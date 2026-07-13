@@ -1,0 +1,236 @@
+  :root{
+    --bg:#1f2023; --panel:#2a2c30; --panel2:#26282c; --line:#3a3d42;
+    --text:#e7e9ec; --muted:#9aa0a6; --accent:#f0a032; --blue:#3a7afe;
+    --blue2:#2f6ae0; --green:#46c46a; --dot:#2f9bff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.5;
+    padding:24px;
+  }
+  h1{font-size:24px; margin:0 0 4px}
+  .sub{color:var(--muted); margin:0 0 18px; font-size:14px}
+  .wrap{max-width:1180px; margin:0 auto}
+
+  /* ---- nokta editörü ---- */
+  .pts{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:14px 16px; margin-bottom:18px}
+  .pts h3{margin:0 0 10px; font-size:14px; color:var(--accent)}
+  .ptrow{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .ptcell{display:flex; align-items:center; gap:4px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 8px}
+  .ptcell label{color:var(--muted); font-size:12px}
+  .ptcell input{width:54px; background:#15161a; border:1px solid var(--line); color:var(--text); border-radius:4px; padding:3px 5px; font-size:13px; text-align:center}
+  .ptcell .rm{cursor:pointer; color:#e06a6a; font-weight:700; margin-left:2px; border:none; background:none; font-size:15px}
+  .pts .addbtn{background:var(--green); color:#0b2a12; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-weight:600; font-size:13px}
+  .pts .hint{color:var(--muted); font-size:12px; margin-top:10px}
+
+  .plots{display:flex; gap:18px; flex-wrap:wrap}
+  .plotbox{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; flex:1 1 360px}
+  .plotbox h3{margin:2px 0 8px; font-size:13px; color:var(--muted); font-weight:600}
+  canvas{width:100%; height:auto; display:block; background:#1a1b1e; border-radius:4px}
+  #fit{cursor:crosshair}
+
+  .controls{display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; margin:18px 0 4px}
+  .alpha{display:flex; align-items:center; gap:8px; font-size:15px}
+  button.ctrl{background:var(--blue); color:#fff; border:none; border-radius:6px; width:42px; height:38px; font-size:17px; cursor:pointer; transition:.15s; display:inline-flex; align-items:center; justify-content:center}
+  button.ctrl:hover{background:var(--blue2)}
+  button.ctrl.on{outline:2px solid var(--accent); outline-offset:1px}
+  .hx{font-size:16px; margin:10px 0 2px; text-align:center}
+  .hx b{color:var(--accent)}
+  .iter{text-align:center; color:var(--muted); font-size:13px; margin-bottom:14px}
+  .speed{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted)}
+
+  .steps{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px}
+  .step{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:0; transition:.2s; overflow:hidden}
+  .step.active{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent)}
+  .stephead{display:flex; align-items:center; justify-content:space-between; padding:16px 18px 10px; cursor:pointer; user-select:none}
+  .stephead:hover h2{color:#fff}
+  .step h2{font-size:16px; margin:0; color:#dfe2e6; font-weight:600}
+  .step.active h2{color:var(--accent)}
+  .chev{color:var(--muted); font-size:13px; transition:.2s; transform:rotate(0deg)}
+  .step.open .chev{transform:rotate(90deg); color:var(--accent)}
+  .stepbody{padding:0 18px 16px}
+  .eq{font-size:15px; margin:6px 0; font-variant-numeric:tabular-nums}
+  .eq .v{color:var(--accent); font-weight:600}
+  sub{font-size:.72em}
+  .detail{display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); font-size:14px; color:#cfd3d8}
+  .step.open .detail{display:block}
+  .detail h4{color:var(--accent); margin:14px 0 6px; font-size:14px}
+  .detail h4:first-child{margin-top:0}
+  .detail ul{margin:6px 0; padding-left:20px}
+  .detail .tip{background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin:10px 0}
+  .work{background:#15161a; border:1px solid var(--line); border-radius:6px; padding:10px 12px; font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.85; color:#d6dadf; overflow-x:auto; margin-bottom:6px}
+  .work b{color:var(--accent)}
+  .acc{border:1px solid var(--line); border-radius:6px; margin:8px 0; overflow:hidden}
+  .acc-head{background:var(--panel); padding:10px 12px; cursor:pointer; font-weight:600; font-size:13px; color:#dfe2e6; user-select:none; display:flex; align-items:center; gap:8px}
+  .acc-head:hover{color:#fff}
+  .acc.open .acc-head{color:var(--accent)}
+  .acc-head .ac{transition:.2s; display:inline-block; color:var(--muted)}
+  .acc.open .acc-head .ac{transform:rotate(90deg); color:var(--accent)}
+  .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#cfd3d8; border-top:1px solid var(--line)}
+  .acc.open .acc-body{display:block}
+
+  .notes{margin-top:34px}
+  .notes h2.title{font-size:20px; border-bottom:2px solid var(--accent); padding-bottom:8px; display:inline-block}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 0}
+  .tab{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:9px 15px; border-radius:6px 6px 0 0; cursor:pointer; font-size:14px}
+  .tab.active{background:var(--panel2); border-bottom-color:var(--panel2); color:var(--accent); font-weight:600}
+  .tabpane{display:none; background:var(--panel2); border:1px solid var(--line); border-radius:0 8px 8px 8px; padding:22px 26px}
+  .tabpane.active{display:block}
+  .tabpane h3{color:var(--accent); margin-top:22px}
+  .tabpane h3:first-child{margin-top:0}
+  .callout{background:#2e2a20; border-left:3px solid var(--accent); padding:12px 16px; border-radius:4px; margin:16px 0}
+  .num{color:var(--green); font-weight:600}
+  table.calc{border-collapse:collapse; margin:12px 0; font-size:14px}
+  table.calc td,table.calc th{border:1px solid var(--line); padding:7px 12px; text-align:center}
+  table.calc th{background:var(--panel)}
+  .footer{color:var(--muted); font-size:12px; margin-top:30px; text-align:center}
+  @media(max-width:720px){ .steps{grid-template-columns:1fr} }
+
+  /* ---- çok modelli düzen: sol panel ---- */
+  .applayout{display:flex; align-items:flex-start; max-width:1680px; margin:0 auto; padding:0 8px}
+  .sidebar{position:sticky; top:20px; flex:0 0 var(--sbw,215px); min-width:0; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:14px; margin-right:20px}
+  .sb-title{font-size:12px; color:var(--muted); font-weight:700; margin-bottom:10px; letter-spacing:1px}
+  .navbtn{display:block; width:100%; text-align:left; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 13px; margin-bottom:8px; cursor:pointer; font-size:14px; transition:.15s}
+  .navbtn:hover{border-color:var(--accent); color:#fff}
+  .navbtn.active{background:var(--accent); color:#1f2023; font-weight:700; border-color:var(--accent)}
+  .sb-note{font-size:11px; color:var(--muted); margin-top:10px; line-height:1.4}
+  .wrap{flex:1 1 auto; min-width:0; max-width:none; margin:0}
+  .model{display:none}
+  .model.active{display:block}
+  .sechead{font-size:20px; color:var(--text); border-bottom:2px solid var(--accent); padding-bottom:8px; margin:28px 0 6px; display:inline-block}
+  /* ---- Stanford-tarzı bölüm alt-navigasyonu ---- */
+  .subnav{display:none; margin:-2px 0 10px 10px; border-left:2px solid var(--line)}
+  .subnav.show{display:block}
+  .subnav a{display:block; position:relative; padding:5px 8px 5px 15px; font-size:12px; color:var(--muted); cursor:pointer; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-radius:0 6px 6px 0; transition:.12s}
+  .subnav a::before{content:''; position:absolute; left:-5px; top:50%; transform:translateY(-50%); width:8px; height:8px; border-radius:50%; background:var(--line); transition:.15s}
+  .subnav a:hover{color:var(--text); background:rgba(255,255,255,0.03)}
+  .subnav a.cur{color:var(--accent); font-weight:600}
+  .subnav a.cur::before{background:var(--accent)}
+  @media(max-width:860px){ .subnav{display:none !important} }
+  /* ---- yol haritası (tech tree) ---- */
+  #techSvg{width:100%; max-width:960px; min-width:640px; height:auto; background:#141519; border-radius:10px}
+  #techSvg text{fill:#e7e9ec; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  #techSvg .tsub{font-size:9.5px; fill:#9aa0a6}
+  #techSvg .tn rect{fill:#22242a; stroke-width:2; transition:.15s}
+  #techSvg .tn-done rect{stroke:#46c46a; fill:#16281c}
+  #techSvg .tn-avail rect{stroke:#f0a032; fill:#2a2416; animation:ttpulse 1.5s ease-in-out infinite}
+  #techSvg .tn-avail .tsub{fill:#f0a032}
+  #techSvg .tn-locked rect{stroke:#3a3d42; fill:#1b1c20}
+  #techSvg .tn-locked text{fill:#6f757c}
+  #techSvg .tn.sel rect{stroke-width:4}
+  #techSvg .te-off{stroke:#33363c; stroke-width:1.6; fill:none}
+  #techSvg .te-on{stroke:#46c46a; stroke-width:2.2; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.85}
+  @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.35}}
+  @keyframes ttflow{to{stroke-dashoffset:-11}}
+  /* ---- sol panel yeniden boyutlandırma ---- */
+  .sb-resizer{position:absolute; top:0; right:-7px; width:14px; height:100%; cursor:col-resize; z-index:5; touch-action:none}
+  .sb-resizer::after{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:transparent; transition:.15s}
+  .sb-resizer:hover::after,.sb-resizer.on::after{background:var(--accent)}
+  @media(max-width:860px){ .sb-resizer{display:none} }
+
+  /* ---- mobil / Android uyumu ---- */
+  @media(max-width:720px){
+    body{padding:10px}
+    h1{font-size:19px}
+    .sub{font-size:13px}
+    .pts{padding:10px 12px}
+    .tabpane{padding:14px 12px}
+    .work{font-size:12px}
+    table.calc{display:block; overflow-x:auto; max-width:100%}
+    .plotbox{flex-basis:100%}
+    .controls{gap:8px}
+    .sechead{font-size:17px}
+    #techSvg{min-width:560px}
+    .applayout{padding:0 2px}
+  }
+  @media(max-width:860px){
+    .applayout{flex-direction:column}
+    .sidebar{position:static; flex-basis:auto; width:100%; margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .navbtn{width:auto; margin:0}
+    .sb-title,.sb-note{display:none}
+  }
+
+  /* ---- RNN hücre içi diyagram okları ---- */
+  .rnn-edge{stroke:#6f757c; stroke-width:2; transition:.15s}
+
+  /* ---- RNN hücre içi (computational graph) ---- */
+  #cellSvg{width:100%; max-width:700px; height:auto; min-width:500px; background:#10182b; border-radius:8px}
+  .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
+  .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
+  .io-y{fill:#4a1f1f; stroke:#e06a6a; cursor:pointer}
+  .io-a{fill:#123a3a; stroke:#3fb6b6; cursor:pointer}
+  .op-lbl{fill:#fff; font-size:15px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  .io-lbl{fill:#fff; font-size:13px; font-weight:600; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  .w-lbl{fill:#cfd3d8; font-size:12px; font-style:italic; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  .cell-hl{stroke:#ffd24a !important; stroke-width:4 !important}
+  text.cell-hl{fill:#ffd24a !important; stroke:none !important}
+  .cell-hl-b{stroke:#f0a032 !important; stroke-width:4 !important}
+  text.cell-hl-b{fill:#f0a032 !important; stroke:none !important}
+  /* ---- Civ6 tech tree v3: yatay + çağlar ---- */
+  #techSvg{min-width:1820px; background:linear-gradient(180deg,#15161b 0%,#131418 55%,#171512 100%)}
+  #techSvg .era-band{fill:rgba(255,255,255,0.018)}
+  #techSvg .era-band.alt{fill:rgba(240,160,50,0.045)}
+  #techSvg .era-lbl{fill:#8a9097; font-size:13px; letter-spacing:3px; font-weight:700}
+  #techSvg .tchips{font-size:12px; pointer-events:none}
+  @media(max-width:720px){ #techSvg{min-width:1350px} }
+  /* ---- Civilopedia ---- */
+  .pedia-art p{font-size:14px; line-height:1.75; color:#cfd3d8; margin:6px 0 14px}
+  .pedia-art ul{margin:6px 0 14px; padding-left:20px}
+  .pedia-art li{font-size:13.5px; line-height:1.7; color:#cfd3d8; margin:5px 0}
+  .ped-h{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin:14px 0 4px}
+  .ped-h:first-child{margin-top:0}
+  .ped-links{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+  /* ---- Civilopedia v2: portreler + hook ---- */
+  .ped-hook{font-size:15px; font-style:italic; color:#e8dcbf; border-left:3px solid var(--accent); padding:10px 14px; background:rgba(240,160,50,.06); border-radius:4px; line-height:1.75; margin:0 0 16px}
+  .ped-people{display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 14px}
+  .ped-card{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; flex:0 1 auto; max-width:290px}
+  .ped-card b{font-size:13px}
+  .ped-card span{color:var(--muted); font-size:11.5px}
+  .ped-card i{color:#cfd3d8; font-size:11.5px}
+  .ped-ava{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; color:#fff; flex:0 0 44px; border:2px solid rgba(255,255,255,.25); background:linear-gradient(135deg,#3a7afe,#7c5cf6)}
+  .ped-card:nth-child(2) .ped-ava{background:linear-gradient(135deg,#46c46a,#2a8f8f)}
+  .ped-card:nth-child(3) .ped-ava{background:linear-gradient(135deg,#f0a032,#e06a6a)}
+  .ped-card:nth-child(4) .ped-ava{background:linear-gradient(135deg,#e06a6a,#a34ad1)}
+  .ped-stat{color:#46c46a; font-weight:700}
+  #lstmPipe{width:100%; max-width:800px; min-width:620px; height:auto; background:#141519; border-radius:10px}
+  /* ---- self-attention ısı haritası ---- */
+  #attSvg{width:100%; max-width:420px; min-width:330px; height:auto; background:#141519; border-radius:10px}
+  #attSvg .at-col,#attSvg .at-row{fill:#e7e9ec; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
+  #attSvg .at-row{cursor:pointer}
+  #attSvg .at-row:hover{fill:#fff}
+  #attSvg .at-row.cur{fill:var(--accent); font-weight:700}
+  #attSvg .at-cell{fill:#0a1f0c; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  #attSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
+  /* ---- eğlence paketi ---- */
+  #techSvg .tn.justUnlocked rect{stroke:#ffd24a; animation:ttBurst .7s ease-out 3}
+  @keyframes ttBurst{0%{stroke-width:2}45%{stroke-width:7}100%{stroke-width:2}}
+  .tt-toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:#2a2416; border:1px solid #f0a032; color:#f0d8a0; padding:12px 20px; border-radius:10px; font-size:14px; z-index:9999; box-shadow:0 6px 24px rgba(0,0,0,.5); animation:ttToast 3.3s ease forwards; text-align:center; max-width:88vw}
+  @keyframes ttToast{0%{opacity:0; transform:translateX(-50%) translateY(14px)}10%{opacity:1; transform:translateX(-50%) translateY(0)}84%{opacity:1}100%{opacity:0; transform:translateX(-50%) translateY(-8px)}}
+  .tt-confetti{position:fixed; top:8vh; width:9px; height:9px; border-radius:2px; z-index:9998; pointer-events:none; animation:ttFall 1.7s ease-in forwards}
+  @keyframes ttFall{0%{opacity:1; top:8vh}100%{opacity:0; top:82vh}}
+  .wond-grid{display:flex; flex-wrap:wrap; gap:8px}
+  .wond{border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:13px; background:var(--panel); opacity:.5; transition:.2s}
+  .wond.built{opacity:1; border-color:#46c46a; background:#16281c}
+  /* ---- RNN interaktif hesap kartları (linreg stili) ---- */
+  .rc-card{margin-top:4px}
+  .rc-eq{font-size:14px; margin:7px 0; font-variant-numeric:tabular-nums; line-height:1.6; color:#dfe2e6}
+  .rc-eq .sb{color:var(--muted)}
+  .rc-eq .rv{color:var(--accent); font-weight:700}
+  .rc-hd{font-size:12.5px; color:var(--accent); font-weight:700; margin:12px 0 2px}
+  .rc-hd:first-child{margin-top:2px}
+  /* ---- RNN sabit formül haritası ---- */
+  .rnn-formmap{position:sticky; top:8px; z-index:4; background:var(--panel2); border:1px solid var(--accent); border-radius:10px; padding:12px 16px; margin:6px 0 16px; box-shadow:0 6px 18px rgba(0,0,0,.45)}
+  @media(max-width:720px){ .rnn-formmap{position:static; box-shadow:none} }
+  .fm-row{display:flex; gap:11px; align-items:baseline; margin:7px 0; font-size:13.5px; line-height:1.6}
+  .fm-tag{flex:0 0 76px; text-align:center; font-size:10.5px; font-weight:700; letter-spacing:.5px; padding:3px 0; border-radius:20px; white-space:nowrap}
+  .fm-eq{font-variant-numeric:tabular-nums; color:#e2e5e9}
+  .fm-eq .mut{color:var(--muted)}
+  .fm-eq b{color:#fff; font-weight:600}
+  .fm-t-ileri{background:#12304c; color:#8ec5ff}
+  .fm-t-geri{background:#3a2c12; color:#f0a032}
+  .fm-t-genel{background:#16281c; color:#6ee08f}
+  .fm-t-tek{background:#2e2a10; color:#ffd24a}
+  .fm-t-guncelle{background:#3a1f1f; color:#f0928f}
+  .fm-t-delta{background:#2a1a33; color:#d29bff}
+  @media(max-width:720px){ .fm-row{flex-direction:column; gap:2px} .fm-tag{flex:0 0 auto; align-self:flex-start} }
