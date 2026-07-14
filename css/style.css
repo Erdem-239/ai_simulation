@@ -135,7 +135,7 @@
   .sb-toggle:hover{border-color:var(--accent); color:#fff}
   .sidebar.collapsed{flex:0 0 0; width:0; min-width:0; padding:0; margin-right:0; border-color:transparent; overflow:visible}
   .sidebar.collapsed .sb-inner,.sidebar.collapsed .sb-resizer{display:none}
-  @media(max-width:860px){ .sb-toggle{top:6px; right:-13px} }
+  @media(max-width:860px){ .sb-toggle{position:static; margin:0} }
 
   /* ---- mobil / Android uyumu ---- */
   @media(max-width:720px){
@@ -155,7 +155,7 @@
   @media(max-width:860px){
     .applayout{flex-direction:column}
     .sidebar{position:relative; flex-basis:auto; width:100%; margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
-    .sidebar.collapsed{width:auto; padding:6px 20px 6px 6px; min-height:38px}
+    .sidebar.collapsed{flex:0 0 auto; width:auto; padding:8px}
     .navbtn{width:auto; margin:0}
     .sb-title,.sb-note{display:none}
   }
