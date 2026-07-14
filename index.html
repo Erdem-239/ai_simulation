@@ -15,22 +15,25 @@
 </head>
 <body>
 <div class="applayout">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
+    <button class="sb-toggle" id="sbToggle" title="Paneli kapat" aria-label="Paneli aç/kapat">◀</button>
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
-    <div class="sb-title">🧠 MODELLER</div>
-    <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
-    <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
-    <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
-    <button class="navbtn" data-model="vektor">🧮 Vektör & Nokta Çarpım</button>
-    <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
-    <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
-    <button class="navbtn" data-model="softmax">🌡️ Softmax & Temperature</button>
-    <button class="navbtn" data-model="embedding">🔤 Kelime Temsili (Embedding)</button>
-    <button class="navbtn" data-model="attention">🎯 Self-Attention</button>
-    <button class="navbtn" data-model="multihead">🧩 Multi-Head Attention</button>
-    <button class="navbtn" data-model="rnn">🔁 RNN (BPTT)</button>
-    <button class="navbtn" data-model="lstm">🚪 LSTM / GRU</button>
-    <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
+    <div class="sb-inner">
+      <div class="sb-title">🧠 MODELLER</div>
+      <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
+      <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
+      <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
+      <button class="navbtn" data-model="vektor">🧮 Vektör & Nokta Çarpım</button>
+      <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
+      <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
+      <button class="navbtn" data-model="softmax">🌡️ Softmax & Temperature</button>
+      <button class="navbtn" data-model="embedding">🔤 Kelime Temsili (Embedding)</button>
+      <button class="navbtn" data-model="attention">🎯 Self-Attention</button>
+      <button class="navbtn" data-model="multihead">🧩 Multi-Head Attention</button>
+      <button class="navbtn" data-model="rnn">🔁 RNN (BPTT)</button>
+      <button class="navbtn" data-model="lstm">🚪 LSTM / GRU</button>
+      <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
+    </div>
   </aside>
   <div class="wrap">
   <div class="model" id="model-linreg">

@@ -129,6 +129,14 @@
   .sb-resizer:hover::after,.sb-resizer.on::after{background:var(--accent)}
   @media(max-width:860px){ .sb-resizer{display:none} }
 
+  /* ---- sol panel aç/kapat ---- */
+  .sidebar{transition:flex-basis .2s ease, padding .2s ease, margin-right .2s ease, border-color .2s ease}
+  .sb-toggle{position:absolute; top:14px; right:-14px; width:26px; height:26px; border-radius:50%; background:var(--panel2); border:1px solid var(--line); color:var(--text); cursor:pointer; z-index:6; display:flex; align-items:center; justify-content:center; font-size:11px; padding:0; line-height:1; transition:.15s}
+  .sb-toggle:hover{border-color:var(--accent); color:#fff}
+  .sidebar.collapsed{flex:0 0 0; width:0; min-width:0; padding:0; margin-right:0; border-color:transparent; overflow:visible}
+  .sidebar.collapsed .sb-inner,.sidebar.collapsed .sb-resizer{display:none}
+  @media(max-width:860px){ .sb-toggle{top:6px; right:-13px} }
+
   /* ---- mobil / Android uyumu ---- */
   @media(max-width:720px){
     body{padding:10px}
@@ -146,7 +154,8 @@
   }
   @media(max-width:860px){
     .applayout{flex-direction:column}
-    .sidebar{position:static; flex-basis:auto; width:100%; margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .sidebar{position:relative; flex-basis:auto; width:100%; margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .sidebar.collapsed{width:auto; padding:6px 20px 6px 6px; min-height:38px}
     .navbtn{width:auto; margin:0}
     .sb-title,.sb-note{display:none}
   }

@@ -740,6 +740,24 @@
   rs.addEventListener('pointerup',()=>{ drag=false; rs.classList.remove('on'); try{ localStorage.setItem('attn_sbw', String(w)); }catch(e){} });
 })();
 
+/* ---- sol panel: aç/kapat ---- */
+(function(){
+  const tg=document.getElementById('sbToggle'); const sb=document.getElementById('sidebar'); if(!tg||!sb) return;
+  let collapsed=false;
+  try{ collapsed = localStorage.getItem('attn_sbcollapsed')==='1'; }catch(e){}
+  function apply(){
+    sb.classList.toggle('collapsed', collapsed);
+    tg.textContent = collapsed ? '▶' : '◀';
+    tg.title = collapsed ? 'Paneli aç' : 'Paneli kapat';
+  }
+  apply();
+  tg.addEventListener('click', ()=>{
+    collapsed = !collapsed;
+    apply();
+    try{ localStorage.setItem('attn_sbcollapsed', collapsed ? '1' : '0'); }catch(e){}
+  });
+})();
+
 /* ---- Civilopedia gezinme ---- */
 (function(){
   document.querySelectorAll('[data-ped-tree]').forEach(b=>b.addEventListener('click',()=>{
