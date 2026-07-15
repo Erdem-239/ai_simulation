@@ -713,9 +713,13 @@
         <button class="addbtn" id="cellBackAuto" style="background:var(--accent); color:#1f2023; opacity:.8">◀ BPTT ⏩</button>
         <button class="addbtn" id="cellRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Sıfırla</button>
       </div>
-      <div style="overflow-x:auto"><svg id="cellSvg" role="img"></svg></div>
-      <div id="cellFormula" class="work" style="margin-top:12px; min-height:48px; font-size:15px; line-height:1.9">Diyagramı oku: çarp (×) → topla (+) → aktivasyon (g). "Formülü oluştur"a bas.</div>
-      <div id="cellInfo" class="callout" style="margin-top:8px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
+      <div class="cell-layout">
+        <div class="cell-diagram" style="overflow-x:auto"><svg id="cellSvg" role="img"></svg></div>
+        <div class="cell-side">
+          <div id="cellFormula" class="work" style="min-height:48px; font-size:14px; line-height:1.85">Diyagramı oku: çarp (×) → topla (+) → aktivasyon (g). "Formülü oluştur"a bas.</div>
+          <div id="cellInfo" class="callout" style="margin:8px 0 0">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
+        </div>
+      </div>
     </div>
 
     <div class="sechead">3) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
