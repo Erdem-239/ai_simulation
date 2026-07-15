@@ -200,8 +200,8 @@
   .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:10px}
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
-  #cellSvg{display:block; width:100%; max-width:100%; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
-  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0} .cell-diagram{overflow-x:auto} #cellSvg{min-width:420px} }
+  #cellSvg{display:block; width:100%; max-width:420px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
+  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
   .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
   .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
   .io-y{fill:#4a1f1f; stroke:#e06a6a; cursor:pointer}
