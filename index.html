@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607151811">
+<link rel="stylesheet" href="css/style.css?v=202607151823">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:11 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:23 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -778,7 +778,26 @@
     </div><!-- /rnn-fwd-cols -->
 
     <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
-    <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
+    <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b>, ve aşağıdaki <b>her adımın grafiği</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
+
+    <!-- girdi & ağırlık editörü (yukarıda — aşağıdaki tüm adım grafikleri buna bağlı) -->
+    <div class="pts" style="border-left:3px solid var(--green)">
+      <h3 style="color:var(--green)">🎛️ Hücrenin girdileri ve ağırlıkları — oyna, aşağıdaki her şey canlı değişir</h3>
+      <div class="ptrow">
+        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
+        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px">
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.05" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.05" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.05" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.05" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.05" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z), &nbsp; ŷ = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>.</div>
+    </div>
 
     <!-- ADIM ADIM — HER ADIM NEDEN? -->
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
@@ -798,18 +817,42 @@
       </div>
       <div class="pts" style="margin:0">
         <b style="color:var(--accent)">Geri Adım 2) Çıktı katmanından geri</b>
-        <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W_{hy}} = (\hat y - y)\,h \quad\cdot\quad \dfrac{\partial L}{\partial b_y} = (\hat y - y) \)</div>
-        <div style="font-size:13px; color:#cfd3d8"><b>Neden — ×giriş kuralı:</b> bir ağırlığın gradyanı = geri-sinyal × o ağırlığın <b>girişi</b> (burada h). h'ye akan sinyal = (ŷ−y)·W<sub>hy</sub>.</div>
+        <div class="step-graph-row">
+          <div class="step-graph-formula">
+            <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W_{hy}} = (\hat y - y)\,h \quad\cdot\quad \dfrac{\partial L}{\partial b_y} = (\hat y - y) \)</div>
+            <div style="font-size:13px; color:#cfd3d8"><b>Neden — ×giriş kuralı:</b> bir ağırlığın gradyanı = geri-sinyal × o ağırlığın <b>girişi</b> (burada h). h'ye akan sinyal = (ŷ−y)·W<sub>hy</sub>.</div>
+          </div>
+          <div class="step-graph-plot">
+            <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
+            <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
+          </div>
+        </div>
       </div>
       <div class="pts" style="margin:0">
         <b style="color:var(--accent)">Geri Adım 3) tanh'tan geri</b>
-        <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial z} = \dfrac{\partial L}{\partial h}\,(1 - h^2) \)</div>
-        <div style="font-size:13px; color:#cfd3d8"><b>Neden — aktivasyon türevi:</b> her tanh'tan geçişte gradyan <b>(1−h²)</b> ile çarpılır. (İspatı aşağıdaki akordeonda.)</div>
+        <div class="step-graph-row">
+          <div class="step-graph-formula">
+            <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial z} = \dfrac{\partial L}{\partial h}\,(1 - h^2) \)</div>
+            <div style="font-size:13px; color:#cfd3d8"><b>Neden — aktivasyon türevi:</b> her tanh'tan geçişte gradyan <b>(1−h²)</b> ile çarpılır. (İspatı aşağıdaki akordeonda.)</div>
+          </div>
+          <div class="step-graph-plot">
+            <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
+            <div class="step-graph-cap">h = tanh(z) — nokta: şu anki z · sarı: teğet (eğim = 1−h²)</div>
+          </div>
+        </div>
       </div>
       <div class="pts" style="margin:0">
         <b style="color:var(--accent)">Geri Adım 4) İçerideki ağırlıklara</b>
-        <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W_{xh}} = \dfrac{\partial L}{\partial z}\,x \quad \dfrac{\partial L}{\partial W_{hh}} = \dfrac{\partial L}{\partial z}\,h_{t-1} \quad \dfrac{\partial L}{\partial b} = \dfrac{\partial L}{\partial z} \)</div>
-        <div style="font-size:13px; color:#cfd3d8"><b>Neden — yine ×giriş:</b> her ağırlığın gradyanı = ∂L/∂z × o ağırlığın girişi (x, h₋₁ ya da 1).</div>
+        <div class="step-graph-row">
+          <div class="step-graph-formula">
+            <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W_{xh}} = \dfrac{\partial L}{\partial z}\,x \quad \dfrac{\partial L}{\partial W_{hh}} = \dfrac{\partial L}{\partial z}\,h_{t-1} \quad \dfrac{\partial L}{\partial b} = \dfrac{\partial L}{\partial z} \)</div>
+            <div style="font-size:13px; color:#cfd3d8"><b>Neden — yine ×giriş:</b> her ağırlığın gradyanı = ∂L/∂z × o ağırlığın girişi (x, h₋₁ ya da 1).</div>
+          </div>
+          <div class="step-graph-plot">
+            <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
+            <div class="step-graph-cap">L(W<sub>xh</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>xh</sub>)</div>
+          </div>
+        </div>
       </div>
       <div class="pts" style="margin:0">
         <b style="color:var(--accent)">Geri Adım 5) Zaman boyunca topla</b>
@@ -818,59 +861,43 @@
       </div>
       </div>
     </div>
-    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↓ Şimdi aşağıda bu 5 adımı <b>kendi sayılarınla</b> canlı çalıştır.</p>
+    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↑ Yukarıdaki kaydırıcılarla oynadın mı? Aşağıda aynı hesabın <b>tam sayısal dökümü</b> var, istersen aç.</p>
 
-    <!-- girdi & ağırlık editörü -->
-    <div class="pts" style="border-left:3px solid var(--green)">
-      <h3 style="color:var(--green)">🎛️ Hücrenin girdileri ve ağırlıkları — oyna, her şey canlı değişir</h3>
-      <div class="ptrow">
-        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
-        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
-        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px">
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.05" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.05" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.05" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.05" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.05" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z), &nbsp; ŷ = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>.</div>
-    </div>
+    <!-- ①②③ tam sayısal döküm — tek kapalı accordion (grafiklerle bilgi tekrarı, ayrıntı isteyen açar) -->
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 🔢 Tam sayısal hesap — ileri yayılım, domino domino, güncelleme (senin sayılarınla)</div>
+      <div class="acc-body">
+        <div class="pts" style="margin:0 0 12px">
+          <h3 style="color:var(--accent)">① İleri yayılım — tahmini üret</h3>
+          <div id="rc_fwd" class="rc-card"></div>
+        </div>
 
-    <!-- ileri yayılım -->
-    <div class="pts">
-      <h3 style="color:var(--accent)">① İleri yayılım — tahmini üret (senin sayılarınla)</h3>
-      <div id="rc_fwd" class="rc-card"></div>
-    </div>
+        <div class="pts" style="border-left:3px solid var(--accent); margin:0 0 12px">
+          <h3 style="color:var(--accent)">② Geri yayılım — domino domino</h3>
+          <div style="font-size:13px; color:#cfd3d8; margin-bottom:8px">Hatayı en sondan (çıktıdan) başlayıp geriye deviriyoruz. Her domino bir öncekinin sonucunu kullanır.</div>
+          <div id="rc_bwd" class="rc-card"></div>
+          <div class="acc" style="margin-top:10px">
+            <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
+            <div class="acc-body">
+              <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
+              \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
+              <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
+              \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
+              <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
+              \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
+              <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
+              \[ \tanh'(z)=1-h^{2} \]
+              <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
+            </div>
+          </div>
+        </div>
 
-    <!-- geri yayılım domino -->
-    <div class="pts" style="border-left:3px solid var(--accent)">
-      <h3 style="color:var(--accent)">② Geri yayılım — domino domino (senin sayılarınla)</h3>
-      <div style="font-size:13px; color:#cfd3d8; margin-bottom:8px">Hatayı en sondan (çıktıdan) başlayıp geriye deviriyoruz. Her domino bir öncekinin sonucunu kullanır.</div>
-      <div id="rc_bwd" class="rc-card"></div>
-      <div class="acc" style="margin-top:10px">
-        <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
-        <div class="acc-body">
-          <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
-          \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
-          <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
-          \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
-          <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
-          \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
-          <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
-          \[ \tanh'(z)=1-h^{2} \]
-          <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
+        <div class="pts" style="border-left:3px solid var(--blue); margin:0">
+          <h3 style="color:var(--blue)">③ Güncelle — yokuş aşağı bir adım (W := W − α·∂L/∂W)</h3>
+          <div id="rc_upd" class="rc-card"></div>
+          <div style="font-size:12px; color:var(--muted); margin-top:8px">α'yı büyüt → adım büyür (çabuk ama zıplayabilir); küçült → yavaş ama kararlı. Lineer regresyondaki güncelleme kuralının aynısı.</div>
         </div>
       </div>
-    </div>
-
-    <!-- güncelle -->
-    <div class="pts" style="border-left:3px solid var(--blue)">
-      <h3 style="color:var(--blue)">③ Güncelle — yokuş aşağı bir adım (W := W − α·∂L/∂W)</h3>
-      <div id="rc_upd" class="rc-card"></div>
-      <div style="font-size:12px; color:var(--muted); margin-top:8px">α'yı büyüt → adım büyür (çabuk ama zıplayabilir); küçült → yavaş ama kararlı. Lineer regresyondaki güncelleme kuralının aynısı.</div>
     </div>
 
     <!-- ileri seviye: tam BPTT akordeon -->
@@ -2417,8 +2444,8 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607151811"></script>
+<script src="js/lesson-linreg.js?v=202607151823"></script>
 
-<script src="js/app.js?v=202607151811"></script>
+<script src="js/app.js?v=202607151823"></script>
 </body>
 </html>
