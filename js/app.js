@@ -340,18 +340,21 @@
       + EQ('ŷ = W<sub>hy</sub>·h + b<sub>y</sub>', '('+F(p.Why,2)+')('+F(h)+') + '+F(p.by,2), F(yhat))
       + EQ('L = ½(ŷ − y)²', '½('+F(yhat)+' − '+F(p.y,2)+')²', F(L));
 
-    const rcS1=$('rcS1Live'); if(rcS1) rcS1.innerHTML =
-      EQ('∂L/∂z<sub>y</sub> = (ŷ − y)', '('+F(yhat)+' − '+F(p.y,2)+')', F(dyhat));
-    const rcS2=$('rcS2Live'); if(rcS2) rcS2.innerHTML =
-      EQ('∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub> · h', '('+F(dyhat)+')('+F(h)+')', F(dWhy))
-      + EQ('∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>', '', F(dby));
-    const rcS3=$('rcS3Live'); if(rcS3) rcS3.innerHTML =
-      EQ('∂L/∂h = ∂L/∂z<sub>y</sub> · W<sub>hy</sub>', '('+F(dyhat)+')('+F(p.Why,2)+')', F(dh))
-      + EQ('∂L/∂z = ∂L/∂h · (1 − h²)', '('+F(dh)+')(1 − '+F(h*h)+')', F(dz));
-    const rcS4=$('rcS4Live'); if(rcS4) rcS4.innerHTML =
-      EQ('∂L/∂W<sub>xh</sub> = ∂L/∂z · x', '('+F(dz)+')('+F(p.x,2)+')', F(dWxh))
-      + EQ('∂L/∂W<sub>hh</sub> = ∂L/∂z · h₋₁', '('+F(dz)+')('+F(p.hp,2)+')', F(dWhh))
-      + EQ('∂L/∂b<sub>h</sub> = ∂L/∂z', '', F(db));
+    const setTxt=(id,v)=>{ const el=$(id); if(el) el.textContent=v; };
+    setTxt('rcS1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
+    setTxt('rcS1val', F(dyhat));
+    setTxt('rcS2sub1', '('+F(dyhat)+')('+F(h)+')');
+    setTxt('rcS2val1', F(dWhy));
+    setTxt('rcS2val2', F(dby));
+    setTxt('rcS3sub1', '('+F(dyhat)+')('+F(p.Why,2)+')');
+    setTxt('rcS3val1', F(dh));
+    setTxt('rcS3sub2', '('+F(dh)+')(1 − '+F(h*h)+')');
+    setTxt('rcS3val2', F(dz));
+    setTxt('rcS4sub1', '('+F(dz)+')('+F(p.x,2)+')');
+    setTxt('rcS4val1', F(dWxh));
+    setTxt('rcS4sub2', '('+F(dz)+')('+F(p.hp,2)+')');
+    setTxt('rcS4val2', F(dWhh));
+    setTxt('rcS4val3', F(db));
 
     drawStep1(p.y, yhat, L, dyhat);
     drawStep2(p, h, dWhy);
