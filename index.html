@@ -647,7 +647,7 @@
     <div class="callout">🔗 <b>En önemli bağlantı:</b> Lineer regresyonda öğrendiğin <b>zincir kuralı</b>, RNN'de aynen geçerli — sadece <b>zaman adımları boyunca zincirleme</b> uygulanıyor. Her \(h_t\), bir önceki \(h_{t-1}\)'e bağlı; o da \(h_{t-2}\)'ye… Bu yüzden türev "geçmişe doğru" akar. Adı bu yüzden <b>zaman içinde geri yayılım</b>.</div>
 
     <div class="sechead">1) İleri Yayılım (Forward Pass) — canlı hücre</div>
-    <div class="rnn-fwd-cols">
+    <div class="rnn-fwd-cols" id="rnnFwdCols">
     <div class="rnn-fc-left">
       <div class="rnn-deriv-cards">
       <div class="deriv-h" style="margin:0 0 6px">İleri (Forward)</div>
@@ -713,6 +713,8 @@
       </div>
       </div>
     </div><!-- /rnn-fc-left -->
+
+    <div class="rnn-col-resizer" id="rnnColResizer" title="Sürükle: sol/sağ oranını ayarla"></div>
 
     <div class="rnn-fc-right">
     <div class="pts">
