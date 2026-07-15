@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 11:33 UTC</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 14:30 UTC</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -712,6 +712,23 @@
           <div class="deriv-why">Yokuş aşağı bir adım. Diziyse aynı \(W\) her adımda kullanıldığı için gradyanlar zaman boyunca toplanır: \( \frac{\partial L}{\partial W}=\sum_t(\text{adım }t) \).</div>
         </div>
       </div>
+      <div class="deriv-h" style="margin:16px 0 6px">📑 Notasyon — kim kim?</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; font-size:12px; color:#cfd3d8; line-height:1.6; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px 12px">
+        <div><b>x</b> — o adımın girdisi</div>
+        <div><b>h₋₁</b> — önceki hafıza</div>
+        <div><b>z</b> — ham toplam (akt. öncesi)</div>
+        <div><b>h</b> — yeni hafıza = tanh(z)</div>
+        <div><b>ŷ</b> — modelin tahmini</div>
+        <div><b>y</b> — gerçek cevap</div>
+        <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+        <div><b>δ</b> — geri-sinyal = ∂L/∂z</div>
+        <div><b>W<sub>xh</sub></b> — x → h</div>
+        <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+        <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+        <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+        <div><b>α</b> — öğrenme oranı</div>
+        <div><b>(1−h²)</b> — tanh türevi</div>
+      </div>
       </div>
     </div><!-- /rnn-fc-left -->
 
@@ -769,24 +786,6 @@
         <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W} = \displaystyle\sum_{t=1}^{T} (\text{adım } t\text{'nin gradyanı}) \)</div>
         <div style="font-size:13px; color:#cfd3d8"><b>Neden — paylaşılan ağırlık:</b> aynı W her zaman adımında kullanıldığı için tüm adımların katkısı <b>toplanır</b>. <b>Genel BPTT formülü budur.</b></div>
       </div>
-          <div class="pts" style="margin:0; border-left:3px solid var(--muted)">
-        <b style="color:var(--muted); font-size:12px; letter-spacing:.5px">📑 NOTASYON — kim kim?</b>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px 14px; font-size:12px; color:#cfd3d8; line-height:1.6; margin-top:6px">
-          <div><b>x</b> — o adımın girdisi</div>
-          <div><b>h₋₁</b> — önceki hafıza</div>
-          <div><b>z</b> — ham toplam (akt. öncesi)</div>
-          <div><b>h</b> — yeni hafıza = tanh(z)</div>
-          <div><b>ŷ</b> — modelin tahmini</div>
-          <div><b>y</b> — gerçek cevap</div>
-          <div><b>L</b> — kayıp ½(ŷ−y)²</div>
-          <div><b>δ</b> — geri-sinyal = ∂L/∂z</div>
-          <div><b>W<sub>xh</sub></b> — x → h</div>
-          <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
-          <div><b>W<sub>hy</sub></b> — h → ŷ</div>
-          <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
-          <div><b>α</b> — öğrenme oranı</div>
-          <div><b>(1−h²)</b> — tanh türevi</div>
-        </div>
       </div>
     </div>
     <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↓ Şimdi aşağıda bu 5 adımı <b>kendi sayılarınla</b> canlı çalıştır.</p>
