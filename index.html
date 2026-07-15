@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607151847">
+<link rel="stylesheet" href="css/style.css?v=202607151854">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:47 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:54 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -706,6 +706,26 @@
         </div>
       </div>
       </div>
+
+    <!-- girdi & ağırlık editörü (yukarıda — aşağıdaki tüm adım grafikleri buna bağlı) -->
+    <div class="pts" style="border-left:3px solid var(--green)">
+      <h3 style="color:var(--green)">🎛️ Hücrenin girdileri ve ağırlıkları — oyna, aşağıdaki her şey canlı değişir</h3>
+      <div class="ptrow">
+        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
+        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px">
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.05" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.05" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.05" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.05" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.05" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z), &nbsp; ŷ = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>.</div>
+    </div>
+
     </div><!-- /rnn-fc-left -->
 
     <div class="rnn-col-resizer" id="rnnColResizer" title="Sürükle: sol/sağ oranını ayarla"></div>
@@ -734,24 +754,6 @@
     <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
     <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b>, ve aşağıdaki <b>her adımın grafiği</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
 
-    <!-- girdi & ağırlık editörü (yukarıda — aşağıdaki tüm adım grafikleri buna bağlı) -->
-    <div class="pts" style="border-left:3px solid var(--green)">
-      <h3 style="color:var(--green)">🎛️ Hücrenin girdileri ve ağırlıkları — oyna, aşağıdaki her şey canlı değişir</h3>
-      <div class="ptrow">
-        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
-        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
-        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px">
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.05" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.05" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.05" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.05" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.05" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z), &nbsp; ŷ = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>.</div>
-    </div>
 
     <!-- ADIM ADIM — HER ADIM NEDEN? -->
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
@@ -2410,8 +2412,8 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607151847"></script>
+<script src="js/lesson-linreg.js?v=202607151854"></script>
 
-<script src="js/app.js?v=202607151847"></script>
+<script src="js/app.js?v=202607151854"></script>
 </body>
 </html>
