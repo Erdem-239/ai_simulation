@@ -50,7 +50,7 @@
   .chev{color:var(--muted); font-size:13px; transition:.2s; transform:rotate(0deg)}
   .step.open .chev{transform:rotate(90deg); color:var(--accent)}
   .stepbody{padding:0 14px 12px}
-  .eq{font-size:13.5px; margin:4px 0; font-variant-numeric:tabular-nums}
+  .eq{font-size:13.5px; margin:4px 0; font-variant-numeric:tabular-nums; overflow-x:auto; overflow-y:hidden}
   .eq .v{color:var(--accent); font-weight:600}
   sub{font-size:.72em}
   .detail{display:none; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); font-size:12.5px; color:#cfd3d8}
@@ -110,7 +110,7 @@
   @media(max-width:480px){ .ex-grid{grid-template-columns:1fr} }
 
   /* ---- çok modelli düzen: sol panel ---- */
-  .applayout{display:flex; align-items:flex-start; max-width:none; margin:0; padding:0}
+  .applayout{display:flex; align-items:flex-start; width:100%; max-width:none; margin:0; padding:0}
   .sidebar{position:sticky; top:0; align-self:flex-start; flex:0 0 var(--sbw,215px); min-width:0; max-height:100vh; background:var(--panel2); border:1px solid var(--line); border-left:none; border-radius:0 10px 10px 0; padding:14px; margin:0 20px 0 -24px}
   .sb-inner{max-height:calc(100vh - 28px); overflow-y:auto; overflow-x:hidden; padding-right:4px}
   .sb-inner::-webkit-scrollbar{width:8px}
@@ -179,7 +179,7 @@
     .applayout{padding:0 2px}
   }
   @media(max-width:860px){
-    .applayout{flex-direction:column}
+    .applayout{flex-direction:column; align-items:stretch}
     .sidebar{position:relative; top:auto; align-self:auto; flex-basis:auto; width:100%; max-height:none; margin:0 0 16px; border:1px solid var(--line); border-radius:10px}
     .sb-inner{max-height:none; overflow:visible; padding-right:0}
     .sidebar.collapsed{flex:0 0 auto; width:auto; padding:8px}
@@ -201,6 +201,14 @@
   .cell-side{min-width:0}
   #cellSvg{display:block; width:100%; max-width:420px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none} .rnn-fc-right{flex:1 1 auto} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
+
+  /* ---- tam türetme bloğu (defter stili) ---- */
+  .deriv-h{font-size:12.5px; color:var(--accent); font-weight:700; letter-spacing:.5px; margin:6px 0 8px; text-transform:uppercase}
+  .deriv-why{font-size:12.5px; color:#cfd3d8; margin-top:2px; line-height:1.55; overflow-wrap:anywhere}
+  .deriv-step{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line)}
+  .deriv-num{flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#1f2023; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px}
+  .deriv-body{flex:1 1 auto; min-width:0; overflow-x:auto}
+  .deriv-body .eq,.deriv-body>p{margin:0}
   .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
   .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
   .io-y{fill:#4a1f1f; stroke:#e06a6a; cursor:pointer}

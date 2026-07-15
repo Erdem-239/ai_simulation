@@ -727,6 +727,58 @@
     </div><!-- /rnn-fc-right -->
     </div><!-- /rnn-fwd-cols -->
 
+    <div class="sechead">📝 Tam Türetme — her notasyonun altında anlamı, her adım açık</div>
+    <div class="pts">
+      <div class="deriv-h">İleri — her parçanın altında ne olduğu yazılı</div>
+      <div class="eq">\[ h=\tanh\Big(\underbrace{W_{xh}\,x_t}_{\text{girdi}}+\underbrace{W_{hh}\,h_{t-1}}_{\text{geçmiş hafıza}}+\underbrace{b_h}_{\text{sapma (bias)}}\Big) \]</div>
+      <div class="deriv-why">Parantezin içi ham toplam <b>z<sub>h</sub></b>: &nbsp;\( z_h=W_{xh}x_t+W_{hh}h_{t-1}+b_h \) &nbsp;→&nbsp; \( h=\tanh(z_h) \) = <b>yeni hafıza</b>.</div>
+
+      <div class="eq" style="margin-top:14px">\[ \hat{y}=\underbrace{W_{hy}\,h}_{\text{hafızadan çıktıya}}+\underbrace{b_y}_{\text{çıktı sapması}} \]</div>
+      <div class="deriv-why">İçi <b>z<sub>y</sub></b>: \( z_y=W_{hy}h+b_y \). Bizim regresyonda <b>çıktı aktivasyonu g₂ yok</b> → \( \hat y=z_y \) doğrudan. (Sınıflandırmada burada softmax/sigmoid olurdu.)</div>
+
+      <div class="eq" style="margin-top:14px">\[ L=\tfrac{1}{2}\,(\hat y-y)^2 \]</div>
+      <div class="deriv-why">Kayıp: tahmin ile gerçek arasındaki hatanın karesinin yarısı.</div>
+
+      <div class="deriv-h" style="margin-top:18px">Geri — sondan başla, sırayla geriye · kurallar: <b>+</b> gradyanı kopyalar · <b>×W</b> girişe ×W / ağırlığa ×giriş · <b>tanh</b> ×(1−h²)</div>
+
+      <div class="deriv-step"><div class="deriv-num">1</div><div class="deriv-body">
+        <div class="eq">\[ \delta_y=\frac{\partial L}{\partial z_y}=\underbrace{\frac{\partial L}{\partial \hat y}}_{(\hat y-y)}\cdot\underbrace{\frac{\partial \hat y}{\partial z_y}}_{=\,1}=(\hat y-y) \]</div>
+        <div class="deriv-why">Kayıptan başla. \(L\)'nin türevi \((\hat y-y)\); \(\hat y=z_y\) olduğu için \(\partial\hat y/\partial z_y=1\). Bu \(\delta_y\) = <b>çıktıdaki geri-sinyal</b>.</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">2</div><div class="deriv-body">
+        <div class="eq">\[ \frac{\partial L}{\partial W_{hy}}=\delta_y\cdot\frac{\partial z_y}{\partial W_{hy}}=\delta_y\,h^{\top} \]</div>
+        <div class="deriv-why">×giriş kuralı: ağırlığın gradyanı = geri-sinyal × o ağırlığın <b>girişi</b>. \(W_{hy}\)'nin girişi <b>h</b>.</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">3</div><div class="deriv-body">
+        <div class="eq">\[ \frac{\partial L}{\partial b_y}=\delta_y \]</div>
+        <div class="deriv-why">\(b_y\)'nin girişi 1 → geri-sinyal aynen geçer.</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">4</div><div class="deriv-body">
+        <div class="eq">\[ \frac{\partial L}{\partial h}=\frac{\partial z_y}{\partial h}\cdot\delta_y=W_{hy}^{\top}\,\delta_y \]</div>
+        <div class="deriv-why">Sinyali bir katman geriye, <b>hafızaya</b> taşı. \(\times W\) düğümü, girişe \(W\) ile çarparak geçirir.</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">5</div><div class="deriv-body">
+        <div class="eq">\[ \delta_h=\frac{\partial L}{\partial z_h}=\frac{\partial L}{\partial h}\odot\underbrace{(1-h^2)}_{\tanh'} \]</div>
+        <div class="deriv-why">tanh'tan geç: her tanh geçişinde \(\times(1-h^2)\). Bu \(\delta_h\) = <b>z<sub>h</sub>'ye ulaşan geri-sinyal</b>.</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">6</div><div class="deriv-body">
+        <div class="eq">\[ \frac{\partial L}{\partial W_{xh}}=\delta_h\,x_t^{\top},\qquad \frac{\partial L}{\partial W_{hh}}=\delta_h\,h_{t-1}^{\top} \]</div>
+        <div class="deriv-why">Yine ×giriş: \(W_{xh}\)'nin girişi \(x_t\), \(W_{hh}\)'nin girişi \(h_{t-1}\) (önceki hafıza).</div>
+      </div></div>
+
+      <div class="deriv-step"><div class="deriv-num">7</div><div class="deriv-body">
+        <div class="eq">\[ \frac{\partial L}{\partial b_h}=\delta_h \]</div>
+        <div class="deriv-why">\(b_h\)'nin girişi 1.</div>
+      </div></div>
+
+      <div class="callout" style="margin-top:14px">🔻 <b>Güncelle:</b> her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \). &nbsp;Diziyse aynı \(W\) her adımda kullanıldığı için gradyanlar zaman boyunca toplanır: \( \frac{\partial L}{\partial W}=\sum_t (\text{adım } t\text{'nin gradyanı}) \).</div>
+    </div>
+
     <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
     <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
 
