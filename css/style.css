@@ -193,7 +193,7 @@
 
   /* ---- RNN hücre içi (computational graph) ---- */
   /* 1) İleri Yayılım — solda canlı hücre diyagramı, sağda formül kartları */
-  .rnn-fwd-cols{display:flex; gap:0; align-items:stretch; max-width:1180px; margin:0 auto}
+  .rnn-fwd-cols{display:flex; gap:0; align-items:stretch}
   .rnn-fc-right{flex:0 0 var(--rnn-simw,460px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
   .rnn-fc-left > .pts{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center}
@@ -210,7 +210,7 @@
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-fc-left > .pts{flex:0 0 auto; justify-content:flex-start} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
   /* 2) Geri Yayılım başlığı + Kayıp Vadisi grafikleri — aynı satırda başlar */
-  .rnn-bwd-top{display:flex; gap:24px; align-items:stretch; flex-wrap:wrap; max-width:1180px; margin:0 auto}
+  .rnn-bwd-top{display:flex; gap:24px; align-items:stretch; flex-wrap:wrap}
   .rnn-bwd-top-left{flex:1 1 320px; min-width:0; display:flex; flex-direction:column; justify-content:center}
   .rnn-bwd-top-right{flex:1 1 460px; min-width:0}
   @media(max-width:900px){ .rnn-bwd-top{flex-direction:column; gap:0; align-items:stretch} .rnn-bwd-top-left{justify-content:flex-start} }
