@@ -110,8 +110,12 @@
   @media(max-width:480px){ .ex-grid{grid-template-columns:1fr} }
 
   /* ---- çok modelli düzen: sol panel ---- */
-  .applayout{display:flex; align-items:flex-start; max-width:1680px; margin:0 auto; padding:0 8px}
-  .sidebar{position:sticky; top:20px; flex:0 0 var(--sbw,215px); min-width:0; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:14px; margin-right:20px}
+  .applayout{display:flex; align-items:flex-start; max-width:none; margin:0; padding:0}
+  .sidebar{position:sticky; top:0; align-self:flex-start; flex:0 0 var(--sbw,215px); min-width:0; max-height:100vh; background:var(--panel2); border:1px solid var(--line); border-left:none; border-radius:0 10px 10px 0; padding:14px; margin:0 20px 0 -24px}
+  .sb-inner{max-height:calc(100vh - 28px); overflow-y:auto; overflow-x:hidden; padding-right:4px}
+  .sb-inner::-webkit-scrollbar{width:8px}
+  .sb-inner::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px}
+  .sb-inner::-webkit-scrollbar-track{background:transparent}
   .sb-title{font-size:12px; color:var(--muted); font-weight:700; margin-bottom:10px; letter-spacing:1px}
   .navbtn{display:block; width:100%; text-align:left; background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:11px 13px; margin-bottom:8px; cursor:pointer; font-size:14px; transition:.15s}
   .navbtn:hover{border-color:var(--accent); color:#fff}
@@ -152,7 +156,7 @@
   @media(max-width:860px){ .sb-resizer{display:none} }
 
   /* ---- sol panel aç/kapat ---- */
-  .sidebar{transition:flex-basis .2s ease, padding .2s ease, margin-right .2s ease, border-color .2s ease}
+  .sidebar{transition:flex-basis .2s ease, padding .2s ease, margin .2s ease, border-color .2s ease}
   .sb-toggle{position:absolute; top:14px; right:-14px; width:26px; height:26px; border-radius:50%; background:var(--panel2); border:1px solid var(--line); color:var(--text); cursor:pointer; z-index:6; display:flex; align-items:center; justify-content:center; font-size:11px; padding:0; line-height:1; transition:.15s}
   .sb-toggle:hover{border-color:var(--accent); color:#fff}
   .sidebar.collapsed{flex:0 0 0; width:0; min-width:0; padding:0; margin-right:0; border-color:transparent; overflow:visible}
@@ -176,9 +180,10 @@
   }
   @media(max-width:860px){
     .applayout{flex-direction:column}
-    .sidebar{position:relative; flex-basis:auto; width:100%; margin:0 0 16px; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+    .sidebar{position:relative; top:auto; align-self:auto; flex-basis:auto; width:100%; max-height:none; margin:0 0 16px; border:1px solid var(--line); border-radius:10px}
+    .sb-inner{max-height:none; overflow:visible; padding-right:0}
     .sidebar.collapsed{flex:0 0 auto; width:auto; padding:8px}
-    .navbtn{width:auto; margin:0}
+    .navbtn{width:100%; margin:0 0 8px}
     .sb-title,.sb-note{display:none}
   }
 
