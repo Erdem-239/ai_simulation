@@ -345,6 +345,7 @@
   const sb=document.querySelector('.sidebar'); if(!sb) return;
   const nav=document.createElement('div'); nav.className='subnav';
   let heads=[], links=[];
+  let lastModel=null, subnavOpen=true;
   function build(){
     const model=document.querySelector('.model.active'); if(!model) return;
     let hs=[...model.querySelectorAll('.sechead')];
@@ -359,7 +360,7 @@
     });
     const btn=sb.querySelector('.navbtn.active');
     if(btn) btn.insertAdjacentElement('afterend', nav);
-    nav.classList.toggle('show', hs.length>0);
+    nav.classList.toggle('show', hs.length>0 && subnavOpen);
     spy();
   }
   function spy(){
@@ -371,7 +372,11 @@
   }
   let lastSpy=0;
   window.addEventListener('scroll',()=>{ const n=Date.now(); if(n-lastSpy>80){ lastSpy=n; spy(); } });
-  document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>setTimeout(build,40)));
+  document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>{
+    const m=b.dataset.model;
+    if(m===lastModel){ subnavOpen=!subnavOpen; } else { subnavOpen=true; lastModel=m; }
+    setTimeout(build,40);
+  }));
   build();
 })();
 
