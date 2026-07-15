@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 14:30 UTC</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 14:52 UTC</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -656,16 +656,23 @@
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> <b>① h</b> — yeni hafıza (gizli durum)</div>
         <div class="acc-body">
-          <div class="eq">\[ h=\tanh\Big(\underbrace{W_{xh}\,x_t}_{\text{girdi}}+\underbrace{W_{hh}\,h_{t-1}}_{\text{geçmiş hafıza}}+\underbrace{b_h}_{\text{sapma}}\Big) \]</div>
-          <div class="deriv-why">Parantezin içi ham toplam <b>z<sub>h</sub></b>: \( z_h=W_{xh}x_t+W_{hh}h_{t-1}+b_h \) → \( h=\tanh(z_h) \).</div>
+          <div class="deriv-why"><b>Adım 1</b> — ham toplamı kur:</div>
+          <div class="eq">\[ z_h=W_{xh}\,x_t+W_{hh}\,h_{t-1}+b_h \]</div>
+          <div class="deriv-why">(W<sub>xh</sub>·x<sub>t</sub> = girdi katkısı · W<sub>hh</sub>·h<sub>t−1</sub> = geçmiş hafıza katkısı · b<sub>h</sub> = sapma)</div>
+          <div class="deriv-why" style="margin-top:8px"><b>Adım 2</b> — aktivasyonu uygula:</div>
+          <div class="eq">\[ h=\tanh(z_h) \]</div>
         </div>
       </div>
 
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> <b>② ŷ</b> — tahmin (çıktı)</div>
         <div class="acc-body">
-          <div class="eq">\[ \hat{y}=\underbrace{W_{hy}\,h}_{\text{hafızadan çıktıya}}+\underbrace{b_y}_{\text{çıktı sapması}} \]</div>
-          <div class="deriv-why">İçi <b>z<sub>y</sub></b>: \( z_y=W_{hy}h+b_y \). Regresyonda <b>g₂ (çıktı aktivasyonu) yok</b> → \( \hat y=z_y \) doğrudan.</div>
+          <div class="deriv-why"><b>Adım 1</b> — ham toplamı kur:</div>
+          <div class="eq">\[ z_y=W_{hy}\,h+b_y \]</div>
+          <div class="deriv-why">(W<sub>hy</sub>·h = hafızadan çıktıya · b<sub>y</sub> = çıktı sapması)</div>
+          <div class="deriv-why" style="margin-top:8px"><b>Adım 2</b> — çıktı aktivasyonunu uygula:</div>
+          <div class="eq">\[ \hat y=g_2(z_y) \]</div>
+          <div class="deriv-why">Regresyonda g₂ <b>özdeşlik</b> (g₂(z)=z) → \( \hat y=z_y \) doğrudan.</div>
         </div>
       </div>
 
@@ -677,31 +684,46 @@
         </div>
       </div>
 
-      <div class="deriv-h" style="margin:16px 0 6px">Geri — türev (BPTT) · +kopyalar · ×W ⇒ ağırlığa ×giriş · tanh ×(1−h²)</div>
+      <div class="deriv-h" style="margin:16px 0 6px">Geri — türev (BPTT), her adım açık</div>
 
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> <b>④ Çıktı katmanı</b> — ∂L/∂W<sub>hy</sub>, ∂L/∂b<sub>y</sub></div>
         <div class="acc-body">
-          <div class="eq">\[ \delta_y=\frac{\partial L}{\partial z_y}=(\hat y-y) \]</div>
-          <div class="eq" style="margin-top:8px">\[ \frac{\partial L}{\partial W_{hy}}=\delta_y\,h^{\top},\qquad \frac{\partial L}{\partial b_y}=\delta_y \]</div>
-          <div class="deriv-why">Kayıptan başla (\(\hat y=z_y\) olduğu için türev 1) → \(\delta_y\) = çıktı geri-sinyali. ×giriş: W<sub>hy</sub>'nin girişi <b>h</b>, b<sub>y</sub>'nin girişi 1.</div>
+          <div class="deriv-why"><b>Adım 1</b> — L'nin ŷ'ye göre türevi:</div>
+          <div class="eq">\[ \frac{\partial L}{\partial \hat y}=(\hat y-y) \]</div>
+          <div class="deriv-why"><b>Adım 2</b> — ŷ'nin z<sub>y</sub>'ye göre türevi (g₂ özdeşlik olduğu için):</div>
+          <div class="eq">\[ \frac{\partial \hat y}{\partial z_y}=1 \]</div>
+          <div class="deriv-why"><b>Adım 3</b> — ikisini çarpıyoruz (zincir kuralı):</div>
+          <div class="eq">\[ \delta_y=\frac{\partial L}{\partial z_y}=\frac{\partial L}{\partial \hat y}\times\frac{\partial \hat y}{\partial z_y}=(\hat y-y)\times 1=(\hat y-y) \]</div>
+          <div class="deriv-why" style="margin-top:8px"><b>Adım 4</b> — δ<sub>y</sub>'yi W<sub>hy</sub> ve b<sub>y</sub>'ye dağıt. Önce z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub>'nin kendi türevleri:</div>
+          <div class="eq">\[ \frac{\partial z_y}{\partial W_{hy}}=h,\qquad \frac{\partial z_y}{\partial b_y}=1 \]</div>
+          <div class="deriv-why"><b>Adım 5</b> — zincir kuralıyla çarp:</div>
+          <div class="eq">\[ \frac{\partial L}{\partial W_{hy}}=\delta_y\times\frac{\partial z_y}{\partial W_{hy}}=\delta_y\,h,\qquad \frac{\partial L}{\partial b_y}=\delta_y\times\frac{\partial z_y}{\partial b_y}=\delta_y \]</div>
         </div>
       </div>
 
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> <b>⑤ tanh'tan geri</b> — ∂L/∂h, δ<sub>h</sub></div>
         <div class="acc-body">
-          <div class="eq">\[ \frac{\partial L}{\partial h}=W_{hy}^{\top}\,\delta_y \]</div>
-          <div class="eq" style="margin-top:8px">\[ \delta_h=\frac{\partial L}{\partial z_h}=\frac{\partial L}{\partial h}\odot\underbrace{(1-h^2)}_{\tanh'} \]</div>
-          <div class="deriv-why">Sinyali hafızaya taşı (×W<sub>hy</sub>), sonra tanh'tan geç: ×(1−h²). Bu <b>δ<sub>h</sub></b> = z<sub>h</sub>'ye ulaşan geri-sinyal.</div>
+          <div class="deriv-why"><b>Adım 1</b> — L'nin h'ye göre türevi. z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub> olduğu için ∂z<sub>y</sub>/∂h = W<sub>hy</sub>:</div>
+          <div class="eq">\[ \frac{\partial L}{\partial h}=\delta_y\times\frac{\partial z_y}{\partial h}=\delta_y\,W_{hy} \]</div>
+          <div class="deriv-why"><b>Adım 2</b> — h'nin z<sub>h</sub>'ye göre türevi (tanh'ın türevi):</div>
+          <div class="eq">\[ \frac{\partial h}{\partial z_h}=1-\tanh^2(z_h)=1-h^2 \]</div>
+          <div class="deriv-why"><b>Adım 3</b> — ikisini çarpıyoruz:</div>
+          <div class="eq">\[ \delta_h=\frac{\partial L}{\partial z_h}=\frac{\partial L}{\partial h}\times\frac{\partial h}{\partial z_h}=\big(\delta_y\,W_{hy}\big)\times(1-h^2) \]</div>
+          <div class="deriv-why">Bu <b>δ<sub>h</sub></b> = z<sub>h</sub>'ye ulaşan geri-sinyal.</div>
         </div>
       </div>
 
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> <b>⑥ İçerideki ağırlıklar</b> — ∂L/∂W<sub>xh</sub>, ∂L/∂W<sub>hh</sub>, ∂L/∂b<sub>h</sub></div>
         <div class="acc-body">
-          <div class="eq">\[ \frac{\partial L}{\partial W_{xh}}=\delta_h\,x_t^{\top},\quad \frac{\partial L}{\partial W_{hh}}=\delta_h\,h_{t-1}^{\top},\quad \frac{\partial L}{\partial b_h}=\delta_h \]</div>
-          <div class="deriv-why">Yine ×giriş kuralı: W<sub>xh</sub>→x<sub>t</sub>, W<sub>hh</sub>→h<sub>t−1</sub> (önceki hafıza), b<sub>h</sub>→1.</div>
+          <div class="deriv-why"><b>Adım 1</b> — z<sub>h</sub>=W<sub>xh</sub>·x<sub>t</sub>+W<sub>hh</sub>·h<sub>t−1</sub>+b<sub>h</sub>'nin kendi türevleri:</div>
+          <div class="eq">\[ \frac{\partial z_h}{\partial W_{xh}}=x_t,\qquad \frac{\partial z_h}{\partial W_{hh}}=h_{t-1},\qquad \frac{\partial z_h}{\partial b_h}=1 \]</div>
+          <div class="deriv-why"><b>Adım 2</b> — δ<sub>h</sub> ile zincir kuralıyla çarp:</div>
+          <div class="eq">\[ \frac{\partial L}{\partial W_{xh}}=\delta_h\times\frac{\partial z_h}{\partial W_{xh}}=\delta_h\,x_t \]</div>
+          <div class="eq" style="margin-top:6px">\[ \frac{\partial L}{\partial W_{hh}}=\delta_h\times\frac{\partial z_h}{\partial W_{hh}}=\delta_h\,h_{t-1} \]</div>
+          <div class="eq" style="margin-top:6px">\[ \frac{\partial L}{\partial b_h}=\delta_h\times\frac{\partial z_h}{\partial b_h}=\delta_h \]</div>
         </div>
       </div>
 
