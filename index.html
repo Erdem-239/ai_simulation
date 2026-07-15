@@ -566,7 +566,75 @@
   <!-- ===================== RNN MODELİ ===================== -->
   <div class="model" id="model-rnn">
 
-    <h1>RNN — Zaman İçinde Geri Yayılım (BPTT)</h1>
+    <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri (ders şablonu) ===== -->
+    <div class="lesson-hero">
+      <svg class="lesson-hero-svg" viewBox="0 0 760 210" role="img" aria-label="Bir kelime dizisi RNN hücrelerinden geçerken hafızanın zincirle taşınmasını gösteren şema">
+        <defs>
+          <marker id="rnnA" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
+          <marker id="rnnB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3a7afe"/></marker>
+          <marker id="rnnG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46c46a"/></marker>
+        </defs>
+        <text x="380" y="22" text-anchor="middle" font-size="12" fill="#9aa0a6" font-family="Segoe UI, Arial, sans-serif">gizli durum (hafıza) her adımda zincirle bir sonrakine akar →</text>
+
+        <line x1="117" y1="78" x2="203" y2="78" stroke="#f0a032" stroke-width="2.5" marker-end="url(#rnnA)"/>
+        <line x1="257" y1="78" x2="343" y2="78" stroke="#f0a032" stroke-width="2.5" marker-end="url(#rnnA)"/>
+        <line x1="397" y1="78" x2="483" y2="78" stroke="#f0a032" stroke-width="2.5" marker-end="url(#rnnA)"/>
+        <line x1="538" y1="78" x2="618" y2="78" stroke="#3a7afe" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#rnnB)"/>
+
+        <line x1="90" y1="148" x2="90" y2="110" stroke="#46c46a" stroke-width="2.2" marker-end="url(#rnnG)"/>
+        <line x1="230" y1="148" x2="230" y2="110" stroke="#46c46a" stroke-width="2.2" marker-end="url(#rnnG)"/>
+        <line x1="370" y1="148" x2="370" y2="110" stroke="#46c46a" stroke-width="2.2" marker-end="url(#rnnG)"/>
+        <line x1="510" y1="148" x2="510" y2="110" stroke="#46c46a" stroke-width="2.2" marker-end="url(#rnnG)"/>
+
+        <circle cx="90" cy="78" r="27" fill="#16324f" stroke="#5aa0e0" stroke-width="2.5"/>
+        <text x="90" y="84" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">h₁</text>
+        <circle cx="230" cy="78" r="27" fill="#16324f" stroke="#5aa0e0" stroke-width="2.5"/>
+        <text x="230" y="84" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">h₂</text>
+        <circle cx="370" cy="78" r="27" fill="#16324f" stroke="#5aa0e0" stroke-width="2.5"/>
+        <text x="370" y="84" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">h₃</text>
+        <circle cx="510" cy="78" r="27" fill="#16324f" stroke="#5aa0e0" stroke-width="2.5"/>
+        <text x="510" y="84" text-anchor="middle" font-size="15" fill="#fff" font-weight="700">h₄</text>
+
+        <circle cx="665" cy="78" r="30" fill="#2a2416" stroke="#f0a032" stroke-width="2.5"/>
+        <text x="665" y="84" text-anchor="middle" font-size="17" fill="#f0d8a0" font-weight="700">ŷ</text>
+        <text x="665" y="122" text-anchor="middle" font-size="11" fill="#9aa0a6">tahmin</text>
+
+        <rect x="45" y="150" width="90" height="32" rx="8" fill="#173a22" stroke="#46c46a" stroke-width="1.5"/>
+        <text x="90" y="171" text-anchor="middle" font-size="13" fill="#e7e9ec">Bir</text>
+        <rect x="180" y="150" width="100" height="32" rx="8" fill="#173a22" stroke="#46c46a" stroke-width="1.5"/>
+        <text x="230" y="171" text-anchor="middle" font-size="13" fill="#e7e9ec">varmış</text>
+        <rect x="325" y="150" width="90" height="32" rx="8" fill="#173a22" stroke="#46c46a" stroke-width="1.5"/>
+        <text x="370" y="171" text-anchor="middle" font-size="13" fill="#e7e9ec">bir</text>
+        <rect x="460" y="150" width="100" height="32" rx="8" fill="#173a22" stroke="#46c46a" stroke-width="1.5"/>
+        <text x="510" y="171" text-anchor="middle" font-size="13" fill="#e7e9ec">yokmuş</text>
+
+        <text x="380" y="200" text-anchor="middle" font-size="11" fill="#6f757c">x₁ → x₂ → x₃ → x₄ girer, h zincirle taşınır, sonunda ŷ tahmin edilir</text>
+      </svg>
+
+      <h1>RNN — Zaman İçinde Geri Yayılım (BPTT)</h1>
+      <p class="lesson-hook">🌌 Bu cümlenin sonunu anlaman, başını hatırlamana bağlı — hafıza olmadan düşünce olmaz. 1990'da bir dilbilimci, ağlara ilk kez "geçmişini taşı" demeyi öğretti. O tek fikir, bugün konuştuğun her dil modelinin soy ağacının başlangıcı oldu.</p>
+    </div>
+
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Ağa hafıza takmak</div>
+      <p>1986'da yapay zekâ camiası uzun bir kıştan çıkmaya çalışıyordu: Marvin Minsky'nin on yıllar önceki eleştirisi fonları kurutmuş, kimse basit ağların işe yarayacağına inanmıyordu. Sonra David Rumelhart, Geoffrey Hinton ve Ronald Williams'ın imzaladığı bir <i>Nature</i> makalesi buzu kırdı: çok katmanlı bir ağ, kendi hatasını geriye yayarak öğrenebiliyordu. (İlginç bir ayrıntı: bu matematiği aslında Paul Werbos on iki yıl önce, 1974 doktora tezinde bulmuştu — ama kimse okumamıştı. Bilim bazen doğru fikri, yanlış zamanda söyleyeni duymaz.)</p>
+      <p>Asıl sıçramayı dilbilimci Jeffrey Elman yaptı. 1990'da basit ama zarif bir fikir denedi: ağın çıktısını bir sonraki adıma geri besle. Böylece ağ, o anki girdiyle birlikte "az önce ne gördüğünü" de hatırlayabiliyordu — zamanı hissediyordu. "Finding Structure in Time" makalesi, ağın hiçbir gramer kuralı verilmeden cümle yapısını kendi başına sezdiğini gösterdi.</p>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+    </div>
+
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">✉️</span><b>El yazısı okuma</b> — 1990'lardan beri ABD posta servisi, günde yüz milyonlarca zarfın adresini böyle ağlarla okuyor; bankalar çekleri aynı yöntemle işledi.</div>
+        <div class="ex-card"><span class="ex-ico">🎙️</span><b>Konuşma tanıma</b> — telefonundaki dikte özelliğinden çağrı merkezi asistanlarına, sesi metne çeviren ilk nöral sistemler RNN tabanlıydı.</div>
+        <div class="ex-card"><span class="ex-ico">⌨️</span><b>Klavye tahmini</b> — telefonunda yazarken önerilen bir sonraki kelime, tam olarak bu derste öğreneceğin "geçmişten sonrakini tahmin et" mantığını kullanır.</div>
+        <div class="ex-card"><span class="ex-ico">📉</span><b>Zaman serisi tahmini</b> — elektrik talebi, trafik yoğunluğu, hisse fiyatları: sırayla gelen veriden geleceği tahmin eden ilk nöral araçlar da RNN'di.</div>
+        <div class="ex-card"><span class="ex-ico">🎵</span><b>Metin/müzik üretimi</b> — karakter karakter yazı ya da nota üreten ilk "yaratıcı" YZ denemeleri (~2015) RNN'lerle yapıldı — bugünkü GPT'lerin atası.</div>
+      </div>
+    </div>
+
+    <div class="scroll-cue"><span class="sc-arrow">▼</span> şimdi mekanizmanın içine inelim: formüller, notasyon ve kendi sayılarınla canlı simülasyon aşağıda <span class="sc-arrow">▼</span></div>
+
     <p class="sub">Aynı gradyan alçalma mantığı; ama bu kez <b>sıralı veri</b> ve <b>hafıza (gizli durum)</b> var. Türevler "<b>zaman boyunca zincir kuralı</b>" ile alınır (BPTT = Backpropagation Through Time).</p>
 
     <div class="pts" style="border-left:3px solid var(--blue)">

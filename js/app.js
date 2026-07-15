@@ -767,6 +767,8 @@
   }));
   document.querySelectorAll('[data-ped-tab]').forEach(b=>b.addEventListener('click',()=>{
     const t=document.querySelector('.navbtn[data-model="'+b.dataset.pedTab+'"]'); if(t) t.click();
+    const sc=b.dataset.pedScroll;
+    if(sc){ setTimeout(()=>{ const el=document.getElementById(sc); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); },80); }
   }));
 })();
 
