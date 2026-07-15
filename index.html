@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 11:29 UTC</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 11:33 UTC</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -741,45 +741,6 @@
     <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
     <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
 
-    <!-- SABİT FORMÜL HARİTASI (hep göz önünde) -->
-    <div class="rnn-formmap">
-      <div style="font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:6px">🧭 FORMÜL HARİTASI — bütün resim, kaydırsan da hep göz önünde</div>
-      <div class="fm-row"><span class="fm-tag fm-t-ileri">İLERİ</span><span class="fm-eq">\( z = W_{xh}\,x + W_{hh}\,h_{t-1} + b \ \to\ h=\tanh z \ \to\ \hat{y}=W_{hy}\,h+b_y \ \to\ L=\tfrac{1}{2}(\hat y - y)^2 \)</span></div>
-      <div class="fm-row"><span class="fm-tag fm-t-geri">GERİ</span><span class="fm-eq">\( (\hat y - y)\ \xrightarrow{\ \times W_{hy}\ }\ \frac{\partial L}{\partial h}\ \xrightarrow{\ \times(1-h^2)\ }\ \frac{\partial L}{\partial z}\ \xrightarrow{\ \times\,\text{giriş}\ }\ \frac{\partial L}{\partial W} \)</span></div>
-      <div class="fm-row"><span class="fm-tag fm-t-genel">GENEL</span><span class="fm-eq">\( \frac{\partial L}{\partial W} = \sum_{t}\,\delta_t\,\times\,(\text{giriş}) \) &nbsp;<span class="mut">← δ = geri-sinyal (altta), zaman boyunca toplanır</span></span></div>
-      <div class="fm-row"><span class="fm-tag fm-t-delta">δ</span><span class="fm-eq">\( \delta = \frac{\partial L}{\partial z} = (\hat y - y)\,W_{hy}\,(1-h^2) \) &nbsp;<span class="mut">= "geri-sinyal": z'ye ulaşan gradyan · sonra ∂L/∂W<sub>iç</sub> = δ·(giriş). Çıktı katmanında geri-sinyal = (ŷ−y), giriş = h.</span></span></div>
-      <div class="fm-row"><span class="fm-tag fm-t-tek">TEK SATIR</span><span class="fm-eq">\( \frac{\partial L}{\partial W} = (\hat y - y)\,W_{hy}\,(1-h^2)\,(\text{giriş}) \) &nbsp;<span class="mut">giriş: W<sub>xh</sub>→x, W<sub>hh</sub>→h₋₁, b<sub>h</sub>→1</span></span></div>
-      <div class="fm-row"><span class="fm-tag fm-t-guncelle">GÜNCELLE</span><span class="fm-eq">\( W := W - \alpha\,\frac{\partial L}{\partial W} \)</span></div>
-      <div style="font-size:11px; color:var(--muted); margin-top:8px; border-top:1px solid var(--line); padding-top:6px">3 altın kural: <b>+</b> gradyanı kopyalar · <b>×W</b> girişe ×W, ağırlığa ×giriş · <b>tanh</b> ×(1−h²)</div>
-    </div>
-
-    <!-- NOTASYON -->
-    <div class="pts" style="border-left:3px solid var(--muted); padding:10px 14px; margin-bottom:14px">
-      <div style="font-size:12px; color:var(--muted); font-weight:700; margin-bottom:6px">📑 NOTASYON — kim kim?</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 20px; font-size:13px; color:#cfd3d8; line-height:1.7">
-        <div><b>x</b> — o adımın girdisi</div>
-        <div><b>h₋₁</b> — önceki hafıza (gizli durum)</div>
-        <div><b>z</b> — ham toplam (aktivasyondan önce)</div>
-        <div><b>h</b> — yeni hafıza = tanh(z)</div>
-        <div><b>ŷ</b> — modelin tahmini</div>
-        <div><b>y</b> — gerçek cevap</div>
-        <div><b>ŷ − y</b> — hata</div>
-        <div><b>L</b> — kayıp (hata²/2)</div>
-        <div><b>W<sub>xh</sub></b> — girdi → hafıza ağırlığı</div>
-        <div><b>W<sub>hh</sub></b> — geçmiş hafıza → hafıza (recurrent)</div>
-        <div><b>W<sub>hy</sub></b> — hafıza → çıktı ağırlığı</div>
-        <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar (bias)</div>
-        <div><b>α</b> — öğrenme oranı (adım büyüklüğü)</div>
-        <div><b>∂L/∂W</b> — L'nin W'ye göre türevi (gradyan)</div>
-        <div><b>δ (delta)</b> — geri-sinyal = ∂L/∂z</div>
-        <div><b>(1−h²)</b> — tanh'ın türevi</div>
-        <div><b>Σ<sub>t</sub></b> — tüm zaman adımları üzerinden topla</div>
-      </div>
-      <div style="font-size:12.5px; color:var(--muted); margin-top:10px; border-top:1px solid var(--line); padding-top:8px; line-height:1.8">
-        Not — yukarıdaki hücre şeması artık <b>bu notasyonla aynı</b>. Tek fark: şemada bir de <b>g₂ (çıktı aktivasyonu)</b> düğümü var; o, sınıflandırmada softmax/sigmoid olur. Bizim regresyon örneğimizde g₂ yok, çıktı düz: <b>ŷ = W<sub>hy</sub>·h + b<sub>y</sub></b>.
-      </div>
-    </div>
-
     <!-- ADIM ADIM — HER ADIM NEDEN? -->
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
     <div class="steps">
@@ -808,8 +769,27 @@
         <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W} = \displaystyle\sum_{t=1}^{T} (\text{adım } t\text{'nin gradyanı}) \)</div>
         <div style="font-size:13px; color:#cfd3d8"><b>Neden — paylaşılan ağırlık:</b> aynı W her zaman adımında kullanıldığı için tüm adımların katkısı <b>toplanır</b>. <b>Genel BPTT formülü budur.</b></div>
       </div>
+          <div class="pts" style="margin:0; border-left:3px solid var(--muted)">
+        <b style="color:var(--muted); font-size:12px; letter-spacing:.5px">📑 NOTASYON — kim kim?</b>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px 14px; font-size:12px; color:#cfd3d8; line-height:1.6; margin-top:6px">
+          <div><b>x</b> — o adımın girdisi</div>
+          <div><b>h₋₁</b> — önceki hafıza</div>
+          <div><b>z</b> — ham toplam (akt. öncesi)</div>
+          <div><b>h</b> — yeni hafıza = tanh(z)</div>
+          <div><b>ŷ</b> — modelin tahmini</div>
+          <div><b>y</b> — gerçek cevap</div>
+          <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+          <div><b>δ</b> — geri-sinyal = ∂L/∂z</div>
+          <div><b>W<sub>xh</sub></b> — x → h</div>
+          <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+          <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+          <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+          <div><b>α</b> — öğrenme oranı</div>
+          <div><b>(1−h²)</b> — tanh türevi</div>
+        </div>
+      </div>
     </div>
-    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↓ Şimdi aşağıda bu 5 adımı <b>kendi sayılarınla</b> canlı çalıştır — yukarıdaki genel formül haritası hep göz önünde kalır.</p>
+    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↓ Şimdi aşağıda bu 5 adımı <b>kendi sayılarınla</b> canlı çalıştır.</p>
 
     <!-- girdi & ağırlık editörü -->
     <div class="pts" style="border-left:3px solid var(--green)">
