@@ -137,49 +137,91 @@
              Wxh:g('Wxh'), Whh:g('Whh'), b:g('b'), Why:g('Why'), by:g('by'), alpha:g('alpha') };
   }
 
-  /* Geri Adım 1 — L(ŷ) eğrisi + o anki noktada teğet (eğim = ∂L/∂ŷ) */
-  const step1Cv=$('rcStep1Canvas');
-  function drawStep1(y, yhat, L, slope){
-    if(!step1Cv) return;
-    const ctx=step1Cv.getContext('2d');
-    const W=step1Cv.width, H=step1Cv.height;
+  /* Genel: eğri + o anki noktada teğet çizen mini-grafik (tüm Geri Adım kartları bunu kullanır) */
+  function plotCurveWithTangent(cv, o){
+    if(!cv) return;
+    const ctx=cv.getContext('2d');
+    const W=cv.width, H=cv.height;
     const gx0=32, gx1=W-10, gy0=12, gy1=H-22;
-    let lo=Math.min(y,yhat)-1.5, hi=Math.max(y,yhat)+1.5;
-    if(hi-lo<3){ const mid=(hi+lo)/2; lo=mid-1.5; hi=mid+1.5; }
+    const lo=o.lo, hi=o.hi, Ymin=o.Ymin, Ymax=o.Ymax;
     const X=v=>gx0+(gx1-gx0)*(v-lo)/(hi-lo);
-    const Lmax=Math.max(0.5*(lo-y)*(lo-y), 0.5*(hi-y)*(hi-y), 0.05)*1.15;
-    const Y=v=>gy1-(gy1-gy0)*(v/Lmax);
+    const Y=v=>gy1-(gy1-gy0)*(v-Ymin)/(Ymax-Ymin);
 
     ctx.clearRect(0,0,W,H);
     ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1;
     for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4; ctx.beginPath(); ctx.moveTo(X(v),gy0); ctx.lineTo(X(v),gy1); ctx.stroke(); }
     ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.moveTo(gx0,gy1); ctx.lineTo(gx1,gy1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(gx0,Y(Math.max(Ymin,0))); ctx.lineTo(gx1,Y(Math.max(Ymin,0))); ctx.stroke();
 
-    // L(v) = ½(v−y)² eğrisi
+    // eğri
     ctx.strokeStyle='#3a7afe'; ctx.lineWidth=2.4;
     ctx.beginPath();
-    for(let i=0;i<=100;i++){ const v=lo+(hi-lo)*i/100; const Lv=0.5*(v-y)*(v-y); const px=X(v), py=Y(Lv); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+    for(let i=0;i<=100;i++){ const v=lo+(hi-lo)*i/100; const yy=o.curveFn(v); const px=X(v), py=Y(yy); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
     ctx.stroke();
 
-    // y (hedef) — dikey kesik çizgi
-    ctx.strokeStyle='#46c46a'; ctx.setLineDash([3,3]); ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.moveTo(X(y),gy0); ctx.lineTo(X(y),gy1); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle='#46c46a'; ctx.font='10px Segoe UI'; ctx.fillText('y', X(y)-3, gy0+10);
+    // opsiyonel işaret çizgisi (örn. hedef y)
+    if(o.markX!=null){
+      ctx.strokeStyle='#46c46a'; ctx.setLineDash([3,3]); ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(X(o.markX),gy0); ctx.lineTo(X(o.markX),gy1); ctx.stroke(); ctx.setLineDash([]);
+      if(o.markLabel){ ctx.fillStyle='#46c46a'; ctx.font='10px Segoe UI'; ctx.fillText(o.markLabel, X(o.markX)-3, gy0+10); }
+    }
 
-    // teğet: eğim = slope, ŷ noktasından geçer
-    const va=yhat-(hi-lo)*0.22, vb=yhat+(hi-lo)*0.22;
-    const La=L+slope*(va-yhat), Lb=L+slope*(vb-yhat);
+    // teğet: eğim = o.slope, (curV, curY) noktasından geçer
+    const va=o.curV-(hi-lo)*0.22, vb=o.curV+(hi-lo)*0.22;
+    const La=o.curY+o.slope*(va-o.curV), Lb=o.curY+o.slope*(vb-o.curV);
     ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.6; ctx.setLineDash([3,3]);
-    ctx.beginPath(); ctx.moveTo(X(va),Y(Math.max(0,La))); ctx.lineTo(X(vb),Y(Math.max(0,Lb))); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(X(va),Y(Math.max(Ymin,Math.min(Ymax,La)))); ctx.lineTo(X(vb),Y(Math.max(Ymin,Math.min(Ymax,Lb)))); ctx.stroke(); ctx.setLineDash([]);
 
-    // nokta (ŷ, L)
-    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(X(yhat),Y(L),5,0,7); ctx.fill();
+    // nokta
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(X(o.curV),Y(o.curY),5,0,7); ctx.fill();
     ctx.strokeStyle='#3a7afe'; ctx.lineWidth=2; ctx.stroke();
 
     ctx.font='10.5px Segoe UI';
-    ctx.fillStyle='#9aa0a6'; ctx.fillText('ŷ →', gx1-24, gy1-4);
-    ctx.fillStyle='#3a7afe'; ctx.fillText('L(ŷ)', gx0+2, gy0+10);
+    if(o.xLabel){ ctx.fillStyle='#9aa0a6'; ctx.fillText(o.xLabel, gx1-o.xLabel.length*6-4, gy1-4); }
+    if(o.yLabel){ ctx.fillStyle=o.yLabelColor||'#3a7afe'; ctx.fillText(o.yLabel, gx0+2, gy0+10); }
+  }
+
+  /* Geri Adım 1 — L(ŷ) eğrisi + teğet (eğim = ∂L/∂ŷ) */
+  function drawStep1(y, yhat, L, slope){
+    let lo=Math.min(y,yhat)-1.5, hi=Math.max(y,yhat)+1.5;
+    if(hi-lo<3){ const mid=(hi+lo)/2; lo=mid-1.5; hi=mid+1.5; }
+    const Ymax=Math.max(0.5*(lo-y)*(lo-y), 0.5*(hi-y)*(hi-y), 0.05)*1.15;
+    plotCurveWithTangent($('rcStep1Canvas'), {
+      lo, hi, curveFn:v=>0.5*(v-y)*(v-y), curV:yhat, curY:L, slope,
+      Ymin:0, Ymax, markX:y, markLabel:'y', xLabel:'ŷ →', yLabel:'L(ŷ)'
+    });
+  }
+
+  /* Geri Adım 2 — L(W_hy) eğrisi + teğet (eğim = ∂L/∂W_hy); h, b_y, y sabit tutulur */
+  function drawStep2(p, h, dWhy){
+    const cur=p.Why, lo=cur-1.5, hi=cur+1.5;
+    const Lof=v=>{ const yh=v*h+p.by; return 0.5*(yh-p.y)*(yh-p.y); };
+    const curY=Lof(cur);
+    let Ymax=0.05; for(let i=0;i<=20;i++){ Ymax=Math.max(Ymax, Lof(lo+(hi-lo)*i/20)); }
+    plotCurveWithTangent($('rcStep2Canvas'), {
+      lo, hi, curveFn:Lof, curV:cur, curY, slope:dWhy,
+      Ymin:0, Ymax:Ymax*1.15, xLabel:'W_hy →', yLabel:'L(W_hy)'
+    });
+  }
+
+  /* Geri Adım 3 — h = tanh(z) eğrisi + teğet (eğim = 1−h²) */
+  function drawStep3(z, h, slope){
+    plotCurveWithTangent($('rcStep3Canvas'), {
+      lo:-4, hi:4, curveFn:v=>Math.tanh(v), curV:z, curY:h, slope,
+      Ymin:-1.15, Ymax:1.15, xLabel:'z →', yLabel:'h=tanh(z)', yLabelColor:'#46c46a'
+    });
+  }
+
+  /* Geri Adım 4 — L(W_xh) eğrisi + teğet (eğim = ∂L/∂W_xh); x, h₋₁, diğer ağırlıklar sabit, tanh'tan geçtiği için tam ileri yayılım tekrar hesaplanır */
+  function drawStep4(p, dWxh){
+    const cur=p.Wxh, lo=cur-1.5, hi=cur+1.5;
+    const Lof=v=>{ const zz=v*p.x+p.Whh*p.hp+p.b; const hh=Math.tanh(zz); const yh=p.Why*hh+p.by; return 0.5*(yh-p.y)*(yh-p.y); };
+    const curY=Lof(cur);
+    let Ymax=0.05; for(let i=0;i<=20;i++){ Ymax=Math.max(Ymax, Lof(lo+(hi-lo)*i/20)); }
+    plotCurveWithTangent($('rcStep4Canvas'), {
+      lo, hi, curveFn:Lof, curV:cur, curY, slope:dWxh,
+      Ymin:0, Ymax:Ymax*1.15, xLabel:'W_xh →', yLabel:'L(W_xh)'
+    });
   }
   function render(){
     const p=read();
@@ -219,6 +261,9 @@
       + EQ('∂L/∂b<sub>h</sub> = ∂L/∂z', '', F(db));
 
     drawStep1(p.y, yhat, L, dyhat);
+    drawStep2(p, h, dWhy);
+    drawStep3(z, h, dz);
+    drawStep4(p, dWxh);
 
     const u=(w,g)=>F(w - p.alpha*g);
     $('rc_upd').innerHTML =
