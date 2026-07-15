@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607151859">
+<link rel="stylesheet" href="css/style.css?v=202607151904">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:59 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 19:04 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -762,8 +762,10 @@
         <b style="color:var(--accent)">Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin açık hali; ŷ'ye göre türetiyoruz (kare alma kuralı: 2×(içerik), ½ ile sadeleşir):</div>
-            <div class="eq" style="margin:4px 0">\( L=\tfrac12(\hat y-y)^2 \quad\Rightarrow\quad \dfrac{\partial L}{\partial \hat y} = (\hat y - y) \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin açık hali:</div>
+            <div class="eq" style="margin:4px 0">\( L=\tfrac12(\hat y-y)^2 \)</div>
+            <div class="deriv-why">ŷ'ye göre türetelim. Kare alma kuralı: (bir ifadenin karesi)′ = 2×(o ifade)×(o ifadenin kendi türevi). İfade = (ŷ−y); onun ŷ'ye göre kendi türevi (y sabit) = 1:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial \hat y} = \tfrac12\times 2(\hat y-y)\times 1 = (\hat y - y) \)</div>
             <div class="deriv-why"><b>Adım 2</b> — ŷ'nin açık hali (ŷ=g₂(z<sub>y</sub>), regresyonda g₂ özdeşlik → g₂(z)=z); bir değişkenin kendine göre türevi her zaman 1'dir:</div>
             <div class="eq" style="margin:4px 0">\( \hat y=g_2(z_y)=z_y \quad\Rightarrow\quad \dfrac{\partial \hat y}{\partial z_y} = \dfrac{\partial z_y}{\partial z_y}=1 \)</div>
             <div class="deriv-why"><b>Adım 3</b> — zincir kuralı: ikisini çarp:</div>
@@ -798,8 +800,12 @@
         <b style="color:var(--accent)">Geri Adım 3) tanh'tan geri — ∂L/∂z'yi bul</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin h'ye göre türevi. z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub> olduğu için h'ye göre türetirsek W<sub>hy</sub> katsayı olarak kalır:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h}=W_{hy} \quad\Rightarrow\quad \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali (tekrar):</div>
+            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
+            <div class="deriv-why">Bu kez h'ye göre türetelim; W<sub>hy</sub> ve b<sub>y</sub>'yi sabit sayarız. W<sub>hy</sub>·h terimi = sabit(W<sub>hy</sub>)×değişken(h) → türevi W<sub>hy</sub>'nin kendisi. b<sub>y</sub> terimi içinde h yok → türevi 0:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h} = W_{hy}+0=W_{hy} \)</div>
+            <div class="deriv-why">Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
             <div class="deriv-why"><b>Adım 2</b> — h'nin açık hali (h=tanh(z)); z'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
             <div class="eq" style="margin:4px 0">\( h=\tanh(z) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z}=1-\tanh^2(z)=1-h^2 \)</div>
             <div class="deriv-why"><b>Adım 3</b> — zincir kuralı: ikisini çarp:</div>
@@ -815,8 +821,14 @@
         <b style="color:var(--accent)">Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanı</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z'nin açık hali; her ağırlığa göre türetirsek, o ağırlığın çarptığı terim katsayı olarak kalır:</div>
-            <div class="eq" style="margin:4px 0">\( z=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \quad\Rightarrow\quad \dfrac{\partial z}{\partial W_{xh}}=x,\quad \dfrac{\partial z}{\partial W_{hh}}=h_{t-1},\quad \dfrac{\partial z}{\partial b_h}=1 \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z'nin açık hali:</div>
+            <div class="eq" style="margin:4px 0">\( z=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \)</div>
+            <div class="deriv-why">W<sub>xh</sub>'ye göre türetelim; diğer ikisini sabit sayarız. W<sub>xh</sub>·x terimi = sabit(x)×değişken(W<sub>xh</sub>) → türevi x. Diğer iki terimde W<sub>xh</sub> yok → türevleri 0:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial W_{xh}}=x \)</div>
+            <div class="deriv-why">Aynı mantıkla W<sub>hh</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>t−1</sub> terimi = sabit(h<sub>t−1</sub>)×değişken(W<sub>hh</sub>) → türevi h<sub>t−1</sub>; diğerlerinde W<sub>hh</sub> yok):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial W_{hh}}=h_{t-1} \)</div>
+            <div class="deriv-why">Ve b<sub>h</sub>'ye göre türetelim (b<sub>h</sub>'nin kendine göre türevi her zaman 1'dir; diğer iki terimde b<sub>h</sub> yok):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial b_h}=1 \)</div>
             <div class="deriv-why"><b>Adım 2</b> — zincir kuralı: bir önceki adımda bulduğumuz ∂L/∂z ile çarp (yine ×giriş kuralı):</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times 1 \)</div>
           </div>
@@ -2416,8 +2428,8 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607151859"></script>
+<script src="js/lesson-linreg.js?v=202607151904"></script>
 
-<script src="js/app.js?v=202607151859"></script>
+<script src="js/app.js?v=202607151904"></script>
 </body>
 </html>
