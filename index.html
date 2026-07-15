@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607151838">
+<link rel="stylesheet" href="css/style.css?v=202607151847">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:38 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:47 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -695,7 +695,7 @@
             <div><b>ŷ</b> — modelin tahmini</div>
             <div><b>y</b> — gerçek cevap</div>
             <div><b>L</b> — kayıp ½(ŷ−y)²</div>
-            <div><b>δ</b> — geri-sinyal = ∂L/∂z</div>
+            <div><b>∂L/∂z</b> — z'ye ulaşan geri-sinyal</div>
             <div><b>W<sub>xh</sub></b> — x → h</div>
             <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
             <div><b>W<sub>hy</sub></b> — h → ŷ</div>
@@ -757,19 +757,19 @@
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
     <div class="steps">
       <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 1) Kayıptan başla — δ<sub>y</sub>'yi bul</b>
+        <b style="color:var(--accent)">Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin ŷ'ye göre türevi:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial \hat y} = (\hat y - y) \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — ŷ'nin z<sub>y</sub>'ye göre türevi (g₂ özdeşlik olduğu için):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial \hat y}{\partial z_y} = 1 \)</div>
-            <div class="deriv-why"><b>Adım 3</b> — ikisini çarpıyoruz (zincir kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \delta_y=\dfrac{\partial L}{\partial z_y}=\dfrac{\partial L}{\partial \hat y}\times\dfrac{\partial \hat y}{\partial z_y}=(\hat y-y)\times 1=(\hat y - y) \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin açık hali; ŷ'ye göre türetiyoruz (kare alma kuralı: 2×(içerik), ½ ile sadeleşir):</div>
+            <div class="eq" style="margin:4px 0">\( L=\tfrac12(\hat y-y)^2 \quad\Rightarrow\quad \dfrac{\partial L}{\partial \hat y} = (\hat y - y) \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — ŷ'nin açık hali (ŷ=g₂(z<sub>y</sub>), regresyonda g₂ özdeşlik → g₂(z)=z); bir değişkenin kendine göre türevi her zaman 1'dir:</div>
+            <div class="eq" style="margin:4px 0">\( \hat y=g_2(z_y)=z_y \quad\Rightarrow\quad \dfrac{\partial \hat y}{\partial z_y} = \dfrac{\partial z_y}{\partial z_y}=1 \)</div>
+            <div class="deriv-why"><b>Adım 3</b> — zincir kuralı: ikisini çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_y}=\dfrac{\partial L}{\partial \hat y}\times\dfrac{\partial \hat y}{\partial z_y}=(\hat y-y)\times 1=(\hat y - y) \)</div>
           </div>
           <div class="step-graph-plot">
             <canvas id="rcStep1Canvas" width="240" height="170"></canvas>
-            <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = δ<sub>y</sub>)</div>
+            <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
           </div>
         </div>
       </div>
@@ -777,10 +777,10 @@
         <b style="color:var(--accent)">Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub>'nin kendi türevleri:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial W_{hy}}=h,\qquad \dfrac{\partial z_y}{\partial b_y}=1 \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — δ<sub>y</sub> ile zincir kuralıyla çarp (×giriş kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\delta_y\times\dfrac{\partial z_y}{\partial W_{hy}}=\delta_y\,h,\qquad \dfrac{\partial L}{\partial b_y}=\delta_y\times\dfrac{\partial z_y}{\partial b_y}=\delta_y \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali; W<sub>hy</sub>'ye göre türetirsek h katsayı olarak kalır, b<sub>y</sub>'ye göre türetirsek bağımsız terim olduğu için 1 kalır:</div>
+            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \quad\Rightarrow\quad \dfrac{\partial z_y}{\partial W_{hy}}=h,\qquad \dfrac{\partial z_y}{\partial b_y}=1 \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — zincir kuralı: bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile çarp (×giriş kuralı):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h,\qquad \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \)</div>
           </div>
           <div class="step-graph-plot">
             <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
@@ -789,15 +789,15 @@
         </div>
       </div>
       <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 3) tanh'tan geri — δ<sub>h</sub>'yi bul</b>
+        <b style="color:var(--accent)">Geri Adım 3) tanh'tan geri — ∂L/∂z'yi bul</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin h'ye göre türevi (z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub> olduğu için ∂z<sub>y</sub>/∂h=W<sub>hy</sub>):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\delta_y\times\dfrac{\partial z_y}{\partial h}=\delta_y\,W_{hy} \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — h'nin z'ye göre türevi (tanh'ın türevi):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial h}{\partial z}=1-\tanh^2(z)=1-h^2 \)</div>
-            <div class="deriv-why"><b>Adım 3</b> — ikisini çarpıyoruz (zincir kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \delta_h=\dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z}=\big(\delta_y\,W_{hy}\big)\times(1-h^2) \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — L'nin h'ye göre türevi. z<sub>y</sub>=W<sub>hy</sub>·h+b<sub>y</sub> olduğu için h'ye göre türetirsek W<sub>hy</sub> katsayı olarak kalır:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h}=W_{hy} \quad\Rightarrow\quad \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — h'nin açık hali (h=tanh(z)); z'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
+            <div class="eq" style="margin:4px 0">\( h=\tanh(z) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z}=1-\tanh^2(z)=1-h^2 \)</div>
+            <div class="deriv-why"><b>Adım 3</b> — zincir kuralı: ikisini çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
           </div>
           <div class="step-graph-plot">
             <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
@@ -809,10 +809,10 @@
         <b style="color:var(--accent)">Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanı</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z=W<sub>xh</sub>·x+W<sub>hh</sub>·h₋₁+b<sub>h</sub>'nin kendi türevleri:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial W_{xh}}=x,\qquad \dfrac{\partial z}{\partial W_{hh}}=h_{t-1},\qquad \dfrac{\partial z}{\partial b_h}=1 \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — δ<sub>h</sub> ile zincir kuralıyla çarp (yine ×giriş kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\delta_h\,x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\delta_h\,h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\delta_h \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z'nin açık hali; her ağırlığa göre türetirsek, o ağırlığın çarptığı terim katsayı olarak kalır:</div>
+            <div class="eq" style="margin:4px 0">\( z=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \quad\Rightarrow\quad \dfrac{\partial z}{\partial W_{xh}}=x,\quad \dfrac{\partial z}{\partial W_{hh}}=h_{t-1},\quad \dfrac{\partial z}{\partial b_h}=1 \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — zincir kuralı: bir önceki adımda bulduğumuz ∂L/∂z ile çarp (yine ×giriş kuralı):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times 1 \)</div>
           </div>
           <div class="step-graph-plot">
             <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
@@ -2410,8 +2410,8 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607151838"></script>
+<script src="js/lesson-linreg.js?v=202607151847"></script>
 
-<script src="js/app.js?v=202607151838"></script>
+<script src="js/app.js?v=202607151847"></script>
 </body>
 </html>
