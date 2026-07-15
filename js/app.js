@@ -745,6 +745,25 @@
   rs.addEventListener('pointerup',()=>{ drag=false; rs.classList.remove('on'); try{ localStorage.setItem('attn_sbw', String(w)); }catch(e){} });
 })();
 
+/* ---- RNN 1. bölüm: sim/kartlar sütun genişliği sürüklenebilir ---- */
+(function(){
+  const rs=document.getElementById('rnnColResizer'); const cols=document.getElementById('rnnFwdCols'); if(!rs||!cols) return;
+  const root=document.documentElement;
+  let w=460;
+  try{ const s=parseInt(localStorage.getItem('attn_rnn_simw')||'',10); if(s>=300&&s<=800) w=s; }catch(e){}
+  root.style.setProperty('--rnn-simw', w+'px');
+  let drag=false, sx=0, sw=0;
+  rs.addEventListener('pointerdown',e=>{ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
+  rs.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const total=cols.getBoundingClientRect().width;
+    const maxW=Math.max(320, total-260);
+    w=Math.max(300, Math.min(maxW, sw+(e.clientX-sx)));
+    root.style.setProperty('--rnn-simw', w+'px');
+  });
+  rs.addEventListener('pointerup',()=>{ drag=false; rs.classList.remove('on'); try{ localStorage.setItem('attn_rnn_simw', String(Math.round(w))); }catch(e){} });
+})();
+
 /* ---- sol panel: aç/kapat ---- */
 (function(){
   const tg=document.getElementById('sbToggle'); const sb=document.getElementById('sidebar'); if(!tg||!sb) return;
