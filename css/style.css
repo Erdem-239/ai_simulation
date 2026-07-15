@@ -209,6 +209,12 @@
   .deriv-num{flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#1f2023; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px}
   .deriv-body{flex:1 1 auto; min-width:0; overflow-x:auto}
   .deriv-body .eq,.deriv-body>p{margin:0}
+  /* sağ sütun: türetme kartları (accordion) */
+  .rnn-deriv-cards .acc{margin:8px 0}
+  .rnn-deriv-cards .acc-head{font-size:13px; padding:11px 13px}
+  .rnn-deriv-cards .acc-head b{color:var(--accent)}
+  .rnn-deriv-cards .acc-body{padding:10px 14px 12px}
+  .rnn-deriv-cards .acc-body .eq{margin:2px 0}
   .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
   .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
   .io-y{fill:#4a1f1f; stroke:#e06a6a; cursor:pointer}
