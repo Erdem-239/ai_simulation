@@ -646,9 +646,9 @@
 
     <div class="callout">🔗 <b>En önemli bağlantı:</b> Lineer regresyonda öğrendiğin <b>zincir kuralı</b>, RNN'de aynen geçerli — sadece <b>zaman adımları boyunca zincirleme</b> uygulanıyor. Her \(h_t\), bir önceki \(h_{t-1}\)'e bağlı; o da \(h_{t-2}\)'ye… Bu yüzden türev "geçmişe doğru" akar. Adı bu yüzden <b>zaman içinde geri yayılım</b>.</div>
 
+    <div class="sechead">1) İleri Yayılım (Forward Pass) — canlı hücre</div>
     <div class="rnn-fwd-cols">
     <div class="rnn-fc-left">
-    <div class="sechead">1) İleri Yayılım (Forward Pass)</div>
     <div class="steps steps-1col">
 
       <div class="step">
@@ -707,7 +707,6 @@
     </div><!-- /rnn-fc-left -->
 
     <div class="rnn-fc-right">
-    <div class="sechead">2) Hücrenin İçi — işlem işlem</div>
     <div class="pts">
       <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>g = aktivasyon</b>. Bir düğüme tıkla → o işlem. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu).</div>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
@@ -728,7 +727,7 @@
     </div><!-- /rnn-fc-right -->
     </div><!-- /rnn-fwd-cols -->
 
-    <div class="sechead">3) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
+    <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
     <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
 
     <!-- SABİT FORMÜL HARİTASI (hep göz önünde) -->
@@ -868,7 +867,7 @@
       </div>
     </div>
 
-    <div class="sechead">4) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient)</div>
+    <div class="sechead">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient)</div>
     <div class="pts">
       <p style="font-size:14px; color:#cfd3d8">\(\delta_t\)'yi en sondan \(t\)'ye taşırken her adımda \(\frac{\partial h_{t+1}}{\partial h_t}=W_{hh}(1-h_{t+1}^2)\) ile <b>çarpılır</b>. Yani uzun bir dizide bu çarpan <b>kendisiyle defalarca çarpılır</b>:</p>
       \[ \frac{\partial L}{\partial h_t}\;\sim\;\prod_{k=t}^{T-1} W_{hh}\,(1-h_{k+1}^2) \]
