@@ -223,6 +223,100 @@
       Ymin:0, Ymax:Ymax*1.15, xLabel:'W_xh →', yLabel:'L(W_xh)'
     });
   }
+  /* ---- Kayıp Vadisi: gradyan pusulası (radar) — gerçek |∂L/∂W| büyüklükleri ---- */
+  const radarCv=$('gradRadarCanvas');
+  function drawGradRadar(items){
+    if(!radarCv) return;
+    const ctx=radarCv.getContext('2d');
+    const W=radarCv.width, H=radarCv.height;
+    const cx=W/2, cy=H/2+4, R=Math.min(W,H)/2-38, n=items.length;
+    const maxMag=Math.max(...items.map(g=>Math.abs(g.val)), 0.02);
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1;
+    [0.25,0.5,0.75,1].forEach(f=>{
+      ctx.beginPath();
+      for(let i=0;i<=n;i++){ const a=-Math.PI/2+i*(2*Math.PI/n); const x=cx+Math.cos(a)*R*f, y=cy+Math.sin(a)*R*f; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+      ctx.stroke();
+    });
+    ctx.strokeStyle='#3a3d42'; ctx.fillStyle='#9aa0a6'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+    items.forEach((g,i)=>{
+      const a=-Math.PI/2+i*(2*Math.PI/n);
+      const x=cx+Math.cos(a)*R, y=cy+Math.sin(a)*R;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+      const lx=cx+Math.cos(a)*(R+18), ly=cy+Math.sin(a)*(R+18);
+      ctx.fillText(g.label, lx, ly+4);
+    });
+    ctx.beginPath();
+    items.forEach((g,i)=>{ const a=-Math.PI/2+i*(2*Math.PI/n); const r=(Math.abs(g.val)/maxMag)*R; const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r; i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    ctx.closePath();
+    ctx.fillStyle='rgba(240,160,50,0.28)'; ctx.fill();
+    ctx.strokeStyle='#f0a032'; ctx.lineWidth=2; ctx.stroke();
+    items.forEach((g,i)=>{ const a=-Math.PI/2+i*(2*Math.PI/n); const r=(Math.abs(g.val)/maxMag)*R; const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x,y,3.5,0,7); ctx.fill(); });
+  }
+
+  /* ---- Kayıp Vadisi: gerçek 3B yüzey L(W_xh,W_hy) — three.js ---- */
+  let loss3D=null;
+  (function initLoss3D(){
+    const el=document.getElementById('lossSurface3D');
+    if(!el || typeof THREE==='undefined') return;
+    const W=el.clientWidth||320, H=el.clientHeight||280;
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(42, W/H, 0.1, 100);
+    camera.position.set(3.1, 2.5, 3.1);
+    camera.lookAt(0, 0.4, 0);
+    const renderer=new THREE.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setSize(W,H); renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    el.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0xffffff,0.6));
+    const dl=new THREE.DirectionalLight(0xffffff,0.75); dl.position.set(3,5,2); scene.add(dl);
+    const SEG=22;
+    const geo=new THREE.PlaneGeometry(4,4,SEG,SEG);
+    geo.rotateX(-Math.PI/2);
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geo.attributes.position.count*3),3));
+    const mat=new THREE.MeshPhongMaterial({vertexColors:true, side:THREE.DoubleSide, shininess:18});
+    const mesh=new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+    const marker=new THREE.Mesh(new THREE.SphereGeometry(0.1,16,16), new THREE.MeshBasicMaterial({color:0xffffff}));
+    scene.add(marker);
+    loss3D={scene, camera, renderer, geo, marker, el};
+    (function animate(){
+      requestAnimationFrame(animate);
+      if(!loss3D) return;
+      loss3D.scene.rotation.y += 0.0025;
+      loss3D.renderer.render(loss3D.scene, loss3D.camera);
+    })();
+  })();
+  function updateLoss3D(p){
+    if(!loss3D) return;
+    const {geo, marker}=loss3D;
+    const pos=geo.attributes.position, col=geo.attributes.color;
+    const n=pos.count;
+    const raw=new Float32Array(n);
+    let Lmax=0.02;
+    for(let i=0;i<n;i++){
+      const wx=pos.getX(i), wy=pos.getZ(i);
+      const zPre=wx*p.x + p.Whh*p.hp + p.b;
+      const hh=Math.tanh(zPre);
+      const yh=wy*hh + p.by;
+      const Lv=0.5*(yh-p.y)*(yh-p.y);
+      raw[i]=Lv; if(Lv>Lmax) Lmax=Lv;
+    }
+    const scale=1.8/Lmax;
+    for(let i=0;i<n;i++){
+      const t=raw[i]/Lmax;
+      pos.setY(i, raw[i]*scale);
+      const r=(0x3a+(0xf0-0x3a)*t)/255, g=(0x7a+(0xa0-0x7a)*t)/255, b=(0xfe+(0x32-0xfe)*t)/255;
+      col.setXYZ(i, r, g, b);
+    }
+    pos.needsUpdate=true; col.needsUpdate=true;
+    geo.computeVertexNormals();
+    const curZPre=p.Wxh*p.x + p.Whh*p.hp + p.b;
+    const curH=Math.tanh(curZPre);
+    const curYhat=p.Why*curH + p.by;
+    const curL=0.5*(curYhat-p.y)*(curYhat-p.y);
+    marker.position.set(p.Wxh, curL*scale, p.Why);
+  }
+
   function render(){
     const p=read();
     sliders.forEach(s=>{ const v=$('rc_'+s+'_v'); if(v) v.textContent=F(parseFloat($('rc_'+s).value),2); });
@@ -264,6 +358,11 @@
     drawStep2(p, h, dWhy);
     drawStep3(z, h, dz);
     drawStep4(p, dWxh);
+    drawGradRadar([
+      {label:'Wxh', val:dWxh}, {label:'Whh', val:dWhh}, {label:'bh', val:db},
+      {label:'Why', val:dWhy}, {label:'by', val:dby}
+    ]);
+    updateLoss3D(p);
 
     const u=(w,g)=>F(w - p.alpha*g);
     $('rc_upd').innerHTML =
