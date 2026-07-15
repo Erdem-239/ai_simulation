@@ -209,6 +209,12 @@
   #cellSvg{display:block; width:100%; max-width:420px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-fc-left > .pts{flex:0 0 auto; justify-content:flex-start} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
+  /* 2) Geri Yayılım başlığı + Kayıp Vadisi grafikleri — aynı satırda başlar */
+  .rnn-bwd-top{display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; max-width:1180px; margin:0 auto}
+  .rnn-bwd-top-left{flex:1 1 320px; min-width:0}
+  .rnn-bwd-top-right{flex:1 1 460px; min-width:0}
+  @media(max-width:900px){ .rnn-bwd-top{flex-direction:column; gap:0} }
+
   /* ---- tam türetme bloğu (defter stili) ---- */
   .deriv-h{font-size:12.5px; color:var(--accent); font-weight:700; letter-spacing:.5px; margin:6px 0 8px; text-transform:uppercase}
   .deriv-why{font-size:12.5px; color:#cfd3d8; margin-top:2px; line-height:1.55; overflow-wrap:anywhere}
