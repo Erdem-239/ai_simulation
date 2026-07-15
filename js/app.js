@@ -370,11 +370,80 @@
       + EQ('b<sub>h</sub> := b<sub>h</sub> − α·∂L/∂b<sub>h</sub>', F(p.b,2)+' − ('+F(p.alpha,2)+')('+F(db)+')', u(p.b,db))
       + EQ('W<sub>hy</sub> := W<sub>hy</sub> − α·∂L/∂W<sub>hy</sub>', F(p.Why,2)+' − ('+F(p.alpha,2)+')('+F(dWhy)+')', u(p.Why,dWhy))
       + EQ('b<sub>y</sub> := b<sub>y</sub> − α·∂L/∂b<sub>y</sub>', F(p.by,2)+' − ('+F(p.alpha,2)+')('+F(dby)+')', u(p.by,dby));
+
+    return {L, dWxh, dWhh, db, dWhy, dby};
+  }
+
+  /* ---- eğitim döngüsü: geri yayılımla kendini düzeltip minimuma insin (lineer regresyondaki gibi) ---- */
+  const rcCostCv=$('rc_costCanvas');
+  let rcIter=0, rcCostHist=[], rcTimer=null;
+  const DEFAULTS={Wxh:0.4, Whh:0.3, b:0.1, Why:0.8, by:0.2};
+
+  function drawRcCost(){
+    if(!rcCostCv) return;
+    const ctx=rcCostCv.getContext('2d');
+    const W=rcCostCv.width, H=rcCostCv.height, PAD=30;
+    ctx.clearRect(0,0,W,H);
+    const n=rcCostHist.length;
+    const xmax=Math.max(10,n-1), ymax=Math.max(...rcCostHist,0.0001)*1.15;
+    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1; ctx.fillStyle='#8a9097'; ctx.font='10px Segoe UI';
+    for(let j=0;j<=4;j++){ const py=(H-18)-(H-18-8)*(j/4); ctx.globalAlpha=.3; ctx.beginPath(); ctx.moveTo(PAD,py); ctx.lineTo(W-8,py); ctx.stroke(); ctx.globalAlpha=1;
+      ctx.fillText(F(ymax*j/4,2), 2, py+3); }
+    ctx.fillStyle='#6f757c'; ctx.fillText('iterasyon →', W-62, H-4);
+    if(n<2) return;
+    const X=v=>PAD+(W-PAD-8)*(v/xmax), Y=v=>(H-18)-(H-18-8)*(v/ymax);
+    ctx.strokeStyle='#46c46a'; ctx.lineWidth=2; ctx.beginPath();
+    rcCostHist.forEach((c,i)=>{ const px=X(i),py=Y(c); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }); ctx.stroke();
+    ctx.fillStyle='#46c46a'; ctx.beginPath(); ctx.arc(X(n-1),Y(rcCostHist[n-1]),3.5,0,7); ctx.fill();
+  }
+  function rcUpdateUI(L){
+    const ie=$('rc_iter'); if(ie) ie.textContent=rcIter;
+    const ce=$('rc_curcost'); if(ce) ce.textContent=F(L,4);
+    drawRcCost();
+  }
+  function rcTrainStep(){
+    const {L, dWxh, dWhh, db, dWhy, dby}=render();
+    const alpha=parseFloat($('rc_alpha').value);
+    const set=(id,val)=>{ const el=$(id); if(el) el.value=Math.max(-2,Math.min(2, val)).toFixed(4); };
+    set('rc_Wxh', parseFloat($('rc_Wxh').value)-alpha*dWxh);
+    set('rc_Whh', parseFloat($('rc_Whh').value)-alpha*dWhh);
+    set('rc_b',   parseFloat($('rc_b').value)-alpha*db);
+    set('rc_Why', parseFloat($('rc_Why').value)-alpha*dWhy);
+    set('rc_by',  parseFloat($('rc_by').value)-alpha*dby);
+    rcIter++; rcCostHist.push(L); if(rcCostHist.length>300) rcCostHist.shift();
+    const {L:newL}=render();
+    rcUpdateUI(newL);
+  }
+  function rcTrainStop(){ if(rcTimer){clearInterval(rcTimer);rcTimer=null;} const fb=$('rc_fast'); if(fb) fb.classList.remove('on'); }
+  // kaydırıcıyı elle oynatınca: eğitimi durdur, sayacı sıfırla, ama ağırlıkları OLDUĞU GİBİ bırak (yeni başlangıç noktası)
+  function rcSyncManual(){
+    rcTrainStop(); rcIter=0;
+    const {L}=render();
+    rcCostHist=[L];
+    rcUpdateUI(L);
+  }
+  // ↺ düğmesi: ağırlıkları varsayılana döndür, sayacı sıfırla
+  function rcTrainReset(){
+    rcTrainStop(); rcIter=0; rcCostHist=[];
+    Object.keys(DEFAULTS).forEach(k=>{ const el=$('rc_'+k); if(el) el.value=DEFAULTS[k]; });
+    const {L}=render();
+    rcCostHist.push(L);
+    rcUpdateUI(L);
   }
   sliders.map(s=>'rc_'+s).concat(nums.map(n=>'rc_'+n)).forEach(id=>{
-    const el=$(id); if(el) el.addEventListener('input', render);
+    const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
   });
-  render();
+  const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
+  if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcTrainStep(); });
+  if(rcFastBtn) rcFastBtn.addEventListener('click', ()=>{
+    if(rcTimer){ rcTrainStop(); return; }
+    rcFastBtn.classList.add('on');
+    rcTimer=setInterval(rcTrainStep, 110);
+  });
+  if(rcStopBtn) rcStopBtn.addEventListener('click', rcTrainStop);
+  if(rcResetBtn) rcResetBtn.addEventListener('click', rcTrainReset);
+
+  { const {L}=render(); rcCostHist.push(L); rcUpdateUI(L); }
 })();
 
 
