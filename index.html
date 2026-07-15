@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607151854">
+<link rel="stylesheet" href="css/style.css?v=202607151859">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-15 18:59 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -779,8 +779,12 @@
         <b style="color:var(--accent)">Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</b>
         <div class="step-graph-row">
           <div class="step-graph-formula">
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali; W<sub>hy</sub>'ye göre türetirsek h katsayı olarak kalır, b<sub>y</sub>'ye göre türetirsek bağımsız terim olduğu için 1 kalır:</div>
-            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \quad\Rightarrow\quad \dfrac{\partial z_y}{\partial W_{hy}}=h,\qquad \dfrac{\partial z_y}{\partial b_y}=1 \)</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali:</div>
+            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
+            <div class="deriv-why">W<sub>hy</sub>'ye göre türetelim; h ve b<sub>y</sub>'yi sabit sayarız (onlar W<sub>hy</sub> değil). W<sub>hy</sub>·h terimi = sabit(h)×değişken(W<sub>hy</sub>) → türevi o sabitin kendisi, yani h. b<sub>y</sub> terimi içinde hiç W<sub>hy</sub> yok → türevi 0:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial W_{hy}} = h + 0 = h \)</div>
+            <div class="deriv-why">Aynı mantıkla b<sub>y</sub>'ye göre türetelim (şimdi W<sub>hy</sub>·h sabit sayılır → içinde b<sub>y</sub> yok, türevi 0; b<sub>y</sub>'nin kendine göre türevi her zaman 1'dir):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial b_y} = 0 + 1 = 1 \)</div>
             <div class="deriv-why"><b>Adım 2</b> — zincir kuralı: bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile çarp (×giriş kuralı):</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h,\qquad \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \)</div>
           </div>
@@ -2412,8 +2416,8 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607151854"></script>
+<script src="js/lesson-linreg.js?v=202607151859"></script>
 
-<script src="js/app.js?v=202607151854"></script>
+<script src="js/app.js?v=202607151859"></script>
 </body>
 </html>
