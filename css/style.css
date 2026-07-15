@@ -192,7 +192,7 @@
 
   /* ---- RNN hücre içi (computational graph) ---- */
   /* 1) İleri Yayılım — solda canlı hücre diyagramı, sağda formül kartları */
-  .rnn-fwd-cols{display:flex; gap:0; align-items:flex-start; max-width:1040px}
+  .rnn-fwd-cols{display:flex; gap:0; align-items:flex-start}
   .rnn-fc-right{flex:0 0 var(--rnn-simw,460px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px}                       /* formül kartları — SAĞ */
   .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
