@@ -191,17 +191,16 @@
   .rnn-edge{stroke:#6f757c; stroke-width:2; transition:.15s}
 
   /* ---- RNN hücre içi (computational graph) ---- */
-  /* 1) İleri Yayılım | 2) Hücrenin İçi — yan yana iki sütun */
-  .rnn-fwd-cols{display:flex; gap:16px; align-items:flex-start}
-  .rnn-fc-left{flex:1 1 40%; min-width:0}
-  .rnn-fc-right{flex:1 1 60%; min-width:0}
-  .rnn-fc-left .sechead,.rnn-fc-right .sechead{margin-top:0}
+  /* 1) İleri Yayılım — solda canlı hücre diyagramı, sağda formül kartları */
+  .rnn-fwd-cols{display:flex; gap:18px; align-items:flex-start; max-width:1040px}
+  .rnn-fc-right{flex:0 0 460px; min-width:0; order:1}   /* hücre diyagramı — SOL */
+  .rnn-fc-left{flex:1 1 auto; min-width:0; order:2}      /* formül kartları — SAĞ */
   .steps-1col{grid-template-columns:1fr !important}
-  .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:10px}
+  .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:0}
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
   #cellSvg{display:block; width:100%; max-width:420px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
-  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
+  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none} .rnn-fc-right{flex:1 1 auto} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
   .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
   .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
   .io-y{fill:#4a1f1f; stroke:#e06a6a; cursor:pointer}
