@@ -333,7 +333,6 @@
     const dWxh=dz*p.x, dWhh=dz*p.hp, db=dz;
 
     const EQ=(f,sub,val)=>'<div class="rc-eq">'+f+(sub?' = <span class="sb">'+sub+'</span>':'')+' = <span class="rv">'+val+'</span></div>';
-    const HD=t=>'<div class="rc-hd">'+t+'</div>';
 
     $('rc_fwd').innerHTML =
       EQ('z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>', '('+F(p.Wxh,2)+')('+F(p.x,2)+') + ('+F(p.Whh,2)+')('+F(p.hp,2)+') + '+F(p.b,2), F(z))
@@ -341,16 +340,16 @@
       + EQ('ŷ = W<sub>hy</sub>·h + b<sub>y</sub>', '('+F(p.Why,2)+')('+F(h)+') + '+F(p.by,2), F(yhat))
       + EQ('L = ½(ŷ − y)²', '½('+F(yhat)+' − '+F(p.y,2)+')²', F(L));
 
-    $('rc_bwd').innerHTML =
-      HD('Domino 1 — çıktıdan başla')
-      + EQ('∂L/∂ŷ = (ŷ − y)', '('+F(yhat)+' − '+F(p.y,2)+')', F(dyhat))
-      + EQ('∂L/∂W<sub>hy</sub> = ∂L/∂ŷ · h', '('+F(dyhat)+')('+F(h)+')', F(dWhy))
-      + EQ('∂L/∂b<sub>y</sub> = ∂L/∂ŷ', '', F(dby))
-      + EQ('↳ h₋₁\'e akan: ∂L/∂h = ∂L/∂ŷ · W<sub>hy</sub>', '('+F(dyhat)+')('+F(p.Why,2)+')', F(dh))
-      + HD('Domino 2 — tanh geri (×(1−h²))')
-      + EQ('∂L/∂z = ∂L/∂h · (1 − h²)', '('+F(dh)+')(1 − '+F(h*h)+')', F(dz))
-      + HD('Domino 3 — ham toplamdan ağırlıklara')
-      + EQ('∂L/∂W<sub>xh</sub> = ∂L/∂z · x', '('+F(dz)+')('+F(p.x,2)+')', F(dWxh))
+    const rcS1=$('rcS1Live'); if(rcS1) rcS1.innerHTML =
+      EQ('∂L/∂z<sub>y</sub> = (ŷ − y)', '('+F(yhat)+' − '+F(p.y,2)+')', F(dyhat));
+    const rcS2=$('rcS2Live'); if(rcS2) rcS2.innerHTML =
+      EQ('∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub> · h', '('+F(dyhat)+')('+F(h)+')', F(dWhy))
+      + EQ('∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>', '', F(dby));
+    const rcS3=$('rcS3Live'); if(rcS3) rcS3.innerHTML =
+      EQ('∂L/∂h = ∂L/∂z<sub>y</sub> · W<sub>hy</sub>', '('+F(dyhat)+')('+F(p.Why,2)+')', F(dh))
+      + EQ('∂L/∂z = ∂L/∂h · (1 − h²)', '('+F(dh)+')(1 − '+F(h*h)+')', F(dz));
+    const rcS4=$('rcS4Live'); if(rcS4) rcS4.innerHTML =
+      EQ('∂L/∂W<sub>xh</sub> = ∂L/∂z · x', '('+F(dz)+')('+F(p.x,2)+')', F(dWxh))
       + EQ('∂L/∂W<sub>hh</sub> = ∂L/∂z · h₋₁', '('+F(dz)+')('+F(p.hp,2)+')', F(dWhh))
       + EQ('∂L/∂b<sub>h</sub> = ∂L/∂z', '', F(db));
 

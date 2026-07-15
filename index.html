@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607160018">
+<link rel="stylesheet" href="css/style.css?v=202607160030">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 00:18 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 00:30 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -778,10 +778,19 @@
     <!-- ADIM ADIM — HER ADIM NEDEN? -->
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
     <div class="steps">
-      <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</b>
-        <div class="step-graph-row">
-          <div class="step-graph-formula">
+      <div class="step" id="gAdim1">
+        <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS1Live" class="rc-card"></div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep1Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
+            </div>
+          </div>
+          <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
             <div class="eq" style="margin:4px 0">\( L=\tfrac12(\hat y-y)^2 \)</div>
@@ -792,16 +801,21 @@
             <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> zincir kuralıyla iki parçayı çarpıp L'nin z<sub>y</sub>'ye duyarlılığını buluruz. İkisini çarp:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_y}=\dfrac{\partial L}{\partial \hat y}\times\dfrac{\partial \hat y}{\partial z_y}=(\hat y-y)\times 1=(\hat y - y) \)</div>
           </div>
-          <div class="step-graph-plot">
-            <canvas id="rcStep1Canvas" width="240" height="170"></canvas>
-            <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
-          </div>
         </div>
       </div>
-      <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</b>
-        <div class="step-graph-row">
-          <div class="step-graph-formula">
+      <div class="step" id="gAdim2">
+        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS2Live" class="rc-card"></div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
+            </div>
+          </div>
+          <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
             <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
@@ -812,16 +826,21 @@
             <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> asıl istediğimiz L'nin bu ağırlıklara göre türevi; zincir kuralıyla ∂L/∂z<sub>y</sub> ile çarparak oraya ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile çarp (×giriş kuralı):</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h,\qquad \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \)</div>
           </div>
-          <div class="step-graph-plot">
-            <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
-            <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
-          </div>
         </div>
       </div>
-      <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 3) tanh'tan geri — ∂L/∂z'yi bul</b>
-        <div class="step-graph-row">
-          <div class="step-graph-formula">
+      <div class="step" id="gAdim3">
+        <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS3Live" class="rc-card"></div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">h = tanh(z) — nokta: şu anki z · sarı: teğet (eğim = 1−h²)</div>
+            </div>
+          </div>
+          <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z'ye taşımak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
             <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
@@ -831,19 +850,38 @@
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
             <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> h=tanh(z) olduğu için z'ye inmek üzere tanh'ın türevini bilmemiz lazım. h'nin açık hali (h=tanh(z)); z'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
             <div class="eq" style="margin:4px 0">\( h=\tanh(z) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z}=1-\tanh^2(z)=1-h^2 \)</div>
+            <div class="acc">
+              <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
+              <div class="acc-body">
+                <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
+                \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
+                <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
+                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
+                <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
+                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
+                <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
+                \[ \tanh'(z)=1-h^{2} \]
+                <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
+              </div>
+            </div>
             <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z'ye duyarlılığını (∂L/∂z) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
           </div>
-          <div class="step-graph-plot">
-            <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
-            <div class="step-graph-cap">h = tanh(z) — nokta: şu anki z · sarı: teğet (eğim = 1−h²)</div>
-          </div>
         </div>
       </div>
-      <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanı</b>
-        <div class="step-graph-row">
-          <div class="step-graph-formula">
+      <div class="step" id="gAdim4">
+        <div class="stephead"><h2>Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS4Live" class="rc-card"></div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">L(W<sub>xh</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>xh</sub>)</div>
+            </div>
+          </div>
+          <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ortak sinyali (∂L/∂z) kullanıp W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanına ulaşmak — bu üçü z'nin içinde birlikte yaşıyor.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z'nin formülünde bu üç ağırlık da görünüyor; her birine duyarlılığı ayrı ayrı bulmalıyız. z'nin açık hali:</div>
             <div class="eq" style="margin:4px 0">\( z=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \)</div>
@@ -855,10 +893,6 @@
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial b_h}=1 \)</div>
             <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> zincir kuralıyla ∂L/∂z ile çarparak asıl istediğimiz L'nin bu ağırlıklara göre türevine ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z ile çarp (yine ×giriş kuralı):</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times 1 \)</div>
-          </div>
-          <div class="step-graph-plot">
-            <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
-            <div class="step-graph-cap">L(W<sub>xh</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>xh</sub>)</div>
           </div>
         </div>
       </div>
@@ -873,35 +907,16 @@
 
     <!-- ①②③ tam sayısal döküm — tek kapalı accordion (grafiklerle bilgi tekrarı, ayrıntı isteyen açar) -->
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> 🔢 Tam sayısal hesap — ileri yayılım, domino domino, güncelleme (senin sayılarınla)</div>
+      <div class="acc-head"><span class="ac">▸</span> 🔢 Tam sayısal hesap — ileri yayılım ve güncelleme (senin sayılarınla)</div>
       <div class="acc-body">
         <div class="pts" style="margin:0 0 12px">
           <h3 style="color:var(--accent)">① İleri yayılım — tahmini üret</h3>
           <div id="rc_fwd" class="rc-card"></div>
         </div>
-
-        <div class="pts" style="border-left:3px solid var(--accent); margin:0 0 12px">
-          <h3 style="color:var(--accent)">② Geri yayılım — domino domino</h3>
-          <div style="font-size:13px; color:#cfd3d8; margin-bottom:8px">Hatayı en sondan (çıktıdan) başlayıp geriye deviriyoruz. Her domino bir öncekinin sonucunu kullanır.</div>
-          <div id="rc_bwd" class="rc-card"></div>
-          <div class="acc" style="margin-top:10px">
-            <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
-            <div class="acc-body">
-              <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
-              \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
-              <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
-              \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
-              <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
-              \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
-              <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
-              \[ \tanh'(z)=1-h^{2} \]
-              <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
-            </div>
-          </div>
-        </div>
+        <div style="font-size:12.5px; color:var(--muted); margin:0 0 12px">Geri yayılımın domino domino sayısal dökümünü yukarıdaki <b>Geri Adım 1-4</b> kartlarını açarak görebilirsin — her kart kendi canlı hesabını gösterir.</div>
 
         <div class="pts" style="border-left:3px solid var(--blue); margin:0">
-          <h3 style="color:var(--blue)">③ Güncelle — yokuş aşağı bir adım (W := W − α·∂L/∂W)</h3>
+          <h3 style="color:var(--blue)">② Güncelle — yokuş aşağı bir adım (W := W − α·∂L/∂W)</h3>
           <div id="rc_upd" class="rc-card"></div>
           <div style="font-size:12px; color:var(--muted); margin-top:8px">α'yı büyüt → adım büyür (çabuk ama zıplayabilir); küçült → yavaş ama kararlı. Lineer regresyondaki güncelleme kuralının aynısı.</div>
         </div>
@@ -2452,9 +2467,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607160018"></script>
+<script src="js/lesson-linreg.js?v=202607160030"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607160018"></script>
+<script src="js/app.js?v=202607160030"></script>
 </body>
 </html>
