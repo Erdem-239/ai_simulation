@@ -195,9 +195,11 @@
   .rnn-fwd-cols{display:flex; gap:0; align-items:flex-start; max-width:1040px}
   .rnn-fc-right{flex:0 0 var(--rnn-simw,460px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px}                       /* formül kartları — SAĞ */
-  .rnn-col-resizer{flex:0 0 6px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
-  .rnn-col-resizer::after{content:''; position:absolute; left:2px; top:0; width:2px; height:100%; background:var(--line); transition:.15s}
-  .rnn-col-resizer:hover::after,.rnn-col-resizer.on::after{background:var(--accent); width:3px}
+  .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
+  .rnn-col-resizer::before{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:var(--line); transition:.15s}
+  .rnn-col-resizer::after{content:'⋮⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:16px; letter-spacing:-2px; line-height:1; background:var(--panel2); padding:8px 3px; border:1px solid var(--line); border-radius:6px; transition:.15s; user-select:none}
+  .rnn-col-resizer:hover::before,.rnn-col-resizer.on::before{background:var(--accent); width:3px; left:5.5px}
+  .rnn-col-resizer:hover::after,.rnn-col-resizer.on::after{color:var(--accent); border-color:var(--accent)}
   .steps-1col{grid-template-columns:1fr !important}
   .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:0}
   .cell-diagram{min-width:0; overflow-x:auto}
