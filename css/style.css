@@ -215,6 +215,12 @@
   .deriv-num{flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#1f2023; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px}
   .deriv-body{flex:1 1 auto; min-width:0; overflow-x:auto}
   .deriv-body .eq,.deriv-body>p{margin:0}
+  /* Geri Adım kartı: sol formül, sağ canlı grafik */
+  .step-graph-row{display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; margin-top:6px}
+  .step-graph-formula{flex:1 1 220px; min-width:0}
+  .step-graph-plot{flex:0 0 240px}
+  .step-graph-plot canvas{width:100%; height:auto; background:#15161a; border:1px solid var(--line); border-radius:6px}
+  .step-graph-cap{font-size:10.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.4}
   /* sağ sütun: türetme kartları (accordion) */
   .rnn-deriv-cards .acc{margin:8px 0}
   .rnn-deriv-cards .acc-head{font-size:13px; padding:11px 13px}
