@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607160056">
+<link rel="stylesheet" href="css/style.css?v=202607160855">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 00:56 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 08:55 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -806,6 +806,7 @@
               <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
             </div>
           </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> işaret, ŷ'nin y'ye göre hangi yönde olduğunu söylüyor — küre vadinin hangi yamacında. Büyüklük ise dibe ne kadar uzak olduğumuzu gösterir; sıfıra yaklaştıkça minimuma varmışız demektir.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
@@ -834,6 +835,7 @@
               <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
             </div>
           </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
@@ -862,6 +864,7 @@
               <div class="step-graph-cap">h = tanh(z) — nokta: şu anki z · sarı: teğet (eğim = 1−h²)</div>
             </div>
           </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z'ye taşımak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
@@ -907,6 +910,7 @@
               <div class="step-graph-cap">L(W<sub>xh</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>xh</sub>)</div>
             </div>
           </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu üç sayı, x, h₋₁ ve sabit terimin kayba katkısını gösteriyor — hangisinin mutlak değeri büyükse, o ağırlık bu turda en çok değişecek demek.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ortak sinyali (∂L/∂z) kullanıp W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanına ulaşmak — bu üçü z'nin içinde birlikte yaşıyor.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z'nin formülünde bu üç ağırlık da görünüyor; her birine duyarlılığı ayrı ayrı bulmalıyız. z'nin açık hali:</div>
@@ -2493,9 +2497,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607160056"></script>
+<script src="js/lesson-linreg.js?v=202607160855"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607160056"></script>
+<script src="js/app.js?v=202607160855"></script>
 </body>
 </html>
