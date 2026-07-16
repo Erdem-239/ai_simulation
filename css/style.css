@@ -230,8 +230,10 @@
   .rc-float-diagram .rc-float-head{color:var(--blue)}
   .rc-float-diagram #cellSvg{max-width:250px}
   .rc-float-diagram .cell-layout{gap:5px}
-  .rc-float-diagram .addbtn{font-size:10px !important; padding:4px 6px !important}
-  .rc-float-diagram .addbtn{font-size:11px; padding:6px 8px}
+  .rc-float-diagram .cell-btnrow{gap:4px !important}
+  .rc-float-diagram .addbtn{font-size:9.5px !important; padding:3px 5px !important; flex:0 0 auto !important}
+  .rc-float-diagram .acc-head{font-size:11px; padding:6px 8px}
+  .rc-float-diagram .acc-body > div{grid-template-columns:1fr !important; font-size:10.5px !important; gap:1px 0 !important}
   @media(max-width:900px){ .rc-float-diagram{display:none !important} }
   @media(max-width:720px){ .rc-float{top:auto; bottom:8px; right:8px; left:8px; width:auto; max-width:none} }
   @media(max-width:720px){ .rc-float{top:auto; bottom:8px; right:8px; left:8px; width:auto; max-width:none; max-height:60vh} }

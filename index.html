@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607161134">
+<link rel="stylesheet" href="css/style.css?v=202607161143">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 11:34 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 11:43 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -748,7 +748,30 @@
     <div id="rcDiagramAnchor"></div>
     <div class="pts" id="rcDiagramPanel">
       <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>g = aktivasyon</b>. Bir düğüme tıkla → o işlem. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu).</div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
+      <div class="acc" style="margin-bottom:10px">
+        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
+        <div class="acc-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; font-size:12px; color:#cfd3d8; line-height:1.6">
+            <div><b>x</b> — o adımın girdisi</div>
+            <div><b>h₋₁</b> — önceki hafıza</div>
+            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
+            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
+            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
+            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
+            <div><b>y</b> — gerçek cevap</div>
+            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
+            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
+            <div><b>W<sub>xh</sub></b> — x → h</div>
+            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+            <div><b>α</b> — öğrenme oranı</div>
+            <div><b>(1−h²)</b> — tanh türevi</div>
+          </div>
+        </div>
+      </div>
+      <div class="cell-btnrow" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
         <button class="addbtn" id="cellStep" style="background:var(--blue); color:#fff">İleri ▶ adım</button>
         <button class="addbtn" id="cellAuto" style="background:var(--blue); color:#fff; opacity:.8">İleri ⏩</button>
         <button class="addbtn" id="cellBack" style="background:var(--accent); color:#1f2023">◀ BPTT adım</button>
@@ -2526,9 +2549,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607161134"></script>
+<script src="js/lesson-linreg.js?v=202607161143"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607161134"></script>
+<script src="js/app.js?v=202607161143"></script>
 </body>
 </html>
