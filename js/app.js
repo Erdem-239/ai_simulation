@@ -335,8 +335,8 @@
     const EQ=(f,sub,val)=>'<div class="rc-eq">'+f+(sub?' = <span class="sb">'+sub+'</span>':'')+' = <span class="rv">'+val+'</span></div>';
 
     $('rc_fwd').innerHTML =
-      EQ('z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>', '('+F(p.Wxh,2)+')('+F(p.x,2)+') + ('+F(p.Whh,2)+')('+F(p.hp,2)+') + '+F(p.b,2), F(z))
-      + EQ('h = tanh(z)', 'tanh('+F(z)+')', F(h))
+      EQ('z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>', '('+F(p.Wxh,2)+')('+F(p.x,2)+') + ('+F(p.Whh,2)+')('+F(p.hp,2)+') + '+F(p.b,2), F(z))
+      + EQ('h = tanh(z<sub>h</sub>)', 'tanh('+F(z)+')', F(h))
       + EQ('ŷ = W<sub>hy</sub>·h + b<sub>y</sub>', '('+F(p.Why,2)+')('+F(h)+') + '+F(p.by,2), F(yhat))
       + EQ('L = ½(ŷ − y)²', '½('+F(yhat)+' − '+F(p.y,2)+')²', F(L));
 

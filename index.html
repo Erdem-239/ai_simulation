@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607160949">
+<link rel="stylesheet" href="css/style.css?v=202607161003">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 09:49 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 10:03 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -690,12 +690,14 @@
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; font-size:12px; color:#cfd3d8; line-height:1.6">
             <div><b>x</b> — o adımın girdisi</div>
             <div><b>h₋₁</b> — önceki hafıza</div>
-            <div><b>z</b> — ham toplam (akt. öncesi)</div>
-            <div><b>h</b> — yeni hafıza = tanh(z)</div>
-            <div><b>ŷ</b> — modelin tahmini</div>
+            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
+            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
+            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
+            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
             <div><b>y</b> — gerçek cevap</div>
             <div><b>L</b> — kayıp ½(ŷ−y)²</div>
-            <div><b>∂L/∂z</b> — z'ye ulaşan geri-sinyal</div>
+            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
+            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
             <div><b>W<sub>xh</sub></b> — x → h</div>
             <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
             <div><b>W<sub>hy</sub></b> — h → ŷ</div>
@@ -724,7 +726,7 @@
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.0001" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
       </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z), &nbsp; ŷ = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>.</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
     </div>
 
     <div class="rc-float" id="rcFloatWrap" style="display:none">
@@ -860,7 +862,7 @@
             </div>
           </div>
           <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
+          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
@@ -875,32 +877,32 @@
         </div>
       </div>
       <div class="step" id="gAdim3">
-        <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS3Live" class="rc-card">
                 <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
-              <div class="step-graph-cap">h = tanh(z) — nokta: şu anki z · sarı: teğet (eğim = 1−h²)</div>
+              <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
             </div>
           </div>
           <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z'ye ulaşan sinyalimiz var — z'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
+          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
           <div class="detail">
-            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z'ye taşımak.</div>
+            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
             <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
             <div class="deriv-why">Bu kez h'ye göre türetelim; W<sub>hy</sub> ve b<sub>y</sub>'yi sabit sayarız. W<sub>hy</sub>·h terimi = sabit(W<sub>hy</sub>)×değişken(h) → türevi W<sub>hy</sub>'nin kendisi. b<sub>y</sub> terimi içinde h yok → türevi 0:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h} = W_{hy}+0=W_{hy} \)</div>
             <div class="deriv-why">Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> h=tanh(z) olduğu için z'ye inmek üzere tanh'ın türevini bilmemiz lazım. h'nin açık hali (h=tanh(z)); z'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
-            <div class="eq" style="margin:4px 0">\( h=\tanh(z) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z}=1-\tanh^2(z)=1-h^2 \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> h=tanh(z<sub>h</sub>) olduğu için z<sub>h</sub>'ye inmek üzere tanh'ın türevini bilmemiz lazım. z<sub>h</sub>'nin açık hali (1. bölümdeki "① h" kartından hatırla): z<sub>h</sub>=W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub>, h'nin açık hali (h=tanh(z<sub>h</sub>)); z<sub>h</sub>'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
+            <div class="eq" style="margin:4px 0">\( h=\tanh(z_h) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z_h}=1-\tanh^2(z_h)=1-h^2 \)</div>
             <div class="acc">
               <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
               <div class="acc-body">
@@ -915,8 +917,8 @@
                 <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
               </div>
             </div>
-            <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z'ye duyarlılığını (∂L/∂z) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
+            <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z<sub>h</sub>'ye duyarlılığını (∂L/∂z<sub>h</sub>) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
           </div>
         </div>
       </div>
@@ -926,9 +928,9 @@
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS4Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial b_h}=\dfrac{\partial L}{\partial z} \) = <span class="v" id="rcS4val3"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h} \) = <span class="v" id="rcS4val3"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
@@ -939,17 +941,17 @@
           <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu üç sayı, x, h₋₁ ve sabit terimin kayba katkısını gösteriyor — hangisinin mutlak değeri büyükse, o ağırlık bu turda en çok değişecek demek.</div>
           <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu, TEK bir zaman adımının gradyanıydı. Ama RNN'de aynı ağırlık her adımda kullanılıyor — asıl gradyan hepsinin toplamı. Geri Adım 5'te bunu topluyoruz.</div>
           <div class="detail">
-            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ortak sinyali (∂L/∂z) kullanıp W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanına ulaşmak — bu üçü z'nin içinde birlikte yaşıyor.</div>
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z'nin formülünde bu üç ağırlık da görünüyor; her birine duyarlılığı ayrı ayrı bulmalıyız. z'nin açık hali:</div>
-            <div class="eq" style="margin:4px 0">\( z=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \)</div>
+            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ortak sinyali (∂L/∂z<sub>h</sub>) kullanıp W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanına ulaşmak — bu üçü z<sub>h</sub>'nin içinde birlikte yaşıyor.</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>h</sub>'nin formülünde bu üç ağırlık da görünüyor; her birine duyarlılığı ayrı ayrı bulmalıyız. z<sub>h</sub>'nin açık hali:</div>
+            <div class="eq" style="margin:4px 0">\( z_h=W_{xh}\,x+W_{hh}\,h_{t-1}+b_h \)</div>
             <div class="deriv-why">W<sub>xh</sub>'ye göre türetelim; diğer ikisini sabit sayarız. W<sub>xh</sub>·x terimi = sabit(x)×değişken(W<sub>xh</sub>) → türevi x. Diğer iki terimde W<sub>xh</sub> yok → türevleri 0:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial W_{xh}}=x \)</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_h}{\partial W_{xh}}=x \)</div>
             <div class="deriv-why">Aynı mantıkla W<sub>hh</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>t−1</sub> terimi = sabit(h<sub>t−1</sub>)×değişken(W<sub>hh</sub>) → türevi h<sub>t−1</sub>; diğerlerinde W<sub>hh</sub> yok):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial W_{hh}}=h_{t-1} \)</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_h}{\partial W_{hh}}=h_{t-1} \)</div>
             <div class="deriv-why">Ve b<sub>h</sub>'ye göre türetelim (b<sub>h</sub>'nin kendine göre türevi her zaman 1'dir; diğer iki terimde b<sub>h</sub> yok):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z}{\partial b_h}=1 \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> zincir kuralıyla ∂L/∂z ile çarparak asıl istediğimiz L'nin bu ağırlıklara göre türevine ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z ile çarp (yine ×giriş kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times 1 \)</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_h}{\partial b_h}=1 \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> zincir kuralıyla ∂L/∂z<sub>h</sub> ile çarparak asıl istediğimiz L'nin bu ağırlıklara göre türevine ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z<sub>h</sub> ile çarp (yine ×giriş kuralı):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times 1 \)</div>
           </div>
         </div>
       </div>
@@ -2524,9 +2526,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607160949"></script>
+<script src="js/lesson-linreg.js?v=202607161003"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607160949"></script>
+<script src="js/app.js?v=202607161003"></script>
 </body>
 </html>
