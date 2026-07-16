@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607161154">
+<link rel="stylesheet" href="css/style.css?v=202607161209">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 11:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 12:09 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -951,9 +951,9 @@
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS4Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h} \) = <span class="v" id="rcS4val3"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\cdot x=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1}=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span class="v" id="rcS4val3"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
@@ -974,14 +974,39 @@
             <div class="deriv-why">Ve b<sub>h</sub>'ye göre türetelim (b<sub>h</sub>'nin kendine göre türevi her zaman 1'dir; diğer iki terimde b<sub>h</sub> yok):</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_h}{\partial b_h}=1 \)</div>
             <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> zincir kuralıyla ∂L/∂z<sub>h</sub> ile çarparak asıl istediğimiz L'nin bu ağırlıklara göre türevine ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z<sub>h</sub> ile çarp (yine ×giriş kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times 1 \)</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times x=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\,x,\qquad \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times h_{t-1}=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\,h_{t-1},\qquad \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times 1=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \)</div>
           </div>
         </div>
       </div>
-      <div class="pts" style="margin:0">
-        <b style="color:var(--accent)">Geri Adım 5) Zaman boyunca topla</b>
-        <div class="eq" style="margin:8px 0">\( \dfrac{\partial L}{\partial W} = \displaystyle\sum_{t=1}^{T} (\text{adım } t\text{'nin gradyanı}) \)</div>
-        <div style="font-size:13px; color:#cfd3d8"><b>Neden — paylaşılan ağırlık:</b> aynı W her zaman adımında kullanıldığı için tüm adımların katkısı <b>toplanır</b>. <b>Genel BPTT formülü budur.</b></div>
+      <div class="step" id="gAdim5" style="grid-column:1/-1">
+        <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS5Live" class="rc-card">
+                <div class="eq">\( \dfrac{\partial L}{\partial W} = \displaystyle\sum_{t=1}^{T} \dfrac{\partial L}{\partial z_h^{(t)}}\times\dfrac{\partial z_h^{(t)}}{\partial W} \)</div>
+                <div style="font-size:12px; color:var(--muted); margin:4px 0 8px">Aynı W<sub>hh</sub> her adımda kullanıldığı için geri sinyal, adım geriye giderken r=W<sub>hh</sub>(1−h²) ile tekrar tekrar çarpılır (Adım 3'teki (1−h²) çarpanını hatırla). Basitleştirilmiş örnek — aynı h ve W<sub>hh</sub>'yi varsayarsak (T=4):</div>
+                <div class="eq">\( r=W_{hh}(1-h^2) \) = <span class="v" id="rcS5r">0.0000</span></div>
+                <div class="eq">\( g_T=\dfrac{\partial L}{\partial W_{hh}} \) = <span class="v" id="rcS5gT">0.0000</span> ,&nbsp; \( g_{T-k}\approx g_T\cdot r^{\,k} \)</div>
+                <div class="eq">\( \displaystyle\sum_{k=0}^{3} g_{T-k} = g_T(1+r+r^2+r^3) \) = <span class="v" id="rcS5sum">0.0000</span></div>
+              </div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep5Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">Her adımın katkısı — geriye gittikçe |r| kadar küçülür (|r|&gt;1 ise büyür)</div>
+            </div>
+          </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> aynı ağırlık her adımda kullanıldığı için asıl gradyan, tüm zaman adımlarının katkısının <b>toplamı</b>. |r|&lt;1 ise eski adımların etkisi hızla söner (vanishing gradient) — |r|&gt;1 ise patlar (exploding gradient).</div>
+          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu toplam gradyanla her ağırlığı güncelliyoruz — aşağıdaki <b>🔻 Güncelle</b> satırı bunu gösteriyor; sonraki bölümde bu döngüyü tekrar tekrar çalıştırıp modeli eğitiyoruz.</div>
+          <div class="detail">
+            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> Geri Adım 1-4'te bulduğumuz her gradyan TEK bir zaman adımına aitti. Ama RNN'de aynı ağırlık (örneğin W<sub>hh</sub>) her adımda yeniden kullanılıyor — asıl gradyanı bulmak için tüm adımların katkısını toplamamız gerekiyor.</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Neden toplanır — çoklu kullanım kuralı:</b> bir değişken birden fazla yerde kullanılıyorsa (burada W, t=1..T'nin hepsinde), o değişkene göre toplam türev, her kullanımdan gelen katkıların toplamıdır:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W} = \sum_{t=1}^{T} \dfrac{\partial L}{\partial W}\Big|_{\text{adım }t} \)</div>
+            <div class="deriv-why"><b>Neden geriye gittikçe küçülür/büyür:</b> h<sub>t−1</sub> bir önceki adımın hafızası, o da kendi z<sub>h</sub>'sine ve ondan önceki h<sub>t−2</sub>'ye bağlı — zincir kuralı geriye doğru tekrar tekrar uygulanır. Her adım geriye gidişte sinyal bir W<sub>hh</sub> ve bir (1−h²) çarpanı daha kazanır:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
+            <div class="deriv-why">Bu yüzden T adım geriye gidersek çarpan yaklaşık \( r^{T} \) olur (r = W<sub>hh</sub>(1−h²)). |r|&lt;1 ise bu üstel olarak sıfıra gider (vanishing) — |r|&gt;1 ise üstel olarak büyür (exploding). RNN'lerin en bilinen zorluğu budur.</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \) — yokuş aşağı bir adım.</div>
@@ -2549,9 +2574,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607161154"></script>
+<script src="js/lesson-linreg.js?v=202607161209"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607161154"></script>
+<script src="js/app.js?v=202607161209"></script>
 </body>
 </html>
