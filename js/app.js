@@ -223,6 +223,32 @@
       Ymin:0, Ymax:Ymax*1.15, xLabel:'W_xh →', yLabel:'L(W_xh)'
     });
   }
+
+  /* Geri Adım 5 — zaman boyunca geriye giden katkılar (T-3..T), r=Whh(1-h²) ile üstel küçülüp/büyüyor */
+  function drawStep5(r, gT){
+    const cv=$('rcStep5Canvas'); if(!cv) return;
+    const ctx=cv.getContext('2d');
+    const W=cv.width, H=cv.height;
+    const gx0=32, gx1=W-10, gy0=12, gy1=H-24;
+    const vals=[3,2,1,0].map(k=>gT*Math.pow(r,k));
+    const labels=['T-3','T-2','T-1','T'];
+    const maxAbs=Math.max(...vals.map(Math.abs), 1e-6)*1.2;
+    const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
+    ctx.clearRect(0,0,W,H);
+    const zeroY=Y(0);
+    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
+    const bw=(gx1-gx0)/vals.length;
+    vals.forEach((v,i)=>{
+      const x=gx0+i*bw+bw*0.22, w=bw*0.56;
+      const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
+      ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
+      ctx.fillRect(x, top, w, h);
+      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(labels[i], x+w/2, gy1+13);
+    });
+    ctx.textAlign='left';
+  }
   /* ---- Kayıp Vadisi: gradyan pusulası (radar) — gerçek |∂L/∂W| büyüklükleri ---- */
   const radarCv=$('gradRadarCanvas');
   function drawGradRadar(items){
@@ -356,10 +382,17 @@
     setTxt('rcS4val2', F(dWhh));
     setTxt('rcS4val3', F(db));
 
+    const rDecay=p.Whh*(1-h*h);
+    const sum5=dWhh*(1+rDecay+rDecay*rDecay+rDecay*rDecay*rDecay);
+    setTxt('rcS5r', F(rDecay));
+    setTxt('rcS5gT', F(dWhh));
+    setTxt('rcS5sum', F(sum5));
+
     drawStep1(p.y, yhat, L, dyhat);
     drawStep2(p, h, dWhy);
     drawStep3(z, h, dz);
     drawStep4(p, dWxh);
+    drawStep5(rDecay, dWhh);
     drawGradRadar([
       {label:'Wxh', val:dWxh}, {label:'Whh', val:dWhh}, {label:'bh', val:db},
       {label:'Why', val:dWhy}, {label:'by', val:dby}
