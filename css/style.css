@@ -194,7 +194,7 @@
   /* ---- RNN hücre içi (computational graph) ---- */
   /* 1) İleri Yayılım — solda canlı hücre diyagramı, sağda formül kartları */
   .rnn-fwd-cols{display:flex; gap:0; align-items:stretch}
-  .rnn-fc-right{flex:0 0 var(--rnn-simw,460px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
+  .rnn-fc-right{flex:0 0 var(--rnn-simw,540px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
   .rnn-fc-left > .pts{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center}
   .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
@@ -206,8 +206,18 @@
   .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:0}
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
-  #cellSvg{display:block; width:100%; max-width:420px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
+  #cellSvg{display:block; width:100%; max-width:700px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-fc-left > .pts{flex:0 0 auto; justify-content:flex-start} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
+
+  /* kaydırıcı paneli scroll ile ekrandan çıkınca sağ üstte yüzer */
+  .rc-float{position:fixed; top:76px; right:16px; z-index:600; width:360px; max-width:92vw; max-height:82vh; overflow-y:auto; background:var(--panel); border:1px solid var(--green); border-radius:10px; box-shadow:0 10px 34px rgba(0,0,0,.55)}
+  .rc-float-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 13px; cursor:pointer; user-select:none; font-size:13px; font-weight:700; color:var(--green); border-bottom:1px solid var(--line)}
+  .rc-float-toggle{color:var(--muted); font-size:13px; transition:.15s}
+  .rc-float-body{padding:2px}
+  .rc-float-body .pts{border:none; border-radius:0; margin:0}
+  .rc-float.rc-float-collapsed .rc-float-head{border-bottom:none}
+  .rc-float.rc-float-collapsed .rc-float-body{display:none}
+  @media(max-width:720px){ .rc-float{top:auto; bottom:8px; right:8px; left:8px; width:auto; max-width:none; max-height:60vh} }
 
   /* 2) Geri Yayılım başlığı + Kayıp Vadisi grafikleri — aynı satırda başlar */
   .rnn-bwd-top{display:flex; gap:24px; align-items:stretch; flex-wrap:wrap}
