@@ -1044,6 +1044,7 @@ function setupFloatingPanel(ids){
     floatWrap.classList.toggle('rc-float-collapsed', collapsed);
     if(floatToggle) floatToggle.textContent = collapsed ? '▸' : '▾';
   }
+  if(ids.startCollapsed) setCollapsed(true);
 
   /* ---- sürükleme (başlık çubuğundan) ---- */
   const storageKey = ids.storageKey;
@@ -1130,7 +1131,7 @@ function setupFloatingPanel(ids){
   checkFloat();
 }
 setupFloatingPanel({anchor:'rcSliderAnchor', panel:'rcSliderPanel', floatWrap:'rcFloatWrap', floatBody:'rcFloatBody', floatHead:'rcFloatHead', floatToggle:'rcFloatToggle', floatClose:'rcFloatClose', storageKey:'attn_rcFloatSliderPos'});
-setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose', storageKey:'attn_rcFloatDiagramPos', stackBelow:'rcFloatWrap'});
+setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose', storageKey:'attn_rcFloatDiagramPos', stackBelow:'rcFloatWrap', startCollapsed:true});
 
 /* ---- sol panel: aç/kapat ---- */
 (function(){
