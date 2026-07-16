@@ -1044,7 +1044,48 @@ function setupFloatingPanel(ids){
     floatWrap.classList.toggle('rc-float-collapsed', collapsed);
     if(floatToggle) floatToggle.textContent = collapsed ? '▸' : '▾';
   }
-  floatHead.addEventListener('click', ()=> setCollapsed(!collapsed));
+
+  /* ---- sürükleme (başlık çubuğundan) ---- */
+  const storageKey = ids.storageKey;
+  let dragging=false, moved=false, sx=0, sy=0, sLeft=0, sTop=0;
+  floatHead.addEventListener('pointerdown', (e)=>{
+    if(e.target.closest('.rc-float-toggle,.rc-float-close')) return;
+    dragging=true; moved=false;
+    const rect=floatWrap.getBoundingClientRect();
+    sLeft=rect.left; sTop=rect.top; sx=e.clientX; sy=e.clientY;
+    floatHead.setPointerCapture(e.pointerId);
+  });
+  floatHead.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>3||Math.abs(dy)>3) moved=true;
+    if(!moved) return;
+    let nl=Math.max(4, Math.min(window.innerWidth-floatWrap.offsetWidth-4, sLeft+dx));
+    let nt=Math.max(4, Math.min(window.innerHeight-32, sTop+dy));
+    floatWrap.style.left=nl+'px'; floatWrap.style.top=nt+'px';
+    floatWrap.style.right='auto'; floatWrap.style.bottom='auto';
+  });
+  function endDrag(){
+    if(!dragging) return;
+    dragging=false;
+    if(moved && storageKey){
+      try{ localStorage.setItem(storageKey, JSON.stringify({left:floatWrap.style.left, top:floatWrap.style.top})); }catch(e){}
+    }
+  }
+  floatHead.addEventListener('pointerup', endDrag);
+  floatHead.addEventListener('pointercancel', endDrag);
+  floatHead.addEventListener('click', ()=>{
+    if(moved){ moved=false; return; }
+    setCollapsed(!collapsed);
+  });
+  if(storageKey){
+    try{
+      const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
+      if(saved && saved.left && saved.top){
+        floatWrap.style.left=saved.left; floatWrap.style.top=saved.top; floatWrap.style.right='auto';
+      }
+    }catch(e){}
+  }
 
   function unfloat(){
     floating=false;
@@ -1068,6 +1109,14 @@ function setupFloatingPanel(ids){
         floating=true;
         floatBody.appendChild(panel);
         floatWrap.style.display='block';
+        // ilk kez açılıyorsa ve sürüklenerek taşınmamışsa, referans panelin altına yerleştir (alt alta)
+        if(ids.stackBelow && !floatWrap.style.left){
+          const ref=document.getElementById(ids.stackBelow);
+          if(ref && ref.style.display!=='none'){
+            const r=ref.getBoundingClientRect();
+            floatWrap.style.top=(r.bottom+10)+'px';
+          }
+        }
       }
     } else {
       closed=false;
@@ -1080,8 +1129,8 @@ function setupFloatingPanel(ids){
   document.querySelectorAll('.navbtn').forEach(b=> b.addEventListener('click', ()=> setTimeout(checkFloat, 50)));
   checkFloat();
 }
-setupFloatingPanel({anchor:'rcSliderAnchor', panel:'rcSliderPanel', floatWrap:'rcFloatWrap', floatBody:'rcFloatBody', floatHead:'rcFloatHead', floatToggle:'rcFloatToggle', floatClose:'rcFloatClose'});
-setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose'});
+setupFloatingPanel({anchor:'rcSliderAnchor', panel:'rcSliderPanel', floatWrap:'rcFloatWrap', floatBody:'rcFloatBody', floatHead:'rcFloatHead', floatToggle:'rcFloatToggle', floatClose:'rcFloatClose', storageKey:'attn_rcFloatSliderPos'});
+setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose', storageKey:'attn_rcFloatDiagramPos', stackBelow:'rcFloatWrap'});
 
 /* ---- sol panel: aç/kapat ---- */
 (function(){

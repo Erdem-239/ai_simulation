@@ -209,23 +209,28 @@
   #cellSvg{display:block; width:100%; max-width:700px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-fc-left > .pts{flex:0 0 auto; justify-content:flex-start} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
-  /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer */
-  .rc-float{position:fixed; top:76px; right:16px; z-index:600; width:360px; max-width:92vw; max-height:82vh; overflow-y:auto; background:var(--panel); border:1px solid var(--green); border-radius:10px; box-shadow:0 10px 34px rgba(0,0,0,.55)}
-  .rc-float-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 13px; cursor:pointer; user-select:none; font-size:13px; font-weight:700; color:var(--green); border-bottom:1px solid var(--line)}
-  .rc-float-btns{display:flex; align-items:center; gap:10px}
-  .rc-float-toggle{color:var(--muted); font-size:13px; transition:.15s}
-  .rc-float-close{color:var(--muted); font-size:13px; line-height:1; padding:2px 4px; border-radius:4px; transition:.15s}
+  /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer, sürüklenebilir */
+  .rc-float{position:fixed; top:76px; right:16px; z-index:600; width:280px; max-width:88vw; max-height:78vh; overflow-y:auto; background:var(--panel); border:1px solid var(--green); border-radius:9px; box-shadow:0 8px 26px rgba(0,0,0,.55); font-size:12px}
+  .rc-float-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:6px 9px; cursor:move; user-select:none; font-size:11.5px; font-weight:700; color:var(--green); border-bottom:1px solid var(--line)}
+  .rc-float-btns{display:flex; align-items:center; gap:7px}
+  .rc-float-toggle{color:var(--muted); font-size:11.5px; transition:.15s; cursor:pointer}
+  .rc-float-close{color:var(--muted); font-size:11.5px; line-height:1; padding:2px 4px; border-radius:4px; transition:.15s; cursor:pointer}
   .rc-float-close:hover{color:#fff; background:rgba(224,106,106,0.35)}
-  .rc-float-body{padding:2px}
-  .rc-float-body .pts{border:none; border-radius:0; margin:0}
+  .rc-float-body{padding:6px}
+  .rc-float-body .pts{border:none; border-radius:0; margin:0; padding:4px}
+  .rc-float-body h3{font-size:11px}
+  .rc-float-body .ptcell label{font-size:10px}
+  .rc-float-body .ptcell input{font-size:11px; padding:3px 5px}
+  .rc-float-body input[type=range]{width:78px !important}
   .rc-float.rc-float-collapsed .rc-float-head{border-bottom:none}
   .rc-float.rc-float-collapsed .rc-float-body{display:none}
 
-  /* diyagram yüzen kutusu: sol üstte (sidebar'ın sağında), sürüklenebilir sütuna göre değil sabit küçük boyutta */
-  .rc-float-diagram{top:76px; left:calc(var(--sbw, 215px) + 36px); right:auto; border-color:var(--blue); width:300px}
+  /* diyagram yüzen kutusu: sağ köşede, kaydırıcı panelin altında (alt alta), küçük boyutta */
+  .rc-float-diagram{top:340px; right:16px; border-color:var(--blue); width:280px}
   .rc-float-diagram .rc-float-head{color:var(--blue)}
-  .rc-float-diagram #cellSvg{max-width:270px}
-  .rc-float-diagram .cell-layout{gap:6px}
+  .rc-float-diagram #cellSvg{max-width:250px}
+  .rc-float-diagram .cell-layout{gap:5px}
+  .rc-float-diagram .addbtn{font-size:10px !important; padding:4px 6px !important}
   .rc-float-diagram .addbtn{font-size:11px; padding:6px 8px}
   @media(max-width:900px){ .rc-float-diagram{display:none !important} }
   @media(max-width:720px){ .rc-float{top:auto; bottom:8px; right:8px; left:8px; width:auto; max-width:none} }
