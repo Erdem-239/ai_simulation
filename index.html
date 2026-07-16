@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607160908">
+<link rel="stylesheet" href="css/style.css?v=202607160919">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 09:08 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 09:19 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -827,8 +827,8 @@
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS2Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\cdot h \) = <span style="color:var(--muted)" id="rcS2sub1"></span> = <span class="v" id="rcS2val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y} \) = <span class="v" id="rcS2val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}} \) = <span style="color:var(--muted)" id="rcS2sub1"></span> = <span class="v" id="rcS2val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y} \) = <span class="v" id="rcS2val2"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
@@ -857,8 +857,8 @@
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS3Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\cdot W_{hy} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\cdot(1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial z}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z} \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
@@ -903,9 +903,9 @@
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS4Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z} \) = <span class="v" id="rcS4val3"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial W_{xh}} \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial W_{hh}} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z}\times\dfrac{\partial z}{\partial b_h} \) = <span class="v" id="rcS4val3"></span></div>
               </div>
             </div>
             <div class="step-graph-plot">
@@ -2501,9 +2501,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607160908"></script>
+<script src="js/lesson-linreg.js?v=202607160919"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607160908"></script>
+<script src="js/app.js?v=202607160919"></script>
 </body>
 </html>
