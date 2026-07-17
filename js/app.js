@@ -388,6 +388,50 @@
     setTxt('rcS5gT', F(dWhh));
     setTxt('rcS5sum', F(sum5));
 
+    /* ---- ileri seviye: gerçek 3 zaman adımlı BPTT (unrolling) ---- */
+    if($('ruFwd')){
+      const rx1=parseFloat($('ru_x1').value), rx2=parseFloat($('ru_x2').value), rx3=parseFloat($('ru_x3').value), ry=parseFloat($('ru_y').value);
+      const rh0=0;
+      const rz1=p.Wxh*rx1 + p.Whh*rh0 + p.b; const rh1=Math.tanh(rz1);
+      const rz2=p.Wxh*rx2 + p.Whh*rh1 + p.b; const rh2=Math.tanh(rz2);
+      const rz3=p.Wxh*rx3 + p.Whh*rh2 + p.b; const rh3=Math.tanh(rz3);
+      const ryhat=p.Why*rh3 + p.by;
+      const rL=0.5*(ryhat-ry)*(ryhat-ry);
+
+      $('ruFwd').innerHTML =
+        EQ('h₁ = tanh(W<sub>xh</sub>·x₁ + W<sub>hh</sub>·h₀ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)+')', F(rh1))
+        + EQ('h₂ = tanh(W<sub>xh</sub>·x₂ + W<sub>hh</sub>·h₁ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)+')', F(rh2))
+        + EQ('h₃ = tanh(W<sub>xh</sub>·x₃ + W<sub>hh</sub>·h₂ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)+')', F(rh3))
+        + EQ('ŷ = W<sub>hy</sub>·h₃ + b<sub>y</sub>', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2), F(ryhat))
+        + EQ('L = ½(ŷ − y)²', '½('+F(ryhat)+' − '+F(ry,2)+')²', F(rL));
+
+      const rdyhat=ryhat-ry;
+      const rdh3=rdyhat*p.Why, rdz3=rdh3*(1-rh3*rh3);
+      const rdh2=rdz3*p.Whh,   rdz2=rdh2*(1-rh2*rh2);
+      const rdh1=rdz2*p.Whh,   rdz1=rdh1*(1-rh1*rh1);
+
+      const dWxh3=rdz3*rx3, dWhh3=rdz3*rh2, db3=rdz3;
+      const dWxh2=rdz2*rx2, dWhh2=rdz2*rh1, db2=rdz2;
+      const dWxh1=rdz1*rx1, dWhh1=rdz1*rh0, db1=rdz1;
+
+      $('ruBwd').innerHTML =
+        EQ('t=3 — ∂L/∂z<sub>h</sub> = [(ŷ−y)W<sub>hy</sub>](1−h₃²)', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1−'+F(rh3*rh3)+')', F(rdz3))
+        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₃)', '('+F(rdz3)+')('+F(rx3,2)+')', F(dWxh3))
+        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₂)', '('+F(rdz3)+')('+F(rh2)+')', F(dWhh3))
+        + EQ('t=2 — ∂L/∂z<sub>h</sub> = [önceki·W<sub>hh</sub>](1−h₂²) ← BPTT', '('+F(rdz3)+')('+F(p.Whh,2)+')(1−'+F(rh2*rh2)+')', F(rdz2))
+        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₂)', '('+F(rdz2)+')('+F(rx2,2)+')', F(dWxh2))
+        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₁)', '('+F(rdz2)+')('+F(rh1)+')', F(dWhh2))
+        + EQ('t=1 — ∂L/∂z<sub>h</sub> = [önceki·W<sub>hh</sub>](1−h₁²) ← BPTT', '('+F(rdz2)+')('+F(p.Whh,2)+')(1−'+F(rh1*rh1)+')', F(rdz1))
+        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₁)', '('+F(rdz1)+')('+F(rx1,2)+')', F(dWxh1))
+        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₀=0)', '('+F(rdz1)+')('+F(rh0,2)+')', F(dWhh1));
+
+      const totWxh=dWxh1+dWxh2+dWxh3, totWhh=dWhh1+dWhh2+dWhh3, totBh=db1+db2+db3;
+      $('ruTotal').innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):<br>'
+        + '∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b><br>'
+        + '∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b><br>'
+        + '∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b>';
+    }
+
     drawStep1(p.y, yhat, L, dyhat);
     drawStep2(p, h, dWhy);
     drawStep3(z, h, dz);
@@ -468,6 +512,9 @@
   }
   sliders.map(s=>'rc_'+s).concat(nums.map(n=>'rc_'+n)).forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
+  });
+  ['ru_x1','ru_x2','ru_x3','ru_y'].forEach(id=>{
+    const el=$(id); if(el) el.addEventListener('input', render);
   });
   const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
   if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcTrainStep(); });

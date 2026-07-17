@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607161209">
+<link rel="stylesheet" href="css/style.css?v=202607171655">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-16 12:09 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-17 16:55 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1030,17 +1030,70 @@
       </div>
     </div>
 
-    <!-- ileri seviye: tam BPTT akordeon -->
+    <!-- ileri seviye: gerçek çok-adımlı BPTT (unrolling) -->
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> İleri seviye: birden çok zaman adımı — tam BPTT (zaman boyunca zincir)</div>
+      <div class="acc-head"><span class="ac">▸</span> İleri seviye: gerçek 3 zaman adımlı BPTT (unrolling) — kendi sayılarınla</div>
       <div class="acc-body">
-        <p style="font-size:14px; color:#cfd3d8">Yukarıdaki <b>tek bir hücreydi</b>. Gerçek bir dizide \(h_t\), hem o adımın kaybını (\(L_t\)) hem de <b>bir sonraki</b> adımı (\(h_{t+1}\) üzerinden) etkiler. O yüzden \(h_t\)'ye gelen toplam türev <b>iki yoldan</b> gelir:</p>
-        \[ \underbrace{\frac{\partial L}{\partial h_t}}_{\delta_t} \;=\; \underbrace{\frac{\partial L_t}{\partial h_t}}_{\text{bu adımın çıktısı}} \;+\; \underbrace{\frac{\partial L}{\partial h_{t+1}}\cdot\frac{\partial h_{t+1}}{\partial h_t}}_{\text{gelecekten geri akan}} \]
-        <p style="font-size:14px; color:#cfd3d8">İşte "zaman içinde geri yayılım": \(\delta_t\) için \(\delta_{t+1}\)'e ihtiyaç var → en sondan başlayıp <b>geriye</b> ilerleriz. Her geçişte çarpan:</p>
-        \[ \frac{\partial h_{t+1}}{\partial h_t}=W_{hh}\cdot\big(1-h_{t+1}^{2}\big) \]
-        <p style="font-size:14px; color:#cfd3d8">Aynı W her adımda kullanıldığından gradyanlar <b>tüm zaman adımları boyunca toplanır</b>:</p>
-        \[ \frac{\partial L}{\partial W_{hh}} = \sum_{t=1}^{T} \delta_t\,(1-h_t^{2})\,h_{t-1}, \qquad \frac{\partial L}{\partial W_{xh}} = \sum_{t=1}^{T} \delta_t\,(1-h_t^{2})\,x_t \]
-        <div class="tip">Tek hücredeki domino mantığı birebir aynı; sadece <b>δ<sub>t</sub></b>'ye "gelecekten geri akan" terim ekleniyor ve sonunda <b>Σ<sub>t</sub></b> ile toplanıyor. Bu tekrar eden \(W_{hh}(1-h^{2})\) çarpanı, aşağıdaki vanishing/exploding sorununun da kaynağı.</div>
+        <p style="font-size:14px; color:#cfd3d8">Yukarıdaki (Adım 1-5) <b>tek bir zaman adımıydı</b>; Adım 5'teki toplam da "geçmişte de aynı h, aynı W<sub>hh</sub> tekrarlansaydı" varsayımıyla <b>yaklaşık</b> hesaplanmıştı. Şimdi gerçek bir diziyi (T=3, üç <b>farklı</b> x) aynı hücreyle çalıştırıp <b>gerçek</b> toplamı bulalım. h, bir adımdan diğerine zincirleniyor; kayıp sadece son adımda hesaplanıyor.</p>
+
+        <div class="ptrow" style="margin-bottom:10px">
+          <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
+          <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
+          <div class="ptcell"><label>x₃</label><input id="ru_x3" type="number" step="0.1" value="1.5"></div>
+          <div class="ptcell"><label>y (gerçek cevap, t=3)</label><input id="ru_y" type="number" step="0.1" value="1"></div>
+        </div>
+        <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
+
+        <div class="cell-diagram" style="overflow-x:auto; margin-bottom:12px">
+          <svg id="ruSvg" viewBox="0 0 900 230" role="img" style="display:block; width:100%; max-width:900px; height:auto; margin:0 auto; background:#10182b; border-radius:8px">
+            <defs>
+              <marker id="ruArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker>
+              <marker id="ruArrowB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f0a032"/></marker>
+            </defs>
+            <text x="20" y="115" fill="#9aa0a6" font-size="13">h₀=0</text>
+            <line x1="58" y1="110" x2="95" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
+
+            <rect x="95" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
+            <text x="195" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 1</text>
+            <text x="195" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₁ → hücre</text>
+            <text x="195" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
+            <text x="195" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₁</text>
+
+            <line x1="295" y1="110" x2="345" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
+            <text x="320" y="98" fill="#46c46a" font-size="12" text-anchor="middle">h₁</text>
+
+            <rect x="345" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
+            <text x="445" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 2</text>
+            <text x="445" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₂ → hücre</text>
+            <text x="445" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
+            <text x="445" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₂</text>
+
+            <line x1="545" y1="110" x2="595" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
+            <text x="570" y="98" fill="#46c46a" font-size="12" text-anchor="middle">h₂</text>
+
+            <rect x="595" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
+            <text x="695" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 3</text>
+            <text x="695" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₃ → hücre</text>
+            <text x="695" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
+            <text x="695" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₃</text>
+
+            <line x1="695" y1="55" x2="695" y2="26" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
+            <text x="695" y="16" fill="#f0a032" font-size="13" text-anchor="middle" font-weight="700">ŷ (→ L, y ile karşılaştır)</text>
+
+            <line x1="595" y1="185" x2="345" y2="185" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrowB)"/>
+            <line x1="345" y1="185" x2="95" y2="185" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrowB)"/>
+            <text x="445" y="212" fill="#f0a032" font-size="12" text-anchor="middle">◀ gradyan zaman boyunca geri akıyor (BPTT)</text>
+          </svg>
+        </div>
+
+        <h3 style="color:var(--accent); font-size:13px; margin:0 0 6px">İleri yayılım — h zincirlensin</h3>
+        <div id="ruFwd" class="rc-card" style="margin-bottom:12px"></div>
+
+        <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Geriye doğru — her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
+        <div id="ruBwd" class="rc-card" style="margin-bottom:10px"></div>
+
+        <div class="callout" id="ruTotal" style="margin:10px 0 0"></div>
+        <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ Adım 5'teki toplam <b>yaklaşıktı</b> (aynı h, aynı W<sub>hh</sub> varsayımıyla r<sup>k</sup> ile tahmin ettik). Burada x₁, x₂, x₃ gerçekten farklı — bu, <b>gerçek</b> 3 terimin toplamı.</div>
       </div>
     </div>
 
@@ -2574,9 +2627,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607161209"></script>
+<script src="js/lesson-linreg.js?v=202607171655"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607161209"></script>
+<script src="js/app.js?v=202607171655"></script>
 </body>
 </html>
