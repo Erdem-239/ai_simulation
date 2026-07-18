@@ -529,6 +529,20 @@
   { const {L}=render(); rcCostHist.push(L); rcUpdateUI(L); }
 })();
 
+/* ---- RNN'nin farklı kullanım şekilleri: tip seçici (görsel diyagram galerisi) ---- */
+(function(){
+  const btns=document.querySelectorAll('.rnn-type-btn');
+  if(!btns.length) return;
+  btns.forEach(b=>{
+    b.addEventListener('click', ()=>{
+      btns.forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.rnn-type-panel').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const panel=document.querySelector('.rnn-type-panel[data-rp="'+b.dataset.rt+'"]');
+      if(panel) panel.classList.add('active');
+    });
+  });
+})();
 
 
 /* ---- aktivasyon fonksiyonları explorer ---- */
