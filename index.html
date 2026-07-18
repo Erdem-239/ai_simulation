@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607190036">
+<link rel="stylesheet" href="css/style.css?v=202607190245">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 00:36 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 02:45 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1045,44 +1045,89 @@
         <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
 
         <div class="cell-diagram" style="overflow-x:auto; margin-bottom:12px">
-          <svg id="ruSvg" viewBox="0 0 900 230" role="img" style="display:block; width:100%; max-width:900px; height:auto; margin:0 auto; background:#10182b; border-radius:8px">
+          <svg id="ruSvg" viewBox="0 0 950 340" role="img" style="display:block; width:100%; max-width:950px; height:auto; margin:0 auto; background:#10182b; border-radius:8px">
             <defs>
-              <marker id="ruArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker>
-              <marker id="ruArrowB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#f0a032"/></marker>
+              <marker id="ruArrC" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8a9097"/></marker>
+              <marker id="ruArrB" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#f0a032"/></marker>
             </defs>
-            <text x="20" y="115" fill="#9aa0a6" font-size="13">h₀=0</text>
-            <line x1="58" y1="110" x2="95" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
 
-            <rect x="95" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
-            <text x="195" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 1</text>
-            <text x="195" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₁ → hücre</text>
-            <text x="195" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
-            <text x="195" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₁</text>
+            <!-- h0 -->
+            <rect class="io-a" x="0" y="124" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="145" text-anchor="middle" fill="#fff" font-size="12">h₀=0</text>
+            <line class="rnn-edge" x1="62" y1="140" x2="80" y2="140" marker-end="url(#ruArrC)"/>
 
-            <line x1="295" y1="110" x2="345" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
-            <text x="320" y="98" fill="#46c46a" font-size="12" text-anchor="middle">h₁</text>
+            <!-- ================= cell t=1 (offset 40) ================= -->
+            <rect x="25" y="55" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>
+            <text x="150" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 1</text>
+            <circle class="op" cx="95" cy="140" r="15"/><text class="op-lbl" x="95" y="145" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="95" y="115" text-anchor="middle">Whh</text>
+            <circle class="op" cx="160" cy="190" r="15"/><text class="op-lbl" x="160" y="195" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="132" y="193" text-anchor="end">Wxh</text>
+            <rect class="io-x" x="135" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="160" y="238" text-anchor="middle" fill="#fff" font-size="12">x₁</text>
+            <line class="rnn-edge" x1="160" y1="220" x2="160" y2="206" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="225" cy="165" r="15"/><text class="op-lbl" x="225" y="170" text-anchor="middle" font-size="13">+</text>
+            <text class="w-lbl" x="248" y="197" text-anchor="middle">bh</text>
+            <line class="rnn-edge" x1="245" y1="190" x2="233" y2="177" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="110" y1="140" x2="212" y2="160" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="175" y1="182" x2="216" y2="172" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="280" cy="140" r="17"/><text class="op-lbl" x="280" y="145" text-anchor="middle" font-size="12">tanh</text>
+            <line class="rnn-edge" x1="240" y1="157" x2="266" y2="146" marker-end="url(#ruArrC)"/>
 
-            <rect x="345" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
-            <text x="445" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 2</text>
-            <text x="445" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₂ → hücre</text>
-            <text x="445" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
-            <text x="445" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₂</text>
+            <line class="rnn-edge" x1="297" y1="140" x2="360" y2="140" marker-end="url(#ruArrC)"/>
+            <text x="328" y="128" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h₁</text>
 
-            <line x1="545" y1="110" x2="595" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
-            <text x="570" y="98" fill="#46c46a" font-size="12" text-anchor="middle">h₂</text>
+            <!-- ================= cell t=2 (offset 320) ================= -->
+            <rect x="305" y="55" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>
+            <text x="430" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 2</text>
+            <circle class="op" cx="375" cy="140" r="15"/><text class="op-lbl" x="375" y="145" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="375" y="115" text-anchor="middle">Whh</text>
+            <circle class="op" cx="440" cy="190" r="15"/><text class="op-lbl" x="440" y="195" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="412" y="193" text-anchor="end">Wxh</text>
+            <rect class="io-x" x="415" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="440" y="238" text-anchor="middle" fill="#fff" font-size="12">x₂</text>
+            <line class="rnn-edge" x1="440" y1="220" x2="440" y2="206" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="505" cy="165" r="15"/><text class="op-lbl" x="505" y="170" text-anchor="middle" font-size="13">+</text>
+            <text class="w-lbl" x="528" y="197" text-anchor="middle">bh</text>
+            <line class="rnn-edge" x1="525" y1="190" x2="513" y2="177" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="390" y1="140" x2="492" y2="160" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="455" y1="182" x2="496" y2="172" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="560" cy="140" r="17"/><text class="op-lbl" x="560" y="145" text-anchor="middle" font-size="12">tanh</text>
+            <line class="rnn-edge" x1="520" y1="157" x2="546" y2="146" marker-end="url(#ruArrC)"/>
 
-            <rect x="595" y="55" width="200" height="110" rx="10" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/>
-            <text x="695" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 3</text>
-            <text x="695" y="95" fill="#e7e9ec" font-size="13" text-anchor="middle">x₃ → hücre</text>
-            <text x="695" y="115" fill="#e7e9ec" font-size="13" text-anchor="middle">↓ tanh</text>
-            <text x="695" y="140" fill="#46c46a" font-size="14" text-anchor="middle" font-weight="700">h₃</text>
+            <line class="rnn-edge" x1="577" y1="140" x2="640" y2="140" marker-end="url(#ruArrC)"/>
+            <text x="608" y="128" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h₂</text>
 
-            <line x1="695" y1="55" x2="695" y2="26" stroke="#5a6068" stroke-width="1.5" marker-end="url(#ruArrow)"/>
-            <text x="695" y="16" fill="#f0a032" font-size="13" text-anchor="middle" font-weight="700">ŷ (→ L, y ile karşılaştır)</text>
+            <!-- ================= cell t=3 (offset 600) ================= -->
+            <rect x="585" y="55" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>
+            <text x="710" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = 3</text>
+            <circle class="op" cx="655" cy="140" r="15"/><text class="op-lbl" x="655" y="145" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="655" y="115" text-anchor="middle">Whh</text>
+            <circle class="op" cx="720" cy="190" r="15"/><text class="op-lbl" x="720" y="195" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="692" y="193" text-anchor="end">Wxh</text>
+            <rect class="io-x" x="695" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="720" y="238" text-anchor="middle" fill="#fff" font-size="12">x₃</text>
+            <line class="rnn-edge" x1="720" y1="220" x2="720" y2="206" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="785" cy="165" r="15"/><text class="op-lbl" x="785" y="170" text-anchor="middle" font-size="13">+</text>
+            <text class="w-lbl" x="808" y="197" text-anchor="middle">bh</text>
+            <line class="rnn-edge" x1="805" y1="190" x2="793" y2="177" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="670" y1="140" x2="772" y2="160" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="735" y1="182" x2="776" y2="172" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="840" cy="140" r="17"/><text class="op-lbl" x="840" y="145" text-anchor="middle" font-size="12">tanh</text>
+            <line class="rnn-edge" x1="800" y1="157" x2="826" y2="146" marker-end="url(#ruArrC)"/>
 
-            <line x1="595" y1="185" x2="345" y2="185" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrowB)"/>
-            <line x1="345" y1="185" x2="95" y2="185" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrowB)"/>
-            <text x="445" y="212" fill="#f0a032" font-size="12" text-anchor="middle">◀ gradyan zaman boyunca geri akıyor (BPTT)</text>
+            <!-- t=3 çıktı dalı: h₃ -> Why -> +by -> ŷ -->
+            <text x="856" y="120" fill="#7fe3a3" font-size="12" font-weight="700">h₃</text>
+            <line class="rnn-edge" x1="840" y1="123" x2="840" y2="97" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="840" cy="80" r="15"/><text class="op-lbl" x="840" y="85" text-anchor="middle" font-size="13">×</text>
+            <text class="w-lbl" x="858" y="84">Why</text>
+            <line class="rnn-edge" x1="855" y1="80" x2="882" y2="80" marker-end="url(#ruArrC)"/>
+            <circle class="op" cx="900" cy="80" r="15"/><text class="op-lbl" x="900" y="85" text-anchor="middle" font-size="13">+</text>
+            <text class="w-lbl" x="900" y="118" text-anchor="middle">by</text>
+            <line class="rnn-edge" x1="900" y1="112" x2="900" y2="97" marker-end="url(#ruArrC)"/>
+            <line class="rnn-edge" x1="900" y1="63" x2="900" y2="43" marker-end="url(#ruArrC)"/>
+            <rect class="io-y" x="875" y="15" width="50" height="26" rx="6"/><text class="io-lbl" x="900" y="33" text-anchor="middle" fill="#fff" font-size="12">ŷ</text>
+
+            <!-- BPTT: geri akış -->
+            <line x1="585" y1="290" x2="305" y2="290" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrB)"/>
+            <line x1="305" y1="290" x2="25" y2="290" stroke="#f0a032" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ruArrB)"/>
+            <text x="305" y="312" fill="#f0a032" font-size="12" text-anchor="middle">◀ gradyan zaman boyunca geri akıyor (BPTT)</text>
           </svg>
         </div>
 
@@ -2750,9 +2795,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607190036"></script>
+<script src="js/lesson-linreg.js?v=202607190245"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607190036"></script>
+<script src="js/app.js?v=202607190245"></script>
 </body>
 </html>
