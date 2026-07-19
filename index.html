@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191803">
+<link rel="stylesheet" href="css/style.css?v=202607191930">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 18:03 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 19:30 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -753,16 +753,23 @@
         <div class="acc open" style="margin:0">
           <div class="acc-head"><span class="ac">▸</span> 📘 İleri Yayılım — h₁→h₂→h₃→ŷ, 3 adım</div>
           <div class="acc-body">
+            <div class="narr-box">
+              <div class="narr-text" id="ruFNarrText">🎙️ <b>Anlat</b>'a bas — sana bir öğretmen gibi adım adım, neden yaptığımızı da söyleyerek anlatayım. Sağdaki ilgili satır her adımda yanacak.</div>
+              <div class="narr-btns">
+                <button class="addbtn narr-btn" id="ruFNarrStep" style="background:#ffd24a; color:#1f2023">🎙️ Anlat ▶</button>
+                <button class="addbtn narr-btn" id="ruFNarrReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Baştan</button>
+              </div>
+            </div>
             <div id="ruFwd" class="rc-card">
-              <div class="eq">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
-              <div class="eq">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
-              <div class="eq" style="margin-top:8px">\( z_h^{(2)}=W_{xh}\,x_2+W_{hh}\,h_1+b_h \) = <span style="color:var(--muted)" id="ruZ2sub"></span> = <span class="v" id="ruZ2val"></span></div>
-              <div class="eq">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
-              <div class="eq" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
-              <div class="eq">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
-              <div class="eq" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
-              <div class="eq">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
-              <div class="eq">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
+              <div class="eq" id="ruFeq1">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
+              <div class="eq" id="ruFeq2">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
+              <div class="eq" id="ruFeq3" style="margin-top:8px">\( z_h^{(2)}=W_{xh}\,x_2+W_{hh}\,h_1+b_h \) = <span style="color:var(--muted)" id="ruZ2sub"></span> = <span class="v" id="ruZ2val"></span></div>
+              <div class="eq" id="ruFeq4">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
+              <div class="eq" id="ruFeq5" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
+              <div class="eq" id="ruFeq6">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
+              <div class="eq" id="ruFeq7" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
+              <div class="eq" id="ruFeq8">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
+              <div class="eq" id="ruFeq9">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
             </div>
           </div>
         </div>
@@ -770,26 +777,33 @@
         <div class="acc" style="margin:0">
           <div class="acc-head"><span class="ac">▸</span> 📘 Geri Yayılım — BPTT, t=3'ten t=1'e, 3 adım</div>
           <div class="acc-body">
+            <div class="narr-box">
+              <div class="narr-text" id="ruBNarrText">🎙️ <b>Anlat</b>'a bas — geri yayılımı bir öğretmen gibi adım adım anlatayım. Sağdaki ilgili satır her adımda yanacak.</div>
+              <div class="narr-btns">
+                <button class="addbtn narr-btn" id="ruBNarrStep" style="background:var(--accent); color:#1f2023">🎙️ Anlat ▶</button>
+                <button class="addbtn narr-btn" id="ruBNarrReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Baştan</button>
+              </div>
+            </div>
             <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
             <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">🌳 = o değerin <b>tam türev ağacı</b> — L'ye kadar hangi zincirlerden geçtiğini görmek için tıkla.</div>
             <div id="ruBwd" class="rc-card" style="margin-bottom:10px">
-              <div class="eq"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)\,W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="ruB3sub"></span> = <span class="v" id="ruB3val"></span> <button class="dt-btn" data-dt="dLdzh3">🌳</button></div>
+              <div class="eq" id="ruBeq1"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)\,W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="ruB3sub"></span> = <span class="v" id="ruB3val"></span> <button class="dt-btn" data-dt="dLdzh3">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span style="color:var(--muted)" id="ruB3xsub"></span> = <span class="v" id="ruB3xval"></span> <button class="dt-btn" data-dt="dLdWxh3">🌳</button></div>
+              <div class="eq" id="ruBeq2" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span style="color:var(--muted)" id="ruB3xsub"></span> = <span class="v" id="ruB3xval"></span> <button class="dt-btn" data-dt="dLdWxh3">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="ruB3hsub"></span> = <span class="v" id="ruB3hval"></span> <button class="dt-btn" data-dt="dLdWhh3">🌳</button></div>
+              <div class="eq" id="ruBeq3" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="ruB3hsub"></span> = <span class="v" id="ruB3hval"></span> <button class="dt-btn" data-dt="dLdWhh3">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB2sub"></span> = <span class="v" id="ruB2val"></span> <button class="dt-btn" data-dt="dLdzh2">🌳</button></div>
+              <div class="eq" id="ruBeq4" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB2sub"></span> = <span class="v" id="ruB2val"></span> <button class="dt-btn" data-dt="dLdzh2">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot x_2 \) = <span style="color:var(--muted)" id="ruB2xsub"></span> = <span class="v" id="ruB2xval"></span> <button class="dt-btn" data-dt="dLdWxh2">🌳</button></div>
+              <div class="eq" id="ruBeq5" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot x_2 \) = <span style="color:var(--muted)" id="ruB2xsub"></span> = <span class="v" id="ruB2xval"></span> <button class="dt-btn" data-dt="dLdWxh2">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="ruB2hsub"></span> = <span class="v" id="ruB2hval"></span> <button class="dt-btn" data-dt="dLdWhh2">🌳</button></div>
+              <div class="eq" id="ruBeq6" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="ruB2hsub"></span> = <span class="v" id="ruB2hval"></span> <button class="dt-btn" data-dt="dLdWhh2">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB1sub"></span> = <span class="v" id="ruB1val"></span> <button class="dt-btn" data-dt="dLdzh1">🌳</button></div>
+              <div class="eq" id="ruBeq7" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB1sub"></span> = <span class="v" id="ruB1val"></span> <button class="dt-btn" data-dt="dLdzh1">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot x_1 \) = <span style="color:var(--muted)" id="ruB1xsub"></span> = <span class="v" id="ruB1xval"></span> <button class="dt-btn" data-dt="dLdWxh1">🌳</button></div>
+              <div class="eq" id="ruBeq8" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot x_1 \) = <span style="color:var(--muted)" id="ruB1xsub"></span> = <span class="v" id="ruB1xval"></span> <button class="dt-btn" data-dt="dLdWxh1">🌳</button></div>
               <div class="dt-tree"></div>
-              <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="ruB1hsub"></span> = <span class="v" id="ruB1hval"></span> <button class="dt-btn" data-dt="dLdWhh1">🌳</button></div>
+              <div class="eq" id="ruBeq9" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="ruB1hsub"></span> = <span class="v" id="ruB1hval"></span> <button class="dt-btn" data-dt="dLdWhh1">🌳</button></div>
               <div class="dt-tree"></div>
             </div>
             <div class="callout" id="ruTotal" style="margin:10px 0 0"></div>
@@ -2758,9 +2772,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191803"></script>
+<script src="js/lesson-linreg.js?v=202607191930"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191803"></script>
+<script src="js/app.js?v=202607191930"></script>
 </body>
 </html>
