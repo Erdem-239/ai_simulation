@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191506">
+<link rel="stylesheet" href="css/style.css?v=202607191647">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 15:06 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 16:47 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -916,6 +916,17 @@
             <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
             <div><b>α</b> — öğrenme oranı</div>
             <div><b>(1−h²)</b> — tanh türevi</div>
+          </div>
+          <div style="border-top:1px solid var(--line); margin-top:10px; padding-top:8px; font-size:12px; color:#cfd3d8; line-height:1.6">
+            <b style="color:var(--accent)">Aşağıdaki diyagramda alt/üst simge olarak zaman adımı (t) görünüyor — işte onların adları:</b>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; margin-top:6px">
+              <div><b>h₀</b> — dizinin başlangıç hafızası (=0, bir önceki adımın sonucu değil)</div>
+              <div><b>h₁, h₂, h₃</b> — t=1,2,3 adımlarının hafızası (h<sub>t</sub>=tanh(z<sub>h</sub><sup>(t)</sup>))</div>
+              <div><b>z<sub>h</sub><sup>(1)</sup>, z<sub>h</sub><sup>(2)</sup>, z<sub>h</sub><sup>(3)</sup></b> — her adımın kendi ham toplamı</div>
+              <div><b>x₁, x₂, x₃</b> — t=1,2,3 adımlarının girdisi</div>
+            </div>
+            <div style="margin-top:6px">Parantez içindeki <b>(t)</b> bir <b>üs değil</b> — "hangi zaman adımı" anlamına gelen bir <b>indeks</b> (z<sub>h</sub><sup>(3)</sup> = "z<sub>h</sub>'nin küpü" değil, "z<sub>h</sub>'nin t=3'teki değeri" demek).</div>
+            <div style="margin-top:6px"><b>z<sub>y</sub></b> — <b>many-to-one</b>'da SADECE t=3'te var (tek çıktı); <b>many-to-many</b>'de HER adımda kendi z<sub>y</sub><sup>(t)</sup>'si var (o yüzden many-to-many'de ŷ₁, ŷ₂, ŷ₃ ayrı ayrı gösteriliyor).</div>
           </div>
         </div>
       </div>
@@ -2817,9 +2828,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191506"></script>
+<script src="js/lesson-linreg.js?v=202607191647"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191506"></script>
+<script src="js/app.js?v=202607191647"></script>
 </body>
 </html>
