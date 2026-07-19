@@ -430,6 +430,11 @@
         + '∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b><br>'
         + '∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b><br>'
         + '∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b>';
+
+      const r32=rdz3!==0 ? rdz2/rdz3 : 0;
+      const r21=rdz2!==0 ? rdz1/rdz2 : 0;
+      setTxt('ruR32', F(r32));
+      setTxt('ruR21', F(r21));
     }
 
     drawStep1(p.y, yhat, L, dyhat);
