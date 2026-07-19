@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191704">
+<link rel="stylesheet" href="css/style.css?v=202607191714">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 17:04 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 17:14 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -739,6 +739,61 @@
       <div style="font-size:12px; color:var(--muted); margin-top:10px">Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
     </div>
 
+    <div class="pts" style="border-left:3px solid var(--accent); margin:16px 0 0">
+      <h3 style="color:var(--accent); font-size:13.5px">🔗 Gerçek 3 adımlı BPTT — h zincirlensin, kendi sayılarınla</h3>
+      <div class="ptrow" style="margin-bottom:10px">
+        <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
+        <div class="ptcell"><label>x₃</label><input id="ru_x3" type="number" step="0.1" value="1.5"></div>
+        <div class="ptcell"><label>y (gerçek cevap, t=3)</label><input id="ru_y" type="number" step="0.1" value="1"></div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
+
+      <div class="acc open" style="margin:0 0 10px">
+        <div class="acc-head"><span class="ac">▸</span> 📘 İleri Yayılım — h₁→h₂→h₃→ŷ, 3 adım</div>
+        <div class="acc-body">
+          <div id="ruFwd" class="rc-card">
+            <div class="eq">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
+            <div class="eq">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
+            <div class="eq" style="margin-top:8px">\( z_h^{(2)}=W_{xh}\,x_2+W_{hh}\,h_1+b_h \) = <span style="color:var(--muted)" id="ruZ2sub"></span> = <span class="v" id="ruZ2val"></span></div>
+            <div class="eq">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
+            <div class="eq" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
+            <div class="eq">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
+            <div class="eq" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
+            <div class="eq">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
+            <div class="eq">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc" style="margin:0">
+        <div class="acc-head"><span class="ac">▸</span> 📘 Geri Yayılım — BPTT, t=3'ten t=1'e, 3 adım</div>
+        <div class="acc-body">
+          <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
+          <div id="ruBwd" class="rc-card" style="margin-bottom:10px">
+            <div class="eq"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)\,W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="ruB3sub"></span> = <span class="v" id="ruB3val"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span style="color:var(--muted)" id="ruB3xsub"></span> = <span class="v" id="ruB3xval"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="ruB3hsub"></span> = <span class="v" id="ruB3hval"></span></div>
+            <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB2sub"></span> = <span class="v" id="ruB2val"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot x_2 \) = <span style="color:var(--muted)" id="ruB2xsub"></span> = <span class="v" id="ruB2xval"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="ruB2hsub"></span> = <span class="v" id="ruB2hval"></span></div>
+            <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB1sub"></span> = <span class="v" id="ruB1val"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot x_1 \) = <span style="color:var(--muted)" id="ruB1xsub"></span> = <span class="v" id="ruB1xval"></span></div>
+            <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="ruB1hsub"></span> = <span class="v" id="ruB1hval"></span></div>
+          </div>
+          <div class="callout" id="ruTotal" style="margin:10px 0 0"></div>
+          <div class="callout" style="margin:8px 0 0; border-left-color:#e06a6a">
+            <b>📉 Vanishing / Exploding Gradient formülü — gerçek sayılarla:</b>
+            <div style="font-size:13px; margin-top:6px">Geri giden sinyal, bir adım geriye her gidişinde şu formülle çarpılır:</div>
+            <div class="eq" style="margin:6px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
+            <div style="font-size:13px">Senin gerçek 3 adımının ölçtüğü küçülme/büyüme oranı (r = bir sonraki z<sub>h</sub> sinyaline bölüm):</div>
+            <div style="font-size:13px; margin-top:4px">r (t=3→t=2) = <span class="v" id="ruR32">0.0000</span> &nbsp;·&nbsp; r (t=2→t=1) = <span class="v" id="ruR21">0.0000</span></div>
+            <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding). Aşağıda Geri Adım 5'te, bu oranı gerçek geçmiş adımlar olmadan tek bir r=W<sub>hh</sub>(1−h²) ile nasıl <b>yaklaşık</b> tahmin edebileceğimizi göreceksin.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="rc-float" id="rcFloatWrap" style="display:none">
       <div class="rc-float-head" id="rcFloatHead">
         <span>🎛️ Ağırlıklar</span>
@@ -823,62 +878,7 @@
     <div class="rnn-bwd-top">
       <div class="rnn-bwd-top-left">
         <div class="sechead">2) Geri Yayılım (BPTT) — kendi sayılarınla, domino domino</div>
-        <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b>, ve aşağıdaki <b>her adımın grafiği</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var.</p>
-
-        <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0">
-          <h3 style="color:var(--accent); font-size:13.5px">2.1) Gerçek 3 adımlı BPTT — h zincirlensin, kendi sayılarınla</h3>
-          <div class="ptrow" style="margin-bottom:10px">
-            <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
-            <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
-            <div class="ptcell"><label>x₃</label><input id="ru_x3" type="number" step="0.1" value="1.5"></div>
-            <div class="ptcell"><label>y (gerçek cevap, t=3)</label><input id="ru_y" type="number" step="0.1" value="1"></div>
-          </div>
-          <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
-
-          <div class="acc open" style="margin:0 0 10px">
-            <div class="acc-head"><span class="ac">▸</span> 📘 İleri Yayılım — h₁→h₂→h₃→ŷ, 3 adım</div>
-            <div class="acc-body">
-              <div id="ruFwd" class="rc-card">
-                <div class="eq">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
-                <div class="eq">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
-                <div class="eq" style="margin-top:8px">\( z_h^{(2)}=W_{xh}\,x_2+W_{hh}\,h_1+b_h \) = <span style="color:var(--muted)" id="ruZ2sub"></span> = <span class="v" id="ruZ2val"></span></div>
-                <div class="eq">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
-                <div class="eq" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
-                <div class="eq">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
-                <div class="eq" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
-                <div class="eq">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
-                <div class="eq">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="acc" style="margin:0">
-            <div class="acc-head"><span class="ac">▸</span> 📘 Geri Yayılım — BPTT, t=3'ten t=1'e, 3 adım</div>
-            <div class="acc-body">
-              <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
-              <div id="ruBwd" class="rc-card" style="margin-bottom:10px">
-                <div class="eq"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)\,W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="ruB3sub"></span> = <span class="v" id="ruB3val"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span style="color:var(--muted)" id="ruB3xsub"></span> = <span class="v" id="ruB3xval"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="ruB3hsub"></span> = <span class="v" id="ruB3hval"></span></div>
-                <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB2sub"></span> = <span class="v" id="ruB2val"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot x_2 \) = <span style="color:var(--muted)" id="ruB2xsub"></span> = <span class="v" id="ruB2xval"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="ruB2hsub"></span> = <span class="v" id="ruB2hval"></span></div>
-                <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB1sub"></span> = <span class="v" id="ruB1val"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot x_1 \) = <span style="color:var(--muted)" id="ruB1xsub"></span> = <span class="v" id="ruB1xval"></span></div>
-                <div class="eq" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="ruB1hsub"></span> = <span class="v" id="ruB1hval"></span></div>
-              </div>
-              <div class="callout" id="ruTotal" style="margin:10px 0 0"></div>
-              <div class="callout" style="margin:8px 0 0; border-left-color:#e06a6a">
-                <b>📉 Vanishing / Exploding Gradient formülü — gerçek sayılarla:</b>
-                <div style="font-size:13px; margin-top:6px">Geri giden sinyal, bir adım geriye her gidişinde şu formülle çarpılır:</div>
-                <div class="eq" style="margin:6px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
-                <div style="font-size:13px">Senin gerçek 3 adımının ölçtüğü küçülme/büyüme oranı (r = bir sonraki z<sub>h</sub> sinyaline bölüm):</div>
-                <div style="font-size:13px; margin-top:4px">r (t=3→t=2) = <span class="v" id="ruR32">0.0000</span> &nbsp;·&nbsp; r (t=2→t=1) = <span class="v" id="ruR21">0.0000</span></div>
-                <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding). Aşağıda Geri Adım 5'te, bu oranı gerçek geçmiş adımlar olmadan tek bir r=W<sub>hh</sub>(1−h²) ile nasıl <b>yaklaşık</b> tahmin edebileceğimizi göreceksin.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <p class="sub">Tek bir zaman adımını (bir hücre) ele alalım. Aşağıdaki <b>girdi ve ağırlıkları değiştir</b> → ileri yayılım, kayıp ve <b>her gradyan</b>, ve aşağıdaki <b>her adımın grafiği</b> senin sayılarınla anında güncellensin. Mantık birebir lineer regresyondaki gibi; tek fark, arada bir <b>tanh</b> var. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılımı yukarıda, hücre diyagramının yanındaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> panelinin altında bulabilirsin.)</span></p>
 
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
           <h3 style="color:var(--accent); font-size:13.5px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
@@ -2746,9 +2746,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191704"></script>
+<script src="js/lesson-linreg.js?v=202607191714"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191704"></script>
+<script src="js/app.js?v=202607191714"></script>
 </body>
 </html>
