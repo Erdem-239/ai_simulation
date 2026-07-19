@@ -1251,8 +1251,9 @@ function setupFloatingPanel(ids){
   document.querySelectorAll('.navbtn').forEach(b=> b.addEventListener('click', ()=> setTimeout(checkFloat, 50)));
   checkFloat();
 }
-setupFloatingPanel({anchor:'rcSliderAnchor', panel:'rcSliderPanel', floatWrap:'rcFloatWrap', floatBody:'rcFloatBody', floatHead:'rcFloatHead', floatToggle:'rcFloatToggle', floatClose:'rcFloatClose', storageKey:'attn_rcFloatSliderPos', startCollapsed:true});
-setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose', storageKey:'attn_rcFloatDiagramPos', stackBelow:'rcFloatWrap', startCollapsed:true});
+// Yüzen paneller şimdilik kapalı — hem sayfada tekrar/karmaşa yaratıyorlardı hem de detach/re-attach anında scroll zıplamasına yol açıyorlardı.
+// setupFloatingPanel({anchor:'rcSliderAnchor', panel:'rcSliderPanel', floatWrap:'rcFloatWrap', floatBody:'rcFloatBody', floatHead:'rcFloatHead', floatToggle:'rcFloatToggle', floatClose:'rcFloatClose', storageKey:'attn_rcFloatSliderPos', startCollapsed:true});
+// setupFloatingPanel({anchor:'rcDiagramAnchor', panel:'rcDiagramPanel', floatWrap:'rcDiagramFloatWrap', floatBody:'rcDiagramFloatBody', floatHead:'rcDiagramFloatHead', floatToggle:'rcDiagramFloatToggle', floatClose:'rcDiagramFloatClose', storageKey:'attn_rcFloatDiagramPos', stackBelow:'rcFloatWrap', startCollapsed:true});
 
 /* ---- sol panel: aç/kapat ---- */
 (function(){
