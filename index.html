@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191454">
+<link rel="stylesheet" href="css/style.css?v=202607191506">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 15:06 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1180,10 +1180,111 @@
     </div>
     </div><!-- /gAdimSection -->
 
-    <div class="pts" id="gAdimPreview" style="display:none; border-left:3px solid var(--muted)">
-      <h3 style="color:var(--muted)">Geri yayılım — adım adım, her adım neden?</h3>
-      <p style="font-size:14px; color:#cfd3d8">Yukarıdaki <b>canlı hücre diyagramı</b> bu mimaride de (<b id="gAdimPreviewType">bu mimari</b>) tam çalışıyor — <b>İleri ▶</b> ve <b>◀ BPTT</b> ile her adımı, özellikle her h<sub>t</sub>'nin gradyanının hem kendi çıktısından hem gelecekten (BPTT) TOPLANDIĞINI inceleyebilirsin. Ama bu kaydırıcılı, sayfa aşağısındaki <b>Geri Adım 1-5</b> kartları (canlı sayısal hesap) şu an sadece <b>many-to-one</b> için hazır — bu mimari için henüz eklenmedi.</p>
-      <div class="callout" style="margin:8px 0 0">Yukarıdaki tip seçiciden <b>"many-to-one"</b>a tıkla — bu bölüm gerçek sayılarla geri gelir.</div>
+    <div id="gAdimSectionM2m" style="display:none">
+      <div class="sechead" style="font-size:17px">Geri yayılım — adım adım (many-to-many, T<sub>x</sub>=T<sub>y</sub>)</div>
+      <div class="callout" style="margin:0 0 14px">Aşağıdaki 5 adım <b>many-to-one</b>'daki ile AYNI sırayı takip ediyor — Adım 1, 2, 4'ün formülü birebir aynı (bu adımın kendi z<sub>y</sub>'sinden gelen katkı, türetmesi yukarıdaki many-to-one Geri Adım 1/2/4 ile özdeş). Asıl fark <b>Adım 3</b> ve <b>Adım 5</b>'te: burada her adımın ∂L/∂h'si İKİ kaynaktan (kendi çıktısı + gelecekten BPTT) TOPLANIYOR.</div>
+      <div class="steps">
+        <div class="step" id="gAdimM2m1">
+          <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — bu adımın KENDİ kaybından ∂L/∂z<sub>y</sub></h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div id="rcM2S1Live" class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial z_y^{(t)}}=(\hat y_t-y_t) \) = <span style="color:var(--muted)" id="rcM2S1sub"></span> = <span class="v" id="rcM2S1val"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0">💡 <b>many-to-one'dan farkı:</b> orada SADECE son adımda kendi kaybı vardı; burada L=ΣL<sub>t</sub> olduğu için HER adımın (t=1,2,3) kendi z<sub>y</sub><sup>(t)</sup>'si ve kendi kaybı L<sub>t</sub> var. Türetme (kare alma kuralı, ŷ=g₂(z<sub>y</sub>) özdeşliği) many-to-one Geri Adım 1'deki ile birebir aynı.</div>
+          </div>
+        </div>
+        <div class="step" id="gAdimM2m2">
+          <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin (bu adımdaki) gradyanı</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div id="rcM2S2Live" class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}\Big|_t=\dfrac{\partial L}{\partial z_y^{(t)}}\cdot h_t \) = <span style="color:var(--muted)" id="rcM2S2sub1"></span> = <span class="v" id="rcM2S2val1"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial b_y}\Big|_t=\dfrac{\partial L}{\partial z_y^{(t)}} \) = <span class="v" id="rcM2S2val2"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0">💡 many-to-one Geri Adım 2 ile birebir aynı türetme — Adım 1'in sonucu × z<sub>y</sub>'nin W<sub>hy</sub>, b<sub>y</sub>'ye göre türevi. W<sub>hy</sub>, b<sub>y</sub> TÜM adımlarda ortak kullanıldığı için bu da Adım 5'te toplanacak.</div>
+          </div>
+        </div>
+        <div class="step" id="gAdimM2m3">
+          <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — İKİ kaynak TOPLANIYOR</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="ptrow" style="margin-bottom:10px">
+              <div class="ptcell"><label>∂L/∂z<sub>h</sub><sup>(t+1)</sup> (gelecekten gelen)</label><input id="rcM2_futz" type="number" step="0.01" value="0.15"></div>
+              <div class="ptcell" style="display:flex; align-items:flex-end; padding-bottom:6px"><label style="display:flex; align-items:center; gap:6px; font-size:12.5px; cursor:pointer"><input id="rcM2_islast" type="checkbox" style="width:auto">bu son adım (t=T) — gelecekten katkı yok</label></div>
+            </div>
+            <div id="rcM2S3Live" class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial h_t}\Big|_{\text{kendi}}=\dfrac{\partial L}{\partial z_y^{(t)}}\cdot W_{hy} \) = <span style="color:var(--muted)" id="rcM2S3ownSub"></span> = <span class="v" id="rcM2S3ownVal"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial h_t}\Big|_{\text{BPTT}}=\dfrac{\partial L}{\partial z_h^{(t+1)}}\cdot W_{hh} \) = <span style="color:var(--muted)" id="rcM2S3bpttSub"></span> = <span class="v" id="rcM2S3bpttVal"></span></div>
+              <div class="eq" style="margin-top:6px"><b>\( \dfrac{\partial L}{\partial h_t}=\dfrac{\partial L}{\partial h_t}\Big|_{\text{kendi}}+\dfrac{\partial L}{\partial h_t}\Big|_{\text{BPTT}} \)</b> = <span style="color:var(--muted)" id="rcM2S3sumSub"></span> = <span class="v" id="rcM2S3sumVal"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial z_h^{(t)}}=\dfrac{\partial L}{\partial h_t}\times(1-h_t^2) \) = <span style="color:var(--muted)" id="rcM2S3zhSub"></span> = <span class="v" id="rcM2S3zhVal"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0">💡 <b>many-to-one'dan asıl fark burada:</b> orada ∂L/∂h SADECE kendi çıktısından (t=T'de) YA DA SADECE BPTT'den (t&lt;T'de) geliyordu — hiç ikisi birden değildi. many-to-many'de HER ara adımda İKİSİ BİRDEN var ve TOPLANIYOR. Üstteki kutucuğu işaretleyip "son adım" durumunu da dene — BPTT terimi sıfırlanır, sadece kendi katkı kalır (many-to-one'un t=3'üyle aynı davranış).</div>
+            <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu TOPLAM sinyal (∂L/∂z<sub>h</sub>) içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye Adım 4'te aynı şekilde ulaşacak.</div>
+          </div>
+        </div>
+        <div class="step" id="gAdimM2m4">
+          <div class="stephead"><h2>Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin (bu adımdaki) gradyanı</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div id="rcM2S4Live" class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}\Big|_t=\dfrac{\partial L}{\partial z_h^{(t)}}\cdot x_t \) = <span style="color:var(--muted)" id="rcM2S4sub1"></span> = <span class="v" id="rcM2S4val1"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}\Big|_t=\dfrac{\partial L}{\partial z_h^{(t)}}\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcM2S4sub2"></span> = <span class="v" id="rcM2S4val2"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial b_h}\Big|_t=\dfrac{\partial L}{\partial z_h^{(t)}} \) = <span class="v" id="rcM2S4val3"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0">💡 Formül many-to-one Geri Adım 4 ile birebir aynı — tek fark, girdi olarak Adım 3'ün TOPLAM ∂L/∂z<sub>h</sub>'sini (kendi+BPTT toplamı) kullanması.</div>
+          </div>
+        </div>
+        <div class="step" id="gAdimM2m5" style="grid-column:1/-1">
+          <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla — GERÇEK 3 adım, gerçek sayılarla</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="ptrow" style="margin-bottom:10px">
+              <div class="ptcell"><label>x₁</label><input id="rcM2_x1" type="number" step="0.1" value="2"></div>
+              <div class="ptcell"><label>x₂</label><input id="rcM2_x2" type="number" step="0.1" value="-1"></div>
+              <div class="ptcell"><label>x₃</label><input id="rcM2_x3" type="number" step="0.1" value="1.5"></div>
+            </div>
+            <div class="ptrow" style="margin-bottom:10px">
+              <div class="ptcell"><label>y₁ (gerçek, t=1)</label><input id="rcM2_y1" type="number" step="0.1" value="0.5"></div>
+              <div class="ptcell"><label>y₂ (gerçek, t=2)</label><input id="rcM2_y2" type="number" step="0.1" value="-0.3"></div>
+              <div class="ptcell"><label>y₃ (gerçek, t=3)</label><input id="rcM2_y3" type="number" step="0.1" value="1"></div>
+            </div>
+            <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀=0.</div>
+            <div id="rcM2S5Fwd" class="rc-card" style="margin-bottom:12px">
+              <div class="eq">\( z_h^{(1)}=W_{xh}x_1+W_{hh}h_0+b_h \) = <span style="color:var(--muted)" id="rcM2Fz1sub"></span> = <span class="v" id="rcM2Fz1val"></span></div>
+              <div class="eq">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="rcM2Fh1sub"></span> = <span class="v" id="rcM2Fh1val"></span></div>
+              <div class="eq">\( z_y^{(1)}=W_{hy}h_1+b_y \) = <span style="color:var(--muted)" id="rcM2Fzy1sub"></span> = <span class="v" id="rcM2Fzy1val"></span> &nbsp;→&nbsp; \( L_1=\tfrac12(\hat y_1-y_1)^2 \) = <span class="v" id="rcM2FL1val"></span></div>
+              <div class="eq" style="margin-top:8px">\( z_h^{(2)}=W_{xh}x_2+W_{hh}h_1+b_h \) = <span style="color:var(--muted)" id="rcM2Fz2sub"></span> = <span class="v" id="rcM2Fz2val"></span></div>
+              <div class="eq">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="rcM2Fh2sub"></span> = <span class="v" id="rcM2Fh2val"></span></div>
+              <div class="eq">\( z_y^{(2)}=W_{hy}h_2+b_y \) = <span style="color:var(--muted)" id="rcM2Fzy2sub"></span> = <span class="v" id="rcM2Fzy2val"></span> &nbsp;→&nbsp; \( L_2=\tfrac12(\hat y_2-y_2)^2 \) = <span class="v" id="rcM2FL2val"></span></div>
+              <div class="eq" style="margin-top:8px">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \) = <span style="color:var(--muted)" id="rcM2Fz3sub"></span> = <span class="v" id="rcM2Fz3val"></span></div>
+              <div class="eq">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="rcM2Fh3sub"></span> = <span class="v" id="rcM2Fh3val"></span></div>
+              <div class="eq">\( z_y^{(3)}=W_{hy}h_3+b_y \) = <span style="color:var(--muted)" id="rcM2Fzy3sub"></span> = <span class="v" id="rcM2Fzy3val"></span> &nbsp;→&nbsp; \( L_3=\tfrac12(\hat y_3-y_3)^2 \) = <span class="v" id="rcM2FL3val"></span></div>
+              <div class="eq" style="margin-top:8px"><b>\( L=L_1+L_2+L_3 \)</b> = <span class="v" id="rcM2FLtot"></span></div>
+            </div>
+            <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Geriye doğru — t=3'ten t=1'e, her adımda kendi+BPTT TOPLANARAK:</b></div>
+            <div class="step-graph-row">
+              <div class="step-graph-formula">
+                <div id="rcM2S5Bwd" class="rc-card">
+                  <div class="eq"><b style="color:var(--accent)">t=3</b> — kendi: \( \dfrac{\partial L}{\partial h_3}=(\hat y_3-y_3)W_{hy} \) = <span style="color:var(--muted)" id="rcM2B3ownSub"></span> = <span class="v" id="rcM2B3ownVal"></span> <span style="color:var(--muted); font-size:11px">(son adım, BPTT yok)</span></div>
+                  <div class="eq" style="padding-left:16px">→ \( \dfrac{\partial L}{\partial z_h^{(3)}}=\dfrac{\partial L}{\partial h_3}(1-h_3^2) \) = <span style="color:var(--muted)" id="rcM2B3zhSub"></span> = <span class="v" id="rcM2B3zhVal"></span></div>
+                  <div class="eq" style="padding-left:16px">→ \( g_3=\dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="rcM2B3WhhSub"></span> = <span class="v" id="rcM2B3WhhVal"></span></div>
+                  <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — kendi: \( \dfrac{\partial L}{\partial h_2}\Big|_{\text{kendi}}=(\hat y_2-y_2)W_{hy} \) = <span style="color:var(--muted)" id="rcM2B2ownSub"></span> = <span class="v" id="rcM2B2ownVal"></span></div>
+                  <div class="eq" style="padding-left:16px">+ BPTT (t=3'ten): \( \dfrac{\partial L}{\partial h_2}\Big|_{\text{BPTT}}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot W_{hh} \) = <span style="color:var(--muted)" id="rcM2B2bpttSub"></span> = <span class="v" id="rcM2B2bpttVal"></span></div>
+                  <div class="eq" style="padding-left:16px">→ \( \dfrac{\partial L}{\partial h_2}=\)kendi+BPTT = <span style="color:var(--muted)" id="rcM2B2sumSub"></span> = <span class="v" id="rcM2B2sumVal"></span> &nbsp;→&nbsp; \( \dfrac{\partial L}{\partial z_h^{(2)}} \) = <span style="color:var(--muted)" id="rcM2B2zhSub"></span> = <span class="v" id="rcM2B2zhVal"></span></div>
+                  <div class="eq" style="padding-left:16px">→ \( g_2=\dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="rcM2B2WhhSub"></span> = <span class="v" id="rcM2B2WhhVal"></span></div>
+                  <div class="eq" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — kendi: \( \dfrac{\partial L}{\partial h_1}\Big|_{\text{kendi}}=(\hat y_1-y_1)W_{hy} \) = <span style="color:var(--muted)" id="rcM2B1ownSub"></span> = <span class="v" id="rcM2B1ownVal"></span></div>
+                  <div class="eq" style="padding-left:16px">+ BPTT (t=2'den): \( \dfrac{\partial L}{\partial h_1}\Big|_{\text{BPTT}}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot W_{hh} \) = <span style="color:var(--muted)" id="rcM2B1bpttSub"></span> = <span class="v" id="rcM2B1bpttVal"></span></div>
+                  <div class="eq" style="padding-left:16px">→ \( \dfrac{\partial L}{\partial h_1}=\)kendi+BPTT = <span style="color:var(--muted)" id="rcM2B1sumSub"></span> = <span class="v" id="rcM2B1sumVal"></span> &nbsp;→&nbsp; \( \dfrac{\partial L}{\partial z_h^{(1)}} \) = <span style="color:var(--muted)" id="rcM2B1zhSub"></span> = <span class="v" id="rcM2B1zhVal"></span></div>
+                  <div class="eq" style="padding-left:16px">→ \( g_1=\dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="rcM2B1WhhSub"></span> = <span class="v" id="rcM2B1WhhVal"></span> <span style="color:var(--muted); font-size:11px">(h₀=0)</span></div>
+                </div>
+              </div>
+              <div class="step-graph-plot">
+                <canvas id="rcM2Step5Canvas" width="240" height="170"></canvas>
+                <div class="step-graph-cap">Her adımın GERÇEK W<sub>hh</sub> katkısı (g<sub>t</sub>·h<sub>t-1</sub>) — yaklaşık değil, üstteki sayılarla</div>
+              </div>
+            </div>
+            <div class="callout" id="rcM2S5Total" style="margin:10px 0 0"></div>
+            <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">💡 <b>many-to-one'dan fark:</b> orada toplam, geriye doğru r=W<sub>hh</sub>(1−h²) ile küçülen/büyüyen TEK bir kaynağın (t=3'ün kendi çıktısının) yankısıydı. Burada her g<sub>t</sub>'nin İÇİNDE zaten o adımın ÖZ katkısı da var — toplam hem "kendi payların" hem "yankıların" toplamı.</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> aynı kural — her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \), toplam gradyanla (güncelleme mekanizması many-to-one bölümündeki ile aynı).</div>
     </div>
 
     <div class="sechead">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient)</div>
@@ -2716,9 +2817,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191454"></script>
+<script src="js/lesson-linreg.js?v=202607191506"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191454"></script>
+<script src="js/app.js?v=202607191506"></script>
 </body>
 </html>
