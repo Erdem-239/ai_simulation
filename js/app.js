@@ -540,6 +540,10 @@
   if(!btns.length) return;
   const realBlock=document.getElementById('rnnFwdCols');
   const preview=document.getElementById('rnnTypePreview');
+  const gAdimSection=document.getElementById('gAdimSection');
+  const gAdimPreview=document.getElementById('gAdimPreview');
+  const gAdimPreviewType=document.getElementById('gAdimPreviewType');
+  const typeNames={o2o:'one-to-one', o2m:'one-to-many', m2mEq:'many-to-many (T_x=T_y)', m2mNeq:'many-to-many (T_x≠T_y)'};
   btns.forEach(b=>{
     b.addEventListener('click', ()=>{
       btns.forEach(x=>x.classList.remove('active'));
@@ -547,6 +551,8 @@
       if(b.dataset.rt==='m2o'){
         if(realBlock) realBlock.style.display='';
         if(preview) preview.style.display='none';
+        if(gAdimSection) gAdimSection.style.display='';
+        if(gAdimPreview) gAdimPreview.style.display='none';
       } else {
         if(realBlock) realBlock.style.display='none';
         if(preview){
@@ -555,6 +561,9 @@
           const panel=preview.querySelector('.rnn-type-panel[data-rp="'+b.dataset.rt+'"]');
           if(panel) panel.classList.add('active');
         }
+        if(gAdimSection) gAdimSection.style.display='none';
+        if(gAdimPreview) gAdimPreview.style.display='block';
+        if(gAdimPreviewType) gAdimPreviewType.textContent=typeNames[b.dataset.rt]||b.dataset.rt;
       }
     });
   });
