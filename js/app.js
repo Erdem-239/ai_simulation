@@ -296,6 +296,118 @@
   window.__rnnCellSetMode=function(m){ bindMode(m); };
 })();
 
+/* ---- Tek Hücre — bir RNN adımının içi (basit, tıklanabilir computational graph) ---- */
+(function(){
+  const svg=document.getElementById('scSvg'); if(!svg) return;
+  const fbox=document.getElementById('scFormula');
+  const info=document.getElementById('scInfo');
+  let timer=null;
+
+  function op(id,cx,cy,r,sym,fs){ return '<circle class="op" id="'+id+'" data-k="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/><text class="op-lbl" x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="'+(fs||13)+'">'+sym+'</text>'; }
+  function ar(x1,y1,x2,y2,dash){ return '<line class="rnn-edge" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" marker-end="url(#scar)"'+(dash?' stroke-dasharray="4,3"':'')+'/>'; }
+  function wl(x,y,t,anc){ return '<text class="w-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'">'+t+'</text>'; }
+
+  let s='<defs><marker id="scar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8a9097"/></marker></defs>';
+  s+='<rect x="10" y="55" width="290" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
+
+  s+='<rect class="op io-a" id="sc_io_a0" data-k="sc_io_a0" x="0" y="124" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="145" text-anchor="middle" font-size="12">h₋₁</text>';
+  s+=ar(62,140,80,140);
+  s+=op('sc_maa',95,140,15,'×');
+  s+=wl(95,115,'Whh');
+  s+=op('sc_max',160,190,15,'×');
+  s+=wl(132,193,'Wxh','end');
+  s+='<rect class="op io-x" id="sc_io_x" data-k="sc_io_x" x="135" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="160" y="238" text-anchor="middle" font-size="12">x</text>';
+  s+=ar(160,220,160,206);
+  s+=op('sc_adda',225,165,15,'+');
+  s+=wl(248,197,'bh');
+  s+=ar(245,190,233,177);
+  s+=ar(110,140,212,160);
+  s+=ar(175,182,216,172);
+  s+=op('sc_g1',280,140,17,'tanh',12);
+  s+=ar(240,157,266,146);
+
+  s+='<text x="296" y="128" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h</text>';
+  s+=ar(297,140,345,140,true);
+  s+='<text x="360" y="128" fill="var(--muted)" font-size="10.5">sonraki adıma →</text>';
+
+  s+=ar(280,123,280,97);
+  s+=op('sc_mya',280,80,15,'×');
+  s+=wl(280,55,'Why');
+  s+=ar(295,80,322,80);
+  s+=op('sc_addy',340,80,15,'+');
+  s+=wl(340,118,'by');
+  s+=ar(340,112,340,97);
+  s+=ar(340,63,340,43);
+  s+='<rect class="op io-y" id="sc_io_y" data-k="sc_io_y" x="315" y="15" width="50" height="26" rx="6"/><text class="io-lbl" x="340" y="33" text-anchor="middle">ŷ</text>';
+
+  svg.setAttribute('viewBox','0 0 460 260');
+  svg.innerHTML=s;
+
+  const ci={
+    'sc_io_a0':'<b>h₋₁</b> — önceki hafıza (geçmiş adımdan gelir, veya dizinin başıysa h₀=0).',
+    'sc_maa':'<b>× çarpma:</b> W<sub>hh</sub> · h₋₁ — önceki hafızayı ağırlıkla çarp.',
+    'sc_max':'<b>× çarpma:</b> W<sub>xh</sub> · x — bu adımın girdisini ağırlıkla çarp.',
+    'sc_io_x':'<b>x</b> — bu adımın girdisi.',
+    'sc_adda':'<b>+ toplama:</b> W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + b<sub>h</sub> = z<sub>h</sub> (gizli katmanın ham toplamı).',
+    'sc_g1':'<b>tanh:</b> h = tanh(z<sub>h</sub>) — yeni hafıza. Hem çıktıya (yukarı) hem sonraki adıma (sağa) gider.',
+    'sc_mya':'<b>× çarpma:</b> W<sub>hy</sub> · h.',
+    'sc_addy':'<b>+ toplama:</b> W<sub>hy</sub>·h + b<sub>y</sub> = z<sub>y</sub> (çıktı katmanının ham toplamı).',
+    'sc_io_y':'<b>ŷ</b> — modelin tahmini (ŷ=z<sub>y</sub>, regresyonda çıktı aktivasyonu özdeşlik).'
+  };
+  svg.querySelectorAll('[data-k]').forEach(el=>{
+    el.addEventListener('click',()=>{ reset(); info.innerHTML=ci[el.dataset.k]||''; el.classList.add('cell-hl'); });
+  });
+
+  const fSteps=[
+    {hl:['sc_maa','sc_io_a0'], f:'z<sub>h</sub> = <b>W<sub>hh</sub>·h₋₁</b>', i:`h₋₁'i (önceki hafızayı) W<sub>hh</sub> ağırlığıyla çarpıyoruz.`},
+    {hl:['sc_max','sc_io_x'],  f:'z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + <b>W<sub>xh</sub>·x</b>', i:`x'i (bu adımın girdisini) W<sub>xh</sub> ağırlığıyla çarpıyoruz.`},
+    {hl:['sc_adda'],          f:'z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + <b>b<sub>h</sub></b>', i:`İki çarpımı topluyoruz ve b<sub>h</sub> sapmasını ekliyoruz — işte z<sub>h</sub>, gizli katmanın ham toplamı.`},
+    {hl:['sc_g1'],            f:'z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + b<sub>h</sub> &nbsp;→&nbsp; h = tanh(z<sub>h</sub>) &nbsp;<b style="color:#3fb6b6">✓</b>', i:`z<sub>h</sub>'yi tanh'tan geçiriyoruz. Çıkan h, yeni hafızamız — hem çıktı üretmek için yukarı, hem (bir zincirin parçasıysa) sonraki adıma taşınmak için sağa gider.`},
+    {hl:['sc_mya'],           f:'z<sub>y</sub> = <b>W<sub>hy</sub>·h</b>', i:`h'yi W<sub>hy</sub> ağırlığıyla çarpıyoruz.`},
+    {hl:['sc_addy'],          f:'z<sub>y</sub> = W<sub>hy</sub>·h + <b>b<sub>y</sub></b>', i:`b<sub>y</sub>'yi ekliyoruz — işte z<sub>y</sub>, çıktı katmanının ham toplamı.`},
+    {hl:['sc_io_y'],          f:'z<sub>y</sub> = W<sub>hy</sub>·h + b<sub>y</sub> &nbsp;→&nbsp; ŷ = z<sub>y</sub> &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>', i:`Regresyon olduğu için ŷ = z<sub>y</sub>, ekstra dönüşüm yok. İşte tek bir RNN hücresinin tam ileri yayılımı: z<sub>h</sub>=W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub>, h=tanh(z<sub>h</sub>), z<sub>y</sub>=W<sub>hy</sub>h+b<sub>y</sub>, ŷ=z<sub>y</sub>.`}
+  ];
+  function bfJoin(arr,idxBold){ return arr.map((t,i)=> i===idxBold?'<b style="color:#f0a032">'+t+'</b>':t).join('<br>'); }
+  const gl=[
+    `∂L/∂z<sub>y</sub> = (ŷ−y)`,
+    `∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>`,
+    `∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h &nbsp;→&nbsp; ∂L/∂h = ∂L/∂z<sub>y</sub>·W<sub>hy</sub>`,
+    `∂L/∂z<sub>h</sub> = ∂L/∂h × (1−h²)`,
+    `∂L/∂b<sub>h</sub> = ∂L/∂z<sub>h</sub>`,
+    `∂L/∂W<sub>hh</sub> = ∂L/∂z<sub>h</sub>·h₋₁ &nbsp;→&nbsp; ∂L/∂h₋₁ = ∂L/∂z<sub>h</sub>·W<sub>hh</sub> <i>(bir zincirin parçasıysa ÖNCEKİ adıma akar — Bölüm 2'de gerçek 3 adımda göreceğiz)</i>`,
+    `∂L/∂W<sub>xh</sub> = ∂L/∂z<sub>h</sub>·x`
+  ];
+  const bSteps=[
+    {hl:['sc_io_y'],  f:bfJoin(gl,0), i:ci['sc_io_y']+` Geri yayılım burada başlıyor: kaybın z<sub>y</sub>'ye olan türevi.`},
+    {hl:['sc_addy'],  f:bfJoin(gl,1), i:`<b>+ geri:</b> gradyan kopyalanır → ∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>.`},
+    {hl:['sc_mya'],   f:bfJoin(gl,2), i:`<b>× geri:</b> ∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h; aynı sinyal h'ye de akar.`},
+    {hl:['sc_g1'],    f:bfJoin(gl,3), i:`<b>tanh geri:</b> ∂L/∂z<sub>h</sub> = ∂L/∂h × (1−h²).`},
+    {hl:['sc_adda'],  f:bfJoin(gl,4), i:`<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub> = ∂L/∂z<sub>h</sub>.`},
+    {hl:['sc_maa','sc_io_a0'], f:bfJoin(gl,5), i:`<b>× geri:</b> ∂L/∂W<sub>hh</sub> = ∂L/∂z<sub>h</sub>·h₋₁; aynı sinyal h₋₁'e de akar — bu hücre bir zincirin parçasıysa BPTT ile önceki adıma gider.`},
+    {hl:['sc_max'],   f:bfJoin(gl,6)+`<br><b style="color:#46c46a">✓ Tamamlandı!</b>`, i:`<b>× geri:</b> ∂L/∂W<sub>xh</sub> = ∂L/∂z<sub>h</sub>·x. Tüm gradyanlar hazır!`}
+  ];
+
+  let cstep=0, playMode=null;
+  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); }
+  function reset(){
+    clr(); cstep=0; playMode=null;
+    fbox.innerHTML=`<b style="color:#ffd24a">İleri ▶</b> ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; <b style="color:#f0a032">◀ BPTT</b> ile gradyanlar geriye akar.`;
+    info.innerHTML='Bir düğüme tıkla → ne yaptığı burada görünür.';
+  }
+  function apply(st,cls){ st.hl.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls); }); fbox.innerHTML=st.f; info.innerHTML=st.i; }
+  function ensure(m){ if(playMode!==m){ clr(); cstep=0; playMode=m; } }
+  function fStep(){ ensure('fwd'); if(cstep>=fSteps.length) return false; apply(fSteps[cstep],'cell-hl'); cstep++; return true; }
+  function bStep(){ ensure('bwd'); if(cstep>=bSteps.length) return false; apply(bSteps[cstep],'cell-hl-b'); cstep++; return true; }
+  function auto(fn){ clr(); cstep=0; playMode=null; timer=setInterval(()=>{ if(!fn()){ clearInterval(timer); timer=null; } }, 800); }
+
+  document.getElementById('scStep').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=fSteps.length){ reset(); } else { fStep(); } });
+  document.getElementById('scBack').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=bSteps.length){ reset(); } else { bStep(); } });
+  document.getElementById('scAuto').addEventListener('click', ()=>auto(fStep));
+  document.getElementById('scBackAuto').addEventListener('click', ()=>auto(bStep));
+  document.getElementById('scRst').addEventListener('click', reset);
+
+  reset();
+})();
 
 /* ---- interaktif tek-hücre RNN geri yayılım oynatıcısı ---- */
 (function(){
@@ -305,14 +417,11 @@
   const sliders=['Wxh','Whh','b','Why','by','alpha'];
   let ruLastNums=null;
 
-  /* x/h₋₁/y artık ayrı sorulmuyor — 🔗 3 adımlı BPTT panelindeki x₁,x₂,x₃,y'nin t=3'ü (x=x₃, h₋₁=h₂, y=y) kullanılıyor */
   function read(){
     const g=id=>parseFloat($('rc_'+id).value);
     const Wxh=g('Wxh'), Whh=g('Whh'), b=g('b'), Why=g('Why'), by=g('by'), alpha=g('alpha');
-    const rx1=parseFloat($('ru_x1').value), rx2=parseFloat($('ru_x2').value), rx3=parseFloat($('ru_x3').value), ry=parseFloat($('ru_y').value);
-    const rz1=Wxh*rx1 + Whh*0 + b, rh1=Math.tanh(rz1);
-    const rz2=Wxh*rx2 + Whh*rh1 + b, rh2=Math.tanh(rz2);
-    return { x:rx3, hp:rh2, y:ry, Wxh, Whh, b, Why, by, alpha };
+    const x=g('x'), hp=g('hp'), y=g('y');
+    return { x, hp, y, Wxh, Whh, b, Why, by, alpha };
   }
 
   /* Genel: eğri + o anki noktada teğet çizen mini-grafik (tüm Geri Adım kartları bunu kullanır) */
@@ -906,6 +1015,9 @@
   sliders.map(s=>'rc_'+s).forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
   });
+  ['rc_x','rc_hp','rc_y'].forEach(id=>{
+    const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
+  });
   ['ru_x1','ru_x2','ru_x3','ru_y'].forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
   });
@@ -929,7 +1041,6 @@
 (function(){
   const btns=document.querySelectorAll('.rnn-type-btn');
   if(!btns.length) return;
-  const gAdimSection=document.getElementById('gAdimSection');
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const typeNote=document.getElementById('rnnTypeNote');
   const typeNoteHtml={
@@ -942,13 +1053,7 @@
       b.classList.add('active');
       if(window.__rnnCellSetMode) window.__rnnCellSetMode(b.dataset.rt);
       if(typeNote) typeNote.innerHTML=typeNoteHtml[b.dataset.rt]||'';
-      if(b.dataset.rt==='m2o'){
-        if(gAdimSection) gAdimSection.style.display='';
-        if(gAdimSectionM2m) gAdimSectionM2m.style.display='none';
-      } else {
-        if(gAdimSection) gAdimSection.style.display='none';
-        if(gAdimSectionM2m) gAdimSectionM2m.style.display='block';
-      }
+      if(gAdimSectionM2m) gAdimSectionM2m.style.display = (b.dataset.rt==='m2o') ? 'none' : 'block';
     });
   });
 })();
