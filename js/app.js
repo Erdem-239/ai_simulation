@@ -398,9 +398,12 @@
       const ryhat=p.Why*rh3 + p.by;
       const rL=0.5*(ryhat-ry)*(ryhat-ry);
 
-      setTxt('ruF1sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)+')'); setTxt('ruF1val', F(rh1));
-      setTxt('ruF2sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)+')'); setTxt('ruF2val', F(rh2));
-      setTxt('ruF3sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)+')'); setTxt('ruF3val', F(rh3));
+      setTxt('ruZ1sub', '('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)); setTxt('ruZ1val', F(rz1));
+      setTxt('ruF1sub', 'tanh('+F(rz1)+')'); setTxt('ruF1val', F(rh1));
+      setTxt('ruZ2sub', '('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)); setTxt('ruZ2val', F(rz2));
+      setTxt('ruF2sub', 'tanh('+F(rz2)+')'); setTxt('ruF2val', F(rh2));
+      setTxt('ruZ3sub', '('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)); setTxt('ruZ3val', F(rz3));
+      setTxt('ruF3sub', 'tanh('+F(rz3)+')'); setTxt('ruF3val', F(rh3));
       setTxt('ruFysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('ruFyval', F(ryhat));
       setTxt('ruFLsub', '½('+F(ryhat)+' − '+F(ry,2)+')²'); setTxt('ruFLval', F(rL));
 
