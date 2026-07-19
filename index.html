@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607192057">
+<link rel="stylesheet" href="css/style.css?v=202607192104">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 20:57 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 21:04 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -652,24 +652,8 @@
 
     <p style="font-size:14px; color:#cfd3d8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
 
-    <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue)">
-      <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. Bir düğüme tıkla → o işlem ne yapıyor gör. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu).</div>
-      <div class="cell-btnrow" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
-        <button class="addbtn" id="scStep" style="background:var(--blue); color:#fff">İleri ▶ adım</button>
-        <button class="addbtn" id="scAuto" style="background:var(--blue); color:#fff; opacity:.8">İleri ⏩</button>
-        <button class="addbtn" id="scBack" style="background:var(--accent); color:#1f2023">◀ BPTT adım</button>
-        <button class="addbtn" id="scBackAuto" style="background:var(--accent); color:#1f2023; opacity:.8">◀ BPTT ⏩</button>
-        <button class="addbtn" id="scRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Sıfırla</button>
-      </div>
-      <div class="cell-layout">
-        <div class="cell-diagram" style="overflow-x:auto"><svg id="scSvg" role="img"></svg></div>
-        <div class="cell-side">
-          <div id="scFormula" class="work" style="min-height:48px; font-size:14px; line-height:1.85">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
-          <div id="scInfo" class="callout" style="margin:8px 0 0">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
-        </div>
-      </div>
-    </div>
-
+    <div class="sc-cols">
+      <div class="sc-left">
       <div class="rnn-deriv-cards">
       <div class="deriv-h" style="margin:0 0 6px">İleri (Forward)</div>
 
@@ -728,8 +712,29 @@
         </div>
       </div>
       </div>
+      </div>
 
-    <!-- girdi & ağırlık editörü -->
+      <div class="sc-center">
+    <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue)">
+      <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. Bir düğüme tıkla → o işlem ne yapıyor gör. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu).</div>
+      <div class="cell-btnrow" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px">
+        <button class="addbtn" id="scStep" style="background:var(--blue); color:#fff">İleri ▶ adım</button>
+        <button class="addbtn" id="scAuto" style="background:var(--blue); color:#fff; opacity:.8">İleri ⏩</button>
+        <button class="addbtn" id="scBack" style="background:var(--accent); color:#1f2023">◀ BPTT adım</button>
+        <button class="addbtn" id="scBackAuto" style="background:var(--accent); color:#1f2023; opacity:.8">◀ BPTT ⏩</button>
+        <button class="addbtn" id="scRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Sıfırla</button>
+      </div>
+      <div class="cell-layout">
+        <div class="cell-diagram" style="overflow-x:auto"><svg id="scSvg" role="img"></svg></div>
+        <div class="cell-side">
+          <div id="scFormula" class="work" style="min-height:48px; font-size:14px; line-height:1.85">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
+          <div id="scInfo" class="callout" style="margin:8px 0 0">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
+        </div>
+      </div>
+    </div>
+      </div>
+
+      <div class="sc-right">
     <div id="rcSliderAnchor"></div>
     <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green)">
       <h3 style="color:var(--green)">🎛️ Hücrenin girdileri ve ağırlıkları — oyna, aşağıdaki her şey canlı değişir</h3>
@@ -758,6 +763,8 @@
         </span>
       </div>
       <div class="rc-float-body" id="rcFloatBody"></div>
+    </div>
+      </div>
     </div>
 
     <div class="rnn-bwd-top">
@@ -2789,9 +2796,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607192057"></script>
+<script src="js/lesson-linreg.js?v=202607192104"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607192057"></script>
+<script src="js/app.js?v=202607192104"></script>
 </body>
 </html>

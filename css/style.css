@@ -203,6 +203,13 @@
   .rnn-fc-left > .pts{flex:0 0 auto}
   .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
 
+  /* ---- Tek Hücre bölümü — sol: formül kartları, orta: diyagram, sağ: girdi/ağırlık paneli ---- */
+  .sc-cols{display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap}
+  .sc-left{flex:1 1 240px; min-width:0}
+  .sc-center{flex:1 1 480px; min-width:300px; max-width:560px}
+  .sc-right{flex:1 1 240px; min-width:0}
+  @media(max-width:1000px){ .sc-cols{flex-direction:column} .sc-center{max-width:none} }
+
   /* ---- türev ağacı: her ∂L/∂X satırının tam zincirini gösteren tıklanabilir açılır ağaç ---- */
   .dt-btn{background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:1px 7px; font-size:11px; line-height:1.7; cursor:pointer; margin-left:6px; color:var(--muted); vertical-align:middle; white-space:nowrap}
   .dt-btn:hover{border-color:var(--accent); color:var(--accent)}
