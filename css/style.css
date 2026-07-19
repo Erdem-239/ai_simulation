@@ -226,7 +226,8 @@
   .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:0}
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
-  #cellSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
+  #cellSvg, #scSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
+  #scSvg{max-width:500px}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
   /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer, sürüklenebilir */
@@ -375,4 +376,4 @@
   .fm-t-guncelle{background:#3a1f1f; color:#f0928f}
   .fm-t-delta{background:#2a1a33; color:#d29bff}
   @media(max-width:720px){ .fm-row{flex-direction:column; gap:2px} .fm-tag{flex:0 0 auto; align-self:flex-start} }
-  @media(max-width:720px){ #cellSvg,#lstmPipe,#attSvg,.lesson-hero-svg{min-width:0} }
+  @media(max-width:720px){ #cellSvg,#scSvg,#lstmPipe,#attSvg,.lesson-hero-svg{min-width:0} }
