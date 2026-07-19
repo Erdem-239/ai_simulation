@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191433">
+<link rel="stylesheet" href="css/style.css?v=202607191437">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:33 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:37 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -651,50 +651,11 @@
 
     <p style="font-size:14px; color:#cfd3d8; margin-top:0">Aşağıdaki canlı hücre <b>"many-to-one"</b> düzeninde çalışıyor (bir dizi girdi → tek çıktı). Aynı hücre farklı şekillerde bağlanınca farklı görevler yapabiliyor — bir tipe tıkla, görelim:</p>
     <div class="rnn-type-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px">
-      <button class="rnn-type-btn" data-rt="o2o">one-to-one</button>
-      <button class="rnn-type-btn" data-rt="o2m">one-to-many</button>
       <button class="rnn-type-btn active" data-rt="m2o">many-to-one</button>
       <button class="rnn-type-btn" data-rt="m2mEq">many-to-many (T<sub>x</sub>=T<sub>y</sub>)</button>
-      <button class="rnn-type-btn" data-rt="m2mNeq">many-to-many (T<sub>x</sub>≠T<sub>y</sub>)</button>
     </div>
 
     <div class="pts" id="rnnTypePreview" style="display:none">
-      <div class="rnn-type-panel" data-rp="o2o">
-        <svg viewBox="0 0 160 180" role="img" style="display:block; max-width:160px; margin:0 auto; background:#10182b; border-radius:8px">
-          <defs><marker id="rtA1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker></defs>
-          <rect x="54" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="80" y="29" fill="#f0a032" font-size="13" text-anchor="middle">ŷ</text>
-          <line x1="80" y1="64" x2="80" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA1)"/>
-          <rect x="48" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="80" y="90" fill="#e7e9ec" font-size="14" text-anchor="middle">h</text>
-          <line x1="80" y1="142" x2="80" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA1)"/>
-          <rect x="54" y="142" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="80" y="161" fill="#46c46a" font-size="13" text-anchor="middle">x</text>
-        </svg>
-        <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=T<sub>y</sub>=1</b> — tek girdi, tek çıktı. Hafıza gerçek anlamda kullanılmaz (RNN olmasına bile gerek yok).</p>
-        <div class="callout" style="margin:8px 0 0">Örnek: geleneksel/klasik sinir ağı (bir resmi sınıflandırmak gibi).</div>
-        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var. "many-to-one"a tıkla, canlı hücreyi gör.</p>
-      </div>
-
-      <div class="rnn-type-panel" data-rp="o2m">
-        <svg viewBox="0 0 420 180" role="img" style="display:block; max-width:420px; width:100%; margin:0 auto; background:#10182b; border-radius:8px">
-          <defs><marker id="rtA2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker></defs>
-          <rect x="36" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="62" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₁</text>
-          <rect x="166" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="192" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₂</text>
-          <rect x="296" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="322" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₃</text>
-          <line x1="62" y1="64" x2="62" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <line x1="192" y1="64" x2="192" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <line x1="322" y1="64" x2="322" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <rect x="30" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="62" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₁</text>
-          <rect x="160" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="192" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₂</text>
-          <rect x="290" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="322" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₃</text>
-          <line x1="94" y1="86" x2="160" y2="86" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <line x1="224" y1="86" x2="290" y2="86" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <line x1="62" y1="142" x2="62" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA2)"/>
-          <rect x="36" y="142" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="62" y="161" fill="#46c46a" font-size="12" text-anchor="middle">x</text>
-        </svg>
-        <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=1, T<sub>y</sub>&gt;1</b> — tek girdi, bir dizi çıktı. Her adım bir önceki hafızayı (ve genelde bir önceki kendi çıktısını) alıp yeni bir çıktı üretir.</p>
-        <div class="callout" style="margin:8px 0 0">Örnek: müzik üretimi (bir başlangıç notasından bütün bir melodi üretmek).</div>
-        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var. "many-to-one"a tıkla, canlı hücreyi gör.</p>
-      </div>
-
       <div class="rnn-type-panel" data-rp="m2mEq">
         <svg viewBox="0 0 420 180" role="img" style="display:block; max-width:420px; width:100%; margin:0 auto; background:#10182b; border-radius:8px">
           <defs><marker id="rtA4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker></defs>
@@ -721,37 +682,6 @@
         <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var. "many-to-one"a tıkla, canlı hücreyi gör.</p>
       </div>
 
-      <div class="rnn-type-panel" data-rp="m2mNeq">
-        <svg viewBox="0 0 460 200" role="img" style="display:block; max-width:460px; width:100%; margin:0 auto; background:#10182b; border-radius:8px">
-          <defs><marker id="rtA5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker></defs>
-          <text x="95" y="18" fill="#9aa0a6" font-size="11" text-anchor="middle">encoder — okur</text>
-          <text x="365" y="18" fill="#9aa0a6" font-size="11" text-anchor="middle">decoder — üretir</text>
-
-          <rect x="30" y="80" width="60" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="60" y="106" fill="#e7e9ec" font-size="13" text-anchor="middle">h₁</text>
-          <rect x="130" y="80" width="60" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="160" y="106" fill="#e7e9ec" font-size="13" text-anchor="middle">h₂</text>
-          <line x1="90" y1="102" x2="130" y2="102" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <line x1="190" y1="102" x2="230" y2="102" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-
-          <rect x="230" y="80" width="60" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="260" y="106" fill="#e7e9ec" font-size="13" text-anchor="middle">h₃</text>
-          <rect x="330" y="80" width="60" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="360" y="106" fill="#e7e9ec" font-size="13" text-anchor="middle">h₄</text>
-          <line x1="290" y1="102" x2="330" y2="102" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <line x1="390" y1="102" x2="425" y2="102" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <rect x="425" y="80" width="30" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.2" stroke-dasharray="3,2"/><text x="440" y="106" fill="#9aa0a6" font-size="11" text-anchor="middle">…</text>
-
-          <line x1="60" y1="158" x2="60" y2="126" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <rect x="34" y="158" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="60" y="177" fill="#46c46a" font-size="12" text-anchor="middle">x₁</text>
-          <line x1="160" y1="158" x2="160" y2="126" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <rect x="134" y="158" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="160" y="177" fill="#46c46a" font-size="12" text-anchor="middle">x₂</text>
-
-          <rect x="234" y="26" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="260" y="45" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₁</text>
-          <line x1="260" y1="80" x2="260" y2="54" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-          <rect x="334" y="26" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="360" y="45" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₂</text>
-          <line x1="360" y1="80" x2="360" y2="54" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA5)"/>
-        </svg>
-        <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>≠T<sub>y</sub></b> — girdi ve çıktı dizileri farklı uzunlukta olabilir. Önce girdiyi baştan sona "oku" (encoder, x alır ama çıktı üretmez), sonuncu hafızadan itibaren çıktıyı "üret" (decoder, artık x almaz, sadece ŷ üretir). Bu aslında ayrı bir mimari (<b>encoder-decoder / seq2seq</b>) — ileri bir konu.</p>
-        <div class="callout" style="margin:8px 0 0">Örnek: makine çevirisi (5 kelimelik bir cümle, 3 kelimelik başka bir dile çevrilebilir).</div>
-        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var. "many-to-one"a tıkla, canlı hücreyi gör.</p>
-      </div>
     </div>
 
     <!-- gerçek çok-adımlı BPTT (unrolling) — şimdilik gizli, tek-hücre diyagramı many-to-one zincire çevrilince buna gerek kalmayacak -->
@@ -2812,9 +2742,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191433"></script>
+<script src="js/lesson-linreg.js?v=202607191437"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191433"></script>
+<script src="js/app.js?v=202607191437"></script>
 </body>
 </html>
