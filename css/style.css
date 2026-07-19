@@ -200,7 +200,7 @@
   .rnn-fwd-cols{display:flex; gap:0; align-items:stretch}
   .rnn-fc-right{flex:0 0 var(--rnn-simw,540px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
-  .rnn-fc-left > .pts{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center}
+  .rnn-fc-left > .pts{flex:0 0 auto}
   .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
   .rnn-col-resizer::before{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:var(--line); transition:.15s}
   .rnn-col-resizer::after{content:'⋮⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:16px; letter-spacing:-2px; line-height:1; background:var(--panel2); padding:8px 3px; border:1px solid var(--line); border-radius:6px; transition:.15s; user-select:none}
@@ -211,7 +211,7 @@
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
   #cellSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
-  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-fc-left > .pts{flex:0 0 auto; justify-content:flex-start} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
+  @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
   /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer, sürüklenebilir */
   .rc-float{position:fixed; top:76px; right:16px; z-index:600; width:280px; max-width:88vw; max-height:78vh; overflow-y:auto; background:var(--panel); border:1px solid var(--green); border-radius:9px; box-shadow:0 8px 26px rgba(0,0,0,.55); font-size:12px}
