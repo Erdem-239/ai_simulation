@@ -542,6 +542,13 @@
       if(panel) panel.classList.add('active');
     });
   });
+  const goM2o=document.getElementById('rtGoM2o');
+  if(goM2o){
+    goM2o.addEventListener('click', ()=>{
+      const target=document.getElementById('gAdim1');
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  }
 })();
 
 
