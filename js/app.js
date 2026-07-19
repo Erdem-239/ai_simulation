@@ -404,7 +404,8 @@
       setTxt('ruF2sub', 'tanh('+F(rz2)+')'); setTxt('ruF2val', F(rh2));
       setTxt('ruZ3sub', '('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)); setTxt('ruZ3val', F(rz3));
       setTxt('ruF3sub', 'tanh('+F(rz3)+')'); setTxt('ruF3val', F(rh3));
-      setTxt('ruFysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('ruFyval', F(ryhat));
+      setTxt('ruZysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('ruZyval', F(ryhat));
+      setTxt('ruFyval', F(ryhat));
       setTxt('ruFLsub', '½('+F(ryhat)+' − '+F(ry,2)+')²'); setTxt('ruFLval', F(rL));
 
       const rdyhat=ryhat-ry;

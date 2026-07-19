@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607190957">
+<link rel="stylesheet" href="css/style.css?v=202607191001">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 09:57 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 10:01 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -862,7 +862,8 @@
         <div class="eq">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
         <div class="eq" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
         <div class="eq">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
-        <div class="eq" style="margin-top:8px">\( \hat y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruFysub"></span> = <span class="v" id="ruFyval"></span></div>
+        <div class="eq" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
+        <div class="eq">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
         <div class="eq">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
       </div>
 
@@ -2811,9 +2812,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607190957"></script>
+<script src="js/lesson-linreg.js?v=202607191001"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607190957"></script>
+<script src="js/app.js?v=202607191001"></script>
 </body>
 </html>
