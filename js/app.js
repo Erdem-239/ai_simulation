@@ -77,16 +77,17 @@
     for(let i=0;i<3;i++){
       const n=i+1, prev=(n===1?'h₀':'h'+SUB[i-1]);
       const base='h'+SUB[i]+' = tanh( ';
-      fSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:hist+base+'<b>W<sub>hh</sub>·'+prev+'</b>', i:ci['mul_aa_'+n]});
-      fSteps.push({hl:['mul_ax_'+n,'io-x_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + <b>W<sub>xh</sub>·x'+SUB[i]+'</b>', i:ci['mul_ax_'+n]});
-      fSteps.push({hl:['add_a_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + <b>b<sub>h</sub></b>', i:ci['add_a_'+n]});
+      const zEq='ruFeq'+(2*i+1), hEq='ruFeq'+(2*i+2);
+      fSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:hist+base+'<b>W<sub>hh</sub>·'+prev+'</b>', i:ci['mul_aa_'+n], eq:[zEq]});
+      fSteps.push({hl:['mul_ax_'+n,'io-x_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + <b>W<sub>xh</sub>·x'+SUB[i]+'</b>', i:ci['mul_ax_'+n], eq:[zEq]});
+      fSteps.push({hl:['add_a_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + <b>b<sub>h</sub></b>', i:ci['add_a_'+n], eq:[zEq]});
       const doneLine=base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + b<sub>h</sub> ) &nbsp;<b style="color:#3fb6b6">✓</b>';
-      fSteps.push({hl:['g1_'+n], f:hist+doneLine, i:ci['g1_'+n]});
+      fSteps.push({hl:['g1_'+n], f:hist+doneLine, i:ci['g1_'+n], eq:[hEq]});
       hist+=doneLine+'<br>';
     }
-    fSteps.push({hl:['mul_ya'], f:hist+`z<sub>y</sub> = <b>W<sub>hy</sub>·h₃</b> <span style="color:var(--muted); font-size:11.5px">(sadece t=3'te)</span>`, i:ci['mul_ya']});
-    fSteps.push({hl:['add_y'],  f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + <b>b<sub>y</sub></b>', i:ci['add_y']});
-    fSteps.push({hl:['io-y'],   f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + b<sub>y</sub> &nbsp;→&nbsp; ŷ = z<sub>y</sub> &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>', i:ci['io-y']});
+    fSteps.push({hl:['mul_ya'], f:hist+`z<sub>y</sub> = <b>W<sub>hy</sub>·h₃</b> <span style="color:var(--muted); font-size:11.5px">(sadece t=3'te)</span>`, i:ci['mul_ya'], eq:['ruFeq7']});
+    fSteps.push({hl:['add_y'],  f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + <b>b<sub>y</sub></b>', i:ci['add_y'], eq:['ruFeq7']});
+    fSteps.push({hl:['io-y'],   f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + b<sub>y</sub> &nbsp;→&nbsp; ŷ = z<sub>y</sub> &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>', i:ci['io-y'], eq:['ruFeq8','ruFeq9']});
 
     /* ---- Geri yayılım (BPTT) adımları: çıktıdan başla, 3 hücre boyunca geriye ---- */
     const glOut=[
@@ -95,13 +96,14 @@
       '∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃ &nbsp;→&nbsp; ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub>'
     ];
     const bSteps=[
-      {hl:['io-y'],    f:bfJoin(glOut,0), i:ci['io-y']+' Geri yayılım burada başlıyor.'},
-      {hl:['add_y'],   f:bfJoin(glOut,1), i:'<b>+ geri:</b> gradyan kopyalanır → ∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>.'},
-      {hl:['mul_ya'],  f:bfJoin(glOut,2), i:`<b>× geri:</b> ∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃; ayrıca ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub> (h₃'e gidiyor).`}
+      {hl:['io-y'],    f:bfJoin(glOut,0), i:ci['io-y']+' Geri yayılım burada başlıyor.', eq:['ruBeq1']},
+      {hl:['add_y'],   f:bfJoin(glOut,1), i:'<b>+ geri:</b> gradyan kopyalanır → ∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>.', eq:['ruBeq1']},
+      {hl:['mul_ya'],  f:bfJoin(glOut,2), i:`<b>× geri:</b> ∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃; ayrıca ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub> (h₃'e gidiyor).`, eq:['ruBeq1']}
     ];
     let bhist=glOut.join('<br>')+'<br>';
     for(let i=2;i>=0;i--){
       const n=i+1, prev=(n===1?'h₀':'h'+SUB[i-1]);
+      const base=(2-i)*3, zhEq='ruBeq'+(base+1), wxhEq='ruBeq'+(base+2), whhEq='ruBeq'+(base+3);
       const dh = n===3 ? '∂L/∂h₃' : ('∂L/∂h'+SUB[i]+' (BPTT ile bir önceki geri adımdan geldi)');
       const lines=[
         'tanh geri (t='+n+'): ∂L/∂z<sub>h</sub><sup>('+n+')</sup> = '+dh+' × (1−h'+SUB[i]+'²)',
@@ -109,13 +111,13 @@
         '∂L/∂W<sub>hh</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>·'+prev+(n>1?` &nbsp;→&nbsp; ∂L/∂h${SUB[i-1]} = ∂L/∂z<sub>h</sub><sup>(${n})</sup>·W<sub>hh</sub> (BPTT, t=${n-1}'e akar)`:' &nbsp;(h₀=0 olduğu için bu terim 0)'),
         '∂L/∂W<sub>xh</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>·x'+SUB[i]
       ];
-      bSteps.push({hl:['g1_'+n],    f:bhist+bfJoin(lines,0), i:'<b>tanh geri (t='+n+'):</b> ∂L/∂z<sub>h</sub><sup>('+n+')</sup> = '+dh+' × (1−h'+SUB[i]+'²).'});
-      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,1), i:'<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>.'});
-      bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,2), i:`<b>× geri:</b> ∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>·${prev}`+(n>1?`; ayrıca ∂L/∂${prev} ÖNCEKİ zamana akar (BPTT'nin kalbi).`:'; h₀=0 olduğu için bu katkı sıfır.')});
-      bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,3), i:'<b>× geri:</b> ∂L/∂W<sub>xh</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>·x'+SUB[i]+'.'});
+      bSteps.push({hl:['g1_'+n],    f:bhist+bfJoin(lines,0), i:'<b>tanh geri (t='+n+'):</b> ∂L/∂z<sub>h</sub><sup>('+n+')</sup> = '+dh+' × (1−h'+SUB[i]+'²).', eq:[zhEq]});
+      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,1), i:'<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>.', eq:[zhEq]});
+      bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,2), i:`<b>× geri:</b> ∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>·${prev}`+(n>1?`; ayrıca ∂L/∂${prev} ÖNCEKİ zamana akar (BPTT'nin kalbi).`:'; h₀=0 olduğu için bu katkı sıfır.'), eq:[whhEq]});
+      bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,3), i:'<b>× geri:</b> ∂L/∂W<sub>xh</sub>|<sub>t='+n+'</sub> = ∂L/∂z<sub>h</sub><sup>('+n+')</sup>·x'+SUB[i]+'.', eq:[wxhEq]});
       bhist+=lines.join('<br>')+'<br>';
     }
-    bSteps.push({hl:['io-a0'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — şimdi t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de (Geri Adım 5).</b>`, i:'✓ Bitti! Aynı ağırlık her adımda kullanıldığı için katkılar toplanır — vanishing/exploding gradient tam burada, W<sub>hh</sub>·tanh′ tekrar tekrar çarpıldığı için ortaya çıkıyor.'});
+    bSteps.push({hl:['io-a0'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — şimdi t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de (Geri Adım 5).</b>`, i:'✓ Bitti! Aynı ağırlık her adımda kullanıldığı için katkılar toplanır — vanishing/exploding gradient tam burada, W<sub>hh</sub>·tanh′ tekrar tekrar çarpıldığı için ortaya çıkıyor.', eq:['ruTotal']});
 
     return {ci, fSteps, bSteps};
   }
@@ -246,7 +248,7 @@
   }
 
   let cstep=0, playMode=null;
-  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); }
+  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b')); }
   function reset(){
     clr(); cstep=0; playMode=null;
     fbox.innerHTML = curMode==='m2mEq'
@@ -254,7 +256,18 @@
       : `<b style="color:#ffd24a">İleri ▶</b> ile h₁→h₂→h₃→ŷ kurulur; <b style="color:#f0a032">◀ BPTT</b> ile gradyanlar t=3'ten t=1'e geriye akar.`;
     info.innerHTML='Bir düğüme tıkla → ne yaptığı burada görünür.';
   }
-  function apply(st,cls){ st.hl.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls); }); fbox.innerHTML=st.f; info.innerHTML=st.i; }
+  function apply(st,cls){
+    st.hl.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls); });
+    fbox.innerHTML=st.f; info.innerHTML=st.i;
+    const eqCls = cls==='cell-hl' ? 'eq-hl-f' : 'eq-hl-b';
+    document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
+    if(st.eq && st.eq.length){
+      st.eq.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(eqCls); });
+      const accId = eqCls==='eq-hl-f' ? 'ruFwdAcc' : 'ruBwdAcc';
+      const acc=document.getElementById(accId);
+      if(acc && !acc.classList.contains('open')) acc.classList.add('open');
+    }
+  }
   function ensure(m){ if(playMode!==m){ clr(); cstep=0; playMode=m; } }
   function fStep(){ ensure('fwd'); if(cstep>=cellSteps.length) return false; apply(cellSteps[cstep],'cell-hl'); cstep++; return true; }
   function bStep(){ ensure('bwd'); if(cstep>=cellBackSteps.length) return false; apply(cellBackSteps[cstep],'cell-hl-b'); cstep++; return true; }
@@ -817,56 +830,6 @@
       }
     }
   });
-
-  /* ---- sözlü anlatım: İleri/Geri Yayılım kartlarını bir öğretmen gibi adım adım anlat + ilgili satırı vurgula ---- */
-  const fwdNarr=[
-    {id:'ruFeq1', text:`Birinci zaman adımındayız. Önce hücrenin gizli katmanının ham toplamını kuruyoruz: girdimiz x₁'i W<sub>xh</sub> ile çarpıyoruz, bir önceki hafızamız h₀'ı W<sub>hh</sub> ile çarpıyoruz, ikisini topluyoruz ve b<sub>h</sub> sapmasını ekliyoruz. h₀ sıfır olduğu için bu ilk adımda geçmişten gelen hiçbir katkı yok — dizinin en başındayız.`},
-    {id:'ruFeq2', text:`Şimdi bu ham toplamı tanh aktivasyonundan geçiriyoruz. Çıkan sonuç h₁ — birinci adımın hafızası. Bu hafıza bir sonraki adıma taşınacak; RNN'i RNN yapan tam da bu.`},
-    {id:'ruFeq3', text:`İkinci zaman adımına geçtik. Aynı formülü tekrar kuruyoruz, ama artık h₀ yerine bir önceki adımdan gelen gerçek hafızamız h₁ var. Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) değişmedi — aynı ağırlıklar her adımda tekrar tekrar kullanılıyor.`},
-    {id:'ruFeq4', text:`Yine tanh'tan geçiriyoruz, h₂'yi buluyoruz. Artık hafızamızda hem x₁'in hem x₂'nin izi var — çünkü h₁ zaten x₁'den geliyordu.`},
-    {id:'ruFeq5', text:`Üçüncü ve son zaman adımındayız. Aynı formül, bu sefer girdimiz x₃ ve önceki hafızamız h₂ ile.`},
-    {id:'ruFeq6', text:`tanh'tan geçirip h₃'ü buluyoruz. h₃ artık dizinin TAMAMININ (x₁, x₂, x₃) özetlenmiş hâli — many-to-one'da işte bu yüzden sadece son adımda çıktı üretiyoruz.`},
-    {id:'ruFeq7', text:`Şimdi hafızadan çıktıya geçiyoruz. h₃'ü W<sub>hy</sub> ile çarpıp b<sub>y</sub>'yi ekliyoruz — bu bize z<sub>y</sub>'yi, çıktı katmanının ham toplamını veriyor. Dikkat: bu satır SADECE t=3'te var, çünkü many-to-one'da ara adımların kendi çıktısı yok.`},
-    {id:'ruFeq8', text:`Regresyon problemi olduğu için çıktı aktivasyonumuz özdeşlik — yani ŷ, z<sub>y</sub>'nin ta kendisi. Ekstra bir dönüşüm yok.`},
-    {id:'ruFeq9', text:`Son olarak tahminimiz ŷ ile gerçek cevap y arasındaki farkın karesinin yarısını alıyoruz — bu bizim kaybımız L. İleri yayılım burada bitti; şimdi sıra bu kaybı geriye, ağırlıklara doğru yaymakta.`}
-  ];
-  const bwdNarr=[
-    {id:'ruBeq1', text:`Geri yayılıma başlıyoruz. İlk olarak kaybın çıktı katmanına, yani z<sub>y</sub>'ye olan türevine bakarız: ∂L/∂z<sub>y</sub> = (ŷ − y) — tahminimizle gerçek değer arasındaki fark. Bu satıda parantez içindeki (ŷ−y) kısmı tam olarak bu. Sonra bunu W<sub>hy</sub> ile çarpıp h₃'e taşıyoruz, en son da tanh'ın türevi (1−h₃²) ile çarpıp z<sub>h</sub><sup>(3)</sup>'e iniyoruz. Üç çarpanın hepsi bir zincir kuralı: kayıptan çıktıya, çıktıdan hafızaya, hafızadan gizli katmanın ham toplamına.`},
-    {id:'ruBeq2', text:`Artık z<sub>h</sub><sup>(3)</sup>'e ulaşan sinyalimiz var. z<sub>h</sub>'nin formülünde W<sub>xh</sub> doğrudan görünüyordu, değil mi? O yüzden bu sinyali x₃ ile çarpmak yeterli — işte t=3 adımının W<sub>xh</sub>'ye katkısı.`},
-    {id:'ruBeq3', text:`Aynı mantıkla, bu sefer x₃ yerine h₂ ile çarpıyoruz — çünkü z<sub>h</sub>'nin formülünde W<sub>hh</sub>, h₂ ile çarpılıyordu. Bu, t=3 adımının W<sub>hh</sub>'ye katkısı.`},
-    {id:'ruBeq4', text:`Şimdi bir adım geriye, t=2'ye geçiyoruz. İşte BPTT'nin kalbi burada: z<sub>h</sub><sup>(3)</sup>'e ulaşan sinyali W<sub>hh</sub> ile çarpıp geçmişe gönderiyoruz — çünkü h₂, z<sub>h</sub><sup>(3)</sup>'ün formülünde vardı. Sonra yine tanh'ın türevi (1−h₂²) ile çarpıp z<sub>h</sub><sup>(2)</sup>'ye iniyoruz. t=3'ten farkı: artık kendi çıktısından değil, GELECEKTEN gelen bir sinyal var — many-to-one'da ara adımların kendi çıktısı olmadığı için tek kaynağı bu.`},
-    {id:'ruBeq5', text:`t=2'nin W<sub>xh</sub>'ye katkısı — az önceki mantığın aynısı, bu sefer x₂ ile çarpıyoruz.`},
-    {id:'ruBeq6', text:`t=2'nin W<sub>hh</sub>'ye katkısı — bu sefer h₁ ile çarpıyoruz.`},
-    {id:'ruBeq7', text:`Bir adım daha geriye, t=1'e. Yine aynı BPTT adımı: z<sub>h</sub><sup>(2)</sup>'ye ulaşan sinyali W<sub>hh</sub> ile çarpıp geçmişe taşıyoruz, tanh'ın türeviyle (1−h₁²) çarpıp z<sub>h</sub><sup>(1)</sup>'e iniyoruz.`},
-    {id:'ruBeq8', text:`t=1'in W<sub>xh</sub>'ye katkısı — x₁ ile çarpıyoruz.`},
-    {id:'ruBeq9', text:`t=1'in W<sub>hh</sub>'ye katkısı — ama dikkat, bu sefer h₀ ile çarpıyoruz, ve h₀ sıfırdı. Yani bu katkı otomatik olarak sıfır oluyor; dizinin başlangıcından öncesi yok çünkü.`},
-    {id:'ruTotal', text:`Şimdi elimizde t=1, t=2, t=3'ün AYRI AYRI katkıları var. Ama W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> her adımda AYNI ağırlıklar — yani gerçek gradyan, bu üç katkının TOPLAMI. Aşağıda gördüğün toplam bu; tam burada, geriye giderken sinyalin nasıl küçülüp büyüdüğünü de (vanishing/exploding gradient) görebiliyoruz.`}
-  ];
-
-  function makeNarrator(list, textEl, hlClass, stepBtn, resetBtn, defaultMsg){
-    if(!textEl || !stepBtn) return;
-    let idx=0;
-    function clearHl(){ document.querySelectorAll('.'+hlClass).forEach(e=>e.classList.remove(hlClass)); }
-    function reset(){
-      clearHl(); idx=0;
-      textEl.innerHTML=defaultMsg;
-    }
-    function step(){
-      if(idx>=list.length){ reset(); return; }
-      clearHl();
-      const item=list[idx];
-      const el=document.getElementById(item.id);
-      if(el){ el.classList.add(hlClass); el.scrollIntoView({behavior:'smooth', block:'center'}); }
-      textEl.innerHTML='<b>Adım '+(idx+1)+'/'+list.length+':</b> '+item.text;
-      idx++;
-    }
-    stepBtn.addEventListener('click', step);
-    if(resetBtn) resetBtn.addEventListener('click', reset);
-  }
-  makeNarrator(fwdNarr, $('ruFNarrText'), 'eq-hl-f', $('ruFNarrStep'), $('ruFNarrReset'),
-    `🎙️ <b>Anlat</b>'a bas — sana bir öğretmen gibi adım adım, neden yaptığımızı da söyleyerek anlatayım. Sağdaki ilgili satır her adımda yanacak.`);
-  makeNarrator(bwdNarr, $('ruBNarrText'), 'eq-hl-b', $('ruBNarrStep'), $('ruBNarrReset'),
-    `🎙️ <b>Anlat</b>'a bas — geri yayılımı bir öğretmen gibi adım adım anlatayım. Sağdaki ilgili satır her adımda yanacak.`);
 
   /* ---- eğitim döngüsü: geri yayılımla kendini düzeltip minimuma insin (lineer regresyondaki gibi) ---- */
   const rcCostCv=$('rc_costCanvas');

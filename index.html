@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191930">
+<link rel="stylesheet" href="css/style.css?v=202607191942">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 19:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 19:42 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -750,16 +750,10 @@
       <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Hücrenin girdileri ve ağırlıkları</b> kaydırıcılarıyla aynı — onları değiştirince burası da canlı güncellenir. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
 
       <div class="ru-acc-row">
-        <div class="acc open" style="margin:0">
+        <div class="acc open" id="ruFwdAcc" style="margin:0">
           <div class="acc-head"><span class="ac">▸</span> 📘 İleri Yayılım — h₁→h₂→h₃→ŷ, 3 adım</div>
           <div class="acc-body">
-            <div class="narr-box">
-              <div class="narr-text" id="ruFNarrText">🎙️ <b>Anlat</b>'a bas — sana bir öğretmen gibi adım adım, neden yaptığımızı da söyleyerek anlatayım. Sağdaki ilgili satır her adımda yanacak.</div>
-              <div class="narr-btns">
-                <button class="addbtn narr-btn" id="ruFNarrStep" style="background:#ffd24a; color:#1f2023">🎙️ Anlat ▶</button>
-                <button class="addbtn narr-btn" id="ruFNarrReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Baştan</button>
-              </div>
-            </div>
+            <div style="font-size:11.5px; color:var(--muted); margin-bottom:8px">💡 Yukarıdaki hücre diyagramında <b style="color:#ffd24a">İleri ▶ adım</b>'a bastıkça, o adımın anlatımı diyagramın yanındaki kutuda görünür ve buradaki ilgili satır otomatik yanar.</div>
             <div id="ruFwd" class="rc-card">
               <div class="eq" id="ruFeq1">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
               <div class="eq" id="ruFeq2">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
@@ -774,16 +768,10 @@
           </div>
         </div>
 
-        <div class="acc" style="margin:0">
+        <div class="acc" id="ruBwdAcc" style="margin:0">
           <div class="acc-head"><span class="ac">▸</span> 📘 Geri Yayılım — BPTT, t=3'ten t=1'e, 3 adım</div>
           <div class="acc-body">
-            <div class="narr-box">
-              <div class="narr-text" id="ruBNarrText">🎙️ <b>Anlat</b>'a bas — geri yayılımı bir öğretmen gibi adım adım anlatayım. Sağdaki ilgili satır her adımda yanacak.</div>
-              <div class="narr-btns">
-                <button class="addbtn narr-btn" id="ruBNarrStep" style="background:var(--accent); color:#1f2023">🎙️ Anlat ▶</button>
-                <button class="addbtn narr-btn" id="ruBNarrReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Baştan</button>
-              </div>
-            </div>
+            <div style="font-size:11.5px; color:var(--muted); margin-bottom:8px">💡 Yukarıdaki hücre diyagramında <b style="color:#f0a032">◀ BPTT adım</b>'a bastıkça, o adımın anlatımı diyagramın yanındaki kutuda görünür ve buradaki ilgili satır otomatik yanar.</div>
             <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
             <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">🌳 = o değerin <b>tam türev ağacı</b> — L'ye kadar hangi zincirlerden geçtiğini görmek için tıkla.</div>
             <div id="ruBwd" class="rc-card" style="margin-bottom:10px">
@@ -2772,9 +2760,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191930"></script>
+<script src="js/lesson-linreg.js?v=202607191942"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191930"></script>
+<script src="js/app.js?v=202607191942"></script>
 </body>
 </html>
