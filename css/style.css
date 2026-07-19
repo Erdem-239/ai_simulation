@@ -202,6 +202,21 @@
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
   .rnn-fc-left > .pts{flex:0 0 auto}
   .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
+
+  /* ---- türev ağacı: her ∂L/∂X satırının tam zincirini gösteren tıklanabilir açılır ağaç ---- */
+  .dt-btn{background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:1px 7px; font-size:11px; line-height:1.7; cursor:pointer; margin-left:6px; color:var(--muted); vertical-align:middle; white-space:nowrap}
+  .dt-btn:hover{border-color:var(--accent); color:var(--accent)}
+  .dt-btn.on{border-color:var(--accent); color:var(--accent); background:rgba(240,160,50,0.08)}
+  .dt-tree{display:none; margin:2px 0 12px; padding:8px 10px; background:var(--panel); border:1px solid var(--line); border-radius:8px}
+  .dt-tree.open{display:block}
+  .dt-node-head{display:flex; align-items:flex-start; gap:6px; cursor:pointer; padding:2px 0; border-radius:4px}
+  .dt-node-head:hover{background:rgba(255,255,255,0.03)}
+  .dt-node-head .eq{margin:2px 0; flex:1 1 auto; min-width:0}
+  .dt-arrow{display:inline-block; color:var(--muted); font-size:11px; margin-top:6px; transition:transform .15s; flex:0 0 auto}
+  .dt-node.open > .dt-node-head .dt-arrow{transform:rotate(90deg); color:var(--accent)}
+  .dt-arrow.dt-leaf{color:var(--line); cursor:default}
+  .dt-kids{display:none; margin-left:15px; padding-left:12px; border-left:2px solid var(--line)}
+  .dt-node.open > .dt-kids{display:block}
   .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
   .rnn-col-resizer::before{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:var(--line); transition:.15s}
   .rnn-col-resizer::after{content:'⋮⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:16px; letter-spacing:-2px; line-height:1; background:var(--panel2); padding:8px 3px; border:1px solid var(--line); border-radius:6px; transition:.15s; user-select:none}

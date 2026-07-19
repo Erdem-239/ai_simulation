@@ -278,6 +278,7 @@
   const F=(v,d=4)=>(isFinite(v)?v:0).toFixed(d);
   const sliders=['Wxh','Whh','b','Why','by','alpha'];
   const nums=['x','hp','y'];
+  let ruLastNums=null;
 
   function read(){
     const g=id=>parseFloat($('rc_'+id).value);
@@ -692,15 +693,24 @@
       setTxt('ruB1hsub', '('+F(rdz1)+')('+F(rh0,2)+')'); setTxt('ruB1hval', F(dWhh1));
 
       const totWxh=dWxh1+dWxh2+dWxh3, totWhh=dWhh1+dWhh2+dWhh3, totBh=db1+db2+db3;
-      $('ruTotal').innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):<br>'
-        + '∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b><br>'
-        + '∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b><br>'
-        + '∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b>';
+      $('ruTotal').innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):'
+        + '<div style="margin-top:4px">∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b> <button class="dt-btn" data-dt="dLdWxhTot">🌳</button></div><div class="dt-tree"></div>'
+        + '<div>∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b> <button class="dt-btn" data-dt="dLdWhhTot">🌳</button></div><div class="dt-tree"></div>'
+        + '<div>∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b> <button class="dt-btn" data-dt="dLdbhTot">🌳</button></div><div class="dt-tree"></div>';
 
       const r32=rdz3!==0 ? rdz2/rdz3 : 0;
       const r21=rdz2!==0 ? rdz1/rdz2 : 0;
       setTxt('ruR32', F(r32));
       setTxt('ruR21', F(r21));
+
+      ruLastNums={
+        Wxh:p.Wxh, Whh:p.Whh, bh:p.b, Why:p.Why, by:p.by,
+        x1:rx1, x2:rx2, x3:rx3, y:ry, h0:rh0, h1:rh1, h2:rh2, h3:rh3,
+        yhat:ryhat, dyhat:rdyhat,
+        dz3:rdz3, dz2:rdz2, dz1:rdz1,
+        dWxh1, dWxh2, dWxh3, dWhh1, dWhh2, dWhh3, db1, db2, db3,
+        totWxh, totWhh, totBh
+      };
     }
 
     drawStep1(p.y, yhat, L, dyhat);
@@ -724,6 +734,89 @@
 
     return {L, dWxh, dWhh, db, dWhy, dby};
   }
+
+  /* ---- türev ağacı: her ∂L/∂X teriminin L'ye kadar TÜM zincirini gösteren tıklanabilir ağaç ---- */
+  function buildRuGraph(){
+    const n=ruLastNums; if(!n) return null;
+    const g={};
+    const add=(id,tex,sub,val,kids)=>{ g[id]={tex, sub, val:F(val), kids:kids||[]}; };
+
+    add('dLdyhat', '\\dfrac{\\partial L}{\\partial \\hat y}=(\\hat y-y)', '('+F(n.yhat)+'-'+F(n.y,2)+')', n.dyhat, []);
+    add('dyhatdzy', '\\dfrac{\\partial \\hat y}{\\partial z_y}=1', '1', 1, []);
+    add('dLdzy', '\\dfrac{\\partial L}{\\partial z_y}=\\dfrac{\\partial L}{\\partial \\hat y}\\times\\dfrac{\\partial \\hat y}{\\partial z_y}', F(n.dyhat)+'×1', n.dyhat, ['dLdyhat','dyhatdzy']);
+    add('dzydh3', '\\dfrac{\\partial z_y}{\\partial h_3}=W_{hy}', F(n.Why,2), n.Why, []);
+    add('dh3dzh3', '\\dfrac{\\partial h_3}{\\partial z_h^{(3)}}=(1-h_3^2)', '(1-'+F(n.h3*n.h3)+')', 1-n.h3*n.h3, []);
+    add('dLdzh3', '\\dfrac{\\partial L}{\\partial z_h^{(3)}}=\\dfrac{\\partial L}{\\partial z_y}\\times\\dfrac{\\partial z_y}{\\partial h_3}\\times\\dfrac{\\partial h_3}{\\partial z_h^{(3)}}', F(n.dyhat)+'×'+F(n.Why,2)+'×(1-'+F(n.h3*n.h3)+')', n.dz3, ['dLdzy','dzydh3','dh3dzh3']);
+
+    const mk=(t,tPrev,dzhCur,hPrev,xCur)=>{
+      add('dzh'+t+'dWxh', '\\dfrac{\\partial z_h^{('+t+')}}{\\partial W_{xh}}=x_'+t, F(xCur,2), xCur, []);
+      add('dLdWxh'+t, '\\dfrac{\\partial L}{\\partial W_{xh}}\\Big|_{t='+t+'}=\\dfrac{\\partial L}{\\partial z_h^{('+t+')}}\\times\\dfrac{\\partial z_h^{('+t+')}}{\\partial W_{xh}}', F(dzhCur)+'×'+F(xCur,2), dzhCur*xCur, ['dLdzh'+t,'dzh'+t+'dWxh']);
+      add('dzh'+t+'dWhh', '\\dfrac{\\partial z_h^{('+t+')}}{\\partial W_{hh}}=h_{'+tPrev+'}', F(hPrev,2), hPrev, []);
+      add('dLdWhh'+t, '\\dfrac{\\partial L}{\\partial W_{hh}}\\Big|_{t='+t+'}=\\dfrac{\\partial L}{\\partial z_h^{('+t+')}}\\times\\dfrac{\\partial z_h^{('+t+')}}{\\partial W_{hh}}', F(dzhCur)+'×'+F(hPrev,2), dzhCur*hPrev, ['dLdzh'+t,'dzh'+t+'dWhh']);
+    };
+    mk(3,2,n.dz3,n.h2,n.x3);
+    mk(2,1,n.dz2,n.h1,n.x2);
+    mk(1,0,n.dz1,n.h0,n.x1);
+
+    add('dzh3dh2', '\\dfrac{\\partial z_h^{(3)}}{\\partial h_2}=W_{hh}', F(n.Whh,2), n.Whh, []);
+    add('dLdh2', '\\dfrac{\\partial L}{\\partial h_2}=\\dfrac{\\partial L}{\\partial z_h^{(3)}}\\times\\dfrac{\\partial z_h^{(3)}}{\\partial h_2}', F(n.dz3)+'×'+F(n.Whh,2), n.dz3*n.Whh, ['dLdzh3','dzh3dh2']);
+    add('dh2dzh2', '\\dfrac{\\partial h_2}{\\partial z_h^{(2)}}=(1-h_2^2)', '(1-'+F(n.h2*n.h2)+')', 1-n.h2*n.h2, []);
+    add('dLdzh2', '\\dfrac{\\partial L}{\\partial z_h^{(2)}}=\\dfrac{\\partial L}{\\partial h_2}\\times\\dfrac{\\partial h_2}{\\partial z_h^{(2)}}', F(n.dz3*n.Whh)+'×(1-'+F(n.h2*n.h2)+')', n.dz2, ['dLdh2','dh2dzh2']);
+
+    add('dzh2dh1', '\\dfrac{\\partial z_h^{(2)}}{\\partial h_1}=W_{hh}', F(n.Whh,2), n.Whh, []);
+    add('dLdh1', '\\dfrac{\\partial L}{\\partial h_1}=\\dfrac{\\partial L}{\\partial z_h^{(2)}}\\times\\dfrac{\\partial z_h^{(2)}}{\\partial h_1}', F(n.dz2)+'×'+F(n.Whh,2), n.dz2*n.Whh, ['dLdzh2','dzh2dh1']);
+    add('dh1dzh1', '\\dfrac{\\partial h_1}{\\partial z_h^{(1)}}=(1-h_1^2)', '(1-'+F(n.h1*n.h1)+')', 1-n.h1*n.h1, []);
+    add('dLdzh1', '\\dfrac{\\partial L}{\\partial z_h^{(1)}}=\\dfrac{\\partial L}{\\partial h_1}\\times\\dfrac{\\partial h_1}{\\partial z_h^{(1)}}', F(n.dz2*n.Whh)+'×(1-'+F(n.h1*n.h1)+')', n.dz1, ['dLdh1','dh1dzh1']);
+
+    add('dLdWxhTot', '\\dfrac{\\partial L}{\\partial W_{xh}}=\\displaystyle\\sum_{t=1}^{3}\\dfrac{\\partial L}{\\partial W_{xh}}\\Big|_t', F(n.dWxh1)+'+'+F(n.dWxh2)+'+'+F(n.dWxh3), n.totWxh, ['dLdWxh1','dLdWxh2','dLdWxh3']);
+    add('dLdWhhTot', '\\dfrac{\\partial L}{\\partial W_{hh}}=\\displaystyle\\sum_{t=1}^{3}\\dfrac{\\partial L}{\\partial W_{hh}}\\Big|_t', F(n.dWhh1)+'+'+F(n.dWhh2)+'+'+F(n.dWhh3), n.totWhh, ['dLdWhh1','dLdWhh2','dLdWhh3']);
+    add('dLdbhTot', '\\dfrac{\\partial L}{\\partial b_h}=\\displaystyle\\sum_{t=1}^{3}\\dfrac{\\partial L}{\\partial z_h^{(t)}}', F(n.dz1)+'+'+F(n.dz2)+'+'+F(n.dz3), n.totBh, ['dLdzh1','dLdzh2','dLdzh3']);
+
+    return g;
+  }
+
+  function renderDtNode(id, g, depth){
+    const node=g[id]; if(!node) return '';
+    const hasKids=node.kids && node.kids.length;
+    const arrow = hasKids ? '<span class="dt-arrow">▸</span>' : '<span class="dt-arrow dt-leaf">•</span>';
+    const kidsHtml = hasKids ? '<div class="dt-kids">'+node.kids.map(k=>renderDtNode(k,g,depth+1)).join('')+'</div>' : '';
+    return '<div class="dt-node'+(depth===0?' open':'')+'">'
+      + '<div class="dt-node-head">'+arrow+'<span class="eq">\\( '+node.tex+' \\) = <span style="color:var(--muted)">'+node.sub+'</span> = <span class="v">'+node.val+'</span></span></div>'
+      + kidsHtml
+      + '</div>';
+  }
+
+  function typesetMath(el){
+    if(window.MathJax && MathJax.typesetPromise){
+      try{ MathJax.typesetClear && MathJax.typesetClear([el]); }catch(e){}
+      MathJax.typesetPromise([el]).catch(()=>{});
+    }
+  }
+
+  document.addEventListener('click', (e)=>{
+    const btn=e.target.closest('.dt-btn');
+    if(btn){
+      const treeEl=btn.parentElement.nextElementSibling;
+      if(!treeEl || !treeEl.classList.contains('dt-tree')) return;
+      if(treeEl.classList.contains('open')){
+        treeEl.classList.remove('open'); treeEl.innerHTML=''; btn.classList.remove('on');
+        return;
+      }
+      const g=buildRuGraph();
+      if(!g || !g[btn.dataset.dt]) return;
+      treeEl.innerHTML=renderDtNode(btn.dataset.dt, g, 0);
+      treeEl.classList.add('open'); btn.classList.add('on');
+      typesetMath(treeEl);
+      return;
+    }
+    const head=e.target.closest('.dt-node-head');
+    if(head){
+      const node=head.parentElement;
+      if(node && node.classList.contains('dt-node') && node.querySelector(':scope > .dt-kids')){
+        node.classList.toggle('open');
+      }
+    }
+  });
 
   /* ---- eğitim döngüsü: geri yayılımla kendini düzeltip minimuma insin (lineer regresyondaki gibi) ---- */
   const rcCostCv=$('rc_costCanvas');
