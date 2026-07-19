@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607190245">
+<link rel="stylesheet" href="css/style.css?v=202607190301">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 02:45 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 03:01 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1189,6 +1189,7 @@
         </svg>
         <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=T<sub>y</sub>=1</b> — tek girdi, tek çıktı. Hafıza gerçek anlamda kullanılmaz (RNN olmasına bile gerek yok).</p>
         <div class="callout" style="margin:8px 0 0">Örnek: geleneksel/klasik sinir ağı (bir resmi sınıflandırmak gibi).</div>
+        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var.</p>
       </div>
 
       <div class="rnn-type-panel" data-rp="o2m">
@@ -1210,6 +1211,7 @@
         </svg>
         <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=1, T<sub>y</sub>&gt;1</b> — tek girdi, bir dizi çıktı. Her adım bir önceki hafızayı (ve genelde bir önceki kendi çıktısını) alıp yeni bir çıktı üretir.</p>
         <div class="callout" style="margin:8px 0 0">Örnek: müzik üretimi (bir başlangıç notasından bütün bir melodi üretmek).</div>
+        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var.</p>
       </div>
 
       <div class="rnn-type-panel" data-rp="m2o">
@@ -1231,6 +1233,7 @@
         </svg>
         <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>&gt;1, T<sub>y</sub>=1</b> — bir dizi girdi, tek çıktı. Bütün diziyi okuyup sonunda tek bir karar verir. <b>Az önce inşa ettiğimiz unrolling widget'ı tam olarak bu.</b></p>
         <div class="callout" style="margin:8px 0 0">Örnek: duygu analizi (bir cümlenin olumlu mu olumsuz mu olduğuna karar vermek).</div>
+        <button class="addbtn" id="rtGoM2o" style="margin-top:10px; background:var(--blue); color:#fff">🔗 Bu mimarinin gerçek adım adım türetmesini gör ↑</button>
       </div>
 
       <div class="rnn-type-panel" data-rp="m2mEq">
@@ -1256,6 +1259,7 @@
         </svg>
         <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=T<sub>y</sub></b> — her girdiye karşılık, aynı adımda kendi çıktısı var. Dizi ile çıktı hep aynı uzunlukta.</p>
         <div class="callout" style="margin:8px 0 0">Örnek: isim varlık tanıma / NER (cümledeki her kelimenin kişi/yer/organizasyon olup olmadığını etiketlemek).</div>
+        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var.</p>
       </div>
 
       <div class="rnn-type-panel" data-rp="m2mNeq">
@@ -1287,6 +1291,7 @@
         </svg>
         <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>≠T<sub>y</sub></b> — girdi ve çıktı dizileri farklı uzunlukta olabilir. Önce girdiyi baştan sona "oku" (encoder, x alır ama çıktı üretmez), sonuncu hafızadan itibaren çıktıyı "üret" (decoder, artık x almaz, sadece ŷ üretir). Bu aslında ayrı bir mimari (<b>encoder-decoder / seq2seq</b>) — ileri bir konu.</p>
         <div class="callout" style="margin:8px 0 0">Örnek: makine çevirisi (5 kelimelik bir cümle, 3 kelimelik başka bir dile çevrilebilir).</div>
+        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var.</p>
       </div>
     </div>
 
@@ -2795,9 +2800,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607190245"></script>
+<script src="js/lesson-linreg.js?v=202607190301"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607190245"></script>
+<script src="js/app.js?v=202607190301"></script>
 </body>
 </html>
