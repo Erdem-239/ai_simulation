@@ -201,6 +201,7 @@
   .rnn-fc-right{flex:0 0 var(--rnn-simw,540px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
   .rnn-fc-left > .pts{flex:0 0 auto}
+  .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
   .rnn-col-resizer{flex:0 0 14px; order:2; align-self:stretch; min-height:200px; background:transparent; cursor:col-resize; position:relative; touch-action:none}
   .rnn-col-resizer::before{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:var(--line); transition:.15s}
   .rnn-col-resizer::after{content:'⋮⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:16px; letter-spacing:-2px; line-height:1; background:var(--panel2); padding:8px 3px; border:1px solid var(--line); border-radius:6px; transition:.15s; user-select:none}
