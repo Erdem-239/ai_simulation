@@ -398,12 +398,11 @@
       const ryhat=p.Why*rh3 + p.by;
       const rL=0.5*(ryhat-ry)*(ryhat-ry);
 
-      $('ruFwd').innerHTML =
-        EQ('h₁ = tanh(W<sub>xh</sub>·x₁ + W<sub>hh</sub>·h₀ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)+')', F(rh1))
-        + EQ('h₂ = tanh(W<sub>xh</sub>·x₂ + W<sub>hh</sub>·h₁ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)+')', F(rh2))
-        + EQ('h₃ = tanh(W<sub>xh</sub>·x₃ + W<sub>hh</sub>·h₂ + b<sub>h</sub>)', 'tanh(('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)+')', F(rh3))
-        + EQ('ŷ = W<sub>hy</sub>·h₃ + b<sub>y</sub>', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2), F(ryhat))
-        + EQ('L = ½(ŷ − y)²', '½('+F(ryhat)+' − '+F(ry,2)+')²', F(rL));
+      setTxt('ruF1sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)+')'); setTxt('ruF1val', F(rh1));
+      setTxt('ruF2sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)+')'); setTxt('ruF2val', F(rh2));
+      setTxt('ruF3sub', 'tanh(('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)+')'); setTxt('ruF3val', F(rh3));
+      setTxt('ruFysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('ruFyval', F(ryhat));
+      setTxt('ruFLsub', '½('+F(ryhat)+' − '+F(ry,2)+')²'); setTxt('ruFLval', F(rL));
 
       const rdyhat=ryhat-ry;
       const rdh3=rdyhat*p.Why, rdz3=rdh3*(1-rh3*rh3);
@@ -414,16 +413,15 @@
       const dWxh2=rdz2*rx2, dWhh2=rdz2*rh1, db2=rdz2;
       const dWxh1=rdz1*rx1, dWhh1=rdz1*rh0, db1=rdz1;
 
-      $('ruBwd').innerHTML =
-        EQ('t=3 — ∂L/∂z<sub>h</sub> = [(ŷ−y)W<sub>hy</sub>](1−h₃²)', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1−'+F(rh3*rh3)+')', F(rdz3))
-        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₃)', '('+F(rdz3)+')('+F(rx3,2)+')', F(dWxh3))
-        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₂)', '('+F(rdz3)+')('+F(rh2)+')', F(dWhh3))
-        + EQ('t=2 — ∂L/∂z<sub>h</sub> = [önceki·W<sub>hh</sub>](1−h₂²) ← BPTT', '('+F(rdz3)+')('+F(p.Whh,2)+')(1−'+F(rh2*rh2)+')', F(rdz2))
-        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₂)', '('+F(rdz2)+')('+F(rx2,2)+')', F(dWxh2))
-        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₁)', '('+F(rdz2)+')('+F(rh1)+')', F(dWhh2))
-        + EQ('t=1 — ∂L/∂z<sub>h</sub> = [önceki·W<sub>hh</sub>](1−h₁²) ← BPTT', '('+F(rdz2)+')('+F(p.Whh,2)+')(1−'+F(rh1*rh1)+')', F(rdz1))
-        + EQ('&nbsp;&nbsp;→ W<sub>xh</sub> katkısı (·x₁)', '('+F(rdz1)+')('+F(rx1,2)+')', F(dWxh1))
-        + EQ('&nbsp;&nbsp;→ W<sub>hh</sub> katkısı (·h₀=0)', '('+F(rdz1)+')('+F(rh0,2)+')', F(dWhh1));
+      setTxt('ruB3sub', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1 − '+F(rh3*rh3)+')'); setTxt('ruB3val', F(rdz3));
+      setTxt('ruB3xsub', '('+F(rdz3)+')('+F(rx3,2)+')'); setTxt('ruB3xval', F(dWxh3));
+      setTxt('ruB3hsub', '('+F(rdz3)+')('+F(rh2)+')'); setTxt('ruB3hval', F(dWhh3));
+      setTxt('ruB2sub', '('+F(rdz3)+')('+F(p.Whh,2)+')(1 − '+F(rh2*rh2)+')'); setTxt('ruB2val', F(rdz2));
+      setTxt('ruB2xsub', '('+F(rdz2)+')('+F(rx2,2)+')'); setTxt('ruB2xval', F(dWxh2));
+      setTxt('ruB2hsub', '('+F(rdz2)+')('+F(rh1)+')'); setTxt('ruB2hval', F(dWhh2));
+      setTxt('ruB1sub', '('+F(rdz2)+')('+F(p.Whh,2)+')(1 − '+F(rh1*rh1)+')'); setTxt('ruB1val', F(rdz1));
+      setTxt('ruB1xsub', '('+F(rdz1)+')('+F(rx1,2)+')'); setTxt('ruB1xval', F(dWxh1));
+      setTxt('ruB1hsub', '('+F(rdz1)+')('+F(rh0,2)+')'); setTxt('ruB1hval', F(dWhh1));
 
       const totWxh=dWxh1+dWxh2+dWxh3, totWhh=dWhh1+dWhh2+dWhh3, totBh=db1+db2+db3;
       $('ruTotal').innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):<br>'
