@@ -397,6 +397,31 @@
     });
     ctx.textAlign='left';
   }
+
+  /* many-to-many Geri Adım 5 — GERÇEK 3 adımın Whh katkısı (g_t·h_{t-1}), yaklaşık değil */
+  function drawStep5M2m(vals){
+    const cv=$('rcM2Step5Canvas'); if(!cv) return;
+    const ctx=cv.getContext('2d');
+    const W=cv.width, H=cv.height;
+    const gx0=32, gx1=W-10, gy0=12, gy1=H-24;
+    const labels=['t=1','t=2','t=3'];
+    const maxAbs=Math.max(...vals.map(Math.abs), 1e-6)*1.2;
+    const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
+    ctx.clearRect(0,0,W,H);
+    const zeroY=Y(0);
+    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
+    const bw=(gx1-gx0)/vals.length;
+    vals.forEach((v,i)=>{
+      const x=gx0+i*bw+bw*0.22, w=bw*0.56;
+      const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
+      ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
+      ctx.fillRect(x, top, w, h);
+      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(labels[i], x+w/2, gy1+13);
+    });
+    ctx.textAlign='left';
+  }
   /* ---- Kayıp Vadisi: gradyan pusulası (radar) — gerçek |∂L/∂W| büyüklükleri ---- */
   const radarCv=$('gradRadarCanvas');
   function drawGradRadar(items){
@@ -536,6 +561,97 @@
     setTxt('rcS5gT', F(dWhh));
     setTxt('rcS5sum', F(sum5));
 
+    /* ---- many-to-many (Tx=Ty) Geri Adım 1-5: aynı x/h₋₁/y/ağırlıklar, ama Adım 3'te iki kaynak toplanıyor ---- */
+    if($('rcM2S1sub')){
+      setTxt('rcM2S1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
+      setTxt('rcM2S1val', F(dyhat));
+      setTxt('rcM2S2sub1', '('+F(dyhat)+')('+F(h)+')');
+      setTxt('rcM2S2val1', F(dWhy));
+      setTxt('rcM2S2val2', F(dby));
+
+      const futzEl=$('rcM2_futz'), islastEl=$('rcM2_islast');
+      const futz=futzEl?parseFloat(futzEl.value):0;
+      const isLast=islastEl?islastEl.checked:false;
+      if(futzEl) futzEl.disabled=isLast;
+      const dhOwn=dh;
+      const dhBptt=isLast?0:futz*p.Whh;
+      const dhTot=dhOwn+dhBptt;
+      const dzTot=dhTot*(1-h*h);
+
+      setTxt('rcM2S3ownSub', '('+F(dyhat)+')('+F(p.Why,2)+')');
+      setTxt('rcM2S3ownVal', F(dhOwn));
+      setTxt('rcM2S3bpttSub', isLast?'0 (son adım)':'('+F(futz)+')('+F(p.Whh,2)+')');
+      setTxt('rcM2S3bpttVal', F(dhBptt));
+      setTxt('rcM2S3sumSub', F(dhOwn)+' + '+F(dhBptt));
+      setTxt('rcM2S3sumVal', F(dhTot));
+      setTxt('rcM2S3zhSub', '('+F(dhTot)+')(1 − '+F(h*h)+')');
+      setTxt('rcM2S3zhVal', F(dzTot));
+
+      const dWxhM2=dzTot*p.x, dWhhM2=dzTot*p.hp, dbM2=dzTot;
+      setTxt('rcM2S4sub1', '('+F(dzTot)+')('+F(p.x,2)+')');
+      setTxt('rcM2S4val1', F(dWxhM2));
+      setTxt('rcM2S4sub2', '('+F(dzTot)+')('+F(p.hp,2)+')');
+      setTxt('rcM2S4val2', F(dWhhM2));
+      setTxt('rcM2S4val3', F(dbM2));
+
+      /* Geri Adım 5: gerçek 3 adımlı ileri+geri, her adımda kendi+BPTT toplanarak */
+      const gx1=parseFloat($('rcM2_x1').value), gx2=parseFloat($('rcM2_x2').value), gx3=parseFloat($('rcM2_x3').value);
+      const gy1=parseFloat($('rcM2_y1').value), gy2=parseFloat($('rcM2_y2').value), gy3=parseFloat($('rcM2_y3').value);
+      const gh0=0;
+      const gz1=p.Wxh*gx1+p.Whh*gh0+p.b, gh1=Math.tanh(gz1);
+      const gz2=p.Wxh*gx2+p.Whh*gh1+p.b, gh2=Math.tanh(gz2);
+      const gz3=p.Wxh*gx3+p.Whh*gh2+p.b, gh3=Math.tanh(gz3);
+      const gzy1=p.Why*gh1+p.by, gzy2=p.Why*gh2+p.by, gzy3=p.Why*gh3+p.by;
+      const gyhat1=gzy1, gyhat2=gzy2, gyhat3=gzy3;
+      const gL1=0.5*(gyhat1-gy1)*(gyhat1-gy1), gL2=0.5*(gyhat2-gy2)*(gyhat2-gy2), gL3=0.5*(gyhat3-gy3)*(gyhat3-gy3);
+      const gLtot=gL1+gL2+gL3;
+
+      setTxt('rcM2Fz1sub', '('+F(p.Wxh,2)+')('+F(gx1,2)+') + ('+F(p.Whh,2)+')('+F(gh0,2)+') + '+F(p.b,2)); setTxt('rcM2Fz1val', F(gz1));
+      setTxt('rcM2Fh1sub', 'tanh('+F(gz1)+')'); setTxt('rcM2Fh1val', F(gh1));
+      setTxt('rcM2Fzy1sub', '('+F(p.Why,2)+')('+F(gh1)+') + '+F(p.by,2)); setTxt('rcM2Fzy1val', F(gzy1));
+      setTxt('rcM2FL1val', F(gL1));
+      setTxt('rcM2Fz2sub', '('+F(p.Wxh,2)+')('+F(gx2,2)+') + ('+F(p.Whh,2)+')('+F(gh1)+') + '+F(p.b,2)); setTxt('rcM2Fz2val', F(gz2));
+      setTxt('rcM2Fh2sub', 'tanh('+F(gz2)+')'); setTxt('rcM2Fh2val', F(gh2));
+      setTxt('rcM2Fzy2sub', '('+F(p.Why,2)+')('+F(gh2)+') + '+F(p.by,2)); setTxt('rcM2Fzy2val', F(gzy2));
+      setTxt('rcM2FL2val', F(gL2));
+      setTxt('rcM2Fz3sub', '('+F(p.Wxh,2)+')('+F(gx3,2)+') + ('+F(p.Whh,2)+')('+F(gh2)+') + '+F(p.b,2)); setTxt('rcM2Fz3val', F(gz3));
+      setTxt('rcM2Fh3sub', 'tanh('+F(gz3)+')'); setTxt('rcM2Fh3val', F(gh3));
+      setTxt('rcM2Fzy3sub', '('+F(p.Why,2)+')('+F(gh3)+') + '+F(p.by,2)); setTxt('rcM2Fzy3val', F(gzy3));
+      setTxt('rcM2FL3val', F(gL3));
+      setTxt('rcM2FLtot', F(gL1)+' + '+F(gL2)+' + '+F(gL3)+' = '+F(gLtot));
+
+      const gdyhat3=gyhat3-gy3, gOwn3=gdyhat3*p.Why, gZh3=gOwn3*(1-gh3*gh3), gWhh3=gZh3*gh2;
+      const gdyhat2=gyhat2-gy2, gOwn2=gdyhat2*p.Why, gBptt2=gZh3*p.Whh, gH2=gOwn2+gBptt2, gZh2=gH2*(1-gh2*gh2), gWhh2=gZh2*gh1;
+      const gdyhat1=gyhat1-gy1, gOwn1=gdyhat1*p.Why, gBptt1=gZh2*p.Whh, gH1=gOwn1+gBptt1, gZh1=gH1*(1-gh1*gh1), gWhh1=gZh1*gh0;
+
+      setTxt('rcM2B3ownSub', '('+F(gdyhat3)+')('+F(p.Why,2)+')'); setTxt('rcM2B3ownVal', F(gOwn3));
+      setTxt('rcM2B3zhSub', '('+F(gOwn3)+')(1 − '+F(gh3*gh3)+')'); setTxt('rcM2B3zhVal', F(gZh3));
+      setTxt('rcM2B3WhhSub', '('+F(gZh3)+')('+F(gh2)+')'); setTxt('rcM2B3WhhVal', F(gWhh3));
+
+      setTxt('rcM2B2ownSub', '('+F(gdyhat2)+')('+F(p.Why,2)+')'); setTxt('rcM2B2ownVal', F(gOwn2));
+      setTxt('rcM2B2bpttSub', '('+F(gZh3)+')('+F(p.Whh,2)+')'); setTxt('rcM2B2bpttVal', F(gBptt2));
+      setTxt('rcM2B2sumSub', F(gOwn2)+' + '+F(gBptt2)); setTxt('rcM2B2sumVal', F(gH2));
+      setTxt('rcM2B2zhSub', '('+F(gH2)+')(1 − '+F(gh2*gh2)+')'); setTxt('rcM2B2zhVal', F(gZh2));
+      setTxt('rcM2B2WhhSub', '('+F(gZh2)+')('+F(gh1)+')'); setTxt('rcM2B2WhhVal', F(gWhh2));
+
+      setTxt('rcM2B1ownSub', '('+F(gdyhat1)+')('+F(p.Why,2)+')'); setTxt('rcM2B1ownVal', F(gOwn1));
+      setTxt('rcM2B1bpttSub', '('+F(gZh2)+')('+F(p.Whh,2)+')'); setTxt('rcM2B1bpttVal', F(gBptt1));
+      setTxt('rcM2B1sumSub', F(gOwn1)+' + '+F(gBptt1)); setTxt('rcM2B1sumVal', F(gH1));
+      setTxt('rcM2B1zhSub', '('+F(gH1)+')(1 − '+F(gh1*gh1)+')'); setTxt('rcM2B1zhVal', F(gZh1));
+      setTxt('rcM2B1WhhSub', '('+F(gZh1)+')('+F(gh0,2)+')'); setTxt('rcM2B1WhhVal', F(gWhh1));
+
+      const gWxh1=gZh1*gx1, gWxh2=gZh2*gx2, gWxh3=gZh3*gx3;
+      const gBh1=gZh1, gBh2=gZh2, gBh3=gZh3;
+      const totWhhM2=gWhh1+gWhh2+gWhh3, totWxhM2=gWxh1+gWxh2+gWxh3, totBhM2=gBh1+gBh2+gBh3;
+      const totEl=$('rcM2S5Total');
+      if(totEl) totEl.innerHTML = '✅ <b>Gerçek toplam</b> (her adımın "kendi+BPTT" gradyanından gelen katkıların toplamı):<br>'
+        + '∂L/∂W<sub>hh</sub> = g₁·h₀ + g₂·h₁ + g₃·h₂ = '+F(gWhh1)+' + '+F(gWhh2)+' + '+F(gWhh3)+' = <b style="color:var(--accent)">'+F(totWhhM2)+'</b><br>'
+        + '∂L/∂W<sub>xh</sub> = g₁·x₁ + g₂·x₂ + g₃·x₃ = '+F(gWxh1)+' + '+F(gWxh2)+' + '+F(gWxh3)+' = <b style="color:var(--accent)">'+F(totWxhM2)+'</b><br>'
+        + '∂L/∂b<sub>h</sub> = g₁ + g₂ + g₃ = '+F(gBh1)+' + '+F(gBh2)+' + '+F(gBh3)+' = <b style="color:var(--accent)">'+F(totBhM2)+'</b>';
+
+      drawStep5M2m([gWhh1, gWhh2, gWhh3]);
+    }
+
     /* ---- ileri seviye: gerçek 3 zaman adımlı BPTT (unrolling) ---- */
     if($('ruFwd')){
       const rx1=parseFloat($('ru_x1').value), rx2=parseFloat($('ru_x2').value), rx3=parseFloat($('ru_x3').value), ry=parseFloat($('ru_y').value);
@@ -671,6 +787,9 @@
   ['ru_x1','ru_x2','ru_x3','ru_y'].forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', render);
   });
+  ['rcM2_futz','rcM2_islast','rcM2_x1','rcM2_x2','rcM2_x3','rcM2_y1','rcM2_y2','rcM2_y3'].forEach(id=>{
+    const el=$(id); if(el) el.addEventListener('input', render);
+  });
   const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
   if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcTrainStep(); });
   if(rcFastBtn) rcFastBtn.addEventListener('click', ()=>{
@@ -689,10 +808,8 @@
   const btns=document.querySelectorAll('.rnn-type-btn');
   if(!btns.length) return;
   const gAdimSection=document.getElementById('gAdimSection');
-  const gAdimPreview=document.getElementById('gAdimPreview');
-  const gAdimPreviewType=document.getElementById('gAdimPreviewType');
+  const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const typeNote=document.getElementById('rnnTypeNote');
-  const typeNames={m2o:'many-to-one', m2mEq:'many-to-many (T_x=T_y)'};
   const typeNoteHtml={
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
     m2mEq:'<b>many-to-many (T<sub>x</sub>=T<sub>y</sub>)</b> — her girdiye karşılık, AYNI adımda kendi çıktısı var. Her h<sub>t</sub>, gradyanı hem kendi çıktısından hem gelecekten (BPTT) alır. Örnek: isim varlık tanıma / NER (cümledeki her kelimeyi etiketlemek).'
@@ -705,11 +822,10 @@
       if(typeNote) typeNote.innerHTML=typeNoteHtml[b.dataset.rt]||'';
       if(b.dataset.rt==='m2o'){
         if(gAdimSection) gAdimSection.style.display='';
-        if(gAdimPreview) gAdimPreview.style.display='none';
+        if(gAdimSectionM2m) gAdimSectionM2m.style.display='none';
       } else {
         if(gAdimSection) gAdimSection.style.display='none';
-        if(gAdimPreview) gAdimPreview.style.display='block';
-        if(gAdimPreviewType) gAdimPreviewType.textContent=typeNames[b.dataset.rt]||b.dataset.rt;
+        if(gAdimSectionM2m) gAdimSectionM2m.style.display='block';
       }
     });
   });
