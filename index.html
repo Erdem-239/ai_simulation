@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191001">
+<link rel="stylesheet" href="css/style.css?v=202607191250">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 10:01 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 12:50 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1284,8 +1284,8 @@
 
     <div class="sechead">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient)</div>
     <div class="pts">
-      <p style="font-size:14px; color:#cfd3d8">\(\delta_t\)'yi en sondan \(t\)'ye taşırken her adımda \(\frac{\partial h_{t+1}}{\partial h_t}=W_{hh}(1-h_{t+1}^2)\) ile <b>çarpılır</b>. Yani uzun bir dizide bu çarpan <b>kendisiyle defalarca çarpılır</b>:</p>
-      \[ \frac{\partial L}{\partial h_t}\;\sim\;\prod_{k=t}^{T-1} W_{hh}\,(1-h_{k+1}^2) \]
+      <p style="font-size:14px; color:#cfd3d8">Yukarıda (unrolling widget'ında ve Geri Adım 5'te) gördüğün gibi, ∂L/∂z<sub>h</sub> bir adım geriye her gidişinde <b>r = W<sub>hh</sub>(1−h²)</b> ile çarpılıyor. Sorun şu: bu, T adımlık bir dizide <b>T kere üst üste</b> oluyor — tek seferlik değil:</p>
+      \[ \dfrac{\partial L}{\partial z_h^{(1)}}\;\approx\;r^{\,T-1}\times\dfrac{\partial L}{\partial z_h^{(T)}}, \qquad r=W_{hh}(1-h^2) \]
       <div class="callout">
         <ul style="margin:0; padding-left:18px">
           <li>Bu çarpan sürekli <b>&lt; 1</b> ise → çarpıla çarpıla <b>0'a gider</b>: <b>vanishing gradient</b> (uzak geçmiş öğrenilemez).</li>
@@ -2812,9 +2812,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191001"></script>
+<script src="js/lesson-linreg.js?v=202607191250"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191001"></script>
+<script src="js/app.js?v=202607191250"></script>
 </body>
 </html>
