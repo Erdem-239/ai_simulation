@@ -73,8 +73,6 @@
   .rnn-type-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; transition:.15s}
   .rnn-type-btn:hover{border-color:var(--accent)}
   .rnn-type-btn.active{background:var(--panel2); border-color:var(--accent); color:var(--accent); font-weight:600}
-  .rnn-type-panel{display:none}
-  .rnn-type-panel.active{display:block}
 
   .notes{margin-top:34px}
   .notes h2.title{font-size:20px; border-bottom:2px solid var(--accent); padding-bottom:8px; display:inline-block}

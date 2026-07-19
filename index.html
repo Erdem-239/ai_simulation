@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191437">
+<link rel="stylesheet" href="css/style.css?v=202607191454">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:37 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:54 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -649,39 +649,13 @@
 
     <div class="sechead">1) İleri Yayılım (Forward Pass) — canlı hücre</div>
 
-    <p style="font-size:14px; color:#cfd3d8; margin-top:0">Aşağıdaki canlı hücre <b>"many-to-one"</b> düzeninde çalışıyor (bir dizi girdi → tek çıktı). Aynı hücre farklı şekillerde bağlanınca farklı görevler yapabiliyor — bir tipe tıkla, görelim:</p>
+    <p style="font-size:14px; color:#cfd3d8; margin-top:0">Aşağıdaki canlı hücre, seçtiğin mimariye göre <b>gerçekten değişiyor</b> — bir tipe tıkla, aynı hücrenin nasıl farklı bağlandığını gör:</p>
     <div class="rnn-type-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px">
       <button class="rnn-type-btn active" data-rt="m2o">many-to-one</button>
       <button class="rnn-type-btn" data-rt="m2mEq">many-to-many (T<sub>x</sub>=T<sub>y</sub>)</button>
     </div>
-
-    <div class="pts" id="rnnTypePreview" style="display:none">
-      <div class="rnn-type-panel" data-rp="m2mEq">
-        <svg viewBox="0 0 420 180" role="img" style="display:block; max-width:420px; width:100%; margin:0 auto; background:#10182b; border-radius:8px">
-          <defs><marker id="rtA4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6068"/></marker></defs>
-          <rect x="36" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="62" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₁</text>
-          <rect x="166" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="192" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₂</text>
-          <rect x="296" y="10" width="52" height="28" rx="6" fill="#3a2210" stroke="#f0a032" stroke-width="1.5"/><text x="322" y="29" fill="#f0a032" font-size="12" text-anchor="middle">ŷ₃</text>
-          <line x1="62" y1="64" x2="62" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="192" y1="64" x2="192" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="322" y1="64" x2="322" y2="40" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <rect x="30" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="62" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₁</text>
-          <rect x="160" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="192" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₂</text>
-          <rect x="290" y="64" width="64" height="44" rx="8" fill="#152040" stroke="#3a7afe" stroke-width="1.5"/><text x="322" y="90" fill="#e7e9ec" font-size="13" text-anchor="middle">h₃</text>
-          <line x1="94" y1="86" x2="160" y2="86" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="224" y1="86" x2="290" y2="86" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="62" y1="142" x2="62" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="192" y1="142" x2="192" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <line x1="322" y1="142" x2="322" y2="110" stroke="#5a6068" stroke-width="1.5" marker-end="url(#rtA4)"/>
-          <rect x="36" y="142" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="62" y="161" fill="#46c46a" font-size="12" text-anchor="middle">x₁</text>
-          <rect x="166" y="142" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="192" y="161" fill="#46c46a" font-size="12" text-anchor="middle">x₂</text>
-          <rect x="296" y="142" width="52" height="28" rx="6" fill="#0f2a18" stroke="#46c46a" stroke-width="1.5"/><text x="322" y="161" fill="#46c46a" font-size="12" text-anchor="middle">x₃</text>
-        </svg>
-        <p style="font-size:13px; color:#cfd3d8; margin:10px 0 0"><b>T<sub>x</sub>=T<sub>y</sub></b> — her girdiye karşılık, aynı adımda kendi çıktısı var. Dizi ile çıktı hep aynı uzunlukta.</p>
-        <div class="callout" style="margin:8px 0 0">Örnek: isim varlık tanıma / NER (cümledeki her kelimenin kişi/yer/organizasyon olup olmadığını etiketlemek).</div>
-        <p style="font-size:12px; color:var(--muted); margin:8px 0 0; font-style:italic">Bu mimarinin adım adım türetmesi henüz eklenmedi — şimdilik sadece <b>many-to-one</b> için var. "many-to-one"a tıkla, canlı hücreyi gör.</p>
-      </div>
-
+    <div class="callout" id="rnnTypeNote" style="margin:0 0 14px">
+      <b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).
     </div>
 
     <!-- gerçek çok-adımlı BPTT (unrolling) — şimdilik gizli, tek-hücre diyagramı many-to-one zincire çevrilince buna gerek kalmayacak -->
@@ -1208,7 +1182,7 @@
 
     <div class="pts" id="gAdimPreview" style="display:none; border-left:3px solid var(--muted)">
       <h3 style="color:var(--muted)">Geri yayılım — adım adım, her adım neden?</h3>
-      <p style="font-size:14px; color:#cfd3d8">Bu adım adım türetme (Geri Adım 1-5, canlı sayısal hesap) şu an sadece <b>many-to-one</b> mimarisi için hazır. Seçtiğin <b id="gAdimPreviewType">bu</b> mimari için henüz eklenmedi.</p>
+      <p style="font-size:14px; color:#cfd3d8">Yukarıdaki <b>canlı hücre diyagramı</b> bu mimaride de (<b id="gAdimPreviewType">bu mimari</b>) tam çalışıyor — <b>İleri ▶</b> ve <b>◀ BPTT</b> ile her adımı, özellikle her h<sub>t</sub>'nin gradyanının hem kendi çıktısından hem gelecekten (BPTT) TOPLANDIĞINI inceleyebilirsin. Ama bu kaydırıcılı, sayfa aşağısındaki <b>Geri Adım 1-5</b> kartları (canlı sayısal hesap) şu an sadece <b>many-to-one</b> için hazır — bu mimari için henüz eklenmedi.</p>
       <div class="callout" style="margin:8px 0 0">Yukarıdaki tip seçiciden <b>"many-to-one"</b>a tıkla — bu bölüm gerçek sayılarla geri gelir.</div>
     </div>
 
@@ -2742,9 +2716,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191437"></script>
+<script src="js/lesson-linreg.js?v=202607191454"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191437"></script>
+<script src="js/app.js?v=202607191454"></script>
 </body>
 </html>
