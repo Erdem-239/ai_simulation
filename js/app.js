@@ -529,26 +529,30 @@
   { const {L}=render(); rcCostHist.push(L); rcUpdateUI(L); }
 })();
 
-/* ---- RNN'nin farklı kullanım şekilleri: tip seçici (görsel diyagram galerisi) ---- */
+/* ---- RNN'nin farklı kullanım şekilleri: tip seçici (many-to-one = gerçek canlı hücre, diğerleri = önizleme) ---- */
 (function(){
   const btns=document.querySelectorAll('.rnn-type-btn');
   if(!btns.length) return;
+  const realBlock=document.getElementById('rnnFwdCols');
+  const preview=document.getElementById('rnnTypePreview');
   btns.forEach(b=>{
     b.addEventListener('click', ()=>{
       btns.forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.rnn-type-panel').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      const panel=document.querySelector('.rnn-type-panel[data-rp="'+b.dataset.rt+'"]');
-      if(panel) panel.classList.add('active');
+      if(b.dataset.rt==='m2o'){
+        if(realBlock) realBlock.style.display='';
+        if(preview) preview.style.display='none';
+      } else {
+        if(realBlock) realBlock.style.display='none';
+        if(preview){
+          preview.style.display='block';
+          preview.querySelectorAll('.rnn-type-panel').forEach(x=>x.classList.remove('active'));
+          const panel=preview.querySelector('.rnn-type-panel[data-rp="'+b.dataset.rt+'"]');
+          if(panel) panel.classList.add('active');
+        }
+      }
     });
   });
-  const goM2o=document.getElementById('rtGoM2o');
-  if(goM2o){
-    goM2o.addEventListener('click', ()=>{
-      const target=document.getElementById('gAdim1');
-      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-    });
-  }
 })();
 
 
