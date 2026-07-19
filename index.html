@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607191250">
+<link rel="stylesheet" href="css/style.css?v=202607191422">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 12:50 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-19 14:22 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -754,8 +754,8 @@
       </div>
     </div>
 
-    <!-- gerçek çok-adımlı BPTT (unrolling) — many-to-one'ın gerçek büyük resmi, en üstte -->
-    <div class="pts" style="border-left:3px solid var(--accent)">
+    <!-- gerçek çok-adımlı BPTT (unrolling) — şimdilik gizli, tek-hücre diyagramı many-to-one zincire çevrilince buna gerek kalmayacak -->
+    <div class="pts" style="border-left:3px solid var(--accent); display:none">
       <h3 style="color:var(--accent)">🔗 Gerçek 3 zaman adımlı BPTT (unrolling) — kendi sayılarınla</h3>
       <p style="font-size:14px; color:#cfd3d8">Bu, <b>T=3</b> gerçek bir dizinin ileri+geri yayılımı — h gerçekten zincirleniyor (h₁→h₂→h₃), kayıp sadece son adımda hesaplanıyor (many-to-one). Aşağıda önce bu hücrenin <b>içinde</b> ne olduğunu tek tek inceleyebilirsin ("İleri ▶ adım" / "◀ BPTT adım" ile); sonra <b>Geri Adım 1-5</b> kartlarında bu formüllerin nereden geldiğini adım adım görürsün.</p>
 
@@ -2812,9 +2812,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607191250"></script>
+<script src="js/lesson-linreg.js?v=202607191422"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607191250"></script>
+<script src="js/app.js?v=202607191422"></script>
 </body>
 </html>
