@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607202217">
+<link rel="stylesheet" href="css/style.css?v=202607202227">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 22:17 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 22:27 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -771,8 +771,8 @@
       <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
       <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı BPTT, aşağıda 2) Zincirleme'de.)</span></p>
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
-          <h3 style="color:var(--accent); font-size:13.5px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
-          <div style="font-size:12.5px; color:#cfd3d8; margin-bottom:8px">▶ / ⏩ ile ağırlıklar otomatik olarak −α·∂L/∂W yönünde küçük adımlarla güncellenir; kayıp minimuma inene kadar izle. Lineer regresyondaki eğitim döngüsünün aynısı.</div>
+          <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
+          <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
           <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap">
             <div style="display:flex; gap:12px; align-items:flex-start; flex:1 1 320px">
               <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
@@ -789,8 +789,6 @@
               </div>
             </div>
             <div style="flex:1 1 260px; min-width:220px; border-left:1px solid var(--line); padding-left:16px">
-              <div class="sechead" style="font-size:13px; margin:0 0 4px">📉 Kayıp Vadisi</div>
-              <div style="font-size:11px; color:var(--muted); margin-bottom:6px">Yukarıdaki kaydırıcılardan gerçek hesaplanıyor. Sol: gradyan büyüklüğü. Sağ: kayıp yüzeyi.</div>
               <div class="loss-valley-row">
                 <div class="loss-valley-col">
                   <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
@@ -2804,9 +2802,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607202217"></script>
+<script src="js/lesson-linreg.js?v=202607202227"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607202217"></script>
+<script src="js/app.js?v=202607202227"></script>
 </body>
 </html>
