@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>∂L/∂W_hh — t=1 zinciri — RNN test sayfası</title>
+<style>
+  :root{
+    --bg:#14161c; --panel:#1b1e26; --panel2:#20232c; --line:#2b2f3a;
+    --text:#e8eaf0; --muted:#8b93a3; --faint:#5c6274;
+    --accent:#ff9d52; --accent-dim:#5a3a20;
+    --chain:#6fd6ff; --chain-dim:#1f3a45;
+    --good:#7fe3a3;
+    --font-display: ui-serif, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  }
+  :root[data-theme="light"]{
+    --bg:#f3f1eb; --panel:#ffffff; --panel2:#faf8f2;
+    --line:#e0ddd2; --text:#242220; --muted:#6b6a63; --faint:#a6a396;
+    --accent:#c96a2e; --accent-dim:#f3ddc6;
+    --chain:#2b7c94; --chain-dim:#d9ecf0;
+    --good:#2f8f5b;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f3f1eb; --panel:#ffffff; --panel2:#faf8f2;
+      --line:#e0ddd2; --text:#242220; --muted:#6b6a63; --faint:#a6a396;
+      --accent:#c96a2e; --accent-dim:#f3ddc6;
+      --chain:#2b7c94; --chain-dim:#d9ecf0;
+      --good:#2f8f5b;
+    }
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--font-body);
+    padding:56px 20px 90px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{display:flex; gap:26px; max-width:900px; margin:0 auto; align-items:flex-start}
+  .wrap{flex:1 1 auto; min-width:0; max-width:600px}
+
+  /* --- left rail: forward-pass değer yığını (yukarıdan aşağıya, geriye-doğru okuma sırasıyla) --- */
+  .rail{
+    flex:0 0 232px; position:sticky; top:40px;
+    display:flex; flex-direction:column; gap:0;
+  }
+  .rail-label{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--faint); margin:0 0 16px;
+  }
+  .rail-stack{position:relative; display:flex; flex-direction:column; gap:0}
+  .rail-stack::before{
+    content:""; position:absolute; left:15px; top:12px; bottom:12px; width:2px; background:var(--line);
+  }
+  .rval{position:relative; display:flex; gap:12px; padding:16px 0}
+  .rval-dot{
+    flex:0 0 auto; width:32px; height:32px; border-radius:50%; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:11px; font-weight:600;
+    background:var(--panel); border:2px solid var(--line); color:var(--muted);
+  }
+  .rval:first-child .rval-dot{border-color:var(--good); color:var(--good)}
+  .rval-body{min-width:0; padding-top:1px; flex:1 1 auto}
+  .rval-name{font-family:var(--font-display); font-style:italic; font-size:15px; color:var(--text); margin:0 0 8px}
+
+  /* handwritten-style stacked equation: her satır kendi hizasında, kesirler dikey */
+  .rval-eq{
+    display:flex; flex-wrap:wrap; align-items:center; gap:5px;
+    font-family:var(--font-mono); font-size:12px; color:var(--text);
+    line-height:1.3; margin:0 0 7px;
+  }
+  .rval-sub{
+    display:flex; flex-wrap:wrap; align-items:center; gap:5px;
+    font-family:var(--font-mono); font-size:11px; color:var(--faint);
+    line-height:1.3; margin:0 0 9px; padding-left:11px; position:relative;
+  }
+  .rval-sub::before{content:"="; position:absolute; left:-2px; top:0; color:var(--faint)}
+  .rval-num{
+    font-family:var(--font-mono); font-size:17px; font-weight:600; color:var(--chain);
+    font-variant-numeric:tabular-nums; padding-left:11px; position:relative;
+  }
+  .rval-num::before{content:"="; position:absolute; left:-2px; top:0; color:var(--chain); font-weight:400}
+  .rval:first-child .rval-num, .rval:first-child .rval-num::before{color:var(--good)}
+
+  .mfrac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1; margin:0 1px}
+  .mfrac .mn, .mfrac .md{padding:0 2px}
+  .mfrac .mn{border-bottom:1.2px solid currentColor; padding-bottom:1px; margin-bottom:1px}
+  .rval-eq .mfrac .mn, .rval-eq .mfrac .md{font-size:11px}
+  .rval-sub .mfrac .mn, .rval-sub .mfrac .md{font-size:10px}
+
+  @media(max-width:760px){
+    .page{flex-direction:column; gap:36px}
+    .rail{position:static; width:100%; flex-basis:auto}
+    .rail-stack{display:grid; grid-template-columns:repeat(2,1fr); gap:0 22px}
+    .rail-stack::before{display:none}
+    .rval{padding:10px 0}
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--chain); margin:0 0 10px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(26px,5vw,34px);
+    line-height:1.15; margin:0 0 14px; text-wrap:balance;
+  }
+  h1 em{font-style:italic; color:var(--accent)}
+  .lede{
+    color:var(--muted); font-size:15px; line-height:1.6; margin:0 0 44px; max-width:56ch;
+  }
+  .lede code{font-family:var(--font-mono); color:var(--text); background:var(--panel2); padding:1px 5px; border-radius:4px; font-size:.92em}
+
+  /* --- chain spine --- */
+  .chain{position:relative; display:flex; flex-direction:column; gap:0}
+  .chain::before{
+    content:""; position:absolute; left:19px; top:14px; bottom:14px; width:2px;
+    background:linear-gradient(var(--line), var(--line));
+  }
+
+  .step{position:relative; display:flex; gap:22px; padding:22px 0}
+  .step-dot{
+    flex:0 0 auto; width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:14px; font-weight:600;
+    background:var(--panel); border:2px solid var(--line); color:var(--muted);
+    position:relative; z-index:1;
+  }
+  .step.bptt .step-dot{border-color:var(--accent); color:var(--accent); background:var(--accent-dim)}
+  .step.final .step-dot{border-color:var(--good); color:var(--good); background:transparent}
+
+  .step-body{flex:1 1 auto; min-width:0; padding-top:2px}
+  .step-path{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--faint);
+    margin:0 0 9px; letter-spacing:.01em;
+  }
+  .step-path b{color:var(--chain); font-weight:600}
+  .step.bptt .step-path b{color:var(--accent)}
+  .step-tag{
+    display:inline-block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--accent); border:1px solid var(--accent-dim);
+    background:var(--accent-dim); border-radius:4px; padding:2px 7px; margin-left:8px;
+    vertical-align:middle; transform:translateY(-1px);
+  }
+
+  .eq-box{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:16px 18px; overflow-x:auto;
+  }
+  .step.bptt .eq-box{border-color:var(--accent-dim)}
+
+  .eq{
+    font-family:var(--font-mono); font-size:15px; white-space:nowrap;
+    display:flex; align-items:center; gap:9px; font-variant-numeric:tabular-nums;
+  }
+
+  .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 1px; line-height:1.05}
+  .frac .num, .frac .den{font-size:13px; padding:0 2px}
+  .frac .num{border-bottom:1.3px solid currentColor; padding-bottom:2px; margin-bottom:1px}
+  .frac .den{padding-top:1px}
+
+  sub{font-size:.66em; position:relative; bottom:-.28em}
+  sup{font-size:.62em; position:relative; top:-.62em; margin-left:.5px}
+
+  .step-note{
+    font-size:13.5px; color:var(--muted); line-height:1.55; margin:11px 0 0; max-width:52ch;
+  }
+
+  .step.final{padding-top:30px}
+  .step.final .eq-box{
+    background:linear-gradient(180deg, var(--panel2), var(--panel));
+    border:1.4px solid var(--good);
+  }
+  .step.final .eq{font-size:16.5px}
+  .result-flag{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--good); margin-top:14px;
+  }
+
+  .note-box{
+    margin-top:46px; padding:16px 18px; background:var(--chain-dim); border-radius:10px;
+    border:1px solid var(--line); font-size:13.5px; line-height:1.6; color:var(--text);
+  }
+  .note-box b{color:var(--chain)}
+
+  ::selection{background:var(--accent); color:#181818}
+
+  /* --- clickable eq-box + derivation detail --- */
+  .eq-box{
+    cursor:pointer; position:relative; padding-right:40px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .eq-box:hover{border-color:var(--chain)}
+  .step.bptt .eq-box:hover{border-color:var(--accent)}
+  .eq-box:focus-visible{outline:2px solid var(--chain); outline-offset:2px}
+  .eq-toggle{
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    font-family:var(--font-mono); font-size:11px; color:var(--faint);
+    display:flex; align-items:center; gap:5px; white-space:nowrap;
+    pointer-events:none;
+  }
+  .eq-toggle .chev{
+    display:inline-block; transition:transform .18s ease; font-size:10px;
+  }
+  .step.open .eq-toggle .chev{transform:rotate(90deg)}
+  .step.open .eq-box{border-color:var(--chain)}
+  .step.bptt.open .eq-box{border-color:var(--accent)}
+
+  .detail{
+    max-height:0; overflow:hidden;
+    transition:max-height .28s ease;
+  }
+  .step.open .detail{max-height:900px}
+  .detail-inner{
+    margin-top:12px; padding:14px 16px; background:var(--panel2); border:1px solid var(--line);
+    border-radius:9px; font-size:13px; line-height:1.65; color:var(--text);
+  }
+  .detail-inner .dwhy{color:var(--muted); margin:0 0 5px}
+  .detail-inner .dwhy:not(:first-child){margin-top:10px}
+  .detail-inner .dwhy b{color:var(--text)}
+  .detail-inner .deq{
+    font-family:var(--font-mono); font-size:13px; margin:4px 0 2px; color:var(--text);
+    display:flex; align-items:center; gap:7px; flex-wrap:wrap;
+  }
+  .detail-inner .deq .frac .num, .detail-inner .deq .frac .den{font-size:11.5px}
+
+  @media(max-width:520px){
+    body{padding:40px 14px 70px}
+    .step{gap:14px}
+    .step-dot{width:34px; height:34px; font-size:12px}
+    .chain::before{left:16px}
+    .eq{font-size:13.5px}
+    .eq-box{padding-right:34px}
+    .eq-toggle span:not(.chev){display:none}
+  }
+</style>
+</head>
+<body>
+
+
+<div class="page">
+
+  <div class="rail">
+    <p class="rail-label">t=3 · ileri yayılım</p>
+    <div class="rail-stack">
+      <div class="rval">
+        <div class="rval-dot">L</div>
+        <div class="rval-body">
+          <p class="rval-name">L</p>
+          <div class="rval-eq">
+            <span class="mfrac"><span class="mn">1</span><span class="md">2</span></span>
+            <span>(ŷ − y)²</span>
+          </div>
+          <div class="rval-sub">
+            <span class="mfrac"><span class="mn">1</span><span class="md">2</span></span>
+            <span>(0.6704 − 1.00)²</span>
+          </div>
+          <p class="rval-num">0.0543</p>
+        </div>
+      </div>
+      <div class="rval">
+        <div class="rval-dot">ŷ</div>
+        <div class="rval-body">
+          <p class="rval-name">ŷ</p>
+          <div class="rval-eq"><span>z<sub>y</sub> = W<sub>hy</sub>h<sub>3</sub>+b<sub>y</sub></span></div>
+          <div class="rval-sub"><span>(0.80)(0.5880) + 0.20</span></div>
+          <p class="rval-num">0.6704</p>
+        </div>
+      </div>
+      <div class="rval">
+        <div class="rval-dot">tanh</div>
+        <div class="rval-body">
+          <p class="rval-name">tanh</p>
+          <div class="rval-eq"><span>h<sub>3</sub> = tanh(z<sub>h</sub><sup>(3)</sup>)</span></div>
+          <div class="rval-sub"><span>tanh(0.6745)</span></div>
+          <p class="rval-num">0.5880</p>
+        </div>
+      </div>
+      <div class="rval">
+        <div class="rval-dot">z<sub>h</sub></div>
+        <div class="rval-body">
+          <p class="rval-name">z<sub>h</sub><sup>(3)</sup></p>
+          <div class="rval-eq"><span>W<sub>xh</sub>x<sub>3</sub>+W<sub>hh</sub>h<sub>2</sub>+b<sub>h</sub></span></div>
+          <div class="rval-sub"><span>(0.4)(1.5) + (0.3)(−0.0849) + 0.1</span></div>
+          <p class="rval-num">0.6745</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="wrap">
+  <p class="eyebrow">BPTT · geri yayılım zinciri</p>
+  <h1>t=1'de <em>W<sub>hh</sub></em>'nin gradyanı<br>hangi zincirden geçiyor?</h1>
+  <p class="lede">3 adımlı bir RNN'de (t=1,2,3) çıktı sadece <code>t=3</code>'te var. t=1 en uzak adım olduğu için, oraya ulaşan sinyal en uzun yolu kat ediyor — kayıptan başlayıp zaman içinde <b style="color:var(--accent)">iki kez geriye</b> sıçrıyor.</p>
+
+  <div class="chain">
+
+    <div class="step">
+      <div class="step-dot">1</div>
+      <div class="step-body">
+        <p class="step-path"><b>L → ŷ → z<sub>y</sub></b></p>
+        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
+          <div class="eq">
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>y</sub></span></span>
+            <span>=</span>
+            <span>(ŷ − y)</span>
+          </div>
+          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
+        </div>
+        <p class="step-note">Başlangıç noktası — kaybın çıktı katmanına duyarlılığı.</p>
+        <div class="detail"><div class="detail-inner">
+          <p class="dwhy"><b>Adım 1</b> — L'nin açık hali: L = ½(ŷ−y)². ŷ'ye göre türetelim (kare alma kuralı: 2×ifade×ifadenin kendi türevi, ifade=(ŷ−y), kendi türevi=1):</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂ŷ</span></span> = ½ × 2(ŷ−y) × 1 = (ŷ−y)</div>
+          <p class="dwhy"><b>Adım 2</b> — ŷ=z<sub>y</sub> (regresyonda çıktı katmanı özdeşlik), bir değişkenin kendine göre türevi 1'dir:</p>
+          <div class="deq"><span class="frac"><span class="num">∂ŷ</span><span class="den">∂z<sub>y</sub></span></span> = 1</div>
+          <p class="dwhy"><b>Adım 3</b> — zincir kuralıyla çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>y</sub></span></span> = (ŷ−y) × 1 = (ŷ−y)</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-dot">2</div>
+      <div class="step-body">
+        <p class="step-path"><b>z<sub>y</sub> → h<sub>3</sub> → z<sub>h</sub><sup>(3)</sup></b></p>
+        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
+          <div class="eq">
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span>
+            <span>=</span>
+            <span>[(ŷ − y)·W<sub>hy</sub>] · (1 − h<sub>3</sub>²)</span>
+          </div>
+          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
+        </div>
+        <p class="step-note">Sinyal son hücreye iniyor; tanh türevi (1−h²) burada ilk kez çarpana giriyor.</p>
+        <div class="detail"><div class="detail-inner">
+          <p class="dwhy"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali: z<sub>y</sub>=W<sub>hy</sub>·h<sub>3</sub>+b<sub>y</sub>. h<sub>3</sub>'e göre türetelim (W<sub>hy</sub>·h<sub>3</sub> terimi = sabit(W<sub>hy</sub>)×değişken(h<sub>3</sub>) → türevi W<sub>hy</sub>; b<sub>y</sub>'de h<sub>3</sub> yok):</p>
+          <div class="deq"><span class="frac"><span class="num">∂z<sub>y</sub></span><span class="den">∂h<sub>3</sub></span></span> = W<sub>hy</sub></div>
+          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>3</sub></span></span> = (ŷ−y) × W<sub>hy</sub></div>
+          <p class="dwhy"><b>Adım 2</b> — h<sub>3</sub>=tanh(z<sub>h</sub><sup>(3)</sup>) olduğu için tanh'ın türevini kullanırız (1−tanh²=1−h²):</p>
+          <div class="deq"><span class="frac"><span class="num">∂h<sub>3</sub></span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> = 1 − h<sub>3</sub>²</div>
+          <p class="dwhy"><b>Adım 3</b> — iki parçayı çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> = [(ŷ−y)·W<sub>hy</sub>] × (1−h<sub>3</sub>²)</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="step bptt">
+      <div class="step-dot">3</div>
+      <div class="step-body">
+        <p class="step-path"><b>z<sub>h</sub><sup>(3)</sup> → h<sub>2</sub> → z<sub>h</sub><sup>(2)</sup></b><span class="step-tag">BPTT · 1 adım geri</span></p>
+        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
+          <div class="eq">
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span>
+            <span>=</span>
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span>
+            <span>· W<sub>hh</sub> · (1 − h<sub>2</sub>²)</span>
+          </div>
+          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
+        </div>
+        <p class="step-note">Zaman içinde ilk geri sıçrayış — aynı W<sub>hh</sub>, ikinci kez çarpana giriyor.</p>
+        <div class="detail"><div class="detail-inner">
+          <p class="dwhy"><b>Amaç:</b> z<sub>h</sub><sup>(3)</sup>, h<sub>2</sub>'ye bağlı (h<sub>2</sub> bir önceki adımın hafızası) — sinyali oradan geriye, z<sub>h</sub><sup>(2)</sup>'ye taşıyoruz.</p>
+          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(3)</sup>'ün açık hali: z<sub>h</sub><sup>(3)</sup>=W<sub>xh</sub>·x<sub>3</sub>+W<sub>hh</sub>·h<sub>2</sub>+b<sub>h</sub>. h<sub>2</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>2</sub> terimi → türevi W<sub>hh</sub>):</p>
+          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(3)</sup></span><span class="den">∂h<sub>2</sub></span></span> = W<sub>hh</sub></div>
+          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>h</sub><sup>(3)</sup> ile çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>2</sub></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> × W<sub>hh</sub></div>
+          <p class="dwhy"><b>Adım 2</b> — h<sub>2</sub>=tanh(z<sub>h</sub><sup>(2)</sup>) → tanh türevi:</p>
+          <div class="deq"><span class="frac"><span class="num">∂h<sub>2</sub></span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> = 1 − h<sub>2</sub>²</div>
+          <p class="dwhy"><b>Adım 3</b> — çarp, işte BPTT'nin bir adımı:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> × W<sub>hh</sub> × (1−h<sub>2</sub>²)</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="step bptt">
+      <div class="step-dot">4</div>
+      <div class="step-body">
+        <p class="step-path"><b>z<sub>h</sub><sup>(2)</sup> → h<sub>1</sub> → z<sub>h</sub><sup>(1)</sup></b><span class="step-tag">BPTT · 1 adım daha geri</span></p>
+        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
+          <div class="eq">
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span>
+            <span>=</span>
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span>
+            <span>· W<sub>hh</sub> · (1 − h<sub>1</sub>²)</span>
+          </div>
+          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
+        </div>
+        <p class="step-note">İkinci ve son sıçrayış — hedefimiz olan t=1'e vardık.</p>
+        <div class="detail"><div class="detail-inner">
+          <p class="dwhy"><b>Amaç:</b> aynı mantık bir adım daha — z<sub>h</sub><sup>(2)</sup>, h<sub>1</sub>'e bağlı; sinyali h<sub>1</sub> üzerinden z<sub>h</sub><sup>(1)</sup>'e taşıyoruz.</p>
+          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(2)</sup>=W<sub>xh</sub>·x<sub>2</sub>+W<sub>hh</sub>·h<sub>1</sub>+b<sub>h</sub>. h<sub>1</sub>'e göre türetelim:</p>
+          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(2)</sup></span><span class="den">∂h<sub>1</sub></span></span> = W<sub>hh</sub></div>
+          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>h</sub><sup>(2)</sup> ile çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>1</sub></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> × W<sub>hh</sub></div>
+          <p class="dwhy"><b>Adım 2</b> — h<sub>1</sub>=tanh(z<sub>h</sub><sup>(1)</sup>) → tanh türevi:</p>
+          <div class="deq"><span class="frac"><span class="num">∂h<sub>1</sub></span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> = 1 − h<sub>1</sub>²</div>
+          <p class="dwhy"><b>Adım 3</b> — çarp; hedefimiz z<sub>h</sub><sup>(1)</sup>'e ulaştık:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> × W<sub>hh</sub> × (1−h<sub>1</sub>²)</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="step final">
+      <div class="step-dot">✓</div>
+      <div class="step-body">
+        <p class="step-path"><b>z<sub>h</sub><sup>(1)</sup> → W<sub>hh</sub></b></p>
+        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
+          <div class="eq">
+            <span class="frac"><span class="num">∂L</span><span class="den">∂W<sub>hh</sub></span></span><span style="font-size:12px; color:var(--faint)">|<sub>t=1</sub></span>
+            <span>=</span>
+            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span>
+            <span>· h<sub>0</sub></span>
+          </div>
+          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
+        </div>
+        <p class="result-flag">sonuç</p>
+        <div class="detail"><div class="detail-inner">
+          <p class="dwhy"><b>Son adım:</b> artık z<sub>h</sub><sup>(1)</sup>'e ulaşan sinyalimiz var; W<sub>hh</sub>'nin z<sub>h</sub><sup>(1)</sup> içindeki katkısını bulup zincir kuralıyla çarpıyoruz.</p>
+          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(1)</sup>=W<sub>xh</sub>·x<sub>1</sub>+W<sub>hh</sub>·h<sub>0</sub>+b<sub>h</sub>. W<sub>hh</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>0</sub> terimi = sabit(h<sub>0</sub>)×değişken(W<sub>hh</sub>) → türevi h<sub>0</sub>):</p>
+          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(1)</sup></span><span class="den">∂W<sub>hh</sub></span></span> = h<sub>0</sub></div>
+          <p class="dwhy">h<sub>0</sub>=0 — dizinin başlangıç hafızası (bir önceki adımın sonucu değil, sıfırdan başlıyoruz).</p>
+          <p class="dwhy"><b>Adım 2</b> — ∂L/∂z<sub>h</sub><sup>(1)</sup> ile çarp:</p>
+          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂W<sub>hh</sub></span></span>|<sub>t=1</sub> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> × h<sub>0</sub></div>
+          <p class="dwhy" style="margin-top:12px">💡 h<sub>0</sub>=0 olduğu için bu terimin SAYISAL katkısı sıfır çıkar — ama zincirin kendisi (yukarıdaki 4 adım) her adımda aynen işliyor; farkı yaratan h<sub>0</sub>'ın değeri, zincirin yapısı değil.</p>
+        </div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="note-box">
+    <b>Neden en uzun zincir?</b> t=1, çıktıdan en uzak adım. Sinyal oraya ulaşana kadar 3 kez tanh türevinden ((1−h²)) ve 2 kez <b style="color:var(--accent)">W<sub>hh</sub></b>'den geçiyor — kısa dizilerde bile bu, RNN'in "geriye gittikçe zayıflayan/patlayan sinyal" (vanishing / exploding gradient) sorununun tam olarak nereden geldiğini gösteriyor.
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+  document.querySelectorAll('.eq-box').forEach(function(box){
+    function toggle(){
+      var step = box.closest('.step');
+      var open = step.classList.toggle('open');
+      box.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var label = box.querySelector('.eq-toggle span:not(.chev)');
+      if(label) label.textContent = open ? 'gizle' : 'nasıl';
+    }
+    box.addEventListener('click', toggle);
+    box.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+  });
+</script>
+</body>
+</html>
