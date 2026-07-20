@@ -57,11 +57,6 @@
   .detail{display:none; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); font-size:12.5px; color:#cfd3d8}
   .step.open .detail{display:block}
 
-  /* ---- RNN Geri Adım kartları: tüm gövde (formül+grafik+detay) açılıp kapanabilir ---- */
-  #gAdimSection .stepbody, #gAdimSectionM2m .stepbody{display:none}
-  #gAdimSection .step.open .stepbody, #gAdimSectionM2m .step.open .stepbody{display:block}
-  #gAdimSection .stephead, #gAdimSectionM2m .stephead{padding-bottom:11px}
-  #gAdimSection .step.open .stephead, #gAdimSectionM2m .step.open .stephead{padding-bottom:7px}
   .detail h4{color:var(--accent); margin:10px 0 4px; font-size:13px}
   .detail h4:first-child{margin-top:0}
   .detail ul{margin:6px 0; padding-left:20px}
@@ -223,7 +218,8 @@
   /* ---- Tek Hücre bölümü — sol: formül kartları, orta: diyagram, sağ: girdi/ağırlık paneli ---- */
   .sc-cols{display:flex; gap:0; align-items:flex-start; flex-wrap:wrap}
   .sc-left{flex:1 1 130px; min-width:130px; padding-right:6px}
-  .sc-center{flex:0 0 var(--scw,300px); min-width:220px; max-width:560px}
+  .sc-center{flex:0 0 var(--scw,300px); min-width:220px; max-width:560px; position:sticky; top:10px}
+  @media(max-width:560px){ .sc-center{position:static} }
   .sc-right{flex:1 1 170px; min-width:170px; padding-left:6px}
   .sc-right input[type="range"]{width:90px !important}
   @media(max-width:560px){ .sc-cols{flex-direction:column} .sc-center{max-width:none} .sc-resizer{display:none} }
@@ -313,8 +309,10 @@
   .deriv-body .eq,.deriv-body>p{margin:0}
   /* Geri Adım kartı: sol formül, sağ canlı grafik */
   .step-graph-row{display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; margin-top:6px}
-  .step-graph-formula{flex:1 1 220px; min-width:0}
+  .step-graph-formula{flex:1 1 320px}
+  .step-graph-formula .eq{overflow-x:visible}
   .step-graph-plot{flex:0 0 240px}
+  @media(max-width:560px){ .step-graph-formula .eq{overflow-x:auto} }
   .step-graph-plot canvas{width:100%; height:auto; background:#15161a; border:1px solid var(--line); border-radius:6px}
   .step-graph-cap{font-size:10.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.4}
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
