@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607202108">
+<link rel="stylesheet" href="css/style.css?v=202607202125">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 21:08 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 21:25 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -825,14 +825,14 @@
               <div id="rcS1Live" class="rc-card">
                 <div class="eq">\( \dfrac{\partial L}{\partial z_y}=(\hat y-y) \) = <span style="color:var(--muted)" id="rcS1sub">(0.0000 − 0.00)</span> = <span class="v" id="rcS1val">0.0000</span></div>
               </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> işaret, ŷ'nin y'ye göre hangi yönde olduğunu söylüyor — küre vadinin hangi yamacında. Büyüklük ise dibe ne kadar uzak olduğumuzu gösterir; sıfıra yaklaştıkça minimuma varmışız demektir.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu sinyali bulduk, ama asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanı — bu sinyal onlara nasıl ulaşacak? Geri Adım 2'de bu köprüyü kuruyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep1Canvas" width="240" height="170"></canvas>
               <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
             </div>
           </div>
-          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> işaret, ŷ'nin y'ye göre hangi yönde olduğunu söylüyor — küre vadinin hangi yamacında. Büyüklük ise dibe ne kadar uzak olduğumuzu gösterir; sıfıra yaklaştıkça minimuma varmışız demektir.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu sinyali bulduk, ama asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanı — bu sinyal onlara nasıl ulaşacak? Geri Adım 2'de bu köprüyü kuruyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
@@ -855,14 +855,14 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h \) = <span style="color:var(--muted)" id="rcS2sub1"></span> = <span class="v" id="rcS2val1"></span></div>
                 <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \) = <span class="v" id="rcS2val2"></span></div>
               </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
               <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
             </div>
           </div>
-          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
@@ -885,14 +885,14 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
                 <div class="eq">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
               </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
               <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
             </div>
           </div>
-          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
@@ -932,14 +932,14 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1}=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
                 <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span class="v" id="rcS4val3"></span></div>
               </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu üç sayı, x, h₋₁ ve sabit terimin kayba katkısını gösteriyor — hangisinin mutlak değeri büyükse, o ağırlık bu turda en çok değişecek demek.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu, TEK bir zaman adımının gradyanıydı. Ama RNN'de aynı ağırlık her adımda kullanılıyor — asıl gradyan hepsinin toplamı. Geri Adım 5'te bunu topluyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
               <div class="step-graph-cap">L(W<sub>xh</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>xh</sub>)</div>
             </div>
           </div>
-          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu üç sayı, x, h₋₁ ve sabit terimin kayba katkısını gösteriyor — hangisinin mutlak değeri büyükse, o ağırlık bu turda en çok değişecek demek.</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu, TEK bir zaman adımının gradyanıydı. Ama RNN'de aynı ağırlık her adımda kullanılıyor — asıl gradyan hepsinin toplamı. Geri Adım 5'te bunu topluyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ortak sinyali (∂L/∂z<sub>h</sub>) kullanıp W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanına ulaşmak — bu üçü z<sub>h</sub>'nin içinde birlikte yaşıyor.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>h</sub>'nin formülünde bu üç ağırlık da görünüyor; her birine duyarlılığı ayrı ayrı bulmalıyız. z<sub>h</sub>'nin açık hali:</div>
@@ -967,14 +967,14 @@
                 <div class="eq">\( g_T=\dfrac{\partial L}{\partial W_{hh}} \) = <span class="v" id="rcS5gT">0.0000</span> ,&nbsp; \( g_{T-k}\approx g_T\cdot r^{\,k} \)</div>
                 <div class="eq">\( \displaystyle\sum_{k=0}^{3} g_{T-k} = g_T(1+r+r^2+r^3) \) = <span class="v" id="rcS5sum">0.0000</span></div>
               </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> aynı ağırlık her adımda kullanıldığı için asıl gradyan, tüm zaman adımlarının katkısının <b>toplamı</b>. |r|&lt;1 ise eski adımların etkisi hızla söner (vanishing gradient) — |r|&gt;1 ise patlar (exploding gradient).</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu toplam gradyanla her ağırlığı güncelliyoruz — aşağıdaki <b>🔻 Güncelle</b> satırı bunu gösteriyor; sonraki bölümde bu döngüyü tekrar tekrar çalıştırıp modeli eğitiyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep5Canvas" width="240" height="170"></canvas>
               <div class="step-graph-cap">Her adımın katkısı — geriye gittikçe |r| kadar küçülür (|r|&gt;1 ise büyür)</div>
             </div>
           </div>
-          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> aynı ağırlık her adımda kullanıldığı için asıl gradyan, tüm zaman adımlarının katkısının <b>toplamı</b>. |r|&lt;1 ise eski adımların etkisi hızla söner (vanishing gradient) — |r|&gt;1 ise patlar (exploding gradient).</div>
-          <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu toplam gradyanla her ağırlığı güncelliyoruz — aşağıdaki <b>🔻 Güncelle</b> satırı bunu gösteriyor; sonraki bölümde bu döngüyü tekrar tekrar çalıştırıp modeli eğitiyoruz.</div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> Geri Adım 1-4'te bulduğumuz her gradyan TEK bir zaman adımına aitti. Ama RNN'de aynı ağırlık (örneğin W<sub>hh</sub>) her adımda yeniden kullanılıyor — asıl gradyanı bulmak için tüm adımların katkısını toplamamız gerekiyor.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Neden toplanır — çoklu kullanım kuralı:</b> bir değişken birden fazla yerde kullanılıyorsa (burada W, t=1..T'nin hepsinde), o değişkene göre toplam türev, her kullanımdan gelen katkıların toplamıdır:</div>
@@ -1260,14 +1260,14 @@
                   <div class="eq" style="padding-left:16px">→ \( \dfrac{\partial L}{\partial h_1}=\)kendi+BPTT = <span style="color:var(--muted)" id="rcM2B1sumSub"></span> = <span class="v" id="rcM2B1sumVal"></span> &nbsp;→&nbsp; \( \dfrac{\partial L}{\partial z_h^{(1)}} \) = <span style="color:var(--muted)" id="rcM2B1zhSub"></span> = <span class="v" id="rcM2B1zhVal"></span></div>
                   <div class="eq" style="padding-left:16px">→ \( g_1=\dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="rcM2B1WhhSub"></span> = <span class="v" id="rcM2B1WhhVal"></span> <span style="color:var(--muted); font-size:11px">(h₀=0)</span></div>
                 </div>
+                <div class="callout" id="rcM2S5Total" style="margin:10px 0 0"></div>
+                <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">💡 <b>many-to-one'dan fark:</b> orada toplam, geriye doğru r=W<sub>hh</sub>(1−h²) ile küçülen/büyüyen TEK bir kaynağın (t=3'ün kendi çıktısının) yankısıydı. Burada her g<sub>t</sub>'nin İÇİNDE zaten o adımın ÖZ katkısı da var — toplam hem "kendi payların" hem "yankıların" toplamı.</div>
               </div>
               <div class="step-graph-plot">
                 <canvas id="rcM2Step5Canvas" width="240" height="170"></canvas>
                 <div class="step-graph-cap">Her adımın GERÇEK W<sub>hh</sub> katkısı (g<sub>t</sub>·h<sub>t-1</sub>) — yaklaşık değil, üstteki sayılarla</div>
               </div>
             </div>
-            <div class="callout" id="rcM2S5Total" style="margin:10px 0 0"></div>
-            <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">💡 <b>many-to-one'dan fark:</b> orada toplam, geriye doğru r=W<sub>hh</sub>(1−h²) ile küçülen/büyüyen TEK bir kaynağın (t=3'ün kendi çıktısının) yankısıydı. Burada her g<sub>t</sub>'nin İÇİNDE zaten o adımın ÖZ katkısı da var — toplam hem "kendi payların" hem "yankıların" toplamı.</div>
           </div>
         </div>
       </div>
@@ -2808,9 +2808,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607202108"></script>
+<script src="js/lesson-linreg.js?v=202607202125"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607202108"></script>
+<script src="js/app.js?v=202607202125"></script>
 </body>
 </html>
