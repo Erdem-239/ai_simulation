@@ -335,10 +335,10 @@
   .loss-surface-3d{width:100%; max-width:130px; height:130px; margin:0 auto; background:#10182b; border:1px solid var(--line); border-radius:8px; overflow:hidden}
   .loss-surface-3d canvas{display:block; width:100%!important; height:100%!important}
   /* sağ sütun: türetme kartları (accordion) */
-  .rnn-deriv-cards .acc{margin:8px 0}
-  .rnn-deriv-cards .acc-head{font-size:13px; padding:11px 13px}
+  .rnn-deriv-cards .acc{margin:5px 0}
+  .rnn-deriv-cards .acc-head{font-size:12.5px; padding:7px 12px}
   .rnn-deriv-cards .acc-head b{color:var(--accent)}
-  .rnn-deriv-cards .acc-body{padding:10px 14px 12px}
+  .rnn-deriv-cards .acc-body{padding:8px 13px 10px}
   .rnn-deriv-cards .acc-body .eq{margin:2px 0}
   .op{fill:#16324f; stroke:#5aa0e0; stroke-width:2; cursor:pointer}
   .io-x{fill:#173a22; stroke:#46c46a; cursor:pointer}
