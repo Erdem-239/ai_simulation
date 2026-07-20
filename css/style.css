@@ -235,6 +235,19 @@
   .sc-resizer:hover::before, .sc-resizer.on::before{background:var(--blue); width:3px; left:4.5px}
   .sc-resizer:hover::after, .sc-resizer.on::after{color:var(--blue); border-color:var(--blue)}
 
+  /* ---- diyagram kartını aşağıdan sürükleyip uzatarak boşluğu kapat ---- */
+  #scDiagramPanel{min-height:var(--scdiagh,0px); box-sizing:border-box}
+  .sc-vresizer{height:14px; width:100%; cursor:row-resize; position:relative; touch-action:none}
+  .sc-vresizer::before{content:''; position:absolute; top:6px; left:10%; height:2px; width:80%; background:var(--line); transition:.15s}
+  .sc-vresizer::after{
+    content:'⋯'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    color:var(--muted); font-size:12px; line-height:1; background:var(--panel2); padding:2px 6px;
+    border:1px solid var(--line); border-radius:5px; user-select:none; transition:.15s;
+  }
+  .sc-vresizer:hover::before, .sc-vresizer.on::before{background:var(--blue); height:3px; top:5.5px}
+  .sc-vresizer:hover::after, .sc-vresizer.on::after{color:var(--blue); border-color:var(--blue)}
+  @media(max-width:560px){ .sc-vresizer{display:none} }
+
   /* ---- türev ağacı: her ∂L/∂X satırının tam zincirini gösteren tıklanabilir açılır ağaç ---- */
   .dt-btn{background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:1px 7px; font-size:11px; line-height:1.7; cursor:pointer; margin-left:6px; color:var(--muted); vertical-align:middle; white-space:nowrap}
   .dt-btn:hover{border-color:var(--accent); color:var(--accent)}

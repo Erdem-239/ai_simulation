@@ -434,6 +434,27 @@
   bind(rsR, 1);
 })();
 
+/* ---- diyagram kartını aşağıdan sürükleyip uzatarak boşluğu kapat ---- */
+(function(){
+  const root=document.documentElement;
+  const panel=document.getElementById('scDiagramPanel'), vres=document.getElementById('scVResizer');
+  if(!panel||!vres) return;
+  let h=0;
+  try{ const s=parseInt(localStorage.getItem('attn_scdiagh')||'',10); if(s>=0&&s<=1600) h=s; }catch(e){}
+  if(h>0) root.style.setProperty('--scdiagh', h+'px');
+  let drag=false, sy=0, sh=0;
+  vres.addEventListener('pointerdown', e=>{ drag=true; sy=e.clientY; sh=h||panel.getBoundingClientRect().height; vres.classList.add('on'); vres.setPointerCapture(e.pointerId); e.preventDefault(); });
+  vres.addEventListener('pointermove', e=>{
+    if(!drag) return;
+    h=Math.max(0, Math.min(1600, sh+(e.clientY-sy)));
+    root.style.setProperty('--scdiagh', h+'px');
+  });
+  vres.addEventListener('pointerup', ()=>{
+    drag=false; vres.classList.remove('on');
+    try{ localStorage.setItem('attn_scdiagh', String(Math.round(h))); }catch(e){}
+  });
+})();
+
 /* ---- interaktif tek-hücre RNN geri yayılım oynatıcısı ---- */
 (function(){
   const $=id=>document.getElementById(id);
