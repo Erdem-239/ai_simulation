@@ -56,6 +56,12 @@
   sub{font-size:.72em}
   .detail{display:none; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); font-size:12.5px; color:#cfd3d8}
   .step.open .detail{display:block}
+
+  /* ---- RNN Geri Adım kartları: tüm gövde (formül+grafik+detay) açılıp kapanabilir ---- */
+  #gAdimSection .stepbody, #gAdimSectionM2m .stepbody{display:none}
+  #gAdimSection .step.open .stepbody, #gAdimSectionM2m .step.open .stepbody{display:block}
+  #gAdimSection .stephead, #gAdimSectionM2m .stephead{padding-bottom:11px}
+  #gAdimSection .step.open .stephead, #gAdimSectionM2m .step.open .stephead{padding-bottom:7px}
   .detail h4{color:var(--accent); margin:10px 0 4px; font-size:13px}
   .detail h4:first-child{margin-top:0}
   .detail ul{margin:6px 0; padding-left:20px}
