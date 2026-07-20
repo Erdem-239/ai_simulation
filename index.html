@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607202227">
+<link rel="stylesheet" href="css/style.css?v=202607202234">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 22:27 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 22:34 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -800,18 +800,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- ADIM ADIM — HER ADIM NEDEN? (many-to-one'a özgü — tip seçiciyle birlikte gizlenir/gösterilir) -->
-    <div id="gAdimSection">
-    <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
-    <div class="steps">
-      <div class="step" id="gAdim1">
+      <div class="step" id="gAdim1" style="flex:1 1 360px">
         <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -840,6 +829,17 @@
           </div>
         </div>
       </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- ADIM ADIM — HER ADIM NEDEN? (many-to-one'a özgü — tip seçiciyle birlikte gizlenir/gösterilir) -->
+    <div id="gAdimSection">
+    <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
+    <div class="steps">
       <div class="step" id="gAdim2">
         <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -949,7 +949,7 @@
           </div>
         </div>
       </div>
-      <div class="step" id="gAdim5" style="grid-column:1/-1">
+      <div class="step" id="gAdim5">
         <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -2802,9 +2802,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607202227"></script>
+<script src="js/lesson-linreg.js?v=202607202234"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607202227"></script>
+<script src="js/app.js?v=202607202234"></script>
 </body>
 </html>
