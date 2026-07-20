@@ -454,6 +454,57 @@
   });
 })();
 
+/* ---- eğitim döngüsü satırı: Eğitim döngüsü / Kayıp Vadisi / Adım 1 sütunlarını sürükle-genişlet ---- */
+(function(){
+  const row=document.getElementById('trRow');
+  const r1=document.getElementById('trResizer1'), r2=document.getElementById('trResizer2');
+  if(!row||!r1||!r2) return;
+  let w1=320, w2=260;
+  try{ const s=parseInt(localStorage.getItem('attn_tr1w')||'',10); if(s>=180&&s<=700) w1=s; }catch(e){}
+  try{ const s=parseInt(localStorage.getItem('attn_tr2w')||'',10); if(s>=160&&s<=600) w2=s; }catch(e){}
+  row.style.setProperty('--tr1w', w1+'px');
+  row.style.setProperty('--tr2w', w2+'px');
+  function bind(handle, getW, setW, storageKey, min, max){
+    let drag=false, sx=0, sw=0;
+    handle.addEventListener('pointerdown', e=>{ drag=true; sx=e.clientX; sw=getW(); handle.classList.add('on'); handle.setPointerCapture(e.pointerId); e.preventDefault(); });
+    handle.addEventListener('pointermove', e=>{
+      if(!drag) return;
+      const w=Math.max(min, Math.min(max, sw+(e.clientX-sx)));
+      setW(w);
+    });
+    handle.addEventListener('pointerup', ()=>{
+      drag=false; handle.classList.remove('on');
+      try{ localStorage.setItem(storageKey, String(Math.round(getW()))); }catch(e){}
+    });
+  }
+  bind(r1, ()=>w1, w=>{ w1=w; row.style.setProperty('--tr1w', w1+'px'); }, 'attn_tr1w', 180, 700);
+  bind(r2, ()=>w2, w=>{ w2=w; row.style.setProperty('--tr2w', w2+'px'); }, 'attn_tr2w', 160, 600);
+})();
+
+/* ---- Geri Adım kartları ızgarası: sütun genişliğini sürükle-ayarla ---- */
+(function(){
+  const section=document.getElementById('gAdimSection');
+  const handle=document.getElementById('gAdimStepsResizer');
+  if(!section||!handle) return;
+  let pct=50;
+  try{ const s=parseFloat(localStorage.getItem('attn_stepsw')||''); if(s>=25&&s<=75) pct=s; }catch(e){}
+  section.style.setProperty('--stepsw', pct+'%');
+  let drag=false, sx=0, spct=50, sw=0;
+  handle.addEventListener('pointerdown', e=>{
+    drag=true; sx=e.clientX; spct=pct; sw=handle.parentElement.getBoundingClientRect().width;
+    handle.classList.add('on'); handle.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  handle.addEventListener('pointermove', e=>{
+    if(!drag||!sw) return;
+    pct=Math.max(25, Math.min(75, spct+(e.clientX-sx)/sw*100));
+    section.style.setProperty('--stepsw', pct+'%');
+  });
+  handle.addEventListener('pointerup', ()=>{
+    drag=false; handle.classList.remove('on');
+    try{ localStorage.setItem('attn_stepsw', String(pct.toFixed(1))); }catch(e){}
+  });
+})();
+
 /* ---- interaktif tek-hücre RNN geri yayılım oynatıcısı ---- */
 (function(){
   const $=id=>document.getElementById(id);
