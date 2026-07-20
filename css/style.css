@@ -221,12 +221,23 @@
   .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
 
   /* ---- Tek Hücre bölümü — sol: formül kartları, orta: diyagram, sağ: girdi/ağırlık paneli ---- */
-  .sc-cols{display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap}
-  .sc-left{flex:1 1 130px; min-width:130px}
-  .sc-center{flex:1 1 260px; min-width:220px; max-width:300px}
-  .sc-right{flex:1 1 170px; min-width:170px}
+  .sc-cols{display:flex; gap:0; align-items:flex-start; flex-wrap:wrap}
+  .sc-left{flex:1 1 130px; min-width:130px; padding-right:6px}
+  .sc-center{flex:0 0 var(--scw,300px); min-width:220px; max-width:560px}
+  .sc-right{flex:1 1 170px; min-width:170px; padding-left:6px}
   .sc-right input[type="range"]{width:90px !important}
-  @media(max-width:560px){ .sc-cols{flex-direction:column} .sc-center{max-width:none} }
+  @media(max-width:560px){ .sc-cols{flex-direction:column} .sc-center{max-width:none} .sc-resizer{display:none} }
+
+  /* ---- diyagramı sağdan/soldan sürükle-bırak ile boyutlandır ---- */
+  .sc-resizer{flex:0 0 12px; align-self:stretch; cursor:col-resize; position:relative; touch-action:none}
+  .sc-resizer::before{content:''; position:absolute; left:5px; top:8%; width:2px; height:84%; background:var(--line); transition:.15s}
+  .sc-resizer::after{
+    content:'⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    color:var(--muted); font-size:12px; line-height:1; background:var(--panel2); padding:5px 2px;
+    border:1px solid var(--line); border-radius:5px; user-select:none; transition:.15s;
+  }
+  .sc-resizer:hover::before, .sc-resizer.on::before{background:var(--blue); width:3px; left:4.5px}
+  .sc-resizer:hover::after, .sc-resizer.on::after{color:var(--blue); border-color:var(--blue)}
 
   /* ---- türev ağacı: her ∂L/∂X satırının tam zincirini gösteren tıklanabilir açılır ağaç ---- */
   .dt-btn{background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:1px 7px; font-size:11px; line-height:1.7; cursor:pointer; margin-left:6px; color:var(--muted); vertical-align:middle; white-space:nowrap}
@@ -252,7 +263,7 @@
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
   #cellSvg, #scSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
-  #scSvg{max-width:280px}
+  #scSvg{max-width:100%}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
   /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer, sürüklenebilir */
