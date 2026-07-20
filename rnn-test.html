@@ -43,8 +43,9 @@
   .wrap{flex:1 1 460px; min-width:0; max-width:560px; order:3}
 
   /* --- sol rail: forward-pass değer yığını (yukarıdan aşağıya, geriye-doğru okuma sırasıyla) --- */
+  /* sticky: diyagramla birlikte sabit kalsın, sağdaki uzun zincir kaydırılırken boşluk oluşmasın */
   .rail{
-    flex:0 0 190px; order:1;
+    flex:0 0 190px; order:1; position:sticky; top:10px; max-height:calc(100vh - 20px); overflow-y:auto;
     display:flex; flex-direction:column; gap:0;
   }
   .rail-label{
@@ -119,7 +120,7 @@
     .page{flex-wrap:wrap}
     .diagram-col{order:1; flex:1 1 100%; position:static; max-width:none}
     .diagram-panel{max-width:640px}
-    .rail{order:2}
+    .rail{order:2; position:static; max-height:none}
     .wrap{order:3}
   }
   @media(max-width:760px){
@@ -277,11 +278,24 @@
 
   /* --- canlı diyagram: ORTA sütun, sticky (chain sütunü kaydırılırken sabit kalır) --- */
   .diagram-col{
-    flex:0 0 460px; order:2; position:sticky; top:10px; min-width:0;
+    flex:0 0 var(--diagw,540px); order:2; position:sticky; top:10px; min-width:0; display:flex; gap:0;
   }
   .diagram-panel{
+    flex:1 1 auto; min-width:0;
     background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:9px 11px;
   }
+  .diagram-resizer{
+    flex:0 0 12px; align-self:stretch; cursor:col-resize; position:relative; touch-action:none;
+  }
+  .diagram-resizer::before{content:''; position:absolute; left:5px; top:8%; width:2px; height:84%; background:var(--line); transition:.15s}
+  .diagram-resizer::after{
+    content:'⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    color:var(--muted); font-size:13px; line-height:1; background:var(--panel2); padding:6px 2px;
+    border:1px solid var(--line); border-radius:5px; user-select:none; transition:.15s;
+  }
+  .diagram-resizer:hover::before, .diagram-resizer.on::before{background:var(--accent); width:3px; left:4.5px}
+  .diagram-resizer:hover::after, .diagram-resizer.on::after{color:var(--accent); border-color:var(--accent)}
+  @media(max-width:1180px){ .diagram-resizer{display:none} }
   .diagram-toprow{margin-bottom:6px}
   .diagram-toprow .cap{
     display:block; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.08em;
@@ -355,6 +369,7 @@
       </div>
     </div>
   </div>
+  <div class="diagram-resizer" id="diagResizer" title="Sürükle: diyagram boyutunu ayarla"></div>
 </div><!-- /diagram-col -->
 
   <div class="rail">
@@ -843,6 +858,29 @@
   document.getElementById('cellRst').addEventListener('click', reset);
 
   reset();
+})();
+</script>
+
+<!-- ---- diyagram genişliği sürükle-bırak ile ayarlanabilir ---- -->
+<script>
+(function(){
+  var rs=document.getElementById('diagResizer'); var col=document.querySelector('.diagram-col');
+  if(!rs||!col) return;
+  var root=document.documentElement;
+  var w=540;
+  try{ var s=parseInt(localStorage.getItem('rnntest_diagw')||'',10); if(s>=380&&s<=760) w=s; }catch(e){}
+  root.style.setProperty('--diagw', w+'px');
+  var drag=false, sx=0, sw=0;
+  rs.addEventListener('pointerdown', function(e){ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
+  rs.addEventListener('pointermove', function(e){
+    if(!drag) return;
+    w=Math.max(380, Math.min(760, sw+(e.clientX-sx)));
+    root.style.setProperty('--diagw', w+'px');
+  });
+  rs.addEventListener('pointerup', function(){
+    drag=false; rs.classList.remove('on');
+    try{ localStorage.setItem('rnntest_diagw', String(Math.round(w))); }catch(e){}
+  });
 })();
 </script>
 </body>
