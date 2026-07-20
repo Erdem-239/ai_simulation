@@ -91,6 +91,30 @@
   .rval-eq .mfrac .mn, .rval-eq .mfrac .md{font-size:9.5px}
   .rval-sub .mfrac .mn, .rval-sub .mfrac .md{font-size:9px}
 
+  /* --- girdi & ağırlık paneli (rail'in altında) --- */
+  .gc-inputs{margin-top:4px}
+  .gc-row{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px}
+  .gc-row label{
+    display:flex; flex-direction:column; gap:2px; font-family:var(--font-mono); font-size:9.5px;
+    color:var(--faint); flex:1 1 44px;
+  }
+  .gc-row input{
+    width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:5px;
+    color:var(--text); font-family:var(--font-mono); font-size:11px; padding:3px 5px;
+    font-variant-numeric:tabular-nums;
+  }
+  .gc-row input:focus{outline:none; border-color:var(--chain)}
+
+  /* --- hedef ağırlık seçici (hangi zincir gösteriliyor) --- */
+  .target-tabs{display:flex; gap:6px; margin:0 0 16px; flex-wrap:wrap}
+  .target-tab{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:600; padding:6px 13px;
+    border-radius:7px; border:1px solid var(--line); background:var(--panel); color:var(--muted);
+    cursor:pointer; transition:.15s;
+  }
+  .target-tab:hover{border-color:var(--chain); color:var(--text)}
+  .target-tab.active{background:var(--chain); border-color:var(--chain); color:#0c2430}
+
   @media(max-width:1180px){
     .page{flex-wrap:wrap}
     .diagram-col{order:1; flex:1 1 100%; position:static; max-width:none}
@@ -159,9 +183,18 @@
   .step.bptt .eq-box{border-color:var(--accent-dim)}
 
   .eq{
-    font-family:var(--font-mono); font-size:12.5px; white-space:nowrap;
-    display:flex; align-items:center; gap:7px; font-variant-numeric:tabular-nums;
+    font-family:var(--font-mono); font-size:12.5px; white-space:normal;
+    display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-variant-numeric:tabular-nums;
   }
+  .eq-sub{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--faint); line-height:1.4;
+    margin-top:5px; word-break:break-word;
+  }
+  .eq-result{
+    font-family:var(--font-mono); font-size:14.5px; font-weight:600; color:var(--chain);
+    margin-top:3px; font-variant-numeric:tabular-nums;
+  }
+  .step.final .eq-result{color:var(--good); font-size:16px}
 
   .frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; margin:0 1px; line-height:1.05}
   .frac .num, .frac .den{font-size:11px; padding:0 2px}
@@ -335,11 +368,8 @@
             <span class="mfrac"><span class="mn">1</span><span class="md">2</span></span>
             <span>(ŷ − y)²</span>
           </div>
-          <div class="rval-sub">
-            <span class="mfrac"><span class="mn">1</span><span class="md">2</span></span>
-            <span>(0.6704 − 1.00)²</span>
-          </div>
-          <p class="rval-num">0.0543</p>
+          <div class="rval-sub" id="r_L_sub"></div>
+          <p class="rval-num" id="r_L_num">0.0543</p>
         </div>
       </div>
       <div class="rval">
@@ -347,8 +377,8 @@
         <div class="rval-body">
           <p class="rval-name">ŷ</p>
           <div class="rval-eq"><span>z<sub>y</sub> = W<sub>hy</sub>h<sub>3</sub>+b<sub>y</sub></span></div>
-          <div class="rval-sub"><span>(0.80)(0.5880) + 0.20</span></div>
-          <p class="rval-num">0.6704</p>
+          <div class="rval-sub" id="r_zy_sub"></div>
+          <p class="rval-num" id="r_zy_num">0.6704</p>
         </div>
       </div>
       <div class="rval">
@@ -356,8 +386,8 @@
         <div class="rval-body">
           <p class="rval-name">tanh</p>
           <div class="rval-eq"><span>h<sub>3</sub> = tanh(z<sub>h</sub><sup>(3)</sup>)</span></div>
-          <div class="rval-sub"><span>tanh(0.6745)</span></div>
-          <p class="rval-num">0.5880</p>
+          <div class="rval-sub" id="r_h3_sub"></div>
+          <p class="rval-num" id="r_h3_num">0.5880</p>
         </div>
       </div>
       <div class="rval">
@@ -365,163 +395,200 @@
         <div class="rval-body">
           <p class="rval-name">z<sub>h</sub><sup>(3)</sup></p>
           <div class="rval-eq"><span>W<sub>xh</sub>x<sub>3</sub>+W<sub>hh</sub>h<sub>2</sub>+b<sub>h</sub></span></div>
-          <div class="rval-sub"><span>(0.4)(1.5) + (0.3)(−0.0849) + 0.1</span></div>
-          <p class="rval-num">0.6745</p>
+          <div class="rval-sub" id="r_zh3_sub"></div>
+          <p class="rval-num" id="r_zh3_num">0.6745</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="gc-inputs">
+    <p class="rail-label" style="margin:14px 0 6px">girdiler &amp; ağırlıklar</p>
+    <div class="gc-row">
+      <label>x<sub>1</sub><input type="number" step="0.1" id="gc_x1" value="2"></label>
+      <label>x<sub>2</sub><input type="number" step="0.1" id="gc_x2" value="-1"></label>
+      <label>x<sub>3</sub><input type="number" step="0.1" id="gc_x3" value="1.5"></label>
+      <label>y<input type="number" step="0.1" id="gc_y" value="1"></label>
+    </div>
+    <div class="gc-row">
+      <label>W<sub>xh</sub><input type="number" step="0.01" id="gc_Wxh" value="0.4"></label>
+      <label>W<sub>hh</sub><input type="number" step="0.01" id="gc_Whh" value="0.3"></label>
+      <label>b<sub>h</sub><input type="number" step="0.01" id="gc_bh" value="0.1"></label>
+    </div>
+    <div class="gc-row">
+      <label>W<sub>hy</sub><input type="number" step="0.01" id="gc_Why" value="0.8"></label>
+      <label>b<sub>y</sub><input type="number" step="0.01" id="gc_by" value="0.2"></label>
     </div>
   </div>
 
 <div class="wrap">
   <p class="eyebrow">BPTT · geri yayılım zinciri</p>
-  <h1>t=1'de <em>W<sub>hh</sub></em>'nin gradyanı<br>hangi zincirden geçiyor?</h1>
-  <p class="lede">3 adımlı bir RNN'de (t=1,2,3) çıktı sadece <code>t=3</code>'te var. t=1 en uzak adım olduğu için, oraya ulaşan sinyal en uzun yolu kat ediyor — kayıptan başlayıp zaman içinde <b style="color:var(--accent)">iki kez geriye</b> sıçrıyor.</p>
+  <h1 id="chainTitle">t=1'de <em>W<sub>hh</sub></em>'nin gradyanı<br>hangi zincirden geçiyor?</h1>
+  <p class="lede" id="chainLede">3 adımlı bir RNN'de (t=1,2,3) çıktı sadece <code>t=3</code>'te var. t=1 en uzak adım olduğu için, oraya ulaşan sinyal en uzun yolu kat ediyor — kayıptan başlayıp zaman içinde <b style="color:var(--accent)">iki kez geriye</b> sıçrıyor.</p>
 
-  <div class="chain">
-
-    <div class="step">
-      <div class="step-dot">1</div>
-      <div class="step-body">
-        <p class="step-path"><b>L → ŷ → z<sub>y</sub></b></p>
-        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
-          <div class="eq">
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>y</sub></span></span>
-            <span>=</span>
-            <span>(ŷ − y)</span>
-          </div>
-          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
-        </div>
-        <p class="step-note">Başlangıç noktası — kaybın çıktı katmanına duyarlılığı.</p>
-        <div class="detail"><div class="detail-inner">
-          <p class="dwhy"><b>Adım 1</b> — L'nin açık hali: L = ½(ŷ−y)². ŷ'ye göre türetelim (kare alma kuralı: 2×ifade×ifadenin kendi türevi, ifade=(ŷ−y), kendi türevi=1):</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂ŷ</span></span> = ½ × 2(ŷ−y) × 1 = (ŷ−y)</div>
-          <p class="dwhy"><b>Adım 2</b> — ŷ=z<sub>y</sub> (regresyonda çıktı katmanı özdeşlik), bir değişkenin kendine göre türevi 1'dir:</p>
-          <div class="deq"><span class="frac"><span class="num">∂ŷ</span><span class="den">∂z<sub>y</sub></span></span> = 1</div>
-          <p class="dwhy"><b>Adım 3</b> — zincir kuralıyla çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>y</sub></span></span> = (ŷ−y) × 1 = (ŷ−y)</div>
-        </div></div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-dot">2</div>
-      <div class="step-body">
-        <p class="step-path"><b>z<sub>y</sub> → h<sub>3</sub> → z<sub>h</sub><sup>(3)</sup></b></p>
-        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
-          <div class="eq">
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span>
-            <span>=</span>
-            <span>[(ŷ − y)·W<sub>hy</sub>] · (1 − h<sub>3</sub>²)</span>
-          </div>
-          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
-        </div>
-        <p class="step-note">Sinyal son hücreye iniyor; tanh türevi (1−h²) burada ilk kez çarpana giriyor.</p>
-        <div class="detail"><div class="detail-inner">
-          <p class="dwhy"><b>Adım 1</b> — z<sub>y</sub>'nin açık hali: z<sub>y</sub>=W<sub>hy</sub>·h<sub>3</sub>+b<sub>y</sub>. h<sub>3</sub>'e göre türetelim (W<sub>hy</sub>·h<sub>3</sub> terimi = sabit(W<sub>hy</sub>)×değişken(h<sub>3</sub>) → türevi W<sub>hy</sub>; b<sub>y</sub>'de h<sub>3</sub> yok):</p>
-          <div class="deq"><span class="frac"><span class="num">∂z<sub>y</sub></span><span class="den">∂h<sub>3</sub></span></span> = W<sub>hy</sub></div>
-          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>3</sub></span></span> = (ŷ−y) × W<sub>hy</sub></div>
-          <p class="dwhy"><b>Adım 2</b> — h<sub>3</sub>=tanh(z<sub>h</sub><sup>(3)</sup>) olduğu için tanh'ın türevini kullanırız (1−tanh²=1−h²):</p>
-          <div class="deq"><span class="frac"><span class="num">∂h<sub>3</sub></span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> = 1 − h<sub>3</sub>²</div>
-          <p class="dwhy"><b>Adım 3</b> — iki parçayı çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> = [(ŷ−y)·W<sub>hy</sub>] × (1−h<sub>3</sub>²)</div>
-        </div></div>
-      </div>
-    </div>
-
-    <div class="step bptt">
-      <div class="step-dot">3</div>
-      <div class="step-body">
-        <p class="step-path"><b>z<sub>h</sub><sup>(3)</sup> → h<sub>2</sub> → z<sub>h</sub><sup>(2)</sup></b><span class="step-tag">BPTT · 1 adım geri</span></p>
-        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
-          <div class="eq">
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span>
-            <span>=</span>
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span>
-            <span>· W<sub>hh</sub> · (1 − h<sub>2</sub>²)</span>
-          </div>
-          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
-        </div>
-        <p class="step-note">Zaman içinde ilk geri sıçrayış — aynı W<sub>hh</sub>, ikinci kez çarpana giriyor.</p>
-        <div class="detail"><div class="detail-inner">
-          <p class="dwhy"><b>Amaç:</b> z<sub>h</sub><sup>(3)</sup>, h<sub>2</sub>'ye bağlı (h<sub>2</sub> bir önceki adımın hafızası) — sinyali oradan geriye, z<sub>h</sub><sup>(2)</sup>'ye taşıyoruz.</p>
-          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(3)</sup>'ün açık hali: z<sub>h</sub><sup>(3)</sup>=W<sub>xh</sub>·x<sub>3</sub>+W<sub>hh</sub>·h<sub>2</sub>+b<sub>h</sub>. h<sub>2</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>2</sub> terimi → türevi W<sub>hh</sub>):</p>
-          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(3)</sup></span><span class="den">∂h<sub>2</sub></span></span> = W<sub>hh</sub></div>
-          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>h</sub><sup>(3)</sup> ile çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>2</sub></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> × W<sub>hh</sub></div>
-          <p class="dwhy"><b>Adım 2</b> — h<sub>2</sub>=tanh(z<sub>h</sub><sup>(2)</sup>) → tanh türevi:</p>
-          <div class="deq"><span class="frac"><span class="num">∂h<sub>2</sub></span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> = 1 − h<sub>2</sub>²</div>
-          <p class="dwhy"><b>Adım 3</b> — çarp, işte BPTT'nin bir adımı:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(3)</sup></span></span> × W<sub>hh</sub> × (1−h<sub>2</sub>²)</div>
-        </div></div>
-      </div>
-    </div>
-
-    <div class="step bptt">
-      <div class="step-dot">4</div>
-      <div class="step-body">
-        <p class="step-path"><b>z<sub>h</sub><sup>(2)</sup> → h<sub>1</sub> → z<sub>h</sub><sup>(1)</sup></b><span class="step-tag">BPTT · 1 adım daha geri</span></p>
-        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
-          <div class="eq">
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span>
-            <span>=</span>
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span>
-            <span>· W<sub>hh</sub> · (1 − h<sub>1</sub>²)</span>
-          </div>
-          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
-        </div>
-        <p class="step-note">İkinci ve son sıçrayış — hedefimiz olan t=1'e vardık.</p>
-        <div class="detail"><div class="detail-inner">
-          <p class="dwhy"><b>Amaç:</b> aynı mantık bir adım daha — z<sub>h</sub><sup>(2)</sup>, h<sub>1</sub>'e bağlı; sinyali h<sub>1</sub> üzerinden z<sub>h</sub><sup>(1)</sup>'e taşıyoruz.</p>
-          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(2)</sup>=W<sub>xh</sub>·x<sub>2</sub>+W<sub>hh</sub>·h<sub>1</sub>+b<sub>h</sub>. h<sub>1</sub>'e göre türetelim:</p>
-          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(2)</sup></span><span class="den">∂h<sub>1</sub></span></span> = W<sub>hh</sub></div>
-          <p class="dwhy">Bir önceki adımdaki ∂L/∂z<sub>h</sub><sup>(2)</sup> ile çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂h<sub>1</sub></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> × W<sub>hh</sub></div>
-          <p class="dwhy"><b>Adım 2</b> — h<sub>1</sub>=tanh(z<sub>h</sub><sup>(1)</sup>) → tanh türevi:</p>
-          <div class="deq"><span class="frac"><span class="num">∂h<sub>1</sub></span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> = 1 − h<sub>1</sub>²</div>
-          <p class="dwhy"><b>Adım 3</b> — çarp; hedefimiz z<sub>h</sub><sup>(1)</sup>'e ulaştık:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(2)</sup></span></span> × W<sub>hh</sub> × (1−h<sub>1</sub>²)</div>
-        </div></div>
-      </div>
-    </div>
-
-    <div class="step final">
-      <div class="step-dot">✓</div>
-      <div class="step-body">
-        <p class="step-path"><b>z<sub>h</sub><sup>(1)</sup> → W<sub>hh</sub></b></p>
-        <div class="eq-box" tabindex="0" role="button" aria-expanded="false">
-          <div class="eq">
-            <span class="frac"><span class="num">∂L</span><span class="den">∂W<sub>hh</sub></span></span><span style="font-size:12px; color:var(--faint)">|<sub>t=1</sub></span>
-            <span>=</span>
-            <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span>
-            <span>· h<sub>0</sub></span>
-          </div>
-          <span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>
-        </div>
-        <p class="result-flag">sonuç</p>
-        <div class="detail"><div class="detail-inner">
-          <p class="dwhy"><b>Son adım:</b> artık z<sub>h</sub><sup>(1)</sup>'e ulaşan sinyalimiz var; W<sub>hh</sub>'nin z<sub>h</sub><sup>(1)</sup> içindeki katkısını bulup zincir kuralıyla çarpıyoruz.</p>
-          <p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(1)</sup>=W<sub>xh</sub>·x<sub>1</sub>+W<sub>hh</sub>·h<sub>0</sub>+b<sub>h</sub>. W<sub>hh</sub>'ye göre türetelim (W<sub>hh</sub>·h<sub>0</sub> terimi = sabit(h<sub>0</sub>)×değişken(W<sub>hh</sub>) → türevi h<sub>0</sub>):</p>
-          <div class="deq"><span class="frac"><span class="num">∂z<sub>h</sub><sup>(1)</sup></span><span class="den">∂W<sub>hh</sub></span></span> = h<sub>0</sub></div>
-          <p class="dwhy">h<sub>0</sub>=0 — dizinin başlangıç hafızası (bir önceki adımın sonucu değil, sıfırdan başlıyoruz).</p>
-          <p class="dwhy"><b>Adım 2</b> — ∂L/∂z<sub>h</sub><sup>(1)</sup> ile çarp:</p>
-          <div class="deq"><span class="frac"><span class="num">∂L</span><span class="den">∂W<sub>hh</sub></span></span>|<sub>t=1</sub> = <span class="frac"><span class="num">∂L</span><span class="den">∂z<sub>h</sub><sup>(1)</sup></span></span> × h<sub>0</sub></div>
-          <p class="dwhy" style="margin-top:12px">💡 h<sub>0</sub>=0 olduğu için bu terimin SAYISAL katkısı sıfır çıkar — ama zincirin kendisi (yukarıdaki 4 adım) her adımda aynen işliyor; farkı yaratan h<sub>0</sub>'ın değeri, zincirin yapısı değil.</p>
-        </div></div>
-      </div>
-    </div>
-
+  <div class="target-tabs">
+    <button class="target-tab active" data-target="Whh">W<sub>hh</sub> (t=1)</button>
+    <button class="target-tab" data-target="Wxh">W<sub>xh</sub> (t=1)</button>
+    <button class="target-tab" data-target="by">b<sub>y</sub></button>
   </div>
 
-  <div class="note-box">
-    <b>Neden en uzun zincir?</b> t=1, çıktıdan en uzak adım. Sinyal oraya ulaşana kadar 3 kez tanh türevinden ((1−h²)) ve 2 kez <b style="color:var(--accent)">W<sub>hh</sub></b>'den geçiyor — kısa dizilerde bile bu, RNN'in "geriye gittikçe zayıflayan/patlayan sinyal" (vanishing / exploding gradient) sorununun tam olarak nereden geldiğini gösteriyor.
-  </div>
+  <div class="chain" id="chainBox"></div>
+
+  <div class="note-box" id="chainNote"></div>
 </div>
 
 </div><!-- /page -->
 
 <script>
-  var chainSteps = Array.prototype.slice.call(document.querySelectorAll('.chain > .step'));
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var F=function(v,d){ d=(d===undefined?4:d); return (isFinite(v)?v:0).toFixed(d); };
+  var frac=function(numHTML,denHTML){ return '<span class="frac"><span class="num">'+numHTML+'</span><span class="den">'+denHTML+'</span></span>'; };
+  var curTarget='Whh';
+
+  function readInputs(){
+    return {
+      x1:parseFloat($('gc_x1').value), x2:parseFloat($('gc_x2').value), x3:parseFloat($('gc_x3').value), y:parseFloat($('gc_y').value),
+      Wxh:parseFloat($('gc_Wxh').value), Whh:parseFloat($('gc_Whh').value), bh:parseFloat($('gc_bh').value),
+      Why:parseFloat($('gc_Why').value), by:parseFloat($('gc_by').value)
+    };
+  }
+  function forward(p){
+    var h0=0;
+    var z1=p.Wxh*p.x1+p.Whh*h0+p.bh, h1=Math.tanh(z1);
+    var z2=p.Wxh*p.x2+p.Whh*h1+p.bh, h2=Math.tanh(z2);
+    var z3=p.Wxh*p.x3+p.Whh*h2+p.bh, h3=Math.tanh(z3);
+    var zy=p.Why*h3+p.by, yhat=zy;
+    var L=0.5*(yhat-p.y)*(yhat-p.y);
+    return {h0:h0,z1:z1,h1:h1,z2:z2,h2:h2,z3:z3,h3:h3,zy:zy,yhat:yhat,L:L};
+  }
+  function backward(p, fw){
+    var dzy=fw.yhat-p.y;
+    var dh3=dzy*p.Why;
+    var dzh3=dh3*(1-fw.h3*fw.h3);
+    var dzh2=dzh3*p.Whh*(1-fw.h2*fw.h2);
+    var dzh1=dzh2*p.Whh*(1-fw.h1*fw.h1);
+    return {dzy:dzy, dh3:dh3, dzh3:dzh3, dzh2:dzh2, dzh1:dzh1,
+      dWhh_t1:dzh1*fw.h0, dWxh_t1:dzh1*p.x1, dby:dzy};
+  }
+
+  /* ---- İleri yayılım (t=3) rail'i canlı doldur ---- */
+  function renderRail(p, fw){
+    $('r_L_sub').innerHTML = frac('1','2')+'<span>('+F(fw.yhat)+' − '+F(p.y,2)+')²</span>';
+    $('r_L_num').textContent = F(fw.L);
+    $('r_zy_sub').innerHTML = '<span>('+F(p.Why,2)+')('+F(fw.h3)+') + '+F(p.by,2)+'</span>';
+    $('r_zy_num').textContent = F(fw.zy);
+    $('r_h3_sub').innerHTML = '<span>tanh('+F(fw.z3)+')</span>';
+    $('r_h3_num').textContent = F(fw.h3);
+    $('r_zh3_sub').innerHTML = '<span>('+F(p.Wxh,2)+')('+F(p.x3,2)+') + ('+F(p.Whh,2)+')('+F(fw.h2)+') + '+F(p.bh,2)+'</span>';
+    $('r_zh3_num').textContent = F(fw.z3);
+  }
+
+  /* ---- hedefe göre zincir adımları ---- */
+  function buildSteps(target, p, fw, bw){
+    var s1 = {
+      dot:'1', path:'L → ŷ → z<sub>y</sub>',
+      eq:frac('∂L','∂z<sub>y</sub>'), sub:'(ŷ − y) = ('+F(fw.yhat)+' − '+F(p.y,2)+')', result:F(bw.dzy),
+      note:'Başlangıç noktası — kaybın çıktı katmanına duyarlılığı.',
+      detail:'<p class="dwhy"><b>Adım 1</b> — L\'nin açık hali: L = ½(ŷ−y)². ŷ\'ye göre türetelim (kare alma kuralı):</p>'
+        +'<div class="deq">'+frac('∂L','∂ŷ')+' = ½ × 2(ŷ−y) × 1 = (ŷ−y)</div>'
+        +'<p class="dwhy"><b>Adım 2</b> — ŷ=z<sub>y</sub> (regresyonda çıktı katmanı özdeşlik), bir değişkenin kendine göre türevi 1\'dir:</p>'
+        +'<div class="deq">'+frac('∂ŷ','∂z<sub>y</sub>')+' = 1</div>'
+        +'<p class="dwhy"><b>Adım 3</b> — zincir kuralıyla çarp:</p>'
+        +'<div class="deq">'+frac('∂L','∂z<sub>y</sub>')+' = (ŷ−y) × 1 = (ŷ−y)</div>'
+    };
+
+    if(target==='by'){
+      var sBy = {
+        dot:'✓', final:true, path:'z<sub>y</sub> → b<sub>y</sub>',
+        eq:frac('∂L','∂b<sub>y</sub>'), sub:'∂L/∂z<sub>y</sub> × 1 = ('+F(bw.dzy)+')(1)', result:F(bw.dby),
+        note:'z<sub>y</sub>=W<sub>hy</sub>h<sub>3</sub>+b<sub>y</sub> — b<sub>y</sub> her zaman adımından değil, SADECE çıktı katmanından bir kez geliyor; BPTT sıçraması yok.',
+        detail:'<p class="dwhy"><b>Adım 1</b> — z<sub>y</sub>\'nin açık hali: z<sub>y</sub>=W<sub>hy</sub>·h<sub>3</sub>+b<sub>y</sub>. b<sub>y</sub>\'ye göre türetelim (W<sub>hy</sub>·h<sub>3</sub> terimi sabit sayılır, b<sub>y</sub>\'nin kendine göre türevi 1\'dir):</p>'
+          +'<div class="deq">'+frac('∂z<sub>y</sub>','∂b<sub>y</sub>')+' = 1</div>'
+          +'<p class="dwhy"><b>Adım 2</b> — bir önceki adımdaki ∂L/∂z<sub>y</sub> ile çarp:</p>'
+          +'<div class="deq">'+frac('∂L','∂b<sub>y</sub>')+' = ∂L/∂z<sub>y</sub> × 1 = ∂L/∂z<sub>y</sub></div>'
+          +'<p class="dwhy" style="margin-top:8px">💡 b<sub>y</sub> zaman içinde tekrarlanmıyor (sadece çıktı katmanında bir kez var) — bu yüzden W<sub>hh</sub>/W<sub>xh</sub>\'in aksine hiç BPTT sıçraması yok, zincir çok kısa.</p>'
+      };
+      return [s1, sBy];
+    }
+
+    var s2 = {
+      dot:'2', path:'z<sub>y</sub> → h<sub>3</sub> → z<sub>h</sub><sup>(3)</sup>',
+      eq:frac('∂L','∂z<sub>h</sub><sup>(3)</sup>'), sub:'[(ŷ−y)·W<sub>hy</sub>]·(1−h<sub>3</sub>²) = [('+F(bw.dzy)+')('+F(p.Why,2)+')]·(1−'+F(fw.h3*fw.h3)+')', result:F(bw.dzh3),
+      note:'Sinyal son hücreye iniyor; tanh türevi (1−h²) burada ilk kez çarpana giriyor.',
+      detail:'<p class="dwhy"><b>Adım 1</b> — z<sub>y</sub>=W<sub>hy</sub>·h<sub>3</sub>+b<sub>y</sub>. h<sub>3</sub>\'e göre türetelim:</p>'
+        +'<div class="deq">'+frac('∂z<sub>y</sub>','∂h<sub>3</sub>')+' = W<sub>hy</sub></div>'
+        +'<p class="dwhy">Bir önceki adımla çarp: '+frac('∂L','∂h<sub>3</sub>')+' = (ŷ−y) × W<sub>hy</sub></p>'
+        +'<p class="dwhy"><b>Adım 2</b> — h<sub>3</sub>=tanh(z<sub>h</sub><sup>(3)</sup>) → tanh türevi (1−h²):</p>'
+        +'<div class="deq">'+frac('∂h<sub>3</sub>','∂z<sub>h</sub><sup>(3)</sup>')+' = 1 − h<sub>3</sub>²</div>'
+        +'<p class="dwhy"><b>Adım 3</b> — iki parçayı çarp.</p>'
+    };
+    var s3 = {
+      dot:'3', bptt:true, path:'z<sub>h</sub><sup>(3)</sup> → h<sub>2</sub> → z<sub>h</sub><sup>(2)</sup>', tag:'BPTT · 1 adım geri',
+      eq:frac('∂L','∂z<sub>h</sub><sup>(2)</sup>'), sub:'∂L/∂z<sub>h</sub><sup>(3)</sup> · W<sub>hh</sub> · (1−h<sub>2</sub>²) = ('+F(bw.dzh3)+')('+F(p.Whh,2)+')(1−'+F(fw.h2*fw.h2)+')', result:F(bw.dzh2),
+      note:'Zaman içinde ilk geri sıçrayış — aynı W<sub>hh</sub>, ikinci kez çarpana giriyor.',
+      detail:'<p class="dwhy"><b>Amaç:</b> z<sub>h</sub><sup>(3)</sup>, h<sub>2</sub>\'ye bağlı (bir önceki adımın hafızası) — sinyali oradan geriye taşıyoruz.</p>'
+        +'<div class="deq">'+frac('∂z<sub>h</sub><sup>(3)</sup>','∂h<sub>2</sub>')+' = W<sub>hh</sub></div>'
+        +'<div class="deq">'+frac('∂h<sub>2</sub>','∂z<sub>h</sub><sup>(2)</sup>')+' = 1 − h<sub>2</sub>²</div>'
+        +'<p class="dwhy">İkisini bir önceki sinyalle çarp — işte BPTT\'nin bir adımı.</p>'
+    };
+    var s4 = {
+      dot:'4', bptt:true, path:'z<sub>h</sub><sup>(2)</sup> → h<sub>1</sub> → z<sub>h</sub><sup>(1)</sup>', tag:'BPTT · 1 adım daha geri',
+      eq:frac('∂L','∂z<sub>h</sub><sup>(1)</sup>'), sub:'∂L/∂z<sub>h</sub><sup>(2)</sup> · W<sub>hh</sub> · (1−h<sub>1</sub>²) = ('+F(bw.dzh2)+')('+F(p.Whh,2)+')(1−'+F(fw.h1*fw.h1)+')', result:F(bw.dzh1),
+      note:'İkinci ve son sıçrayış — hedefimiz olan t=1\'e vardık.',
+      detail:'<p class="dwhy"><b>Amaç:</b> aynı mantık bir adım daha — z<sub>h</sub><sup>(2)</sup>, h<sub>1</sub>\'e bağlı; sinyali h<sub>1</sub> üzerinden z<sub>h</sub><sup>(1)</sup>\'e taşıyoruz.</p>'
+        +'<div class="deq">'+frac('∂z<sub>h</sub><sup>(2)</sup>','∂h<sub>1</sub>')+' = W<sub>hh</sub></div>'
+        +'<div class="deq">'+frac('∂h<sub>1</sub>','∂z<sub>h</sub><sup>(1)</sup>')+' = 1 − h<sub>1</sub>²</div>'
+        +'<p class="dwhy">Çarp; hedefimiz z<sub>h</sub><sup>(1)</sup>\'e ulaştık.</p>'
+    };
+
+    var s5;
+    if(target==='Wxh'){
+      s5 = {
+        dot:'✓', final:true, path:'z<sub>h</sub><sup>(1)</sup> → W<sub>xh</sub>',
+        eq:frac('∂L','∂W<sub>xh</sub>')+'<span style="font-size:11px; color:var(--faint)">|<sub>t=1</sub></span>',
+        sub:'∂L/∂z<sub>h</sub><sup>(1)</sup> · x<sub>1</sub> = ('+F(bw.dzh1)+')('+F(p.x1,2)+')', result:F(bw.dWxh_t1),
+        note:'z<sub>h</sub><sup>(1)</sup>=W<sub>xh</sub>·x<sub>1</sub>+W<sub>hh</sub>·h<sub>0</sub>+b<sub>h</sub> — W<sub>xh</sub>\'in katkısı x<sub>1</sub> ile çarpılıyor (W<sub>hh</sub>\'nin h<sub>0</sub> ile çarpılmasının aksine, x<sub>1</sub> sıfır değil).',
+        detail:'<p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(1)</sup>=W<sub>xh</sub>·x<sub>1</sub>+W<sub>hh</sub>·h<sub>0</sub>+b<sub>h</sub>. W<sub>xh</sub>\'ye göre türetelim (W<sub>xh</sub>·x<sub>1</sub> terimi → türevi x<sub>1</sub>):</p>'
+          +'<div class="deq">'+frac('∂z<sub>h</sub><sup>(1)</sup>','∂W<sub>xh</sub>')+' = x<sub>1</sub></div>'
+          +'<p class="dwhy"><b>Adım 2</b> — bir önceki sinyalle çarp:</p>'
+          +'<div class="deq">'+frac('∂L','∂W<sub>xh</sub>')+'|<sub>t=1</sub> = ∂L/∂z<sub>h</sub><sup>(1)</sup> × x<sub>1</sub></div>'
+      };
+    } else {
+      s5 = {
+        dot:'✓', final:true, path:'z<sub>h</sub><sup>(1)</sup> → W<sub>hh</sub>',
+        eq:frac('∂L','∂W<sub>hh</sub>')+'<span style="font-size:11px; color:var(--faint)">|<sub>t=1</sub></span>',
+        sub:'∂L/∂z<sub>h</sub><sup>(1)</sup> · h<sub>0</sub> = ('+F(bw.dzh1)+')('+F(fw.h0,2)+')', result:F(bw.dWhh_t1),
+        note:'h<sub>0</sub>=0 olduğu için SAYISAL katkı sıfır çıkar — ama zincirin kendisi (yukarıdaki 4 adım) her adımda aynen işliyor.',
+        detail:'<p class="dwhy"><b>Adım 1</b> — z<sub>h</sub><sup>(1)</sup>=W<sub>xh</sub>·x<sub>1</sub>+W<sub>hh</sub>·h<sub>0</sub>+b<sub>h</sub>. W<sub>hh</sub>\'ye göre türetelim (W<sub>hh</sub>·h<sub>0</sub> terimi → türevi h<sub>0</sub>):</p>'
+          +'<div class="deq">'+frac('∂z<sub>h</sub><sup>(1)</sup>','∂W<sub>hh</sub>')+' = h<sub>0</sub></div>'
+          +'<p class="dwhy">h<sub>0</sub>=0 — dizinin başlangıç hafızası (bir önceki adımın sonucu değil, sıfırdan başlıyoruz).</p>'
+          +'<p class="dwhy"><b>Adım 2</b> — bir önceki sinyalle çarp:</p>'
+          +'<div class="deq">'+frac('∂L','∂W<sub>hh</sub>')+'|<sub>t=1</sub> = ∂L/∂z<sub>h</sub><sup>(1)</sup> × h<sub>0</sub></div>'
+          +'<p class="dwhy" style="margin-top:8px">💡 h<sub>0</sub>=0 olduğu için bu terimin SAYISAL katkısı sıfır çıkar — ama zincirin kendisi her adımda aynen işliyor; farkı yaratan h<sub>0</sub>\'ın değeri, zincirin yapısı değil.</p>'
+      };
+    }
+    return [s1, s2, s3, s4, s5];
+  }
+
+  function stepHTML(st, idx){
+    var cls='step'+(st.bptt?' bptt':'')+(st.final?' final':'');
+    var tag = st.tag ? '<span class="step-tag">'+st.tag+'</span>' : '';
+    return '<div class="'+cls+'">'
+      + '<div class="step-dot">'+st.dot+'</div>'
+      + '<div class="step-body">'
+      +   '<p class="step-path"><b>'+st.path+'</b>'+tag+'</p>'
+      +   '<div class="eq-box" tabindex="0" role="button" aria-expanded="false">'
+      +     '<div class="eq">'+st.eq+'</div>'
+      +     '<div class="eq-sub">'+st.sub+'</div>'
+      +     '<div class="eq-result">= '+st.result+'</div>'
+      +     '<span class="eq-toggle"><span>nasıl</span><span class="chev">▸</span></span>'
+      +   '</div>'
+      +   '<p class="step-note">'+st.note+'</p>'
+      +   '<div class="detail"><div class="detail-inner">'+st.detail+'</div></div>'
+      + '</div>'
+      + '</div>';
+  }
 
   function setStepOpen(step, open){
     var box = step.querySelector('.eq-box');
@@ -531,20 +598,24 @@
     if(label) label.textContent = open ? 'gizle' : 'nasıl';
   }
 
-  chainSteps.forEach(function(step){
-    var box = step.querySelector('.eq-box');
-    if(!box) return;
-    function toggle(){ setStepOpen(step, !step.classList.contains('open')); }
-    box.addEventListener('click', toggle);
-    box.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+  function wireChain(){
+    var steps = Array.prototype.slice.call($('chainBox').querySelectorAll('.step'));
+    steps.forEach(function(step){
+      var box = step.querySelector('.eq-box');
+      if(!box) return;
+      function toggle(){ setStepOpen(step, !step.classList.contains('open')); }
+      box.addEventListener('click', toggle);
+      box.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+      });
     });
-  });
+  }
 
   /* diyagramdan çağrılır: idx'inci zincir kartını aç, diğerlerini kapat, görünür alana kaydır */
-  function openChainStepByIndex(idx){
-    chainSteps.forEach(function(step, i){ setStepOpen(step, i===idx); });
-    var target = chainSteps[idx];
+  window.openChainStepByIndex = function(idx){
+    var steps = Array.prototype.slice.call($('chainBox').querySelectorAll('.step'));
+    steps.forEach(function(step, i){ setStepOpen(step, i===idx); });
+    var target = steps[idx];
     if(!target) return;
     target.scrollIntoView({behavior:'smooth', block:'center'});
     var box = target.querySelector('.eq-box');
@@ -552,7 +623,51 @@
       box.classList.add('diag-synced');
       setTimeout(function(){ box.classList.remove('diag-synced'); }, 1200);
     }
+  };
+
+  var TITLES = {
+    Whh:{h:'t=1\'de <em>W<sub>hh</sub></em>\'nin gradyanı<br>hangi zincirden geçiyor?',
+      lede:'3 adımlı bir RNN\'de (t=1,2,3) çıktı sadece <code>t=3</code>\'te var. t=1 en uzak adım olduğu için, oraya ulaşan sinyal en uzun yolu kat ediyor — kayıptan başlayıp zaman içinde <b style="color:var(--accent)">iki kez geriye</b> sıçrıyor.',
+      note:'<b>Neden en uzun zincir?</b> t=1, çıktıdan en uzak adım. Sinyal oraya ulaşana kadar 3 kez tanh türevinden ((1−h²)) ve 2 kez <b style="color:var(--accent)">W<sub>hh</sub></b>\'den geçiyor — kısa dizilerde bile bu, RNN\'in "geriye gittikçe zayıflayan/patlayan sinyal" (vanishing / exploding gradient) sorununun tam olarak nereden geldiğini gösteriyor.'},
+    Wxh:{h:'t=1\'de <em>W<sub>xh</sub></em>\'nin gradyanı<br>hangi zincirden geçiyor?',
+      lede:'Aynı zincir W<sub>hh</sub> ile birebir aynı — çünkü ikisi de z<sub>h</sub><sup>(1)</sup>\'e ulaşan aynı sinyali kullanıyor. Fark sadece <b style="color:var(--accent)">son adımda</b>: W<sub>hh</sub> h<sub>0</sub> ile, W<sub>xh</sub> ise x<sub>1</sub> ile çarpılıyor.',
+      note:'<b>Neden aynı zincir, farklı sonuç?</b> W<sub>xh</sub> ve W<sub>hh</sub> ikisi de z<sub>h</sub><sup>(1)</sup>\'in içinde yaşıyor, o yüzden ∂L/∂z<sub>h</sub><sup>(1)</sup>\'e kadar zincirleri özdeş. Ayrıştıkları tek yer: z<sub>h</sub>=W<sub>xh</sub>x+W<sub>hh</sub>h<sub>-1</sub>+b<sub>h</sub> formülünde her birinin YANINDAKİ terim farklı (x<sub>1</sub> vs h<sub>0</sub>).'},
+    by:{h:'<em>b<sub>y</sub></em>\'nin gradyanı<br>neden bu kadar kısa?',
+      lede:'b<sub>y</sub>, sadece çıktı katmanında (z<sub>y</sub>=W<sub>hy</sub>h<sub>3</sub>+b<sub>y</sub>) bir kez var — zaman içinde tekrarlanmıyor. Bu yüzden W<sub>hh</sub>/W<sub>xh</sub>\'in aksine hiç <b style="color:var(--accent)">BPTT sıçraması</b> yok.',
+      note:'<b>Neden zincir bu kadar kısa?</b> W<sub>hh</sub> ve W<sub>xh</sub> HER zaman adımında tekrar kullanıldığı için gradyanları geçmişe doğru zincirleniyor (BPTT). b<sub>y</sub> ise sadece SON adımın çıktı katmanında bir kez var — bu yüzden zinciri sadece 2 basamak, hiç zaman-içi sıçrama yok.'}
+  };
+
+  function render(){
+    var p = readInputs();
+    var fw = forward(p);
+    var bw = backward(p, fw);
+    renderRail(p, fw);
+
+    var steps = buildSteps(curTarget, p, fw, bw);
+    $('chainBox').innerHTML = steps.map(stepHTML).join('');
+    wireChain();
+
+    var t = TITLES[curTarget];
+    $('chainTitle').innerHTML = t.h;
+    $('chainLede').innerHTML = t.lede;
+    $('chainNote').innerHTML = t.note;
   }
+
+  document.querySelectorAll('.target-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.target-tab').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      curTarget = btn.dataset.target;
+      render();
+    });
+  });
+
+  ['gc_x1','gc_x2','gc_x3','gc_y','gc_Wxh','gc_Whh','gc_bh','gc_Why','gc_by'].forEach(function(id){
+    var el=$(id); if(el) el.addEventListener('input', render);
+  });
+
+  render();
+})();
 </script>
 
 <!-- ---- canlı 3-adımlı diyagram: siteki cellSvg mekanizmasının aynısı (many-to-one) ---- -->
