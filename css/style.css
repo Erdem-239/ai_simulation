@@ -137,6 +137,16 @@
   .model{display:none}
   .model.active{display:block}
   .sechead{font-size:17px; color:var(--text); border-bottom:2px solid var(--accent); padding-bottom:6px; margin:18px 0 6px; display:inline-block}
+
+  /* ---- RNN sayfası: 1)/2)/3) ana bölümleri açılıp kapanabilir ---- */
+  .sechead.rnn-toggle{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    width:100%; cursor:pointer; user-select:none;
+  }
+  .sechead.rnn-toggle .chev{color:var(--muted); font-size:15px; transition:.2s; flex:0 0 auto}
+  .sechead.rnn-toggle:not(.closed) .chev{transform:rotate(90deg); color:var(--accent)}
+  .rnn-secbody{overflow:hidden}
+  .rnn-secbody.closed{display:none}
   /* ---- Stanford-tarzı bölüm alt-navigasyonu ---- */
   .subnav{display:none; margin:-2px 0 10px 10px; border-left:2px solid var(--line)}
   .subnav.show{display:block}

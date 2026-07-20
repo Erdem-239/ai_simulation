@@ -239,6 +239,14 @@
   document.querySelectorAll('.stephead').forEach(h=>{
     h.addEventListener('click', ()=> h.closest('.step').classList.toggle('open'));
   });
+  // ---- RNN sayfası: 1)/2)/3) ana bölümleri aç/kapa ----
+  document.querySelectorAll('.sechead.rnn-toggle').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      h.classList.toggle('closed');
+      const body=h.nextElementSibling;
+      if(body && body.classList.contains('rnn-secbody')) body.classList.toggle('closed');
+    });
+  });
   // ---- ispat panelleri (accordion) aç/kapa ----
   document.querySelectorAll('.acc-head').forEach(h=>{
     h.addEventListener('click', e=>{ e.stopPropagation(); h.closest('.acc').classList.toggle('open'); });
