@@ -215,13 +215,11 @@
   .rnn-fc-left > .pts{flex:0 0 auto}
   .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
 
-  /* ---- Tek Hücre bölümü — sol: formül kartları, orta: diyagram, sağ: girdi/ağırlık paneli ---- */
+  /* ---- Tek Hücre bölümü — sol: diyagram+forward, sağ: eğitim döngüsü+kayıp vadisi ---- */
   .sc-cols{display:flex; gap:0; align-items:flex-start; flex-wrap:wrap}
-  .sc-left{flex:1 1 130px; min-width:130px; padding-right:6px}
   .sc-center{flex:0 0 var(--scw,300px); min-width:220px; max-width:560px; position:sticky; top:10px}
   @media(max-width:560px){ .sc-center{position:static} }
   .sc-right{flex:1 1 170px; min-width:170px; padding-left:6px}
-  .sc-right input[type="range"]{width:90px !important}
   @media(max-width:560px){ .sc-cols{flex-direction:column} .sc-center{max-width:none} .sc-resizer{display:none} }
 
   /* ---- diyagramı sağdan/soldan sürükle-bırak ile boyutlandır ---- */

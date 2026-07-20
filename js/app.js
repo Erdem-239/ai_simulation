@@ -409,11 +409,11 @@
   reset();
 })();
 
-/* ---- Tek Hücre diyagramı sağdan/soldan sürükle-bırak ile boyutlandırılabilir ---- */
+/* ---- Tek Hücre diyagramı sürükle-bırak ile boyutlandırılabilir ---- */
 (function(){
   const root=document.documentElement;
-  const rsL=document.getElementById('scResizerL'), rsR=document.getElementById('scResizerR');
-  if(!rsL||!rsR) return;
+  const rsR=document.getElementById('scResizerR');
+  if(!rsR) return;
   let w=300;
   try{ const s=parseInt(localStorage.getItem('attn_scw')||'',10); if(s>=220&&s<=560) w=s; }catch(e){}
   root.style.setProperty('--scw', w+'px');
@@ -430,7 +430,6 @@
       try{ localStorage.setItem('attn_scw', String(Math.round(w))); }catch(e){}
     });
   }
-  bind(rsL, -1);
   bind(rsR, 1);
 })();
 
