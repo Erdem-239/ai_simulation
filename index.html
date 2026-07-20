@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607202046">
+<link rel="stylesheet" href="css/style.css?v=202607202054">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 20:46 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 20:54 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -720,15 +720,19 @@
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
           <h3 style="color:var(--accent); font-size:13.5px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
           <div style="font-size:12.5px; color:#cfd3d8; margin-bottom:8px">▶ / ⏩ ile ağırlıklar otomatik olarak −α·∂L/∂W yönünde küçük adımlarla güncellenir; kayıp minimuma inene kadar izle. Lineer regresyondaki eğitim döngüsünün aynısı.</div>
-          <div class="controls" style="margin:6px 0; justify-content:flex-start">
-            <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
-            <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
-            <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
-            <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
-          </div>
-          <div class="iter" style="text-align:left; margin-bottom:8px">iterasyon: <span id="rc_iter">0</span> &nbsp;|&nbsp; maliyet: <span id="rc_curcost">0.0000</span></div>
-          <div class="plotbox" style="max-width:420px; padding:8px">
-            <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+          <div style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap">
+            <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
+              <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+            </div>
+            <div style="flex:1 1 100px; min-width:96px">
+              <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
+                <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
+                <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
+                <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
+                <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
+              </div>
+              <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2804,9 +2808,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607202046"></script>
+<script src="js/lesson-linreg.js?v=202607202054"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607202046"></script>
+<script src="js/app.js?v=202607202054"></script>
 </body>
 </html>
