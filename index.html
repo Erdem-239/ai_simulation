@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607201957">
+<link rel="stylesheet" href="css/style.css?v=202607202003">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 19:57 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-20 20:03 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -649,7 +649,8 @@
     <div class="callout">🔗 <b>En önemli bağlantı:</b> Lineer regresyonda öğrendiğin <b>zincir kuralı</b>, RNN'de aynen geçerli — sadece <b>zaman adımları boyunca zincirleme</b> uygulanıyor. Her \(h_t\), bir önceki \(h_{t-1}\)'e bağlı; o da \(h_{t-2}\)'ye… Bu yüzden türev "geçmişe doğru" akar. Adı bu yüzden <b>zaman içinde geri yayılım</b>.</div>
 
 
-    <div class="sechead">1) Tek Hücre — bir RNN adımının içi</div>
+    <div class="sechead rnn-toggle" data-rnnsec="1">1) Tek Hücre — bir RNN adımının içi <span class="chev">▸</span></div>
+    <div class="rnn-secbody" id="rnnBody1">
 
     <p style="font-size:14px; color:#cfd3d8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
 
@@ -1001,9 +1002,11 @@
       </div>
     </div>
     </div><!-- /gAdimSection -->
+    </div><!-- /rnnBody1 -->
 
 
-    <div class="sechead">2) Zincirleme — gerçek 3 adımlı BPTT</div>
+    <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı BPTT <span class="chev">▸</span></div>
+    <div class="rnn-secbody" id="rnnBody2">
 
     <p style="font-size:14px; color:#cfd3d8; margin-top:0">Az önce TEK hücrenin içini gördün. Şimdi aynı hücreyi zincirleyelim: aynı ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub>) zaman içinde <b>tekrar tekrar</b> kullanılıyor, h bir adımdan diğerine taşınıyor. Aşağıdaki canlı hücre, seçtiğin mimariye göre gerçekten değişiyor — bir tipe tıkla, aynı hücrenin nasıl farklı bağlandığını gör:</p>
 
@@ -1265,9 +1268,11 @@
       </div>
       <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> aynı kural — her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \), toplam gradyanla (güncelleme mekanizması many-to-one bölümündeki ile aynı).</div>
     </div>
+    </div><!-- /rnnBody2 -->
 
 
-    <div class="sechead">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient)</div>
+    <div class="sechead rnn-toggle" data-rnnsec="3">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient) <span class="chev">▸</span></div>
+    <div class="rnn-secbody" id="rnnBody3">
     <div class="pts">
       <p style="font-size:14px; color:#cfd3d8">Yukarıda (unrolling widget'ında ve Geri Adım 5'te) gördüğün gibi, ∂L/∂z<sub>h</sub> bir adım geriye her gidişinde <b>r = W<sub>hh</sub>(1−h²)</b> ile çarpılıyor. Sorun şu: bu, T adımlık bir dizide <b>T kere üst üste</b> oluyor — tek seferlik değil:</p>
       \[ \dfrac{\partial L}{\partial z_h^{(1)}}\;\approx\;r^{\,T-1}\times\dfrac{\partial L}{\partial z_h^{(T)}}, \qquad r=W_{hh}(1-h^2) \]
@@ -1279,6 +1284,7 @@
       </div>
       <p style="font-size:14px; color:#cfd3d8">Kurabiye analojisindeki "8x" gibi: orada tek bir çarpan vardı; RNN'de bu çarpan <b>zaman adımı kadar</b> üst üste biner. Çözüm olarak <b>LSTM/GRU</b> (kapılı hücreler) ve <b>gradient clipping</b> geliştirildi.</p>
     </div>
+    </div><!-- /rnnBody3 -->
 
     <div class="sechead">Lineer Regresyon ↔ RNN karşılaştırması</div>
     <table class="calc">
@@ -2797,9 +2803,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607201957"></script>
+<script src="js/lesson-linreg.js?v=202607202003"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607201957"></script>
+<script src="js/app.js?v=202607202003"></script>
 </body>
 </html>
