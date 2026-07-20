@@ -409,6 +409,31 @@
   reset();
 })();
 
+/* ---- Tek Hücre diyagramı sağdan/soldan sürükle-bırak ile boyutlandırılabilir ---- */
+(function(){
+  const root=document.documentElement;
+  const rsL=document.getElementById('scResizerL'), rsR=document.getElementById('scResizerR');
+  if(!rsL||!rsR) return;
+  let w=300;
+  try{ const s=parseInt(localStorage.getItem('attn_scw')||'',10); if(s>=220&&s<=560) w=s; }catch(e){}
+  root.style.setProperty('--scw', w+'px');
+  function bind(handle, sign){
+    let drag=false, sx=0, sw=0;
+    handle.addEventListener('pointerdown', e=>{ drag=true; sx=e.clientX; sw=w; handle.classList.add('on'); handle.setPointerCapture(e.pointerId); e.preventDefault(); });
+    handle.addEventListener('pointermove', e=>{
+      if(!drag) return;
+      w=Math.max(220, Math.min(560, sw+sign*(e.clientX-sx)));
+      root.style.setProperty('--scw', w+'px');
+    });
+    handle.addEventListener('pointerup', ()=>{
+      drag=false; handle.classList.remove('on');
+      try{ localStorage.setItem('attn_scw', String(Math.round(w))); }catch(e){}
+    });
+  }
+  bind(rsL, -1);
+  bind(rsR, 1);
+})();
+
 /* ---- interaktif tek-hücre RNN geri yayılım oynatıcısı ---- */
 (function(){
   const $=id=>document.getElementById(id);
