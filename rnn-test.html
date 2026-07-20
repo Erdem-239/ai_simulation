@@ -43,10 +43,12 @@
   .wrap{flex:1 1 460px; min-width:0; max-width:560px; order:3}
 
   /* --- sol rail: forward-pass değer yığını (yukarıdan aşağıya, geriye-doğru okuma sırasıyla) --- */
-  /* sticky: diyagramla birlikte sabit kalsın, sağdaki uzun zincir kaydırılırken boşluk oluşmasın */
+  /* sticky: diyagramla birlikte sabit kalsın, sağdaki uzun zincir kaydırılırken boşluk oluşmasın.
+     Kart görünümü (arka plan+kenarlık): içerik kısa kalsa bile "kopuk/boş" değil "tasarlanmış panel" gibi görünsün. */
   .rail{
     flex:0 0 190px; order:1; position:sticky; top:10px; max-height:calc(100vh - 20px); overflow-y:auto;
     display:flex; flex-direction:column; gap:0;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 13px;
   }
   .rail-label{
     font-family:var(--font-mono); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
@@ -415,26 +417,26 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="gc-inputs">
-    <p class="rail-label" style="margin:14px 0 6px">girdiler &amp; ağırlıklar</p>
-    <div class="gc-row">
-      <label>x<sub>1</sub><input type="number" step="0.1" id="gc_x1" value="2"></label>
-      <label>x<sub>2</sub><input type="number" step="0.1" id="gc_x2" value="-1"></label>
-      <label>x<sub>3</sub><input type="number" step="0.1" id="gc_x3" value="1.5"></label>
-      <label>y<input type="number" step="0.1" id="gc_y" value="1"></label>
+    <div class="gc-inputs">
+      <p class="rail-label" style="margin:14px 0 6px">girdiler &amp; ağırlıklar</p>
+      <div class="gc-row">
+        <label>x<sub>1</sub><input type="number" step="0.1" id="gc_x1" value="2"></label>
+        <label>x<sub>2</sub><input type="number" step="0.1" id="gc_x2" value="-1"></label>
+        <label>x<sub>3</sub><input type="number" step="0.1" id="gc_x3" value="1.5"></label>
+        <label>y<input type="number" step="0.1" id="gc_y" value="1"></label>
+      </div>
+      <div class="gc-row">
+        <label>W<sub>xh</sub><input type="number" step="0.01" id="gc_Wxh" value="0.4"></label>
+        <label>W<sub>hh</sub><input type="number" step="0.01" id="gc_Whh" value="0.3"></label>
+        <label>b<sub>h</sub><input type="number" step="0.01" id="gc_bh" value="0.1"></label>
+      </div>
+      <div class="gc-row">
+        <label>W<sub>hy</sub><input type="number" step="0.01" id="gc_Why" value="0.8"></label>
+        <label>b<sub>y</sub><input type="number" step="0.01" id="gc_by" value="0.2"></label>
+      </div>
     </div>
-    <div class="gc-row">
-      <label>W<sub>xh</sub><input type="number" step="0.01" id="gc_Wxh" value="0.4"></label>
-      <label>W<sub>hh</sub><input type="number" step="0.01" id="gc_Whh" value="0.3"></label>
-      <label>b<sub>h</sub><input type="number" step="0.01" id="gc_bh" value="0.1"></label>
-    </div>
-    <div class="gc-row">
-      <label>W<sub>hy</sub><input type="number" step="0.01" id="gc_Why" value="0.8"></label>
-      <label>b<sub>y</sub><input type="number" step="0.01" id="gc_by" value="0.2"></label>
-    </div>
-  </div>
+  </div><!-- /rail -->
 
 <div class="wrap">
   <p class="eyebrow">BPTT · geri yayılım zinciri</p>
