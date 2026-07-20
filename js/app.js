@@ -1137,9 +1137,12 @@
 (function(){
   const btns=document.querySelectorAll('.rnn-type-btn');
   if(!btns.length) return;
+  const rnnTypeTek=document.getElementById('rnnTypeTek');
+  const rnnFwdCols=document.getElementById('rnnFwdCols');
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const typeNote=document.getElementById('rnnTypeNote');
   const typeNoteHtml={
+    tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
     m2mEq:'<b>many-to-many (T<sub>x</sub>=T<sub>y</sub>)</b> — her girdiye karşılık, AYNI adımda kendi çıktısı var. Her h<sub>t</sub>, gradyanı hem kendi çıktısından hem gelecekten (BPTT) alır. Örnek: isim varlık tanıma / NER (cümledeki her kelimeyi etiketlemek).'
   };
@@ -1147,9 +1150,12 @@
     b.addEventListener('click', ()=>{
       btns.forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      if(window.__rnnCellSetMode) window.__rnnCellSetMode(b.dataset.rt);
-      if(typeNote) typeNote.innerHTML=typeNoteHtml[b.dataset.rt]||'';
-      if(gAdimSectionM2m) gAdimSectionM2m.style.display = (b.dataset.rt==='m2o') ? 'none' : 'block';
+      const rt=b.dataset.rt;
+      if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
+      if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'block';
+      if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
+      if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
+      if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
     });
   });
 })();
