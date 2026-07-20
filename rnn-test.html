@@ -40,13 +40,26 @@
     -webkit-font-smoothing:antialiased;
   }
   .page{display:flex; gap:16px; max-width:1420px; margin:0 auto; align-items:flex-start}
-  .wrap{flex:1 1 460px; min-width:0; max-width:560px; order:3}
+  .wrap{flex:1 1 460px; min-width:0; max-width:560px; order:4}
+
+  .rail-resizer{
+    flex:0 0 12px; order:2; align-self:stretch; cursor:col-resize; position:relative; touch-action:none;
+  }
+  .rail-resizer::before{content:''; position:absolute; left:5px; top:8%; width:2px; height:84%; background:var(--line); transition:.15s}
+  .rail-resizer::after{
+    content:'⋮'; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    color:var(--muted); font-size:13px; line-height:1; background:var(--panel2); padding:6px 2px;
+    border:1px solid var(--line); border-radius:5px; user-select:none; transition:.15s;
+  }
+  .rail-resizer:hover::before, .rail-resizer.on::before{background:var(--chain); width:3px; left:4.5px}
+  .rail-resizer:hover::after, .rail-resizer.on::after{color:var(--chain); border-color:var(--chain)}
+  @media(max-width:1180px){ .rail-resizer{display:none} }
 
   /* --- sol rail: forward-pass değer yığını (yukarıdan aşağıya, geriye-doğru okuma sırasıyla) --- */
   /* sticky: diyagramla birlikte sabit kalsın, sağdaki uzun zincir kaydırılırken boşluk oluşmasın.
      Kart görünümü (arka plan+kenarlık): içerik kısa kalsa bile "kopuk/boş" değil "tasarlanmış panel" gibi görünsün. */
   .rail{
-    flex:0 0 190px; order:1; position:sticky; top:10px; max-height:calc(100vh - 20px); overflow-y:auto;
+    flex:0 0 var(--railw,190px); order:1; position:sticky; top:10px; max-height:calc(100vh - 20px); overflow-y:auto;
     display:flex; flex-direction:column; gap:0;
     background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 13px;
   }
@@ -280,7 +293,7 @@
 
   /* --- canlı diyagram: ORTA sütun, sticky (chain sütunü kaydırılırken sabit kalır) --- */
   .diagram-col{
-    flex:0 0 var(--diagw,540px); order:2; position:sticky; top:10px; min-width:0; display:flex; gap:0;
+    flex:0 0 var(--diagw,540px); order:3; position:sticky; top:10px; min-width:0; display:flex; gap:0;
   }
   .diagram-panel{
     flex:1 1 auto; min-width:0;
@@ -437,6 +450,8 @@
       </div>
     </div>
   </div><!-- /rail -->
+
+  <div class="rail-resizer" id="railResizer" title="Sürükle: sol panel genişliğini ayarla"></div>
 
 <div class="wrap">
   <p class="eyebrow">BPTT · geri yayılım zinciri</p>
@@ -863,26 +878,30 @@
 })();
 </script>
 
-<!-- ---- diyagram genişliği sürükle-bırak ile ayarlanabilir ---- -->
+<!-- ---- sütun genişlikleri sürükle-bırak ile ayarlanabilir (rail + diyagram, iki tarafı da) ---- -->
 <script>
 (function(){
-  var rs=document.getElementById('diagResizer'); var col=document.querySelector('.diagram-col');
-  if(!rs||!col) return;
   var root=document.documentElement;
-  var w=540;
-  try{ var s=parseInt(localStorage.getItem('rnntest_diagw')||'',10); if(s>=380&&s<=760) w=s; }catch(e){}
-  root.style.setProperty('--diagw', w+'px');
-  var drag=false, sx=0, sw=0;
-  rs.addEventListener('pointerdown', function(e){ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
-  rs.addEventListener('pointermove', function(e){
-    if(!drag) return;
-    w=Math.max(380, Math.min(760, sw+(e.clientX-sx)));
-    root.style.setProperty('--diagw', w+'px');
-  });
-  rs.addEventListener('pointerup', function(){
-    drag=false; rs.classList.remove('on');
-    try{ localStorage.setItem('rnntest_diagw', String(Math.round(w))); }catch(e){}
-  });
+  function setupResizer(handleId, cssVar, storageKey, def, min, max){
+    var rs=document.getElementById(handleId);
+    if(!rs) return;
+    var w=def;
+    try{ var s=parseInt(localStorage.getItem(storageKey)||'',10); if(s>=min&&s<=max) w=s; }catch(e){}
+    root.style.setProperty(cssVar, w+'px');
+    var drag=false, sx=0, sw=0;
+    rs.addEventListener('pointerdown', function(e){ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
+    rs.addEventListener('pointermove', function(e){
+      if(!drag) return;
+      w=Math.max(min, Math.min(max, sw+(e.clientX-sx)));
+      root.style.setProperty(cssVar, w+'px');
+    });
+    rs.addEventListener('pointerup', function(){
+      drag=false; rs.classList.remove('on');
+      try{ localStorage.setItem(storageKey, String(Math.round(w))); }catch(e){}
+    });
+  }
+  setupResizer('railResizer', '--railw', 'rnntest_railw', 190, 140, 340);
+  setupResizer('diagResizer', '--diagw', 'rnntest_diagw', 540, 380, 760);
 })();
 </script>
 </body>
