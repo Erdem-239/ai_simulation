@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607211007">
+<link rel="stylesheet" href="css/style.css?v=202607211055">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-21 10:07 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-21 10:55 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1177,6 +1177,63 @@
 
     </div><!-- /rnn-fwd-cols -->
 
+    <div id="gAdimSectionM2o" style="display:none">
+      <div class="sechead" style="font-size:17px">Geri yayılım — adım adım (many-to-one)</div>
+      <div class="callout" style="margin:0 0 14px">Aşağıdaki 5 adım, yukarıda girdiğin x₁,x₂,x₃,y ve ağırlıklarla gerçek zamanlı hesaplanıyor. Çıktı (ŷ) SADECE t=3'te var — bu yüzden Adım 1 ve 2 tek seferlik; Adım 3 ve 4 ise BPTT zinciriyle t=3→2→1 geriye akıyor, Adım 5'te toplanıyor.</div>
+      <div style="margin:0 0 12px; display:flex; flex-wrap:wrap; gap:8px">
+        <button class="rnn-watch-btn" id="mo5WatchBtn">▶ İzle</button>
+        <button class="rnn-watch-btn" id="moOldViewToggle">🔍 Detaylı / filtrelenebilir görünüm</button>
+      </div>
+      <div class="steps">
+        <div class="step" id="moAdim1">
+          <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial z_y}=(\hat y-y) \) = <span style="color:var(--muted)" id="mo1sub"></span> = <span class="v" id="mo1val"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu sinyal W<sub>hy</sub>, b<sub>y</sub>'ye Adım 2'de ulaşacak.</div>
+          </div>
+        </div>
+        <div class="step" id="moAdim2">
+          <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="rc-card">
+              <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\cdot h_3 \) = <span style="color:var(--muted)" id="mo2wsub"></span> = <span class="v" id="mo2wval"></span></div>
+              <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y} \) = <span class="v" id="mo2bval"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye inmemiz lazım — önce sinyali h'ye taşımalıyız (Adım 3).</div>
+          </div>
+        </div>
+        <div class="step" id="moAdim3">
+          <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — t=3→2→1, BPTT zinciri</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="rc-card">
+              <div class="eq"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="mo3t3sub"></span> = <span class="v" id="mo3t3val"></span></div>
+              <div class="eq" style="margin-top:6px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="mo3t2sub"></span> = <span class="v" id="mo3t2val"></span></div>
+              <div class="eq" style="margin-top:6px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="mo3t1sub"></span> = <span class="v" id="mo3t1val"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> her adımın z<sub>h</sub> sinyali kendi W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'sine Adım 4'te ulaşacak.</div>
+          </div>
+        </div>
+        <div class="step" id="moAdim4">
+          <div class="stephead"><h2>Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin (bu adımdaki) gradyanı</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="rc-card">
+              <div class="eq"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial W_{xh}}\big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span class="v" id="mo4t3xval"></span> &nbsp;·&nbsp; \( \dfrac{\partial L}{\partial W_{hh}}\big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span class="v" id="mo4t3hval"></span></div>
+              <div class="eq" style="margin-top:6px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial W_{xh}}\big|_{t=2} \) = <span class="v" id="mo4t2xval"></span> &nbsp;·&nbsp; \( \dfrac{\partial L}{\partial W_{hh}}\big|_{t=2} \) = <span class="v" id="mo4t2hval"></span></div>
+              <div class="eq" style="margin-top:6px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial W_{xh}}\big|_{t=1} \) = <span class="v" id="mo4t1xval"></span> &nbsp;·&nbsp; \( \dfrac{\partial L}{\partial W_{hh}}\big|_{t=1} \) = <span class="v" id="mo4t1hval"></span></div>
+            </div>
+            <div class="callout" style="margin:10px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu, HER zaman adımının KENDİ gradyanıydı. Ama aynı ağırlık her adımda tekrar kullanılıyor — asıl gradyan hepsinin toplamı (Adım 5).</div>
+          </div>
+        </div>
+        <div class="step" id="moAdim5" style="grid-column:1/-1">
+          <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="callout" id="mo5total" style="margin:0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="gAdimSectionM2m" style="display:none">
       <div class="sechead" style="font-size:17px">Geri yayılım — adım adım (many-to-many, T<sub>x</sub>=T<sub>y</sub>)</div>
@@ -2820,9 +2877,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607211007"></script>
+<script src="js/lesson-linreg.js?v=202607211055"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607211007"></script>
+<script src="js/app.js?v=202607211055"></script>
 </body>
 </html>
