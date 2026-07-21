@@ -1079,7 +1079,14 @@
     const ce=$('rc_curcost'); if(ce) ce.textContent=F(L,4);
     drawRcCost();
   }
-  function rcTrainStep(){
+  // ---- adım adım oynatma: Geri Adım 1→2→3→4 kartlarını sırayla vurgula (Lineer Regresyondaki Adım 0-4 gibi) ----
+  let rcPhase=0;
+  const RC_PHASE_STEPS=['gAdim1','gAdim2','gAdim3','gAdim4'];
+  function rcHighlight(n){
+    RC_PHASE_STEPS.forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.classList.toggle('active', i===n); });
+  }
+  function rcClearHighlight(){ RC_PHASE_STEPS.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.remove('active'); }); }
+  function rcTrainCommit(){
     const {L, dWxh, dWhh, db, dWhy, dby}=render();
     const alpha=parseFloat($('rc_alpha').value);
     const set=(id,val)=>{ const el=$(id); if(el) el.value=Math.max(-2,Math.min(2, val)).toFixed(4); };
@@ -1092,17 +1099,23 @@
     const {L:newL}=render();
     rcUpdateUI(newL);
   }
+  // ▶ / ⏩ : her basışta/tik'te SADECE bir sonraki Geri Adım kartını vurgula; 4. adımda ağırlıklar gerçekten güncellenir
+  function rcPhaseTick(){
+    rcHighlight(rcPhase);
+    if(rcPhase===RC_PHASE_STEPS.length-1) rcTrainCommit();
+    rcPhase=(rcPhase+1)%RC_PHASE_STEPS.length;
+  }
   function rcTrainStop(){ if(rcTimer){clearInterval(rcTimer);rcTimer=null;} const fb=$('rc_fast'); if(fb) fb.classList.remove('on'); }
   // kaydırıcıyı elle oynatınca: eğitimi durdur, sayacı sıfırla, ama ağırlıkları OLDUĞU GİBİ bırak (yeni başlangıç noktası)
   function rcSyncManual(){
-    rcTrainStop(); rcIter=0;
+    rcTrainStop(); rcIter=0; rcPhase=0; rcClearHighlight();
     const {L}=render();
     rcCostHist=[L];
     rcUpdateUI(L);
   }
   // ↺ düğmesi: ağırlıkları varsayılana döndür, sayacı sıfırla
   function rcTrainReset(){
-    rcTrainStop(); rcIter=0; rcCostHist=[];
+    rcTrainStop(); rcIter=0; rcPhase=0; rcCostHist=[]; rcClearHighlight();
     Object.keys(DEFAULTS).forEach(k=>{ const el=$('rc_'+k); if(el) el.value=DEFAULTS[k]; });
     const {L}=render();
     rcCostHist.push(L);
@@ -1121,13 +1134,13 @@
     const el=$(id); if(el) el.addEventListener('input', render);
   });
   const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
-  if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcTrainStep(); });
+  if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcPhaseTick(); });
   if(rcFastBtn) rcFastBtn.addEventListener('click', ()=>{
     if(rcTimer){ rcTrainStop(); return; }
     rcFastBtn.classList.add('on');
-    rcTimer=setInterval(rcTrainStep, 700);
+    rcTimer=setInterval(rcPhaseTick, 700);
   });
-  if(rcStopBtn) rcStopBtn.addEventListener('click', rcTrainStop);
+  if(rcStopBtn) rcStopBtn.addEventListener('click', ()=>{ rcTrainStop(); rcClearHighlight(); });
   if(rcResetBtn) rcResetBtn.addEventListener('click', rcTrainReset);
 
   { const {L}=render(); rcCostHist.push(L); rcUpdateUI(L); }
