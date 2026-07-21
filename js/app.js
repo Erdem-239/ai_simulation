@@ -1152,7 +1152,7 @@
       b.classList.add('active');
       const rt=b.dataset.rt;
       if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
-      if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'block';
+      if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'flex';
       if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
       if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
