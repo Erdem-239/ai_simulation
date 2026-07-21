@@ -657,6 +657,30 @@
     });
     ctx.textAlign='left';
   }
+  /* many-to-one Geri Adım 5 — GERÇEK 3 adımın Whh katkısı (g_t·h_{t-1}), yaklaşık değil */
+  function drawStep5Mo(vals){
+    const cv=$('moStep5Canvas'); if(!cv) return;
+    const ctx=cv.getContext('2d');
+    const W=cv.width, H=cv.height;
+    const gx0=32, gx1=W-10, gy0=12, gy1=H-24;
+    const labels=['t=1','t=2','t=3'];
+    const maxAbs=Math.max(...vals.map(Math.abs), 1e-6)*1.2;
+    const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
+    ctx.clearRect(0,0,W,H);
+    const zeroY=Y(0);
+    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
+    const bw=(gx1-gx0)/vals.length;
+    vals.forEach((v,i)=>{
+      const x=gx0+i*bw+bw*0.22, w=bw*0.56;
+      const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
+      ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
+      ctx.fillRect(x, top, w, h);
+      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(labels[i], x+w/2, gy1+13);
+    });
+    ctx.textAlign='left';
+  }
   /* ---- Kayıp Vadisi: gradyan pusulası (radar) — gerçek |∂L/∂W| büyüklükleri ---- */
   const radarCv=$('gradRadarCanvas');
   function drawGradRadar(items){
@@ -948,6 +972,25 @@
       setTxt('mo4t3xval', F(dWxh3)); setTxt('mo4t3hval', F(dWhh3));
       setTxt('mo4t2xval', F(dWxh2)); setTxt('mo4t2hval', F(dWhh2));
       setTxt('mo4t1xval', F(dWxh1)); setTxt('mo4t1hval', F(dWhh1));
+
+      /* Geri Adım 5 kartı — many-to-many'nin Adım 5'i gibi kendi ileri geçiş özeti + geri zincir + grafik içeriyor */
+      setTxt('mo5fZ1sub', '('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)); setTxt('mo5fZ1val', F(rz1));
+      setTxt('mo5fH1sub', 'tanh('+F(rz1)+')'); setTxt('mo5fH1val', F(rh1));
+      setTxt('mo5fZ2sub', '('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)); setTxt('mo5fZ2val', F(rz2));
+      setTxt('mo5fH2sub', 'tanh('+F(rz2)+')'); setTxt('mo5fH2val', F(rh2));
+      setTxt('mo5fZ3sub', '('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)); setTxt('mo5fZ3val', F(rz3));
+      setTxt('mo5fH3sub', 'tanh('+F(rz3)+')'); setTxt('mo5fH3val', F(rh3));
+      setTxt('mo5fZysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('mo5fZyval', F(ryhat));
+      setTxt('mo5fYval', F(ryhat)); setTxt('mo5fLval', F(rL));
+
+      setTxt('mo5bZ3sub', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1 − '+F(rh3*rh3)+')'); setTxt('mo5bZ3val', F(rdz3));
+      setTxt('mo5bWhh3sub', '('+F(rdz3)+')('+F(rh2)+')'); setTxt('mo5bWhh3val', F(dWhh3));
+      setTxt('mo5bZ2sub', '('+F(rdz3)+')('+F(p.Whh,2)+')(1 − '+F(rh2*rh2)+')'); setTxt('mo5bZ2val', F(rdz2));
+      setTxt('mo5bWhh2sub', '('+F(rdz2)+')('+F(rh1)+')'); setTxt('mo5bWhh2val', F(dWhh2));
+      setTxt('mo5bZ1sub', '('+F(rdz2)+')('+F(p.Whh,2)+')(1 − '+F(rh1*rh1)+')'); setTxt('mo5bZ1val', F(rdz1));
+      setTxt('mo5bWhh1sub', '('+F(rdz1)+')('+F(rh0,2)+')'); setTxt('mo5bWhh1val', F(dWhh1));
+      drawStep5Mo([dWhh1, dWhh2, dWhh3]);
+
       const mo5El=$('mo5total');
       if(mo5El) mo5El.innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):'
         + '<div style="margin-top:4px">∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(dWxh1+dWxh2+dWxh3)+'</b></div>'
