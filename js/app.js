@@ -937,6 +937,24 @@
       setTxt('ruR32', F(r32));
       setTxt('ruR21', F(r21));
 
+      /* ---- Geri Adım 1-5 kartları (many-to-one standardı, Tek Hücre/many-to-many ile aynı kalıp) — yukarıdaki değerlerin aynısı, sadece yeniden gruplanmış ---- */
+      const ruDWhy=rdyhat*rh3, ruDby=rdyhat;
+      setTxt('mo1sub', '('+F(ryhat)+' − '+F(ry,2)+')'); setTxt('mo1val', F(rdyhat));
+      setTxt('mo2wsub', '('+F(rdyhat)+')('+F(rh3)+')'); setTxt('mo2wval', F(ruDWhy));
+      setTxt('mo2bval', F(ruDby));
+      setTxt('mo3t3sub', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1 − '+F(rh3*rh3)+')'); setTxt('mo3t3val', F(rdz3));
+      setTxt('mo3t2sub', '('+F(rdz3)+')('+F(p.Whh,2)+')(1 − '+F(rh2*rh2)+')'); setTxt('mo3t2val', F(rdz2));
+      setTxt('mo3t1sub', '('+F(rdz2)+')('+F(p.Whh,2)+')(1 − '+F(rh1*rh1)+')'); setTxt('mo3t1val', F(rdz1));
+      setTxt('mo4t3xval', F(dWxh3)); setTxt('mo4t3hval', F(dWhh3));
+      setTxt('mo4t2xval', F(dWxh2)); setTxt('mo4t2hval', F(dWhh2));
+      setTxt('mo4t1xval', F(dWxh1)); setTxt('mo4t1hval', F(dWhh1));
+      const mo5El=$('mo5total');
+      if(mo5El) mo5El.innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):'
+        + '<div style="margin-top:4px">∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(dWxh1+dWxh2+dWxh3)+'</b></div>'
+        + '<div>∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(dWhh1+dWhh2+dWhh3)+'</b></div>'
+        + '<div>∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(db1+db2+db3)+'</b></div>'
+        + '<div style="margin-top:6px">∂L/∂W<sub>hy</sub> = <b style="color:var(--accent)">'+F(ruDWhy)+'</b> &nbsp;·&nbsp; ∂L/∂b<sub>y</sub> = <b style="color:var(--accent)">'+F(ruDby)+'</b> <span style="color:var(--muted); font-size:11.5px">(bunlar sadece t=3\'te oluştuğu için toplama girmiyor)</span></div>';
+
       ruLastNums={
         Wxh:p.Wxh, Whh:p.Whh, bh:p.b, Why:p.Why, by:p.by,
         x1:rx1, x2:rx2, x3:rx3, y:ry, h0:rh0, h1:rh1, h2:rh2, h3:rh3,
@@ -1155,7 +1173,24 @@
   const rnnFcLeft=document.getElementById('rnnFcLeft');
   const rnnColResizer=document.getElementById('rnnColResizer');
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
+  const gAdimSectionM2o=document.getElementById('gAdimSectionM2o');
   const typeNote=document.getElementById('rnnTypeNote');
+  let curRt='tek';
+  let moOldViewOpen=false;
+  function updateFcLeftVisibility(){
+    const showOld = curRt==='m2o' && moOldViewOpen;
+    if(rnnFcLeft) rnnFcLeft.style.display = showOld ? 'flex' : 'none';
+    if(rnnColResizer) rnnColResizer.style.display = showOld ? 'block' : 'none';
+    if(rnnFwdCols) rnnFwdCols.classList.toggle('rfc-diagram-only', curRt!=='tek' && !showOld);
+  }
+  window.__rnnToggleMoOldView = function(btn){
+    moOldViewOpen = !moOldViewOpen;
+    updateFcLeftVisibility();
+    if(btn){
+      btn.classList.toggle('on', moOldViewOpen);
+      btn.textContent = moOldViewOpen ? '✕ Detaylı görünümü kapat' : '🔍 Detaylı / filtrelenebilir görünüm';
+    }
+  };
   const typeNoteHtml={
     tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
@@ -1166,15 +1201,15 @@
       btns.forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       const rt=b.dataset.rt;
+      curRt=rt;
       if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
       if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'flex';
       if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
       if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
-      // many-to-many'de gerçek 3-adım kartı zaten Geri Adım 5'te (3 ayrı kayıpla) doğru gösteriliyor — many-to-one'a özgü tekrarı gizle
-      if(rnnFcLeft) rnnFcLeft.style.display = (rt==='m2mEq') ? 'none' : 'flex';
-      if(rnnColResizer) rnnColResizer.style.display = (rt==='m2mEq') ? 'none' : 'block';
-      if(rnnFwdCols) rnnFwdCols.classList.toggle('rfc-diagram-only', rt==='m2mEq');
+      if(gAdimSectionM2o) gAdimSectionM2o.style.display = (rt==='m2o') ? 'block' : 'none';
+      // her mimarinin kendi "Geri Adım 1-5" kart standardı var; eski filtrelenebilir İleri+Geri Yayılım hesap defteri many-to-one'da kaldırılmadı, moOldViewToggle ile açılabilir
+      updateFcLeftVisibility();
     });
   });
 })();
@@ -1208,6 +1243,33 @@
   btn.addEventListener('click', ()=>{
     i=(i+1)%(steps.length+1);
     if(i===steps.length) i=-1;
+    highlight();
+  });
+})();
+
+/* ---- many-to-one: eski filtrelenebilir İleri+Geri Yayılım hesap defteri artık kapalı başlıyor, bu butonla açılıp kapanıyor (silinmedi) ---- */
+(function(){
+  const btn=document.getElementById('moOldViewToggle');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    if(window.__rnnToggleMoOldView) window.__rnnToggleMoOldView(btn);
+  });
+})();
+
+/* ---- many-to-one: ▶ İzle — Geri Adım 1→5 kartlarını sırayla vurgula ---- */
+(function(){
+  const btn=document.getElementById('mo5WatchBtn');
+  const ids=['moAdim1','moAdim2','moAdim3','moAdim4','moAdim5'];
+  if(!btn) return;
+  let i=-1;
+  function highlight(){
+    ids.forEach((id,idx)=>{ const el=document.getElementById(id); if(el) el.classList.toggle('active', idx===i); });
+    btn.classList.toggle('on', i>=0);
+    btn.textContent = i>=0 ? ('▶ Adım '+(i+1)) : '▶ İzle';
+  }
+  btn.addEventListener('click', ()=>{
+    i=(i+1)%(ids.length+1);
+    if(i===ids.length) i=-1;
     highlight();
   });
 })();
