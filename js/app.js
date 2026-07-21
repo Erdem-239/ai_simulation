@@ -1160,6 +1160,21 @@
   });
 })();
 
+/* ---- many-to-one Geri Yayılım kartı: Wxh/Whh'e göre filtrele ---- */
+(function(){
+  const btns=document.querySelectorAll('.rnn-w-btn');
+  const card=document.getElementById('ruBwd');
+  if(!btns.length||!card) return;
+  btns.forEach(b=>{
+    b.addEventListener('click', ()=>{
+      btns.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      card.classList.remove('wshow-all','wshow-wxh','wshow-whh');
+      card.classList.add('wshow-'+b.dataset.w);
+    });
+  });
+})();
+
 
 /* ---- aktivasyon fonksiyonları explorer ---- */
 (function(){
