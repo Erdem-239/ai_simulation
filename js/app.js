@@ -1194,6 +1194,42 @@
   });
 })();
 
+/* ---- many-to-one: ▶ İzle — t=3→2→1 sırayla vurgula (gerçek eğitim döngüsü olmadan, hafif adım-adım hissi) ---- */
+(function(){
+  const btn=document.getElementById('ruWatchBtn');
+  const steps=Array.from(document.querySelectorAll('.ru-tstep'));
+  if(!btn||!steps.length) return;
+  let i=-1;
+  function highlight(){
+    steps.forEach((el,idx)=>el.classList.toggle('active', idx===i));
+    btn.classList.toggle('on', i>=0);
+    btn.textContent = i>=0 ? ('▶ t='+steps[i].dataset.t) : '▶ İzle';
+  }
+  btn.addEventListener('click', ()=>{
+    i=(i+1)%(steps.length+1);
+    if(i===steps.length) i=-1;
+    highlight();
+  });
+})();
+
+/* ---- many-to-many: ▶ İzle — Geri Adım 1→5 kartlarını sırayla vurgula ---- */
+(function(){
+  const btn=document.getElementById('m2mWatchBtn');
+  const ids=['gAdimM2m1','gAdimM2m2','gAdimM2m3','gAdimM2m4','gAdimM2m5'];
+  if(!btn) return;
+  let i=-1;
+  function highlight(){
+    ids.forEach((id,idx)=>{ const el=document.getElementById(id); if(el) el.classList.toggle('active', idx===i); });
+    btn.classList.toggle('on', i>=0);
+    btn.textContent = i>=0 ? ('▶ Adım '+(i+1)) : '▶ İzle';
+  }
+  btn.addEventListener('click', ()=>{
+    i=(i+1)%(ids.length+1);
+    if(i===ids.length) i=-1;
+    highlight();
+  });
+})();
+
 
 /* ---- aktivasyon fonksiyonları explorer ---- */
 (function(){
