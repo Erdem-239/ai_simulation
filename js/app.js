@@ -1125,7 +1125,7 @@
   if(rcFastBtn) rcFastBtn.addEventListener('click', ()=>{
     if(rcTimer){ rcTrainStop(); return; }
     rcFastBtn.classList.add('on');
-    rcTimer=setInterval(rcTrainStep, 110);
+    rcTimer=setInterval(rcTrainStep, 700);
   });
   if(rcStopBtn) rcStopBtn.addEventListener('click', rcTrainStop);
   if(rcResetBtn) rcResetBtn.addEventListener('click', rcTrainReset);
