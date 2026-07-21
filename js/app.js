@@ -1139,6 +1139,8 @@
   if(!btns.length) return;
   const rnnTypeTek=document.getElementById('rnnTypeTek');
   const rnnFwdCols=document.getElementById('rnnFwdCols');
+  const rnnFcLeft=document.getElementById('rnnFcLeft');
+  const rnnColResizer=document.getElementById('rnnColResizer');
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const typeNote=document.getElementById('rnnTypeNote');
   const typeNoteHtml={
@@ -1156,6 +1158,10 @@
       if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
       if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
+      // many-to-many'de gerçek 3-adım kartı zaten Geri Adım 5'te (3 ayrı kayıpla) doğru gösteriliyor — many-to-one'a özgü tekrarı gizle
+      if(rnnFcLeft) rnnFcLeft.style.display = (rt==='m2mEq') ? 'none' : 'flex';
+      if(rnnColResizer) rnnColResizer.style.display = (rt==='m2mEq') ? 'none' : 'block';
+      if(rnnFwdCols) rnnFwdCols.classList.toggle('rfc-diagram-only', rt==='m2mEq');
     });
   });
 })();

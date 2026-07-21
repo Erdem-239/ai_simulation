@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607210915">
+<link rel="stylesheet" href="css/style.css?v=202607210927">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-21 09:15 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-21 09:27 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -651,7 +651,7 @@
 
 
 
-    <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı BPTT <span class="chev">▸</span></div>
+    <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı ileri + geri yayılım <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody2">
 
     <p style="font-size:14px; color:#cfd3d8; margin-top:0">Önce TEK bir RNN hücresinin içine bak, sonra aynı hücreyi zincirleyelim: aynı ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub>) zaman içinde <b>tekrar tekrar</b> kullanılıyor, h bir adımdan diğerine taşınıyor. Aşağıdaki canlı hücre, seçtiğin mimariye göre gerçekten değişiyor — bir mimariye tıkla, aynı hücrenin nasıl farklı bağlandığını gör:</p>
@@ -784,7 +784,7 @@
 
       <div class="sc-right">
       <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
-      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı BPTT, aşağıda 2) Zincirleme'de.)</span></p>
+      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
           <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
           <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
@@ -1021,9 +1021,9 @@
     </div><!-- /gAdimSection -->
     </div><!-- /rnnTypeTek -->
     <div class="rnn-fwd-cols" id="rnnFwdCols" style="display:none">
-    <div class="rnn-fc-left">
+    <div class="rnn-fc-left" id="rnnFcLeft">
     <div class="pts" style="border-left:3px solid var(--accent); margin:16px 0 0">
-      <h3 style="color:var(--accent); font-size:13.5px">🔗 Gerçek 3 adımlı BPTT — h zincirlensin, kendi sayılarınla</h3>
+      <h3 style="color:var(--accent); font-size:13.5px">🔗 Gerçek 3 adımlı İleri + Geri Yayılım — h zincirlensin, kendi sayılarınla</h3>
       <div class="ptrow" style="margin-bottom:10px">
         <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
         <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
@@ -2810,9 +2810,9 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607210915"></script>
+<script src="js/lesson-linreg.js?v=202607210927"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607210915"></script>
+<script src="js/app.js?v=202607210927"></script>
 </body>
 </html>
