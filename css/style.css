@@ -242,6 +242,7 @@
   .rnn-fc-right{flex:0 0 var(--rnn-simw,540px); min-width:0; order:1; padding-right:8px}   /* hücre diyagramı — SOL */
   .rnn-fc-left{flex:1 1 auto; min-width:0; order:3; padding-left:8px; display:flex; flex-direction:column}   /* formül kartları — SAĞ */
   .rnn-fc-left > .pts{flex:0 0 auto}
+  .rnn-fwd-cols.rfc-diagram-only .rnn-fc-right{flex:1 1 auto; max-width:900px; margin:0 auto; padding-right:0}
   .ru-acc-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(260px,100%),1fr)); gap:10px; align-items:start}
 
   /* ---- Tek Hücre bölümü — sol: diyagram+forward, sağ: eğitim döngüsü+kayıp vadisi ---- */
