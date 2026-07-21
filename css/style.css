@@ -104,6 +104,12 @@
   #ruBwd.wshow-all .eq[data-w], #ruBwd.wshow-all .dt-tree[data-w]{display:block}
   #ruBwd.wshow-wxh .eq[data-w="wxh"], #ruBwd.wshow-wxh .dt-tree[data-w="wxh"]{display:block}
   #ruBwd.wshow-whh .eq[data-w="whh"], #ruBwd.wshow-whh .dt-tree[data-w="whh"]{display:block}
+  .ru-tstep{border-radius:6px; transition:.2s; padding:2px 6px; margin:0 -6px}
+  .ru-tstep.active{background:rgba(255,157,82,.08); box-shadow:inset 3px 0 0 var(--accent)}
+
+  .rnn-watch-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:5px 12px; border-radius:6px; cursor:pointer; font-size:12px; transition:.15s}
+  .rnn-watch-btn:hover{border-color:var(--accent)}
+  .rnn-watch-btn.on{background:var(--panel2); border-color:var(--accent); color:var(--accent); font-weight:600}
 
   .notes{margin-top:34px}
   .notes h2.title{font-size:20px; border-bottom:2px solid var(--accent); padding-bottom:8px; display:inline-block}
