@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607211109">
+<link rel="stylesheet" href="css/style.css?v=202607220907">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-21 11:09 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:07 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2084,12 +2084,95 @@ z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
   </div>
 
   <!-- MODÜL 2 -->
-  <div class="sechead">2) Türev: Tanım + Kuvvet/Sabit Kuralı</div>
-  <div class="pts">
+  <div class="sechead">2) Türev — anlık değişim hızı</div>
+
+  <!-- SEZGİ AÇILIŞI -->
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🎯 Bir cümleyle: türev = <b>o anki eğim</b> = <b>hızın kendisi</b></h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7; margin:6px 0 0">Arabanın kilometre saati sana <b>ortalama</b> hızını söylemez — <b>şu anki</b> hızını söyler. Türev tam olarak bunu yapan matematiksel araçtır: bir eğrinin herhangi bir noktasında, "bir sonraki mini adımda ne kadar değişir?" sorusunun cevabı. Aşağıda üç ayrı gerçek dünya sahnesinde bunu göreceksin — <b>düşen bir top</b>, <b>kurabiye tezgahı</b> ve <b>en ucuz köprü</b>. Üçünde de aynı sayı iş başında: <b>türev</b>.</p>
+  </div>
+
+  <!-- 🌉 SİM 1: KÖPRÜDEN TOP ATMA -->
+  <div class="pts" style="border-left:3px solid var(--blue); margin-top:14px">
+    <h3 style="color:var(--blue); margin-top:0">🌉 Sahne 1 — Köprüden bırakılan top</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">45 m yükseklikte bir köprüden bir top bıraktın. Yerçekimi (g ≈ 10 m/s²) topu aşağı çeker; yüksekliği zamanla şu formülle azalır: \( h(t) = 45 - \tfrac{1}{2}\,g\,t^{2} = 45 - 5t^{2} \). Peki topun <b>şu anki hızı</b> nedir? Elde tek elimizde h(t) formülü var — hız direkt yok. İşte tam bu sorunun cevabı <b>türev</b>tir.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">zaman t =</span>
+      <input type="range" id="tvBridgeT" min="0" max="3" step="0.02" value="1.2" style="flex:1; min-width:180px; max-width:360px">
+      <b id="tvBridgeTv" style="color:var(--accent); min-width:64px">1.20 s</b>
+      <button class="addbtn" id="tvBridgePlay" style="background:var(--blue); color:#fff; font-size:12px; padding:4px 10px">▶ Bırak</button>
+    </div>
+    <div style="max-width:720px"><canvas id="tvBridgeCanvas" width="700" height="340" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tvBridgeRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Dikkat et:</b> t=0'da hız <b>0</b> (topu bıraktığın an durgun). Zaman ilerledikçe hız — yani türev — <b>büyüyor</b>. h(t) eğrisinin dikleşmesi tam olarak bunu gösteriyor: eğri ne kadar dikse, türev o kadar büyük. <b>Sarı tanjantın eğimi = o anki hız = h'(t) = −10·t</b>. Yani türev bize <i>başka</i> bir fonksiyon veriyor (hız fonksiyonu). Türevin türevi (−10) = <b>ivme</b> = yerçekiminin kendisi. Fizik ile matematik tam burada aynı dilde konuşuyor.</div>
+  </div>
+
+  <!-- 🍪 KURABİYE HİKAYESİ -->
+  <div class="pts" style="border-left:3px solid #d4a94a; margin-top:14px">
+    <h3 style="color:#d4a94a; margin-top:0">🍪 Sahne 2 — Kurabiye tezgahı</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Kurabiye satıyorsun. Günde x kurabiye üretince toplam kârın: \( K(x) = 4x - 0.05x^{2} \) (her kurabiye biraz kâr ekliyor, ama çok üretince satamayıp indirim yapıyorsun — kâr eğrisi tepe yapıyor). Soru: <b>bir kurabiye daha üretsem kârım ne kadar artar?</b> Bu, sana <b>o an</b>'ki durumu söyleyen bir sayı — <b>marjinal kâr</b> = <b>türev</b>.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">bugün üretim x =</span>
+      <input type="range" id="tvCookieX" min="0" max="60" step="1" value="20" style="flex:1; min-width:180px; max-width:340px">
+      <b id="tvCookieXv" style="color:var(--accent); min-width:80px">20 kurabiye</b>
+    </div>
+    <div style="max-width:720px"><canvas id="tvCookieCanvas" width="700" height="320" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tvCookieRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#d4a94a">💡 <b>Türev = karar aracı:</b> Türev pozitifse "üretimi artır — bir kurabiye daha KÂR getirir". Türev negatifse "üretimi azalt — bir kurabiye daha ZARAR". <b>Türev = 0</b> olduğu nokta = <b>en yüksek kârın olduğu tepe</b>. Kaydırıcıyı gezdirip x nerede türevin işaret değiştirdiğini bul — işte optimum üretim sayısı orası. Bu sezgi lineer regresyondaki "gradyan alçalma"nın kalbi: bilgisayar da tam olarak bunu yapar, sadece milyon boyutta.</div>
+    <div class="acc" style="margin-top:10px">
+      <div class="acc-head"><span class="ac">▸</span> Ayrıca — zincir kuralına giriş kapısı (çikolata → lezzet → mutluluk)</div>
+      <div class="acc-body">
+        <p>Kurabiyeyi biraz büyütelim: <b>çikolata (x)</b> → <b>lezzet (u = 2x)</b> → <b>mutluluk (y = u²)</b>. Çikolatayı 1 gram artırınca mutluluk ne kadar artar? Aradaki halkalar var: çikolata önce lezzeti değiştiriyor (kur: du/dx = 2), lezzet de mutluluğu değiştiriyor (kur: dy/du = 2u). <b>Toplam etki = kurları çarp</b>:</p>
+        \[ \frac{dy}{dx}=\frac{dy}{du}\cdot\frac{du}{dx}=(2u)(2)=4u=8x \]
+        <div class="tip">İşte <b>zincir kuralı</b> — Modül 3'te ayrıntısı var. Aktivasyon fonksiyonlarındaki <b>σ'=σ(1−σ)</b>, RNN'deki <b>(1−h²)</b> hep bu kural üstünde durur. Kurabiye örneğini şimdi tuttuğunda derin öğrenmenin tüm matematiği sonra kendiliğinden açılır.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔬 SİM 3: h → 0 LİMİT TANIMI -->
+  <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px">
+    <h3 style="color:#46c46a; margin-top:0">🔬 Türevin resmi tanımı — "h → 0" ne demek, elle küçült</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Kitaptaki tanımı şöyle: \( f'(x)=\lim_{h\to 0}\dfrac{f(x+h)-f(x)}{h} \). Karışık gibi ama sezgisi çok temiz: <b>iki noktayı birleştiren kesme çizgisinin (sekant) eğimini al, sonra iki noktayı birbirine yaklaştır</b> (h'yi küçült). Yaklaştıkça sekant, o noktadaki <b>tanjanta</b> döner. Aşağıda h'yi elinle küçültüp bu dönüşümü izle.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">x =</span>
+      <input type="range" id="tvLimX" min="-2.5" max="2.5" step="0.05" value="1" style="width:200px">
+      <b id="tvLimXv" style="color:var(--accent); min-width:44px">1.00</b>
+      <div style="width:1px; height:24px; background:var(--line)"></div>
+      <span style="font-size:13px">h =</span>
+      <input type="range" id="tvLimH" min="0.01" max="2" step="0.01" value="1.2" style="width:200px">
+      <b id="tvLimHv" style="color:var(--accent); min-width:44px">1.20</b>
+    </div>
+    <div style="max-width:720px"><canvas id="tvLimCanvas" width="700" height="360" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tvLimRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#46c46a">💡 <b>Bak, matematik burada doğuyor:</b> h=1.2'de sekant eğimi henüz kaba bir yaklaşım. h=0.5'e indir — daha yakın. h=0.05'e indir — neredeyse tanjantın üstüne oturdu. h'yi teorik olarak <b>tam sıfıra</b> götürsen (yapamazsın çünkü 0/0 tanımsız) tam olarak türeve varırdın. "Limit" tam olarak bu yaklaşmayı ehlileştirmenin adı. Kuvvet kuralı \((x^n)'=n\,x^{n-1}\) gibi tüm türev kuralları bu limit hesabından çıkar — ama günlük hayatta kuralı ezberler, limiti sadece BURADA hissederiz.</div>
+  </div>
+
+  <!-- 🌉 SİM 4: EN UCUZ KÖPRÜ -->
+  <div class="pts" style="border-left:3px solid #e06a6a; margin-top:14px">
+    <h3 style="color:#e06a6a; margin-top:0">🏗️ Sahne 3 — En ucuz köprü: türev = 0 nerede?</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bir nehri geçmek için köprü kuruyorsun. Köprü uzunluğu L (metre) olsun. İki tür maliyet var: <b>malzeme</b> L'nin karesi kadar artar (uzun köprü daha çok çelik gerektirir, gerilme kuadratik büyür): \( M(L)=0.5\,L^{2} \). <b>Sabit inşaat maliyeti</b> ise L uzadıkça ters oranla düşer (kısa köprüde şantiye kurma başına maliyet yüksek): \( S(L)=200/L \). Toplam: \( C(L)=0.5L^{2}+200/L \). <b>Peki hangi L en ucuz?</b></p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">uzunluk L =</span>
+      <input type="range" id="tvOptL" min="2" max="14" step="0.1" value="4" style="flex:1; min-width:180px; max-width:340px">
+      <b id="tvOptLv" style="color:var(--accent); min-width:64px">4.0 m</b>
+      <button class="addbtn" id="tvOptSolve" style="background:#e06a6a; color:#fff; font-size:12px; padding:4px 10px">🎯 En iyisini bul</button>
+    </div>
+    <div style="max-width:720px"><canvas id="tvOptCanvas" width="700" height="340" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tvOptRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#e06a6a">💡 <b>Optimizasyonun kalbi:</b> C(L) eğrisinin <b>en alt noktasında</b> tanjant <b>yataydır</b> — yani türev tam olarak <b>0</b>'dır. Bu her optimizasyon probleminde geçerli: en iyi yerin adresi = "türevin sıfırlandığı yer". Analitik olarak: \( C'(L)=L - 200/L^{2}=0 \Rightarrow L^{3}=200 \Rightarrow L\approx 5.85\) m. "🎯 En iyisini bul" butonu, gradyan alçalma ile bu noktayı adım adım bulur — RNN eğitirken bilgisayarın yaptığının minik hali.</div>
+  </div>
+
+  <!-- KURALLAR (kısa özet) -->
+  <div class="pts" style="margin-top:14px">
+    <h3 style="color:var(--accent); margin-top:0">🧰 Pratik hesap kuralları (formal tanımdan çıkar; her seferinde limit almazsın)</h3>
     <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
-      Türev = <b>eğim</b> = anlık değişim hızı. Tanımı:
-      \[ f'(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}{h} \]
-      Pratikte üç kural yeter: <b>kuvvet kuralı</b> \((x^{n})'=n\,x^{n-1}\), <b>sabitin türevi 0</b>, <b>toplamın türevi = türevlerin toplamı</b>. (Limit tanımının adım adım kullanımı Lineer Regresyon sekmesinde ispatlarla var.)
+      Yukarıdaki limit tanımından üç pratik kural türer — bu üçüyle bu sitedeki tüm türevleri elle çıkarabilirsin:
+      <ul style="margin:6px 0 0">
+        <li><b>Kuvvet kuralı:</b> \((x^{n})'=n\,x^{n-1}\) &nbsp;— örn. \((x^{3})'=3x^{2}\), \((x^{-1})'=-x^{-2}\).</li>
+        <li><b>Sabitin türevi 0:</b> düz doğru eğimsizdir.</li>
+        <li><b>Toplamın türevi = türevlerin toplamı:</b> terim terim türev al.</li>
+      </ul>
+      (Limit tanımının adım adım kullanımı Lineer Regresyon sekmesinde ispatlarla var.)
     </div>
     <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">d/dx (x²)      = 2x
@@ -2129,23 +2212,6 @@ d/dx (7)       = 0</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(2x-2\). Terim terim: \(x^{2}\to 2x\), \(-2x\to -2\), \(1\to 0\).</div>
       </div>
     </div>
-  </div>
-
-  <!-- 🎬 3b1b-tarzı animasyon: türev = eğimin izi -->
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent)">🎬 Türevi GÖR — eğim, yeni bir fonksiyon çizer</h3>
-    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Beyaz nokta eğri üzerinde kayar; <b style="color:#ffd24a">sarı tanjantın eğimi</b> her an ölçülür ve altta <b style="color:#46c46a">yeşil iz</b> olarak çizilir. O iz, <b>türev fonksiyonunun ta kendisidir</b>. (3Blue1Brown'ın "türev = eğimin hikâyesi" fikri — ama burada durdurup istediğin yere kaydırabilirsin.)</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
-      <button class="addbtn dfn-sel" data-f="par" style="background:var(--blue); color:#fff">f(x) = x²/4</button>
-      <button class="addbtn dfn-sel" data-f="sig" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">σ(x)</button>
-      <button class="addbtn dfn-sel" data-f="tanh" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">tanh(x)</button>
-      <div style="width:1px; height:24px; background:var(--line)"></div>
-      <button class="addbtn" id="dPlay" style="background:var(--accent); color:#1f2023">⏸ Durdur</button>
-      <input type="range" id="dScrub" min="-4" max="4" step="0.02" value="-4" style="flex:1; min-width:140px; max-width:300px">
-    </div>
-    <div style="max-width:680px"><canvas id="dTrace" width="660" height="470"></canvas></div>
-    <div class="work" id="dRead" style="margin-top:10px; line-height:1.8"></div>
-    <div class="tip">Dikkat et: eğri <b>inerken</b> iz sıfırın altında, <b>dibinde</b> iz tam 0, <b>çıkarken</b> pozitif. σ ve tanh'ta izin uçlarda 0'a yapışması = <b>doyma</b> = vanishing gradient'in görsel hali.</div>
   </div>
 
   <!-- MODÜL 3 -->
@@ -2905,9 +2971,10 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607211109"></script>
+<script src="js/lesson-linreg.js?v=202607220907"></script>
+<script src="js/lesson-turev.js?v=202607220907"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607211109"></script>
+<script src="js/app.js?v=202607220907"></script>
 </body>
 </html>
