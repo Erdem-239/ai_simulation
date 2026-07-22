@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607220946">
+<link rel="stylesheet" href="css/style.css?v=202607220950">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:46 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:50 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2517,8 +2517,62 @@ Leaky'(−5) = 0.01</div>
   <!-- ===================== VEKTÖR MODELİ ===================== -->
   <div class="model" id="model-vektor">
 
-  <h1>Vektör & Nokta Çarpım — Benzerliğin Matematiği</h1>
-  <p class="sub">Attention'ın kalbindeki <b>QKᵀ</b> bir matris çarpımı ve tek bir sezgiye dayanıyor: <b>nokta çarpım = iki vektörün ne kadar aynı yöne baktığı</b>. Bu sayfada o sezgiyi elinle döndürerek kazanacaksın.</p>
+  <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri ===== -->
+  <div class="lesson-hero">
+    <svg class="lesson-hero-svg" viewBox="0 0 760 220" role="img" aria-label="İki vektör oku ve aralarındaki nokta çarpım (izdüşüm)">
+      <defs>
+        <marker id="vecA" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3a7afe"/></marker>
+        <marker id="vecB" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#f0a032"/></marker>
+      </defs>
+      <text x="380" y="22" text-anchor="middle" font-size="12" fill="#9aa0a6" font-family="Segoe UI, Arial">iki ok arasındaki açı = ne kadar aynı yöne baktıkları = benzerlik</text>
+
+      <!-- ekseninler -->
+      <line x1="80" y1="170" x2="680" y2="170" stroke="#3a4048" stroke-width="1"/>
+      <line x1="380" y1="40" x2="380" y2="200" stroke="#3a4048" stroke-width="1"/>
+
+      <!-- a vektörü -->
+      <line x1="380" y1="170" x2="580" y2="80" stroke="#3a7afe" stroke-width="3" marker-end="url(#vecA)"/>
+      <text x="590" y="76" font-size="14" fill="#5aa0e0" font-weight="700">a</text>
+
+      <!-- b vektörü -->
+      <line x1="380" y1="170" x2="510" y2="60" stroke="#f0a032" stroke-width="3" marker-end="url(#vecB)"/>
+      <text x="518" y="52" font-size="14" fill="#f0a032" font-weight="700">b</text>
+
+      <!-- açı yayı -->
+      <path d="M 428 130 A 45 45 0 0 0 415 116" fill="none" stroke="#d4a94a" stroke-width="1.5"/>
+      <text x="426" y="118" font-size="12" fill="#d4a94a">θ</text>
+
+      <!-- gölge/izdüşüm (a'nın b üstüne) — kesikli -->
+      <line x1="580" y1="80" x2="497" y2="70" stroke="#5aa0e0" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <circle cx="497" cy="70" r="4" fill="#5aa0e0"/>
+      <text x="500" y="60" font-size="11" fill="#5aa0e0">izdüşüm</text>
+
+      <!-- alt açıklama -->
+      <text x="380" y="210" text-anchor="middle" font-size="11" fill="#6f757c">a·b = |a|·|b|·cos θ &nbsp; = &nbsp; aₓbₓ + a_y b_y</text>
+    </svg>
+
+    <h1>Vektör & Nokta Çarpım — Benzerliğin Matematiği</h1>
+    <p class="lesson-hook">🎯 "Kral" ile "kraliçe" nasıl akrabadır — bilgisayar bunu nasıl anlar? Her kelimeyi 768 sayılık bir ok olarak yazar, sonra iki okun ne kadar <b>aynı yöne baktığına</b> bakar. Bu tek fikir Google Translate'ten ChatGPT'ye kadar her modern dil modelinin altında duruyor. Ve tek bir işlemin adı var: <b>nokta çarpım</b>.</p>
+  </div>
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Aynı fikri iki dilde konuşan matematikçi</div>
+    <p>19. yüzyılın ortasında iki matematikçi, birbirlerinden habersiz, aynı devrimi hazırladı. Almanya'da <b>Hermann Grassmann</b> (1844) — bir lise öğretmeni — cebiri geometriden çıkarıp saf bir "büyüklük hesabı" olarak yazdı: yönlü sayılar, dış çarpımlar, tam bir vektör uzayı teorisi. Kimse anlamadı; kitap unutuldu. Aynı yıllarda İskoçya'da <b>William Rowan Hamilton</b>, 3B rotasyonları hesaplayabilmek için "kuaterniyon" adında dört boyutlu sayılar icat etti — bu, o zamana kadar hiç kimsenin görmediği bir şeydi.</p>
+    <p>50 yıl sonra Amerika'da <b>Josiah Willard Gibbs</b> (1881, Yale), fizikçilere yakınmıştı: "Kuaterniyonun büyük kısmı gereksiz, işimize yarayanı çekip alalım." Grassmann'ın unutulmuş fikirlerini, Hamilton'ın kuaterniyonunu ve fiziğin ihtiyaçlarını birleştirdi — bugün kullandığımız <b>vektör analizi</b> doğdu. <b>Nokta çarpım</b> (a·b = aₓbₓ + a_y b_y) tam olarak bu sadeleştirmeden çıktı: "İki yönlü büyüklüğün ne kadar aynı yöne baktığını söyleyen tek sayı."</p>
+    <p>Sonra 2013'te Google'da <b>Tomáš Mikolov</b> word2vec ile kelimeleri vektöre çevirdi. Ortaya çıkan sonuç şaşırtıcıydı: <i>vec("kral") − vec("erkek") + vec("kadın") ≈ vec("kraliçe")</i>. Grassmann'ın 170 yıl önce yazdığı cebir, kelimelerin anlamını taşıyabiliyordu. Attention mekanizması (2017) da aynı Q·K nokta çarpımını kullanır. Yani öğreneceğin bu tek işlem, iki yüzyıllık bir hattın devamıdır.</p>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🔍</span><b>Arama motorları</b> — Google 90'lardan beri sorgunu ve belgeleri vektöre çevirip cosine benzerliğine bakar. En yakın vektör = en alakalı belge.</div>
+      <div class="ex-card"><span class="ex-ico">🎬</span><b>Netflix/YouTube önerisi</b> — beğendiklerin ve izlemediklerin vektör; nokta çarpımı yüksek olanlar "sana benzer izleyicilerin sevdikleri" olur.</div>
+      <div class="ex-card"><span class="ex-ico">💬</span><b>ChatGPT/Claude</b> — her kelime bir vektör; attention'da her kelime her kelimeye Q·K nokta çarpımıyla bakar. Bu dersteki formülün büyütülmüşü.</div>
+      <div class="ex-card"><span class="ex-ico">🖼️</span><b>Yüz tanıma</b> — telefonun senin yüzünü bir vektör olarak hatırlar; kamera her karede yeni bir vektör çıkarır, ikisinin cosine benzerliği eşiğin üstündeyse kilit açılır.</div>
+      <div class="ex-card"><span class="ex-ico">🛒</span><b>Amazon "birlikte alınanlar"</b> — ürün vektörleri; aldığın şeye nokta çarpımı yüksek çıkanlar "önerilenler" listesine düşer.</div>
+    </div>
+  </div>
 
   <div class="callout">🔗 <b>Neden şimdi?</b> Şu ana kadar her şey tek sayıyla (skaler) yürüdü. Ama kelimeler vektör (Embedding), attention skorları ise vektörlerin nokta çarpımı. Bu kapıdan geçmeden <b>softmax(QKᵀ/√d)·V</b> okunmaz — geçince kendiliğinden okunur.</div>
 
@@ -3033,10 +3087,10 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607220946"></script>
-<script src="js/lesson-turev.js?v=202607220946"></script>
+<script src="js/lesson-linreg.js?v=202607220950"></script>
+<script src="js/lesson-turev.js?v=202607220950"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607220946"></script>
+<script src="js/app.js?v=202607220950"></script>
 </body>
 </html>
