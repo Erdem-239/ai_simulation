@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607220907">
+<link rel="stylesheet" href="css/style.css?v=202607220946">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:07 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:46 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2215,14 +2215,76 @@ d/dx (7)       = 0</div>
   </div>
 
   <!-- MODÜL 3 -->
-  <div class="sechead">3) Zincir Kuralı ⭐</div>
+  <div class="sechead">3) Zincir Kuralı ⭐ — birden fazla değişim üst üste bindiğinde</div>
+
+  <!-- SEZGİ AÇILIŞI -->
   <div class="pts" style="border-left:3px solid var(--accent)">
-    <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
-      İç içe fonksiyon \(f(g(x))\)'in türevi:
-      \[ \big(f(g(x))\big)'=f'(g(x))\cdot g'(x) \]
-      Sözle: <b>dış türev × iç türev</b> — yol üstündeki oranları çarp (bisiklet dişlisi / döviz kuru; canlı hali Aktivasyon sekmesinde). <b>Bütün aktivasyon türevleri ve tüm geri yayılım bu kuralın üstünde durur.</b>
+    <h3 style="color:var(--accent); margin-top:0">🎯 Bir cümleyle: zincir kuralı = <b>yol üstündeki oranları çarp</b></h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7; margin:6px 0 0">Türev bölümünde tek halkalı değişimi gördün: <i>x biraz değişirse f(x) ne kadar değişir</i>. Ama gerçek hayatta değişim <b>zincirle</b> gelir: pedal → dişli → tekerlek, TL → EUR → USD, ağırlık → z → aktivasyon → kayıp. Her halkanın kendi "kur"u var (yerel türev) ve <b>toplam etki = kurların çarpımı</b>. Aşağıdaki 3 sahne aynı fikri üç farklı gerçek dünya senaryosunda gösteriyor. En sonuncusu, aktivasyon fonksiyonlarındaki zincirin ta kendisi.</p>
+    <div style="font-size:13.5px; color:#cfd3d8; line-height:1.7; margin-top:10px">Matematiksel gösterim: iç içe \(f(g(x))\) fonksiyonunun türevi:</div>
+    \[ \big(f(g(x))\big)' = f'(g(x)) \cdot g'(x) \]
+    <div style="font-size:13.5px; color:#cfd3d8; margin:-4px 0 0">veya Leibniz gösterimiyle (aynı şey):</div>
+    \[ \frac{dy}{dx} = \frac{dy}{du}\cdot\frac{du}{dx} \]
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Yani <b>dış türev × iç türev</b>. Bütün aktivasyon türevleri ve tüm geri yayılım (BPTT dahil) bu kuralın üstünde durur — kurabiye örneğindeki 8x, sigmoid'in σ(1−σ), RNN'deki (1−h²), hepsi bu kuralın sonucu.</p>
+  </div>
+
+  <!-- 🚴 SİM 1: BİSİKLET VİTESİ -->
+  <div class="pts" style="border-left:3px solid var(--blue); margin-top:14px">
+    <h3 style="color:var(--blue); margin-top:0">🚴 Sahne 1 — Bisiklet vitesi: pedal → dişli → tekerlek</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Pedalı çevirdiğinde bacağın <b>doğrudan</b> tekerleğe bağlı değil — arada iki dişli var. Pedalı 1 tur döndürünce ön dişli \(k_1\) kat hızlanır, ondan sonraki orta dişli \(k_2\) kat, arka dişli de \(k_3\) kat. Peki pedalı biraz daha hızlı çevirirsem <b>tekerlek</b> ne kadar hızlanır? Cevap: <b>k₁ × k₂ × k₃</b> — zincir kuralının fiziksel hali. Değerleri değiştir, çarpımın nasıl anında büyüyüp küçüldüğünü izle.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">Ön dişli k₁ =</span>
+      <input type="range" id="tzGearK1" min="0.5" max="4" step="0.1" value="2" style="width:180px">
+      <b id="tzGearK1v" style="color:#3a7afe; min-width:38px">2.0×</b>
+      <span style="font-size:13px; margin-left:6px">Orta dişli k₂ =</span>
+      <input type="range" id="tzGearK2" min="0.5" max="4" step="0.1" value="1.5" style="width:180px">
+      <b id="tzGearK2v" style="color:#3a7afe; min-width:38px">1.5×</b>
+      <span style="font-size:13px; margin-left:6px">Arka dişli k₃ =</span>
+      <input type="range" id="tzGearK3" min="0.5" max="4" step="0.1" value="1.2" style="width:180px">
+      <b id="tzGearK3v" style="color:#3a7afe; min-width:38px">1.2×</b>
     </div>
-    <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
+    <div style="max-width:720px"><canvas id="tzGearCanvas" width="700" height="280" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tzGearRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Ters dişli:</b> bir dişliyi 1'in <i>altına</i> koy — o halka artık "azaltıcı" (küçültücü) oluyor. Çarpım küçülüyor. Sinir ağında sigmoid'in türevi en fazla 0.25'tir — yani her sigmoid katmanı zincire "×0.25 kadar küçültücü" bir halka ekler. 20 katmanlı sigmoid ağda gradyan 0.25²⁰ ≈ 10⁻¹² gibi bir sayıyla çarpılır → yok olur (<b>vanishing gradient</b>). ReLU'da pozitif bölgede kur = 1 → hiç sönmez. Zincir kuralı hem sorunu hem çözümü tek bir formülde açıklıyor.</div>
+  </div>
+
+  <!-- 💱 SİM 2: DÖVİZ ZİNCİRİ -->
+  <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px">
+    <h3 style="color:#46c46a; margin-top:0">💱 Sahne 2 — Döviz zinciri: TL → EUR → USD → Altın</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Türkiye'de bir tüccar altın alacak. Elinde TL var. Doğrudan TL/altın kuru yok; önce EUR'ya, sonra USD'ye, oradan altına geçmesi gerekiyor. Peki <b>1 TL kaç gram altın eder?</b> Her ara kur bilinirse tek şey yeter: <b>kurları çarp</b>. Bu, zincir kuralının parasal ifadesi — para geçtiği her halkada bir kurdan geçiyor, matematiksel olarak da aynı iş oluyor.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">TL → EUR:</span>
+      <input type="range" id="tzFxR1" min="0.01" max="0.1" step="0.001" value="0.03" style="width:180px">
+      <b id="tzFxR1v" style="color:#46c46a; min-width:60px">0.030</b>
+      <span style="font-size:13px; margin-left:6px">EUR → USD:</span>
+      <input type="range" id="tzFxR2" min="0.5" max="1.5" step="0.01" value="1.08" style="width:180px">
+      <b id="tzFxR2v" style="color:#46c46a; min-width:44px">1.08</b>
+      <span style="font-size:13px; margin-left:6px">USD → gram altın:</span>
+      <input type="range" id="tzFxR3" min="0.005" max="0.05" step="0.001" value="0.014" style="width:180px">
+      <b id="tzFxR3v" style="color:#46c46a; min-width:60px">0.014</b>
+    </div>
+    <div style="max-width:720px"><canvas id="tzFxCanvas" width="700" height="220" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tzFxRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>"Sadeleşme" numarası:</b> \( \dfrac{\text{EUR}}{\text{TL}}\times\dfrac{\text{USD}}{\text{EUR}}\times\dfrac{\text{altın}}{\text{USD}}=\dfrac{\text{altın}}{\text{TL}} \). Aradaki birimler birbirini götürüyor — tam olarak \( \tfrac{dy}{du}\cdot\tfrac{du}{dx}=\tfrac{dy}{dx} \) formülündeki "du"ların sadeleşmesi gibi. Leibniz gösteriminin (\(dy/dx\)) neden bu kadar sevildiğini burada görüyorsun: birim analizi <i>gözle</i> yapılıyor.</div>
+  </div>
+
+  <!-- 🌡️ SİM 3: SİGMOİD ZİNCİRİ -->
+  <div class="pts" style="border-left:3px solid #d4a94a; margin-top:14px">
+    <h3 style="color:#d4a94a; margin-top:0">🌡️ Sahne 3 — Sigmoid zinciri: z → e⁻ᶻ → 1+e⁻ᶻ → 1/(1+e⁻ᶻ) = σ</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Sinir ağının en klasik aktivasyonu sigmoid. Kısa formülü \( \sigma(z)=1/(1+e^{-z}) \) ama sezgi için içindeki <b>üç halkayı</b> ayrı ayrı görmek şart. z değeri hücrenin ham skoru; her halkada değer bir dönüşümden geçiyor. Her halkanın kendi <b>anlık kuru</b> (o noktadaki türevi) var. Toplam <b>dσ/dz</b> bu üç kurun çarpımı. z'yi kaydır — kurların ve toplamın nasıl değiştiğini adım adım gör.</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">giriş z =</span>
+      <input type="range" id="tzSigZ" min="-5" max="5" step="0.05" value="1" style="flex:1; min-width:180px; max-width:400px">
+      <b id="tzSigZv" style="color:var(--accent); min-width:44px">1.00</b>
+    </div>
+    <div style="max-width:720px"><canvas id="tzSigCanvas" width="700" height="240" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="tzSigRead" style="margin-top:10px; line-height:1.85; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Bak, buradan σ'=σ(1−σ) çıkıyor:</b> üç kuru elle çarpıp sadeleştirince tam olarak σ(1−σ) elde ediliyor (Aktivasyon sayfasındaki tam ispat orada). Ama ezberlemene gerek yok — zincir kuralını bildiğin sürece her aktivasyonu bu yöntemle <i>elden çıkarabilirsin</i>. tanh, softmax, GELU, hepsi aynı mantık. <b>Türev sıralamayı bildikten sonra derin öğrenmenin tüm matematiği açılır.</b></div>
+  </div>
+
+  <!-- KURAL VE ALIŞTIRMALAR -->
+  <div class="pts" style="margin-top:14px">
+    <h3 style="color:var(--accent); margin-top:0">📝 Yazıya dökmek — kalıp örnekler</h3>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">d/dx (2x+1)³ = 3(2x+1)² · (2x+1)'  = 3(2x+1)² · 2 = 6(2x+1)²
 d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
@@ -2971,10 +3033,10 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607220907"></script>
-<script src="js/lesson-turev.js?v=202607220907"></script>
+<script src="js/lesson-linreg.js?v=202607220946"></script>
+<script src="js/lesson-turev.js?v=202607220946"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607220907"></script>
+<script src="js/app.js?v=202607220946"></script>
 </body>
 </html>

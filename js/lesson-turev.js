@@ -318,4 +318,252 @@
     });
     render();
   })();
+
+  /* ==========================================================================
+     ZİNCİR KURALI — SİM 1: Bisiklet vitesi (pedal → dişli → tekerlek)
+     ========================================================================== */
+  (function gears(){
+    const cv = document.getElementById('tzGearCanvas');
+    if(!cv) return;
+    const k1In = document.getElementById('tzGearK1');
+    const k2In = document.getElementById('tzGearK2');
+    const k3In = document.getElementById('tzGearK3');
+    const k1V = document.getElementById('tzGearK1v');
+    const k2V = document.getElementById('tzGearK2v');
+    const k3V = document.getElementById('tzGearK3v');
+    const read = document.getElementById('tzGearRead');
+    const ctx = cv.getContext('2d');
+
+    function drawGear(cx, cy, r, color, teeth, angle, label, ratio){
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      // teeth
+      ctx.fillStyle = color;
+      const outerR = r, innerR = r*0.85;
+      for(let i=0;i<teeth;i++){
+        const a = i * 2*Math.PI/teeth;
+        const w = Math.PI/teeth * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a-w)*innerR, Math.sin(a-w)*innerR);
+        ctx.lineTo(Math.cos(a-w*0.7)*outerR, Math.sin(a-w*0.7)*outerR);
+        ctx.lineTo(Math.cos(a+w*0.7)*outerR, Math.sin(a+w*0.7)*outerR);
+        ctx.lineTo(Math.cos(a+w)*innerR, Math.sin(a+w)*innerR);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(0,0,innerR,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#12141a';
+      ctx.beginPath(); ctx.arc(0,0,innerR*0.35,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      // label
+      ctx.fillStyle = '#e7e9ec'; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText(label, cx, cy+r+16);
+      ctx.fillStyle = color; ctx.font='11px Segoe UI';
+      ctx.fillText('×'+F(ratio,1), cx, cy+r+30);
+    }
+
+    let angle = 0;
+    let anim = null;
+
+    function render(){
+      const W=cv.width, H=cv.height;
+      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
+      const k1=parseFloat(k1In.value), k2=parseFloat(k2In.value), k3=parseFloat(k3In.value);
+      const total = k1*k2*k3;
+      // 4 elements: Pedal (input), Gear1, Gear2, Gear3, Wheel (output)
+      const cy = 110;
+      const positions = [
+        {x:80,  r:26, color:'#5aa0e0', teeth:10, label:'Pedal',    ratio:1,   speed:1},
+        {x:210, r:34, color:'#3a7afe', teeth:14, label:'Ön (k₁)',  ratio:k1,  speed:k1},
+        {x:360, r:28, color:'#3a7afe', teeth:12, label:'Orta (k₂)', ratio:k2, speed:k1*k2},
+        {x:510, r:32, color:'#3a7afe', teeth:13, label:'Arka (k₃)', ratio:k3, speed:total},
+        {x:640, r:40, color:'#f0a032', teeth:16, label:'Tekerlek', ratio:total, speed:total}
+      ];
+      // connection lines
+      ctx.strokeStyle='#3a4048'; ctx.lineWidth=3; ctx.setLineDash([6,4]);
+      for(let i=0;i<positions.length-1;i++){
+        ctx.beginPath(); ctx.moveTo(positions[i].x+positions[i].r, cy); ctx.lineTo(positions[i+1].x-positions[i+1].r, cy); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      // draw gears
+      positions.forEach((p,i)=>{
+        // alternate rotation direction based on gear ratio sign; here just spinning
+        const dir = (i%2===0) ? 1 : -1;
+        drawGear(p.x, cy, p.r, p.color, p.teeth, angle*p.speed*dir*0.5, p.label, p.ratio);
+      });
+      // top label: chain
+      ctx.fillStyle='#c0c5cc'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText('pedal hızı × k₁ × k₂ × k₃ = tekerlek hızı', W/2, 26);
+      ctx.fillStyle='#f0a032'; ctx.font='bold 14px Segoe UI';
+      ctx.fillText('1 × '+F(k1,1)+' × '+F(k2,1)+' × '+F(k3,1)+' = '+F(total,2)+'×', W/2, 46);
+
+      let msg;
+      if(total > 4) msg = '🚀 Çok hızlı — pedal ufak dönerse tekerlek fırlar (patlayan gradyan)';
+      else if(total < 0.5) msg = '🐢 Çok yavaş — pedali çok çevirsen bile tekerlek zar zor döner (sönen gradyan)';
+      else msg = '👍 Dengeli — orta bir toplam oran';
+      read.innerHTML =
+        '<b>Yerel kurlar (her halkanın yerel türevi):</b> k₁='+F(k1,2)+', k₂='+F(k2,2)+', k₃='+F(k3,2)+
+        '<br><b>Toplam kur (zincir kuralı):</b> k₁·k₂·k₃ = <b style="color:#f0a032">'+F(total,3)+'</b> × (pedal 1 birim hızlansa tekerlek '+F(total,2)+' birim hızlanır)'+
+        '<br><span style="color:var(--muted); font-size:12px">↳ '+msg+'</span>';
+    }
+
+    function tick(){
+      angle += 0.04;
+      render();
+      anim = requestAnimationFrame(tick);
+    }
+    [k1In,k2In,k3In].forEach(el => el.addEventListener('input', ()=>{
+      k1V.textContent = F(parseFloat(k1In.value),1)+'×';
+      k2V.textContent = F(parseFloat(k2In.value),1)+'×';
+      k3V.textContent = F(parseFloat(k3In.value),1)+'×';
+    }));
+    tick();
+  })();
+
+  /* ==========================================================================
+     ZİNCİR KURALI — SİM 2: Döviz zinciri (TL → EUR → USD → altın)
+     ========================================================================== */
+  (function fx(){
+    const cv = document.getElementById('tzFxCanvas');
+    if(!cv) return;
+    const r1I=document.getElementById('tzFxR1'), r2I=document.getElementById('tzFxR2'), r3I=document.getElementById('tzFxR3');
+    const r1V=document.getElementById('tzFxR1v'), r2V=document.getElementById('tzFxR2v'), r3V=document.getElementById('tzFxR3v');
+    const read=document.getElementById('tzFxRead');
+    const ctx=cv.getContext('2d');
+
+    function render(){
+      const W=cv.width, H=cv.height;
+      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
+      const r1=parseFloat(r1I.value), r2=parseFloat(r2I.value), r3=parseFloat(r3I.value);
+      const total = r1*r2*r3;
+      // 4 nodes
+      const nodes = [
+        {x:80,  label:'1 TL', color:'#5aa0e0'},
+        {x:250, label:F(r1,3)+' EUR', color:'#46c46a'},
+        {x:420, label:F(r1*r2,4)+' USD', color:'#46c46a'},
+        {x:600, label:F(total,5)+' g altın', color:'#f0a032'}
+      ];
+      const labels = ['× '+F(r1,3), '× '+F(r2,2), '× '+F(r3,3)];
+      const cy = 110;
+      // arrows and labels
+      ctx.strokeStyle='#5a6068'; ctx.lineWidth=2;
+      for(let i=0;i<nodes.length-1;i++){
+        const x1=nodes[i].x+50, x2=nodes[i+1].x-50;
+        ctx.beginPath(); ctx.moveTo(x1, cy); ctx.lineTo(x2, cy); ctx.stroke();
+        // arrow head
+        ctx.beginPath(); ctx.moveTo(x2, cy); ctx.lineTo(x2-8, cy-4); ctx.lineTo(x2-8, cy+4); ctx.closePath();
+        ctx.fillStyle='#5a6068'; ctx.fill();
+        // rate label
+        ctx.fillStyle='#46c46a'; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
+        ctx.fillText(labels[i], (x1+x2)/2, cy-10);
+      }
+      // draw nodes
+      nodes.forEach(n=>{
+        ctx.fillStyle='#1a1e26';
+        ctx.strokeStyle=n.color; ctx.lineWidth=2;
+        const w=100, h=44, x=n.x-w/2, y=cy-h/2;
+        ctx.beginPath();
+        if(ctx.roundRect) ctx.roundRect(x,y,w,h,8); else ctx.rect(x,y,w,h);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle=n.color; ctx.font='bold 13px Segoe UI'; ctx.textAlign='center';
+        ctx.fillText(n.label, n.x, cy+5);
+      });
+      // top and bottom labels
+      ctx.fillStyle='#c0c5cc'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText('Her ok bir kur — kurları çarp, altın miktarı çıkar', W/2, 24);
+      ctx.fillStyle='#f0a032'; ctx.font='bold 13px Segoe UI';
+      ctx.fillText('1 × '+F(r1,3)+' × '+F(r2,2)+' × '+F(r3,3)+' = '+F(total,5)+' gram altın', W/2, H-14);
+
+      read.innerHTML =
+        '<b>Ara sonuçlar:</b> 1 TL → '+F(r1,3)+' EUR → '+F(r1*r2,4)+' USD → <b style="color:#f0a032">'+F(total,5)+' g altın</b>'+
+        '<br><b>Toplam kur (zincir kuralı):</b> ('+F(r1,3)+') × ('+F(r2,2)+') × ('+F(r3,3)+') = <b style="color:#f0a032">'+F(total,6)+'</b> g/TL'+
+        '<br><span style="color:var(--muted); font-size:12px">↳ Yani 1000 TL ile '+F(total*1000,3)+' gram altın alınır. Ara birimler (EUR, USD) sonuçta görünmüyor — sadeleştiler.</span>';
+    }
+    [r1I,r2I,r3I].forEach(el => el.addEventListener('input', ()=>{
+      r1V.textContent=F(parseFloat(r1I.value),3);
+      r2V.textContent=F(parseFloat(r2I.value),2);
+      r3V.textContent=F(parseFloat(r3I.value),3);
+      render();
+    }));
+    render();
+  })();
+
+  /* ==========================================================================
+     ZİNCİR KURALI — SİM 3: Sigmoid zinciri (z → e⁻ᶻ → 1+e⁻ᶻ → 1/(...) = σ)
+     Her halka: değer, formül, YEREL TÜREV (kur) — sonda hepsini çarp = σ'
+     ========================================================================== */
+  (function sig(){
+    const cv = document.getElementById('tzSigCanvas');
+    if(!cv) return;
+    const zI = document.getElementById('tzSigZ');
+    const zV = document.getElementById('tzSigZv');
+    const read = document.getElementById('tzSigRead');
+    const ctx = cv.getContext('2d');
+
+    function render(){
+      const W=cv.width, H=cv.height;
+      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
+      const z = parseFloat(zI.value);
+      const u = Math.exp(-z);
+      const s = 1 + u;
+      const sigma = 1/s;
+      // yerel türevler
+      const du_dz = -Math.exp(-z);   // d/dz e^(-z) = -e^(-z)
+      const ds_du = 1;               // d/du (1+u) = 1
+      const dsigma_ds = -1/(s*s);    // d/ds (1/s) = -1/s²
+      const total = du_dz * ds_du * dsigma_ds;
+      const analytic = sigma*(1-sigma);
+
+      // 4 nodes: z, u, s, σ  with values
+      const nodes = [
+        {x:60,  label:'z',           val:F(z,3),      color:'#5aa0e0'},
+        {x:230, label:'u = e⁻ᶻ',     val:F(u,4),      color:'#f0a032'},
+        {x:410, label:'s = 1 + u',   val:F(s,4),      color:'#f0a032'},
+        {x:600, label:'σ = 1/s',     val:F(sigma,4),  color:'#46c46a'}
+      ];
+      const kurlar = [
+        {lbl:'du/dz = −e⁻ᶻ',        val:F(du_dz,4)},
+        {lbl:'ds/du = 1',             val:F(ds_du,4)},
+        {lbl:'dσ/ds = −1/s²',        val:F(dsigma_ds,4)}
+      ];
+      const cy = 90;
+      // arrows + kur labels
+      ctx.strokeStyle='#5a6068'; ctx.lineWidth=2;
+      for(let i=0;i<nodes.length-1;i++){
+        const x1=nodes[i].x+55, x2=nodes[i+1].x-55;
+        ctx.beginPath(); ctx.moveTo(x1, cy); ctx.lineTo(x2, cy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x2, cy); ctx.lineTo(x2-7, cy-4); ctx.lineTo(x2-7, cy+4); ctx.closePath();
+        ctx.fillStyle='#5a6068'; ctx.fill();
+        ctx.fillStyle='#d4a94a'; ctx.font='11px Segoe UI'; ctx.textAlign='center';
+        ctx.fillText(kurlar[i].lbl, (x1+x2)/2, cy-16);
+        ctx.fillStyle='#f0a032'; ctx.font='bold 12px Segoe UI';
+        ctx.fillText('= '+kurlar[i].val, (x1+x2)/2, cy-3);
+      }
+      // draw nodes
+      nodes.forEach(n=>{
+        ctx.fillStyle='#1a1e26';
+        ctx.strokeStyle=n.color; ctx.lineWidth=2;
+        const w=110, h=52, x=n.x-w/2, y=cy-h/2;
+        ctx.beginPath();
+        if(ctx.roundRect) ctx.roundRect(x,y,w,h,8); else ctx.rect(x,y,w,h);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle=n.color; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
+        ctx.fillText(n.label, n.x, cy-6);
+        ctx.fillStyle='#e7e9ec'; ctx.font='13px Segoe UI';
+        ctx.fillText(n.val, n.x, cy+12);
+      });
+      ctx.fillStyle='#c0c5cc'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+      ctx.fillText('z değişince, 3 halkanın kuru çarpılıyor → toplam dσ/dz', W/2, 20);
+      ctx.fillStyle='#f0a032'; ctx.font='bold 12px Segoe UI';
+      ctx.fillText('dσ/dz = '+F(du_dz,4)+' × '+F(ds_du,2)+' × '+F(dsigma_ds,4)+' = '+F(total,4), W/2, H-14);
+
+      read.innerHTML =
+        '<b>Zincir çarpımı:</b> dσ/dz = (du/dz) × (ds/du) × (dσ/ds) = ('+F(du_dz,4)+') × ('+F(ds_du,2)+') × ('+F(dsigma_ds,4)+') = <b style="color:#f0a032">'+F(total,5)+'</b>'+
+        '<br><b>Analitik kontrol:</b> σ·(1−σ) = '+F(sigma,4)+'·'+F(1-sigma,4)+' = <b style="color:#46c46a">'+F(analytic,5)+'</b> &nbsp;<span style="color:var(--muted)">← ikisi aynı ✓</span>'+
+        '<br><span style="color:var(--muted); font-size:12px">↳ z=0 iken σ\' = 0.25 (maksimum). z uçlara giderse σ\' → 0 (doyma = vanishing gradient).</span>';
+    }
+    zI.addEventListener('input', ()=>{ zV.textContent=F(parseFloat(zI.value),2); render(); });
+    render();
+  })();
 })();
