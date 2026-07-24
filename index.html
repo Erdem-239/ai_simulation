@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607250016">
+<link rel="stylesheet" href="css/style.css?v=202607250211">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-25 00:16 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-25 02:11 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1616,6 +1616,39 @@
     </div>
   </div>
 
+  <!-- 🧩 SEZGİ AÇILIŞI: XOR bulmacası — aktivasyona neden ihtiyacımız var, elle keşfet -->
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🧩 Neden aktivasyona ihtiyacımız var? — XOR bulmacası (elle dene)</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">4 nokta var: (0,0) ve (1,1) <b style="color:#e06a6a">kırmızı</b> (sınıf 0), (0,1) ve (1,0) <b style="color:#46c46a">yeşil</b> (sınıf 1) — bu desene <b>XOR</b> deniyor. Aşağıda önce <b>lineer</b> modda bir çizgi sürükleyip kırmızıları yeşillerden ayırmaya çalış — kaç tanesini doğru ayırabildiğini canlı gör. Sonra <b>aktivasyon ekle</b> moduna geç, 2 gizli nöronun (her biri kendi kıvrımıyla) bu imkânsız görünen işi nasıl çözdüğünü izle.</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0">
+      <button class="addbtn" id="actXorModeLin" style="background:var(--blue); color:#fff">📏 Lineer dene (aktivasyonsuz)</button>
+      <button class="addbtn" id="actXorModeNL" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🧠 Aktivasyon ekle (2 nöron)</button>
+    </div>
+    <div class="plots">
+      <div class="plotbox" style="flex:0 1 380px">
+        <h3 id="actXorCanvasTitle">Çizgiyi sürükleyerek ayır</h3>
+        <canvas id="actXorCanvas" width="360" height="360"></canvas>
+      </div>
+      <div class="plotbox" style="flex:1 1 300px">
+        <div id="actXorLinControls" style="margin-bottom:10px">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+            <span style="font-size:13px; min-width:70px">açı</span>
+            <input type="range" id="actXorAngle" min="0" max="179" step="1" value="45" style="flex:1">
+            <b id="actXorAngleV" style="color:var(--accent); min-width:40px; text-align:right">45°</b>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px">
+            <span style="font-size:13px; min-width:70px">konum</span>
+            <input type="range" id="actXorOffset" min="-1" max="2" step="0.02" value="0.5" style="flex:1">
+            <b id="actXorOffsetV" style="color:var(--accent); min-width:40px; text-align:right">0.50</b>
+          </div>
+          <button class="addbtn" id="actXorBest" style="margin-top:8px; font-size:12px; padding:5px 10px; background:var(--panel); color:var(--text); border:1px solid var(--line)">🔍 En iyi açıyı tara (100 deneme)</button>
+        </div>
+        <div class="work" id="actXorRead" style="white-space:pre-wrap; line-height:1.9; font-size:13px"></div>
+        <div class="callout" id="actXorVerdict" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="pts" style="border-left:3px solid var(--muted); padding:10px 14px">
     <b style="color:var(--muted)">❓ z nedir?</b> &nbsp;z, aktivasyona giren <b>ham skor</b>dur. Bir nöron önce girdileri ağırlıklarla çarpıp toplar: <b>z = W·x + b</b> (lineer regresyondaki Θ₀+Θ₁x'in aynısı). Sonra bu z'yi aktivasyondan geçirir: <b>σ(z), tanh(z), ReLU(z)</b>. Yani z = "aktivasyonun x ekseni", çıktıyı ezmeden önceki sayı. (z büyük + → σ≈1, &nbsp;z=0 → σ=0.5, &nbsp;z büyük − → σ≈0.)
   </div>
@@ -3153,10 +3186,11 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607250016"></script>
-<script src="js/lesson-turev.js?v=202607250016"></script>
+<script src="js/lesson-linreg.js?v=202607250211"></script>
+<script src="js/lesson-turev.js?v=202607250211"></script>
+<script src="js/lesson-xor.js?v=202607250211"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607250016"></script>
+<script src="js/app.js?v=202607250211"></script>
 </body>
 </html>
