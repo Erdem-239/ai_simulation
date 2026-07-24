@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607220950">
+<link rel="stylesheet" href="css/style.css?v=202607250016">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-22 09:50 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-25 00:16 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -1547,8 +1547,74 @@
 
   <div class="model" id="model-aktivasyon">
 
-  <h1>Aktivasyon Fonksiyonları — eğri, türev ve geri yayılımdaki rolü</h1>
-  <p class="sub">Bir fonksiyon seç, <b>z</b>'yi kaydır → eğriyi, <b>türevini</b> (sarı tanjantın eğimi) ve değerleri senin sayınla canlı gör. Türev neden bu kadar önemli? Çünkü geri yayılımda gradyan her aktivasyondan geçerken <b>g′(z) ile çarpılır</b>.</p>
+  <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri ===== -->
+  <div class="lesson-hero">
+    <svg class="lesson-hero-svg" viewBox="0 0 760 220" role="img" aria-label="Nöron: girdi × ağırlık toplandı z oldu, aktivasyondan geçti eğri şekle döndü">
+      <defs>
+        <marker id="actA" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5aa0e0"/></marker>
+        <marker id="actB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
+        <marker id="actG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46c46a"/></marker>
+      </defs>
+      <text x="380" y="22" text-anchor="middle" font-size="12" fill="#9aa0a6" font-family="Segoe UI, Arial">nöron: girdiler × ağırlıklar toplandı (ham skor z) → aktivasyondan geçti → çıktı (eğri, sınırlı)</text>
+
+      <!-- girdiler -->
+      <circle cx="60" cy="70" r="18" fill="#173a22" stroke="#46c46a" stroke-width="2"/>
+      <text x="60" y="75" text-anchor="middle" font-size="13" fill="#e7e9ec" font-weight="700">x₁</text>
+      <circle cx="60" cy="130" r="18" fill="#173a22" stroke="#46c46a" stroke-width="2"/>
+      <text x="60" y="135" text-anchor="middle" font-size="13" fill="#e7e9ec" font-weight="700">x₂</text>
+      <circle cx="60" cy="190" r="18" fill="#173a22" stroke="#46c46a" stroke-width="2"/>
+      <text x="60" y="195" text-anchor="middle" font-size="13" fill="#e7e9ec" font-weight="700">x₃</text>
+
+      <!-- ağırlıklar -->
+      <line x1="80" y1="70" x2="240" y2="128" stroke="#5aa0e0" stroke-width="2" marker-end="url(#actA)"/>
+      <line x1="80" y1="130" x2="240" y2="130" stroke="#5aa0e0" stroke-width="2" marker-end="url(#actA)"/>
+      <line x1="80" y1="190" x2="240" y2="132" stroke="#5aa0e0" stroke-width="2" marker-end="url(#actA)"/>
+      <text x="140" y="88" font-size="11" fill="#5aa0e0">×w₁</text>
+      <text x="140" y="123" font-size="11" fill="#5aa0e0">×w₂</text>
+      <text x="140" y="180" font-size="11" fill="#5aa0e0">×w₃</text>
+
+      <!-- toplama düğümü z -->
+      <rect x="240" y="112" width="84" height="36" rx="6" fill="#2a2416" stroke="#f0a032" stroke-width="2"/>
+      <text x="282" y="128" text-anchor="middle" font-size="12" fill="#c0c5cc">z = Σwx+b</text>
+      <text x="282" y="142" text-anchor="middle" font-size="11" fill="#9aa0a6">ham skor</text>
+
+      <!-- aktivasyon kutusu -->
+      <line x1="324" y1="130" x2="380" y2="130" stroke="#f0a032" stroke-width="2" marker-end="url(#actB)"/>
+      <rect x="380" y="80" width="180" height="100" rx="10" fill="#1a1e26" stroke="#f0a032" stroke-width="2"/>
+      <text x="470" y="98" text-anchor="middle" font-size="12" fill="#f0a032" font-weight="700">AKTİVASYON g(z)</text>
+      <!-- S eğrisi minik -->
+      <path d="M 400 160 Q 440 160 470 130 Q 500 100 540 100" stroke="#ffd24a" stroke-width="2" fill="none"/>
+      <text x="470" y="175" text-anchor="middle" font-size="11" fill="#9aa0a6">S-eğrisi (sigmoid örneği)</text>
+
+      <!-- çıkış -->
+      <line x1="560" y1="130" x2="620" y2="130" stroke="#46c46a" stroke-width="2" marker-end="url(#actG)"/>
+      <circle cx="660" cy="130" r="26" fill="#173a22" stroke="#46c46a" stroke-width="2"/>
+      <text x="660" y="126" text-anchor="middle" font-size="13" fill="#e7e9ec" font-weight="700">g(z)</text>
+      <text x="660" y="142" text-anchor="middle" font-size="10" fill="#9aa0a6">çıktı</text>
+    </svg>
+
+    <h1>Aktivasyon Fonksiyonları — eğri, türev ve geri yayılımdaki rolü</h1>
+    <p class="lesson-hook">🧠 Yapay bir nöron, girdileri ağırlıklarla çarpıp toplar — çıkan ham sayı sınırsız. Ama <b>anlamlı bir karar</b> için o sayının bir <b>eğriden</b> geçmesi gerekir (evet/hayır, ne kadar aktif, kaç). Aktivasyon fonksiyonu yapay zekaya "eğri düşünme" yetisini veren şey. Bu ders o eğrilerin nereden geldiğini, neden bu şekli aldıklarını ve modern derin öğrenmenin neden 2010'da <b>ReLU</b>'ya devrimle geçtiğini gösteriyor.</p>
+  </div>
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Basit bir eşikten S eğrisine, oradan bükülmüş bir doğruya</div>
+    <p>1943'te iki bilim insanı — nörofizyolog <b>Warren McCulloch</b> ve mantıkçı <b>Walter Pitts</b> — beynin çalışma prensibini matematiksel olarak yazdı: nöron, girdilerini toplar, bir <b>eşiği</b> geçerse ateşlenir, geçmezse susar. Bu "step function" (basamak fonksiyonu) aktivasyonun ilk halidir — sadece 0 ya da 1 verir, keskin bir sıçrama.</p>
+    <p>1957'de <b>Frank Rosenblatt</b> bunu bir makineye dönüştürdü: <b>Perceptron</b>. Ama sorun vardı — step function <b>keskin</b> olduğu için türevlenmiyordu. Türev olmayınca öğrenmenin matematiği çalışmıyordu. Çözüm 80'lerde geldi: <b>sigmoid</b> (S-eğrisi). Aynı "aktif ol / olma" fikri, ama yumuşak bir geçişle — türevlenebilir, dolayısıyla geri yayılımla öğrenilebilir. Sigmoid ve akrabası tanh, 30 yıl boyunca varsayılan aktivasyon oldu.</p>
+    <p>Ama tuhaf bir sorun ortaya çıktı: 10-20 katmanlı ağlar bir türlü eğitilemiyordu. 2010'da <b>Vinod Nair & Geoffrey Hinton</b> nedenini gösterdi ve şaşırtıcı basit bir çözüm önerdi: <b>ReLU</b> (Rectified Linear Unit) = "negatifse 0, pozitifse aynen geç" — düz doğrudan bir kırıklık. Herkes güldü ("bu bir doğru bile değil"), ama işe yaradı: sigmoid'in en fazla 0.25'lik türev sorunu ReLU'nun pozitif bölgede türevi 1 olmasıyla çözüldü. Derin öğrenme devrimi (2012 ImageNet, sonra her şey) tam olarak bu değişikliğe borçlu.</p>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🖼️</span><b>Görüntü tanıma</b> — ResNet, EfficientNet, ViT'e kadar her modern CNN <b>ReLU</b> ailesi kullanır. Telefonundaki galeride "kedi/köpek/insan" ayrımı bunun ürünü.</div>
+      <div class="ex-card"><span class="ex-ico">💬</span><b>ChatGPT/Claude</b> — GPT ve LLaMA'nın feed-forward katmanları <b>GELU</b> ya da <b>SwiGLU</b> (ReLU'nun türevleri) kullanır. Yazdığın her cümle bu eğrilerden geçiyor.</div>
+      <div class="ex-card"><span class="ex-ico">🎯</span><b>Sınıflandırma çıktısı</b> — modelin sonundaki "bu resim %92 kedi, %5 köpek, %3 kuş" için <b>softmax</b> (sigmoid'in çok-sınıflı akrabası) kullanılır.</div>
+      <div class="ex-card"><span class="ex-ico">🚪</span><b>LSTM/GRU kapıları</b> — hafızayı ne kadar açacağını kontrol eden kapılar hâlâ <b>sigmoid</b> kullanır (0-1 aralığı = "%kaç açık"). RNN'nin gördüğün tanh'ı da hâlâ hafıza içeriği için.</div>
+      <div class="ex-card"><span class="ex-ico">🎮</span><b>Oyun AI (AlphaGo, StarCraft)</b> — pekiştirmeli öğrenme ağları da aynı ReLU-tabanlı derin ağları kullanır; hamle skorlarını üretirken bu eğrilerden geçer.</div>
+    </div>
+  </div>
 
   <div class="pts" style="border-left:3px solid var(--muted); padding:10px 14px">
     <b style="color:var(--muted)">❓ z nedir?</b> &nbsp;z, aktivasyona giren <b>ham skor</b>dur. Bir nöron önce girdileri ağırlıklarla çarpıp toplar: <b>z = W·x + b</b> (lineer regresyondaki Θ₀+Θ₁x'in aynısı). Sonra bu z'yi aktivasyondan geçirir: <b>σ(z), tanh(z), ReLU(z)</b>. Yani z = "aktivasyonun x ekseni", çıktıyı ezmeden önceki sayı. (z büyük + → σ≈1, &nbsp;z=0 → σ=0.5, &nbsp;z büyük − → σ≈0.)
@@ -3087,10 +3153,10 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607220950"></script>
-<script src="js/lesson-turev.js?v=202607220950"></script>
+<script src="js/lesson-linreg.js?v=202607250016"></script>
+<script src="js/lesson-turev.js?v=202607250016"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607220950"></script>
+<script src="js/app.js?v=202607250016"></script>
 </body>
 </html>
