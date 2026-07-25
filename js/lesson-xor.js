@@ -23,9 +23,10 @@
   const bestBtn = document.getElementById('actXorBest');
   const modeLinBtn = document.getElementById('actXorModeLin');
   const modeNLBtn = document.getElementById('actXorModeNL');
+  const modeSigBtn = document.getElementById('actXorModeSig');
   const title = document.getElementById('actXorCanvasTitle');
 
-  let mode = 'lin'; // 'lin' | 'nl'
+  let mode = 'lin'; // 'lin' | 'nl' | 'sig'
 
   // ---- koordinat dönüşümü: (x1,x2) 0..1 aralığı -> canvas pikseli ----
   const PAD = 44, SZ = 280;
@@ -135,6 +136,71 @@
     }
   }
 
+  /* ================= SİGMOİD MOD (hâlâ TEK nöron, sadece step yerine sigmoid) ================= */
+  const sigmoid = z => 1/(1+Math.exp(-z));
+
+  function renderSigmoid(){
+    ctx.fillStyle = '#12141a'; ctx.fillRect(0,0,cv.width,cv.height);
+
+    const angleDeg = parseFloat(angleIn.value);
+    const offset = parseFloat(offsetIn.value);
+    const rad = angleDeg * Math.PI/180;
+    const w1 = Math.cos(rad), w2 = Math.sin(rad);
+
+    // arka planı yumuşak geçişle boyayalım — sigmoid değeri kırmızı<->yeşil arası, dolgun renk (alpha=1, ctx zaten temiz)
+    const imgStep = 5;
+    for(let px=PAD; px<=PAD+SZ; px+=imgStep){
+      for(let py=PAD; py<=PAD+SZ; py+=imgStep){
+        const x1 = (px-PAD)/SZ, x2 = 1-(py-PAD)/SZ;
+        const s = sigmoid(w1*x1 + w2*x2 - offset);
+        // s=0 -> kırmızımsı koyu, s=1 -> yeşilimsi koyu, ara değerler karışık — koyu temaya uysun diye düşük parlaklık
+        const r = Math.round(70*(1-s) + 26*s);
+        const g = Math.round(26*(1-s) + 60*s);
+        const b = Math.round(30*(1-s) + 38*s);
+        ctx.fillStyle = 'rgb('+r+','+g+','+b+')';
+        ctx.fillRect(px, py, imgStep, imgStep);
+      }
+    }
+    ctx.strokeStyle = '#2a2e36'; ctx.lineWidth = 1;
+    ctx.strokeRect(PAD, PAD, SZ, SZ);
+
+    const predict = (x1,x2) => sigmoid(w1*x1 + w2*x2 - offset) >= 0.5 ? 1 : 0;
+
+    // sınır çizgisi: z=0 (sigmoid=0.5 tam burada) — aynı yerde, sadece step modundaki gibi keskin değil
+    let lineP1=null, lineP2=null;
+    const candidates = [];
+    if(Math.abs(w2) > 1e-6) [-1,2].forEach(x1=>candidates.push({x1, x2:(offset - w1*x1)/w2}));
+    if(Math.abs(w1) > 1e-6) [-1,2].forEach(x2=>candidates.push({x1:(offset - w2*x2)/w1, x2}));
+    const inRange = candidates.filter(c => c.x1>=-1.05 && c.x1<=2.05 && c.x2>=-1.05 && c.x2<=2.05);
+    if(inRange.length>=2){ lineP1=inRange[0]; lineP2=inRange[inRange.length-1]; }
+    if(lineP1 && lineP2){
+      const a = toPx(lineP1.x1, lineP1.x2);
+      const b2 = toPx(lineP2.x1, lineP2.x2);
+      ctx.strokeStyle = '#ffd24a'; ctx.lineWidth = 2; ctx.setLineDash([5,4]);
+      ctx.beginPath(); ctx.moveTo(a.px, a.py); ctx.lineTo(b2.px, b2.py); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // eksen etiketlerini üstten tekrar çiz (arka plan boyaması üzerini örttüğü için)
+    ctx.fillStyle = '#8a9099'; ctx.font = '12px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('x1 →', PAD+SZ/2, PAD+SZ+28);
+    ctx.save(); ctx.translate(16, PAD+SZ/2); ctx.rotate(-Math.PI/2); ctx.fillText('x2 →', 0, 0); ctx.restore();
+
+    drawPoints(predict);
+
+    let correctCount = 0;
+    const lines = points.map(p=>{
+      const z = w1*p.x1 + w2*p.x2 - offset;
+      const s = sigmoid(z);
+      const pred = s>=0.5 ? 1 : 0;
+      const ok = pred===p.y; if(ok) correctCount++;
+      return '('+p.x1+','+p.x2+'): z='+F(z,2)+'  σ(z)='+F(s,3)+' → tahmin='+pred+' (gerçek='+p.y+') '+(ok?'✓':'✗');
+    });
+    read.textContent = 'w1='+F(w1,2)+', w2='+F(w2,2)+', b=−'+F(offset,2)+'  (aynı çizgi, step yerine sigmoid)\n\n' + lines.join('\n');
+
+    verdict.innerHTML = '🌊 <b>'+correctCount+'/4 doğru</b> — az önceki step ile <b>BİREBİR AYNI</b> nokta(lar) yanlış. Sigmoid sadece geçişi yumuşattı (renk geçişine bak — keskin sıçrama yok), ama σ(z)≥0.5 şartı hâlâ tam olarak z=0 doğrusunda gerçekleşiyor. <b>Sınır kaymadı.</b> Tek nörona aktivasyon eklemek, çizgiyi bükmüyor — bükme ancak birden fazla nöronu birleştirince oluyor ("🧠 Aktivasyon ekle" modundaki gibi).';
+  }
+
   /* ================= NON-LİNEER MOD (2 nöron) ================= */
   const step = z => z >= 0 ? 1 : 0;
   function h1fn(x1,x2){ return step(x1+x2-0.5); }
@@ -178,7 +244,9 @@
   }
 
   function render(){
-    if(mode==='lin') renderLinear(); else renderNonLinear();
+    if(mode==='lin') renderLinear();
+    else if(mode==='sig') renderSigmoid();
+    else renderNonLinear();
   }
 
   angleIn.addEventListener('input', ()=>{ angleV.textContent = angleIn.value+'°'; render(); });
@@ -206,18 +274,29 @@
     verdict.innerHTML = '🔍 100+ açı/konum kombinasyonu tarandı — <b>en iyi sonuç: '+best.count+'/4</b>. Gördüğün gibi hiçbiri 4/4\'e ulaşamıyor (en fazla 3/4). Şimdi "🧠 Aktivasyon ekle" moduna geçip farkı gör.';
   });
 
+  const allModeBtns = [modeLinBtn, modeSigBtn, modeNLBtn];
+  function setActiveBtn(btn, activeColor, activeTextColor){
+    allModeBtns.forEach(b=>{ b.style.background='var(--panel)'; b.style.color='var(--text)'; b.style.border='1px solid var(--line)'; });
+    btn.style.background=activeColor; btn.style.color=activeTextColor; btn.style.border='none';
+  }
+
   modeLinBtn.addEventListener('click', ()=>{
     mode='lin';
-    modeLinBtn.style.background='var(--blue)'; modeLinBtn.style.color='#fff'; modeLinBtn.style.border='none';
-    modeNLBtn.style.background='var(--panel)'; modeNLBtn.style.color='var(--text)'; modeNLBtn.style.border='1px solid var(--line)';
+    setActiveBtn(modeLinBtn, 'var(--blue)', '#fff');
     linControls.style.display='block';
     title.textContent = 'Çizgiyi sürükleyerek ayır';
     render();
   });
+  modeSigBtn.addEventListener('click', ()=>{
+    mode='sig';
+    setActiveBtn(modeSigBtn, '#d4a94a', '#2a2010');
+    linControls.style.display='block';
+    title.textContent = 'Sigmoid ile yumuşak geçiş — sınır aynı yerde';
+    render();
+  });
   modeNLBtn.addEventListener('click', ()=>{
     mode='nl';
-    modeNLBtn.style.background='var(--green)'; modeNLBtn.style.color='#0b2a12'; modeNLBtn.style.border='none';
-    modeLinBtn.style.background='var(--panel)'; modeLinBtn.style.color='var(--text)'; modeLinBtn.style.border='1px solid var(--line)';
+    setActiveBtn(modeNLBtn, 'var(--green)', '#0b2a12');
     linControls.style.display='none';
     title.textContent = '2 nöron ile ayrılan bölgeler';
     render();
