@@ -566,4 +566,45 @@
     zI.addEventListener('input', ()=>{ zV.textContent=F(parseFloat(zI.value),2); render(); });
     render();
   })();
+
+  /* ==========================================================================
+     LOGARİTMA — SİM: -ln(p), kayıp fonksiyonunun içindeki ceza eğrisi
+     ========================================================================== */
+  (function lnLoss(){
+    const cv = document.getElementById('lnCanvas');
+    if(!cv) return;
+    const pI = document.getElementById('lnPSlider');
+    const pV = document.getElementById('lnPv');
+    const read = document.getElementById('lnRead');
+    const ctx = cv.getContext('2d');
+    const YCAP = 5;
+    const penalty = p => Math.min(-Math.log(p), YCAP);
+
+    function render(){
+      const W=cv.width, H=cv.height;
+      const ax = drawAxes(ctx, W, H, 0, 1, 0, YCAP, {xLabel:'p (modelin verdiği olasılık)', yLabel:'−ln(p) (ceza)', xTicks:5, yTicks:5});
+      drawCurve(ctx, ax.X, ax.Y, penalty, 0.01, 1, '#e06a6a', 2.4);
+
+      const p = parseFloat(pI.value);
+      const y0 = penalty(p);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ax.X(p), ax.Y(y0), 5, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
+      // dikey kesikli çizgi
+      ctx.strokeStyle='#3a4048'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(ax.X(p), ax.Y(0)); ctx.lineTo(ax.X(p), ax.Y(y0)); ctx.stroke();
+      ctx.setLineDash([]);
+
+      const realY = -Math.log(p);
+      let verdict, vColor;
+      if(p > 0.85){ verdict = 'model çok emin ve muhtemelen haklı → ceza neredeyse yok'; vColor = '#46c46a'; }
+      else if(p > 0.4){ verdict = 'orta güven → orta ceza'; vColor = '#d4a94a'; }
+      else { verdict = 'model kendinden emin ama YANLIŞ olma ihtimali yüksek burada → ceza hızla büyüyor'; vColor = '#e06a6a'; }
+
+      read.innerHTML =
+        '<b>−ln(p)</b> = −ln('+p.toFixed(2)+') = <b style="color:'+vColor+'">'+(realY>YCAP?realY.toFixed(2)+' (grafik '+YCAP+'\'te kesildi)':realY.toFixed(4))+'</b>'+
+        '<br><span style="color:'+vColor+'; font-size:12.5px">↳ '+verdict+'</span>';
+    }
+    pI.addEventListener('input', ()=>{ pV.textContent = F(parseFloat(pI.value),2); render(); });
+    render();
+  })();
 })();
