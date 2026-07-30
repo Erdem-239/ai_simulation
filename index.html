@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607302219">
+<link rel="stylesheet" href="css/style.css?v=202607302231">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-30 22:19 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-30 22:31 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2189,12 +2189,41 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="acc-head"><span class="ac">▸</span> 🔢 Sayı Sistemleri — e ve Logaritma</div>
   <div class="acc-body">
 
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu iki sayı neden ilk sırada?</b> Sinir ağının kalbinde iki fonksiyon var: <b>sigmoid</b> içinde \(e^{-z}\) taşır, <b>kayıp fonksiyonu</b> içinde \(\ln(p)\) taşır. Ama bu ikisi yapay zekâ için icat edilmedi — biri <b>bankacıların faiz sorusundan</b>, diğeri <b>gökbilimcilerin çarpma işkencesinden</b> doğdu, 300 yıl önce. Aşağıda önce o hikâyeleri, sonra bugün nerede karşına çıktıklarını göreceksin.</div>
+
   <div class="acc acc-module">
   <div class="acc-head"><span class="ac">▸</span> 1) Üstel Fonksiyon ve e Sayısı</div>
   <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Bankadan çıkan sayı</div>
+    <p>1683'te İsviçreli matematikçi <b>Jacob Bernoulli</b>, bankacılık dünyasından gelen basit bir soruyu inceliyordu: <i>"Faizi ne kadar sık eklersem o kadar çok kazanırım — peki sonsuz sık eklersem sonsuz mu kazanırım?"</i></p>
+    <p>Hesapladı: 1 lira, yıllık %100 faiz. Yılda 1 kez eklenirse <b>2.00</b> lira. Ayda bir eklenirse <b>2.61</b>. Günde bir <b>2.71</b>. Saniyede bir <b>2.71828…</b> Sıklığı ne kadar artırırsa artırsın, sonuç <b>bir duvara çarpıyordu</b> — 2.71828… Bernoulli bu sayının varlığını kanıtladı ama tam değerini bulamadı, adını bile koyamadı.</p>
+    <p>50 yıl sonra <b>Leonhard Euler</b> (1731) bu sayıyı derinlemesine inceledi, ondalıklarını hesapladı ve ona bir harf verdi: <b>e</b>. Bugün "Euler sayısı" deniyor. Kendi adının baş harfi olduğu için mi seçti, yoksa "exponential"ın e'si mi — tarihçiler hâlâ tartışıyor.</p>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 e GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">⏳</span><b>Karbon tarihleme</b> — arkeologlar bir kemiğin yaşını \(N=N_0e^{-\lambda t}\) ile bulur. Karbon-14'ün yarısı 5730 yılda bozunur; kalan miktarı ölçüp geriye doğru hesaplarsın. Mısır mumyalarının, Göbeklitepe'nin yaşı böyle bilindi.</div>
+      <div class="ex-card"><span class="ex-ico">☕</span><b>Kahvenin soğuması</b> — Newton'un soğuma yasası: sıcak bir şey, ortam sıcaklığına <b>üstel</b> yaklaşır. Kahven ilk 5 dakikada çok, sonraki 5 dakikada daha az soğur. Aynı formül binanın ısı kaybında, motorun soğumasında da var.</div>
+      <div class="ex-card"><span class="ex-ico">💊</span><b>İlacın vücuttan atılması</b> — "günde 2 kez alın" talimatının arkasında bu var. Her ilacın bir <b>yarılanma ömrü</b> vardır; kandaki miktar \(e^{-kt}\) ile düşer. Doz aralığı, seviye etkisiz bölgeye inmeden yeniden yükselecek şekilde hesaplanır.</div>
+      <div class="ex-card"><span class="ex-ico">🦠</span><b>Salgın yayılması</b> — bir hasta 2 kişiye bulaştırırsa, sayı <b>katlanarak</b> artar. 2020'de her gün duyduğun "üstel artış" tam olarak buydu: 1→2→4→8… Aşı ve tedbir, o üsteki sayıyı küçültme çabasıdır.</div>
+      <div class="ex-card"><span class="ex-ico">🔋</span><b>Şarj ve deşarj</b> — telefon şarjının başta hızlı, sonda yavaşlaması tesadüf değil. Kondansatör dolarken gerilim \(1-e^{-t/RC}\) eğrisini izler. Her elektronik devrede bu eğri vardır.</div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🎲 En çarpıcı örnek: %37 kuralı — e sana ne zaman "dur" diyeceğini söylüyor</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Diyelim ev arıyorsun ve 100 ev göreceksin. Kural şu: bir evi beğenip geçersen <b>geri dönemezsin</b>, beğenmezsen de o ev gider. En iyi evi bulma şansını <b>maksimuma</b> çıkaran strateji nedir?</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Matematiğin cevabı şaşırtıcı derecede net: <b>ilk 37'sini hiç seçmeden gez</b> (sadece kıyas için), sonra <b>gördüklerinin hepsinden iyi olan ilk evi al</b>. Peki neden tam 37? Çünkü optimum durma noktası <b>n/e</b>'dir — ve \(1/e \approx 0.368\), yani <b>%37</b>.</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">İşin en güzel kısmı: bu stratejiyle en iyi evi bulma ihtimalin de yaklaşık <b>%37</b> çıkıyor — ve bu oran, 100 ev de baksan <b>100 milyon</b> ev de baksan değişmiyor.</p>
+    <div class="tip">Bu probleme literatürde <b>"sekreter problemi"</b> ya da <b>"optimal durma"</b> deniyor. İş görüşmesinde aday seçmekten park yeri aramaya, hatta eş seçimine kadar (matematikçilerin şakayla "evlilik problemi" dediği versiyon) uygulanıyor. Yani <b>e</b>, sadece bir bankacılık sayısı değil — <b>"ne zaman aramayı bırakıp karar vermeli"</b> sorusunun da cevabı.</div>
+  </div>
+
   <div class="pts">
     <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
-      <b>e ≈ 2.71828</b>, "sürekli büyümenin doğal tabanı" (hikâyesi Aktivasyon sekmesinin başında). Elle hesap için gereken kurallar:
+      <b>e ≈ 2.71828</b>, "sürekli büyümenin doğal tabanı". Elle hesap için gereken kurallar:
       \(e^{0}=1\), &nbsp; \(e^{a+b}=e^{a}\cdot e^{b}\), &nbsp; \(e^{-x}=\dfrac{1}{e^{x}}\), &nbsp; ve \(e^{x}\) <b>her zaman pozitiftir</b> (asla 0 ya da eksi olmaz).
       Sigmoid ve tanh'ın içinde gördüğün \(e^{-z}\) hep bu kurallarla işlenir.
     </div>
@@ -2247,6 +2276,38 @@ z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
   <div class="acc acc-module">
   <div class="acc-head"><span class="ac">▸</span> 2) Logaritma ve ln — üslü sayının sorusunu tersine çevirmek</div>
   <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Gökbilimcilerin ömrünü ikiye katlayan adam</div>
+    <p>16. yüzyıl sonu. Gökbilimciler gezegen yörüngelerini hesaplamaya çalışıyor ama önlerinde bir işkence var: <b>elle çarpma</b>. 8 basamaklı iki sayıyı çarpmak kağıt üzerinde saatler alıyor, tek bir hane hatası bütün hesabı çöpe atıyordu. Bir astronomun ömrünün büyük kısmı gökyüzüne bakmakla değil, <b>çarpma yapmakla</b> geçiyordu.</p>
+    <p>İskoç toprak sahibi <b>John Napier</b> bu soruna kafayı taktı ve bir fikir buldu: <i>ya çarpmayı toplamaya çevirebilseydik?</i> Çünkü toplama çok daha kolay. Fikrin özü şuydu: \(\log(a\cdot b)=\log a+\log b\). Yani sayıları "logaritma dünyasına" çevirirsen, çarpma orada <b>toplama</b>ya dönüşüyordu.</p>
+    <p>Ama bunun işe yaraması için birinin oturup <b>her sayının logaritmasını tek tek hesaplaması</b> gerekiyordu. Napier bunu yaptı — <b>20 yılını</b> elle tablo hesaplamaya verdi ve 1614'te ilk logaritma tablosunu yayımladı. Etkisi devasa oldu: Kepler gezegen yasalarını bu tablolarla hesapladı. Yüzyıllar sonra <b>Laplace</b> şöyle özetleyecekti: <i>"Logaritma, işi kısaltarak <b>gökbilimcinin ömrünü ikiye katladı</b>."</i></p>
+    <p>Hikâyenin en güzel finali: Napier'in fikri, <b>sürgülü hesap cetveli</b>ne (slide rule) dönüştü — logaritmik olarak işaretlenmiş iki cetveli kaydırıp çarpma yapabiliyordun. 350 yıl boyunca her mühendisin cebindeydi. Ve 1969'da <b>Buzz Aldrin</b>, Apollo 11 ile Ay'a giderken yanına bir Pickett N600-ES sürgülü cetvel aldı. <b>İnsanoğlu Ay'a, Napier'in logaritmasıyla gitti.</b></p>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 LOGARİTMA GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">📳</span><b>Deprem — Richter ölçeği</b> — "7.8" ile "6.8" arasındaki fark 1 değil: <b>~32 kat daha fazla enerji</b>. Çünkü ölçek logaritmik. Aşağıda bunu sayılarla açıyoruz.</div>
+      <div class="ex-card"><span class="ex-ico">🔊</span><b>Ses — desibel</b> — fısıltı 30 dB, konser 110 dB. Aradaki fark 80 dB, yani <b>100 milyon kat</b> daha güçlü ses dalgası. Kulağın bu devasa aralığı taşıyabilsin diye ölçek sıkıştırılmış.</div>
+      <div class="ex-card"><span class="ex-ico">🧪</span><b>Asitlik — pH</b> — limon pH 2, su pH 7. 5 birim fark = <b>100.000 kat</b> daha asidik. Havuz, toprak, kan — hepsi bu ölçekle ölçülür.</div>
+      <div class="ex-card"><span class="ex-ico">👁️</span><b>Duyuların kendisi logaritmik</b> — bu belki en şaşırtıcısı: gözün ve kulağın <b>algısı</b> logaritmiktir (Weber-Fechner yasası). Işığı 2 kat artırınca "2 kat parlak" görmezsin. Yani logaritma insan icadı değil — <b>beynin zaten kullandığı</b> ölçek.</div>
+      <div class="ex-card"><span class="ex-ico">🔎</span><b>Arama algoritmaları</b> — sıralı 1 milyon kayıtta aradığını <b>20 adımda</b> bulursun (her adımda yarıya böl: \(\log_2 10^6 \approx 20\)). 1 milyar kayıt? Sadece <b>30 adım</b>. Google'ın hızının matematiği bu.</div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid #e06a6a">
+    <h3 style="color:#e06a6a; margin-top:0">📳 En çarpıcı örnek: "7.8 ile 6.8 arası sadece 1 fark" yanılgısı</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Deprem büyüklükleri gazetede yan yana yazılınca kafamız onları <b>doğrusal</b> okur: 7.8, 6.8'den "biraz" büyüktür sanırız. Ama Richter ölçeği <b>logaritmiktir</b> — her <b>1</b> birim artış, sarsıntı genliğinde <b>10 kat</b>, açığa çıkan enerjide ise yaklaşık <b>32 kat</b> artış demektir.</p>
+    <div class="work" style="white-space:pre-wrap; line-height:1.95">Büyüklük farkı  →  Enerji farkı  (formül: 10^(1.5 × fark))
+
+  0.4 birim  →     ~4 kat        (M7.4  vs  M7.8)
+  1.0 birim  →    ~32 kat        (M6.8  vs  M7.8)
+  2.0 birim  →  ~1000 kat        (M5.8  vs  M7.8)</div>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Somutlaştıralım: 1999 İzmit depremi <b>M7.4</b>, 2023 Kahramanmaraş depremi <b>M7.8</b> idi. Kağıt üzerinde "0.4 fark" görünüyor — ama enerji olarak <b>yaklaşık 4 katı</b>. Türkiye'de sık hissedilen bir M5.8 sarsıntı ile M7.8 arasındaysa <b>1000 kat</b> fark var. Ölçeğin sıkıştırdığı şey tam olarak bu.</p>
+    <div class="callout" style="margin-top:10px">💡 <b>Peki neden böyle bir ölçek kullanıyoruz?</b> Çünkü ölçülen büyüklükler <b>akıl almaz aralıkta</b> değişiyor — en küçük algılanabilir sarsıntıyla en büyük deprem arasında <b>milyarlarca kat</b> fark var. Bunu düz bir cetvele sığdıramazsın. Logaritma tam olarak bunu yapar: <b>çarpımsal (kat kat) büyüyen bir dünyayı, toplamsal (adım adım) okunabilir bir sayıya sıkıştırır.</b> Aynı sebep desibelde de, pH'ta da, birazdan göreceğin <b>kayıp fonksiyonunda</b> da geçerli.</div>
+  </div>
+
   <div class="pts">
     <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
       Üslü sayı <b>"b'yi n kere çarparsan ne çıkar?"</b> diye sorar: \(2^{3}=8\). Logaritma bu soruyu <b>tersine çevirir</b>:
@@ -3386,11 +3447,11 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607302219"></script>
-<script src="js/lesson-turev.js?v=202607302219"></script>
-<script src="js/lesson-xor.js?v=202607302219"></script>
+<script src="js/lesson-linreg.js?v=202607302231"></script>
+<script src="js/lesson-turev.js?v=202607302231"></script>
+<script src="js/lesson-xor.js?v=202607302231"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607302219"></script>
+<script src="js/app.js?v=202607302231"></script>
 </body>
 </html>
