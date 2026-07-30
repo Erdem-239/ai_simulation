@@ -93,6 +93,18 @@
   .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#cfd3d8; border-top:1px solid var(--line)}
   .acc.open .acc-body{display:block}
 
+  /* konu (category) ve modül seviyesi accordion varyantları — Matematik Temeli için */
+  .acc-category{margin:24px 0; border-color:var(--line); border-radius:12px}
+  .acc-category > .acc-head{padding:15px 18px; font-size:17px; font-weight:700; color:var(--text); background:var(--panel2)}
+  .acc-category.open > .acc-head{color:var(--accent); border-bottom:2px solid var(--accent)}
+  .acc-category > .acc-head .ac{font-size:15px}
+  .acc-category > .acc-body{padding:8px 18px 18px; border-top:none}
+
+  .acc-module{margin:14px 0; border-radius:9px}
+  .acc-module > .acc-head{padding:11px 15px; font-size:14.5px; font-weight:700; color:var(--text)}
+  .acc-module.open > .acc-head{border-bottom:1px solid var(--line)}
+  .acc-module > .acc-body{padding:13px 15px 15px; border-top:none}
+
   .rnn-type-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; transition:.15s}
   .rnn-type-btn:hover{border-color:var(--accent)}
   .rnn-type-btn.active{background:var(--panel2); border-color:var(--accent); color:var(--accent); font-weight:600}
