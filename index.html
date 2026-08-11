@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202607302231">
+<link rel="stylesheet" href="css/style.css?v=202608112048">
 </head>
 <body>
 <div class="applayout">
@@ -20,13 +20,14 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-07-30 22:31 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-11 20:48 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
       <button class="navbtn" data-model="vektor">🧮 Vektör & Nokta Çarpım</button>
       <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
       <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
+      <button class="navbtn" data-model="neural">🧠 Neural Network</button>
       <button class="navbtn" data-model="rnn">🔁 RNN (BPTT)</button>
       <button class="navbtn" data-model="lstm">🚪 LSTM / GRU</button>
       <a class="navbtn" href="rnn-test.html" target="_blank" rel="noopener" style="text-decoration:none; display:block">🧪 RNN Test</a>
@@ -1699,6 +1700,7 @@
     <div class="tip"><b>Terminoloji köprüsü:</b> "girdi katmanı" = x'lerin durduğu yer (öğrenilmez, sadece veri) · "gizli katman" (hidden layer) = aradaki nöronlar, dışarıdan görünmezler · "ileri yayılım" (forward pass) = girdiden çıktıya doğru z→aktivasyon→z→aktivasyon zincirini bir kere baştan sona işletmek (tam olarak XOR'da 4 nokta için yaptığımız hesap) · "ağırlık matrisi" (W) = bir katmandaki TÜM ağırlıkların tablo hâli — burada girdi→gizli arası 2×2'lik bir matris (Vektör dersindeki "matris = vektör rafı" fikri burada da geçerli).</div>
 
     <div class="callout" style="margin-top:10px">🔍 <b>Peki gerçek ağlar (GPT, ResNet...) bundan ne kadar farklı?</b> Boyut olarak devasa farklı (girdi binlerce sayı, gizli katmanlarda milyonlarca nöron, onlarca-yüzlerce katman) — ama <b>temel yapı taşı birebir aynı</b>: ağırlıklı toplam (<code>z=Wx+b</code>) + aktivasyon (<code>ReLU, GELU...</code>), üst üste dizilmiş. Bugün elle çözdüğün 3-nöronluk XOR ağı, milyarlarca parametreli bir dil modeliyle <b>aynı DNA'yı</b> taşıyor — sadece ölçek farklı.</div>
+    <div class="tip" style="margin-top:10px">👉 Ağırlıkları burada elle biz seçtik (<code>h1=step(x1+x2−0.5)</code> gibi). Peki bir makine bu ağırlıkları <b>rastgele başlayıp kendi kendine</b> nasıl bulur? İşte tam bu soru — geri yayılım, adım adım, ve canlı bir eğitim simülasyonuyla — <button class="addbtn" data-ped-tab="neural" style="background:var(--green); color:#0b2a12; border:none; padding:4px 10px; font-size:12.5px">🧠 Neural Network sayfasında</button></div>
   </div>
 
   <div class="pts" style="border-left:3px solid var(--muted); padding:10px 14px">
@@ -1853,6 +1855,207 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   </div>
   <p class="footer">Aktivasyon fonksiyonları • eğri + türev + geri yayılımdaki çarpan</p>
   </div><!-- /model-aktivasyon -->
+
+
+  <!-- ===================== NEURAL NETWORK MODELİ ===================== -->
+  <div class="model" id="model-neural">
+
+  <!-- ===== HERO: ileri+geri yayılım döngüsü ===== -->
+  <div class="lesson-hero">
+    <svg class="lesson-hero-svg" viewBox="0 0 760 230" role="img" aria-label="İleri yayılım girdiden kayba, geri yayılım kayıptan ağırlıklara doğru akıyor">
+      <defs>
+        <marker id="nnHA" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5aa0e0"/></marker>
+        <marker id="nnHB" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
+        <marker id="nnHC" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46c46a"/></marker>
+        <marker id="nnHR" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M7,0 L0,3 L7,6 Z" fill="#e06a6a"/></marker>
+      </defs>
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#9aa0a6" font-family="Segoe UI, Arial">girdiden kayba: İLERİ YAYILIM (üstte) — kayıptan ağırlığa: GERİ YAYILIM (altta, kesikli)</text>
+
+      <circle cx="60" cy="90" r="20" fill="#16324f" stroke="#5aa0e0" stroke-width="2"/>
+      <text x="60" y="95" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">x</text>
+      <line x1="80" y1="90" x2="230" y2="90" stroke="#5aa0e0" stroke-width="2" marker-end="url(#nnHA)"/>
+      <text x="155" y="80" text-anchor="middle" font-size="10.5" fill="#5aa0e0">W₁,b₁</text>
+
+      <circle cx="260" cy="90" r="22" fill="#2a2416" stroke="#f0a032" stroke-width="2"/>
+      <text x="260" y="95" text-anchor="middle" font-size="12" fill="#f0d8a0" font-weight="700">h</text>
+      <line x1="282" y1="90" x2="430" y2="90" stroke="#f0a032" stroke-width="2" marker-end="url(#nnHB)"/>
+      <text x="356" y="80" text-anchor="middle" font-size="10.5" fill="#f0a032">W₂,b₂</text>
+
+      <circle cx="460" cy="90" r="22" fill="#173a22" stroke="#46c46a" stroke-width="2"/>
+      <text x="460" y="95" text-anchor="middle" font-size="12" fill="#fff" font-weight="700">ŷ</text>
+      <line x1="482" y1="90" x2="600" y2="90" stroke="#46c46a" stroke-width="2" marker-end="url(#nnHC)"/>
+
+      <rect x="600" y="68" width="100" height="44" rx="8" fill="#3a1414" stroke="#e06a6a" stroke-width="2"/>
+      <text x="650" y="86" text-anchor="middle" font-size="11" fill="#e06a6a" font-weight="700">KAYIP</text>
+      <text x="650" y="100" text-anchor="middle" font-size="10" fill="#c98">L(ŷ,y)</text>
+
+      <path d="M 630 112 Q 460 200 260 165 Q 150 145 90 112" stroke="#e06a6a" stroke-width="1.8" fill="none" stroke-dasharray="5,4" marker-end="url(#nnHR)"/>
+      <text x="360" y="205" text-anchor="middle" font-size="11" fill="#e06a6a">gradyan geri akar: W ← W − α·∂L/∂W</text>
+    </svg>
+
+    <h1>Neural Network — nörondan ağa, ağırlıkların kendi kendine öğrenmesi</h1>
+    <p class="lesson-hook">🧠 Aktivasyon dersinde XOR'u <b>elle</b> çözdük — h1, h2, y ağırlıklarını biz seçtik. Ama gerçek bir ağ bunları <b>kendi bulur</b>: rastgele başlar, tahmininin ne kadar yanlış olduğunu ölçer (kayıp), sonra bu hatayı geriye doğru katman katman yayarak <b>her ağırlığı</b> "biraz daha az yanlış" olacak yöne kaydırır. Bu derste tam olarak bunu izleyeceksin — <b>rastgele ağırlıklarla başlayan bir ağ, gözünün önünde XOR'u kendi kendine öğrenecek.</b></p>
+  </div>
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Bir buzul çağı ve ondan çıkış</div>
+    <p>1958'de <b>Frank Rosenblatt</b>, Aktivasyon dersinde tanıdığın tek nöronu bir makineye dönüştürdü: <b>Perceptron</b>. New York Times bunu manşete taşıdı — "yürüyen, konuşan, kendi kendini kopyalayan bir elektronik beyin" vaat ediliyordu. Heyecan büyüktü.</p>
+    <p>1969'da matematikçi <b>Marvin Minsky</b> ve <b>Seymour Papert</b> "Perceptrons" adlı kitapta soğuk bir gerçeği kanıtladılar: <b>tek katmanlı bir perceptron XOR'u asla öğrenemez</b> — tam olarak Aktivasyon dersinde senin de elle keşfettiğin şey (tek çizgi en fazla 3/4 doğru). Bu kanıt o kadar etkili oldu ki sinir ağı araştırmalarına giden fonlar kurudu; tarihe <b>"yapay zeka kışı" (AI winter)</b> olarak geçen ~15 yıllık bir durgunluk başladı.</p>
+    <p>Buz 1986'da kırıldı: <b>David Rumelhart, Geoffrey Hinton, Ronald Williams</b> "Learning representations by back-propagating errors" makalesinde <b>çok katmanlı</b> ağları (senin h1,h2 gizli katmanın gibi) eğitmenin pratik bir yolunu gösterdi — <b>geri yayılım (backpropagation)</b>. Fikir aslında yeni değildi (kökleri 1960'lara kadar gider) ama bu makale onu popülerleştirdi ve gösterdi ki gizli katman + geri yayılım, Minsky'nin imkânsız dediği XOR'u dahil, çok daha karmaşık problemleri çözebiliyordu. Bugünün GPT'sinden ResNet'e kadar her şeyin eğitim algoritması, ölçek dışında, hâlâ bu 1986 fikrinin aynısı.</p>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🏦</span><b>Kredi kartı dolandırıcılığı</b> — bankalar, işlemin "normal mi şüpheli mi" olduğunu saniyeler içinde karar veren küçük sinir ağları kullanır; her biri temelde bugün kuracağın gibi bir girdi→gizli→çıktı zinciri.</div>
+      <div class="ex-card"><span class="ex-ico">🩺</span><b>Tıbbi teşhis</b> — röntgen/MR görüntülerinden tümör tespiti yapan ağlar, aynı geri yayılım döngüsüyle milyonlarca örnekten "öğrenir"; hiçbir doktor ağırlıkları elle yazmaz.</div>
+      <div class="ex-card"><span class="ex-ico">🎮</span><b>AlphaGo</b> — Go tahtasını değerlendiren ağ, insan sezgisiyle değil, kendi kendine oynayıp kaybeden hamlelerin ağırlıklarını geri yayılımla cezalandırarak güçlendi.</div>
+      <div class="ex-card"><span class="ex-ico">🚗</span><b>Otonom araçlar</b> — "bu şerit çizgisi mi, gölge mi" kararını veren ağ katmanları, milyonlarca sürüş saatinden geri yayılımla ince ayar edildi.</div>
+      <div class="ex-card"><span class="ex-ico">💬</span><b>ChatGPT/Claude'un eğitimi</b> — trilyonlarca parametre, bugün 9 parametreyle XOR'da yapacağın <b>aynı</b> döngüyle (ileri yayılım → kayıp → geri yayılım → güncelle) ayarlandı; sadece ölçek ve donanım (GPU/TPU) farklı.</div>
+    </div>
+  </div>
+
+  <!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
+  <div class="sechead">1) 1 nörondan ağa — katman kavramı ve W matrisi</div>
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Aktivasyon dersindeki tek nöron: <code>çıktı = g(w·x+b)</code> — girdileri ağırlıkla çarp, topla, aktivasyondan geçir. Bir <b>ağ</b>, bunun yan yana ve üst üste dizilmiş hâlidir:</p>
+    <ul style="font-size:14px; color:#cfd3d8; line-height:1.8">
+      <li><b>Katman (layer)</b> = yan yana duran, aynı girdiyi paylaşan nöronlar grubu. Bizim XOR ağımızda gizli katman <b>2 nöron</b> (h1, h2) — ikisi de x1, x2'ye <i>paralel</i> bakıyor (Aktivasyon dersinde "band" için gerekli olan tam da bu paralellikti).</li>
+      <li><b>Girdi katmanı</b> — öğrenilmez, sadece veri (x1, x2).</li>
+      <li><b>Gizli katman (hidden layer)</b> — dışarıdan görünmez, kendi z=Σwx+b'sini hesaplayıp aktivasyondan geçirir (h1, h2).</li>
+      <li><b>Çıktı katmanı</b> — gizli katmanın çıktısını girdi gibi alıp son tahmini üretir (y).</li>
+    </ul>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bir katmandaki <b>tüm</b> ağırlıkları tek tek yazmak yerine, Vektör dersindeki fikri hatırla: <b>"matris = vektör rafı"</b> — üst üste dizilmiş vektörler. Girdi katmanından gizli katmana giden 4 ağırlığı (x1→h1, x2→h1, x1→h2, x2→h2) tek bir <b>W⁽¹⁾</b> matrisinde topluyoruz:</p>
+    \[ W^{(1)}=\begin{bmatrix}w_{11} & w_{12}\\ w_{21} & w_{22}\end{bmatrix},\quad b^{(1)}=\begin{bmatrix}b_1\\ b_2\end{bmatrix},\quad z^{(1)}=W^{(1)}x+b^{(1)},\quad h=g\!\left(z^{(1)}\right) \]
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Aynı şekilde gizli katmandan çıktıya giden 2 ağırlık <b>W⁽²⁾</b> (bu kez 1×2, tek satır — çünkü çıktı katmanında tek nöron var):</p>
+    \[ z^{(2)}=W^{(2)}h+b^{(2)},\quad \hat y=g\!\left(z^{(2)}\right) \]
+    <div class="tip"><b>Neden matris?</b> Çünkü <code>W·x</code> (matris-vektör çarpımı), "her rafın x ile nokta çarpımı"ndan başka bir şey değil — yani h1 ve h2'nin z'lerini <b>TEK bir işlemde</b>, aynı anda hesaplar. Gerçek ağlarda W, binlerce×binlerce boyutlu olur ama işlem birebir aynı; GPU'ların bu kadar işine yaraması da tam bu yüzden — matris çarpımını paralel yapabiliyorlar.</div>
+  </div>
+
+  <!-- ===== 2) İleri yayılım simülasyonu ===== -->
+  <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Aşağıdaki 9 sayı (W⁽¹⁾'in 4 ağırlığı + 2 bias'ı, W⁽²⁾'nin 2 ağırlığı + 1 bias'ı) <b>tüm</b> ağın parametreleri. Varsayılan değerler, Aktivasyon dersindeki <code>step(x1+x2−0.5)</code> eşiklerinin <b>keskinleştirilmiş sigmoid</b> hâli (×20 büyütülmüş) — dene, XOR'u hâlâ 4/4 çözüyor. Sayıları değiştirip ağın nasıl bozulduğunu/düzeldiğini gör.</p>
+    <div class="ptrow" style="margin-bottom:6px"><b style="color:var(--blue); font-size:12.5px; width:100%">W⁽¹⁾ (girdi → gizli) ve b⁽¹⁾</b></div>
+    <div class="ptrow">
+      <div class="ptcell"><label>w₁₁ (x1→h1)</label><input type="number" id="nnW1_11" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w₂₁ (x2→h1)</label><input type="number" id="nnW1_21" value="20" step="0.5"></div>
+      <div class="ptcell"><label>b1 (h1)</label><input type="number" id="nnB1_1" value="-10" step="0.5"></div>
+      <div class="ptcell"><label>w₁₂ (x1→h2)</label><input type="number" id="nnW1_12" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w₂₂ (x2→h2)</label><input type="number" id="nnW1_22" value="20" step="0.5"></div>
+      <div class="ptcell"><label>b2 (h2)</label><input type="number" id="nnB1_2" value="-30" step="0.5"></div>
+    </div>
+    <div class="ptrow" style="margin:10px 0 6px"><b style="color:var(--green); font-size:12.5px; width:100%">W⁽²⁾ (gizli → çıktı) ve b⁽²⁾</b></div>
+    <div class="ptrow">
+      <div class="ptcell"><label>w1 (h1→y)</label><input type="number" id="nnW2_1" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w2 (h2→y)</label><input type="number" id="nnW2_2" value="-20" step="0.5"></div>
+      <div class="ptcell"><label>b (y)</label><input type="number" id="nnB2" value="-10" step="0.5"></div>
+      <button class="addbtn" id="nnFwdReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Varsayılana dön</button>
+    </div>
+    <div class="work" id="nnFwdTable" style="white-space:pre; overflow-x:auto; line-height:1.9; font-size:12.5px; margin-top:12px"></div>
+    <div class="callout" id="nnFwdVerdict" style="margin-top:10px"></div>
+  </div>
+
+  <!-- ===== 3) Geri yayılım — adım adım ===== -->
+  <div class="sechead" style="font-size:17px">⭐ 3) Geri yayılım — adım adım</div>
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <div class="callout" style="margin:0 0 14px">Aşağıdaki 4 adım, yukarıdaki (Bölüm 2'deki) <b>aynı ağırlıklarla</b>, TEK bir XOR noktası için gerçek zamanlı hesaplanıyor. Nokta seç, adımları aç — her adımın "neden"i ve sayısal sonucu canlı görünsün. Mantık birebir Aktivasyon dersindeki <code>dL/dz=p−y</code> ve RNN'deki zincir kuralı ("dişli") ile aynı — sadece zamanın yerine <b>katman</b> var.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px">
+      <button class="addbtn nnbp-pt" data-pt="0" style="background:var(--blue); color:#fff">(0,0) → y=0</button>
+      <button class="addbtn nnbp-pt" data-pt="1" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(0,1) → y=1</button>
+      <button class="addbtn nnbp-pt" data-pt="2" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(1,0) → y=1</button>
+      <button class="addbtn nnbp-pt" data-pt="3" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(1,1) → y=0</button>
+    </div>
+
+    <div class="steps" style="grid-template-columns:1fr">
+      <div class="step" id="nnBp1">
+        <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq" id="nnBp1Eq"></div>
+          <div class="callout" id="nnBp1Note" style="margin:10px 0 0"></div>
+        </div>
+        <div class="detail" id="nnBp1Detail"></div>
+      </div>
+      <div class="step" id="nnBp2">
+        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W⁽²⁾, b⁽²⁾'nin gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq" id="nnBp2Eq"></div>
+          <div class="callout" id="nnBp2Note" style="margin:10px 0 0"></div>
+        </div>
+        <div class="detail" id="nnBp2Detail"></div>
+      </div>
+      <div class="step" id="nnBp3">
+        <div class="stephead"><h2>Geri Adım 3) Sigmoid'ten geri — ∂L/∂z<sub>h1</sub>, ∂L/∂z<sub>h2</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq" id="nnBp3Eq"></div>
+          <div class="callout" id="nnBp3Note" style="margin:10px 0 0"></div>
+        </div>
+        <div class="detail" id="nnBp3Detail"></div>
+      </div>
+      <div class="step" id="nnBp4">
+        <div class="stephead"><h2>Geri Adım 4) Gizli katman ağırlıklarına — W⁽¹⁾, b⁽¹⁾'in gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq" id="nnBp4Eq"></div>
+          <div class="callout" id="nnBp4Note" style="margin:10px 0 0"></div>
+        </div>
+        <div class="detail" id="nnBp4Detail"></div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px">🔗 <b>RNN ile fark:</b> RNN'de aynı ağırlık ZAMANDA tekrar kullanıldığı için gradyanları topluyorduk (Geri Adım 5). Burada aynı ağırlık sadece bir kez kullanılıyor (zaman yok) — ama fikir birebir aynı: <b>kayıptan başla, zincir kuralıyla geriye doğru, katman katman in.</b></div>
+  </div>
+
+  <!-- ===== 4) Canlı eğitim ===== -->
+  <div class="sechead" style="font-size:17px">⭐ 4) Canlı eğitim — rastgele ağırlıklar, kendi kendine XOR öğreniyor</div>
+  <div class="pts" style="border-left:3px solid var(--green)">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Şimdi sıra bunu <b>gerçekten</b> izlemekte. Aşağıdaki buton, 9 ağırlığı <b>tamamen rastgele</b> sayılarla başlatıp 4000 tur boyunca <code>W ← W − α·∂L/∂W</code> gradyan alçalmasını çalıştırır — hiçbir ağırlığı biz seçmiyoruz. Aktivasyon dersinde kanıtladığımız <code>dL/dz=p−y</code> ve zincir kuralı, buradaki 9 parametrenin hepsi için aynı anda işliyor.</p>
+    <div class="tip" style="margin-bottom:12px">⚠️ <b>Hatırlıyor musun?</b> Sklearn ile lojistik regresyonu simetrik XOR verisinde denediğimizde <b>w=0'da saplanıp kalmıştı</b> — o global minimumdu ama işe yaramıyordu. Burada da bazı rastgele başlangıçlar benzer bir <b>yerel/sığ noktaya sıkışabilir</b>. Bu yüzden buton, XOR'u tam çözemeden takılırsa <b>otomatik olarak yeni bir rastgele başlangıçla yeniden dener</b> — pratikte gerçek eğitimde de yapılan şey tam olarak bu (farklı "seed" ile yeniden dene).</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
+      <button class="addbtn" id="nnTrainBtn" style="background:var(--green); color:#0b2a12; font-weight:700">🎲 Rastgele başlat ve eğit (4000 tur)</button>
+    </div>
+    <div class="work" id="nnTrainLog" style="white-space:pre-wrap; line-height:1.7; font-size:12.5px; min-height:24px"></div>
+    <div class="plots" style="margin-top:10px">
+      <div class="plotbox" style="flex:1 1 340px">
+        <h3>Kayıp eğrisi (epoch boyunca)</h3>
+        <canvas id="nnTrainCanvas" width="480" height="240"></canvas>
+      </div>
+      <div class="plotbox" style="flex:1 1 260px">
+        <h3>Öğrenilen ağırlıklar</h3>
+        <div class="work" id="nnTrainWeights" style="white-space:pre; line-height:1.9; font-size:12.5px"></div>
+      </div>
+    </div>
+    <div class="work" id="nnTrainTable" style="white-space:pre; overflow-x:auto; line-height:1.9; font-size:12.5px; margin-top:12px"></div>
+    <div class="callout" id="nnTrainVerdict" style="margin-top:10px"></div>
+  </div>
+
+  <div class="callout" style="margin-top:8px">💡 <b>Özet sezgi:</b> Bir sinir ağı = katman katman dizilmiş <b>W·x+b</b> + aktivasyon. Öğrenme = kayıptan başlayıp zincir kuralıyla geriye doğru inen, her ağırlığı kendi gradyanı kadar kaydıran bir döngü. Bugün 9 parametrede elle izlediğin bu döngü, GPT'nin trilyonlarca parametresinde de <b>aynı</b> — sadece ölçek, donanım ve bazı pratik hileler (Adam optimizer, batch'ler, öğrenme oranı planları) eklenir.</div>
+
+  <div class="sechead">🧠 Kendini Test Et — Neural Network</div>
+  <div class="pts">
+    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 1) "Gizli katman" neden gizli deniyor, ne işe yarıyor?</div>
+      <div class="acc-body">Girdi ve çıktının aksine dışarıdan doğrudan görünmez/ölçülmez — ağın kendi ürettiği ara temsillerdir. XOR örneğinde h1, h2 olmadan (yani doğrudan x1,x2→y) tek bir doğru çizebiliyorduk (en fazla 3/4); gizli katman, birden fazla <b>paralel</b> doğrusal-olmayan sınır çizerek girdiyi, çıktı katmanının kolayca ayırabileceği yeni bir uzaya taşır.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 2) W⁽¹⁾ matrisinin (i,j) hücresi ne anlama gelir?</div>
+      <div class="acc-body">j. girdiden i. gizli nörona giden ağırlık. Matris çarpımı <code>W⁽¹⁾x</code>, "her satırın (her nöronun ağırlık vektörünün) x ile nokta çarpımı"ndan başka bir şey değil — Vektör dersindeki QKᵀ sezgisiyle birebir aynı fikir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 3) Geri yayılımda gradyan gizli katmana nasıl ulaşıyor?</div>
+      <div class="acc-body">Zincir kuralıyla: önce ∂L/∂ŷ, sonra ∂L/∂z<sub>y</sub> (kayıptan çıktı katmanına), sonra W⁽²⁾ üzerinden ∂L/∂h'ye (çıktıdan gizliye), sonra sigmoid'in türeviyle ∂L/∂z<sub>h</sub>'ye. Her adım, bir öncekinin sonucunu o adımın <b>yerel türeviyle</b> çarpar — RNN'deki "dişli zinciri" mantığının aynısı, sadece zaman yerine katman var.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 4) "Canlı eğitim" simülasyonunda bazı denemeler neden takılıp yeniden başlıyor?</div>
+      <div class="acc-body">Kayıp yüzeyi düz bir çanak değil — bazı rastgele başlangıç noktaları, XOR'u tam çözmeyen <b>sığ/yerel bir minimuma</b> (tıpkı sklearn'ün simetrik XOR'da bulduğu w=0 noktası gibi) takılabilir. Gerçek hayatta da bu yüzden ağlar genelde <b>birden fazla rastgele başlangıçla (seed)</b> ya da daha akıllı optimizasyon yöntemleriyle (momentum, Adam) eğitilir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 5) Bu ağla GPT arasındaki fark nedir — yapı mı, fikir mi?</div>
+      <div class="acc-body">Fikir <b>birebir aynı</b>: W·x+b + aktivasyon, katman katman, geri yayılımla eğitilir. Fark tamamen <b>ölçek ve mimari detaylar</b> — milyarlarca parametre, onlarca-yüzlerce katman, attention gibi ek yapı taşları (bu sitenin sonraki dersleri) ve eğitimi mümkün kılan pratik hileler (Adam, dropout, normalization). Temel döngü bugün elle izlediğinin tıpatıp aynısı.</div>
+    </div>
+  </div>
+  <p class="footer">Neural Network • katmanlar, W matrisi, geri yayılım ve canlı öğrenme</p>
+  </div><!-- /model-neural -->
 
 
   <!-- ===================== SOFTMAX MODELİ ===================== -->
@@ -3447,11 +3650,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202607302231"></script>
-<script src="js/lesson-turev.js?v=202607302231"></script>
-<script src="js/lesson-xor.js?v=202607302231"></script>
+<script src="js/lesson-linreg.js?v=202608112048"></script>
+<script src="js/lesson-turev.js?v=202608112048"></script>
+<script src="js/lesson-xor.js?v=202608112048"></script>
+<script src="js/lesson-nn.js?v=202608112048"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202607302231"></script>
+<script src="js/app.js?v=202608112048"></script>
 </body>
 </html>
