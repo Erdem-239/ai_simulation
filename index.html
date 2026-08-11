@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202608112048">
+<link rel="stylesheet" href="css/style.css?v=202608112114">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-11 20:48 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-11 21:14 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -3067,13 +3067,243 @@ Leaky'(−5) = 0.01</div>
   </div>
   </div>
 
-  <!-- NEREDEN NEREYE -->
-  <div class="callout" style="margin-top:22px">
-    🧭 <b>Nereden nereye:</b> Elle sigmoid/tanh/ReLU türevi çıkarmak için gereken tek şey: <b>üstel (e) + logaritma/ln + türev + zincir kuralı + bölüm kuralı + biraz cebir</b> (Modül 1–8). Softmax'e geçince bir üst kat: <b>kısmi türev / Jacobian</b> (Modül 9).<br><br>
-    Bu kuralların sayfadaki kullanım yerleri: &nbsp;📈 <b>Lineer Regresyon</b> → zincir kuralı + limit tanımıyla \(\partial E/\partial\Theta\) ispatları. &nbsp;🔁 <b>RNN</b> → aynı zincir kuralı zaman boyunca (BPTT) + tanh türevi \((1-h^{2})\). &nbsp;📊 <b>Aktivasyon</b> → e'nin hikâyesi, \(\sigma'=\sigma(1-\sigma)\) ispatı ve canlı zincir (dişli) simülasyonu.
+  <!-- MODÜL 10-12: İSTATİSTİK -->
+  <div class="acc acc-category">
+  <div class="acc-head"><span class="ac">▸</span> 📊 İstatistik</div>
+  <div class="acc-body">
+
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Bir modelin "iyi mi kötü mü" olduğunu ölçmek istatistiktir. Kayıp fonksiyonu = hatanın <b>varyansı</b>na benzer bir şey; ağırlık başlatma <b>normal dağılım</b>dan sayı çeker; çapraz entropi kaybı doğrudan <b>bilgi teorisi</b>nden gelir. Aşağıda üçü de, önceki modüllerdeki e/ln/türev ile aynı ellerle işlenecek.</div>
+
+  <div class="acc acc-module">
+  <div class="acc-head"><span class="ac">▸</span> 10) Ortalama, Varyans, Standart Sapma</div>
+  <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Fabrikada bir mühendisin "sigma" saplantısı</div>
+    <p>1893'te İngiliz istatistikçi <b>Karl Pearson</b>, bir grup ölçümün ortalamadan ne kadar "dağıldığını" tarif etmek için o zamana kadar kullanılan hantal "ortalama karekök hata" ifadesi yerine kısa bir isim önerdi: <b>standart sapma</b>. Sembolü de kendisi seçti — Yunan harfi <b>σ (sigma)</b>. Evet, sigmoid'deki σ'yla aynı harf, ama farklı bir kavram; tesadüf değil, ikisi de "ortalama etraftaki yayılma/geçiş" fikrini taşıyor.</p>
+    <p>Bu fikir bir asır sonra fabrikalara taşındı. 1986'da Motorola mühendisi <b>Bill Smith</b>, üretim hatalarını azaltmak için bir kalite standardı önerdi: <b>Six Sigma</b> — üretim değerlerinin ortalamadan <b>6 standart sapma</b> içinde kalmasını hedefleyen bir sistem. Sonuç: milyonda sadece <b>3.4 hata</b>. Motorola bu sistemle 4 yılda hata oranını 100'e katladı küçülttü ve 1988'de ilk Malcolm Baldrige Kalite Ödülü'nü kazandı. "Sigma" kelimesi o gün bugündür kalite mühendisliğinin diline yerleşti.</p>
   </div>
 
-  <p class="footer">Matematik temeli • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev</p>
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🏭</span><b>Six Sigma kalite kontrolü</b> — Motorola, GE ve bugün hâlâ birçok fabrika, ürün ölçülerinin ortalamadan kaç sigma saptığını izleyerek hatalı parçayı üretim hattından önce yakalar.</div>
+      <div class="ex-card"><span class="ex-ico">📈</span><b>Borsa riski</b> — bir hissenin "volatilitesi" tam olarak getirilerinin <b>varyansı</b>dır. Yüksek varyans = büyük iniş-çıkış = yüksek risk; portföy yöneticileri her gün bu sayıyla çalışır.</div>
+      <div class="ex-card"><span class="ex-ico">📝</span><b>Sınav bağıl değerlendirme (bell curve)</b> — "ortalamanın 1 std üstü A, 1 std altı C" gibi notlandırma sistemleri doğrudan standart sapma kullanır.</div>
+      <div class="ex-card"><span class="ex-ico">🧠</span><b>Kayıp fonksiyonu (MSE)</b> — Lineer Regresyon dersinde gördüğün <code>ortalama kare hata</code>, istatistiksel olarak tahminlerin gerçek değerden <b>varyansına</b> eşdeğerdir. Model eğitimi, aslında hata varyansını küçültme işidir.</div>
+      <div class="ex-card"><span class="ex-ico">⚽</span><b>Spor istatistikleri</b> — bir basketbolcunun "tutarlılığı", sayı ortalamasından çok, maçtan maça <b>standart sapmasının düşük</b> olmasıyla ölçülür.</div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🎯 En çarpıcı örnek: neden fark kareleniyor, mutlak değer değil?</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Sapmaları toplarken neden <code>|x−ortalama|</code> değil de <code>(x−ortalama)²</code> kullanıyoruz? İki sebep var: <b>(1)</b> negatif ve pozitif sapmalar toplanınca birbirini götürmesin diye bir şekilde "pozitife çevirmek" gerekiyor — mutlak değer de işe yarardı ama <b>(2)</b> mutlak değerin <code>x=0</code>'da türevi yoktur (köşeli), kare almak ise her yerde <b>türevlenebilir</b> — Lineer Regresyon dersinde gradyan alçalmanın çalışabilmesi için bu şarttı. Bonus: kare alma, büyük hataları <b>orantısız</b> cezalandırır (hata 2 kat olunca ceza 4 kat) — bu yüzden aykırı (outlier) noktalara karşı çok hassastır.</p>
+  </div>
+
+  <div class="pts">
+    <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
+      <b>Ortalama (μ):</b> \(\mu=\dfrac{1}{n}\sum x_i\). &nbsp; <b>Varyans (σ²):</b> \(\sigma^{2}=\dfrac{1}{n}\sum (x_i-\mu)^{2}\) — sapmaların kareleri ortalaması. &nbsp; <b>Standart sapma (σ):</b> \(\sigma=\sqrt{\sigma^{2}}\) — varyansın karekökü, verinin <b>orijinal birimine</b> geri döner (varyans "TL²" gibi anlamsız bir birimdeyken, std sapma "TL" gibi anlamlı bir birimde olur).
+    </div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">veri = [70, 80, 90, 100]  (4 sınav notu)
+μ = (70+80+90+100)/4 = 340/4 = 85
+
+sapmalar: 70−85=−15, 80−85=−5, 90−85=5, 100−85=15
+kareler:  225, 25, 25, 225   →  toplam = 500
+
+σ² = 500/4 = 125
+σ  = √125 ≈ 11.18</div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 1: [2, 4, 6, 8] verisinin ortalaması kaçtır?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Hepsini topla, eleman sayısına böl.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> (2+4+6+8)/4 = 20/4 = <b>5</b>.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 2: Aynı veri [2, 4, 6, 8] için varyans kaçtır?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Ortalama (Soru 1'den) = 5. Her sayıdan 5 çıkar, kare al, ortalamasını al.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> sapmalar −3,−1,1,3 → kareler 9,1,1,9 → toplam 20 → σ²=20/4=<b>5</b>.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 3: Varyansın birimi verinin biriminin karesiyken, standart sapmanın birimi neden veriyle aynı?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">σ, σ²'nin karekökü. Karekök, kareyi geri alır.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> Standart sapma = √varyans olduğu için, "birim²" içindeki kare de karekökle geri alınır → "birim" kalır. Bu yüzden yorumlamak için genelde varyans değil <b>standart sapma</b> kullanılır.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <div class="acc acc-module">
+  <div class="acc-head"><span class="ac">▸</span> 11) Normal (Gauss) Dağılımı</div>
+  <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Fasulyelerin çizdiği çan</div>
+    <p>Francis Galton, 1800'lerin sonunda ilginç bir alet yaptı: dikey bir tahtaya çivi sıraları çakıp üstünden yüzlerce bilye bıraktı ("Galton tahtası" / "bean machine"). Her bilye her çiviye çarptığında rastgele sağa ya da sola sekiyordu — tek bir bilyenin nereye düşeceği tahmin edilemezdi. Ama yüzlercesi birikince, alttaki kutucuklarda hep <b>aynı şekil</b> ortaya çıkıyordu: ortada yüksek, kenarlara doğru simetrik azalan bir <b>çan eğrisi</b>.</p>
+    <p>Bu şekil aslında Galton'dan önce, 1809'da <b>Carl Friedrich Gauss</b> tarafından gökbilim ölçüm hatalarını incelerken matematiksel olarak tanımlanmıştı — bu yüzden "Gauss dağılımı" da denir. Galton'ın katkısı, bunun sadece ölçüm hatalarında değil, <b>rastgele küçük etkilerin toplandığı her yerde</b> (boy uzunluğu, zeka testleri, ölçüm hataları) ortaya çıktığını göstermesiydi — bugün "merkezi limit teoremi" dediğimiz fikrin tohumu.</p>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🧠</span><b>Ağırlık başlatma (Xavier/He init)</b> — bir sinir ağı eğitime başlarken ağırlıkları rastgele mi seçer? Evet ama <b>rastgele üniform değil</b> — genelde ortalaması 0, küçük bir varyanslı <b>normal dağılım</b>dan çekilir. Bu, katmanlar arasında sinyalin ne patlamasını ne sönmesini sağlar (RNN dersindeki vanishing/exploding gradient'i hatırla).</div>
+      <div class="ex-card"><span class="ex-ico">📏</span><b>IQ testleri</b> — ortalama 100, standart sapma 15 olacak şekilde <b>tasarlanır</b>; testin kendisi normal dağılıma "zorlanır".</div>
+      <div class="ex-card"><span class="ex-ico">📐</span><b>Ölçüm hataları</b> — bir cetvelle, bir teraziyle aynı şeyi 100 kez ölçsen, sonuçlar gerçek değer etrafında normal dağılır — Gauss'un orijinal problemi tam olarak buydu.</div>
+      <div class="ex-card"><span class="ex-ico">🏭</span><b>Üretim toleransları</b> — bir vidanın çapı "10mm ± 0.1mm" dendiğinde, gerçek üretim değerleri 10mm etrafında normal dağılır; Modül 10'daki Six Sigma tam olarak bunu kontrol eder.</div>
+      <div class="ex-card"><span class="ex-ico">📊</span><b>A/B test analizleri</b> — bir web sitesinin iki versiyonunun performans farkının "şans mı gerçek mi" olduğuna karar verirken, ölçümlerin normal dağıldığı varsayılır.</div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">📐 En çarpıcı örnek: 68-95-99.7 kuralı</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Normal dağılımda, verinin <b>%68'i</b> ortalamanın ±1 standart sapması içinde, <b>%95'i</b> ±2 içinde, <b>%99.7'si</b> ±3 içinde bulunur. IQ testinde μ=100, σ=15: bir kişinin IQ'su <b>130</b> ise, bu ortalamadan tam <b>2 standart sapma</b> yukarıdadır — yani nüfusun en üstteki <b>%2.3</b>'ü içinde. Six Sigma'nın "6 sigma dışına çıkma ihtimali milyonda 3.4" demesi, bu eğrinin kuyruğunun <b>ne kadar hızlı incelen</b> bir şey olduğunu gösteriyor.</p>
+  </div>
+
+  <div class="pts">
+    <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
+      Normal dağılımın formülü: \( f(x)=\dfrac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{(x-\mu)^{2}}{2\sigma^{2}}} \) — içinde yine bizim <b>e</b>'miz var. Bir noktanın ortalamadan kaç standart sapma uzakta olduğunu ölçen sayıya <b>z-skoru</b> denir: \( z=\dfrac{x-\mu}{\sigma} \).
+    </div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">IQ testi: μ=100, σ=15. Bir kişinin IQ'su x=130.
+
+z = (x−μ)/σ = (130−100)/15 = 30/15 = 2
+
+Yorum: bu kişi ortalamanın TAM 2 standart sapma üstünde.
+68-95-99.7 kuralına göre: nüfusun ~%97.7'sinden daha yüksek IQ'ya sahip.</div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 1: μ=50, σ=10 olan bir dağılımda x=65'in z-skoru kaçtır?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">z=(x−μ)/σ formülüne sayıları yerleştir.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> (65−50)/10 = 1.5.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 2: 68-95-99.7 kuralına göre, ortalamanın ±2σ içindeki veri yüzdesi kaçtır?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Kuralın orta terimini hatırla: %68, %95, %99.7 — sırasıyla ±1σ, ±2σ, ±3σ.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> <b>%95</b>.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <div class="acc acc-module">
+  <div class="acc-head"><span class="ac">▸</span> 12) Olasılık ve Çapraz Entropi (Cross-Entropy)</div>
+  <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Bir mühendisin "bilgi" tanımı</div>
+    <p>1948'de Bell Labs'te çalışan <b>Claude Shannon</b>, "A Mathematical Theory of Communication" adlı makalesinde tuhaf bir soru sordu: <i>"bilgiyi sayısal olarak nasıl ölçeriz?"</i> Cevabı sezgiye aykırıydı: bir mesajın taşıdığı bilgi, ne kadar <b>şaşırtıcı</b> olduğuyla orantılı. "Yarın güneş doğacak" haberinde neredeyse hiç bilgi yok (kesin biliyorduk); "yarın deprem olacak" haberinde çok bilgi var (beklenmiyordu).</p>
+    <p>Shannon bu "şaşırma miktarı"nı <b>−log(olasılık)</b> ile formülize etti ve birimine <b>bit</b> dedi. Bir olayın olasılığı ne kadar düşükse, gerçekleştiğinde taşıdığı bilgi (bit sayısı) o kadar yüksek. Bu tek fikir; sıkıştırma (zip), hata düzeltme kodları, ve — bize en yakını — <b>çapraz entropi kaybı fonksiyonu</b>nun temelini attı.</p>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card"><span class="ex-ico">🗜️</span><b>Dosya sıkıştırma (zip)</b> — sık tekrar eden (düşük "şaşırtıcılık") kalıplara az bit, nadir kalıplara çok bit ayırarak dosyayı küçültür — doğrudan Shannon entropisi.</div>
+      <div class="ex-card"><span class="ex-ico">🎯</span><b>20 soru oyunu</b> — her evet/hayır sorusu olası cevap kümesini yarıya indirir; bu yüzden N olasılıktan birini bulmak ~\(\log_2 N\) soru (bit) gerektirir — entropi sezgisinin ta kendisi.</div>
+      <div class="ex-card"><span class="ex-ico">🌦️</span><b>Hava tahmini kalibrasyonu</b> — "%70 yağmur" dedikleri günlerin gerçekten %70'inde yağmur yağıyor mu? Meteorologların doğruluğu çapraz entropiyle ölçülür.</div>
+      <div class="ex-card"><span class="ex-ico">🤖</span><b>Sınıflandırma modelinin kaybı</b> — softmax çıktısı ("bu resim %92 kedi") ile gerçek etiket arasındaki fark, tam olarak <b>çapraz entropi</b> ile ölçülür — Softmax dersindeki formülün istatistiksel temeli burası.</div>
+      <div class="ex-card"><span class="ex-ico">💬</span><b>Dil modelleri (GPT, Claude)</b> — bir sonraki kelimeyi tahmin ederken model, olası tüm kelimeler üzerine bir olasılık dağılımı üretir; eğitim, bu dağılımla gerçek kelime arasındaki çapraz entropiyi küçültmektir.</div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🔁 En çarpıcı örnek: bu formülü zaten görmüştün</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Modül 2'de (Logaritma) simüle ettiğin <b>−ln(p)</b> ceza eğrisi, aslında ikili (binary) çapraz entropinin ta kendisiydi: \(L=-\big(y\ln p+(1-y)\ln(1-p)\big)\). Aktivasyon dersindeki sklearn keşfini hatırla: simetrik XOR verisinde model <b>w=0</b>'a saplanmıştı, çünkü her nokta için p=0.5 tahmini veriyordu. Çapraz entropi kaybı orada tam olarak <b>−ln(0.5)=ln(2)≈0.693</b> çıkıyordu — "hiçbir fikrim yok" cezası. Şimdi bunun neden <b>ln(2)</b> olduğunu (bir bit'lik "adil yazı-tura" belirsizliği) biliyorsun.</p>
+  </div>
+
+  <div class="pts">
+    <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
+      <b>Çapraz entropi (çok sınıflı):</b> \( L=-\sum_i y_i\ln(p_i) \) — gerçek etiket one-hot (\(y_i\)) ise, formül sadece <b>doğru sınıfın</b> tahmin olasılığının \(-\ln\)'ini alır (diğer terimler \(y_i=0\) olduğu için sıfırlanır). <b>Entropi (bilgi):</b> \( H=-\sum_i p_i\log_2 p_i \), birimi <b>bit</b>.
+    </div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">3 sınıf: kedi, köpek, kuş. Gerçek etiket = köpek → one-hot y=[0, 1, 0]
+Model tahmini:            p=[0.2, 0.7, 0.1]
+
+L = −(0·ln0.2 + 1·ln0.7 + 0·ln0.1) = −ln(0.7) ≈ 0.357
+
+Yorum: sadece "doğru sınıfa (köpek) ne kadar olasılık verildiği" önemli;
+diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor).</div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 1: Doğru sınıfa model p=0.5 olasılık vermiş. Çapraz entropi kaybı kaçtır?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">L=−ln(p). p=0.5 için hesapla.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> −ln(0.5)=ln(2)≈<b>0.693</b> — tam olarak sklearn'ün XOR'da saplandığı sayı.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 2: Model A doğru sınıfa p=0.9, Model B p=0.1 veriyor. Hangisinin kaybı daha yüksek, neden?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">p küçüldükçe −ln(p) büyür (Modül 2'deki eğriyi hatırla).</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> <b>Model B</b> (−ln(0.1)≈2.303 > −ln(0.9)≈0.105). Doğru sınıfa düşük olasılık vermek ağır cezalandırılır — "kendinden emin ama yanlış" en pahalı hatadır.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 3: Adil bir yazı-tura (p=0.5, p=0.5) atışının entropisi kaç bittir?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">H=−Σp·log₂(p). İki terim de p=0.5.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> H=−(0.5·log₂0.5+0.5·log₂0.5)=−(0.5·(−1)+0.5·(−1))=<b>1 bit</b>. Bu yüzden bir "evet/hayır" sorusu tam olarak 1 bit'lik belirsizliği çözer.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  </div>
+  </div>
+
+  <!-- NEREDEN NEREYE -->
+  <div class="callout" style="margin-top:22px">
+    🧭 <b>Nereden nereye:</b> Elle sigmoid/tanh/ReLU türevi çıkarmak için gereken tek şey: <b>üstel (e) + logaritma/ln + türev + zincir kuralı + bölüm kuralı + biraz cebir</b> (Modül 1–8). Softmax'e geçince bir üst kat: <b>kısmi türev / Jacobian</b> (Modül 9). Model performansını ölçmek/eğitimin altındaki mantığı anlamak içinse: <b>ortalama/varyans, normal dağılım, çapraz entropi</b> (Modül 10–12).<br><br>
+    Bu kuralların sayfadaki kullanım yerleri: &nbsp;📈 <b>Lineer Regresyon</b> → zincir kuralı + limit tanımıyla \(\partial E/\partial\Theta\) ispatları (ve MSE = hata varyansı). &nbsp;🔁 <b>RNN</b> → aynı zincir kuralı zaman boyunca (BPTT) + tanh türevi \((1-h^{2})\). &nbsp;📊 <b>Aktivasyon</b> → e'nin hikâyesi, \(\sigma'=\sigma(1-\sigma)\) ispatı ve canlı zincir (dişli) simülasyonu. &nbsp;🧠 <b>Neural Network</b> → ağırlık başlatma normal dağılımdan, kayıp fonksiyonu çapraz entropiden gelir.
+  </div>
+
+  <p class="footer">Matematik temeli • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev · istatistik</p>
   </div><!-- /model-matematik -->
 
 
@@ -3650,12 +3880,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608112048"></script>
-<script src="js/lesson-turev.js?v=202608112048"></script>
-<script src="js/lesson-xor.js?v=202608112048"></script>
-<script src="js/lesson-nn.js?v=202608112048"></script>
+<script src="js/lesson-linreg.js?v=202608112114"></script>
+<script src="js/lesson-turev.js?v=202608112114"></script>
+<script src="js/lesson-xor.js?v=202608112114"></script>
+<script src="js/lesson-nn.js?v=202608112114"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202608112048"></script>
+<script src="js/app.js?v=202608112114"></script>
 </body>
 </html>
