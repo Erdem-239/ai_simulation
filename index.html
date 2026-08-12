@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202608121315">
+<link rel="stylesheet" href="css/style.css?v=202608121700">
 </head>
 <body>
 <div class="applayout">
@@ -2405,6 +2405,20 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <p>50 yıl sonra <b>Leonhard Euler</b> (1731) bu sayıyı derinlemesine inceledi, ondalıklarını hesapladı ve ona bir harf verdi: <b>e</b>. Bugün "Euler sayısı" deniyor. Kendi adının baş harfi olduğu için mi seçti, yoksa "exponential"ın e'si mi — tarihçiler hâlâ tartışıyor.</p>
   </div>
 
+  <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px">
+    <h3 style="color:#46c46a; margin-top:0">🔬 Kendin türet: kahveyi parçalara böl, e kendiliğinden çıksın</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bernoulli'nin faiz sorusunu, tam tersi bir olayla — <b>kahvenin soğumasıyla</b> — kendin tekrarlayabilirsin. Fiziksel kural şu: kahve ne kadar sıcaksa (odaya göre farkı ne kadar büyükse) o kadar hızlı soğur. Diyelim kahve, farkının <b>dakikada %10'unu</b> kaybediyor (k=0.1). 1 dakikayı n eşit parçaya bölüp, her parçada farkın <code>0.1/n</code>'ini kaybettirip üst üste n kez uygularsan, Bernoulli'nin faiz formülünün <b>aynısını</b> elde edersin — sadece işaret ters (kazanmak yerine kaybetmek):</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7; text-align:center">\( D(1\text{ dk}) = D_0\left(1-\dfrac{0.1}{n}\right)^{n} \)</p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">1 dakikayı kaç parçaya böldük (n) =</span>
+      <input type="range" id="coolN" min="0" max="7" step="1" value="0" style="width:220px">
+      <b id="coolNv" style="color:var(--accent); min-width:110px">n = 1 (hiç bölmedik)</b>
+    </div>
+    <div style="max-width:720px"><canvas id="coolCanvas" width="700" height="300" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="coolRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#46c46a">💡 <b>Ne oluyor:</b> kaydırıcıyı sağa götürüp dakikayı daha küçük parçalara böldükçe (n büyüdükçe), grafikteki nokta yeşil kesikli çizgiye — yani <b>e<sup>−0.1</sup> ≈ 0.9048</b>'e — yaklaşıp orada takılı kalıyor. n=1'de kaba bir tahmindin (0.900), n=60.000'de ise gerçek fiziksel sürece (kesintisiz, an be an soğuma) neredeyse birebir ulaşıyorsun. Bu duvar sayısı, işaretini değiştirip genelleştirdiğinde tam olarak Kahvenin Soğuması kartındaki <b>T(t)=Toda+(T₀−Toda)·e<sup>−kt</sup></b> formülündeki e — Bernoulli parayı büyütürken, sen ısıyı küçültürken aynı duvara çarpıyorsunuz.</div>
+  </div>
+
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 e GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
@@ -3974,12 +3988,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608121315"></script>
-<script src="js/lesson-turev.js?v=202608121315"></script>
-<script src="js/lesson-xor.js?v=202608121315"></script>
-<script src="js/lesson-nn.js?v=202608121315"></script>
+<script src="js/lesson-linreg.js?v=202608121700"></script>
+<script src="js/lesson-turev.js?v=202608121700"></script>
+<script src="js/lesson-xor.js?v=202608121700"></script>
+<script src="js/lesson-nn.js?v=202608121700"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202608121315"></script>
+<script src="js/app.js?v=202608121700"></script>
 </body>
 </html>
