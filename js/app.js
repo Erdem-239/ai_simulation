@@ -1623,6 +1623,14 @@
   requestAnimationFrame(frame);
 })();
 
+/* ---- Gerçek hayat kartları: tıkla → örnek işlem aç/kapat ---- */
+(function(){
+  const m=document.getElementById('model-matematik'); if(!m) return;
+  m.querySelectorAll('.ex-card.has-example').forEach(card=>{
+    card.addEventListener('click',()=>{ card.classList.toggle('open'); });
+  });
+})();
+
 /* ---- Khan-tarzı alıştırma: ipucu → çözüm + ilerleme ---- */
 (function(){
   const m=document.getElementById('model-matematik'); if(!m) return;

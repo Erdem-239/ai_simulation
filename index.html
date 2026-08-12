@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202608112114">
+<link rel="stylesheet" href="css/style.css?v=202608120952">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-11 21:14 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-12 09:52 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2408,11 +2408,25 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 e GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card"><span class="ex-ico">⏳</span><b>Karbon tarihleme</b> — arkeologlar bir kemiğin yaşını \(N=N_0e^{-\lambda t}\) ile bulur. Karbon-14'ün yarısı 5730 yılda bozunur; kalan miktarı ölçüp geriye doğru hesaplarsın. Mısır mumyalarının, Göbeklitepe'nin yaşı böyle bilindi.</div>
-      <div class="ex-card"><span class="ex-ico">☕</span><b>Kahvenin soğuması</b> — Newton'un soğuma yasası: sıcak bir şey, ortam sıcaklığına <b>üstel</b> yaklaşır. Kahven ilk 5 dakikada çok, sonraki 5 dakikada daha az soğur. Aynı formül binanın ısı kaybında, motorun soğumasında da var.</div>
-      <div class="ex-card"><span class="ex-ico">💊</span><b>İlacın vücuttan atılması</b> — "günde 2 kez alın" talimatının arkasında bu var. Her ilacın bir <b>yarılanma ömrü</b> vardır; kandaki miktar \(e^{-kt}\) ile düşer. Doz aralığı, seviye etkisiz bölgeye inmeden yeniden yükselecek şekilde hesaplanır.</div>
-      <div class="ex-card"><span class="ex-ico">🦠</span><b>Salgın yayılması</b> — bir hasta 2 kişiye bulaştırırsa, sayı <b>katlanarak</b> artar. 2020'de her gün duyduğun "üstel artış" tam olarak buydu: 1→2→4→8… Aşı ve tedbir, o üsteki sayıyı küçültme çabasıdır.</div>
-      <div class="ex-card"><span class="ex-ico">🔋</span><b>Şarj ve deşarj</b> — telefon şarjının başta hızlı, sonda yavaşlaması tesadüf değil. Kondansatör dolarken gerilim \(1-e^{-t/RC}\) eğrisini izler. Her elektronik devrede bu eğri vardır.</div>
+      <div class="ex-card has-example"><span class="ex-ico">⏳</span><b>Karbon tarihleme</b> — arkeologlar bir kemiğin yaşını \(N=N_0e^{-\lambda t}\) ile bulur. Karbon-14'ün yarısı 5730 yılda bozunur; kalan miktarı ölçüp geriye doğru hesaplarsın. Mısır mumyalarının, Göbeklitepe'nin yaşı böyle bilindi.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir kemikte başlangıçtaki Karbon-14'ün sadece %25'i kalmış. Kemik kaç yıllık?</div><div class="work">N/N₀ = 0.25 = 1/4
+Yarılanma her 5730 yılda bir: 1/4 = (1/2)²
+→ tam 2 yarı ömür geçmiş
+t = 2 × 5730 = 11.460 yıl</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">☕</span><b>Kahvenin soğuması</b> — Newton'un soğuma yasası: sıcak bir şey, ortam sıcaklığına <b>üstel</b> yaklaşır. Kahven ilk 5 dakikada çok, sonraki 5 dakikada daha az soğur. Aynı formül binanın ısı kaybında, motorun soğumasında da var.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">90°C'lik kahve, 20°C'lik bir odada k=0.056/dk soğuma sabitiyle soğuyor. 10 dakika sonra sıcaklığı?</div><div class="work">T(t) = Toda + (T₀−Toda)·e^(−kt)
+T(10) = 20 + 70·e^(−0.056×10)
+      = 20 + 70·e^(−0.56)
+      = 20 + 70×0.571 ≈ 60°C</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">💊</span><b>İlacın vücuttan atılması</b> — "günde 2 kez alın" talimatının arkasında bu var. Her ilacın bir <b>yarılanma ömrü</b> vardır; kandaki miktar \(e^{-kt}\) ile düşer. Doz aralığı, seviye etkisiz bölgeye inmeden yeniden yükselecek şekilde hesaplanır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">500mg ilaç alındı, yarılanma ömrü 6 saat. 18 saat sonra kanda ne kadar kaldı?</div><div class="work">18 saat / 6 saat = 3 yarı ömür geçti
+500mg → 250mg → 125mg → 62.5mg</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🦠</span><b>Salgın yayılması</b> — bir hasta 2 kişiye bulaştırırsa, sayı <b>katlanarak</b> artar. 2020'de her gün duyduğun "üstel artış" tam olarak buydu: 1→2→4→8… Aşı ve tedbir, o üsteki sayıyı küçültme çabasıdır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">1 hasta ile başlıyor, her kişi 2 kişiye bulaştırıyor. 10 "nesil" sonra kaç vaka olur?</div><div class="work">vaka sayısı = 2^10 = 1024
+
+10 basit bulaşma turunda 1 kişiden 1024 vaka —
+bu yüzden "erken müdahale" bu kadar önemli.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🔋</span><b>Şarj ve deşarj</b> — telefon şarjının başta hızlı, sonda yavaşlaması tesadüf değil. Kondansatör dolarken gerilim \(1-e^{-t/RC}\) eğrisini izler. Her elektronik devrede bu eğri vardır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir kapasitörün zaman sabiti RC=2 saniye. t=RC anında (2 saniyede) yüzde kaçı dolmuştur?</div><div class="work">V(t)/V₀ = 1 − e^(−t/RC)
+t=RC iken: 1 − e^(−1) = 1 − 0.368 = 0.632
+
+→ %63.2 dolu. Mühendisler bu yüzden
+"1 zaman sabiti = %63 doldu" der.</div></div></div>
     </div>
   </div>
 
@@ -2491,11 +2505,23 @@ z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 LOGARİTMA GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card"><span class="ex-ico">📳</span><b>Deprem — Richter ölçeği</b> — "7.8" ile "6.8" arasındaki fark 1 değil: <b>~32 kat daha fazla enerji</b>. Çünkü ölçek logaritmik. Aşağıda bunu sayılarla açıyoruz.</div>
-      <div class="ex-card"><span class="ex-ico">🔊</span><b>Ses — desibel</b> — fısıltı 30 dB, konser 110 dB. Aradaki fark 80 dB, yani <b>100 milyon kat</b> daha güçlü ses dalgası. Kulağın bu devasa aralığı taşıyabilsin diye ölçek sıkıştırılmış.</div>
-      <div class="ex-card"><span class="ex-ico">🧪</span><b>Asitlik — pH</b> — limon pH 2, su pH 7. 5 birim fark = <b>100.000 kat</b> daha asidik. Havuz, toprak, kan — hepsi bu ölçekle ölçülür.</div>
-      <div class="ex-card"><span class="ex-ico">👁️</span><b>Duyuların kendisi logaritmik</b> — bu belki en şaşırtıcısı: gözün ve kulağın <b>algısı</b> logaritmiktir (Weber-Fechner yasası). Işığı 2 kat artırınca "2 kat parlak" görmezsin. Yani logaritma insan icadı değil — <b>beynin zaten kullandığı</b> ölçek.</div>
-      <div class="ex-card"><span class="ex-ico">🔎</span><b>Arama algoritmaları</b> — sıralı 1 milyon kayıtta aradığını <b>20 adımda</b> bulursun (her adımda yarıya böl: \(\log_2 10^6 \approx 20\)). 1 milyar kayıt? Sadece <b>30 adım</b>. Google'ın hızının matematiği bu.</div>
+      <div class="ex-card has-example"><span class="ex-ico">📳</span><b>Deprem — Richter ölçeği</b> — "7.8" ile "6.8" arasındaki fark 1 değil: <b>~32 kat daha fazla enerji</b>. Çünkü ölçek logaritmik. Aşağıda bunu sayılarla açıyoruz.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">7.8 büyüklüğündeki deprem, 6.8'e göre kaç kat daha fazla enerji açığa çıkarır?</div><div class="work">Enerji oranı = 10^(1.5×ΔM)
+ΔM = 7.8 − 6.8 = 1
+= 10^(1.5×1) = 10^1.5 ≈ 31.6 kat</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🔊</span><b>Ses — desibel</b> — fısıltı 30 dB, konser 110 dB. Aradaki fark 80 dB, yani <b>100 milyon kat</b> daha güçlü ses dalgası. Kulağın bu devasa aralığı taşıyabilsin diye ölçek sıkıştırılmış.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Konser 110dB, fısıltı 30dB. Ses şiddeti (enerji) kaç kat fark eder?</div><div class="work">dB = 10·log₁₀(I/I₀)  →  I oranı = 10^(ΔdB/10)
+ΔdB = 110 − 30 = 80
+I oranı = 10^(80/10) = 10^8 = 100.000.000 kat</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🧪</span><b>Asitlik — pH</b> — limon pH 2, su pH 7. 5 birim fark = <b>100.000 kat</b> daha asidik. Havuz, toprak, kan — hepsi bu ölçekle ölçülür.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Limon (pH 2), suya (pH 7) göre kaç kat daha asidik?</div><div class="work">pH = −log₁₀[H⁺]  →  [H⁺] oranı = 10^ΔpH
+ΔpH = 7 − 2 = 5
+[H⁺] oranı = 10^5 = 100.000 kat</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">👁️</span><b>Duyuların kendisi logaritmik</b> — bu belki en şaşırtıcısı: gözün ve kulağın <b>algısı</b> logaritmiktir (Weber-Fechner yasası). Işığı 2 kat artırınca "2 kat parlak" görmezsin. Yani logaritma insan icadı değil — <b>beynin zaten kullandığı</b> ölçek.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir sesin fiziksel şiddetini (enerjisini) tam 2 katına çıkarırsan, kulağın algıladığı desibel artışı ne kadardır?</div><div class="work">ΔdB = 10·log₁₀(2) ≈ 3 dB
+
+Enerji 2 katına çıktı ama kulak sadece +3dB'lik
+(çok az) bir fark algılıyor. "2 kat yüksek" hissi için
+enerjinin ~10 katına çıkması gerekir (+10dB kuralı).</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🔎</span><b>Arama algoritmaları</b> — sıralı 1 milyon kayıtta aradığını <b>20 adımda</b> bulursun (her adımda yarıya böl: \(\log_2 10^6 \approx 20\)). 1 milyar kayıt? Sadece <b>30 adım</b>. Google'ın hızının matematiği bu.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">1.000.000 kayıtlı sıralı bir listede ikili arama (binary search) en fazla kaç adım sürer?</div><div class="work">adım sayısı = log₂(1.000.000)
+            = ln(1.000.000)/ln(2)
+            ≈ 19.93 → yukarı yuvarla: 20 adım</div></div></div>
     </div>
   </div>
 
@@ -3087,11 +3113,27 @@ Leaky'(−5) = 0.01</div>
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card"><span class="ex-ico">🏭</span><b>Six Sigma kalite kontrolü</b> — Motorola, GE ve bugün hâlâ birçok fabrika, ürün ölçülerinin ortalamadan kaç sigma saptığını izleyerek hatalı parçayı üretim hattından önce yakalar.</div>
-      <div class="ex-card"><span class="ex-ico">📈</span><b>Borsa riski</b> — bir hissenin "volatilitesi" tam olarak getirilerinin <b>varyansı</b>dır. Yüksek varyans = büyük iniş-çıkış = yüksek risk; portföy yöneticileri her gün bu sayıyla çalışır.</div>
-      <div class="ex-card"><span class="ex-ico">📝</span><b>Sınav bağıl değerlendirme (bell curve)</b> — "ortalamanın 1 std üstü A, 1 std altı C" gibi notlandırma sistemleri doğrudan standart sapma kullanır.</div>
-      <div class="ex-card"><span class="ex-ico">🧠</span><b>Kayıp fonksiyonu (MSE)</b> — Lineer Regresyon dersinde gördüğün <code>ortalama kare hata</code>, istatistiksel olarak tahminlerin gerçek değerden <b>varyansına</b> eşdeğerdir. Model eğitimi, aslında hata varyansını küçültme işidir.</div>
-      <div class="ex-card"><span class="ex-ico">⚽</span><b>Spor istatistikleri</b> — bir basketbolcunun "tutarlılığı", sayı ortalamasından çok, maçtan maça <b>standart sapmasının düşük</b> olmasıyla ölçülür.</div>
+      <div class="ex-card has-example"><span class="ex-ico">🏭</span><b>Six Sigma kalite kontrolü</b> — Motorola, GE ve bugün hâlâ birçok fabrika, ürün ölçülerinin ortalamadan kaç sigma saptığını izleyerek hatalı parçayı üretim hattından önce yakalar.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir üretim hattı kalitesini 3 sigma'dan 6 sigma'ya çıkarıyor. Hata oranı nasıl değişir?</div><div class="work">3σ kalite  ≈ 66.800 hatalı ürün / milyon
+6σ kalite  ≈      3.4 hatalı ürün / milyon
+
+→ yaklaşık 20.000 kat daha az hata</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📈</span><b>Borsa riski</b> — bir hissenin "volatilitesi" tam olarak getirilerinin <b>varyansı</b>dır. Yüksek varyans = büyük iniş-çıkış = yüksek risk; portföy yöneticileri her gün bu sayıyla çalışır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir hissenin son 5 günlük getirisi: %1, −%2, %3, −%1, %4. Volatilitesi (std sapma) kaçtır?</div><div class="work">μ = (1−2+3−1+4)/5 = 5/5 = %1
+
+sapmalar: 0,−3,2,−2,3 → kareler: 0,9,4,4,9 → toplam 26
+σ² = 26/5 = 5.2   →   σ = √5.2 ≈ %2.28  (bu, "risk" sayısı)</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📝</span><b>Sınav bağıl değerlendirme (bell curve)</b> — "ortalamanın 1 std üstü A, 1 std altı C" gibi notlandırma sistemleri doğrudan standart sapma kullanır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Sınıfın notları μ=85, σ≈11.18 (yukarıdaki çözümlü örnek). Bir öğrenci 96 aldı — ortalamadan kaç std uzakta?</div><div class="work">z = (x−μ)/σ = (96−85)/11.18 ≈ 0.98
+
+→ ortalamanın hemen hemen tam 1 std üstünde
+(sınıfın en üstteki ~%16'lık dilimine yakın)</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🧠</span><b>Kayıp fonksiyonu (MSE)</b> — Lineer Regresyon dersinde gördüğün <code>ortalama kare hata</code>, istatistiksel olarak tahminlerin gerçek değerden <b>varyansına</b> eşdeğerdir. Model eğitimi, aslında hata varyansını küçültme işidir.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Gerçek değerler=[3,5,2,8], model tahmini=[2,6,3,7]. MSE nedir, varyansla ilişkisi ne?</div><div class="work">hatalar = 1, −1, −1, 1  →  ortalama hata = 0
+kareler = 1, 1, 1, 1    →  MSE = 4/4 = 1
+
+Hataların ortalaması 0 olduğu için:
+MSE = hataların varyansı = 1  (tıpatıp aynı sayı!)</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">⚽</span><b>Spor istatistikleri</b> — bir basketbolcunun "tutarlılığı", sayı ortalamasından çok, maçtan maça <b>standart sapmasının düşük</b> olmasıyla ölçülür.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">A: 20,22,18,21,19 sayı  ·  B: 10,30,5,35,20 sayı — ikisinin de ortalaması 20. Kim daha tutarlı?</div><div class="work">A → σ ≈ 1.41  (çok tutarlı, hep ortalamaya yakın)
+B → σ ≈ 11.40 (çok değişken, bir maç 5 bir maç 35)
+
+İkisinin ortalaması aynı — std sapma "tutarlılığı" ortaya koyuyor.</div></div></div>
     </div>
   </div>
 
@@ -3165,11 +3207,26 @@ kareler:  225, 25, 25, 225   →  toplam = 500
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card"><span class="ex-ico">🧠</span><b>Ağırlık başlatma (Xavier/He init)</b> — bir sinir ağı eğitime başlarken ağırlıkları rastgele mi seçer? Evet ama <b>rastgele üniform değil</b> — genelde ortalaması 0, küçük bir varyanslı <b>normal dağılım</b>dan çekilir. Bu, katmanlar arasında sinyalin ne patlamasını ne sönmesini sağlar (RNN dersindeki vanishing/exploding gradient'i hatırla).</div>
-      <div class="ex-card"><span class="ex-ico">📏</span><b>IQ testleri</b> — ortalama 100, standart sapma 15 olacak şekilde <b>tasarlanır</b>; testin kendisi normal dağılıma "zorlanır".</div>
-      <div class="ex-card"><span class="ex-ico">📐</span><b>Ölçüm hataları</b> — bir cetvelle, bir teraziyle aynı şeyi 100 kez ölçsen, sonuçlar gerçek değer etrafında normal dağılır — Gauss'un orijinal problemi tam olarak buydu.</div>
-      <div class="ex-card"><span class="ex-ico">🏭</span><b>Üretim toleransları</b> — bir vidanın çapı "10mm ± 0.1mm" dendiğinde, gerçek üretim değerleri 10mm etrafında normal dağılır; Modül 10'daki Six Sigma tam olarak bunu kontrol eder.</div>
-      <div class="ex-card"><span class="ex-ico">📊</span><b>A/B test analizleri</b> — bir web sitesinin iki versiyonunun performans farkının "şans mı gerçek mi" olduğuna karar verirken, ölçümlerin normal dağıldığı varsayılır.</div>
+      <div class="ex-card has-example"><span class="ex-ico">🧠</span><b>Ağırlık başlatma (Xavier/He init)</b> — bir sinir ağı eğitime başlarken ağırlıkları rastgele mi seçer? Evet ama <b>rastgele üniform değil</b> — genelde ortalaması 0, küçük bir varyanslı <b>normal dağılım</b>dan çekilir. Bu, katmanlar arasında sinyalin ne patlamasını ne sönmesini sağlar (RNN dersindeki vanishing/exploding gradient'i hatırla).<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir katmanın 100 girdisi var (fan_in=100). He init'e göre ağırlıkların standart sapması ne olmalı?</div><div class="work">σ = √(2/fan_in) = √(2/100) = √0.02 ≈ 0.141
+
+Ağırlıklar N(0, 0.141²) normal dağılımından
+rastgele çekilir — ne çok büyük ne çok küçük.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📏</span><b>IQ testleri</b> — ortalama 100, standart sapma 15 olacak şekilde <b>tasarlanır</b>; testin kendisi normal dağılıma "zorlanır".<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">μ=100, σ=15. Bir kişinin IQ'su 85 (ortalamanın tam 1 std altı). Nüfusun yaklaşık hangi diliminde?</div><div class="work">68-95-99.7 kuralı: ortalamanın ±1σ içi = %68
+→ dışarıda kalan %32'nin yarısı (%16) alt tarafta
+
+IQ=85 → nüfusun en alttaki ~%16'sında</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📐</span><b>Ölçüm hataları</b> — bir cetvelle, bir teraziyle aynı şeyi 100 kez ölçsen, sonuçlar gerçek değer etrafında normal dağılır — Gauss'un orijinal problemi tam olarak buydu.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir masayı 100 kez ölçtün: ortalama 150.2 cm, std sapma 0.3 cm. %95 güven aralığı nedir?</div><div class="work">%95 aralığı ≈ ortalama ± 2σ (68-95-99.7 kuralı)
+150.2 ± 2×0.3 = 150.2 ± 0.6
+
+→ gerçek uzunluk %95 ihtimalle [149.6 cm, 150.8 cm]</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🏭</span><b>Üretim toleransları</b> — bir vidanın çapı "10mm ± 0.1mm" dendiğinde, gerçek üretim değerleri 10mm etrafında normal dağılır; Modül 10'daki Six Sigma tam olarak bunu kontrol eder.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">10mm±0.1mm tolerans ±3σ'ya denk geliyorsa, üretilen vidaların yüzde kaçı tolerans dışında kalır?</div><div class="work">±3σ içinde kalan oran (99.7 kuralı) = %99.7
+→ dışarıda kalan = %0.3
+
+Yani her 1000 vidadan ~3 tanesi kusurlu çıkar.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📊</span><b>A/B test analizleri</b> — bir web sitesinin iki versiyonunun performans farkının "şans mı gerçek mi" olduğuna karar verirken, ölçümlerin normal dağıldığı varsayılır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">A grubu dönüşüm oranı μ=%5.0, σ=%0.5. B grubu %5.8 elde etti. B, A'nın dağılımında kaç std uzakta?</div><div class="work">z = (5.8−5.0)/0.5 = 1.6
+
+Genelde z>1.96 (%95 güven) eşiği aranır; 1.6 henüz
+o eşiği geçmiyor → fark dikkat çekici ama henüz "kesin" değil.</div></div></div>
     </div>
   </div>
 
@@ -3230,11 +3287,30 @@ Yorum: bu kişi ortalamanın TAM 2 standart sapma üstünde.
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card"><span class="ex-ico">🗜️</span><b>Dosya sıkıştırma (zip)</b> — sık tekrar eden (düşük "şaşırtıcılık") kalıplara az bit, nadir kalıplara çok bit ayırarak dosyayı küçültür — doğrudan Shannon entropisi.</div>
-      <div class="ex-card"><span class="ex-ico">🎯</span><b>20 soru oyunu</b> — her evet/hayır sorusu olası cevap kümesini yarıya indirir; bu yüzden N olasılıktan birini bulmak ~\(\log_2 N\) soru (bit) gerektirir — entropi sezgisinin ta kendisi.</div>
-      <div class="ex-card"><span class="ex-ico">🌦️</span><b>Hava tahmini kalibrasyonu</b> — "%70 yağmur" dedikleri günlerin gerçekten %70'inde yağmur yağıyor mu? Meteorologların doğruluğu çapraz entropiyle ölçülür.</div>
-      <div class="ex-card"><span class="ex-ico">🤖</span><b>Sınıflandırma modelinin kaybı</b> — softmax çıktısı ("bu resim %92 kedi") ile gerçek etiket arasındaki fark, tam olarak <b>çapraz entropi</b> ile ölçülür — Softmax dersindeki formülün istatistiksel temeli burası.</div>
-      <div class="ex-card"><span class="ex-ico">💬</span><b>Dil modelleri (GPT, Claude)</b> — bir sonraki kelimeyi tahmin ederken model, olası tüm kelimeler üzerine bir olasılık dağılımı üretir; eğitim, bu dağılımla gerçek kelime arasındaki çapraz entropiyi küçültmektir.</div>
+      <div class="ex-card has-example"><span class="ex-ico">🗜️</span><b>Dosya sıkıştırma (zip)</b> — sık tekrar eden (düşük "şaşırtıcılık") kalıplara az bit, nadir kalıplara çok bit ayırarak dosyayı küçültür — doğrudan Shannon entropisi.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">4 sembollü bir kaynakta olasılıklar: %50, %25, %12.5, %12.5. Ortalama bilgi (entropi) kaç bit?</div><div class="work">H = −Σ pᵢ·log₂(pᵢ)
+  = 0.5×1 + 0.25×2 + 0.125×3 + 0.125×3
+  = 0.5 + 0.5 + 0.375 + 0.375 = 1.75 bit/sembol
+
+Sabit 2-bit kodlama yerine, akıllı kodlamayla ortalama
+1.75 bit yeter — bu Huffman kodlamasının temelidir.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🎯</span><b>20 soru oyunu</b> — her evet/hayır sorusu olası cevap kümesini yarıya indirir; bu yüzden N olasılıktan birini bulmak ~\(\log_2 N\) soru (bit) gerektirir — entropi sezgisinin ta kendisi.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir satranç tahtasının 64 karesinden biri tutuldu. En fazla kaç evet/hayır sorusuyla kesin bulunur?</div><div class="work">soru sayısı = log₂(64) = 6
+
+Her soru olası kareleri ikiye böler:
+64 → 32 → 16 → 8 → 4 → 2 → 1  (tam 6 adım)</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🌦️</span><b>Hava tahmini kalibrasyonu</b> — "%70 yağmur" dedikleri günlerin gerçekten %70'inde yağmur yağıyor mu? Meteorologların doğruluğu çapraz entropiyle ölçülür.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Meteorolog "%70 yağmur" dedi. (a) Gerçekten yağdıysa, (b) yağmadıysa kayıp (−ln p) kaçtır?</div><div class="work">(a) yağdı  (y=1): kayıp = −ln(0.7)      ≈ 0.357
+(b) yağmadı(y=0): kayıp = −ln(1−0.7) = −ln(0.3) ≈ 1.204
+
+Yanlış çıkan tahminin cezası çok daha büyük —
+kalibre bir meteorolog bunu göz önünde bulundurur.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🤖</span><b>Sınıflandırma modelinin kaybı</b> — softmax çıktısı ("bu resim %92 kedi") ile gerçek etiket arasındaki fark, tam olarak <b>çapraz entropi</b> ile ölçülür — Softmax dersindeki formülün istatistiksel temeli burası.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Gerçekten spam olan bir e-postaya model p(spam)=0.95 verdi. Çapraz entropi kaybı kaçtır?</div><div class="work">L = −ln(0.95) ≈ 0.051
+
+Çok düşük kayıp — model neredeyse eminmiş
+ve haklı çıkmış.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">💬</span><b>Dil modelleri (GPT, Claude)</b> — bir sonraki kelimeyi tahmin ederken model, olası tüm kelimeler üzerine bir olasılık dağılımı üretir; eğitim, bu dağılımla gerçek kelime arasındaki çapraz entropiyi küçültmektir.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Model bir sonraki kelimeye nadir bir kelime için p=0.02, sık kullanılan "the" için p=0.5 veriyor. Kayıplar nasıl karşılaştırılır?</div><div class="work">nadir kelime: L = −ln(0.02) ≈ 3.91
+sık kelime:   L = −ln(0.5)  ≈ 0.69
+
+Model öngörülebilir kelimelerde neredeyse hiç
+cezalanmaz, nadir/şaşırtıcı kelimelerde çok daha fazla.</div></div></div>
     </div>
   </div>
 
@@ -3880,12 +3956,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608112114"></script>
-<script src="js/lesson-turev.js?v=202608112114"></script>
-<script src="js/lesson-xor.js?v=202608112114"></script>
-<script src="js/lesson-nn.js?v=202608112114"></script>
+<script src="js/lesson-linreg.js?v=202608120952"></script>
+<script src="js/lesson-turev.js?v=202608120952"></script>
+<script src="js/lesson-xor.js?v=202608120952"></script>
+<script src="js/lesson-nn.js?v=202608120952"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202608112114"></script>
+<script src="js/app.js?v=202608120952"></script>
 </body>
 </html>
