@@ -85,17 +85,26 @@
 
     function render(){
       const W=cv.width, H=cv.height;
-      const ax = drawAxes(ctx, W, H, -2, 2, 0, 9, {xLabel:'x', yLabel:'f(x)=taban^x', xTicks:8, yTicks:6});
+      const ax = drawAxes(ctx, W, H, -2, 2, 0, 10, {xLabel:'x', yLabel:'f(x)=taban^x', xTicks:8, yTicks:5});
       const f = xx => Math.pow(base, xx);
-      drawCurve(ctx, ax.X, ax.Y, f, -2, 2, '#3a7afe', 2);
+      const df = xx => Math.pow(base, xx) * Math.log(base);
+      // arka planda: türev eğrisi f'(x) — aktivasyon dersindeki gibi kesikli, sönük çizgi
+      drawCurve(ctx, ax.X, ax.Y, df, -2, 2, '#9aa0a6', 1.6, [5,4]);
+      // önde: asıl fonksiyon f(x)
+      drawCurve(ctx, ax.X, ax.Y, f, -2, 2, '#3a7afe', 2.4);
       const x = parseFloat(xIn.value);
       const y0 = f(x);
-      const slope = y0 * Math.log(base); // f'(x) = ln(taban)·taban^x
+      const slope = df(x); // f'(x) = ln(taban)·taban^x
       const tanFn = xx => y0 + slope*(xx-x);
-      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-2,x-1), Math.min(2,x+1), '#f0a032', 2.2, [6,4]);
+      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-2,x-1), Math.min(2,x+1), '#ffd24a', 1.8, [3,3]);
       ctx.fillStyle='#fff';
       ctx.beginPath(); ctx.arc(ax.X(x), ax.Y(y0), 5, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.strokeStyle='#3a7afe'; ctx.lineWidth=2; ctx.stroke();
+      // efsane
+      ctx.font='11px Segoe UI, Arial'; ctx.textAlign='left';
+      ctx.fillStyle='#3a7afe'; ctx.fillText('f(x) = taban^x', ax.gx1-140, ax.gy0+12);
+      ctx.fillStyle='#9aa0a6'; ctx.fillText('f′(x) türev (arka plan)', ax.gx1-140, ax.gy0+28);
+      ctx.fillStyle='#ffd24a'; ctx.fillText('teğet, eğim = f′(x0)', ax.gx1-140, ax.gy0+44);
 
       const lnB = Math.log(base);
       const same = Math.abs(lnB - 1) < 1e-9;
