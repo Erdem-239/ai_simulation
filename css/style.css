@@ -162,7 +162,7 @@
   .ex-card .ex-detail{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line)}
   .ex-card.open .ex-detail{display:block}
   .ex-card .ex-detail-q{font-size:12.5px; color:#cfd3d8; font-style:italic; margin-bottom:6px}
-  .ex-card .ex-detail .work{margin:0; font-size:12px; padding:8px 10px}
+  .ex-card .ex-detail .work{margin:0; font-size:12px; padding:8px 10px; white-space:pre-wrap; line-height:1.9}
   .scroll-cue{display:flex; align-items:center; justify-content:center; gap:8px; text-align:center; font-size:13px; color:var(--muted); margin:20px 0 26px; padding:10px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line)}
   .scroll-cue .sc-arrow{display:inline-block; animation:scBounce 1.6s ease-in-out infinite}
   @keyframes scBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}

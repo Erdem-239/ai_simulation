@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202608121700">
+<link rel="stylesheet" href="css/style.css?v=202608121815">
 </head>
 <body>
 <div class="applayout">
@@ -2407,7 +2407,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
 
   <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px">
     <h3 style="color:#46c46a; margin-top:0">🔬 Kendin türet: kahveyi parçalara böl, e kendiliğinden çıksın</h3>
-    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bernoulli'nin faiz sorusunu, tam tersi bir olayla — <b>kahvenin soğumasıyla</b> — kendin tekrarlayabilirsin. Fiziksel kural şu: kahve ne kadar sıcaksa (odaya göre farkı ne kadar büyükse) o kadar hızlı soğur. Diyelim kahve, farkının <b>dakikada %10'unu</b> kaybediyor (k=0.1). 1 dakikayı n eşit parçaya bölüp, her parçada farkın <code>0.1/n</code>'ini kaybettirip üst üste n kez uygularsan, Bernoulli'nin faiz formülünün <b>aynısını</b> elde edersin — sadece işaret ters (kazanmak yerine kaybetmek):</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bernoulli'nin faiz sorusunu, tam tersi bir olayla — <b>kahvenin soğumasıyla</b> — kendin tekrarlayabilirsin. Bunun arkasındaki fiziksel kurala <b>Newton'un soğuma yasası</b> denir: bir cismin sıcaklığı, ortamla arasındaki fark ne kadar büyükse o kadar hızlı, fark küçüldükçe o kadar yavaş azalır — yani kahve ne kadar sıcaksa (odaya göre farkı ne kadar büyükse) o kadar hızlı soğur, ilk dakikalarda çok, sonraki dakikalarda giderek daha az. Diyelim kahve, farkının <b>dakikada %10'unu</b> kaybediyor (k=0.1). 1 dakikayı n eşit parçaya bölüp, her parçada farkın <code>0.1/n</code>'ini kaybettirip üst üste n kez uygularsan, Bernoulli'nin faiz formülünün <b>aynısını</b> elde edersin — sadece işaret ters (kazanmak yerine kaybetmek):</p>
     <p style="font-size:14px; color:#cfd3d8; line-height:1.7; text-align:center">\( D(1\text{ dk}) = D_0\left(1-\dfrac{0.1}{n}\right)^{n} \)</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">1 dakikayı kaç parçaya böldük (n) =</span>
@@ -2416,7 +2416,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     </div>
     <div style="max-width:720px"><canvas id="coolCanvas" width="700" height="300" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
     <div class="work" id="coolRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
-    <div class="callout" style="margin-top:10px; border-left-color:#46c46a">💡 <b>Ne oluyor:</b> kaydırıcıyı sağa götürüp dakikayı daha küçük parçalara böldükçe (n büyüdükçe), grafikteki nokta yeşil kesikli çizgiye — yani <b>e<sup>−0.1</sup> ≈ 0.9048</b>'e — yaklaşıp orada takılı kalıyor. n=1'de kaba bir tahmindin (0.900), n=60.000'de ise gerçek fiziksel sürece (kesintisiz, an be an soğuma) neredeyse birebir ulaşıyorsun. Bu duvar sayısı, işaretini değiştirip genelleştirdiğinde tam olarak Kahvenin Soğuması kartındaki <b>T(t)=Toda+(T₀−Toda)·e<sup>−kt</sup></b> formülündeki e — Bernoulli parayı büyütürken, sen ısıyı küçültürken aynı duvara çarpıyorsunuz.</div>
+    <div class="callout" style="margin-top:10px; border-left-color:#46c46a">💡 <b>Ne oluyor:</b> kaydırıcıyı sağa götürüp dakikayı daha küçük parçalara böldükçe (n büyüdükçe), grafikteki nokta yeşil kesikli çizgiye — yani <b>e<sup>−0.1</sup> ≈ 0.9048</b>'e — yaklaşıp orada takılı kalıyor. n=1'de kaba bir tahmindin (0.900), n=60.000'de ise gerçek fiziksel sürece (kesintisiz, an be an soğuma) neredeyse birebir ulaşıyorsun. Bu duvar sayısı, işaretini değiştirip genelleştirdiğinde Newton'un soğuma yasasının genel formülündeki e'nin ta kendisi: <b>T(t)=Toda+(T₀−Toda)·e<sup>−kt</sup></b> — Bernoulli parayı büyütürken, sen ısıyı küçültürken aynı duvara çarpıyorsunuz.</div>
   </div>
 
   <div class="lesson-examples">
@@ -2426,10 +2426,12 @@ kadın   = (   −0.6    ,    +0.7   )</div>
 Yarılanma her 5730 yılda bir: 1/4 = (1/2)²
 → tam 2 yarı ömür geçmiş
 t = 2 × 5730 = 11.460 yıl</div></div></div>
-      <div class="ex-card has-example"><span class="ex-ico">☕</span><b>Kahvenin soğuması</b> — Newton'un soğuma yasası: sıcak bir şey, ortam sıcaklığına <b>üstel</b> yaklaşır. Kahven ilk 5 dakikada çok, sonraki 5 dakikada daha az soğur. Aynı formül binanın ısı kaybında, motorun soğumasında da var.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Newton'un soğuma yasasına göre bir cismin sıcaklığı, ortamla arasındaki fark ne kadar büyükse o kadar hızlı, fark küçüldükçe o kadar yavaş değişir — yani sıcaklık farkı üstel olarak sıfıra yaklaşır. Bir kahve 90°C'de servis edildi, oda sıcaklığı 20°C ve bu kahvenin soğuma sabiti (k) 0.056 dakika⁻¹ olsun. 10 dakika sonra kahvenin sıcaklığı kaç derece olur?</div><div class="work">T(t) = Toda + (T₀−Toda)·e^(−kt)
-T(10) = 20 + 70·e^(−0.056×10)
-      = 20 + 70·e^(−0.56)
-      = 20 + 70×0.571 ≈ 60°C</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🏦</span><b>Sürekli bileşik faiz</b> — Bernoulli'nin 1683'te sorduğu soruya bankacılığın verdiği gerçek cevap: bazı finansal modeller faizi yılda birkaç kez değil, <b>sürekli</b> (an be an, kesintisiz) işletir. Formülü tam olarak \(A=P\cdot e^{rt}\)'dir — hikayenin başındaki "sonsuz sık eklersem ne olur" sorusunun matematiksel karşılığı.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bernoulli'nin sorduğu "faizi sonsuz sık eklersem ne olur" sorusunun cevabı bugün gerçek bir finans formülü: sürekli bileşik faizde anapara, \(A=P\cdot e^{rt}\) ile büyür — burada P başlangıç anaparası, r yıllık faiz oranı, t ise yıl sayısı. Diyelim 1.000 TL'yi yıllık %5 faizle, sürekli bileşiklenecek şekilde 10 yıl yatırdın. Sonunda elinde ne kadar para olur, ve bu yılda sadece 1 kez bileşiklenen klasik faizden ne kadar farklı çıkar?</div><div class="work">Sürekli bileşik: A = P·e^(rt) = 1000·e^(0.05×10) = 1000·e^0.5 = 1000×1.6487 ≈ 1.648,72 TL
+
+Yılda 1 kez bileşik: A = P·(1+r)^t = 1000·(1.05)^10 ≈ 1.628,89 TL
+
+Fark: sadece ~19,83 TL — Bernoulli'nin merak ettiği "sonsuz sıklık"
+sınırı, klasik bileşiğe göre küçük ama kesin bir fazlalık veriyor.</div></div></div>
       <div class="ex-card has-example"><span class="ex-ico">💊</span><b>İlacın vücuttan atılması</b> — "günde 2 kez alın" talimatının arkasında bu var. Her ilacın bir <b>yarılanma ömrü</b> vardır; kandaki miktar \(e^{-kt}\) ile düşer. Doz aralığı, seviye etkisiz bölgeye inmeden yeniden yükselecek şekilde hesaplanır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir ilaç kana karıştıktan sonra karaciğer ve böbrekler tarafından sabit bir oranla parçalanıp atılır; bu yüzden kandaki miktar da tıpkı radyoaktif bozunma gibi bir "yarılanma ömrü" ile azalır. Doktorların "günde 2 kez alın" demesinin sebebi, ilaç seviyesi etkisiz kalacak kadar düşmeden önce yeniden yükseltilmesini sağlamaktır. Bir hastaya 500mg'lik bir doz verildi ve bu ilacın yarılanma ömrü 6 saat. 18 saat sonra hastanın kanında kaç mg ilaç kalmıştır?</div><div class="work">18 saat / 6 saat = 3 yarı ömür geçti
 500mg → 250mg → 125mg → 62.5mg</div></div></div>
       <div class="ex-card has-example"><span class="ex-ico">🦠</span><b>Salgın yayılması</b> — bir hasta 2 kişiye bulaştırırsa, sayı <b>katlanarak</b> artar. 2020'de her gün duyduğun "üstel artış" tam olarak buydu: 1→2→4→8… Aşı ve tedbir, o üsteki sayıyı küçültme çabasıdır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bulaşıcı bir hastalıkta her hasta ortalama kaç kişiye bulaştırıyorsa (buna "temel üreme sayısı" ya da R₀ denir), vaka sayısı o kadar hızlı katlanarak artar — 2020'de sık duyduğumuz "üstel artış" tam olarak buydu. Bir salgın 1 hasta ile başlıyor ve her hasta ortalama 2 yeni kişiye bulaştırıyor. Bu bulaşma zinciri 10 "nesil" (yani 10 tur) sürerse toplam kaç vaka olur?</div><div class="work">vaka sayısı = 2^10 = 1024
@@ -3988,12 +3990,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608121700"></script>
-<script src="js/lesson-turev.js?v=202608121700"></script>
-<script src="js/lesson-xor.js?v=202608121700"></script>
-<script src="js/lesson-nn.js?v=202608121700"></script>
+<script src="js/lesson-linreg.js?v=202608121815"></script>
+<script src="js/lesson-turev.js?v=202608121815"></script>
+<script src="js/lesson-xor.js?v=202608121815"></script>
+<script src="js/lesson-nn.js?v=202608121815"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202608121700"></script>
+<script src="js/app.js?v=202608121815"></script>
 </body>
 </html>
