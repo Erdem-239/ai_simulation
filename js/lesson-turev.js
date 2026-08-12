@@ -88,8 +88,10 @@
       const ax = drawAxes(ctx, W, H, -2, 2, 0, 10, {xLabel:'x', yLabel:'f(x)=taban^x', xTicks:8, yTicks:5});
       const f = xx => Math.pow(base, xx);
       const df = xx => Math.pow(base, xx) * Math.log(base);
-      // arka planda: türev eğrisi f'(x) — aktivasyon dersindeki gibi kesikli, sönük çizgi
-      drawCurve(ctx, ax.X, ax.Y, df, -2, 2, '#9aa0a6', 1.6, [5,4]);
+      // arka planda: türev eğrisi f'(x) — aktivasyon dersindeki gibi kesikli çizgi.
+      // Mavi çizgiden KALIN çiziyoruz ki taban=e'de iki eğri tam üst üste binince bile
+      // gri "hale" mavinin kenarından taşıp görünsün (yoksa mavi onu tamamen örter).
+      drawCurve(ctx, ax.X, ax.Y, df, -2, 2, '#9aa0a6', 5, [7,6]);
       // önde: asıl fonksiyon f(x)
       drawCurve(ctx, ax.X, ax.Y, f, -2, 2, '#3a7afe', 2.4);
       const x = parseFloat(xIn.value);
