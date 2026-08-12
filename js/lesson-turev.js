@@ -58,6 +58,87 @@
   }
 
   /* ==========================================================================
+     SİM -1: Kendin türet — kahveyi n parçaya böl, (1-k/n)^n → e^-k'ya yaklaş
+     ========================================================================== */
+  (function coolLimit(){
+    const cv = document.getElementById('coolCanvas');
+    if(!cv) return;
+    const nIn = document.getElementById('coolN');
+    const nVal = document.getElementById('coolNv');
+    const read = document.getElementById('coolRead');
+    const ctx = cv.getContext('2d');
+    const k = 0.1;
+    const Ns = [1,2,4,12,60,600,6000,60000];
+    const nLabels = ['1 (hiç bölmedik)','2','4','12','60','600','6.000','60.000'];
+    const limit = Math.exp(-k);
+
+    const W=cv.width, H=cv.height;
+    const gx0=54, gx1=W-16, gy0=16, gy1=H-34;
+    const YMIN=0.895, YMAX=0.907;
+    const logMin=0, logMax=Math.log10(60000);
+    const X = logn => gx0 + (gx1-gx0)*(logn-logMin)/(logMax-logMin);
+    const Y = v => gy1 - (gy1-gy0)*(v-YMIN)/(YMAX-YMIN);
+
+    function drawGrid(){
+      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
+      ctx.font='11px Segoe UI, Arial';
+      ctx.textAlign='center';
+      [1,10,100,1000,10000,60000].forEach(n=>{
+        const px = X(Math.log10(n));
+        ctx.strokeStyle='#2a2e36'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(px,gy0); ctx.lineTo(px,gy1); ctx.stroke();
+        ctx.fillStyle='#8a9099'; ctx.fillText('n='+n.toLocaleString('tr-TR'), px, gy1+16);
+      });
+      ctx.textAlign='right';
+      for(let v=0.896; v<YMAX; v+=0.002){
+        const py=Y(v);
+        ctx.strokeStyle='#2a2e36'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(gx0,py); ctx.lineTo(gx1,py); ctx.stroke();
+        ctx.fillStyle='#8a9099'; ctx.fillText(v.toFixed(3), gx0-6, py+3);
+      }
+      ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(gx0,gy1); ctx.lineTo(gx1,gy1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(gx0,gy0); ctx.lineTo(gx0,gy1); ctx.stroke();
+    }
+
+    function render(){
+      drawGrid();
+      // yakınsama eğrisi: (1-k/n)^n, n arttıkça
+      ctx.strokeStyle='#3a7afe'; ctx.lineWidth=2.2; ctx.beginPath();
+      let first=true;
+      for(let logn=logMin; logn<=logMax+1e-9; logn+=0.02){
+        const n = Math.pow(10, logn);
+        const v = Math.pow(1-k/n, n);
+        const px=X(logn), py=Y(Math.max(YMIN,Math.min(YMAX,v)));
+        if(first){ ctx.moveTo(px,py); first=false; } else ctx.lineTo(px,py);
+      }
+      ctx.stroke();
+      // limit çizgisi
+      ctx.strokeStyle='#46c46a'; ctx.lineWidth=1.6; ctx.setLineDash([6,4]);
+      ctx.beginPath(); ctx.moveTo(gx0,Y(limit)); ctx.lineTo(gx1,Y(limit)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#46c46a'; ctx.font='11px Segoe UI, Arial'; ctx.textAlign='left';
+      ctx.fillText('e⁻⁰·¹ ≈ '+limit.toFixed(4), gx0+6, Y(limit)-6);
+
+      // güncel nokta
+      const idx = parseInt(nIn.value,10);
+      const n = Ns[idx];
+      const v = Math.pow(1-k/n, n);
+      const px = X(Math.log10(n)), py = Y(Math.max(YMIN,Math.min(YMAX,v)));
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
+
+      nVal.textContent = 'n = '+nLabels[idx];
+      const err = Math.abs(v-limit);
+      read.innerHTML =
+        '(1 − 0.1/'+n.toLocaleString('tr-TR')+')<sup>'+n.toLocaleString('tr-TR')+'</sup> = <b style="color:#3a7afe">'+v.toFixed(6)+'</b>'+
+        '<br>limit (n→∞): e<sup>−0.1</sup> = <b style="color:#46c46a">'+limit.toFixed(6)+'</b>'+
+        '<br><span style="color:var(--muted); font-size:12px">↳ fark: '+err.toFixed(6)+' — n büyüdükçe fark küçülüyor, sıfıra hiç ulaşmasa da pratikte kayboluyor.</span>';
+    }
+    nIn.addEventListener('input', render);
+    render();
+  })();
+
+  /* ==========================================================================
      SİM 0: e'yi özel yapan şey — b^x eğrisi ve teğet eğimi
      ========================================================================== */
   (function expSpecial(){
