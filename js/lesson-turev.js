@@ -58,6 +58,60 @@
   }
 
   /* ==========================================================================
+     SİM 0: e'yi özel yapan şey — b^x eğrisi ve teğet eğimi
+     ========================================================================== */
+  (function expSpecial(){
+    const cv = document.getElementById('expCanvas');
+    if(!cv) return;
+    const xIn = document.getElementById('expX');
+    const xVal = document.getElementById('expXv');
+    const read = document.getElementById('expRead');
+    const btns = document.querySelectorAll('.expBaseBtn');
+    const ctx = cv.getContext('2d');
+    let base = Math.E, baseLabel = 'e';
+
+    function setActive(activeBtn){
+      btns.forEach(b=>{ b.style.background='var(--panel)'; b.style.color='var(--text)'; b.style.border='1px solid var(--line)'; });
+      activeBtn.style.background='#3a7afe'; activeBtn.style.color='#fff'; activeBtn.style.border='none';
+    }
+    btns.forEach(b=>{
+      b.addEventListener('click', ()=>{
+        baseLabel = b.dataset.b;
+        base = baseLabel==='e' ? Math.E : parseFloat(baseLabel);
+        setActive(b);
+        render();
+      });
+    });
+
+    function render(){
+      const W=cv.width, H=cv.height;
+      const ax = drawAxes(ctx, W, H, -2, 2, 0, 9, {xLabel:'x', yLabel:'f(x)=taban^x', xTicks:8, yTicks:6});
+      const f = xx => Math.pow(base, xx);
+      drawCurve(ctx, ax.X, ax.Y, f, -2, 2, '#3a7afe', 2);
+      const x = parseFloat(xIn.value);
+      const y0 = f(x);
+      const slope = y0 * Math.log(base); // f'(x) = ln(taban)·taban^x
+      const tanFn = xx => y0 + slope*(xx-x);
+      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-2,x-1), Math.min(2,x+1), '#f0a032', 2.2, [6,4]);
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(ax.X(x), ax.Y(y0), 5, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
+
+      const lnB = Math.log(base);
+      const same = Math.abs(lnB - 1) < 1e-9;
+      read.innerHTML =
+        'f(x) = '+baseLabel+'^x  →  f('+F(x,2)+') = <b style="color:#3a7afe">'+F(y0,3)+'</b>'+
+        '<br>f′(x) = ln('+baseLabel+')·'+baseLabel+'^x  →  f′('+F(x,2)+') = '+F(lnB,3)+'·'+F(y0,3)+' = <b style="color:#f0a032">'+F(slope,3)+'</b> (teğetin eğimi)'+
+        (same
+          ? '<br><span style="color:#46c46a; font-weight:600">✅ f′(x) = f(x)! Sadece taban=e iken eğim, eğrinin kendi yüksekliğine birebir eşit çıkıyor.</span>'
+          : '<br><span style="color:var(--muted); font-size:12px">↳ ln('+baseLabel+') ≈ '+F(lnB,3)+' ≠ 1 olduğu için eğim, eğrinin yüksekliğinden '+(slope<y0?'küçük':'büyük')+' kalıyor — sadece taban=e bunu birebir eşitliyor.</span>')
+      ;
+    }
+    xIn.addEventListener('input', ()=>{ xVal.textContent=F(parseFloat(xIn.value),2); render(); });
+    render();
+  })();
+
+  /* ==========================================================================
      SİM 1: Köprüden top atma
      ========================================================================== */
   (function bridge(){
