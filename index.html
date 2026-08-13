@@ -11,7 +11,7 @@
   };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<link rel="stylesheet" href="css/style.css?v=202608121815">
+<link rel="stylesheet" href="css/style.css?v=202608121930">
 </head>
 <body>
 <div class="applayout">
@@ -2573,28 +2573,47 @@ enerjinin ~10 katına çıkması gerekir (+10dB kuralı).</div></div></div>
 
   <div class="pts">
     <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
-      Üslü sayı <b>"b'yi n kere çarparsan ne çıkar?"</b> diye sorar: \(2^{3}=8\). Logaritma bu soruyu <b>tersine çevirir</b>:
-      <b>"b'yi kaça kuvvet versem x çıkar?"</b> — \(\log_{2}(8)=3\). Yani <b>üs alma ile logaritma birbirinin tersidir</b>, tıpkı toplama/çıkarma ya da çarpma/bölme gibi.
+      <b>Logaritma aslında hangi sorunun cevabıdır?</b> Üstel fonksiyon "büyüme/küçülme nereye varır?" sorusunu cevaplar: elindeki bakteri sayısı her saat 2'ye katlanıyorsa, <b>3 saat sonra</b> ne olur? Cevap basit: \(2^{3}=2\times2\times2=8\). Ama doğa soruyu <b>tersten</b> sorarsa? <i>"Elimde 8 bakteri var, 2'şer katlanarak büyüdüklerini biliyorum — acaba ne kadar zaman geçti?"</i> İşte logaritma tam olarak bunun makinesi: <b>"Bir sonuca ulaşmak için bu sayıyı kendisiyle kaç kere çarpmalıyım?"</b> diye sorar. \(\log_{2}(8)=3\) — okunuşu: "2'yi kaç kere kendisiyle çarparsam 8 eder?" Yani <b>üs alma ile logaritma birbirinin tersidir</b>, tıpkı toplama/çıkarma ya da çarpma/bölme gibi.
     </div>
-    <div class="tip"><b>ln(x) = log<sub>e</sub>(x)</b> — tabanı <b>e</b> olan logaritmaya <b>doğal logaritma (natural log)</b> denir, kısaca <b>ln</b> yazılır. Modül 1'deki <b>e</b> ile buradaki <b>ln</b>, birbirinin <b>tam tersi</b>: \(e^{\ln x}=x\), \(\ln(e^{x})=x\). Sigmoid'in içinde \(e^{-z}\) gördüğün gibi, kayıp fonksiyonlarının (cross-entropy, log-loss) içinde de hep <b>ln</b> göreceksin — birbirlerinin doğal ortağı.</div>
+    <div class="tip"><b>ln(x) = log<sub>e</sub>(x)</b> — tabanı <b>e</b> olan logaritmaya <b>doğal logaritma (natural log)</b> denir, kısaca <b>ln</b> yazılır. Doğaya şunu sorar: <i>"Pürüzsüz e hızında büyüyerek/küçülerek x değerine ulaşman için ne kadar zaman geçmesi gerekiyor?"</i> Modül 1'deki kahve örneğine dönelim: \(T(t)=20+70\cdot e^{-0.056t}\) formülüyle kahvenin sıcaklığını <b>zamandan</b> buluyorduk. Ama soruyu tersine çevirip <i>"kahve kaçıncı dakikada 50 dereceye iner?"</i> dersen, artık üssün tepesindeki <b>t</b>'yi aşağı indirmen gerekir — işte o zaman <b>ln</b> devreye girer:
+      <div class="work" style="white-space:pre-wrap; line-height:1.9; margin-top:8px">50 = 20 + 70·e^(−0.056t)
+30 = 70·e^(−0.056t)                    (T_oda'yı diğer tarafa attık)
+30/70 = e^(−0.056t)                    (70'e böldük)
+ln(30/70) = −0.056t                    (her iki tarafın ln'ini aldık — üs indi!)
+t = ln(70/30) / 0.056 ≈ 15.13 dakika</div>
+      Yani e, "zamandan sıcaklığa" giden yoldu; ln ise "sıcaklıktan zamana" geri dönen yol — birbirinin tam tersi: \(e^{\ln x}=x\), \(\ln(e^{x})=x\). Sigmoid'in içinde \(e^{-z}\) gördüğün gibi, kayıp fonksiyonlarının (cross-entropy, log-loss) içinde de hep <b>ln</b> göreceksin — birbirlerinin doğal ortağı.</div>
 
-    <h4 style="color:var(--accent); margin:14px 0 6px">Temel özdeşlikler (elle hesap için gereken tek şey bunlar)</h4>
-    <ul style="font-size:14px; color:#cfd3d8; line-height:1.9">
-      <li><b>Çarpım → toplam:</b> \(\log(a\cdot b)=\log a+\log b\)</li>
-      <li><b>Bölüm → fark:</b> \(\log(a/b)=\log a-\log b\)</li>
-      <li><b>Üs → çarpan:</b> \(\log(a^{n})=n\log a\)</li>
-      <li><b>Kendi tabanı:</b> \(\log_{b}(b)=1\) &nbsp;·&nbsp; <b>1'in logaritması:</b> \(\log_{b}(1)=0\)</li>
-      <li><b>Tersi (resiprok):</b> \(\log(1/x)=-\log x\)</li>
-    </ul>
+    <h4 style="color:var(--accent); margin:16px 0 6px">🦸 3 süper güç — ezberlemeden, sadece mantığıyla</h4>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Yapay zekâ (sinir ağları, cross-entropy gibi kayıp fonksiyonları) çalışırken logaritmanın üç eşsiz gücünden yararlanır. Ezberlemene gerek yok — mantığını bir kere görünce hep aklında kalıyor.</p>
+
+    <div class="pts" style="border-left:3px solid #3a7afe; margin:10px 0">
+      <h4 style="color:#3a7afe; margin-top:0">1️⃣ Çarpmayı toplamaya çevirme (hayat kurtaran kural)</h4>
+      <p style="font-size:14px; color:#cfd3d8; line-height:1.7">\(\log(a\cdot b)=\log a+\log b\). Neden böyle? 10 tabanında düşün: \(100\times1000=100.000\). Şimdi her sayıya ulaşmak için "10'u kaç kere çarpman gerektiğine" bak: \(\log(100)=2\), \(\log(1000)=3\), \(\log(100.000)=5\). Sayıları çarpmak yerine, onlara ulaşmak için gereken adım sayılarını (2 ve 3) <b>toplamak</b> aynı sonucu verdi (\(2+3=5\))! Çarpma gibi ağır bir işlem, logaritma dünyasında basit bir toplamaya dönüşüyor.</p>
+      <div class="callout" style="margin-top:8px">💡 <b>Yapay zekâda neden lazım?</b> Bir dil modeli bir cümlenin olasılığını hesaplarken, kelime kelime olasılıkları <b>çarpar</b>: %10 × %5 × %20 × %8 × … Bilgisayar bunu yüzlerce kelime için üst üste çarptığında sayı öyle küçülür ki, çift-hassasiyetli sayıların taşıyabildiği en küçük değerin (~10⁻³⁰⁸) bile altına iner ve bilgisayar bunu sıfır sanır — buna <b>underflow</b> denir, ve kayıp sinyali tamamen kaybolur. Bunu Python'da göstermek çok kolay: 200 kelimelik, ortalama %1 olasılıklı bir cümlenin olasılıklarını çarparsan sonuç tam olarak <b>0.0</b> çıkar. Çözüm: olasılıkları çarpmak yerine <b>loglarını toplarsın</b> — aynı matematiksel sonucu, sıfıra yuvarlanmadan, güvenli bir aralıkta verir. Cross-entropy kaybının içinde neden hep <b>toplam</b> gördüğünün sebebi tam olarak bu.</div>
+    </div>
+
+    <div class="pts" style="border-left:3px solid #46c46a; margin:10px 0">
+      <h4 style="color:#46c46a; margin-top:0">2️⃣ Bölmeyi çıkarmaya çevirme</h4>
+      <p style="font-size:14px; color:#cfd3d8; line-height:1.7">\(\log(a/b)=\log a-\log b\) — çarpma toplamaya döndüyse, bölme de simetrik olarak çıkarmaya dönüşür. Örnek: \(\log_{10}(1000/10)=\log_{10}(100)=2\). Ayrı ayrı hesaplarsak: \(\log_{10}(1000)-\log_{10}(10)=3-1=2\). Kusursuz çalışıyor.</p>
+    </div>
+
+    <div class="pts" style="border-left:3px solid #f0a032; margin:10px 0">
+      <h4 style="color:#f0a032; margin-top:0">3️⃣ Üssü başa düşürme (gradyan alçalmanın paraşütü)</h4>
+      <p style="font-size:14px; color:#cfd3d8; line-height:1.7">\(\log(a^{n})=n\cdot\log a\). Neden böyle? Üslü sayı, bir şeyi tekrar tekrar çarpmak demektir: \(a^{3}=a\times a\times a\). 1. süper güce göre çarpmaları toplamaya çevirebiliyorduk: \(\log(a\times a\times a)=\log a+\log a+\log a\) — bu da elma toplamak gibi, tam olarak \(3\times\log a\) eder.</p>
+      <div class="callout" style="margin-top:8px">💡 <b>Yapay zekâda neden lazım?</b> Türev (gradyan) alırken tepede üslü duran bir parametreden kurtulman gerekir. Logaritma sayesinde, ulaşılamaz gibi duran o üssü aşağı indirip normal bir çarpım hâline getirirsin — sonra da türevini rahatça alırsın. Softmax'in cross-entropy ile eşleştiğinde formüllerin bu kadar sadeleşmesinin sebebi tam olarak bu paraşüt hareketi.</div>
+    </div>
+
+    <h4 style="color:var(--accent); margin:16px 0 6px">Bonus: "hiçbir yere gitmeme" noktası</h4>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">\(\log_{b}(1)=0\) — hangi tabanda olursan ol, cevap 1 ise logaritma sıfırdır. Neden? Bir sayıyı <b>hiç kendisiyle çarpmazsan</b> (başlangıç noktasında bırakırsan), elde ettiğin nötr sayı 1'dir — 0 adım = hiçbir yere gitmedin demek. Diğer küçük özdeşlikler: <b>kendi tabanı</b> \(\log_{b}(b)=1\), <b>tersi (resiprok)</b> \(\log(1/x)=-\log x\).</p>
 
     <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">log₂(8) = 3        çünkü 2³=8
 ln(1) = 0           çünkü e⁰=1
 ln(e) = 1           çünkü e¹=e
-log(2·5) = log(2)+log(5)      (çarpım → toplam)
+log(2·5) = log(2)+log(5)      (çarpım → toplam, süper güç 1)
 ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 
-    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
+    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="4" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/4 çözüldü</span></h4>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\log_{3}(9)=?\)</div>
       <div class="acc-body">
@@ -2626,6 +2645,17 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
         </div>
         <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">\(20=2\times10\) — çarpım kuralını uygula.</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(\log(20)=\log(2)+\log(10)\).</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 4: Bir dil modeli neden kelime olasılıklarını çarpmak yerine loglarını toplar?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Çok sayıda küçük olasılığı üst üste çarparsan sayı ne kadar küçülür? Bilgisayarın taşıyabileceği en küçük sayıyı hatırla.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> Çünkü onlarca/yüzlerce küçük olasılığın çarpımı, bilgisayarın taşıyabildiği en küçük sayının (~10⁻³⁰⁸) altına inip <b>underflow</b> ile sıfıra yuvarlanır — kayıp sinyali tamamen kaybolur. Loglarını toplamak, aynı sonucu (1. süper güç sayesinde) sıfıra yuvarlanma riski olmayan, sayısal olarak <b>kararlı</b> bir aralıkta verir.</div>
       </div>
     </div>
   </div>
@@ -3990,12 +4020,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608121815"></script>
-<script src="js/lesson-turev.js?v=202608121815"></script>
-<script src="js/lesson-xor.js?v=202608121815"></script>
-<script src="js/lesson-nn.js?v=202608121815"></script>
+<script src="js/lesson-linreg.js?v=202608121930"></script>
+<script src="js/lesson-turev.js?v=202608121930"></script>
+<script src="js/lesson-xor.js?v=202608121930"></script>
+<script src="js/lesson-nn.js?v=202608121930"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="js/app.js?v=202608121815"></script>
+<script src="js/app.js?v=202608121930"></script>
 </body>
 </html>
