@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-mml-chtml.js?v=202608132135"></script>
-<link rel="stylesheet" href="css/style.css?v=202608132135">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608220818"></script>
+<link rel="stylesheet" href="css/style.css?v=202608220818">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-13 22:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-22 08:18 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -3437,13 +3437,174 @@ diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor)
   </div>
   </div>
 
-  <!-- NEREDEN NEREYE -->
-  <div class="callout" style="margin-top:22px">
-    🧭 <b>Nereden nereye:</b> Elle sigmoid/tanh/ReLU türevi çıkarmak için gereken tek şey: <b>üstel (e) + logaritma/ln + türev + zincir kuralı + bölüm kuralı + biraz cebir</b> (Modül 1–8). Softmax'e geçince bir üst kat: <b>kısmi türev / Jacobian</b> (Modül 9). Model performansını ölçmek/eğitimin altındaki mantığı anlamak içinse: <b>ortalama/varyans, normal dağılım, çapraz entropi</b> (Modül 10–12).<br><br>
-    Bu kuralların sayfadaki kullanım yerleri: &nbsp;📈 <b>Lineer Regresyon</b> → zincir kuralı + limit tanımıyla \(\partial E/\partial\Theta\) ispatları (ve MSE = hata varyansı). &nbsp;🔁 <b>RNN</b> → aynı zincir kuralı zaman boyunca (BPTT) + tanh türevi \((1-h^{2})\). &nbsp;📊 <b>Aktivasyon</b> → e'nin hikâyesi, \(\sigma'=\sigma(1-\sigma)\) ispatı ve canlı zincir (dişli) simülasyonu. &nbsp;🧠 <b>Neural Network</b> → ağırlık başlatma normal dağılımdan, kayıp fonksiyonu çapraz entropiden gelir.
+  <!-- MODÜL 13-14: TRİGONOMETRİ -->
+  <div class="acc acc-category">
+  <div class="acc-head"><span class="ac">▸</span> 🌊 Trigonometri</div>
+  <div class="acc-body">
+
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" demiştik, Civilopedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
+
+  <div class="acc acc-module">
+  <div class="acc-head"><span class="ac">▸</span> 13) Sin, Cos ve Birim Çember</div>
+  <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — Bir kelimenin 1500 yıllık kazası</div>
+    <p><b>Hipparchus</b> (MÖ 190–120), Rodos'ta çalışan bir Yunan gökbilimci, iki farklı şehirden ölçtüğü bir güneş tutulmasının açılarını kullanarak Ay'a olan uzaklığı hesapladı. Bunu yapabilmek için her üçgeni bir çemberin içine oturtup, açılarla kenar uzunlukları arasındaki ilişkiyi tablolaştırdı — <b>7.5°'den 180°'ye kadar</b> her açı için. Tarihe <b>"trigonometrinin babası"</b> olarak geçti; matematiği saf teoriden, gökyüzünü <b>tahmin eden</b> pratik bir bilime çevirdi.</p>
+    <p>Ama asıl eğlenceli kısım kelimenin kendisinde. MS 499'da Hintli matematikçi <b>Aryabhata</b>, bugün "sin" dediğimiz şeye Sanskritçe <b>"jya-ardha"</b> (yarım-kiriş) dedi, kısaca <b>jya</b>. Arap çevirmenler bunu sese göre <b>"jiba"</b> diye yazdılar — ama Arapçada ünlüler yazılmadığı için kelime sadece <b>"jb"</b> harfleriyle kalıyordu, ve "jiba" Arapçada <b>anlamsız</b> bir kelimeydi. Sonraki kâtipler "jb" harflerini görünce, aynı harflerle yazılan <b>gerçek</b> bir Arapça kelimeyi hatırladılar: <b>"jaib"</b> — "koy, körfez, cebin kıvrımı" anlamına geliyordu. 1150 civarında Gerardo da Cremona bu Arapça metni Latinceye çevirirken "jaib"i olduğu gibi <b>anlamıyla</b> çevirdi: Latince <b>"sinus"</b> (kıvrım, körfez). İşte bugünkü <b>"sine" (sinüs)</b> kelimesi tam olarak buradan geliyor.</p>
+    <div class="tip">Yani "sinüs" kelimesi matematikle <b>hiç ilgisi olmayan</b>, bir tercüme zincirinde 3 dil boyunca (Sanskritçe→Arapça→Latince) yapılan bir <b>yanlış okuma</b> yüzünden "körfez/kıvrım" anlamına geliyor. 1500 yıl önce bir kâtibin ünsüz harfleri yanlış tamamlaması, bugün her mühendislik kitabında karşına çıkan kelimeyi doğurdu.</div>
   </div>
 
-  <p class="footer">Matematik temeli • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev · istatistik</p>
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 SİN/COS GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card has-example"><span class="ex-ico">🔌</span><b>AC elektrik</b> — prizden çıkan gerilim sabit değil, tam bir sinüs dalgasıdır: Türkiye'de saniyede 50 kez (50 Hz) yönü değiştirir. Lambanın "titremeden" yanması bu döngünün gözle görülemeyecek kadar hızlı olmasından.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Türkiye'de prizden çıkan gerilim 230V (RMS — etkin değer) ve 50 Hz'dir. Ama bu 230V sabit değildir; her an değişen ani değeri \(v(t)=V_{tepe}\cdot\sin(2\pi f t)\) formülüyle verilir. Tepe gerilimi (V_tepe) ne kadardır, ve t=5ms anındaki ani gerilim kaçtır?</div><div class="work">V_tepe = V_rms·√2 = 230×1.414 ≈ 325V
+
+v(5ms) = 325·sin(2π×50×0.005) = 325·sin(90°) = 325×1 = 325V
+
+5ms tam olarak periyodun 1/4'ü (T=1/50=20ms) —
+yani dalga tam tepe noktasında yakalandı.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🎵</span><b>Müzik notası</b> — her nota, belli bir frekansta titreşen bir ses dalgasıdır (kabaca sinüs şeklinde). "La" notası (konser perdesi) tam olarak <b>440 Hz</b>'de titreşir — saniyede 440 tam salınım.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir kemanın çaldığı "La" (A4) notası 440 Hz'dir — yani ses dalgası saniyede 440 kez tam bir döngü tamamlar. Bu tek bir döngünün (periyodun) süresi kaç milisaniyedir?</div><div class="work">T = 1/f = 1/440 saniye
+  = 0.00227 saniye
+  ≈ 2.27 milisaniye
+
+Yani kulağın, saniyede 440 kez tekrar eden
+2.27ms'lik bir dalga kalıbını "La sesi" olarak algılıyor.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🎢</span><b>Sarkaç ve yay hareketi</b> — bir sarkacın ya da yaydaki ağırlığın konumu, zamanla tam bir sinüs/kosinüs eğrisi çizer (buna "basit harmonik hareket" denir) — fizik derslerindeki ilk "gerçek" sinüs örneği genelde budur.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir sarkacın periyodu (bir gidiş-geliş süresi) \(T=2\pi\sqrt{L/g}\) formülüyle bulunur — burada L ip uzunluğu (metre), g yerçekimi ivmesi (9.8 m/s²). İp uzunluğu 1 metre olan bir sarkacın periyodu kaç saniyedir?</div><div class="work">T = 2π·√(L/g) = 2π·√(1/9.8) = 2π×0.319 ≈ 2.01 saniye
+
+Yani 1 metrelik bir sarkaç, aşağı yukarı 2 saniyede
+bir tam salınım (gidiş-geliş) tamamlar.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🌡️</span><b>Mevsimsel sıcaklık döngüsü</b> — bir şehrin günlük ortalama sıcaklığı yıl boyunca kabaca bir sinüs eğrisi izler: yazın tepe yapar, kışın dibe iner, 365 günde bir tekrarlanır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Diyelim bir şehrin ortalama sıcaklığı 15°C, yıl boyunca ±10°C'lik bir genlikle salınıyor ve en sıcak gün yaklaşık 200. gün (yaz ortası). Bu döngü \(T(g)=15+10\cdot\cos\!\big(\tfrac{2\pi}{365}(g-200)\big)\) ile modellenirse, formülün "365" ve "10" sayıları sırasıyla neyi temsil eder?</div><div class="work">365 → periyot: döngünün 365 günde bir tam tekrar etmesi
+                (dünyanın güneş etrafındaki 1 turu)
+
+10  → genlik (amplitude): ortalamadan ne kadar sapabildiği
+                (en sıcak 25°C, en soğuk 5°C — ortalamanın ±10'u)
+
+g=200 anında cos(0)=1 → sıcaklık = 15+10 = 25°C (tepe nokta) ✓</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🧭</span><b>Positional Encoding (Transformer)</b> — GPT/Claude gibi modeller, bir kelimenin cümledeki <b>sırasını</b> farklı frekanslarda sin/cos dalgalarıyla kodlar. Bir sonraki modülde bu formülü birlikte çözeceğiz.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bunu bir sonraki modülde ("Pozisyonel Kodlamaya Köprü") ayrıntılı işleyeceğiz — burada sadece bağlantıyı not düşelim: Transformer'lar kelime sırasını hatırlamak için, saat kadranındaki saniye/dakika/saat kolları gibi, farklı hızlarda dönen sin/cos dalgaları kullanır. Her pozisyon, bu dalgaların o andaki değerlerinden oluşan benzersiz bir "parmak izi" alır.</div><div class="work">Sıradaki modülde göreceğin gerçek formül:
+PE(pos, 2i)   = sin(pos / 10000^(2i/d))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d))
+
+Şimdilik bilmen gereken tek şey: bu formülün
+kalbinde bu modüldeki sin/cos'un ta kendisi var.</div></div></div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">⚡ En çarpıcı örnek: 45° neden RMS'in sırrı</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">AC elektrik kartında gördüğün "230V RMS" ile "325V tepe" arasındaki <b>√2 farkı</b> tesadüf değil — doğrudan 45°'den geliyor. Birim çemberde tam <b>45°</b>'de \(\sin(45°)=\cos(45°)=\tfrac{\sqrt2}{2}\approx0.707\) — yani <b>tepe değerinin tam %70.7'si</b>. RMS (etkin değer), bir sinüs dalgasının "ortalama etkisini" ölçer ve <b>tam olarak</b> tepe değerin \(1/\sqrt2\approx0.707\) katı çıkar. Yani 230V RMS × √2 ≈ 325V tepe hesabının içinde, aslında 45°'lik bir açı gizli.</p>
+  </div>
+
+  <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px">
+    <h3 style="color:#46c46a; margin-top:0">🔬 Birim çember + dalga — açıyı kendin döndür</h3>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Solda <b>birim çember</b> (yarıçapı 1 olan çember) var. Üstündeki nokta, açı θ kadar döndüğünde <b>(cos θ, sin θ)</b> koordinatlarına gelir — yani <b>cos θ noktanın yatay konumu, sin θ ise dikey yüksekliği</b>. Kaydırıcıyla açıyı büyüt: noktanın yüksekliği (mavi kesikli çizgi), sağdaki dalga grafiğinde <b>aynı anda aynı yükseklikte</b> bir nokta çiziyor — çemberi "açıp" bir dalgaya dönüştürüyorsun. İşte "sinüs dalgası" dediğimiz şey tam olarak bu: <b>dönen bir noktanın yüksekliğinin zamana karşı çizimi.</b></p>
+    <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
+      <span style="font-size:13px">açı θ =</span>
+      <input type="range" id="trigAngle" min="0" max="720" step="1" value="45" style="width:220px">
+      <b id="trigAngleV" style="color:var(--accent); min-width:110px">45°</b>
+      <div style="width:1px; height:24px; background:var(--line)"></div>
+      <button class="addbtn" id="trigPlay" style="background:#46c46a; color:#0b2a12; font-size:12px; padding:4px 12px; font-weight:700">▶ Oynat</button>
+      <button class="addbtn" id="trigSinBtn" data-color="#3a7afe" style="background:var(--panel); color:#3a7afe; border:2px solid #3a7afe; font-size:12px; padding:4px 12px; font-weight:700">sin θ</button>
+      <button class="addbtn" id="trigCosBtn" data-color="#f0a032" style="background:var(--panel); color:#f0a032; border:2px solid #f0a032; font-size:12px; padding:4px 12px; font-weight:700">cos θ</button>
+    </div>
+    <div style="max-width:780px"><canvas id="trigCanvas" width="760" height="320" style="width:100%; height:auto; background:#12141a; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div class="work" id="trigRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#46c46a">💡 <b>Ne görüyorsun:</b> "▶ Oynat"a bas — nokta çember üstünde tur atarken, sağdaki dalga da an be an çiziliyor. Nokta 360°'yi tamamlayınca <b>başa dönüyor</b> ama dalga <b>tekrarlamaya</b> devam ediyor — buna <b>periyodiklik</b> denir (periyot = 360° = 2π radyan). sin ve cos eğrileri birbirinin <b>aynısı, sadece 90° kaydırılmış</b> hali — çemberde cos'un x-ekseninde, sin'in y-ekseninde okunmasının sebebi bu 90°'lik fark.</div>
+  </div>
+
+  <div class="pts">
+    <div style="font-size:14px; color:#cfd3d8; line-height:1.7">
+      Birim çemberde (yarıçap=1) açı θ kadar döndürülen noktanın koordinatları <b>(cos θ, sin θ)</b>'dır. Nokta çember üstünde olduğu için, Pisagor teoreminden (x²+y²=r²=1) doğrudan çıkan özdeşlik: <b>\(\sin^2\theta+\cos^2\theta=1\)</b> — her açı için, istisnasız. <b>Periyot:</b> 360° (ya da 2π radyan) sonra desen aynen tekrarlanır: \(\sin(\theta+360°)=\sin\theta\).
+    </div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">Sık kullanılan açı değerleri</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">açı(°)   0°    30°     45°       60°     90°    180°   270°
+sin θ    0    0.500   0.707    0.866    1      0     -1
+cos θ    1    0.866   0.707    0.500    0     -1      0</div>
+
+    <h4 style="color:var(--accent); margin:14px 0 6px">📝 Çözümlü Örnek</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">230V/50Hz'lik AC hatta t=10ms anındaki ani gerilim:
+V_tepe = 230×√2 ≈ 325V
+v(10ms) = 325·sin(2π×50×0.010) = 325·sin(180°) = 325×0 = 0V
+  → 10ms tam olarak yarım periyot (T/2) — dalga sıfırı kesiyor</div>
+
+    <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\sin(90°)+\cos(180°)=?\)</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Tablodan bak: sin(90°) ve cos(180°) kaçtı?</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> sin(90°)=1, cos(180°)=−1 → 1+(−1)=<b>0</b>.</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 2: 230V/50Hz'lik AC hatta t=15ms anındaki ani gerilim kaçtır? (V_tepe≈325V)</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">v(t)=V_tepe·sin(2π·50·t). 15ms'de açı kaç derece olur? (T=20ms, 15ms=3T/4)</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> 2π×50×0.015 = 270° → sin(270°)=−1 → v=325×(−1)=<b>−325V</b> (dalganın alt tepe noktası).</div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> Soru 3: \(\sin^2(37°)+\cos^2(37°)=?\)</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px">
+          <button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button>
+          <button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button>
+        </div>
+        <div class="hint-body" style="display:none; background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">Bu Pisagor özdeşliği — açı ne olursa olsun aynı sonucu verir, hesap yapmana bile gerek yok.</div>
+        <div class="sol-body" style="display:none"><b>Cevap: 1.</b> \(\sin^2\theta+\cos^2\theta=1\) her θ için geçerlidir — 37° özel bir sayı değil, tuzak buydu.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <div class="acc acc-module">
+  <div class="acc-head"><span class="ac">▸</span> 14) Pozisyonel Kodlamaya Köprü — Transformer sırayı nasıl hatırlıyor?</div>
+  <div class="acc-body">
+
+  <div class="pts" style="border-left:3px solid #3a7afe">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Self-Attention modülünde gördüğün gibi, bir Transformer tüm kelimelere <b>aynı anda</b> (paralel) bakar — RNN gibi soldan sağa sırayla okumaz. Ama bu bir sorun doğurur: <b>"kedi köpeği kovaladı"</b> ile <b>"köpek kediyi kovaladı"</b>, kelimelerin sırası dışında birebir aynı kelime çorbasına dönüşür. Model sırayı bilmeden bu ikisini ayıramaz.</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">2017'nin çözümü zarif: her kelimenin vektörüne, konumuna özgü bir "imza" ekle — <b>Positional Encoding</b>. Bu imzayı, bir <b>saat kadranı</b> gibi düşün: saniye kolu hızlı döner, dakika kolu daha yavaş, saat kolu daha da yavaş. Üçünün konumuna birlikte bakarsan, günün hangi anında olduğunu <b>tek anlamlı</b> şekilde bilirsin. Positional Encoding da tam bunu yapar — <b>farklı hızlarda dönen sin/cos dalgaları</b> kullanır:</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7; text-align:center">\( PE(pos, 2i) = \sin\!\left(\dfrac{pos}{10000^{2i/d}}\right) \qquad PE(pos, 2i{+}1) = \cos\!\left(\dfrac{pos}{10000^{2i/d}}\right) \)</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Burada <b>pos</b> kelimenin cümledeki konumu (0, 1, 2, …), <b>i</b> ise vektörün hangi boyutuna baktığını (küçük i = hızlı "saniye kolu" dalgası, büyük i = yavaş "saat kolu" dalgası) belirler. Aynı sin/cos'u, tek bir kaydırıcı yerine, <b>onlarca farklı hızda</b> aynı anda kullanıyor.</p>
+    <h4 style="color:#3a7afe; margin:14px 0 6px">📝 Çözümlü Örnek — 4 boyutlu mini bir Positional Encoding</h4>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">d=4 boyutlu (gerçekte 512-1024 olur, burada küçültüldü) bir vektör düşün.
+i=0 (hızlı dalga) ve i=2 (100 kat yavaş dalga) için pos=0,1,2,3:
+
+pos   sin(hızlı)  cos(hızlı)   sin(yavaş)  cos(yavaş)
+ 0      0.000       1.000        0.000       1.000
+ 1      0.841       0.540        0.010       1.000
+ 2      0.909      -0.416        0.020       0.9998
+ 3      0.141      -0.990        0.030       0.9996
+
+Fark et: hızlı dalga her pozisyonda ÇOK değişiyor (0→0.84→0.91→0.14),
+yavaş dalga ise neredeyse hiç değişmiyor (0→0.01→0.02→0.03) —
+tıpkı saniye kolu ile saat kolu gibi. Her pos, bu 4 sayının
+BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
+    <div class="callout" style="margin-top:10px; border-left-color:#3a7afe">💡 <b>Neden sin/cos, başka bir şey değil?</b> Çünkü sin/cos'un periyodik olması, modelin "3 kelime ötesi" gibi <b>göreli</b> mesafeleri de matematiksel olarak çıkarabilmesini sağlıyor (iki açının farkı sabitse, dalga değerleri arasındaki ilişki de sabit kalır). Ayrıca değerleri hep [−1,1] aralığında kalır — kelime vektörünün büyüklüğünü bozmaz. Bunun ayrıntısını ve gerçek boyutuyla (512+ boyut) uygulamasını <b>Civilopedia → 📍 Positional Encoding</b> sayfasında ve Multi-Head Attention modülünde bulabilirsin.</div>
+  </div>
+
+  </div>
+  </div>
+
+  </div>
+  </div>
+
+  <!-- NEREDEN NEREYE -->
+  <div class="callout" style="margin-top:22px">
+    🧭 <b>Nereden nereye:</b> Elle sigmoid/tanh/ReLU türevi çıkarmak için gereken tek şey: <b>üstel (e) + logaritma/ln + türev + zincir kuralı + bölüm kuralı + biraz cebir</b> (Modül 1–8). Softmax'e geçince bir üst kat: <b>kısmi türev / Jacobian</b> (Modül 9). Model performansını ölçmek/eğitimin altındaki mantığı anlamak içinse: <b>ortalama/varyans, normal dağılım, çapraz entropi</b> (Modül 10–12). Transformer'ın sırayı hatırlaması içinse: <b>sin/cos, birim çember, periyodiklik</b> (Modül 13–14).<br><br>
+    Bu kuralların sayfadaki kullanım yerleri: &nbsp;📈 <b>Lineer Regresyon</b> → zincir kuralı + limit tanımıyla \(\partial E/\partial\Theta\) ispatları (ve MSE = hata varyansı). &nbsp;🔁 <b>RNN</b> → aynı zincir kuralı zaman boyunca (BPTT) + tanh türevi \((1-h^{2})\). &nbsp;📊 <b>Aktivasyon</b> → e'nin hikâyesi, \(\sigma'=\sigma(1-\sigma)\) ispatı ve canlı zincir (dişli) simülasyonu. &nbsp;🧠 <b>Neural Network</b> → ağırlık başlatma normal dağılımdan, kayıp fonksiyonu çapraz entropiden gelir. &nbsp;🧭 <b>Multi-Head Attention</b> → Positional Encoding'in sin/cos formülü buradan geliyor.
+  </div>
+
+  <p class="footer">Matematik temeli • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev · istatistik · trigonometri</p>
   </div><!-- /model-matematik -->
 
 
@@ -4020,12 +4181,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608132135"></script>
-<script src="js/lesson-turev.js?v=202608132135"></script>
-<script src="js/lesson-xor.js?v=202608132135"></script>
-<script src="js/lesson-nn.js?v=202608132135"></script>
+<script src="js/lesson-linreg.js?v=202608220818"></script>
+<script src="js/lesson-turev.js?v=202608220818"></script>
+<script src="js/lesson-xor.js?v=202608220818"></script>
+<script src="js/lesson-nn.js?v=202608220818"></script>
+<script src="js/lesson-trig.js?v=202608220818"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608132135"></script>
-<script src="js/app.js?v=202608132135"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608220818"></script>
+<script src="js/app.js?v=202608220818"></script>
 </body>
 </html>
