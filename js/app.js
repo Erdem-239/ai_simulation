@@ -1661,10 +1661,10 @@
 
   const NODES=[
     {id:'mat',  nm:'📚 Matematik Temeli', tier:0, v:50, pre:[], tab:'matematik',
-      d:'e sayısı, türev, zincir/bölüm kuralı, kısmi türeve giriş. Her şeyin dişli yatağı — bütün çarklar buradan güç alır.',
+      d:'e sayısı, logaritma, türev, zincir/bölüm kuralı, kısmi türev, istatistik ve trigonometri. Her şeyin dişli yatağı — bütün çarklar buradan güç alır.',
       sci:'Kalkülüs: Newton & Leibniz (1670\'ler, birbirinden bağımsız). e sayısı: Jacob Bernoulli bileşik faiz limitinde buldu (1683); adını, notasyonunu ve teorisini Euler verdi (1727).',
       real:[['💰','Bileşik faiz & finans matematiği'],['🦠','Salgın/nüfus modelleri (üstel yayılım, R₀)'],['☢️','Radyoaktif tarihleme (karbon-14)'],['🚀','Fizik & mühendisliğin tamamı (değişim = türev)']],
-      sub:['e sayısı ve üstel kurallar','Türev: tanım + kuvvet kuralı','Zincir kuralı','Bölüm kuralı → σ(1−σ)','Kısmi türev & gradyan']},
+      sub:['e sayısı ve üstel kurallar','Logaritma & doğal log (ln)','Türev: tanım + kuvvet kuralı','Zincir kuralı','Bölüm kuralı → σ(1−σ)','Kısmi türev & gradyan','İstatistik: ortalama/varyans/normal dağılım/çapraz entropi','Trigonometri: sin/cos, birim çember → Positional Encoding']},
     {id:'vek',  nm:'🧮 Vektör & Nokta Çarpım', tier:2, v:50, pre:['mat'], tab:'vektor',
       d:'Yön + büyüklük = vektör. Nokta çarpım = iki vektörün ne kadar aynı yöne baktığı — attention skorlarının tek satırlık sırrı.',
       sci:'Hamilton kuaterniyonları köprüde yürürken buldu ve formülü taşa kazıdı (1843). Grassmann vektör uzayını yazdı, kimse okumadı. Bugünkü sade "nokta çarpım" dili Gibbs\'in Yale ders notlarından (1880\'ler).',
