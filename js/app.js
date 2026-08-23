@@ -1875,6 +1875,8 @@
     var _av=new Set(NODES.filter(n=>stateOf(n)==='avail').map(n=>n.id));
     if(window.__ttPrevAv){ var _f=[..._av].filter(x=>!window.__ttPrevAv.has(x)); if(_f.length && window.__ttOnUnlock) window.__ttOnUnlock(_f); }
     window.__ttPrevAv=_av;
+    // sidebar ilerleme omurgası da bu durumdan besleniyor (işaret/içe aktar → anında yansısın)
+    if(window.__railSync) window.__railSync();
   }
 
   function recompute(n){
@@ -1940,6 +1942,70 @@
   window.__ttAPI={ NODES:NODES, stateOf:stateOf };
   window.__ttGet=function(){ return { done:[...done], subs:[...subs] }; };
   window.__ttImport=function(d,s){ done.clear(); (d||[]).forEach(x=>done.add(x)); subs.clear(); (s||[]).forEach(x=>subs.add(x)); save(); render(); };
+})();
+
+/* ---- sol panel: ilerleme omurgası — sidebar'ı teknoloji ağacının canlı yansımasına çevirir ----
+   Her ders butonu, ağaçtaki karşılık gelen düğümün durumunu (araştırıldı/sıradaki/kilitli) ve
+   alt başlık ilerlemesini gösterir. Tek doğruluk kaynağı ağacın kendi localStorage durumu;
+   burada hiçbir ilerleme SAKLANMIYOR, sadece okunuyor (__ttAPI + __ttGet).
+   render() içinden __railSync çağrıldığı için işaretleme/içe aktarma anında yansır. */
+(function(){
+  const sb=document.querySelector('.sidebar'); if(!sb) return;
+  const btns=[...sb.querySelectorAll('.navbtn')];
+  if(!btns.length) return;
+
+  // üstteki ilerleme kapsülü (sürüm etiketinin altına)
+  const cap=document.createElement('div');
+  cap.className='sb-prog';
+  cap.innerHTML='<div class="sb-prog-top"><span>⚡ İLERLEME</span><b id="sbProgN">0/0</b></div>'
+    +'<div class="sb-prog-bar"><i id="sbProgBar"></i></div>'
+    +'<div class="sb-prog-sub" id="sbProgSub">—</div>';
+  const anchor=sb.querySelector('.sb-ver') || sb.querySelector('.sb-title');
+  if(anchor) anchor.insertAdjacentElement('afterend', cap);
+  const capN=cap.querySelector('#sbProgN'), capBar=cap.querySelector('#sbProgBar'), capSub=cap.querySelector('#sbProgSub');
+
+  // hattın ilk/son düğümde yarım kalması için
+  btns[0].classList.add('rail-first');
+  btns[btns.length-1].classList.add('rail-last');
+
+  function sync(){
+    const api=window.__ttAPI, get=window.__ttGet;
+    if(!api || !get) return;
+    const st=get();
+    const subs=new Set(st.subs||[]);
+    let doneN=0, kS=0, totS=0, nextNm='';
+
+    btns.forEach(b=>{
+      b.classList.remove('rail-done','rail-avail','rail-locked','rail-meta');
+      const m=b.dataset.model;
+      const node=m ? api.NODES.find(n=>n.tab===m) : null;
+      if(!node){ b.classList.add('rail-meta'); b.style.setProperty('--prog','0%'); return; }
+      const s=api.stateOf(node);
+      const k=node.sub.reduce((a,_,i)=>a+(subs.has(node.id+':'+i)?1:0),0);
+      const N=node.sub.length;
+      b.classList.add('rail-'+s);
+      b.style.setProperty('--prog', (N?Math.round(k/N*100):0)+'%');
+      b.title=(s==='done'?'✓ Araştırıldı':s==='avail'?'⚡ Sıradaki — araştırılabilir':'🔒 Kilitli — önce gerekenleri aç')
+        +' · alt başlık '+k+'/'+N;
+    });
+
+    api.NODES.forEach(n=>{
+      totS+=n.sub.length;
+      kS+=n.sub.reduce((a,_,i)=>a+(subs.has(n.id+':'+i)?1:0),0);
+      const s=api.stateOf(n);
+      if(s==='done') doneN++;
+      else if(s==='avail' && !nextNm) nextNm=n.nm;
+    });
+
+    const T=api.NODES.length;
+    capN.textContent=doneN+'/'+T;
+    capBar.style.width=(T?Math.round(doneN/T*100):0)+'%';
+    capSub.innerHTML=(nextNm?'⚡ Sıradaki: <b style="color:var(--accent)">'+nextNm+'</b>':'🏆 Tüm teknolojiler araştırıldı')
+      +'<br>alt başlık '+kS+'/'+totS;
+  }
+
+  window.__railSync=sync;
+  sync();
 })();
 
 /* ---- sol panel: sürüklenebilir genişlik ---- */
