@@ -1704,7 +1704,7 @@
       sci:'Kalkülüs: Newton & Leibniz (1670\'ler, birbirinden bağımsız). e sayısı: Jacob Bernoulli bileşik faiz limitinde buldu (1683); adını, notasyonunu ve teorisini Euler verdi (1727).',
       real:[['💰','Bileşik faiz & finans matematiği'],['🦠','Salgın/nüfus modelleri (üstel yayılım, R₀)'],['☢️','Radyoaktif tarihleme (karbon-14)'],['🚀','Fizik & mühendisliğin tamamı (değişim = türev)']],
       sub:['e sayısı ve üstel kurallar','Logaritma & doğal log (ln)','Türev: tanım + kuvvet kuralı','Zincir kuralı','Bölüm kuralı → σ(1−σ)','Kısmi türev & gradyan','İstatistik: ortalama/varyans/normal dağılım/çapraz entropi','Trigonometri: sin/cos, birim çember → Positional Encoding']},
-    {id:'vek',  nm:'🧮 Vektör & Nokta Çarpım', tier:2, v:50, pre:['mat'], tab:'vektor',
+    {id:'vek',  nm:'🧮 Vektör & Nokta Çarpım', tier:3, v:50, pre:['mat'], tab:'vektor',
       d:'Yön + büyüklük = vektör. Nokta çarpım = iki vektörün ne kadar aynı yöne baktığı — attention skorlarının tek satırlık sırrı.',
       sci:'Hamilton kuaterniyonları köprüde yürürken buldu ve formülü taşa kazıdı (1843). Grassmann vektör uzayını yazdı, kimse okumadı. Bugünkü sade "nokta çarpım" dili Gibbs\'in Yale ders notlarından (1880\'ler).',
       real:[['🧭','GPS & navigasyon (konum=vektör)'],['🎮','Oyun grafikleri: aydınlanma = nokta çarpım'],['🔍','Benzerlik araması: öneri, yüz tanıma'],['🎯','Attention skorları: QKᵀ']],
@@ -1719,62 +1719,67 @@
       sci:'Sigmoid (lojistik eğri): Verhulst, nüfus büyümesi için (1838). tanh: hiperbolik fonksiyonlar, Lambert (1768). ReLU\'nun derin ağlardaki zaferi: Glorot & Bengio (2011).',
       real:[['🧠','Yapay nöronun "ateşleme" modeli'],['⚕️','Lojistik regresyon: tıpta risk tahmini'],['🛡️','Olasılık çıktısı: spam/dolandırıcılık tespiti']],
       sub:['Euler (e) hikâyesi → sigmoid','Sigmoid & türevi σ(1−σ)','tanh & türevi 1−tanh²','ReLU / Leaky + ölü nöron','Zincir kuralı canlı (dişli)','Kendini test (4 soru)']},
-    {id:'rnn',  nm:'🔁 RNN + BPTT', tier:2, v:26, pre:['lin','akt'], tab:'rnn',
+    {id:'nn',   nm:'🧠 Neural Network', tier:2, v:14, pre:['lin','akt'], tab:'neural',
+      d:'Tek nörondan çok katmanlı ağa: ağırlık matrisi W, ileri yayılım ve geri yayılımın genel hali — "ağırlıklar kendi kendine nasıl öğrenir?" sorusunun cevabı. RNN\'in üzerine kurulduğu temel katman.',
+      sci:'Perceptron: Rosenblatt (1958) tek katmanla başladı, XOR duvarına çarpıp donduruldu (Minsky & Papert, 1969). Çok katmanlı ağları gerçekten eğitilebilir yapan geri yayılım: Rumelhart, Hinton & Williams (1986).',
+      real:[['🖼️','Görüntü sınıflandırma (CNN\'lerin atası)'],['🏦','Kredi/risk skorlama modelleri'],['🎮','Oyun AI karar ağları']],
+      sub:['1 nörondan ağa: katman + W matrisi','İleri yayılım simülasyonu (4 nokta canlı)','Geri yayılım: adım adım (4 adım)','Canlı eğitim: rastgele ağırlıklar XOR\'u kendi kendine öğreniyor','Kendini test']},
+    {id:'rnn',  nm:'🔁 RNN + BPTT', tier:3, v:26, pre:['nn'], tab:'rnn',
       d:'Dizi + hafıza (gizli durum). Zincir kuralı zamana yayılır; gradyan geçmişe doğru akar.',
       sci:'Backprop: Rumelhart, Hinton & Williams (1986). Basit RNN: Elman (1990). "Ağa hafıza takma" fikrinin ilk çalışan hali.',
       real:[['🎙️','İlk konuşma tanıma sistemleri'],['✍️','El yazısı tanıma (posta/çek okuma)'],['🎵','Dizi üretimi: müzik, metin (erken dönem)']],
       sub:['Gizli durum hₜ (hafıza)','İleri yayılım + kayıp','BPTT domino (tek hücre)','Ağırlık paylaşımı → Σₜ','Kendini test (5 soru)']},
-    {id:'emb',  nm:'🔤 Kelime Temsili (Embedding)', tier:3, v:88, pre:['vek'], tab:'embedding',
+    {id:'emb',  nm:'🔤 Kelime Temsili (Embedding)', tier:4, v:88, pre:['vek'], tab:'embedding',
       d:'Kelime → vektör. Word2vec/GloVe: anlamın sayılara gömülmesi. Attention bu vektörlerin üzerinde çalışır.',
       sci:'Word2vec: Mikolov ve ekibi, Google (2013). "kral − erkek + kadın ≈ kraliçe" ile dünyayı şaşırttı: anlam, vektör aritmetiğine dönüştü.',
       real:[['🔍','Arama motorlarında anlamsal eşleme'],['🎬','Öneri sistemleri (film/ürün benzerliği)'],['🌐','Çok dilli anlam haritaları']],
       sub:['One-hot vs yoğun vektör','Word2vec fikri','Benzerlik (cosine)']},
-    {id:'van',  nm:'📉 Vanishing / Exploding', tier:3, v:26, pre:['rnn'], tab:'rnn',
+    {id:'van',  nm:'📉 Vanishing / Exploding', tier:4, v:26, pre:['rnn'], tab:'rnn',
       d:'Whh·(1−h²) çarpanı zaman boyunca üst üste binince gradyan ya söner ya patlar. RNN çağının duvarı.',
       sci:'Teşhis: Sepp Hochreiter\'ın yüksek lisans tezi (1991, Almanca!) ve Bengio (1994). Derin öğrenmenin 20 yıl gecikmesinin baş şüphelisi.',
       real:[['🧱','Derin ağ duvarının teşhisi'],['✂️','Gradient clipping tekniği'],['🛣️','LSTM ve ResNet\'e giden yolun açılması']],
       sub:['Whh·(1−h²) çarpanı','0.5²⁰ vs 1.5²⁰ sezgisi','Gradient clipping']},
-    {id:'lstm', nm:'🚪 LSTM / GRU', tier:3, v:62, pre:['van'], tab:'lstm',
+    {id:'lstm', nm:'🚪 LSTM / GRU', tier:4, v:62, pre:['van'], tab:'lstm',
       d:'Kapılar + cell-state "otoyolu": gradyanın bozulmadan aktığı yol. Vanishing duvarının ilk büyük çözümü.',
       sci:'Hochreiter & Schmidhuber (1997). Vanishing\'i teşhis eden adam, çözümünü de yazdı: gradyanın bozulmadan aktığı cell-state otoyolu + kapılar.',
       real:[['🌍','Google Translate (2016, GNMT)'],['🗣️','Siri/Alexa dönemi konuşma tanıma'],['📱','Klavye tahmini & otomatik tamamlama']],
       sub:['Cell state otoyolu','Forget / input / output kapıları','GRU farkı','Neden gradyan korunur','Kendini test (5 soru)']},
-    {id:'s2s',  nm:'🌉 Seq2Seq + Klasik Attention', tier:4, v:44, pre:['lstm','emb'],
+    {id:'s2s',  nm:'🌉 Seq2Seq + Klasik Attention', tier:5, v:44, pre:['lstm','emb'],
       d:'Encoder–decoder çeviri + Bahdanau attention: "çevirirken kaynağın neresine bakmalıyım?" — attention fikrinin doğduğu yer.',
       sci:'Seq2Seq: Sutskever, Vinyals & Le (2014). Klasik attention: Bahdanau, Cho & Bengio (2014) — "nereye bakmalıyım?" sorusuna öğrenilen cevap.',
       real:[['🔤','Nöral makine çevirisi devrimi'],['📝','Otomatik özetleme'],['💬','İlk nöral sohbet botları']],
       sub:['Encoder–decoder','Bilgi darboğazı sorunu','Bahdanau attention']},
-    {id:'soft', nm:'🌡️ Softmax & Temperature', tier:4, v:74, pre:['akt'], tab:'softmax',
+    {id:'soft', nm:'🌡️ Softmax & Temperature', tier:5, v:74, pre:['akt'], tab:'softmax',
       d:'Skorları olasılığa çeviren formül — ve LLM\'lerin "yaratıcılık" düğmesi. Attention ağırlıklarının mutfağı.',
       sci:'Kök: Boltzmann dağılımı e^(−E/kT) (1868) — T gerçekten sıcaklık! "softmax" adını Bridle koydu (1989). Fizikten yapay zekâya 120 yıllık köprü.',
       real:[['🎲','LLM örneklemesi: her kelime bir zar atışı'],['🌡️','temperature API parametresi'],['🖼️','"%97 kedi" güven skorları'],['🎯','Attention dikkat yüzdeleri']],
       sub:['Neden exp? (skor→olasılık)','Softmax formülü','Temperature: keskin↔yaratıcı','√d ölçekleme ipucu','Kendini test (4 soru)']},
-    {id:'att',  nm:'🎯 Self-Attention (Q/K/V)', tier:5, v:50, pre:['s2s','vek','soft'], tab:'attention',
+    {id:'att',  nm:'🎯 Self-Attention (Q/K/V)', tier:6, v:50, pre:['s2s','vek','soft'], tab:'attention',
       d:'softmax(QKᵀ/√d)·V — her kelime her kelimeye bakar, recurrence tamamen atılır. Makalenin kalbi.',
       sci:'Vaswani ve 7 arkadaşı, Google Brain/Research (2017). "Recurrence\'ı tamamen atalım, yalnız attention kalsın" cesareti — makalenin adı buradan.',
       real:[['⚡','Paralel eğitim: GPU\'ların tam gücü'],['🔗','Uzun menzilli bağlam yakalama'],['🧬','AlphaFold\'a giden temsil gücü']],
       sub:['Q, K, V nedir','Skor: QKᵀ/√d','Softmax ağırlıkları','Ağırlıklı toplam (çıktı)']},
-    {id:'mha',  nm:'🧩 Multi-Head Attention', tier:6, v:26, pre:['att'], tab:'multihead',
+    {id:'mha',  nm:'🧩 Multi-Head Attention', tier:7, v:26, pre:['att'], tab:'multihead',
       d:'Aynı anda farklı ilişki türlerini yakalayan paralel attention kafaları.',
       sci:'Aynı makale (2017): tek attention yerine 8 paralel "kafa" — her biri farklı ilişki türünü öğrenir (sözdizimi, anlam, eşleşme...).',
       real:[['🧩','Zengin dil temsili (BERT/GPT içi)'],['🔬','Yorumlanabilirlik: kafa analizi']],
       sub:['Kafalara bölme','Farklı ilişki uzayları','Birleştirme (concat + W)']},
-    {id:'pos',  nm:'📍 Positional Encoding', tier:6, v:74, pre:['att'],
+    {id:'pos',  nm:'📍 Positional Encoding', tier:7, v:74, pre:['att'],
       d:'Recurrence yoksa sıra bilgisi nereden? Sinüs dalgalarıyla konumun vektöre işlenmesi.',
       sci:'Aynı makale (2017): sıra bilgisi sinüs/kosinüs dalgalarıyla vektöre işlendi — recurrence olmadan "kim önce kim sonra" çözüldü.',
       real:[['📐','Sırayı koruyarak tam paralellik'],['🎼','Dalga-tabanlı konum kodlama']],
       sub:['Neden konum bilgisi gerekli','Sinüs/kosinüs kodlama']},
-    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:7, v:50, pre:['mha','pos'],
+    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha','pos'],
       d:'Residual + LayerNorm + FFN; encoder/decoder mimarisi. Bütün parçaların tek makinede birleşmesi.',
       sci:'Residual: He ve ekibi (2015, ResNet). LayerNorm: Ba, Kiros & Hinton (2016). Transformer bloğu bu parçaları tek makinede birleştirdi (2017).',
       real:[['🏗️','Yüzlerce katman derinlik mümkün'],['📦','Kopyala-yapıştır ölçeklenen mimari']],
       sub:['Residual bağlantı','LayerNorm','FFN katmanı','Encoder/decoder yığını']},
-    {id:'paper',nm:'📜 Attention Is All You Need', tier:8, v:50, pre:['blk'], crown:true,
+    {id:'paper',nm:'📜 Attention Is All You Need', tier:9, v:50, pre:['blk'], crown:true,
       d:'2017, Vaswani vd. Bütün çarklar dönünce bu makale ana dilin gibi okunur. BÜYÜK HEDEF.',
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['🏆','BİLİM ZAFERİ: makale ana dilin gibi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Makaleyi baştan sona oku','Şekil 1 mimarisini kendi cümlelerinle anlat','Sonuç tablolarını yorumla']},
-    {id:'llm',  nm:'🤖 Modern LLM\'ler (GPT)', tier:9, v:50, pre:['paper'],
+    {id:'llm',  nm:'🤖 Modern LLM\'ler (GPT)', tier:10, v:50, pre:['paper'],
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
       real:[['🤖','ChatGPT, Claude, Gemini'],['👨‍💻','Copilot: kod yazan YZ'],['🔬','Bilimsel keşif asistanları']],
@@ -1784,9 +1789,9 @@
   const ERAS=[
     {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI'},
     {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ'},
-    {t0:4,t1:5,nm:'🌉 DİZİ MODELLEME ÇAĞI'},
-    {t0:6,t1:7,nm:'🎯 TRANSFORMER ÇAĞI'},
-    {t0:8,t1:9,nm:'🏆 BİLİM ZAFERİ'}
+    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI'},
+    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI'},
+    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ'}
   ];
 
   const KD='attn_tt_done_v2', KS='attn_tt_sub_v1';
@@ -1802,10 +1807,10 @@
     return 'locked';
   }
 
-  const W=1910, H=560;
-  const X=n=>125+n.tier*185;
+  const W=2320, H=680;
+  const X=n=>125+n.tier*205;
   const Y=n=>100+(H-190)*n.v/100;
-  const NW=n=>n.crown?208:184, NH=72;
+  const NW=n=>n.crown?208:184, NH=78;
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
 

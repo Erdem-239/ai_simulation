@@ -297,8 +297,8 @@
   #techSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.5}
   #techSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
   #techSvg .tn.sel rect.tn-card{stroke-width:4.5; filter:drop-shadow(0 0 8px rgba(184,134,11,.7))}
-  #techSvg .te-off{stroke:#9c8354; stroke-width:1.8; fill:none}
-  #techSvg .te-on{stroke:#3f7d3f; stroke-width:2.6; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.9}
+  #techSvg .te-off{stroke:#9c8354; stroke-width:1.8; fill:none; stroke-linejoin:round}
+  #techSvg .te-on{stroke:#3f7d3f; stroke-width:2.6; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.9; stroke-linejoin:round}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
   /* ---- sol panel yeniden boyutlandırma ---- */
@@ -491,7 +491,7 @@
   .eq.eq-hl-b{background:rgba(240,160,50,0.10); box-shadow:inset 3px 0 0 #f0a032; border-radius:4px; padding-left:8px; margin-left:-8px}
   .callout.eq-hl-b{box-shadow:inset 3px 0 0 #f0a032, 0 0 0 1px rgba(240,160,50,0.3)}
   /* ---- Civ6 tech tree v4: parşömen + çağlar ---- */
-  #techSvg{min-width:1980px; background:
+  #techSvg{min-width:2410px; background:
     radial-gradient(ellipse at 25% 15%, rgba(255,248,222,.55), transparent 55%),
     radial-gradient(ellipse at 80% 85%, rgba(120,85,35,.25), transparent 60%),
     linear-gradient(180deg,#dcc79a 0%,#cbb283 45%,#b89968 100%)}
@@ -500,7 +500,7 @@
   #techSvg .era-ribbon{fill:#5a3d14}
   #techSvg .era-lbl{fill:#f5e7c0; font-size:13px; letter-spacing:3px; font-weight:800}
   #techSvg .tchips{font-size:12px; pointer-events:none}
-  @media(max-width:720px){ #techSvg{min-width:1350px} }
+  @media(max-width:720px){ #techSvg{min-width:1660px} }
   /* ---- Civilopedia ---- */
   .pedia-art p{font-size:14px; line-height:1.75; color:#cfd3d8; margin:6px 0 14px}
   .pedia-art ul{margin:6px 0 14px; padding-left:20px}
