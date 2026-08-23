@@ -1805,18 +1805,28 @@
   const W=1910, H=560;
   const X=n=>125+n.tier*185;
   const Y=n=>100+(H-190)*n.v/100;
-  const NW=n=>n.crown?200:176, NH=66;
+  const NW=n=>n.crown?208:184, NH=72;
+  const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
 
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
+  const DEFS=
+    '<defs>'
+    +'<radialGradient id="tnGradDone" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#a8d896"/><stop offset="100%" stop-color="#4a8a3f"/></radialGradient>'
+    +'<radialGradient id="tnGradAvail" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a8"/><stop offset="100%" stop-color="#c9962f"/></radialGradient>'
+    +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
+    +'</defs>';
+
   function render(){
-    let s='';
-    // çağ bantları
+    let s=DEFS;
+    // çağ bantları + ayraç çizgileri + kurdele etiket
     ERAS.forEach((e,i)=>{
       const x0=X({tier:e.t0})-100, x1=X({tier:e.t1})+100;
       s+='<rect class="era-band'+(i%2?' alt':'')+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
-      s+='<text class="era-lbl" x="'+((x0+x1)/2)+'" y="38" text-anchor="middle">'+e.nm+'</text>';
+      const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
+      s+='<rect class="era-ribbon" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
+      s+='<text class="era-lbl" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
     });
     // kenarlar (Civ tarzı dik hatlar)
     NODES.forEach(n=>{
@@ -1827,22 +1837,28 @@
         s+='<path class="'+(done.has(p)?'te-on':'te-off')+'" d="M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2+'"/>';
       });
     });
-    // düğüm kartları
+    // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
     NODES.forEach(n=>{
       const st=stateOf(n);
       const k=subCount(n), N=n.sub.length;
       const w=NW(n), x=X(n)-w/2, y=Y(n)-NH/2;
       let sub;
-      if(st==='done') sub='✓ tamamlandı ('+N+'/'+N+')';
-      else if(st==='avail') sub='⚡ hazır · '+k+'/'+N+(n.tab?' · sitede var':'');
-      else sub='🔒 kilitli'+(k?' · '+k+'/'+N:'')+(n.tab?'':' · yakında');
+      if(st==='done') sub='✓ Tamamlandı';
+      else if(st==='avail') sub='Araştırılabilir · '+k+'/'+N;
+      else sub='Kilitli'+(k?' · '+k+'/'+N:'');
       const chips=n.real.map(r=>r[0]).join(' ');
-      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#f0a032">★ BİLİM ZAFERİ ★</text>';
+      const sp=n.nm.indexOf(' ');
+      const icon=sp>0?n.nm.slice(0,sp):n.nm, label=sp>0?n.nm.slice(sp+1):n.nm;
+      const icx=x+ICR+9, icy=Y(n), tx=icx+ICR+11;
+      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ BİLİM ZAFERİ ★</text>';
       s+='<g class="tn tn-'+st+(sel===n.id?' sel':'')+'" data-id="'+n.id+'">'
-        +'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+NH+'" rx="10"/>'
-        +'<text x="'+X(n)+'" y="'+(Y(n)-14)+'" text-anchor="middle" font-size="'+(n.crown?12.5:11.5)+'" font-weight="600">'+esc(n.nm)+'</text>'
-        +'<text class="tsub" x="'+X(n)+'" y="'+(Y(n)+2)+'" text-anchor="middle">'+esc(sub)+'</text>'
-        +'<text class="tchips" x="'+X(n)+'" y="'+(Y(n)+22)+'" text-anchor="middle">'+chips+'</text>'
+        +'<rect class="tn-card" x="'+x+'" y="'+y+'" width="'+w+'" height="'+NH+'" rx="12"/>'
+        +'<circle class="tn-icon-bg" cx="'+icx+'" cy="'+icy+'" r="'+ICR+'"/>'
+        +'<text class="tn-emoji" x="'+icx+'" y="'+(icy+6.5)+'" text-anchor="middle" font-size="19">'+icon+'</text>'
+        +'<line class="tn-div" x1="'+(tx-6)+'" y1="'+(y+9)+'" x2="'+(tx-6)+'" y2="'+(y+NH-9)+'"/>'
+        +'<text x="'+tx+'" y="'+(Y(n)-11)+'" font-size="'+(n.crown?12:11)+'" font-weight="700">'+esc(label)+'</text>'
+        +'<text class="tsub" x="'+tx+'" y="'+(Y(n)+7)+'">'+esc(sub)+'</text>'
+        +'<text class="tchips" x="'+tx+'" y="'+(Y(n)+25)+'">'+chips+'</text>'
         +'</g>';
     });
     svg.setAttribute('viewBox','0 0 '+W+' '+H);
