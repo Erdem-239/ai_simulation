@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608231944"></script>
-<link rel="stylesheet" href="css/style.css?v=202608231944">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608232218"></script>
+<link rel="stylesheet" href="css/style.css?v=202608232218">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 19:44 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 22:18 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -2317,8 +2317,8 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <!-- ===================== MULTI-HEAD MODELİ ===================== -->
   <div class="model" id="model-multihead">
 
-  <h1>🧩 Multi-Head Attention — Aynı Anda Birçok Bakış</h1>
-  <p class="sub">Tek bir attention "ortalama bir bakış" öğrenir — her şeye biraz, hiçbir şeye tam. Çözüm zarif: temsili parçalara böl, her parçada <b>bağımsız bir dikkat kafası</b> çalıştır, sonra birleştir. Sekiz göz, bir çift gözden iyidir.</p>
+  <h1>🧩 Multi-Head Attention — Aynı Anda Birçok Bakış (+ Positional Encoding)</h1>
+  <p class="sub">Tek bir attention "ortalama bir bakış" öğrenir — her şeye biraz, hiçbir şeye tam. Çözüm zarif: temsili parçalara böl, her parçada <b>bağımsız bir dikkat kafası</b> çalıştır, sonra birleştir. Sekiz göz, bir çift gözden iyidir. Sayfanın sonunda, Self-Attention'ın kaybettiği sıra bilgisini geri kazandıran <b>Positional Encoding</b>'i de göreceksin.</p>
 
   <div class="callout">🔗 <b>Kaldığımız yer:</b> 🎯 Self-Attention'da tek bir ısı haritası gördün. Multi-head, o haritanın <b>h tane paralel kopyası</b>. Her kafa, embedding'i farklı bir "mercek"ten (öğrenilen W matrisi) geçirir → farklı ilişkileri yakalar. Sonra hepsi birleşir.</p></div>
 
@@ -2355,7 +2355,16 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div class="callout">🎯 Sezgi: bir olayı <b>farklı açılardan çeken kameralar</b> düşün (kim, nerede, neden). Her kafa bir kamera; W<sub>O</sub> ise bütün çekimleri tek bir kurguda birleştiren yönetmen. Sonuç: tek kameranın asla yakalayamayacağı zenginlikte bir temsil.</div>
   </div>
 
-  <div class="sechead">🧠 Kendini Test Et — Multi-Head</div>
+  <div class="sechead">4) 📍 Positional Encoding — sıranın imzası</div>
+  <div class="pts" style="border-left:3px solid #5aa0e0">
+    <div class="callout" style="margin:0 0 14px">🔗 <b>Kaldığımız yer:</b> Matematik Temeli → Trigonometri modülünde formülü ve 4 boyutluk mini bir örneği görmüştün: \( PE(pos,2i)=\sin(pos/10000^{2i/d}) \), \( PE(pos,2i{+}1)=\cos(pos/10000^{2i/d}) \). Self-Attention tüm kelimelere <b>aynı anda</b> baktığı için (RNN gibi sırayla okumadığı için) "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" sırasız aynı kelime çorbasına döner — Positional Encoding, her pozisyona sinüs/kosinüs dalgalarından örülmüş benzersiz bir "imza" ekleyerek bunu çözer. Aşağıda gerçek boyutuna (d=12) yakın bir versiyonunu canlı görüyorsun.</div>
+    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Her <b>satır</b> bir pozisyon (0–15), her <b>sütun</b> bir boyut çifti (i=0 en hızlı dalga, i=5 en yavaş). Turuncu = pozitif değer, mavi = negatif; renk ne kadar koyuysa değer o kadar uçta (±1'e yakın). Bir <b>pozisyon numarasına tıkla</b> → o satırın 12 sayılık imzasını oku.</div>
+    <div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
+    <div class="work" id="posWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
+    <div class="callout" style="margin-top:10px; border-left-color:#5aa0e0">💡 <b>Saat kadranı benzetmesi:</b> i=0 sütunu saniye kolu gibi hızla döner (her pozisyonda çok değişir), i=5 saat kolu gibi neredeyse durur. Birlikte bakınca her pozisyon benzersiz — tıpkı saatin üç kolunun birlikte günün tam anını vermesi gibi. Bu 12 sayı kelimenin embedding vektörüne <b>eklenir</b> (concat değil, toplama); model artık "ne" ile "nerede"yi tek vektörde taşır.</div>
+  </div>
+
+  <div class="sechead">🧠 Kendini Test Et — Multi-Head & Positional Encoding</div>
   <div class="pts">
     <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -2374,9 +2383,17 @@ kadın   = (   −0.6    ,    +0.7   )</div>
       <div class="acc-head"><span class="ac">▸</span> 4) 8 kafa, tek büyük kafadan neden daha iyi olabilir?</div>
       <div class="acc-body"><b>Uzmanlaşma + verimlilik.</b> Her kafa küçük bir alt-uzayda tek bir ilişki türüne odaklanır (işbölümü); toplam hesap aynı kalır ama temsil çok daha zengin ve yorumlanabilir olur. Probing çalışmaları bu uzmanlaşmayı deneysel olarak gösterdi.</div>
     </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 5) Positional Encoding neden gerekli?</div>
+      <div class="acc-body">Self-Attention tüm kelimelere <b>aynı anda</b> (paralel) bakar, RNN gibi sırayla okumaz — bu yüzden sıra bilgisi kendiliğinden yok. Positional Encoding, her pozisyona sinüs/kosinüs dalgalarından benzersiz bir "imza" ekleyerek bu bilgiyi geri kazandırır.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 6) Neden tek bir sinüs değil de onlarca farklı frekans birden?</div>
+      <div class="acc-body">Tek bir dalga periyodik olduğu için pozisyonları <b>tekrar tekrar karıştırırdı</b> (saatte tek bir kol olsaydı günün hangi saati olduğunu bilemezdin). Hızlı + yavaş dalgaları <b>birlikte</b> kullanmak — saniye/dakika/saat kolları gibi — her pozisyona gerçekten benzersiz bir imza verir, üstelik göreli mesafeleri de matematiksel olarak korur.</div>
+    </div>
   </div>
 
-  <p class="footer">Multi-Head • paralel kafalar · farklı mercekler (W) · Concat + W_O · işbölümü</p>
+  <p class="footer">Multi-Head • paralel kafalar · farklı mercekler (W) · Concat + W_O · işbölümü · Positional Encoding · sin/cos imza</p>
   </div><!-- /model-multihead -->
 
   <!-- ===================== MATEMATİK TEMELİ ===================== -->
@@ -4128,7 +4145,7 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     </ul>
     <div class="ped-h">📄 Ateşlediği çalışmalar</div>
     <p>Öğrenilen pozisyonlar (BERT, 2018) → RoPE (2021; Llama ve çağdaş modellerin tercihi) → ALiBi (2021) → uzun-bağlam yarışı.</p>
-    <div class="ped-links"><button class="addbtn" data-ped-tree="pos" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button></div>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="mha" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör (Multi-Head Attention altında)</button> <button class="addbtn" data-ped-tab="multihead" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
   <div class="sechead" id="pedia-blk">🏗️ Transformer Bloğu — Parçalar Birleşiyor</div>
@@ -4208,13 +4225,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608231944"></script>
-<script src="js/lesson-turev.js?v=202608231944"></script>
-<script src="js/lesson-xor.js?v=202608231944"></script>
-<script src="js/lesson-nn.js?v=202608231944"></script>
-<script src="js/lesson-trig.js?v=202608231944"></script>
+<script src="js/lesson-linreg.js?v=202608232218"></script>
+<script src="js/lesson-turev.js?v=202608232218"></script>
+<script src="js/lesson-xor.js?v=202608232218"></script>
+<script src="js/lesson-nn.js?v=202608232218"></script>
+<script src="js/lesson-trig.js?v=202608232218"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608231944"></script>
-<script src="js/app.js?v=202608231944"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608232218"></script>
+<script src="js/app.js?v=202608232218"></script>
 </body>
 </html>

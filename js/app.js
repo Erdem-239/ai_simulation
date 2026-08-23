@@ -1760,16 +1760,11 @@
       real:[['⚡','Paralel eğitim: GPU\'ların tam gücü'],['🔗','Uzun menzilli bağlam yakalama'],['🧬','AlphaFold\'a giden temsil gücü']],
       sub:['Q, K, V nedir','Skor: QKᵀ/√d','Softmax ağırlıkları','Ağırlıklı toplam (çıktı)']},
     {id:'mha',  nm:'🧩 Multi-Head Attention', tier:7, v:26, pre:['att'], tab:'multihead',
-      d:'Aynı anda farklı ilişki türlerini yakalayan paralel attention kafaları.',
-      sci:'Aynı makale (2017): tek attention yerine 8 paralel "kafa" — her biri farklı ilişki türünü öğrenir (sözdizimi, anlam, eşleşme...).',
-      real:[['🧩','Zengin dil temsili (BERT/GPT içi)'],['🔬','Yorumlanabilirlik: kafa analizi']],
-      sub:['Kafalara bölme','Farklı ilişki uzayları','Birleştirme (concat + W)']},
-    {id:'pos',  nm:'📍 Positional Encoding', tier:7, v:74, pre:['att'],
-      d:'Recurrence yoksa sıra bilgisi nereden? Sinüs dalgalarıyla konumun vektöre işlenmesi.',
-      sci:'Aynı makale (2017): sıra bilgisi sinüs/kosinüs dalgalarıyla vektöre işlendi — recurrence olmadan "kim önce kim sonra" çözüldü.',
-      real:[['📐','Sırayı koruyarak tam paralellik'],['🎼','Dalga-tabanlı konum kodlama']],
-      sub:['Neden konum bilgisi gerekli','Sinüs/kosinüs kodlama']},
-    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha','pos'],
+      d:'Aynı anda farklı ilişki türlerini yakalayan paralel attention kafaları — ve recurrence yoksa sıra bilgisini taşıyan sinüs/kosinüs "imza" (Positional Encoding).',
+      sci:'Aynı makale (2017): tek attention yerine 8 paralel "kafa" — her biri farklı ilişki türünü öğrenir (sözdizimi, anlam, eşleşme...). Sıra bilgisi de aynı makalede sinüs/kosinüs dalgalarıyla vektöre işlendi — recurrence olmadan "kim önce kim sonra" çözüldü.',
+      real:[['🧩','Zengin dil temsili (BERT/GPT içi)'],['🔬','Yorumlanabilirlik: kafa analizi'],['📐','Sırayı koruyarak tam paralellik'],['🎼','Dalga-tabanlı konum kodlama']],
+      sub:['Kafalara bölme','Farklı ilişki uzayları','Birleştirme (concat + W)','Neden konum bilgisi gerekli','Sinüs/kosinüs kodlama (Positional Encoding)']},
+    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha'],
       d:'Residual + LayerNorm + FFN; encoder/decoder mimarisi. Bütün parçaların tek makinede birleşmesi.',
       sci:'Residual: He ve ekibi (2015, ResNet). LayerNorm: Ba, Kiros & Hinton (2016). Transformer bloğu bu parçaları tek makinede birleştirdi (2017).',
       real:[['🏗️','Yüzlerce katman derinlik mümkün'],['📦','Kopyala-yapıştır ölçeklenen mimari']],
@@ -2508,6 +2503,49 @@ function setupFloatingPanel(ids){
     draw(); info();
   }));
   document.getElementById('atScale').addEventListener('change',e=>{ scale=e.target.checked; draw(); info(); });
+  draw(); info();
+})();
+
+/* ---- positional encoding: pozisyon × boyut ısı haritası ---- */
+(function(){
+  const svg=document.getElementById('posSvg'); if(!svg) return;
+  const wk=document.getElementById('posWork');
+  const D=12, NPOS=16; // d=12 boyut (6 frekans çifti), 16 pozisyon
+  const NFREQ=D/2;
+  const freq=[]; for(let i=0;i<NFREQ;i++) freq.push(1/Math.pow(10000, (2*i)/D));
+  function val(p,dim){ const i=Math.floor(dim/2); const f=freq[i]; return (dim%2===0) ? Math.sin(p*f) : Math.cos(p*f); }
+  let sel=6;
+  function col(v){ return v>=0 ? '#f0a032' : '#3a7afe'; }
+  function draw(){
+    const RL=34, T=42, C=26, RH=22;
+    const W=RL+D*C+10, H=T+NPOS*RH+8;
+    let s='';
+    for(let i=0;i<NFREQ;i++){
+      s+='<text x="'+(RL+(2*i)*C+C)+'" y="16" text-anchor="middle" font-size="9" fill="#8a9097">i='+i+'</text>';
+      s+='<text x="'+(RL+2*i*C+C/2)+'" y="'+(T-6)+'" text-anchor="middle" font-size="8.5" fill="#5aa0e0">sin</text>';
+      s+='<text x="'+(RL+(2*i+1)*C+C/2)+'" y="'+(T-6)+'" text-anchor="middle" font-size="8.5" fill="#f0a032">cos</text>';
+    }
+    for(let p=0;p<NPOS;p++){
+      const dim=(sel!==null&&sel!==p);
+      s+='<text data-row="'+p+'" x="'+(RL-8)+'" y="'+(T+p*RH+RH/2+4)+'" text-anchor="end" font-size="10" fill="'+(sel===p?'#ffd24a':'#8a9097')+'" font-weight="'+(sel===p?'700':'400')+'">'+p+'</text>';
+      for(let d=0;d<D;d++){
+        const v=val(p,d), op=dim?0.12:(0.18+0.75*Math.abs(v));
+        s+='<rect x="'+(RL+d*C)+'" y="'+(T+p*RH)+'" width="'+(C-2)+'" height="'+(RH-2)+'" rx="3" fill="'+col(v)+'" opacity="'+op.toFixed(2)+'"'+(sel===p?' stroke="#ffd24a" stroke-width="1"':'')+'/>';
+      }
+    }
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-row]').forEach(t=>{ t.style.cursor='pointer'; t.addEventListener('click',()=>{ sel=(sel===+t.dataset.row)?null:+t.dataset.row; draw(); info(); }); });
+  }
+  function info(){
+    if(sel===null){ wk.innerHTML='<b>Bir pozisyon numarasına tıkla</b> (soldaki sütun) → o pozisyonun 12 boyutluk "parmak izini" gör. 🐢 i=0 sütunu (solda) her satırda hızla değişir, i=5 (sağda) neredeyse hiç değişmez.'; return; }
+    const row=[]; for(let d=0;d<D;d++) row.push(val(sel,d).toFixed(2));
+    const fast=val(sel,0).toFixed(2), slow=val(sel,D-2).toFixed(2);
+    wk.innerHTML='<b style="color:#ffd24a">pos='+sel+'</b> satırının imzası:\n['+row.join(', ')+']\n\n'
+      +'🐇 i=0 (hızlı dalga): sin='+fast+' — komşu satırlarla kıyasla ÇOK değişir.\n'
+      +'🐢 i='+(NFREQ-1)+' (yavaş dalga): sin='+slow+' — komşu satırlarla neredeyse aynı.\n\n'
+      +'→ Bu 12 sayı, kelimenin gerçek anlam vektörüne (embedding) EKLENİR — model artık hem "ne" hem "nerede" bilgisini tek vektörde taşır.';
+  }
   draw(); info();
 })();
 
