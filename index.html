@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608231830"></script>
-<link rel="stylesheet" href="css/style.css?v=202608231830">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608231918"></script>
+<link rel="stylesheet" href="css/style.css?v=202608231918">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 18:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 19:18 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -3899,6 +3899,29 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     <div class="ped-links"><button class="addbtn" data-ped-tree="akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="aktivasyon" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
+  <div class="sechead" id="pedia-nn">🧠 Neural Network — Nörondan Ağa</div>
+  <div class="pts pedia-art">
+    <p class="ped-hook">🧱 Tek nöron sadece bir doğru çizebilir (XOR'u bile çözemez) — ama onları <span class="ped-stat">katman katman</span> dizip aralarına bir S eğrisi sıkıştırınca ortaya "her şeyi öğrenebilen" bir makine çıkıyor. 1969'da "bu asla çalışmaz" denen fikir, 1986'da geri yayılımla aniden çalışmaya başladı.</p>
+    <div class="ped-h">👤 Kâşifler</div>
+    <div class="ped-people">
+      <div class="ped-card"><div class="ped-ava">FR</div><div><b>Frank Rosenblatt</b><br><span>1958 · ABD</span><br><i>Perceptron — ilk "öğrenen" tek katman</i></div></div>
+      <div class="ped-card"><div class="ped-ava">M&P</div><div><b>Minsky & Papert</b><br><span>1969 · ABD</span><br><i>XOR duvarını gösterip alanı 15 yıl dondurdu</i></div></div>
+      <div class="ped-card"><div class="ped-ava">RHW</div><div><b>Rumelhart, Hinton, Williams</b><br><span>1986 · ABD</span><br><i>Geri yayılım: çok katmanlı ağı eğitilebilir yaptı</i></div></div>
+    </div>
+    <div class="ped-h">💡 Keşif hikâyesi</div>
+    <p>Rosenblatt'ın Perceptron'u manşetlere çıktı ("Donanma'nın düşünen makinesi") ama tek katmandı — sadece düz bir çizgiyle ayrılabilen şeyleri öğrenebiliyordu. Minsky ve Papert 1969'da kitaplarında XOR gibi basit bir problemi bile çözemediğini kanıtlayınca fon kesildi, alan donduruldu ("ilk yapay zekâ kışı"). Çözüm aslında basitti: <b>katmanları üst üste koy</b> — ama "gizli katmanın hatası nasıl hesaplanır?" sorusunun cevabı 17 yıl bekledi. 1986'da Rumelhart, Hinton ve Williams zincir kuralını ağın içine geriye doğru yayarak (<i>geri yayılım</i>) her ağırlığın hatasını otomatik hesapladılar — ve ağ, elle ayarlanmış hiçbir kuralla değil, sadece verinin kendisinden öğrenmeye başladı.</p>
+    <div class="ped-h">🌍 Gerçek dünyada — rakamlarla</div>
+    <ul>
+      <li><b>🖼️ Gözlerin:</b> ilk çalışan görüntü tanıma ağları (LeNet, 1989) tam bu çok katmanlı + geri yayılım tarifiyle posta kodlarını okudu.</li>
+      <li><b>🏦 Cüzdanın:</b> kredi skorlama ve dolandırıcılık tespiti modellerinin çoğu hâlâ bu temel mimarinin (katman + W + aktivasyon) üzerine kurulu.</li>
+      <li><b>🎮 Oyunun:</b> NPC karar ağları ve erken oyun AI'ları aynı katmanlı ağ fikrini kullanır.</li>
+      <li><b>🧬 Bugün:</b> RNN, CNN, Transformer — hepsi bu "katman + geri yayılım" tarifinin farklı mimarilerle tekrar tekrar uygulanmış hali.</li>
+    </ul>
+    <div class="ped-h">📄 Ateşlediği çalışmalar</div>
+    <p>Perceptron (1958) → XOR duvarı (1969) → geri yayılım (1986) → LeNet (1989) → derin öğrenme çağının tüm mimarileri (RNN, CNN, Transformer) bu temelin üzerine inşa edildi.</p>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="nn" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="neural" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
+  </div>
+
   <div class="sechead" id="pedia-rnn">🔁 RNN + Geri Yayılım — Ağa Hafıza Takmak</div>
   <div class="pts pedia-art">
     <p class="ped-hook">🌌 Bu cümlenin sonunu anlaman, başını hatırlamana bağlı — hafıza olmadan düşünce olmaz. 1986'da makinelere ilk kez "geçmişini taşı" demeyi öğrendik. O yılın makalesindeki üç isimden biri, 2024'te Nobel'le döndü.</p>
@@ -4185,13 +4208,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608231830"></script>
-<script src="js/lesson-turev.js?v=202608231830"></script>
-<script src="js/lesson-xor.js?v=202608231830"></script>
-<script src="js/lesson-nn.js?v=202608231830"></script>
-<script src="js/lesson-trig.js?v=202608231830"></script>
+<script src="js/lesson-linreg.js?v=202608231918"></script>
+<script src="js/lesson-turev.js?v=202608231918"></script>
+<script src="js/lesson-xor.js?v=202608231918"></script>
+<script src="js/lesson-nn.js?v=202608231918"></script>
+<script src="js/lesson-trig.js?v=202608231918"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608231830"></script>
-<script src="js/app.js?v=202608231830"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608231918"></script>
+<script src="js/app.js?v=202608231918"></script>
 </body>
 </html>
