@@ -1631,6 +1631,45 @@
   });
 })();
 
+/* ---- Matematik Temeli: açılan her kategorinin sonuna "sonraki konu" şeridi ----
+   HTML'e elle 6 blok eklemek yerine, kategori sırasından otomatik üretiliyor;
+   kategoriler ileride yeniden sıralanırsa/eklenirse kendini günceller. */
+(function(){
+  const grid=document.querySelector('#model-matematik .cat-grid'); if(!grid) return;
+  const cats=[...grid.querySelectorAll(':scope > .acc-category')];
+  cats.forEach((cat,i)=>{
+    const body=cat.querySelector(':scope > .acc-body'); if(!body) return;
+    if(body.querySelector(':scope > .cat-next')) return;
+    const strip=document.createElement('div');
+    strip.className='cat-next';
+    const next=cats[i+1];
+    if(next){
+      const t=next.querySelector('.cat-title');
+      const nm=t ? t.textContent.replace('▸','').trim() : 'Sonraki konu';
+      strip.style.setProperty('--cat-next-color', next.style.getPropertyValue('--cat-color')||'var(--accent)');
+      const lbl=document.createElement('span');
+      lbl.className='cn-label'; lbl.textContent='SONRAKİ KONU';
+      const btn=document.createElement('button');
+      btn.className='cn-link'; btn.textContent=nm+'  →';
+      btn.addEventListener('click',()=>{
+        cat.classList.remove('open');
+        next.classList.add('open');
+        const h=next.querySelector(':scope > .acc-head');
+        if(h) h.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      strip.appendChild(lbl); strip.appendChild(btn);
+    }else{
+      const lbl=document.createElement('span');
+      lbl.className='cn-label'; lbl.textContent='SON KONU';
+      const done=document.createElement('span');
+      done.className='cn-link'; done.style.cursor='default';
+      done.textContent='🎉 Matematik Temeli bitti — Yol Haritası\'ndan işaretlemeyi unutma';
+      strip.appendChild(lbl); strip.appendChild(done);
+    }
+    body.appendChild(strip);
+  });
+})();
+
 /* ---- Khan-tarzı alıştırma: ipucu → çözüm + ilerleme ---- */
 (function(){
   const m=document.getElementById('model-matematik'); if(!m) return;
