@@ -243,6 +243,36 @@
   @media(max-width:720px){ .lesson-hero{padding:14px 14px 12px} .ex-grid{grid-template-columns:1fr 1fr} }
   @media(max-width:480px){ .ex-grid{grid-template-columns:1fr} }
 
+  /* ---- Matematik Temeli: "Gerçek hayatta nerede" örnek kartları — özel tasarım (sadece bu sayfa, diğer sayfalardaki .ex-card etkilenmez) ---- */
+  #model-matematik .ex-grid{gap:14px}
+  #model-matematik .ex-card{
+    position:relative; overflow:hidden; --ac:#3a7afe;
+    background:linear-gradient(165deg, var(--panel2) 0%, #1c1e22 100%);
+    border:1px solid var(--line); border-radius:14px; padding:18px 16px 16px;
+    box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 4px 14px -10px rgba(0,0,0,.5);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  #model-matematik .ex-grid .ex-card:nth-child(5n+1){--ac:#3a7afe}
+  #model-matematik .ex-grid .ex-card:nth-child(5n+2){--ac:#46c46a}
+  #model-matematik .ex-grid .ex-card:nth-child(5n+3){--ac:#f0a032}
+  #model-matematik .ex-grid .ex-card:nth-child(5n+4){--ac:#e06a6a}
+  #model-matematik .ex-grid .ex-card:nth-child(5n+5){--ac:#a34ad1}
+  #model-matematik .ex-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--ac); opacity:.85}
+  #model-matematik .ex-card:hover{transform:translateY(-3px); border-color:var(--ac); box-shadow:0 14px 28px -12px rgba(0,0,0,.6)}
+  #model-matematik .ex-card .ex-ico{
+    display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
+    border-radius:10px; margin-bottom:10px; background:rgba(255,255,255,.05); border:1.5px solid var(--ac); font-size:17px;
+  }
+  #model-matematik .ex-card .ex-more{
+    display:inline-flex; align-items:center; gap:4px; margin-top:10px; padding:4px 11px;
+    font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--ac);
+    background:rgba(255,255,255,.04); border:1px solid var(--ac); border-radius:20px; transition:.15s;
+  }
+  #model-matematik .ex-card.has-example:hover .ex-more{background:var(--ac); color:#14151a}
+  #model-matematik .ex-card.open .ex-more{background:var(--ac); color:#14151a}
+  #model-matematik .ex-card .ex-detail{border-top:1px dashed var(--ac)}
+  #model-matematik .ex-card .ex-detail-q{padding-left:10px; border-left:2px solid var(--ac)}
+
   /* ---- çok modelli düzen: sol panel ---- */
   .applayout{display:flex; align-items:flex-start; width:100%; max-width:none; margin:0; padding:0}
   .sidebar{position:sticky; top:0; align-self:flex-start; flex:0 0 var(--sbw,215px); min-width:0; max-height:100vh; background:var(--panel2); border:1px solid var(--line); border-left:none; border-radius:0 10px 10px 0; padding:14px; margin:0 20px 0 -24px}
