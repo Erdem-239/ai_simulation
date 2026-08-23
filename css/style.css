@@ -13,6 +13,8 @@
   h1{font-size:24px; margin:0 0 4px}
   .sub{color:var(--muted); margin:0 0 12px; font-size:13px}
   .wrap{max-width:1180px; margin:0 auto}
+  /* MathJax geniş formülleri (ör. yan yana iki denklem) dar ekranda sayfayı değil kendi kutusunu taşırsın */
+  mjx-container{overflow-x:auto; overflow-y:hidden; max-width:100%}
 
   /* ---- nokta editörü ---- */
   .pts{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:11px 13px; margin-bottom:12px}
@@ -568,6 +570,16 @@
   #attSvg .at-row.cur{fill:var(--accent); font-weight:700}
   #attSvg .at-cell{fill:#0a1f0c; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
   #attSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
+
+  /* ---- seq2seq: Bahdanau hizalama haritası (attSvg ile aynı görsel dil) ---- */
+  #s2sSvg{display:block; width:100%; max-width:560px; min-width:300px; height:auto; margin:0 auto; background:#141519; border-radius:10px}
+  #s2sSvg .at-col,#s2sSvg .at-row{fill:#e7e9ec; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
+  #s2sSvg .at-row{cursor:pointer}
+  #s2sSvg .at-row:hover{fill:#fff}
+  #s2sSvg .at-row.cur{fill:var(--accent); font-weight:700}
+  #s2sSvg .at-cell{fill:#1f1400; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  #s2sSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
+  @media(max-width:720px){ #s2sSvg{min-width:0} }
   /* ---- eğlence paketi ---- */
   #techSvg .tn.justUnlocked rect.tn-card{stroke:#d4900a; animation:ttBurst .7s ease-out 3}
   @keyframes ttBurst{0%{stroke-width:2}45%{stroke-width:7}100%{stroke-width:2}}

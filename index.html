@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608232218"></script>
-<link rel="stylesheet" href="css/style.css?v=202608232218">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608232226"></script>
+<link rel="stylesheet" href="css/style.css?v=202608232226">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 22:18 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 22:26 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -33,6 +33,7 @@
       <a class="navbtn" href="rnn-test.html" target="_blank" rel="noopener" style="text-decoration:none; display:block">🧪 RNN Test</a>
       <button class="navbtn" data-model="softmax">🌡️ Softmax & Temperature</button>
       <button class="navbtn" data-model="embedding">🔤 Kelime Temsili (Embedding)</button>
+      <button class="navbtn" data-model="seq2seq">🌉 Seq2Seq + Klasik Attention</button>
       <button class="navbtn" data-model="attention">🎯 Self-Attention</button>
       <button class="navbtn" data-model="multihead">🧩 Multi-Head Attention</button>
       <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
@@ -2227,6 +2228,97 @@ kadın   = (   −0.6    ,    +0.7   )</div>
 
 
   <!-- ===================== SELF-ATTENTION MODELİ ===================== -->
+  <div class="model" id="model-seq2seq">
+
+  <h1>🌉 Seq2Seq + Klasik Attention — Darboğazdan Kurtuluş</h1>
+  <p class="sub">İki 🚪 LSTM'i bir "köprü"yle birbirine bağla: biri cümleyi <b>okur</b> (encoder), diğeri yeni bir cümle <b>üretir</b> (decoder). Sorun şu: köprü tek bir sabit vektörse, uzun cümlelerde bilgi boğulur. 2014'ün zarif çözümü — <b>Bahdanau attention</b> — decoder'ın her adımda kaynağın istediği yerine bakmasına izin verir. Bu, tam attention'a giden ilk adım.</p>
+
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🚪 LSTM/GRU'da gradyanın bozulmadan akan bir "otoyol"unu gördün. 🔤 Embedding'de kelimelerin sayı vektörüne dönüştüğünü gördün. Şimdi ikisini birleştiriyoruz: bir LSTM cümleyi <b>okuyup</b> anlamını sıkıştırır, başka bir LSTM o sıkışmış anlamdan yeni bir cümle <b>üretir</b> — örneğin çeviri.</div>
+
+  <div class="sechead">1) Encoder–Decoder: iki LSTM, tek bir köprü — ve o köprünün sorunu</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7"><b>Encoder</b>, kaynak cümleyi kelime kelime okur; her adımda gizli durumunu günceller (tıpkı RNN/LSTM dersinde gördüğün gibi). Son kelimeyi okuduğunda elinde kalan <b>tek bir vektör</b> — cümlenin <b>tamamının</b> anlamını taşıması beklenen bir özet — <b>decoder</b>'a devredilir. Decoder da bu tek vektörden yola çıkıp hedef cümleyi kelime kelime üretir.</p>
+    <div style="overflow-x:auto; margin:16px 0">
+      <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; min-width:640px; font-size:12.5px">
+        <div style="text-align:center; color:var(--muted); font-size:11px; margin-right:4px">ENCODER<br>(okur)</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">I</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">love</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">cats</div>
+        <div style="color:#e06a6a; font-weight:700">━━▶</div>
+        <div style="background:rgba(224,106,106,.12); border:2px solid #e06a6a; border-radius:10px; padding:10px 14px; text-align:center">
+          <div style="font-size:16px">🍾</div><div style="font-size:11px; color:#e06a6a; font-weight:700">context c</div><div style="font-size:9.5px; color:var(--muted)">(tek, sabit vektör)</div>
+        </div>
+        <div style="color:#e06a6a; font-weight:700">━━▶</div>
+        <div style="text-align:center; color:var(--muted); font-size:11px; margin:0 4px">DECODER<br>(üretir)</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">Ben</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">kedileri</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 12px">seviyorum</div>
+      </div>
+    </div>
+    <div class="callout" style="border-left-color:#e06a6a">🍾 <b>Bilgi darboğazı (bottleneck):</b> 3 kelimelik cümlede sorun yok. Ama 40 kelimelik bir paragrafı <b>tek bir sabit boyutlu vektöre</b> sıkıştırmayı dene — bir kitabı tek cümleyle özetlemek gibi, ayrıntılar kaybolur. Sutskever, Vinyals & Le (2014) tam olarak bunu gördü: cümle uzadıkça çeviri kalitesi <b>çöküyordu</b>. Decoder'ın erken ürettiği kelimeler bile, cümlenin sonundaki bilgiye ihtiyaç duyabiliyordu ama tek vektörde yer kalmamıştı.</div>
+  </div>
+
+  <!-- İNTERAKTİF: Bahdanau hizalama haritası -->
+  <div class="sechead">2) 🔬 Oyuncak: Bahdanau'nun çözümü — hizalama (alignment) haritası</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Bahdanau'nun (2014) fikri zarif: decoder, <b>tek sabit c</b> yerine, her kelimeyi üretirken kaynak cümlenin <b>tüm</b> gizli durumlarına yeniden bakar ve kendi context vektörünü o an için <b>yeniden hesaplar</b>. Aşağıdaki matris = decoder her kelimeyi üretirken kaynağın neresine baktığı. Sol taraftaki bir kelimeye <b>tıkla</b>.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px">
+      <button class="addbtn s2sSent" data-s="0" style="background:var(--blue); color:#fff">"I love cats" → "Ben kedileri seviyorum"</button>
+      <button class="addbtn s2sSent" data-s="1" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">"She reads books" → "O kitap okuyor"</button>
+    </div>
+    <div style="overflow-x:auto"><svg id="s2sSvg" role="img"></svg></div>
+    <div class="work" id="s2sWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
+  </div>
+
+  <div class="sechead">3) Formül: skor → softmax → ağırlıklı context</div>
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    \[ \alpha_{ij} = \text{softmax}_j\big(\text{score}(s_{i-1}, h_j)\big) \qquad c_i = \sum_j \alpha_{ij}\, h_j \]
+    <ol style="font-size:14px; color:#cfd3d8; line-height:1.9">
+      <li><b>score:</b> decoder'ın şu anki durumu (s<sub>i-1</sub>) ile encoder'ın <b>her</b> gizli durumu (h<sub>j</sub>) arasında bir "ne kadar uyuyor" skoru hesaplanır.</li>
+      <li><b>softmax:</b> bu skorlar yüzdeye (α) çevrilir — üstteki ısı haritasındaki bir satır tam olarak bu.</li>
+      <li><b>ağırlıklı toplam:</b> yeni context vektörü c<sub>i</sub>, bu yüzdelerle encoder'ın <b>tüm</b> gizli durumlarının karışımı — ve her decoder adımında <b>yeniden</b> hesaplanır.</li>
+    </ol>
+    <div class="callout">🎯 Sezgi: klasik Seq2Seq'te decoder tek bir fotoğrafa bakarak konuşuyordu. Attention ile decoder, konuşurken istediği ana <b>geri sarıp bakabilen</b> bir video izliyor.</div>
+  </div>
+
+  <div class="sechead">4) Köprü: buradan tam Self-Attention'a</div>
+  <div class="pts" style="border-left:3px solid var(--green)">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bahdanau'nun attention'ı hâlâ bir RNN/LSTM'in içindeydi — decoder yine kelime kelime, sırayla üretim yapıyordu. 2017'nin sıçraması: <b>"Peki recurrence'a hiç ihtiyacımız var mı?"</b> Cevap hayırdı — aynı "ağırlıklı bakış" fikrini RNN'siz, tüm kelimeler <b>aynı anda birbirine</b> bakacak şekilde genelleştirince ortaya <b>Self-Attention</b> çıktı (makalenin adı: <i>Attention Is All You Need</i>).</p>
+    <div class="callout" style="border-left-color:#46c46a">🏆 Ağaçta artık "Dizi Modelleme Çağı" tamamlanmak üzere — 🎯 Self-Attention bir adım ötede.</div>
+  </div>
+
+  <div class="sechead">🧠 Kendini Test Et — Seq2Seq & Attention</div>
+  <div class="pts">
+    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 1) Klasik Seq2Seq'te encoder ile decoder arasında ne var?</div>
+      <div class="acc-body">Encoder'ın son gizli durumundan oluşan <b>tek, sabit boyutlu bir context vektörü (c)</b>. Bütün kaynak cümlenin anlamı bu tek vektöre sıkıştırılır ve decoder'a devredilir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 2) "Bilgi darboğazı" sorunu tam olarak ne?</div>
+      <div class="acc-body">Cümle uzadıkça, o <b>tek sabit vektörün</b> taşıyabileceği bilgi miktarı yetersiz kalır — ayrıntılar kaybolur, çeviri kalitesi uzun cümlelerde çöker. Bir kitabı tek cümleyle özetlemeye benzer.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 3) Bahdanau attention bu sorunu nasıl çözer?</div>
+      <div class="acc-body">Decoder artık tek bir sabit c'ye değil, encoder'ın <b>tüm</b> gizli durumlarına erişebilir; her kelimeyi üretirken bunlardan <b>ağırlıklı bir karışım</b> (yeni bir context vektörü) hesaplar. Hiçbir bilgi tek bir yerde sıkışıp kaybolmaz.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 4) Hizalama haritasında satırlar neden köşegen (diagonal) değil?</div>
+      <div class="acc-body">Çünkü diller kelime sırasını farklı düzenler (Türkçe'de nesne fiilden önce gelebilir). Attention, sıraya bağlı kalmadan <b>ihtiyaç duyduğu kaynak kelimeye doğrudan</b> bakabilir — klasik Seq2Seq'te bu esneklik yoktu.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 5) Bahdanau attention ile Self-Attention arasındaki fark ne?</div>
+      <div class="acc-body">Bahdanau attention hâlâ bir <b>RNN/LSTM'in içinde</b>, decoder'ın encoder'a bakışı için kullanılıyordu (sıralı üretim devam ediyordu). Self-Attention, recurrence'ı tamamen atıp aynı "ağırlıklı bakış" fikrini <b>tüm kelimelerin birbirine aynı anda</b> bakması için genelleştirdi.</div>
+    </div>
+  </div>
+
+  <p class="footer">Seq2Seq + Klasik Attention • encoder–decoder · bilgi darboğazı · Bahdanau hizalama · ağırlıklı context — Self-Attention'a köprü</p>
+  </div><!-- /model-seq2seq -->
+
   <div class="model" id="model-attention">
 
   <h1>🎯 Self-Attention — Makalenin Kalbi</h1>
@@ -4053,7 +4145,7 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     </ul>
     <div class="ped-h">📄 Ateşlediği çalışmalar</div>
     <p>Bahdanau attention (2014) → Luong attention (2015) → <b>Transformer (2017)</b>. Sutskever'in yolu ise OpenAI'a, oradan ChatGPT'ye çıktı.</p>
-    <div class="ped-links"><button class="addbtn" data-ped-tree="s2s" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button></div>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="s2s" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="seq2seq" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
 
@@ -4225,13 +4317,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608232218"></script>
-<script src="js/lesson-turev.js?v=202608232218"></script>
-<script src="js/lesson-xor.js?v=202608232218"></script>
-<script src="js/lesson-nn.js?v=202608232218"></script>
-<script src="js/lesson-trig.js?v=202608232218"></script>
+<script src="js/lesson-linreg.js?v=202608232226"></script>
+<script src="js/lesson-turev.js?v=202608232226"></script>
+<script src="js/lesson-xor.js?v=202608232226"></script>
+<script src="js/lesson-nn.js?v=202608232226"></script>
+<script src="js/lesson-trig.js?v=202608232226"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608232218"></script>
-<script src="js/app.js?v=202608232218"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608232226"></script>
+<script src="js/app.js?v=202608232226"></script>
 </body>
 </html>
