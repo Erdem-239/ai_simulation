@@ -1764,7 +1764,7 @@
       sci:'Aynı makale (2017): tek attention yerine 8 paralel "kafa" — her biri farklı ilişki türünü öğrenir (sözdizimi, anlam, eşleşme...). Sıra bilgisi de aynı makalede sinüs/kosinüs dalgalarıyla vektöre işlendi — recurrence olmadan "kim önce kim sonra" çözüldü.',
       real:[['🧩','Zengin dil temsili (BERT/GPT içi)'],['🔬','Yorumlanabilirlik: kafa analizi'],['📐','Sırayı koruyarak tam paralellik'],['🎼','Dalga-tabanlı konum kodlama']],
       sub:['Kafalara bölme','Farklı ilişki uzayları','Birleştirme (concat + W)','Neden konum bilgisi gerekli','Sinüs/kosinüs kodlama (Positional Encoding)']},
-    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha'],
+    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha'], tab:'transformer',
       d:'Residual + LayerNorm + FFN; encoder/decoder mimarisi. Bütün parçaların tek makinede birleşmesi.',
       sci:'Residual: He ve ekibi (2015, ResNet). LayerNorm: Ba, Kiros & Hinton (2016). Transformer bloğu bu parçaları tek makinede birleştirdi (2017).',
       real:[['🏗️','Yüzlerce katman derinlik mümkün'],['📦','Kopyala-yapıştır ölçeklenen mimari']],
@@ -2482,6 +2482,26 @@ function setupFloatingPanel(ids){
     draw(); info();
   }));
   draw(); info();
+})();
+
+/* ---- transformer bloğu: residual ile/olmadan gradyan kıyası ---- */
+(function(){
+  const rng=document.getElementById('blkN'); if(!rng) return;
+  const nv=document.getElementById('blkNv');
+  const barNo=document.getElementById('blkBarNo'), valNo=document.getElementById('blkValNo');
+  const barYes=document.getElementById('blkBarYes'), valYes=document.getElementById('blkValYes');
+  const FACTOR=0.9; // sezgisel: her bloğun sinyali biraz zayıflattığı varsayımı
+  function update(){
+    const N=+rng.value;
+    nv.textContent=N;
+    const no=Math.pow(FACTOR,N);
+    barNo.style.width=Math.max(no*100,0.5)+'%';
+    valNo.textContent=no.toFixed(no<0.01?4:2);
+    barYes.style.width='100%';
+    valYes.textContent='1.00';
+  }
+  rng.addEventListener('input',update);
+  update();
 })();
 
 /* ---- self-attention: dikkat ısı haritası ---- */
