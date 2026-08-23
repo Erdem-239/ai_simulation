@@ -94,22 +94,48 @@
   .acc.open .acc-body{display:block}
 
   /* konu (category) ve modül seviyesi accordion varyantları — Matematik Temeli için */
-  /* kategoriler: renkli kare kartlar halinde ızgara, tıklanan kart tam genişliğe açılır */
-  .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; margin:22px 0}
-  .acc-category{margin:0; border-color:var(--line); border-radius:14px; align-self:start; transition:box-shadow .2s}
-  .acc-category > .acc-head{
-    flex-direction:column; align-items:flex-start; gap:8px; padding:18px 18px 16px; min-height:118px; justify-content:center;
-    background:var(--panel2); border-left:4px solid var(--cat-color, var(--accent)); border-radius:14px;
+  /* kategoriler: cafcaflı, RGB kenarlıklı kare kartlar — 3'erli ızgara, tıklanan kart tam genişliğe açılır */
+  .cat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin:26px 0}
+  @keyframes catRgbSpin{ to{ filter:hue-rotate(360deg); } }
+  @keyframes catGlowPulse{ 0%,100%{ opacity:.65 } 50%{ opacity:1 } }
+  .acc-category{
+    position:relative; margin:0; border:none; border-radius:20px; align-self:start;
+    padding:3px; isolation:isolate; overflow:visible;
+    transition:transform .25s ease, box-shadow .25s ease;
   }
-  .acc-category > .acc-head .cat-title{font-size:16px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px}
-  .acc-category > .acc-head .cat-desc{font-size:12px; font-weight:400; color:var(--muted); line-height:1.55}
-  .acc-category:hover > .acc-head{background:var(--panel)}
-  .acc-category.open{grid-column:1/-1; box-shadow:0 0 0 1px var(--cat-color, var(--accent)) inset}
-  .acc-category.open > .acc-head{border-radius:14px 14px 0 0; border-bottom:2px solid var(--cat-color, var(--accent))}
+  .acc-category::before{
+    content:''; position:absolute; inset:0; border-radius:20px; z-index:0;
+    background:conic-gradient(from 0deg,
+      #ff3d5a,#ff9d3d,#f5e93d,#4dff6e,#3dd9ff,#5a6bff,#c93dff,#ff3d5a);
+    animation:catRgbSpin 9s linear infinite, catGlowPulse 3.2s ease-in-out infinite;
+    animation-delay:calc(var(--card-i, 0) * -1.1s), calc(var(--card-i, 0) * -0.4s);
+    filter:saturate(1.3);
+  }
+  .acc-category::after{
+    content:''; position:absolute; inset:-6px; border-radius:24px; z-index:-1;
+    background:conic-gradient(from 0deg,
+      #ff3d5a,#ff9d3d,#f5e93d,#4dff6e,#3dd9ff,#5a6bff,#c93dff,#ff3d5a);
+    animation:catRgbSpin 9s linear infinite, catGlowPulse 3.2s ease-in-out infinite;
+    animation-delay:calc(var(--card-i, 0) * -1.1s), calc(var(--card-i, 0) * -0.4s);
+    opacity:.5; filter:blur(16px) saturate(1.4);
+  }
+  .acc-category:hover{transform:translateY(-3px)}
+  .acc-category:hover::before{animation-duration:2.4s, 3.2s}
+  .acc-category > .acc-head{
+    position:relative; z-index:1; flex-direction:column; align-items:flex-start; gap:10px;
+    padding:26px 24px 24px; min-height:168px; justify-content:center;
+    background:var(--panel2); border-radius:17px;
+  }
+  .acc-category > .acc-head .cat-title{font-size:19px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:9px; letter-spacing:.2px}
+  .acc-category > .acc-head .cat-desc{font-size:13px; font-weight:400; color:var(--muted); line-height:1.6}
+  .acc-category:hover > .acc-head{background:#2d2f34}
+  .acc-category.open{grid-column:1/-1}
+  .acc-category.open > .acc-head{border-radius:17px 17px 0 0}
   .acc-category.open > .acc-head .cat-title{color:var(--cat-color, var(--accent))}
-  .acc-category > .acc-head .ac{font-size:15px; color:var(--cat-color, var(--accent))}
-  .acc-category > .acc-body{padding:8px 18px 18px; border-top:none}
-  @media(max-width:520px){ .cat-grid{grid-template-columns:1fr} }
+  .acc-category > .acc-head .ac{font-size:17px; color:var(--cat-color, var(--accent))}
+  .acc-category > .acc-body{position:relative; z-index:1; background:var(--panel2); padding:8px 22px 22px; border-top:1px solid var(--line); border-radius:0 0 17px 17px}
+  @media(max-width:900px){ .cat-grid{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:560px){ .cat-grid{grid-template-columns:1fr; gap:16px} .acc-category > .acc-head{min-height:0; padding:20px 18px} }
 
   .acc-module{margin:14px 0; border-radius:9px}
   .acc-module > .acc-head{padding:11px 15px; font-size:14.5px; font-weight:700; color:var(--text)}
