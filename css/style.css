@@ -284,18 +284,81 @@
   .sb-inner::-webkit-scrollbar-track{background:transparent}
   .sb-title{font-size:12px; color:var(--muted); font-weight:700; margin-bottom:10px; letter-spacing:1px}
   .sb-ver{display:inline-block; font-size:10px; color:var(--muted); background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; margin:-4px 0 10px; font-family:Consolas,"Courier New",monospace; letter-spacing:.3px}
+  /* ---- sol panel: "İLERLEME OMURGASI" — sidebar teknoloji ağacının canlı yansıması ----
+     Soldan geçen bir güç hattı (rail) tüm dersleri dizer; her ders bir düğüm.
+     Düğüm/hat durumu teknoloji ağacının gerçek ilerlemesinden gelir (js: __railSync):
+       rail-done  = araştırıldı  → yeşil düğüm + hattan akan enerji
+       rail-avail = sıradaki     → nabız atan altın düğüm
+       rail-locked= kilitli      → sönük içi boş düğüm
+       rail-meta  = ders değil (Yol Haritası / Civilopedia / RNN Test) → mavi elmas
+     Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
+     Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
+  .sb-prog{background:linear-gradient(160deg,#2c2f34,#212328); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
+  .sb-prog-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:10px; letter-spacing:.8px; color:var(--muted); font-weight:700; margin-bottom:6px}
+  .sb-prog-top b{font-size:12px; color:var(--green); font-family:Consolas,"Courier New",monospace}
+  .sb-prog-bar{height:5px; background:#191b1e; border-radius:4px; overflow:hidden}
+  .sb-prog-bar i{display:block; height:100%; width:0; border-radius:4px; background:linear-gradient(90deg,var(--green),#8ee89e); box-shadow:0 0 10px rgba(70,196,106,.6); transition:width .55s cubic-bezier(.2,.8,.2,1)}
+  .sb-prog-sub{font-size:9.5px; color:var(--muted); margin-top:5px; line-height:1.35}
+
   .navbtn{
-    display:block; width:100%; text-align:left; position:relative; overflow:hidden;
-    background:linear-gradient(165deg, var(--panel) 0%, #202226 100%);
+    --rail-x:15px; --prog:0%; --pc:var(--green);
+    display:block; width:100%; text-align:left; position:relative; overflow:visible;
+    background:
+      linear-gradient(105deg, transparent 42%, rgba(255,255,255,.14) 50%, transparent 58%),
+      linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
+      linear-gradient(165deg, var(--panel) 0%, #202226 100%);
+    background-size:230% 100%, 100% 2px, 100% 100%;
+    background-position:150% 0, 0 100%, 0 0;
+    background-repeat:no-repeat;
     color:var(--text); border:1px solid var(--line); border-radius:10px;
-    padding:11px 13px 11px 17px; margin-bottom:8px; cursor:pointer; font-size:14px;
-    transition:border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+    padding:11px 13px 11px 34px; margin-bottom:8px; cursor:pointer; font-size:14px;
+    transition:border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease, background-position .6s ease;
   }
-  .navbtn::before{content:''; position:absolute; left:0; top:3px; bottom:3px; width:3px; border-radius:3px; background:var(--accent); opacity:0; transition:opacity .18s ease}
-  .navbtn:hover{border-color:var(--accent); color:#fff; background:linear-gradient(165deg, #2c2f34 0%, #202226 100%); transform:translateX(2px)}
-  .navbtn:hover::before{opacity:.55}
-  .navbtn.active{background:linear-gradient(135deg, var(--accent) 0%, #d98a1f 100%); color:#1f2023; font-weight:700; border-color:var(--accent); box-shadow:0 4px 14px -4px rgba(240,160,50,.5)}
-  .navbtn.active::before{opacity:1; background:#1f2023}
+  /* güç hattı: buton aralıklarını da köprüleyecek şekilde alta/üste taşar */
+  .navbtn::before{
+    content:''; position:absolute; left:var(--rail-x); top:-10px; bottom:-10px; width:2px;
+    transform:translateX(-50%); background:var(--line); z-index:0; border-radius:2px;
+  }
+  /* hattın üzerindeki düğüm */
+  .navbtn::after{
+    content:''; position:absolute; left:var(--rail-x); top:50%; transform:translate(-50%,-50%);
+    width:13px; height:13px; border-radius:50%; background:#24262a; border:2px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-weight:900; line-height:1; color:#0b2a12; z-index:2;
+    transition:background .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .navbtn.rail-first::before{top:50%}
+  .navbtn.rail-last::before{bottom:50%}
+  .navbtn.rail-done::before{
+    background:repeating-linear-gradient(180deg, var(--green) 0 6px, rgba(70,196,106,.28) 6px 12px);
+    box-shadow:0 0 8px rgba(70,196,106,.35); animation:railFlow .9s linear infinite;
+  }
+  .navbtn.rail-done::after{content:'✓'; background:var(--green); border-color:var(--green); box-shadow:0 0 11px rgba(70,196,106,.6)}
+  .navbtn.rail-avail::after{background:var(--accent); border-color:var(--accent); animation:railPulse 1.8s ease-in-out infinite}
+  .navbtn.rail-locked::after{background:#24262a; border-color:#4a4d53}
+  .navbtn.rail-meta::after{width:9px; height:9px; border-radius:2px; transform:translate(-50%,-50%) rotate(45deg); background:var(--blue); border-color:var(--blue); box-shadow:0 0 9px rgba(58,122,254,.45)}
+  @keyframes railFlow{to{background-position:0 12px}}
+  @keyframes railPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,160,50,.55)}50%{box-shadow:0 0 0 6px rgba(240,160,50,0)}}
+
+  .navbtn:hover{border-color:var(--accent); color:#fff; transform:translateX(2px); background-position:-50% 0, 0 100%, 0 0}
+  .navbtn:hover::after{box-shadow:0 0 12px rgba(240,160,50,.55)}
+  .navbtn.active{
+    background:
+      linear-gradient(105deg, transparent 42%, rgba(255,255,255,.2) 50%, transparent 58%),
+      linear-gradient(90deg, rgba(31,32,35,.55) 0 var(--prog), transparent 0),
+      linear-gradient(135deg, var(--accent) 0%, #d98a1f 100%);
+    background-size:230% 100%, 100% 2px, 100% 100%;
+    background-position:150% 0, 0 100%, 0 0;
+    background-repeat:no-repeat;
+    color:#1f2023; font-weight:700; border-color:var(--accent); box-shadow:0 4px 16px -4px rgba(240,160,50,.55);
+  }
+  .navbtn.active::before{background:rgba(31,32,35,.5); animation:none; box-shadow:none}
+  .navbtn.active.rail-done::before{background:repeating-linear-gradient(180deg, #1f2023 0 6px, rgba(31,32,35,.35) 6px 12px)}
+  .navbtn.active::after{box-shadow:0 0 0 3px rgba(31,32,35,.35)}
+  @media(prefers-reduced-motion:reduce){
+    .navbtn.rail-done::before,.navbtn.rail-avail::after{animation:none}
+    .navbtn{transition:border-color .18s ease, color .18s ease}
+  }
   .sb-note{font-size:11px; color:var(--muted); margin-top:10px; line-height:1.4}
   .wrap{flex:1 1 auto; min-width:0; max-width:none; margin:0}
   .model{display:none}
@@ -312,7 +375,8 @@
   .rnn-secbody{overflow:hidden}
   .rnn-secbody.closed{display:none}
   /* ---- Stanford-tarzı bölüm alt-navigasyonu ---- */
-  .subnav{display:none; margin:-2px 0 10px 10px; border-left:2px solid var(--line)}
+  /* alt-navigasyon aktif butonun ARDINA giriyor → güç hattının devamı gibi hizalandı (rail-x=15px) */
+  .subnav{display:none; margin:-2px 0 10px 14px; border-left:2px solid var(--line)}
   .subnav.show{display:block}
   .subnav a{display:block; position:relative; padding:5px 8px 5px 15px; font-size:12px; color:var(--muted); cursor:pointer; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-radius:0 6px 6px 0; transition:.12s}
   .subnav a::before{content:''; position:absolute; left:-5px; top:50%; transform:translateY(-50%); width:8px; height:8px; border-radius:50%; background:var(--line); transition:.15s}
