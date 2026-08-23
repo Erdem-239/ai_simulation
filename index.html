@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608232226"></script>
-<link rel="stylesheet" href="css/style.css?v=202608232226">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608232230"></script>
+<link rel="stylesheet" href="css/style.css?v=202608232230">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 22:26 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-23 22:30 TR</div>
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
       <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
@@ -36,6 +36,7 @@
       <button class="navbtn" data-model="seq2seq">🌉 Seq2Seq + Klasik Attention</button>
       <button class="navbtn" data-model="attention">🎯 Self-Attention</button>
       <button class="navbtn" data-model="multihead">🧩 Multi-Head Attention</button>
+      <button class="navbtn" data-model="transformer">🏗️ Transformer Bloğu</button>
       <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
     </div>
   </aside>
@@ -2488,6 +2489,101 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <p class="footer">Multi-Head • paralel kafalar · farklı mercekler (W) · Concat + W_O · işbölümü · Positional Encoding · sin/cos imza</p>
   </div><!-- /model-multihead -->
 
+  <div class="model" id="model-transformer">
+
+  <h1>🏗️ Transformer Bloğu — Parçalar Tek Tuğlada Birleşiyor</h1>
+  <p class="sub">Elindeki bütün parçalar hazır: 🎯 Self-Attention, 🧩 Multi-Head, 📍 Positional Encoding. Şimdi bunları <b>tek, tekrarlanabilir bir tuğlaya</b> paketliyoruz — GPT-3'te bu tuğladan 96 tane üst üste dizili. Üç yeni fikir: <b>residual bağlantı</b> (gradyan için kestirme yol), <b>LayerNorm</b> (değerleri hizada tutan termostat) ve <b>FFN</b> (her kelimeyi derinlemesine işleyen mini bir sinir ağı).</p>
+
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🧩 Multi-Head Attention'da paralel kafaların çıktısını Concat+W<sub>O</sub> ile birleştirdin. O çıktı şimdi bu bloğun girdisi — ama önce onu derin bir ağın içinde <b>kaybolmadan</b> taşımamız gerekiyor.</div>
+
+  <div class="sechead">1) Residual bağlantı — gradyan için kestirme yol</div>
+  <div class="pts" style="border-left:3px solid #e06a6a">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">2015'te Kaiming He garip bir şey fark etti: 56 katmanlı bir ağ, 20 katmanlıdan <b>daha kötü</b> öğreniyordu — oysa fazladan katmanlar en kötü ihtimalle "hiçbir şey yapmamayı" öğrenebilmeliydi. Sorun tanıdık: 📉 RNN dersinde gördüğün <b>vanishing gradient</b> duvarı, bu sefer zamanda değil <b>derinlikte</b> — sinyal çok katmandan geçerken siliniyordu.</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Çözümü ürkütücü derecede basit: her katmana "girdiyi <b>aynen</b> geçir, üstüne sadece bir <b>düzeltme</b> ekle" de.</p>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7; text-align:center">\( \text{çıktı} = x + \text{Sublayer}(x) \)</p>
+    <div style="font-size:13px; color:#cfd3d8; margin:14px 0 8px">🎚️ Kaç blok üst üste dizildiğini değiştir → gradyanın ne kadarının hayatta kaldığını gör (0.9 = her bloğun sinyali biraz zayıflattığı varsayımı, sadece sezgi için):</div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px">
+      <span style="font-size:13px">Blok sayısı N =</span>
+      <input type="range" id="blkN" min="1" max="48" step="1" value="6" style="width:220px">
+      <b id="blkNv" style="color:var(--accent); min-width:30px">6</b>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; font-size:12.5px">
+      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#e06a6a">❌ Residual OLMADAN</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarNo" style="height:100%; background:#e06a6a; width:53%; transition:.15s"></div></div><b id="blkValNo" style="min-width:56px; text-align:right">0.53</b></div>
+      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#46c46a">✅ Residual İLE</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarYes" style="height:100%; background:#46c46a; width:100%; transition:.15s"></div></div><b id="blkValYes" style="min-width:56px; text-align:right">1.00</b></div>
+    </div>
+    <div class="callout" style="margin-top:12px; border-left-color:#e06a6a">💡 <b>Neden fark ediyor:</b> geri yayılımda türev alınca <code>x + F(x)</code> ifadesinin türevi <code>1 + F'(x)</code> olur — F'(x) ne kadar küçülürse küçülsün, o <b>+1</b> (kestirme yol / identity) her zaman orada durur. Gradyan bu servis yolundan, katmanları <b>bypass ederek</b>, sönmeden akar. LSTM'in cell-state otoyolunun mimari kardeşi.</div>
+  </div>
+
+  <div class="sechead">2) LayerNorm — değerleri hizada tutan termostat</div>
+  <div class="pts" style="border-left:3px solid #5aa0e0">
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Her katmandan sonra sayılar büyüyüp küçülebilir; bu birikince eğitim dengesizleşir. LayerNorm, <b>bir kelimenin</b> vektöründeki bütün sayıları alır, İstatistik dersindeki ortalama/varyansı kullanarak onları ortalama 0, standart sapma 1 olacak şekilde yeniden ölçekler — sonra öğrenilen γ (ölçek) ve β (kaydırma) ile son bir ince ayar yapar.</p>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">Bir kelimenin ham vektörü (d=4): z = [2.5, −1.0, 4.0, 0.5]
+ortalama μ = (2.5−1.0+4.0+0.5)/4 = 1.50
+varyans σ² = Σ(zᵢ−μ)²/4 = 3.625  →  σ ≈ 1.90
+
+normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
+→ ortalama 0, std 1'e çekildi. Sonra γ·(...)+β ile model
+   kendi ölçeğini/kaymasını öğrenir (burada γ=1, β=0 varsayıldı).</div>
+    <div class="tip">Fark: BatchNorm (CNN'lerde yaygın) bir *özelliği* bütün batch boyunca normalize eder; LayerNorm <b>tek bir kelimenin</b> bütün özelliklerini normalize eder — dizi uzunluğu değişse de çalışır, bu yüzden Transformer'a daha uygun (Ba, Kiros & Hinton, 2016).</div>
+  </div>
+
+  <div class="sechead">3) FFN — her kelimeyi derinlemesine işleyen mini ağ</div>
+  <div class="pts" style="border-left:3px solid var(--green)">
+    \[ \text{FFN}(x) = \max(0,\, xW_1+b_1)\,W_2+b_2 \]
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Bu tam olarak 🧠 Neural Network dersinde gördüğün şey: bir katman + ReLU + bir katman daha — d<sub>model</sub>'den (ör. 512) daha geniş bir ara boyuta (ör. 2048, ~4×) çıkıp geri dönen küçük bir sinir ağı. Fark şu: bu ağ <b>her kelimeye ayrı ayrı, ama aynı ağırlıklarla</b> uygulanır (position-wise) — kelimeler arasında bilgi karıştırmaz (o iş zaten Attention'ın işiydi), sadece her kelimenin kendi temsilini derinleştirir.</p>
+    <div class="callout">🎯 <b>İş bölümü:</b> Attention = "kelimeler birbirine bakıp bilgi alışverişi yapsın." FFN = "şimdi her kelime, aldığı bu bilgiyi kendi başına derinlemesine düşünsün."</div>
+  </div>
+
+  <div class="sechead">4) Bir araya getirme — tam blok</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <div style="overflow-x:auto; margin:6px 0 14px">
+      <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; min-width:660px; font-size:12px">
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 10px">Girdi</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:rgba(58,122,254,.12); border:1px solid #3a7afe; border-radius:8px; padding:8px 10px">Multi-Head<br>Attention</div>
+        <div style="color:#e06a6a; font-weight:700">⊕</div>
+        <div style="background:rgba(90,160,224,.12); border:1px solid #5aa0e0; border-radius:8px; padding:8px 10px">LayerNorm</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:rgba(70,196,106,.12); border:1px solid var(--green); border-radius:8px; padding:8px 10px">FFN</div>
+        <div style="color:#e06a6a; font-weight:700">⊕</div>
+        <div style="background:rgba(90,160,224,.12); border:1px solid #5aa0e0; border-radius:8px; padding:8px 10px">LayerNorm</div>
+        <div style="color:var(--muted)">→</div>
+        <div style="background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:8px 10px">Çıktı</div>
+      </div>
+      <div style="font-size:11px; color:var(--muted); margin-top:6px">⊕ = residual toplama (girdi + alt-katmanın çıktısı) &nbsp;·&nbsp; bu blok N kez tekrarlanır (GPT-3'te N=96)</div>
+    </div>
+    <p style="font-size:14px; color:#cfd3d8; line-height:1.7">Encoder ve decoder, bu bloktan yığınlar halinde inşa edilir. Decoder'da ayrıca <b>maskeli</b> self-attention (gelecekteki kelimeleri göremesin diye) ve encoder çıktısına bakan bir <b>cross-attention</b> katmanı daha var — ama omurga aynı: attention + residual + LayerNorm + FFN, tekrar tekrar.</p>
+    <div class="callout" style="border-left-color:var(--accent)">🏆 <b>Bütün parçalar tamam.</b> Ağaçta artık "Bilim Zaferi" bir kol boyu ötede — 📜 <b>Attention Is All You Need</b> makalesi şimdi ana dilin gibi okunmalı.</div>
+  </div>
+
+  <div class="sechead">🧠 Kendini Test Et — Transformer Bloğu</div>
+  <div class="pts">
+    <div style="font-size:13px; color:#cfd3d8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 1) Residual bağlantı (x + F(x)) hangi sorunu çözer?</div>
+      <div class="acc-body">Çok katmanlı ağlarda gradyanın <b>sönmesi/kaybolması</b> sorununu. Katman sayısı arttıkça sinyal derinlikte sönebiliyordu (56 katman, 20 katmandan kötü öğreniyordu). Residual, gradyanın katmanları bypass eden bir "kestirme yoldan" sönmeden akmasını sağlar.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 2) x + F(x)'in türevi neden özel?</div>
+      <div class="acc-body">Türev <b>1 + F'(x)</b> olur. F'(x) ne kadar küçülürse küçülsün, o sabit <b>+1</b> her zaman orada durur — gradyan asla tamamen sıfırlanmaz.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 3) LayerNorm ne yapar, BatchNorm'dan farkı ne?</div>
+      <div class="acc-body">LayerNorm <b>tek bir kelimenin</b> tüm özelliklerini normalize eder (ortalama 0, std 1, sonra öğrenilen γ/β ile ölçekler). BatchNorm ise bir özelliği batch boyunca normalize eder — dizi uzunluğu değiştiğinde sorun çıkarabilir, bu yüzden Transformer LayerNorm kullanır.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 4) FFN, Attention'dan nasıl farklı çalışır?</div>
+      <div class="acc-body">Attention kelimeler <b>arasında</b> bilgi taşır (kim kime bakıyor). FFN her kelimeyi <b>kendi başına, ayrı ayrı</b> ama aynı öğrenilmiş ağırlıklarla işler — kelimeler arası bilgi karıştırmaz, sadece her kelimenin kendi temsilini derinleştirir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 5) Bir "Transformer bloğu" hangi 4 parçadan oluşur?</div>
+      <div class="acc-body">(Multi-Head) <b>Attention</b> → residual + <b>LayerNorm</b> → <b>FFN</b> → residual + <b>LayerNorm</b>. Bu blok N kez üst üste tekrarlanır (GPT-3'te 96 kez).</div>
+    </div>
+  </div>
+
+  <p class="footer">Transformer Bloğu • residual (x+F(x)) · LayerNorm · FFN · Nx tekrar — makaleye bir adım kaldı</p>
+  </div><!-- /model-transformer -->
+
   <!-- ===================== MATEMATİK TEMELİ ===================== -->
   <div class="model" id="model-matematik">
 
@@ -4259,7 +4355,7 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     </ul>
     <div class="ped-h">📄 Ateşlediği çalışmalar</div>
     <p>GPT ailesi, BERT, ViT, ses ve protein modelleri — "foundation model" kavramının fiziksel iskeleti bu blok. Pre-norm/post-norm tartışması hâlâ sürüyor.</p>
-    <div class="ped-links"><button class="addbtn" data-ped-tree="blk" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button></div>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="blk" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="transformer" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
   <div class="sechead" id="pedia-paper">📜 Attention Is All You Need — Kurucu Metin</div>
@@ -4317,13 +4413,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608232226"></script>
-<script src="js/lesson-turev.js?v=202608232226"></script>
-<script src="js/lesson-xor.js?v=202608232226"></script>
-<script src="js/lesson-nn.js?v=202608232226"></script>
-<script src="js/lesson-trig.js?v=202608232226"></script>
+<script src="js/lesson-linreg.js?v=202608232230"></script>
+<script src="js/lesson-turev.js?v=202608232230"></script>
+<script src="js/lesson-xor.js?v=202608232230"></script>
+<script src="js/lesson-nn.js?v=202608232230"></script>
+<script src="js/lesson-trig.js?v=202608232230"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608232226"></script>
-<script src="js/app.js?v=202608232226"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608232230"></script>
+<script src="js/app.js?v=202608232230"></script>
 </body>
 </html>
