@@ -1744,7 +1744,7 @@
       sci:'Hochreiter & Schmidhuber (1997). Vanishing\'i teşhis eden adam, çözümünü de yazdı: gradyanın bozulmadan aktığı cell-state otoyolu + kapılar.',
       real:[['🌍','Google Translate (2016, GNMT)'],['🗣️','Siri/Alexa dönemi konuşma tanıma'],['📱','Klavye tahmini & otomatik tamamlama']],
       sub:['Cell state otoyolu','Forget / input / output kapıları','GRU farkı','Neden gradyan korunur','Kendini test (5 soru)']},
-    {id:'s2s',  nm:'🌉 Seq2Seq + Klasik Attention', tier:5, v:44, pre:['lstm','emb'],
+    {id:'s2s',  nm:'🌉 Seq2Seq + Klasik Attention', tier:5, v:44, pre:['lstm','emb'], tab:'seq2seq',
       d:'Encoder–decoder çeviri + Bahdanau attention: "çevirirken kaynağın neresine bakmalıyım?" — attention fikrinin doğduğu yer.',
       sci:'Seq2Seq: Sutskever, Vinyals & Le (2014). Klasik attention: Bahdanau, Cho & Bengio (2014) — "nereye bakmalıyım?" sorusuna öğrenilen cevap.',
       real:[['🔤','Nöral makine çevirisi devrimi'],['📝','Otomatik özetleme'],['💬','İlk nöral sohbet botları']],
@@ -2431,6 +2431,57 @@ function setupFloatingPanel(ids){
   document.getElementById('embReset').addEventListener('click',()=>{ words=START.map(o=>({...o})); sel=null; ghost=null; showInfo(); draw(); });
 
   showInfo(); draw();
+})();
+
+/* ---- seq2seq: Bahdanau hizalama (alignment) haritası ---- */
+(function(){
+  const svg=document.getElementById('s2sSvg'); if(!svg) return;
+  const wk=document.getElementById('s2sWork');
+  const SENT=[
+    { src:['I','love','cats'], tgt:['Ben','kedileri','seviyorum'],
+      A:[[0.85,0.08,0.07],[0.05,0.10,0.85],[0.10,0.80,0.10]] },
+    { src:['She','reads','books'], tgt:['O','kitap','okuyor'],
+      A:[[0.88,0.05,0.07],[0.06,0.08,0.86],[0.08,0.84,0.08]] }
+  ];
+  let si=0, sel=0;
+  function draw(){
+    const S=SENT[si], nS=S.src.length, nT=S.tgt.length;
+    const L=98, T=32, C=68;
+    const W=L+nS*C+14, H=T+nT*C+16;
+    let s='';
+    for(let j=0;j<nS;j++) s+='<text class="at-col" x="'+(L+j*C+C/2)+'" y="'+(T-10)+'" text-anchor="middle">'+S.src[j]+'</text>';
+    for(let i=0;i<nT;i++){
+      const dim=(sel!==null && sel!==i);
+      s+='<text class="at-row'+(sel===i?' cur':'')+'" data-row="'+i+'" x="'+(L-8)+'" y="'+(T+i*C+C/2+4)+'" text-anchor="end" opacity="'+(dim?0.4:1)+'">'+S.tgt[i]+'</text>';
+      for(let j=0;j<nS;j++){
+        const w=S.A[i][j];
+        const op=dim?0.12:(0.12+0.82*w);
+        s+='<rect x="'+(L+j*C)+'" y="'+(T+i*C)+'" width="'+(C-3)+'" height="'+(C-3)+'" rx="5" fill="#f0a032" opacity="'+op+'"/>';
+        s+='<text class="at-cell" x="'+(L+j*C+(C-3)/2)+'" y="'+(T+i*C+(C-3)/2+4)+'" text-anchor="middle" opacity="'+(dim?0.4:1)+'">%'+Math.round(w*100)+'</text>';
+      }
+    }
+    s+='<text class="at-axis" x="'+(L-8)+'" y="16" text-anchor="end">decoder ↓</text>';
+    s+='<text class="at-axis" x="'+(L+nS*C+8)+'" y="'+(T-10)+'" text-anchor="start">← encoder</text>';
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-row]').forEach(t=>{ t.style.cursor='pointer'; t.addEventListener('click',()=>{ sel=(sel===+t.dataset.row)?null:+t.dataset.row; draw(); info(); }); });
+  }
+  function info(){
+    const S=SENT[si];
+    if(sel===null){ wk.innerHTML='<b>Nasıl okunur:</b> her <b>satır</b>, decoder\'ın o kelimeyi üretirken kaynak cümlenin neresine baktığını gösterir (toplam %100). Koyu turuncu = çok dikkat.\nSol taraftaki bir kelimeye <b>tıkla</b> → sadece onun hizalamasını izle.\n\n💡 Dikkat et: hizalama <b>köşegen (diagonal) değil</b> — Türkçe ve İngilizce kelime sırası farklı olduğu için decoder, ihtiyaç duyduğu kaynak kelimeye (sırası ne olursa olsun) doğrudan atlıyor. Klasik Seq2Seq\'te bu mümkün değildi — tek bir sabit context vektörü vardı.'; return; }
+    const row=S.A[sel];
+    const rank=S.src.map((t,j)=>({t,w:row[j]})).sort((a,b)=>b.w-a.w);
+    wk.innerHTML='<b style="color:#f0a032">"'+S.tgt[sel]+'"</b> üretilirken dikkat kaynak cümlenin neresinde:\n'
+      + rank.map(r=>'  '+(r.t+'      ').slice(0,9)+' %'+Math.round(r.w*100)+'  '+'█'.repeat(Math.round(r.w*20))).join('\n')
+      + '\n\n→ En çok <b>"'+rank[0].t+'"</b>ya bakıyor — context vektörü c bu adım için <b>yeniden</b> hesaplanıyor (klasik Seq2Seq\'te tek, sabit c vardı).';
+  }
+  document.querySelectorAll('.s2sSent').forEach(b=>b.addEventListener('click',()=>{
+    si=+b.dataset.s; sel=0;
+    document.querySelectorAll('.s2sSent').forEach(x=>{ x.style.background='var(--panel)'; x.style.color='var(--text)'; x.style.border='1px solid var(--line)'; });
+    b.style.background='var(--blue)'; b.style.color='#fff'; b.style.border='none';
+    draw(); info();
+  }));
+  draw(); info();
 })();
 
 /* ---- self-attention: dikkat ısı haritası ---- */
