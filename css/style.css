@@ -94,11 +94,22 @@
   .acc.open .acc-body{display:block}
 
   /* konu (category) ve modül seviyesi accordion varyantları — Matematik Temeli için */
-  .acc-category{margin:24px 0; border-color:var(--line); border-radius:12px}
-  .acc-category > .acc-head{padding:15px 18px; font-size:17px; font-weight:700; color:var(--text); background:var(--panel2)}
-  .acc-category.open > .acc-head{color:var(--accent); border-bottom:2px solid var(--accent)}
-  .acc-category > .acc-head .ac{font-size:15px}
+  /* kategoriler: renkli kare kartlar halinde ızgara, tıklanan kart tam genişliğe açılır */
+  .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; margin:22px 0}
+  .acc-category{margin:0; border-color:var(--line); border-radius:14px; align-self:start; transition:box-shadow .2s}
+  .acc-category > .acc-head{
+    flex-direction:column; align-items:flex-start; gap:8px; padding:18px 18px 16px; min-height:118px; justify-content:center;
+    background:var(--panel2); border-left:4px solid var(--cat-color, var(--accent)); border-radius:14px;
+  }
+  .acc-category > .acc-head .cat-title{font-size:16px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px}
+  .acc-category > .acc-head .cat-desc{font-size:12px; font-weight:400; color:var(--muted); line-height:1.55}
+  .acc-category:hover > .acc-head{background:var(--panel)}
+  .acc-category.open{grid-column:1/-1; box-shadow:0 0 0 1px var(--cat-color, var(--accent)) inset}
+  .acc-category.open > .acc-head{border-radius:14px 14px 0 0; border-bottom:2px solid var(--cat-color, var(--accent))}
+  .acc-category.open > .acc-head .cat-title{color:var(--cat-color, var(--accent))}
+  .acc-category > .acc-head .ac{font-size:15px; color:var(--cat-color, var(--accent))}
   .acc-category > .acc-body{padding:8px 18px 18px; border-top:none}
+  @media(max-width:520px){ .cat-grid{grid-template-columns:1fr} }
 
   .acc-module{margin:14px 0; border-radius:9px}
   .acc-module > .acc-head{padding:11px 15px; font-size:14.5px; font-weight:700; color:var(--text)}
