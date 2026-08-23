@@ -279,20 +279,27 @@
   .subnav a.cur{color:var(--accent); font-weight:600}
   .subnav a.cur::before{background:var(--accent)}
   @media(max-width:860px){ .subnav{display:none !important} }
-  /* ---- yol haritası (tech tree) ---- */
-  #techSvg{width:100%; max-width:960px; min-width:640px; height:auto; background:#141519; border-radius:10px}
-  #techSvg text{fill:#e7e9ec; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
-  #techSvg .tsub{font-size:9.5px; fill:#9aa0a6}
-  #techSvg .tn rect{fill:#22242a; stroke-width:2; transition:.15s}
-  #techSvg .tn-done rect{stroke:#46c46a; fill:#16281c}
-  #techSvg .tn-avail rect{stroke:#f0a032; fill:#2a2416; animation:ttpulse 1.5s ease-in-out infinite}
-  #techSvg .tn-avail .tsub{fill:#f0a032}
-  #techSvg .tn-locked rect{stroke:#3a3d42; fill:#1b1c20}
-  #techSvg .tn-locked text{fill:#6f757c}
-  #techSvg .tn.sel rect{stroke-width:4}
-  #techSvg .te-off{stroke:#33363c; stroke-width:1.6; fill:none}
-  #techSvg .te-on{stroke:#46c46a; stroke-width:2.2; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.85}
-  @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.35}}
+  /* ---- yol haritası (tech tree) — Civ6 parşömen temalı ---- */
+  #techSvg{width:100%; max-width:960px; min-width:640px; height:auto; background:#c9b283; border-radius:10px; box-shadow:inset 0 0 60px rgba(70,45,10,.35)}
+  #techSvg text{fill:#3a2a12; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  #techSvg .tsub{font-size:9.5px; fill:#7a5a2a; font-weight:600}
+  #techSvg .tn rect.tn-card{fill:#f1e2ba; stroke-width:2.5; transition:.15s; filter:drop-shadow(0 3px 3px rgba(40,25,5,.35))}
+  #techSvg .tn-done rect.tn-card{stroke:#3f7d3f; fill:#e3ecd6}
+  #techSvg .tn-done .tn-icon-bg{fill:url(#tnGradDone)}
+  #techSvg .tn-done .tsub{fill:#2f6b2f}
+  #techSvg .tn-avail rect.tn-card{stroke:#b8860b; fill:#fbedc4; animation:ttpulse 1.6s ease-in-out infinite}
+  #techSvg .tn-avail .tn-icon-bg{fill:url(#tnGradAvail)}
+  #techSvg .tn-avail .tsub{fill:#a06a10; font-weight:800}
+  #techSvg .tn-locked rect.tn-card{stroke:#8a7550; fill:#b9a578; opacity:.82}
+  #techSvg .tn-locked .tn-icon-bg{fill:url(#tnGradLocked)}
+  #techSvg .tn-locked text{fill:#6b5a3a}
+  #techSvg .tn-locked .tn-emoji{opacity:.5}
+  #techSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.5}
+  #techSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
+  #techSvg .tn.sel rect.tn-card{stroke-width:4.5; filter:drop-shadow(0 0 8px rgba(184,134,11,.7))}
+  #techSvg .te-off{stroke:#9c8354; stroke-width:1.8; fill:none}
+  #techSvg .te-on{stroke:#3f7d3f; stroke-width:2.6; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.9}
+  @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
   /* ---- sol panel yeniden boyutlandırma ---- */
   .sb-resizer{position:absolute; top:0; right:-7px; width:14px; height:100%; cursor:col-resize; z-index:5; touch-action:none}
@@ -483,11 +490,15 @@
   .eq.eq-hl-f{background:rgba(255,210,74,0.10); box-shadow:inset 3px 0 0 #ffd24a; border-radius:4px; padding-left:8px; margin-left:-8px}
   .eq.eq-hl-b{background:rgba(240,160,50,0.10); box-shadow:inset 3px 0 0 #f0a032; border-radius:4px; padding-left:8px; margin-left:-8px}
   .callout.eq-hl-b{box-shadow:inset 3px 0 0 #f0a032, 0 0 0 1px rgba(240,160,50,0.3)}
-  /* ---- Civ6 tech tree v3: yatay + çağlar ---- */
-  #techSvg{min-width:1820px; background:linear-gradient(180deg,#15161b 0%,#131418 55%,#171512 100%)}
-  #techSvg .era-band{fill:rgba(255,255,255,0.018)}
-  #techSvg .era-band.alt{fill:rgba(240,160,50,0.045)}
-  #techSvg .era-lbl{fill:#8a9097; font-size:13px; letter-spacing:3px; font-weight:700}
+  /* ---- Civ6 tech tree v4: parşömen + çağlar ---- */
+  #techSvg{min-width:1980px; background:
+    radial-gradient(ellipse at 25% 15%, rgba(255,248,222,.55), transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(120,85,35,.25), transparent 60%),
+    linear-gradient(180deg,#dcc79a 0%,#cbb283 45%,#b89968 100%)}
+  #techSvg .era-band{fill:rgba(255,248,222,.28); stroke:rgba(90,61,20,.35); stroke-width:1.5}
+  #techSvg .era-band.alt{fill:rgba(120,85,35,.14); stroke:rgba(90,61,20,.35); stroke-width:1.5}
+  #techSvg .era-ribbon{fill:#5a3d14}
+  #techSvg .era-lbl{fill:#f5e7c0; font-size:13px; letter-spacing:3px; font-weight:800}
   #techSvg .tchips{font-size:12px; pointer-events:none}
   @media(max-width:720px){ #techSvg{min-width:1350px} }
   /* ---- Civilopedia ---- */
@@ -519,7 +530,7 @@
   #attSvg .at-cell{fill:#0a1f0c; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
   #attSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
   /* ---- eğlence paketi ---- */
-  #techSvg .tn.justUnlocked rect{stroke:#ffd24a; animation:ttBurst .7s ease-out 3}
+  #techSvg .tn.justUnlocked rect.tn-card{stroke:#d4900a; animation:ttBurst .7s ease-out 3}
   @keyframes ttBurst{0%{stroke-width:2}45%{stroke-width:7}100%{stroke-width:2}}
   .tt-toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:#2a2416; border:1px solid #f0a032; color:#f0d8a0; padding:12px 20px; border-radius:10px; font-size:14px; z-index:9999; box-shadow:0 6px 24px rgba(0,0,0,.5); animation:ttToast 3.3s ease forwards; text-align:center; max-width:88vw}
   @keyframes ttToast{0%{opacity:0; transform:translateX(-50%) translateY(14px)}10%{opacity:1; transform:translateX(-50%) translateY(0)}84%{opacity:1}100%{opacity:0; transform:translateX(-50%) translateY(-8px)}}
