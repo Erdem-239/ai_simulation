@@ -109,7 +109,7 @@
   .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#ccd5e8; border-top:1px solid var(--line)}
   .acc.open .acc-body{display:block}
 
-  /* konu (category) ve modül seviyesi accordion varyantları — Matematik Temeli için */
+  /* konu (category) ve modül seviyesi accordion varyantları — Yapı Taşları için */
   /* kategoriler: cafcaflı RGB kenarlıklı kartlar, 3'erli ızgara.
      .acc-category display:contents olduğu için başlık (kart) ve gövde (açılan içerik)
      doğrudan ızgara öğesi olur → açılan gövde kendi satırının ALTINA tam genişlikte
@@ -268,7 +268,7 @@
   @media(max-width:720px){ .lesson-hero{padding:14px 14px 12px} .ex-grid{grid-template-columns:1fr 1fr} }
   @media(max-width:480px){ .ex-grid{grid-template-columns:1fr} }
 
-  /* ---- Matematik Temeli: "Gerçek hayatta nerede" örnek kartları — özel tasarım (sadece bu sayfa, diğer sayfalardaki .ex-card etkilenmez) ---- */
+  /* ---- Yapı Taşları: "Gerçek hayatta nerede" örnek kartları — özel tasarım (sadece bu sayfa, diğer sayfalardaki .ex-card etkilenmez) ---- */
   #model-matematik .ex-grid{gap:14px}
   #model-matematik .ex-card{
     position:relative; overflow:hidden; --ac:#3a7afe;

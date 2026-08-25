@@ -1631,7 +1631,7 @@
   });
 })();
 
-/* ---- Matematik Temeli: açılan her kategorinin sonuna "sonraki konu" şeridi ----
+/* ---- Yapı Taşları: açılan her kategorinin sonuna "sonraki konu" şeridi ----
    HTML'e elle 6 blok eklemek yerine, kategori sırasından otomatik üretiliyor;
    kategoriler ileride yeniden sıralanırsa/eklenirse kendini günceller. */
 (function(){
@@ -1663,7 +1663,7 @@
       lbl.className='cn-label'; lbl.textContent='SON KONU';
       const done=document.createElement('span');
       done.className='cn-link'; done.style.cursor='default';
-      done.textContent='🎉 Matematik Temeli bitti — Yol Haritası\'ndan işaretlemeyi unutma';
+      done.textContent='🎉 Yapı Taşları bitti — Yol Haritası\'ndan işaretlemeyi unutma';
       strip.appendChild(lbl); strip.appendChild(done);
     }
     body.appendChild(strip);
@@ -1699,7 +1699,7 @@
   const prog=document.getElementById('techProg');
 
   const NODES=[
-    {id:'mat',  nm:'📚 Matematik Temeli', tier:0, v:50, pre:[], tab:'matematik',
+    {id:'mat',  nm:'🧱 Yapı Taşları', tier:0, v:50, pre:[], tab:'matematik',
       d:'e sayısı, logaritma, türev, zincir/bölüm kuralı, kısmi türev, istatistik ve trigonometri. Her şeyin dişli yatağı — bütün çarklar buradan güç alır.',
       sci:'Kalkülüs: Newton & Leibniz (1670\'ler, birbirinden bağımsız). e sayısı: Jacob Bernoulli bileşik faiz limitinde buldu (1683); adını, notasyonunu ve teorisini Euler verdi (1727).',
       real:[['💰','Bileşik faiz & finans matematiği'],['🦠','Salgın/nüfus modelleri (üstel yayılım, R₀)'],['☢️','Radyoaktif tarihleme (karbon-14)'],['🚀','Fizik & mühendisliğin tamamı (değişim = türev)']],
