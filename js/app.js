@@ -15,7 +15,7 @@
 
   /* ================= many-to-one: sadece t=3'te çıktı ================= */
   function buildM2o(){
-    let s='<defs><marker id="car" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8a9097"/></marker></defs>';
+    let s='<defs><marker id="car" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#7d8aab"/></marker></defs>';
     s+='<rect class="op io-a" id="io-a0" data-k="io-a0" x="0" y="124" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="145" text-anchor="middle" font-size="12">h₀=0</text>';
     s+=ar(62,140,80,140);
 
@@ -137,7 +137,7 @@
 
   /* ================= many-to-many (Tx=Ty): HER adımda kendi çıktısı var ================= */
   function buildM2mEq(){
-    let s='<defs><marker id="car" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8a9097"/></marker></defs>';
+    let s='<defs><marker id="car" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#7d8aab"/></marker></defs>';
     s+='<rect class="op io-a" id="io-a0" data-k="io-a0" x="0" y="209" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="230" text-anchor="middle" font-size="12">h₀=0</text>';
     s+=ar(62,225,80,225);
 
@@ -307,7 +307,7 @@
   function ar(x1,y1,x2,y2,dash){ return '<line class="rnn-edge" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" marker-end="url(#scar)"'+(dash?' stroke-dasharray="4,3"':'')+'/>'; }
   function wl(x,y,t,anc){ return '<text class="w-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'">'+t+'</text>'; }
 
-  let s='<defs><marker id="scar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#8a9097"/></marker></defs>';
+  let s='<defs><marker id="scar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#7d8aab"/></marker></defs>';
   s+='<rect x="10" y="55" width="290" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
 
   s+='<rect class="op io-a" id="sc_io_a0" data-k="sc_io_a0" x="0" y="124" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="145" text-anchor="middle" font-size="12">h₋₁</text>';
@@ -531,9 +531,9 @@
     const Y=v=>gy1-(gy1-gy0)*(v-Ymin)/(Ymax-Ymin);
 
     ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1;
+    ctx.strokeStyle='#1c2745'; ctx.lineWidth=1;
     for(let i=0;i<=4;i++){ const v=lo+(hi-lo)*i/4; ctx.beginPath(); ctx.moveTo(X(v),gy0); ctx.lineTo(X(v),gy1); ctx.stroke(); }
-    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.strokeStyle='#556182'; ctx.lineWidth=1.2;
     ctx.beginPath(); ctx.moveTo(gx0,Y(Math.max(Ymin,0))); ctx.lineTo(gx1,Y(Math.max(Ymin,0))); ctx.stroke();
 
     // eğri
@@ -560,7 +560,7 @@
     ctx.strokeStyle='#3a7afe'; ctx.lineWidth=2; ctx.stroke();
 
     ctx.font='10.5px Segoe UI';
-    if(o.xLabel){ ctx.fillStyle='#9aa0a6'; ctx.fillText(o.xLabel, gx1-o.xLabel.length*6-4, gy1-4); }
+    if(o.xLabel){ ctx.fillStyle='#95a2c2'; ctx.fillText(o.xLabel, gx1-o.xLabel.length*6-4, gy1-4); }
     if(o.yLabel){ ctx.fillStyle=o.yLabelColor||'#3a7afe'; ctx.fillText(o.yLabel, gx0+2, gy0+10); }
   }
 
@@ -619,7 +619,7 @@
     const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
     ctx.clearRect(0,0,W,H);
     const zeroY=Y(0);
-    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.strokeStyle='#556182'; ctx.lineWidth=1.2;
     ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
     const bw=(gx1-gx0)/vals.length;
     vals.forEach((v,i)=>{
@@ -627,7 +627,7 @@
       const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
       ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
       ctx.fillRect(x, top, w, h);
-      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillStyle='#95a2c2'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
       ctx.fillText(labels[i], x+w/2, gy1+13);
     });
     ctx.textAlign='left';
@@ -644,7 +644,7 @@
     const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
     ctx.clearRect(0,0,W,H);
     const zeroY=Y(0);
-    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.strokeStyle='#556182'; ctx.lineWidth=1.2;
     ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
     const bw=(gx1-gx0)/vals.length;
     vals.forEach((v,i)=>{
@@ -652,7 +652,7 @@
       const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
       ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
       ctx.fillRect(x, top, w, h);
-      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillStyle='#95a2c2'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
       ctx.fillText(labels[i], x+w/2, gy1+13);
     });
     ctx.textAlign='left';
@@ -668,7 +668,7 @@
     const Y=v=>gy0+(gy1-gy0)*(maxAbs-v)/(2*maxAbs);
     ctx.clearRect(0,0,W,H);
     const zeroY=Y(0);
-    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.2;
+    ctx.strokeStyle='#556182'; ctx.lineWidth=1.2;
     ctx.beginPath(); ctx.moveTo(gx0,zeroY); ctx.lineTo(gx1,zeroY); ctx.stroke();
     const bw=(gx1-gx0)/vals.length;
     vals.forEach((v,i)=>{
@@ -676,7 +676,7 @@
       const y1=Y(v), top=Math.min(zeroY,y1), h=Math.max(1,Math.abs(y1-zeroY));
       ctx.fillStyle = i===vals.length-1 ? '#f0a032' : 'rgba(58,122,254,'+(0.4+0.18*i)+')';
       ctx.fillRect(x, top, w, h);
-      ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
+      ctx.fillStyle='#95a2c2'; ctx.font='10px Segoe UI'; ctx.textAlign='center';
       ctx.fillText(labels[i], x+w/2, gy1+13);
     });
     ctx.textAlign='left';
@@ -690,13 +690,13 @@
     const cx=W/2, cy=H/2+4, R=Math.min(W,H)/2-38, n=items.length;
     const maxMag=Math.max(...items.map(g=>Math.abs(g.val)), 0.02);
     ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1;
+    ctx.strokeStyle='#1c2745'; ctx.lineWidth=1;
     [0.25,0.5,0.75,1].forEach(f=>{
       ctx.beginPath();
       for(let i=0;i<=n;i++){ const a=-Math.PI/2+i*(2*Math.PI/n); const x=cx+Math.cos(a)*R*f, y=cy+Math.sin(a)*R*f; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
       ctx.stroke();
     });
-    ctx.strokeStyle='#3a3d42'; ctx.fillStyle='#9aa0a6'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
+    ctx.strokeStyle='#334063'; ctx.fillStyle='#95a2c2'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
     items.forEach((g,i)=>{
       const a=-Math.PI/2+i*(2*Math.PI/n);
       const x=cx+Math.cos(a)*R, y=cy+Math.sin(a)*R;
@@ -1125,10 +1125,10 @@
     ctx.clearRect(0,0,W,H);
     const n=rcCostHist.length;
     const xmax=Math.max(10,n-1), ymax=Math.max(...rcCostHist,0.0001)*1.15;
-    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1; ctx.fillStyle='#8a9097'; ctx.font='10px Segoe UI';
+    ctx.strokeStyle='#1c2745'; ctx.lineWidth=1; ctx.fillStyle='#7d8aab'; ctx.font='10px Segoe UI';
     for(let j=0;j<=4;j++){ const py=(H-18)-(H-18-8)*(j/4); ctx.globalAlpha=.3; ctx.beginPath(); ctx.moveTo(PAD,py); ctx.lineTo(W-8,py); ctx.stroke(); ctx.globalAlpha=1;
       ctx.fillText(F(ymax*j/4,2), 2, py+3); }
-    ctx.fillStyle='#6f757c'; ctx.fillText('iterasyon →', W-62, H-4);
+    ctx.fillStyle='#6b7794'; ctx.fillText('iterasyon →', W-62, H-4);
     if(n<2) return;
     const X=v=>PAD+(W-PAD-8)*(v/xmax), Y=v=>(H-18)-(H-18-8)*(v/ymax);
     ctx.strokeStyle='#46c46a'; ctx.lineWidth=2; ctx.beginPath();
@@ -1394,15 +1394,15 @@
     const fn=fns[cur];
     ctx.clearRect(0,0,W,H);
     // ızgara
-    ctx.strokeStyle='#2a2c30'; ctx.lineWidth=1;
+    ctx.strokeStyle='#1c2745'; ctx.lineWidth=1;
     for(let z=ZMIN; z<=ZMAX; z++){ ctx.beginPath(); ctx.moveTo(X(z),gy0); ctx.lineTo(X(z),gy1); ctx.stroke(); }
     for(let v=Math.ceil(YMIN); v<=YMAX; v++){ ctx.beginPath(); ctx.moveTo(gx0,Y(v)); ctx.lineTo(gx1,Y(v)); ctx.stroke(); }
     // eksenler
-    ctx.strokeStyle='#5a6068'; ctx.lineWidth=1.4;
+    ctx.strokeStyle='#556182'; ctx.lineWidth=1.4;
     ctx.beginPath(); ctx.moveTo(gx0,Y(0)); ctx.lineTo(gx1,Y(0)); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(X(0),gy0); ctx.lineTo(X(0),gy1); ctx.stroke();
     // türev (kesik)
-    ctx.setLineDash([5,4]); ctx.strokeStyle='#9aa0a6'; ctx.lineWidth=1.6; curve(fn,'df'); ctx.setLineDash([]);
+    ctx.setLineDash([5,4]); ctx.strokeStyle='#95a2c2'; ctx.lineWidth=1.6; curve(fn,'df'); ctx.setLineDash([]);
     // fonksiyon (düz)
     ctx.strokeStyle=fn.color; ctx.lineWidth=2.6; curve(fn,'f');
     // tanjant
@@ -1416,7 +1416,7 @@
     // efsane
     ctx.font='11px Segoe UI';
     ctx.fillStyle=fn.color; ctx.fillText('g(z)', gx1-92, gy0+12);
-    ctx.fillStyle='#9aa0a6'; ctx.fillText('g′(z) türev', gx1-92, gy0+28);
+    ctx.fillStyle='#95a2c2'; ctx.fillText('g′(z) türev', gx1-92, gy0+28);
     ctx.fillStyle='#ffd24a'; ctx.fillText('tanjant: eğim = g′(z0) = '+F(sl,3), gx0+6, gy1-8);
   }
   function update(){
@@ -1548,11 +1548,11 @@
   const yPix=(v,yr,a)=>a.y1-(a.y1-a.y0)*(v-yr[0])/(yr[1]-yr[0]);
 
   function panel(a,yr){
-    ctx.fillStyle='#131418'; ctx.fillRect(PL,a.y0,W-PL-PR,a.y1-a.y0);
-    ctx.strokeStyle='#26282c'; ctx.lineWidth=1;
+    ctx.fillStyle='#0c1224'; ctx.fillRect(PL,a.y0,W-PL-PR,a.y1-a.y0);
+    ctx.strokeStyle='#17203a'; ctx.lineWidth=1;
     for(let gx=XMIN; gx<=XMAX; gx++){ ctx.beginPath(); ctx.moveTo(px(gx),a.y0); ctx.lineTo(px(gx),a.y1); ctx.stroke(); }
-    if(yr[0]<0 && yr[1]>0){ ctx.strokeStyle='#4a4f56'; ctx.beginPath(); ctx.moveTo(PL,yPix(0,yr,a)); ctx.lineTo(W-PR,yPix(0,yr,a)); ctx.stroke(); }
-    ctx.strokeStyle='#3a3d42'; ctx.strokeRect(PL,a.y0,W-PL-PR,a.y1-a.y0);
+    if(yr[0]<0 && yr[1]>0){ ctx.strokeStyle='#465273'; ctx.beginPath(); ctx.moveTo(PL,yPix(0,yr,a)); ctx.lineTo(W-PR,yPix(0,yr,a)); ctx.stroke(); }
+    ctx.strokeStyle='#334063'; ctx.strokeRect(PL,a.y0,W-PL-PR,a.y1-a.y0);
   }
   function path(g,yr,a,col,w,xa,xb){
     if(xb<=xa) return;
@@ -1574,7 +1574,7 @@
     path(fn.df,fn.yB,B,'#46c46a',2.6,XMIN,X);
     const y0=fn.f(X), m=fn.df(X);
     // panolar arası bağlantı
-    ctx.setLineDash([3,4]); ctx.strokeStyle='#5a6068'; ctx.lineWidth=1;
+    ctx.setLineDash([3,4]); ctx.strokeStyle='#556182'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(px(X),yPix(y0,fn.yT,T)); ctx.lineTo(px(X),yPix(m,fn.yB,B)); ctx.stroke();
     ctx.setLineDash([]);
     // tanjant
@@ -1901,15 +1901,15 @@
     }).join('');
     let btns='';
     if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'" style="background:var(--blue); color:#fff">Sayfada aç →</button> ';
-    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#1f2023">📖 Civilopedia&#39;da oku</button> ';
+    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 Civilopedia&#39;da oku</button> ';
     if(st!=='locked') btns+='<button class="addbtn" data-tg="'+n.id+'" style="background:'+(done.has(n.id)?'var(--panel); color:var(--muted); border:1px solid var(--line)':'var(--green); color:#0b2a12')+'">'+(done.has(n.id)?'↩ Hepsini geri al':'✔ Hepsini tamamladım')+'</button>';
     info.innerHTML='<b style="font-size:16px">'+esc(n.nm)+'</b>'
       +' <span style="font-size:12px; color:var(--muted)">('+(st==='done'?'araştırıldı':st==='avail'?'araştırılabilir':'kilitli — önce gerekenleri aç')+')</span>'
       +'<div style="margin:8px 0; line-height:1.6">'+n.d+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">👤 KEŞİF — Civilopedia</div>'
-      +'<div style="font-size:13px; line-height:1.6; color:#cfd3d8">'+n.sci+'</div>'
+      +'<div style="font-size:13px; line-height:1.6; color:#ccd5e8">'+n.sci+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">🌍 GERÇEK DÜNYADA NEYİ AÇTI</div>'
-      +'<div style="font-size:13px; line-height:1.5; color:#cfd3d8">'+reals+'</div>'
+      +'<div style="font-size:13px; line-height:1.5; color:#ccd5e8">'+reals+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">⛓️ GEREKENLER</div>'
       +'<div style="font-size:13px">'+chips+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">📋 ALT BAŞLIKLAR '+(st==='locked'?'(kilit açılınca işaretlenebilir)':'— bitirdiğini işaretle')+'</div>'
@@ -1964,9 +1964,38 @@
   if(anchor) anchor.insertAdjacentElement('afterend', cap);
   const capN=cap.querySelector('#sbProgN'), capBar=cap.querySelector('#sbProgBar'), capSub=cap.querySelector('#sbProgSub');
 
-  // hattın ilk/son düğümde yarım kalması için
-  btns[0].classList.add('rail-first');
-  btns[btns.length-1].classList.add('rail-last');
+  /* Sidebar sırası = teknoloji ağacının sırası. Ağaçtaki çağ (tier) ve o çağ içindeki
+     dikey konuma (v) göre diziyoruz — yani ağacı soldan sağa, yukarıdan aşağı okuma sırası.
+     Böylece HTML'deki sıra ağaçtan saparsa (ör. ağaca yeni düğüm eklenirse) panel
+     kendini otomatik düzeltir; tek doğruluk kaynağı yine ağaç. */
+  function applyTreeOrder(){
+    const api=window.__ttAPI; if(!api) return;
+    const HEAD={yol:-2, pedia:-1};              // ders değil, hep en üstte
+    const head=[], lessons=[], extra=[];        // extra = data-model'i olmayan (RNN Test)
+    btns.forEach(b=>{
+      const m=b.dataset.model;
+      if(m in HEAD){ head.push([HEAD[m], b]); return; }
+      const n=m ? api.NODES.find(x=>x.tab===m) : null;
+      if(n) lessons.push([n.tier, n.v, b]); else extra.push(b);
+    });
+    head.sort((a,b)=>a[0]-b[0]);
+    lessons.sort((a,b)=> a[0]-b[0] || a[1]-b[1]);
+    const seq=[...head.map(x=>x[1]), ...lessons.map(x=>x[2])];
+    // RNN Test bir alıştırma sayfası → konusu olan RNN dersinin hemen ardına
+    const rnnBtn=btns.find(b=>b.dataset.model==='rnn');
+    extra.forEach(e=>{ const at=seq.indexOf(rnnBtn); seq.splice(at>=0?at+1:seq.length, 0, e); });
+
+    const parent=btns[0].parentNode, note=sb.querySelector('.sb-note');
+    seq.forEach(b=>{ if(note) parent.insertBefore(b, note); else parent.appendChild(b); });
+    // alt-navigasyon aktif butonun ardında kalmalı (yeniden dizince kopmasın)
+    const sn=sb.querySelector('.subnav'), act=sb.querySelector('.navbtn.active');
+    if(sn && act) act.insertAdjacentElement('afterend', sn);
+    // güç hattı ilk/son düğümde yarım kalsın
+    btns.forEach(b=>b.classList.remove('rail-first','rail-last'));
+    seq[0].classList.add('rail-first');
+    seq[seq.length-1].classList.add('rail-last');
+  }
+  applyTreeOrder();
 
   function sync(){
     const api=window.__ttAPI, get=window.__ttGet;
@@ -2190,7 +2219,7 @@ function setupFloatingPanel(ids){
 
   /* --- 1) vana paneli --- */
   function valve(x,y,val,label,col){
-    return '<circle cx="'+x+'" cy="'+y+'" r="17" fill="#15161a" stroke="'+col+'" stroke-width="2.5"/>'
+    return '<circle cx="'+x+'" cy="'+y+'" r="17" fill="#0d1426" stroke="'+col+'" stroke-width="2.5"/>'
       +'<circle cx="'+x+'" cy="'+y+'" r="'+(3+12*val)+'" fill="'+col+'" opacity="0.55"/>'
       +'<text x="'+x+'" y="'+(y-24)+'" text-anchor="middle" font-size="11" fill="'+col+'" font-weight="700">'+label+'='+F(val,2)+'</text>';
   }
@@ -2198,7 +2227,7 @@ function setupFloatingPanel(ids){
     return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round" opacity="0.85"/>';
   }
   function lbl(x,y,t,col,sz){
-    return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+(sz||11)+'" fill="'+(col||'#cfd3d8')+'">'+t+'</text>';
+    return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+(sz||11)+'" fill="'+(col||'#ccd5e8')+'">'+t+'</text>';
   }
   function drawPipe(){
     const f=parseFloat($('lv_f').value), i=parseFloat($('lv_i').value), o=parseFloat($('lv_o').value);
@@ -2211,13 +2240,13 @@ function setupFloatingPanel(ids){
     s+=seg(20,Y,140,Y,wpx(cp),'#46c46a');
     s+=valve(163,Y,f,'f','#f0a032');
     s+=seg(186,Y,320,Y,wpx(f*cp),'#46c46a');
-    s+=lbl(255,Y-12,'f·c₋₁ = '+F(f*cp,2),'#9aa0a6');
+    s+=lbl(255,Y-12,'f·c₋₁ = '+F(f*cp,2),'#95a2c2');
     s+=lbl(120,Yb+18,'c̃ = '+F(ct,2),'#3a7afe',12);
     s+=seg(70,Yb,215,Yb,wpx(ct),'#3a7afe');
     s+=valve(238,Yb,i,'i','#f0a032');
     s+=seg(261,Yb,340,Yb,wpx(i*ct),'#3a7afe');
     s+=seg(340,Yb,340,Y+14,wpx(i*ct),'#3a7afe');
-    s+=lbl(310,Yb-12,'i·c̃ = '+F(i*ct,2),'#9aa0a6');
+    s+=lbl(310,Yb-12,'i·c̃ = '+F(i*ct,2),'#95a2c2');
     s+='<circle cx="340" cy="'+Y+'" r="15" fill="#16324f" stroke="#5aa0e0" stroke-width="2"/>'+lbl(340,Y+5,'+','#fff',16);
     s+=seg(355,Y,520,Y,wpx(c),'#46c46a');
     s+=lbl(437,Y-14,'c = '+F(c,3),'#46c46a',12.5);
@@ -2294,12 +2323,12 @@ function setupFloatingPanel(ids){
   function draw(){
     ctx.clearRect(0,0,W,H);
     // ızgara
-    ctx.strokeStyle='#26282c'; ctx.lineWidth=1;
+    ctx.strokeStyle='#17203a'; ctx.lineWidth=1;
     for(let i=-3;i<=3;i++){
       ctx.beginPath(); ctx.moveTo(px(i),0); ctx.lineTo(px(i),H); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0,py(i)); ctx.lineTo(W,py(i)); ctx.stroke();
     }
-    ctx.strokeStyle='#4a4f56'; ctx.lineWidth=1.4;
+    ctx.strokeStyle='#465273'; ctx.lineWidth=1.4;
     ctx.beginPath(); ctx.moveTo(0,CY); ctx.lineTo(W,CY); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(CX,0); ctx.lineTo(CX,H); ctx.stroke();
     const dot=a.x*b.x+a.y*b.y;
@@ -2308,7 +2337,7 @@ function setupFloatingPanel(ids){
     // izdüşüm: a'nın b üzerine gölgesi
     const t=dot/((lb*lb)||1);
     const fx=b.x*t, fy=b.y*t;
-    ctx.setLineDash([4,4]); ctx.strokeStyle='#9aa0a6'; ctx.lineWidth=1.5;
+    ctx.setLineDash([4,4]); ctx.strokeStyle='#95a2c2'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(px(a.x),py(a.y)); ctx.lineTo(px(fx),py(fy)); ctx.stroke();
     ctx.setLineDash([]);
     ctx.strokeStyle=cos>=0?'#46c46a':'#e06a6a'; ctx.lineWidth=5; ctx.globalAlpha=0.7;
@@ -2333,7 +2362,7 @@ function setupFloatingPanel(ids){
     let verdict, col;
     if(cos>0.7){ verdict='😍 Neredeyse aynı yöne bakıyorlar → <b>çok benzer</b>. Attention burada yüksek skor verirdi.'; col='#46c46a'; }
     else if(cos>0.25){ verdict='🙂 Yönler uyumlu → <b>benzer sayılır</b>.'; col='#46c46a'; }
-    else if(cos>-0.25){ verdict='😐 Neredeyse dik → <b>alakasız</b>. Nokta çarpım ~0; gölge noktaya büzüldü.'; col='#9aa0a6'; }
+    else if(cos>-0.25){ verdict='😐 Neredeyse dik → <b>alakasız</b>. Nokta çarpım ~0; gölge noktaya büzüldü.'; col='#95a2c2'; }
     else { verdict='🙃 Zıt yönler → <b>karşıt</b>. Nokta çarpım negatif; gölge geriye düştü.'; col='#e06a6a'; }
     vd.innerHTML='<span style="color:'+col+'">'+verdict+'</span>';
   }
@@ -2387,7 +2416,7 @@ function setupFloatingPanel(ids){
     bars.innerHTML=WORDS.map((w,i)=>
       '<div style="display:flex; align-items:center; gap:10px; margin:7px 0">'
       +'<span style="min-width:70px; text-align:right; font-size:13px">'+w.w+'</span>'
-      +'<div style="flex:1; background:#15161a; border-radius:6px; height:26px; overflow:hidden">'
+      +'<div style="flex:1; background:#0d1426; border-radius:6px; height:26px; overflow:hidden">'
       +'<div style="width:'+(r.ps[i]*100)+'%; height:100%; background:'+w.col+'; transition:width .25s; border-radius:6px"></div></div>'
       +'<b style="min-width:56px; font-size:13px; color:'+w.col+'">%'+(r.ps[i]*100).toFixed(1)+'</b></div>'
     ).join('');
@@ -2443,9 +2472,9 @@ function setupFloatingPanel(ids){
   }
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    ctx.strokeStyle='#26282c'; ctx.lineWidth=1;
+    ctx.strokeStyle='#17203a'; ctx.lineWidth=1;
     for(let i=-3;i<=3;i++){ ctx.beginPath(); ctx.moveTo(px(i),0); ctx.lineTo(px(i),cv.height); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0,py(i)); ctx.lineTo(cv.width,py(i)); ctx.stroke(); }
-    ctx.strokeStyle='#4a4f56'; ctx.beginPath(); ctx.moveTo(0,CY); ctx.lineTo(cv.width,CY); ctx.stroke(); ctx.beginPath(); ctx.moveTo(CX,0); ctx.lineTo(CX,cv.height); ctx.stroke();
+    ctx.strokeStyle='#465273'; ctx.beginPath(); ctx.moveTo(0,CY); ctx.lineTo(cv.width,CY); ctx.stroke(); ctx.beginPath(); ctx.moveTo(CX,0); ctx.lineTo(CX,cv.height); ctx.stroke();
     // seçili komşu bağları
     if(sel){
       neighbors(sel).forEach(n=>{
@@ -2465,7 +2494,7 @@ function setupFloatingPanel(ids){
       const on=sel===w;
       ctx.fillStyle=w.c; ctx.beginPath(); ctx.arc(px(w.x),py(w.y),on?7:5,0,7); ctx.fill();
       if(on){ ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); }
-      ctx.fillStyle='#e7e9ec'; ctx.font=(on?'bold ':'')+'12px Segoe UI';
+      ctx.fillStyle='#e9edf8'; ctx.font=(on?'bold ':'')+'12px Segoe UI';
       ctx.fillText(w.w, px(w.x)+8, py(w.y)-7);
     });
   }
@@ -2607,7 +2636,7 @@ function setupFloatingPanel(ids){
       for(let j=0;j<n;j++){
         const w=A[i][j];
         const op=dim?0.12:(0.12+0.82*w);
-        s+='<rect x="'+(L+j*C)+'" y="'+(T+i*C)+'" width="'+(C-3)+'" height="'+(C-3)+'" rx="5" fill="#46c46a" opacity="'+op+'"'+(i===j?' stroke="#e7e9ec" stroke-width="1"':'')+'/>';
+        s+='<rect x="'+(L+j*C)+'" y="'+(T+i*C)+'" width="'+(C-3)+'" height="'+(C-3)+'" rx="5" fill="#46c46a" opacity="'+op+'"'+(i===j?' stroke="#e9edf8" stroke-width="1"':'')+'/>';
         s+='<text class="at-cell" x="'+(L+j*C+(C-3)/2)+'" y="'+(T+i*C+(C-3)/2+4)+'" text-anchor="middle" opacity="'+(dim?0.4:1)+'">%'+Math.round(w*100)+'</text>';
       }
     }
@@ -2658,13 +2687,13 @@ function setupFloatingPanel(ids){
     const W=RL+D*C+10, H=T+NPOS*RH+8;
     let s='';
     for(let i=0;i<NFREQ;i++){
-      s+='<text x="'+(RL+(2*i)*C+C)+'" y="16" text-anchor="middle" font-size="9" fill="#8a9097">i='+i+'</text>';
+      s+='<text x="'+(RL+(2*i)*C+C)+'" y="16" text-anchor="middle" font-size="9" fill="#7d8aab">i='+i+'</text>';
       s+='<text x="'+(RL+2*i*C+C/2)+'" y="'+(T-6)+'" text-anchor="middle" font-size="8.5" fill="#5aa0e0">sin</text>';
       s+='<text x="'+(RL+(2*i+1)*C+C/2)+'" y="'+(T-6)+'" text-anchor="middle" font-size="8.5" fill="#f0a032">cos</text>';
     }
     for(let p=0;p<NPOS;p++){
       const dim=(sel!==null&&sel!==p);
-      s+='<text data-row="'+p+'" x="'+(RL-8)+'" y="'+(T+p*RH+RH/2+4)+'" text-anchor="end" font-size="10" fill="'+(sel===p?'#ffd24a':'#8a9097')+'" font-weight="'+(sel===p?'700':'400')+'">'+p+'</text>';
+      s+='<text data-row="'+p+'" x="'+(RL-8)+'" y="'+(T+p*RH+RH/2+4)+'" text-anchor="end" font-size="10" fill="'+(sel===p?'#ffd24a':'#7d8aab')+'" font-weight="'+(sel===p?'700':'400')+'">'+p+'</text>';
       for(let d=0;d<D;d++){
         const v=val(p,d), op=dim?0.12:(0.18+0.75*Math.abs(v));
         s+='<rect x="'+(RL+d*C)+'" y="'+(T+p*RH)+'" width="'+(C-2)+'" height="'+(RH-2)+'" rx="3" fill="'+col(v)+'" opacity="'+op.toFixed(2)+'"'+(sel===p?' stroke="#ffd24a" stroke-width="1"':'')+'/>';
@@ -2744,11 +2773,11 @@ function setupFloatingPanel(ids){
     const got=eureka.has(n.id);
     let h='<div style="margin-top:12px; border-top:1px dashed var(--line); padding-top:10px">'
       +'<div style="font-size:12px; color:#ffd24a; font-weight:700">⚡ EUREKA — konuya başlamadan bil, rozet kap'+(got?' ✓ kazanıldı':'')+'</div>'
-      +'<div style="font-size:13px; color:#cfd3d8; margin:6px 0">'+b.q+'</div>';
+      +'<div style="font-size:13px; color:#ccd5e8; margin:6px 0">'+b.q+'</div>';
     if(!got){
       h+='<button class="addbtn" id="ekReveal" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">Cevabı gör</button>'
-        +' <button class="addbtn" id="ekGot" style="background:#ffd24a; color:#1f2023; font-size:12px; padding:4px 10px">✅ Bildim → ⚡ kap</button>'
-        +'<div id="ekAns" style="display:none; margin-top:8px; background:#2a2416; border-left:3px solid #ffd24a; padding:8px 12px; border-radius:4px; font-size:13px">'+b.a+'</div>';
+        +' <button class="addbtn" id="ekGot" style="background:#ffd24a; color:#101830; font-size:12px; padding:4px 10px">✅ Bildim → ⚡ kap</button>'
+        +'<div id="ekAns" style="display:none; margin-top:8px; background:#1f2138; border-left:3px solid #ffd24a; padding:8px 12px; border-radius:4px; font-size:13px">'+b.a+'</div>';
     } else {
       h+='<div style="font-size:13px; color:#46c46a">⚡ Bu teknolojiyi önceden sezmiştin — cevap: '+b.a+'</div>';
     }
@@ -2823,19 +2852,19 @@ function setupFloatingPanel(ids){
     HEADS.forEach((h,g)=>{
       const gx=RL+g*(GW+GAP);
       s+='<text x="'+(gx+GW/2)+'" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="'+h.col+'">'+h.nm+'</text>';
-      for(let j=0;j<n;j++) s+='<text x="'+(gx+j*C+C/2)+'" y="'+(T-4)+'" text-anchor="middle" font-size="9" fill="#8a9097">'+toks[j].slice(0,3)+'</text>';
+      for(let j=0;j<n;j++) s+='<text x="'+(gx+j*C+C/2)+'" y="'+(T-4)+'" text-anchor="middle" font-size="9" fill="#7d8aab">'+toks[j].slice(0,3)+'</text>';
       for(let i=0;i<n;i++){
         const dim=(sel!==null&&sel!==i);
         for(let j=0;j<n;j++){
           const w=mats[g][i][j];
           const op=dim?0.1:(0.12+0.82*w);
-          s+='<rect x="'+(gx+j*C)+'" y="'+(T+i*C)+'" width="'+(C-3)+'" height="'+(C-3)+'" rx="4" fill="'+h.col+'" opacity="'+op+'"'+(i===j?' stroke="#e7e9ec" stroke-width="0.8"':'')+'/>';
+          s+='<rect x="'+(gx+j*C)+'" y="'+(T+i*C)+'" width="'+(C-3)+'" height="'+(C-3)+'" rx="4" fill="'+h.col+'" opacity="'+op+'"'+(i===j?' stroke="#e9edf8" stroke-width="0.8"':'')+'/>';
           s+='<text x="'+(gx+j*C+(C-3)/2)+'" y="'+(T+i*C+(C-3)/2+4)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#0a1420" opacity="'+(dim?0.35:1)+'">'+Math.round(w*100)+'</text>';
         }
       }
     });
     for(let i=0;i<n;i++){
-      s+='<text class="mh-row" data-row="'+i+'" x="'+(RL-8)+'" y="'+(T+i*C+C/2+4)+'" text-anchor="end" font-size="12" fill="'+(sel===i?'#ffd24a':'#e7e9ec')+'" font-weight="'+(sel===i?'700':'400')+'">'+toks[i]+'</text>';
+      s+='<text class="mh-row" data-row="'+i+'" x="'+(RL-8)+'" y="'+(T+i*C+C/2+4)+'" text-anchor="end" font-size="12" fill="'+(sel===i?'#ffd24a':'#e9edf8')+'" font-weight="'+(sel===i?'700':'400')+'">'+toks[i]+'</text>';
     }
     svg.setAttribute('viewBox','0 0 '+W+' '+H);
     svg.innerHTML=s;

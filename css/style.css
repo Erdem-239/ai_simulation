@@ -1,7 +1,7 @@
   /* cache-bust test touch */
   :root{
-    --bg:#1f2023; --panel:#2a2c30; --panel2:#26282c; --line:#3a3d42;
-    --text:#e7e9ec; --muted:#9aa0a6; --accent:#f0a032; --blue:#3a7afe;
+    --bg:#101830; --panel:#1c2745; --panel2:#17203a; --line:#334063;
+    --text:#e9edf8; --muted:#95a2c2; --accent:#f0a032; --blue:#3a7afe;
     --blue2:#2f6ae0; --green:#46c46a; --dot:#2f9bff;
   }
   *{box-sizing:border-box}
@@ -22,7 +22,7 @@
   .ptrow{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
   .ptcell{display:flex; align-items:center; gap:4px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 8px}
   .ptcell label{color:var(--muted); font-size:12px}
-  .ptcell input{width:54px; background:#15161a; border:1px solid var(--line); color:var(--text); border-radius:4px; padding:3px 5px; font-size:13px; text-align:center}
+  .ptcell input{width:54px; background:#0d1426; border:1px solid var(--line); color:var(--text); border-radius:4px; padding:3px 5px; font-size:13px; text-align:center}
   .ptcell .rm{cursor:pointer; color:#e06a6a; font-weight:700; margin-left:2px; border:none; background:none; font-size:15px}
   .pts .addbtn{background:var(--green); color:#0b2a12; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-weight:600; font-size:13px}
   .pts .hint{color:var(--muted); font-size:12px; margin-top:10px}
@@ -30,7 +30,7 @@
   .plots{display:flex; gap:18px; flex-wrap:wrap}
   .plotbox{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px; flex:1 1 360px}
   .plotbox h3{margin:2px 0 8px; font-size:13px; color:var(--muted); font-weight:600}
-  canvas{width:100%; height:auto; display:block; background:#1a1b1e; border-radius:4px}
+  canvas{width:100%; height:auto; display:block; background:#0d1426; border-radius:4px}
   #fit{cursor:crosshair}
 
   .controls{display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; margin:18px 0 4px}
@@ -69,7 +69,7 @@
   .step.active{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent)}
   .stephead{display:flex; align-items:center; justify-content:space-between; padding:11px 14px 7px; cursor:pointer; user-select:none}
   .stephead:hover h2{color:#fff}
-  .step h2{font-size:13.5px; margin:0; color:#dfe2e6; font-weight:600}
+  .step h2{font-size:13.5px; margin:0; color:#dbe2f2; font-weight:600}
   .step.active h2{color:var(--accent)}
   .chev{color:var(--muted); font-size:13px; transition:.2s; transform:rotate(0deg)}
   .step.open .chev{transform:rotate(90deg); color:var(--accent)}
@@ -77,22 +77,22 @@
   .eq{font-size:13.5px; margin:4px 0; font-variant-numeric:tabular-nums; overflow-x:auto; overflow-y:hidden}
   .eq .v{color:var(--accent); font-weight:600}
   sub{font-size:.72em}
-  .detail{display:none; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); font-size:12.5px; color:#cfd3d8}
+  .detail{display:none; margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); font-size:12.5px; color:#ccd5e8}
   .step.open .detail{display:block}
 
   .detail h4{color:var(--accent); margin:10px 0 4px; font-size:13px}
   .detail h4:first-child{margin-top:0}
   .detail ul{margin:6px 0; padding-left:20px}
-  .detail .tip{background:#2e2a20; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin:10px 0}
-  .work{background:#15161a; border:1px solid var(--line); border-radius:6px; padding:10px 12px; font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.85; color:#d6dadf; overflow-x:auto; margin-bottom:6px}
+  .detail .tip{background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin:10px 0}
+  .work{background:#0d1426; border:1px solid var(--line); border-radius:6px; padding:10px 12px; font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.85; color:#ccd5e8; overflow-x:auto; margin-bottom:6px}
   .work b{color:var(--accent)}
   .acc{border:1px solid var(--line); border-radius:6px; margin:8px 0; overflow:hidden}
-  .acc-head{background:var(--panel); padding:8px 11px; cursor:pointer; font-weight:600; font-size:12.5px; color:#dfe2e6; user-select:none; display:flex; align-items:center; gap:8px}
+  .acc-head{background:var(--panel); padding:8px 11px; cursor:pointer; font-weight:600; font-size:12.5px; color:#dbe2f2; user-select:none; display:flex; align-items:center; gap:8px}
   .acc-head:hover{color:#fff}
   .acc.open .acc-head{color:var(--accent)}
   .acc-head .ac{transition:.2s; display:inline-block; color:var(--muted)}
   .acc.open .acc-head .ac{transform:rotate(90deg); color:var(--accent)}
-  .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#cfd3d8; border-top:1px solid var(--line)}
+  .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#ccd5e8; border-top:1px solid var(--line)}
   .acc.open .acc-body{display:block}
 
   /* konu (category) ve modül seviyesi accordion varyantları — Matematik Temeli için */
@@ -129,12 +129,12 @@
     animation-delay:calc(var(--card-i, 0) * -1.1s), calc(var(--card-i, 0) * -0.4s);
     filter:blur(15px) saturate(1.4);
   }
-  .cat-grid > .acc-category > .acc-head:hover{background:#31343a}
+  .cat-grid > .acc-category > .acc-head:hover{background:#26325a}
   .cat-grid > .acc-category > .acc-head:hover::after{animation-duration:2.4s, 1.6s}
   .cat-grid > .acc-category > .acc-head .cat-title{font-size:19px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:9px; letter-spacing:.2px}
   .cat-grid > .acc-category > .acc-head .cat-desc{font-size:13px; font-weight:400; color:var(--muted); line-height:1.6}
   .cat-grid > .acc-category > .acc-head .ac{font-size:17px; color:var(--cat-color, var(--accent))}
-  .cat-grid > .acc-category.open > .acc-head{background:#31343a}
+  .cat-grid > .acc-category.open > .acc-head{background:#26325a}
   .cat-grid > .acc-category.open > .acc-head .cat-title{color:var(--cat-color, var(--accent))}
 
   /* açılan gövde: tam genişlik, kendi satırının altında */
@@ -208,7 +208,7 @@
   .tabpane.active{display:block}
   .tabpane h3{color:var(--accent); margin-top:22px}
   .tabpane h3:first-child{margin-top:0}
-  .callout{background:#2e2a20; border-left:3px solid var(--accent); padding:9px 13px; border-radius:4px; margin:11px 0; font-size:13px}
+  .callout{background:#242742; border-left:3px solid var(--accent); padding:9px 13px; border-radius:4px; margin:11px 0; font-size:13px}
   .num{color:var(--green); font-weight:600}
   table.calc{border-collapse:collapse; margin:12px 0; font-size:14px}
   table.calc td,table.calc th{border:1px solid var(--line); padding:7px 12px; text-align:center}
@@ -218,17 +218,17 @@
 
   /* ---- ders şablonu: hero + hikaye + gerçek hayat örnekleri ---- */
   .lesson-hero{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid var(--line); border-radius:14px; padding:20px 22px 18px; margin:4px 0 20px}
-  .lesson-hero-svg{display:block; width:100%; max-width:900px; height:auto; margin:0 auto 14px; background:#141519; border-radius:10px}
+  .lesson-hero-svg{display:block; width:100%; max-width:900px; height:auto; margin:0 auto 14px; background:#0d1426; border-radius:10px}
   .lesson-hero h1{margin:0 0 8px}
-  .lesson-hook{font-size:15px; color:#e2e5e9; line-height:1.6; margin:0; padding:12px 14px; background:#2e2a20; border-left:3px solid var(--accent); border-radius:4px}
+  .lesson-hook{font-size:15px; color:#dee4f4; line-height:1.6; margin:0; padding:12px 14px; background:#242742; border-left:3px solid var(--accent); border-radius:4px}
   .lesson-story{border-left:3px solid var(--dot)}
   .lesson-story-h{font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px}
-  .lesson-story p{font-size:14px; color:#cfd3d8; line-height:1.7; margin:0 0 10px}
+  .lesson-story p{font-size:14px; color:#ccd5e8; line-height:1.7; margin:0 0 10px}
   .lesson-story p:last-child{margin-bottom:0}
   .lesson-examples{margin:18px 0}
   .lesson-ex-h{font-size:12px; color:var(--muted); font-weight:700; letter-spacing:1px; margin-bottom:10px}
   .ex-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px}
-  .ex-card{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:13px; color:#cfd3d8; line-height:1.5; transition:.15s}
+  .ex-card{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:13px; color:#ccd5e8; line-height:1.5; transition:.15s}
   .ex-card:hover{border-color:var(--accent)}
   .ex-card .ex-ico{font-size:20px; display:block; margin-bottom:6px}
   .ex-card b{color:#fff}
@@ -237,7 +237,7 @@
   .ex-card.open .ex-more{color:var(--green)}
   .ex-card .ex-detail{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line)}
   .ex-card.open .ex-detail{display:block}
-  .ex-card .ex-detail-q{font-size:12.5px; color:#cfd3d8; font-style:italic; margin-bottom:6px}
+  .ex-card .ex-detail-q{font-size:12.5px; color:#ccd5e8; font-style:italic; margin-bottom:6px}
   .ex-card .ex-detail .work{margin:0; font-size:12px; padding:8px 10px; white-space:pre-wrap; line-height:1.9}
   .scroll-cue{display:flex; align-items:center; justify-content:center; gap:8px; text-align:center; font-size:13px; color:var(--muted); margin:20px 0 26px; padding:10px; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line)}
   .scroll-cue .sc-arrow{display:inline-block; animation:scBounce 1.6s ease-in-out infinite}
@@ -249,7 +249,7 @@
   #model-matematik .ex-grid{gap:14px}
   #model-matematik .ex-card{
     position:relative; overflow:hidden; --ac:#3a7afe;
-    background:linear-gradient(165deg, var(--panel2) 0%, #1c1e22 100%);
+    background:linear-gradient(165deg, var(--panel2) 0%, #16203a 100%);
     border:1px solid var(--line); border-radius:14px; padding:18px 16px 16px;
     box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 4px 14px -10px rgba(0,0,0,.5);
     transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
@@ -270,8 +270,8 @@
     font-size:11px; font-weight:700; letter-spacing:.3px; color:var(--ac);
     background:rgba(255,255,255,.04); border:1px solid var(--ac); border-radius:20px; transition:.15s;
   }
-  #model-matematik .ex-card.has-example:hover .ex-more{background:var(--ac); color:#14151a}
-  #model-matematik .ex-card.open .ex-more{background:var(--ac); color:#14151a}
+  #model-matematik .ex-card.has-example:hover .ex-more{background:var(--ac); color:#0d1426}
+  #model-matematik .ex-card.open .ex-more{background:var(--ac); color:#0d1426}
   #model-matematik .ex-card .ex-detail{border-top:1px dashed var(--ac)}
   #model-matematik .ex-card .ex-detail-q{padding-left:10px; border-left:2px solid var(--ac)}
 
@@ -293,10 +293,10 @@
        rail-meta  = ders değil (Yol Haritası / Civilopedia / RNN Test) → mavi elmas
      Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
      Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
-  .sb-prog{background:linear-gradient(160deg,#2c2f34,#212328); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
+  .sb-prog{background:linear-gradient(160deg,#26325a,#16203a); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
   .sb-prog-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:10px; letter-spacing:.8px; color:var(--muted); font-weight:700; margin-bottom:6px}
   .sb-prog-top b{font-size:12px; color:var(--green); font-family:Consolas,"Courier New",monospace}
-  .sb-prog-bar{height:5px; background:#191b1e; border-radius:4px; overflow:hidden}
+  .sb-prog-bar{height:5px; background:#0b1122; border-radius:4px; overflow:hidden}
   .sb-prog-bar i{display:block; height:100%; width:0; border-radius:4px; background:linear-gradient(90deg,var(--green),#8ee89e); box-shadow:0 0 10px rgba(70,196,106,.6); transition:width .55s cubic-bezier(.2,.8,.2,1)}
   .sb-prog-sub{font-size:9.5px; color:var(--muted); margin-top:5px; line-height:1.35}
 
@@ -306,7 +306,7 @@
     background:
       linear-gradient(105deg, transparent 42%, rgba(255,255,255,.14) 50%, transparent 58%),
       linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
-      linear-gradient(165deg, var(--panel) 0%, #202226 100%);
+      linear-gradient(165deg, var(--panel) 0%, #16203a 100%);
     background-size:230% 100%, 100% 2px, 100% 100%;
     background-position:150% 0, 0 100%, 0 0;
     background-repeat:no-repeat;
@@ -322,7 +322,7 @@
   /* hattın üzerindeki düğüm */
   .navbtn::after{
     content:''; position:absolute; left:var(--rail-x); top:50%; transform:translate(-50%,-50%);
-    width:13px; height:13px; border-radius:50%; background:#24262a; border:2px solid var(--line);
+    width:13px; height:13px; border-radius:50%; background:#1a2340; border:2px solid var(--line);
     display:flex; align-items:center; justify-content:center;
     font-size:9px; font-weight:900; line-height:1; color:#0b2a12; z-index:2;
     transition:background .18s ease, border-color .18s ease, box-shadow .18s ease;
@@ -335,7 +335,7 @@
   }
   .navbtn.rail-done::after{content:'✓'; background:var(--green); border-color:var(--green); box-shadow:0 0 11px rgba(70,196,106,.6)}
   .navbtn.rail-avail::after{background:var(--accent); border-color:var(--accent); animation:railPulse 1.8s ease-in-out infinite}
-  .navbtn.rail-locked::after{background:#24262a; border-color:#4a4d53}
+  .navbtn.rail-locked::after{background:#1a2340; border-color:#465273}
   .navbtn.rail-meta::after{width:9px; height:9px; border-radius:2px; transform:translate(-50%,-50%) rotate(45deg); background:var(--blue); border-color:var(--blue); box-shadow:0 0 9px rgba(58,122,254,.45)}
   @keyframes railFlow{to{background-position:0 12px}}
   @keyframes railPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,160,50,.55)}50%{box-shadow:0 0 0 6px rgba(240,160,50,0)}}
@@ -350,10 +350,10 @@
     background-size:230% 100%, 100% 2px, 100% 100%;
     background-position:150% 0, 0 100%, 0 0;
     background-repeat:no-repeat;
-    color:#1f2023; font-weight:700; border-color:var(--accent); box-shadow:0 4px 16px -4px rgba(240,160,50,.55);
+    color:#101830; font-weight:700; border-color:var(--accent); box-shadow:0 4px 16px -4px rgba(240,160,50,.55);
   }
   .navbtn.active::before{background:rgba(31,32,35,.5); animation:none; box-shadow:none}
-  .navbtn.active.rail-done::before{background:repeating-linear-gradient(180deg, #1f2023 0 6px, rgba(31,32,35,.35) 6px 12px)}
+  .navbtn.active.rail-done::before{background:repeating-linear-gradient(180deg, #101830 0 6px, rgba(31,32,35,.35) 6px 12px)}
   .navbtn.active::after{box-shadow:0 0 0 3px rgba(31,32,35,.35)}
   @media(prefers-reduced-motion:reduce){
     .navbtn.rail-done::before,.navbtn.rail-avail::after{animation:none}
@@ -445,7 +445,7 @@
   }
 
   /* ---- RNN hücre içi diyagram okları ---- */
-  .rnn-edge{stroke:#6f757c; stroke-width:2; transition:.15s}
+  .rnn-edge{stroke:#6b7794; stroke-width:2; transition:.15s}
 
   /* ---- RNN hücre içi (computational graph) ---- */
   /* 1) İleri Yayılım — solda canlı hücre diyagramı, sağda formül kartları */
@@ -510,7 +510,7 @@
   .cell-layout{display:flex; flex-direction:column; gap:10px; margin-top:0}
   .cell-diagram{min-width:0; overflow-x:auto}
   .cell-side{min-width:0}
-  #cellSvg, #scSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#10182b; border-radius:8px}
+  #cellSvg, #scSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#0e1830; border-radius:8px}
   #scSvg{max-width:100%}
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
@@ -554,9 +554,9 @@
 
   /* ---- tam türetme bloğu (defter stili) ---- */
   .deriv-h{font-size:12.5px; color:var(--accent); font-weight:700; letter-spacing:.5px; margin:6px 0 8px; text-transform:uppercase}
-  .deriv-why{font-size:12.5px; color:#cfd3d8; margin-top:2px; line-height:1.55; overflow-wrap:anywhere}
+  .deriv-why{font-size:12.5px; color:#ccd5e8; margin-top:2px; line-height:1.55; overflow-wrap:anywhere}
   .deriv-step{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-top:1px solid var(--line)}
-  .deriv-num{flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#1f2023; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px}
+  .deriv-num{flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#101830; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:2px}
   .deriv-body{flex:1 1 auto; min-width:0; overflow-x:auto}
   .deriv-body .eq,.deriv-body>p{margin:0}
   /* Geri Adım kartı: sol formül, sağ canlı grafik */
@@ -565,13 +565,13 @@
   .step-graph-formula .eq{overflow-x:visible}
   .step-graph-plot{flex:0 0 240px}
   @media(max-width:560px){ .step-graph-formula .eq{overflow-x:auto} }
-  .step-graph-plot canvas{width:100%; height:auto; background:#15161a; border:1px solid var(--line); border-radius:6px}
+  .step-graph-plot canvas{width:100%; height:auto; background:#0d1426; border:1px solid var(--line); border-radius:6px}
   .step-graph-cap{font-size:10.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.4}
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
   .loss-valley-row{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin-top:6px}
   .loss-valley-col{flex:1 1 95px; max-width:130px; text-align:center}
-  #gradRadarCanvas{background:#15161a; border:1px solid var(--line); border-radius:8px; width:100%; height:auto; aspect-ratio:1/1; max-width:130px}
-  .loss-surface-3d{width:100%; max-width:130px; height:130px; margin:0 auto; background:#10182b; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+  #gradRadarCanvas{background:#0d1426; border:1px solid var(--line); border-radius:8px; width:100%; height:auto; aspect-ratio:1/1; max-width:130px}
+  .loss-surface-3d{width:100%; max-width:130px; height:130px; margin:0 auto; background:#0e1830; border:1px solid var(--line); border-radius:8px; overflow:hidden}
   .loss-surface-3d canvas{display:block; width:100%!important; height:100%!important}
   /* sağ sütun: türetme kartları (accordion) */
   .rnn-deriv-cards .acc{margin:5px 0}
@@ -585,7 +585,7 @@
   .io-a{fill:#123a3a; stroke:#3fb6b6; cursor:pointer}
   .op-lbl{fill:#fff; font-size:15px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
   .io-lbl{fill:#fff; font-size:13px; font-weight:600; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
-  .w-lbl{fill:#cfd3d8; font-size:12px; font-style:italic; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+  .w-lbl{fill:#ccd5e8; font-size:12px; font-style:italic; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
   .cell-hl{stroke:#ffd24a !important; stroke-width:4 !important}
   text.cell-hl{fill:#ffd24a !important; stroke:none !important}
   .cell-hl-b{stroke:#f0a032 !important; stroke-width:4 !important}
@@ -607,9 +607,9 @@
   #techSvg .tchips{font-size:12px; pointer-events:none}
   @media(max-width:720px){ #techSvg{min-width:1660px} }
   /* ---- Civilopedia ---- */
-  .pedia-art p{font-size:14px; line-height:1.75; color:#cfd3d8; margin:6px 0 14px}
+  .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
   .pedia-art ul{margin:6px 0 14px; padding-left:20px}
-  .pedia-art li{font-size:13.5px; line-height:1.7; color:#cfd3d8; margin:5px 0}
+  .pedia-art li{font-size:13.5px; line-height:1.7; color:#ccd5e8; margin:5px 0}
   .ped-h{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin:14px 0 4px}
   .ped-h:first-child{margin-top:0}
   .ped-links{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
@@ -619,35 +619,35 @@
   .ped-card{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; flex:0 1 auto; max-width:290px}
   .ped-card b{font-size:13px}
   .ped-card span{color:var(--muted); font-size:11.5px}
-  .ped-card i{color:#cfd3d8; font-size:11.5px}
+  .ped-card i{color:#ccd5e8; font-size:11.5px}
   .ped-ava{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; color:#fff; flex:0 0 44px; border:2px solid rgba(255,255,255,.25); background:linear-gradient(135deg,#3a7afe,#7c5cf6)}
   .ped-card:nth-child(2) .ped-ava{background:linear-gradient(135deg,#46c46a,#2a8f8f)}
   .ped-card:nth-child(3) .ped-ava{background:linear-gradient(135deg,#f0a032,#e06a6a)}
   .ped-card:nth-child(4) .ped-ava{background:linear-gradient(135deg,#e06a6a,#a34ad1)}
   .ped-stat{color:#46c46a; font-weight:700}
-  #lstmPipe{display:block; width:100%; max-width:1100px; min-width:620px; height:auto; margin:0 auto; background:#141519; border-radius:10px}
+  #lstmPipe{display:block; width:100%; max-width:1100px; min-width:620px; height:auto; margin:0 auto; background:#0d1426; border-radius:10px}
   /* ---- self-attention ısı haritası ---- */
-  #attSvg{display:block; width:100%; max-width:620px; min-width:330px; height:auto; margin:0 auto; background:#141519; border-radius:10px}
-  #attSvg .at-col,#attSvg .at-row{fill:#e7e9ec; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
+  #attSvg{display:block; width:100%; max-width:620px; min-width:330px; height:auto; margin:0 auto; background:#0d1426; border-radius:10px}
+  #attSvg .at-col,#attSvg .at-row{fill:#e9edf8; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
   #attSvg .at-row{cursor:pointer}
   #attSvg .at-row:hover{fill:#fff}
   #attSvg .at-row.cur{fill:var(--accent); font-weight:700}
   #attSvg .at-cell{fill:#0a1f0c; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
-  #attSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
+  #attSvg .at-axis{fill:#6b7794; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
 
   /* ---- seq2seq: Bahdanau hizalama haritası (attSvg ile aynı görsel dil) ---- */
-  #s2sSvg{display:block; width:100%; max-width:560px; min-width:300px; height:auto; margin:0 auto; background:#141519; border-radius:10px}
-  #s2sSvg .at-col,#s2sSvg .at-row{fill:#e7e9ec; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
+  #s2sSvg{display:block; width:100%; max-width:560px; min-width:300px; height:auto; margin:0 auto; background:#0d1426; border-radius:10px}
+  #s2sSvg .at-col,#s2sSvg .at-row{fill:#e9edf8; font-size:12.5px; font-family:"Segoe UI",Arial,sans-serif}
   #s2sSvg .at-row{cursor:pointer}
   #s2sSvg .at-row:hover{fill:#fff}
   #s2sSvg .at-row.cur{fill:var(--accent); font-weight:700}
   #s2sSvg .at-cell{fill:#1f1400; font-size:12px; font-weight:700; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
-  #s2sSvg .at-axis{fill:#6f757c; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
+  #s2sSvg .at-axis{fill:#6b7794; font-size:10px; font-family:"Segoe UI",Arial,sans-serif}
   @media(max-width:720px){ #s2sSvg{min-width:0} }
   /* ---- eğlence paketi ---- */
   #techSvg .tn.justUnlocked rect.tn-card{stroke:#d4900a; animation:ttBurst .7s ease-out 3}
   @keyframes ttBurst{0%{stroke-width:2}45%{stroke-width:7}100%{stroke-width:2}}
-  .tt-toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:#2a2416; border:1px solid #f0a032; color:#f0d8a0; padding:12px 20px; border-radius:10px; font-size:14px; z-index:9999; box-shadow:0 6px 24px rgba(0,0,0,.5); animation:ttToast 3.3s ease forwards; text-align:center; max-width:88vw}
+  .tt-toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); background:#1f2138; border:1px solid #f0a032; color:#f0d8a0; padding:12px 20px; border-radius:10px; font-size:14px; z-index:9999; box-shadow:0 6px 24px rgba(0,0,0,.5); animation:ttToast 3.3s ease forwards; text-align:center; max-width:88vw}
   @keyframes ttToast{0%{opacity:0; transform:translateX(-50%) translateY(14px)}10%{opacity:1; transform:translateX(-50%) translateY(0)}84%{opacity:1}100%{opacity:0; transform:translateX(-50%) translateY(-8px)}}
   .tt-confetti{position:fixed; top:8vh; width:9px; height:9px; border-radius:2px; z-index:9998; pointer-events:none; animation:ttFall 1.7s ease-in forwards}
   @keyframes ttFall{0%{opacity:1; top:8vh}100%{opacity:0; top:82vh}}
@@ -656,7 +656,7 @@
   .wond.built{opacity:1; border-color:#46c46a; background:#16281c}
   /* ---- RNN interaktif hesap kartları (linreg stili) ---- */
   .rc-card{margin-top:4px}
-  .rc-eq{font-size:14px; margin:7px 0; font-variant-numeric:tabular-nums; line-height:1.6; color:#dfe2e6}
+  .rc-eq{font-size:14px; margin:7px 0; font-variant-numeric:tabular-nums; line-height:1.6; color:#dbe2f2}
   .rc-eq .sb{color:var(--muted)}
   .rc-eq .rv{color:var(--accent); font-weight:700}
   .rc-hd{font-size:12.5px; color:var(--accent); font-weight:700; margin:12px 0 2px}
@@ -666,7 +666,7 @@
   @media(max-width:720px){ .rnn-formmap{position:static; box-shadow:none} }
   .fm-row{display:flex; gap:11px; align-items:baseline; margin:7px 0; font-size:13.5px; line-height:1.6}
   .fm-tag{flex:0 0 76px; text-align:center; font-size:10.5px; font-weight:700; letter-spacing:.5px; padding:3px 0; border-radius:20px; white-space:nowrap}
-  .fm-eq{font-variant-numeric:tabular-nums; color:#e2e5e9}
+  .fm-eq{font-variant-numeric:tabular-nums; color:#dee4f4}
   .fm-eq .mut{color:var(--muted)}
   .fm-eq b{color:#fff; font-weight:600}
   .fm-t-ileri{background:#12304c; color:#8ec5ff}
