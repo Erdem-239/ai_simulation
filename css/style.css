@@ -326,10 +326,12 @@
   .navbtn{
     --rail-x:15px; --prog:0%; --pc:var(--green);
     display:block; width:100%; text-align:left; position:relative; overflow:visible;
+    /* iç dolgu da bulunduğu çağın tonunu taşır: sol-üstte era rengi belirgin, sağ-altta
+       koyu laciverte eriyor — kutu kenarlıkla aynı bilgiyi kutunun İÇİNDE de tekrarlıyor */
     background:
       linear-gradient(105deg, transparent 42%, rgba(255,255,255,.14) 50%, transparent 58%),
       linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
-      linear-gradient(165deg, var(--panel) 0%, #16203a 100%);
+      linear-gradient(160deg, rgba(var(--era-c,51,64,99),.32) 0%, rgba(var(--era-c,51,64,99),.10) 40%, #16203a 78%);
     background-size:230% 100%, 100% 2px, 100% 100%;
     background-position:150% 0, 0 100%, 0 0;
     background-repeat:no-repeat;
