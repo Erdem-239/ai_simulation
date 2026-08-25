@@ -1987,6 +1987,35 @@
 
     const parent=btns[0].parentNode, note=sb.querySelector('.sb-note');
     seq.forEach(b=>{ if(note) parent.insertBefore(b, note); else parent.appendChild(b); });
+
+    /* Kenarlık rengi = dersin ağaçtaki ÇAĞI. Böylece renkler süs değil, bilgi:
+       düğüm noktası "ne kadar ilerledim"i, kenarlık "hangi çağdayım"ı söylüyor.
+       Renkleri anlamlı kılmak için çağ başlarına küçük birer ayraç etiketi giriyor. */
+    const ERAC=[
+      {t0:0,  t1:1,  c:'74,134,255',  nm:'📜 TEMELLER ÇAĞI'},
+      {t0:2,  t1:3,  c:'163,74,209',  nm:'⚙️ NÖRAL ÇAĞ'},
+      {t0:4,  t1:6,  c:'47,182,168',  nm:'🌉 DİZİ MODELLEME ÇAĞI'},
+      {t0:7,  t1:8,  c:'240,115,58',  nm:'🎯 TRANSFORMER ÇAĞI'},
+      {t0:9,  t1:10, c:'255,210,74',  nm:'🏆 BİLİM ZAFERİ'}
+    ];
+    const META='90,120,216';
+    sb.querySelectorAll('.sb-era').forEach(e=>e.remove());
+    let curEra=null;
+    seq.forEach(b=>{
+      const m=b.dataset.model;
+      const n=m ? api.NODES.find(x=>x.tab===m) : null;
+      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/Civilopedia/RNN Test)
+      const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
+      if(!e) return;
+      b.style.setProperty('--era-c', e.c);
+      if(e!==curEra){
+        curEra=e;
+        const lab=document.createElement('div');
+        lab.className='sb-era'; lab.textContent=e.nm;
+        lab.style.setProperty('--era-c', e.c);
+        parent.insertBefore(lab, b);
+      }
+    });
     // alt-navigasyon aktif butonun ardında kalmalı (yeniden dizince kopmasın)
     const sn=sb.querySelector('.subnav'), act=sb.querySelector('.navbtn.active');
     if(sn && act) act.insertAdjacentElement('afterend', sn);
@@ -2035,6 +2064,21 @@
 
   window.__railSync=sync;
   sync();
+})();
+
+/* ---- kutu boya-eşitleyici ----
+   HTML'de ~60 kutuda inline `border-left:3px solid X` var (her biri kendi konusunun
+   rengini taşıyor). CSS bu inline rengi okuyamadığı için, kutunun çerçevesi ve hover
+   parıltısı ile sol kenarı farklı renklerde kalırdı. Burada hesaplanmış sol-kenar
+   rengini okuyup kutunun --bc değişkenine yazıyoruz → üç şey de aynı renge oturuyor.
+   Sadece inline border-left'i OLAN kutulara dokunuyoruz; diğerleri CSS'teki tip
+   rengini (leylak/mor/altın/turkuaz) korusun diye elleniyor değil. */
+(function(){
+  const boxes=document.querySelectorAll('.pts[style*="border-left"], .callout[style*="border-left"], .tip[style*="border-left"]');
+  boxes.forEach(el=>{
+    const m=getComputedStyle(el).borderLeftColor.match(/[\d.]+/g);
+    if(m && m.length>=3) el.style.setProperty('--bc', m.slice(0,3).join(','));
+  });
 })();
 
 /* ---- sol panel: sürüklenebilir genişlik ---- */

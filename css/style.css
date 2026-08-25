@@ -16,8 +16,22 @@
   /* MathJax geniş formülleri (ör. yan yana iki denklem) dar ekranda sayfayı değil kendi kutusunu taşırsın */
   mjx-container{overflow-x:auto; overflow-y:hidden; max-width:100%}
 
+  /* ---- KUTU KİMLİK RENKLERİ ------------------------------------------------
+     Her kutu tipi kendi rengini taşır; hover'da kenarlık canlanıp yumuşak bir
+     parıltı bırakır. Renk 3 kanallı liste (--bc: r,g,b) olarak tutuluyor ki
+     aynı renkten farklı saydamlıklarda kenarlık + parıltı türetebilelim.
+     HTML'de zaten ~60 kutuda inline `border-left:3px solid X` var; onları
+     EZMİYORUZ — js/app.js'teki boya-eşitleyici o rengi okuyup --bc'ye yazıyor,
+     böylece kutunun sol kenarı, çerçevesi ve parıltısı aynı renkte oluyor. */
+  .pts        {--bc:90,120,216}   /* genel içerik  — leylak-mavi */
+  .lesson-story{--bc:163,74,209}  /* hikâye        — mor */
+  .callout    {--bc:240,160,50}   /* yönlendirme   — altın */
+  .tip        {--bc:47,182,168}   /* ipucu         — turkuaz */
+  .work       {--bc:47,182,168}   /* hesap/kod     — turkuaz */
+
   /* ---- nokta editörü ---- */
-  .pts{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:11px 13px; margin-bottom:12px}
+  .pts{background:var(--panel2); border:1px solid rgba(var(--bc),.42); border-radius:8px; padding:11px 13px; margin-bottom:12px; transition:border-color .22s ease, box-shadow .22s ease}
+  .pts:hover{border-color:rgba(var(--bc),.72); box-shadow:0 10px 28px -18px rgba(var(--bc),.65)}
   .pts h3{margin:0 0 7px; font-size:13px; color:var(--accent)}
   .ptrow{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
   .ptcell{display:flex; align-items:center; gap:4px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 8px}
@@ -83,8 +97,8 @@
   .detail h4{color:var(--accent); margin:10px 0 4px; font-size:13px}
   .detail h4:first-child{margin-top:0}
   .detail ul{margin:6px 0; padding-left:20px}
-  .detail .tip{background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin:10px 0}
-  .work{background:#0d1426; border:1px solid var(--line); border-radius:6px; padding:10px 12px; font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.85; color:#ccd5e8; overflow-x:auto; margin-bottom:6px}
+  .detail .tip{--bc:240,160,50; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin:10px 0}
+  .work{background:#0d1426; border:1px solid rgba(var(--bc),.32); border-radius:6px; padding:10px 12px; font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.85; color:#ccd5e8; overflow-x:auto; margin-bottom:6px}
   .work b{color:var(--accent)}
   .acc{border:1px solid var(--line); border-radius:6px; margin:8px 0; overflow:hidden}
   .acc-head{background:var(--panel); padding:8px 11px; cursor:pointer; font-weight:600; font-size:12.5px; color:#dbe2f2; user-select:none; display:flex; align-items:center; gap:8px}
@@ -208,7 +222,16 @@
   .tabpane.active{display:block}
   .tabpane h3{color:var(--accent); margin-top:22px}
   .tabpane h3:first-child{margin-top:0}
-  .callout{background:#242742; border-left:3px solid var(--accent); padding:9px 13px; border-radius:4px; margin:11px 0; font-size:13px}
+  /* border kısayolu ÖNCE, border-left SONRA: sol kenar kalın+renkli kalırken
+     diğer üç kenar da kutunun kimlik rengini alıyor. Inline border-left-color
+     bildirimleri yalnızca sol kenarın rengini ezer, bu kural bozulmaz. */
+  .callout{background:#242742; border:1px solid rgba(var(--bc),.38); border-left:3px solid var(--accent); padding:9px 13px; border-radius:4px; margin:11px 0; font-size:13px; transition:border-color .22s ease, box-shadow .22s ease}
+  .callout:hover{border-color:rgba(var(--bc),.62); box-shadow:0 8px 24px -16px rgba(var(--bc),.6)}
+  .callout:hover{border-left-color:rgb(var(--bc))}
+  /* .tip'in tek kuralı `.detail .tip` idi; sayfalardaki 28 serbest .tip kutusu
+     stilsiz kalıyordu — kimlik rengiyle birlikte artık onlar da kutu görünümünde */
+  .tip{background:#242742; border:1px solid rgba(var(--bc),.38); border-left:3px solid rgb(var(--bc)); padding:8px 12px; border-radius:4px; margin:10px 0; font-size:13px; transition:border-color .22s ease, box-shadow .22s ease}
+  .tip:hover{border-color:rgba(var(--bc),.62); box-shadow:0 8px 24px -16px rgba(var(--bc),.6)}
   .num{color:var(--green); font-weight:600}
   table.calc{border-collapse:collapse; margin:12px 0; font-size:14px}
   table.calc td,table.calc th{border:1px solid var(--line); padding:7px 12px; text-align:center}
@@ -310,10 +333,17 @@
     background-size:230% 100%, 100% 2px, 100% 100%;
     background-position:150% 0, 0 100%, 0 0;
     background-repeat:no-repeat;
-    color:var(--text); border:1px solid var(--line); border-radius:10px;
+    color:var(--text); border:1px solid rgba(var(--era-c, 51,64,99),.55); border-radius:10px;
     padding:11px 13px 11px 34px; margin-bottom:8px; cursor:pointer; font-size:14px;
     transition:border-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease, background-position .6s ease;
   }
+  /* Sidebar kenarlık rengi = dersin ağaçtaki ÇAĞI (era). Düğüm noktası ilerlemeyi,
+     kenarlık ise hangi çağa ait olduğunu gösterir — iki ayrı bilgi, iki ayrı kanal. */
+  .sb-era{
+    position:relative; margin:16px 0 7px; padding-left:34px;
+    font-size:9.5px; letter-spacing:1.3px; font-weight:800; color:rgb(var(--era-c));
+  }
+  .sb-era::before{content:''; position:absolute; left:15px; top:-10px; bottom:-10px; width:2px; transform:translateX(-50%); background:var(--line); border-radius:2px}
   /* güç hattı: buton aralıklarını da köprüleyecek şekilde alta/üste taşar */
   .navbtn::before{
     content:''; position:absolute; left:var(--rail-x); top:-10px; bottom:-10px; width:2px;
@@ -340,7 +370,7 @@
   @keyframes railFlow{to{background-position:0 12px}}
   @keyframes railPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,160,50,.55)}50%{box-shadow:0 0 0 6px rgba(240,160,50,0)}}
 
-  .navbtn:hover{border-color:var(--accent); color:#fff; transform:translateX(2px); background-position:-50% 0, 0 100%, 0 0}
+  .navbtn:hover{border-color:rgb(var(--era-c, 240,160,50)); color:#fff; transform:translateX(2px); background-position:-50% 0, 0 100%, 0 0; box-shadow:0 6px 20px -9px rgba(var(--era-c, 240,160,50),.7)}
   .navbtn:hover::after{box-shadow:0 0 12px rgba(240,160,50,.55)}
   .navbtn.active{
     background:
