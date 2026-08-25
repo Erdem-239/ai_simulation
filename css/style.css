@@ -657,8 +657,17 @@
      zaten yüklü serif fontlar zincirleniyor. Kapsam: sidebar butonu + sayfa başlığı
      + Zekapedia'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
      kalanındaki paylaşılan .sechead'lere DOKUNULMUYOR.  */
-  .navbtn-zeka{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
-  .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:400; letter-spacing:.2px}
+  /* Sadece font ailesi değişince gözle fark edilmeyebiliyor (bazı Android
+     cihazlarda Georgia/Times yok, sisteme en yakın serif'e düşüyor). Bu yüzden
+     stil KATMANLI: italik + kalın + eski-altın/yaldız rengi — kitabın cildindeki
+     yaldızlı başlık gibi, hangi cihazda olursa olsun kesin ayrışsın. */
+  .navbtn-zeka{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-style:italic; font-weight:700; letter-spacing:.3px; color:#e3c26b}
+  .navbtn-zeka:hover{color:#f5d98a}
+  /* .navbtn.active (0,2,0) ile .navbtn-zeka:hover (0,2,0) eşit özgüllükte —
+     imleç Zekapedia AKTİFKEN üstünde dururken altın rengin turuncu zemini
+     ezmemesi için üç sınıflı bu kural (0,3,0) ile açıkça kazandırılıyor */
+  .navbtn.active.navbtn-zeka, .navbtn.active.navbtn-zeka:hover{color:#101830}
+  .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:700; font-style:italic; letter-spacing:.2px; color:#e3c26b}
   #model-pedia .sechead{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
   .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
   .pedia-art ul{margin:6px 0 14px; padding-left:20px}
