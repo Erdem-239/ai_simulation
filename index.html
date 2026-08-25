@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608250633"></script>
-<link rel="stylesheet" href="css/style.css?v=202608250633">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608250641"></script>
+<link rel="stylesheet" href="css/style.css?v=202608250641">
 </head>
 <body>
 <div class="applayout">
@@ -20,13 +20,13 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-25 06:33 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-25 06:41 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
       <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
-      <button class="navbtn" data-model="matematik">📚 Matematik Temeli</button>
+      <button class="navbtn" data-model="matematik">🧱 Yapı Taşları</button>
       <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
       <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
       <button class="navbtn" data-model="neural">🧠 Neural Network</button>
@@ -2453,7 +2453,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
 
   <div class="sechead">4) 📍 Positional Encoding — sıranın imzası</div>
   <div class="pts" style="border-left:3px solid #5aa0e0">
-    <div class="callout" style="margin:0 0 14px">🔗 <b>Kaldığımız yer:</b> Matematik Temeli → Trigonometri modülünde formülü ve 4 boyutluk mini bir örneği görmüştün: \( PE(pos,2i)=\sin(pos/10000^{2i/d}) \), \( PE(pos,2i{+}1)=\cos(pos/10000^{2i/d}) \). Self-Attention tüm kelimelere <b>aynı anda</b> baktığı için (RNN gibi sırayla okumadığı için) "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" sırasız aynı kelime çorbasına döner — Positional Encoding, her pozisyona sinüs/kosinüs dalgalarından örülmüş benzersiz bir "imza" ekleyerek bunu çözer. Aşağıda gerçek boyutuna (d=12) yakın bir versiyonunu canlı görüyorsun.</div>
+    <div class="callout" style="margin:0 0 14px">🔗 <b>Kaldığımız yer:</b> Yapı Taşları → Trigonometri modülünde formülü ve 4 boyutluk mini bir örneği görmüştün: \( PE(pos,2i)=\sin(pos/10000^{2i/d}) \), \( PE(pos,2i{+}1)=\cos(pos/10000^{2i/d}) \). Self-Attention tüm kelimelere <b>aynı anda</b> baktığı için (RNN gibi sırayla okumadığı için) "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" sırasız aynı kelime çorbasına döner — Positional Encoding, her pozisyona sinüs/kosinüs dalgalarından örülmüş benzersiz bir "imza" ekleyerek bunu çözer. Aşağıda gerçek boyutuna (d=12) yakın bir versiyonunu canlı görüyorsun.</div>
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Her <b>satır</b> bir pozisyon (0–15), her <b>sütun</b> bir boyut çifti (i=0 en hızlı dalga, i=5 en yavaş). Turuncu = pozitif değer, mavi = negatif; renk ne kadar koyuysa değer o kadar uçta (±1'e yakın). Bir <b>pozisyon numarasına tıkla</b> → o satırın 12 sayılık imzasını oku.</div>
     <div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
     <div class="work" id="posWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
@@ -2590,7 +2590,7 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <!-- ===================== MATEMATİK TEMELİ ===================== -->
   <div class="model" id="model-matematik">
 
-  <h1>Matematik Temeli — Aktivasyon Fonksiyonlarını Elle Çıkarmak İçin</h1>
+  <h1>🧱 Yapı Taşları — Aktivasyon Fonksiyonlarını Elle Çıkarmak İçin</h1>
   <p class="sub">Ders-kitabı gibi: her konu <b>kısa teori → çözümlü örnek → alıştırma</b>. Buradaki her şey doğrudan sigmoid/tanh/ReLU türevlerinde kullanılıyor.</p>
 
   <div class="callout">📖 <b>Nasıl çalışılır (Khan Academy usulü):</b> Soruyu aç → <b>önce kendin dene</b> (kağıt kalem!) → takılırsan <b>💡 İpucu</b> → sonra <b>✅ Çözüm</b> ile karşılaştır. Her modülün başlığında ilerleme rozetin var; hepsini çözünce yeşile döner. Ezber değil, el alışkanlığı hedefliyoruz.</div>
@@ -3816,7 +3816,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     Bu kuralların sayfadaki kullanım yerleri: &nbsp;📈 <b>Lineer Regresyon</b> → zincir kuralı + limit tanımıyla \(\partial E/\partial\Theta\) ispatları (ve MSE = hata varyansı). &nbsp;🔁 <b>RNN</b> → aynı zincir kuralı zaman boyunca (BPTT) + tanh türevi \((1-h^{2})\). &nbsp;📊 <b>Aktivasyon</b> → e'nin hikâyesi, \(\sigma'=\sigma(1-\sigma)\) ispatı ve canlı zincir (dişli) simülasyonu. &nbsp;🧠 <b>Neural Network</b> → ağırlık başlatma normal dağılımdan, kayıp fonksiyonu çapraz entropiden gelir. &nbsp;🧭 <b>Multi-Head Attention</b> → Positional Encoding'in sin/cos formülü buradan geliyor.
   </div>
 
-  <p class="footer">Matematik temeli • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev · istatistik · trigonometri</p>
+  <p class="footer">Yapı Taşları • üstel · logaritma/ln · türev · zincir/bölüm kuralı · parçalı · (ileri) kısmi türev · istatistik · trigonometri</p>
   </div><!-- /model-matematik -->
 
 
@@ -4008,7 +4008,7 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   <h1>📖 Civilopedia — Kâşifler, Keşifler ve Gerçek Dünya</h1>
   <p class="sub">Ağaçtaki her teknolojinin tam ansiklopedi maddesi: <b>kim buldu, nasıl buldu, dünyayı nasıl değiştirdi</b> — rakamlarla, hikâyelerle. Soldaki fihristten atla ya da ağaçtan "📖 Civilopedia'da oku" ile gel.</p>
 
-  <div class="sechead" id="pedia-mat">📚 Matematik Temeli — e Sayısı ve Kalkülüs</div>
+  <div class="sechead" id="pedia-mat">🧱 Yapı Taşları — e Sayısı ve Kalkülüs</div>
   <div class="pts pedia-art">
     <p class="ped-hook">🌌 Cebindeki telefon, insanı Ay'a indiren bilgisayardan milyonlarca kat güçlü — ve yaptığı hemen her hesabın içinde, 340 yıl önce sıradan bir faiz sorusundan doğan sessiz bir sayı dolaşıyor: <b>e</b>. Bakteriler, salgınlar, borçlar ve soğuyan yıldızlar... Evren, büyümeyi ve çürümeyi hep aynı dille yazıyor.</p>
     <div class="ped-h">👤 Kâşifler</div>
@@ -4416,13 +4416,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608250633"></script>
-<script src="js/lesson-turev.js?v=202608250633"></script>
-<script src="js/lesson-xor.js?v=202608250633"></script>
-<script src="js/lesson-nn.js?v=202608250633"></script>
-<script src="js/lesson-trig.js?v=202608250633"></script>
+<script src="js/lesson-linreg.js?v=202608250641"></script>
+<script src="js/lesson-turev.js?v=202608250641"></script>
+<script src="js/lesson-xor.js?v=202608250641"></script>
+<script src="js/lesson-nn.js?v=202608250641"></script>
+<script src="js/lesson-trig.js?v=202608250641"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608250633"></script>
-<script src="js/app.js?v=202608250633"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608250641"></script>
+<script src="js/app.js?v=202608250641"></script>
 </body>
 </html>
