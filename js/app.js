@@ -1802,12 +1802,45 @@
     return 'locked';
   }
 
-  const W=2320, H=680;
-  const X=n=>125+n.tier*205;
-  const Y=n=>100+(H-190)*n.v/100;
+  /* Yatay (masaüstü): tier→X, v→Y — çağlar soldan sağa sütun.
+     Dikey (mobil, ≤BP_VERT): tier→Y, v→X — çağlar yukarıdan aşağı satır.
+     İkisi de aynı X(n)/Y(n) arayüzünü sunduğu için kart çizim kodu, alt başlık
+     metinleri vb. HİÇ değişmiyor — sadece layout() hangi eksenin ne anlama
+     geldiğini yeniden tanımlıyor. render() her çağrıldığında güncel pencere
+     genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
+  const BP_VERT=720;
+  let VERT=window.innerWidth<=BP_VERT;
   const NW=n=>n.crown?208:184, NH=78;
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
+  let W,H,X,Y;
+  function layout(){
+    if(VERT){
+      const mX=100, Wv=680, rowSp=172, topM=150, botM=90;
+      const maxTier=Math.max(...NODES.map(n=>n.tier));
+      // Yatay moddaki v-yüzdesini AYNEN kullanırsak dar mobil genişlikte 3 düğümlü
+      // bir satırda kartlar üst üste biner (v'ler hesap edilirken 456px'lik dar bir
+      // eksen değil, geniş yatay eksen düşünülmüştü). Bunun yerine: aynı çağdaki
+      // (tier) düğümleri v'ye göre sırala (yatay moddaki okuma sırasını korumak için),
+      // sonra sayılarına göre EŞİT ARALIKLI diz — kaç düğüm olursa olsun çakışma
+      // garantili önlenir (1 düğüm→ortada, 2→uçlarda, 3→uç+orta+uç…).
+      const byTier={};
+      NODES.forEach(n=>{ (byTier[n.tier]=byTier[n.tier]||[]).push(n); });
+      const slot=new Map();
+      Object.values(byTier).forEach(arr=>{
+        arr.sort((a,b)=>a.v-b.v);
+        const k=arr.length;
+        arr.forEach((n,i)=>slot.set(n.id, k===1?0.5:i/(k-1)));
+      });
+      W=Wv; H=topM+maxTier*rowSp+botM;
+      X=n=>mX+(Wv-2*mX)*slot.get(n.id);
+      Y=n=>topM+n.tier*rowSp;
+    } else {
+      W=2320; H=680;
+      X=n=>125+n.tier*205;
+      Y=n=>100+(H-190)*n.v/100;
+    }
+  }
 
   function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
@@ -1819,22 +1852,49 @@
     +'</defs>';
 
   function render(){
+    VERT=window.innerWidth<=BP_VERT;
+    layout();
+    const svgWrap=svg.parentElement;
+    svg.classList.toggle('techSvg-vert', VERT);
+    if(svgWrap) svgWrap.style.overflowX = VERT ? 'visible' : 'auto';
+    const hint=document.getElementById('ttHint');
+    if(hint) hint.textContent = VERT ? '⬇️ aşağı kaydırarak çağlarda ilerle' : '➡️ sağa kaydırarak çağlarda ilerle';
+    const dir=document.getElementById('ttDir');
+    if(dir) dir.textContent = VERT ? 'yukarıdan aşağı çağlar' : 'soldan sağa çağlar';
+
     let s=DEFS;
     // çağ bantları + ayraç çizgileri + kurdele etiket
     ERAS.forEach((e,i)=>{
-      const x0=X({tier:e.t0})-100, x1=X({tier:e.t1})+100;
-      s+='<rect class="era-band'+(i%2?' alt':'')+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
-      const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
-      s+='<rect class="era-ribbon" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
-      s+='<text class="era-lbl" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
+      if(VERT){
+        // üst boşluk 96px: normal düğümler için fazlasıyla yeterli, AMA asıl amacı
+        // "kraliyet" (crown) kartının (★ BİLİM ZAFERİ ★ etiketi) çağın ilk satırında
+        // olduğunda ribbon/etiketle çakışmasını önlemek — o yüzden alttan büyük
+        const y0=Y({tier:e.t0})-96, y1=Y({tier:e.t1})+58;
+        s+='<rect class="era-band'+(i%2?' alt':'')+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
+        const lw=Math.max(150, e.nm.length*7.2);
+        s+='<rect class="era-ribbon" x="'+(W/2-lw/2)+'" y="'+(y0+8)+'" width="'+lw+'" height="22" rx="11"/>';
+        s+='<text class="era-lbl" x="'+(W/2)+'" y="'+(y0+23)+'" text-anchor="middle" style="font-size:10.5px; letter-spacing:1.5px">'+e.nm+'</text>';
+      } else {
+        const x0=X({tier:e.t0})-100, x1=X({tier:e.t1})+100;
+        s+='<rect class="era-band'+(i%2?' alt':'')+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
+        const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
+        s+='<rect class="era-ribbon" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
+        s+='<text class="era-lbl" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
+      }
     });
-    // kenarlar (Civ tarzı dik hatlar)
+    // kenarlar (Civ tarzı dik hatlar) — yatayda sol/sağ kart kenarından, dikeyde üst/alt kart kenarından
     NODES.forEach(n=>{
       n.pre.forEach(p=>{
         const a=byId[p];
-        const x1=X(a)+NW(a)/2, y1=Y(a), x2=X(n)-NW(n)/2, y2=Y(n);
-        const mx=(x1+x2)/2;
-        s+='<path class="'+(done.has(p)?'te-on':'te-off')+'" d="M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2+'"/>';
+        let path;
+        if(VERT){
+          const x1=X(a), y1=Y(a)+NH/2, x2=X(n), y2=Y(n)-NH/2, my=(y1+y2)/2;
+          path='M'+x1+' '+y1+' V'+my+' H'+x2+' V'+y2;
+        } else {
+          const x1=X(a)+NW(a)/2, y1=Y(a), x2=X(n)-NW(n)/2, y2=Y(n), mx=(x1+x2)/2;
+          path='M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2;
+        }
+        s+='<path class="'+(done.has(p)?'te-on':'te-off')+'" d="'+path+'"/>';
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
@@ -1938,6 +1998,12 @@
   }
 
   render();
+  // pencere yatay/dikey eşiği aşınca (döndürme, tarayıcı yeniden boyutlandırma) ağacı yeniden diz
+  let _ttRt;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(_ttRt);
+    _ttRt=setTimeout(()=>{ if((window.innerWidth<=BP_VERT)!==VERT) render(); }, 150);
+  });
   window.__ttShow=show;
   window.__ttAPI={ NODES:NODES, stateOf:stateOf };
   window.__ttGet=function(){ return { done:[...done], subs:[...subs] }; };
