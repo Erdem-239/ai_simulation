@@ -636,6 +636,11 @@
   #techSvg .era-lbl{fill:#f5e7c0; font-size:13px; letter-spacing:3px; font-weight:800}
   #techSvg .tchips{font-size:12px; pointer-events:none}
   @media(max-width:720px){ #techSvg{min-width:1660px} }
+  /* Dikey (mobil) mod: js/app.js düğümleri yukarıdan aşağı diziyor, artık yatay
+     kaydırmaya gerek yok — genişliği kendi konteynerine sığdırsın. #techSvg.techSvg-vert
+     seçicisi tek başına #techSvg'den daha spesifik olduğu için yukarıdaki tüm
+     min-width kurallarını (masaüstü + @media 720px) ezer, sıralarına bakılmaksızın. */
+  #techSvg.techSvg-vert{min-width:0; max-width:100%}
   /* ---- Civilopedia ---- */
   .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
   .pedia-art ul{margin:6px 0 14px; padding-left:20px}
