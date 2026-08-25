@@ -2057,12 +2057,16 @@
     /* Kenarlık rengi = dersin ağaçtaki ÇAĞI. Böylece renkler süs değil, bilgi:
        düğüm noktası "ne kadar ilerledim"i, kenarlık "hangi çağdayım"ı söylüyor.
        Renkleri anlamlı kılmak için çağ başlarına küçük birer ayraç etiketi giriyor. */
+    /* Soğuktan sıcağa net ayrışan 5 renk (plazma tayfı: mavi→mor→pembe→turuncu→altın)
+       — ağacın kendi çağ sırasıyla birebir aynı ilerleme, ama her biri bir öncekiyle
+       karıştırılmayacak kadar uzak bir tonda (iki bitişik çağ da "soğuk" ya da ikisi
+       de "sıcak" olsa bile ton farkı göze çarpsın diye). */
     const ERAC=[
-      {t0:0,  t1:1,  c:'74,134,255',  nm:'📜 TEMELLER ÇAĞI'},
-      {t0:2,  t1:3,  c:'163,74,209',  nm:'⚙️ NÖRAL ÇAĞ'},
-      {t0:4,  t1:6,  c:'47,182,168',  nm:'🌉 DİZİ MODELLEME ÇAĞI'},
-      {t0:7,  t1:8,  c:'240,115,58',  nm:'🎯 TRANSFORMER ÇAĞI'},
-      {t0:9,  t1:10, c:'255,210,74',  nm:'🏆 BİLİM ZAFERİ'}
+      {t0:0,  t1:1,  c:'46,134,255',  nm:'📜 TEMELLER ÇAĞI'},
+      {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL ÇAĞ'},
+      {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME ÇAĞI'},
+      {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER ÇAĞI'},
+      {t0:9,  t1:10, c:'255,201,60',  nm:'🏆 BİLİM ZAFERİ'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era').forEach(e=>e.remove());
@@ -2077,7 +2081,8 @@
       if(e!==curEra){
         curEra=e;
         const lab=document.createElement('div');
-        lab.className='sb-era'; lab.textContent=e.nm;
+        lab.className='sb-era';
+        lab.innerHTML='<b></b>'; lab.querySelector('b').textContent=e.nm;
         lab.style.setProperty('--era-c', e.c);
         parent.insertBefore(lab, b);
       }

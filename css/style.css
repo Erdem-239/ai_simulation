@@ -340,10 +340,16 @@
   /* Sidebar kenarlık rengi = dersin ağaçtaki ÇAĞI (era). Düğüm noktası ilerlemeyi,
      kenarlık ise hangi çağa ait olduğunu gösterir — iki ayrı bilgi, iki ayrı kanal. */
   .sb-era{
-    position:relative; margin:16px 0 7px; padding-left:34px;
-    font-size:9.5px; letter-spacing:1.3px; font-weight:800; color:rgb(var(--era-c));
+    position:relative; margin:18px 0 8px; padding-left:34px;
   }
-  .sb-era::before{content:''; position:absolute; left:15px; top:-10px; bottom:-10px; width:2px; transform:translateX(-50%); background:var(--line); border-radius:2px}
+  .sb-era::before{content:''; position:absolute; left:15px; top:-11px; bottom:-11px; width:2px; transform:translateX(-50%); background:linear-gradient(180deg, transparent, rgba(var(--era-c),.55) 30%, rgba(var(--era-c),.55) 70%, transparent); border-radius:2px}
+  /* düz renkli metin yerine dolgulu rozet: taramada göz hangi çağda olduğunu
+     renk BLOĞU olarak yakalasın, sadece ince bir metin rengi olarak değil */
+  .sb-era b{
+    display:inline-block; font-size:9.5px; letter-spacing:1.1px; font-weight:800;
+    color:rgb(var(--era-c)); background:rgba(var(--era-c),.16);
+    border:1px solid rgba(var(--era-c),.5); border-radius:20px; padding:3px 10px 3px 8px;
+  }
   /* güç hattı: buton aralıklarını da köprüleyecek şekilde alta/üste taşar */
   .navbtn::before{
     content:''; position:absolute; left:var(--rail-x); top:-10px; bottom:-10px; width:2px;
