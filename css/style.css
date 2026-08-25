@@ -313,7 +313,7 @@
        rail-done  = araştırıldı  → yeşil düğüm + hattan akan enerji
        rail-avail = sıradaki     → nabız atan altın düğüm
        rail-locked= kilitli      → sönük içi boş düğüm
-       rail-meta  = ders değil (Yol Haritası / Civilopedia / RNN Test) → mavi elmas
+       rail-meta  = ders değil (Yol Haritası / Zekapedia / RNN Test) → mavi elmas
      Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
      Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
   .sb-prog{background:linear-gradient(160deg,#26325a,#16203a); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
@@ -331,7 +331,7 @@
     background:
       linear-gradient(105deg, transparent 42%, rgba(255,255,255,.14) 50%, transparent 58%),
       linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
-      linear-gradient(160deg, rgba(var(--era-c,51,64,99),.32) 0%, rgba(var(--era-c,51,64,99),.10) 40%, #16203a 78%);
+      linear-gradient(160deg, rgba(var(--era-c,51,64,99),.22) 0%, rgba(var(--era-c,51,64,99),.05) 35%, #16203a 70%);
     background-size:230% 100%, 100% 2px, 100% 100%;
     background-position:150% 0, 0 100%, 0 0;
     background-repeat:no-repeat;
@@ -649,14 +649,24 @@
      seçicisi tek başına #techSvg'den daha spesifik olduğu için yukarıdaki tüm
      min-width kurallarını (masaüstü + @media 720px) ezer, sıralarına bakılmaksızın. */
   #techSvg.techSvg-vert{min-width:0; max-width:100%}
-  /* ---- Civilopedia ---- */
+  /* ---- Zekapedia ---- */
+  /* Bilinçli tipografik kopuş: geri kalan bütün site tek bir sans-serif yığınıyla
+     (Segoe UI/Roboto...) konuşuyor — Zekapedia bir ansiklopedi/kitap gibi hissetsin
+     diye klasik bir serif yığınına geçiyor. Yeni font indirilmiyor (indirme
+     başarısız olursa çirkin bir boşluk kalır); evrensel, her işletim sisteminde
+     zaten yüklü serif fontlar zincirleniyor. Kapsam: sidebar butonu + sayfa başlığı
+     + Zekapedia'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
+     kalanındaki paylaşılan .sechead'lere DOKUNULMUYOR.  */
+  .navbtn-zeka{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
+  .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:400; letter-spacing:.2px}
+  #model-pedia .sechead{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
   .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
   .pedia-art ul{margin:6px 0 14px; padding-left:20px}
   .pedia-art li{font-size:13.5px; line-height:1.7; color:#ccd5e8; margin:5px 0}
   .ped-h{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin:14px 0 4px}
   .ped-h:first-child{margin-top:0}
   .ped-links{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-  /* ---- Civilopedia v2: portreler + hook ---- */
+  /* ---- Zekapedia v2: portreler + hook ---- */
   .ped-hook{font-size:15px; font-style:italic; color:#e8dcbf; border-left:3px solid var(--accent); padding:10px 14px; background:rgba(240,160,50,.06); border-radius:4px; line-height:1.75; margin:0 0 16px}
   .ped-people{display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 14px}
   .ped-card{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; flex:0 1 auto; max-width:290px}
