@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608250821"></script>
-<link rel="stylesheet" href="css/style.css?v=202608250821">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608250828"></script>
+<link rel="stylesheet" href="css/style.css?v=202608250828">
 </head>
 <body>
 <div class="applayout">
@@ -20,12 +20,12 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-25 08:21 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-25 08:28 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
-      <button class="navbtn" data-model="pedia">📖 Civilopedia</button>
+      <button class="navbtn navbtn-zeka" data-model="pedia">📖 Zekapedia</button>
       <button class="navbtn" data-model="matematik">🧱 Yapı Taşları</button>
       <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
       <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
@@ -627,7 +627,7 @@
       <div class="lesson-story-h">💡 HİKÂYE — Ağa hafıza takmak</div>
       <p>1986'da yapay zekâ camiası uzun bir kıştan çıkmaya çalışıyordu: Marvin Minsky'nin on yıllar önceki eleştirisi fonları kurutmuş, kimse basit ağların işe yarayacağına inanmıyordu. Sonra David Rumelhart, Geoffrey Hinton ve Ronald Williams'ın imzaladığı bir <i>Nature</i> makalesi buzu kırdı: çok katmanlı bir ağ, kendi hatasını geriye yayarak öğrenebiliyordu. (İlginç bir ayrıntı: bu matematiği aslında Paul Werbos on iki yıl önce, 1974 doktora tezinde bulmuştu — ama kimse okumamıştı. Bilim bazen doğru fikri, yanlış zamanda söyleyeni duymaz.)</p>
       <p>Asıl sıçramayı dilbilimci Jeffrey Elman yaptı. 1990'da basit ama zarif bir fikir denedi: ağın çıktısını bir sonraki adıma geri besle. Böylece ağ, o anki girdiyle birlikte "az önce ne gördüğünü" de hatırlayabiliyordu — zamanı hissediyordu. "Finding Structure in Time" makalesi, ağın hiçbir gramer kuralı verilmeden cümle yapısını kendi başına sezdiğini gösterdi.</p>
-      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Zekapedia'da</button>
     </div>
 
     <div class="lesson-examples">
@@ -1608,7 +1608,7 @@
     <p>1943'te iki bilim insanı — nörofizyolog <b>Warren McCulloch</b> ve mantıkçı <b>Walter Pitts</b> — beynin çalışma prensibini matematiksel olarak yazdı: nöron, girdilerini toplar, bir <b>eşiği</b> geçerse ateşlenir, geçmezse susar. Bu "step function" (basamak fonksiyonu) aktivasyonun ilk halidir — sadece 0 ya da 1 verir, keskin bir sıçrama.</p>
     <p>1957'de <b>Frank Rosenblatt</b> bunu bir makineye dönüştürdü: <b>Perceptron</b>. Ama sorun vardı — step function <b>keskin</b> olduğu için türevlenmiyordu. Türev olmayınca öğrenmenin matematiği çalışmıyordu. Çözüm 80'lerde geldi: <b>sigmoid</b> (S-eğrisi). Aynı "aktif ol / olma" fikri, ama yumuşak bir geçişle — türevlenebilir, dolayısıyla geri yayılımla öğrenilebilir. Sigmoid ve akrabası tanh, 30 yıl boyunca varsayılan aktivasyon oldu.</p>
     <p>Ama tuhaf bir sorun ortaya çıktı: 10-20 katmanlı ağlar bir türlü eğitilemiyordu. 2010'da <b>Vinod Nair & Geoffrey Hinton</b> nedenini gösterdi ve şaşırtıcı basit bir çözüm önerdi: <b>ReLU</b> (Rectified Linear Unit) = "negatifse 0, pozitifse aynen geç" — düz doğrudan bir kırıklık. Herkes güldü ("bu bir doğru bile değil"), ama işe yaradı: sigmoid'in en fazla 0.25'lik türev sorunu ReLU'nun pozitif bölgede türevi 1 olmasıyla çözüldü. Derin öğrenme devrimi (2012 ImageNet, sonra her şey) tam olarak bu değişikliğe borçlu.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Zekapedia'da</button>
   </div>
 
   <div class="lesson-examples">
@@ -1907,7 +1907,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <p>1958'de <b>Frank Rosenblatt</b>, Aktivasyon dersinde tanıdığın tek nöronu bir makineye dönüştürdü: <b>Perceptron</b>. New York Times bunu manşete taşıdı — "yürüyen, konuşan, kendi kendini kopyalayan bir elektronik beyin" vaat ediliyordu. Heyecan büyüktü.</p>
     <p>1969'da matematikçi <b>Marvin Minsky</b> ve <b>Seymour Papert</b> "Perceptrons" adlı kitapta soğuk bir gerçeği kanıtladılar: <b>tek katmanlı bir perceptron XOR'u asla öğrenemez</b> — tam olarak Aktivasyon dersinde senin de elle keşfettiğin şey (tek çizgi en fazla 3/4 doğru). Bu kanıt o kadar etkili oldu ki sinir ağı araştırmalarına giden fonlar kurudu; tarihe <b>"yapay zeka kışı" (AI winter)</b> olarak geçen ~15 yıllık bir durgunluk başladı.</p>
     <p>Buz 1986'da kırıldı: <b>David Rumelhart, Geoffrey Hinton, Ronald Williams</b> "Learning representations by back-propagating errors" makalesinde <b>çok katmanlı</b> ağları (senin h1,h2 gizli katmanın gibi) eğitmenin pratik bir yolunu gösterdi — <b>geri yayılım (backpropagation)</b>. Fikir aslında yeni değildi (kökleri 1960'lara kadar gider) ama bu makale onu popülerleştirdi ve gösterdi ki gizli katman + geri yayılım, Minsky'nin imkânsız dediği XOR'u dahil, çok daha karmaşık problemleri çözebiliyordu. Bugünün GPT'sinden ResNet'e kadar her şeyin eğitim algoritması, ölçek dışında, hâlâ bu 1986 fikrinin aynısı.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Zekapedia'da</button>
   </div>
 
   <div class="lesson-examples">
@@ -2202,7 +2202,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
-    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (Civilopedia → 🔤 maddesinde tam hikâye.)</div>
+    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (Zekapedia → 🔤 maddesinde tam hikâye.)</div>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
   </div>
 
@@ -2436,7 +2436,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Aynı cümle, <b>3 kafa</b>. Her kafa embedding'i farklı bir W merceğinden geçirdiği için <b>farklı</b> dikkat deseni çizer. Bir <b>kelimeye tıkla</b> → o kelimenin 3 kafada nereye baktığını yan yana kıyasla. Tek kafa bunların ortalamasını görürdü; çok-kafa hepsini ayrı yakalar.</div>
     <div style="overflow-x:auto"><svg id="mhSvg" role="img"></svg></div>
     <div class="work" id="mhWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
-    <div class="tip">Gerçek modellerde 8–16 kafa, yüzlerce boyut olur. Sonradan yapılan "beyin otopsileri" (probing) kafaların gerçekten işbölümü yaptığını gösterdi: kimi özne–yüklemi, kimi zamiri, kimi bir önceki kelimeyi izler. (Civilopedia → 🧩 maddesinde tam hikâye.)</p></div>
+    <div class="tip">Gerçek modellerde 8–16 kafa, yüzlerce boyut olur. Sonradan yapılan "beyin otopsileri" (probing) kafaların gerçekten işbölümü yaptığını gösterdi: kimi özne–yüklemi, kimi zamiri, kimi bir önceki kelimeyi izler. (Zekapedia → 🧩 maddesinde tam hikâye.)</p></div>
   </div>
 
   <div class="sechead">3) Birleştirme: Concat + W_O</div>
@@ -3652,7 +3652,7 @@ diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor)
   <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 🌊 Trigonometri</div><div class="cat-desc">Sin, cos ve birim çember — Transformer'ın kelime sırasını nasıl hatırladığının sırrı.</div></div>
   <div class="acc-body">
 
-  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" demiştik, Civilopedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" demiştik, Zekapedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
 
   <div class="acc acc-module">
   <div class="acc-head"><span class="ac">▸</span> 13) Sin, Cos ve Birim Çember</div>
@@ -3799,7 +3799,7 @@ Fark et: hızlı dalga her pozisyonda ÇOK değişiyor (0→0.84→0.91→0.14),
 yavaş dalga ise neredeyse hiç değişmiyor (0→0.01→0.02→0.03) —
 tıpkı saniye kolu ile saat kolu gibi. Her pos, bu 4 sayının
 BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
-    <div class="callout" style="margin-top:10px; border-left-color:#3a7afe">💡 <b>Neden sin/cos, başka bir şey değil?</b> Çünkü sin/cos'un periyodik olması, modelin "3 kelime ötesi" gibi <b>göreli</b> mesafeleri de matematiksel olarak çıkarabilmesini sağlıyor (iki açının farkı sabitse, dalga değerleri arasındaki ilişki de sabit kalır). Ayrıca değerleri hep [−1,1] aralığında kalır — kelime vektörünün büyüklüğünü bozmaz. Bunun ayrıntısını ve gerçek boyutuyla (512+ boyut) uygulamasını <b>Civilopedia → 📍 Positional Encoding</b> sayfasında ve Multi-Head Attention modülünde bulabilirsin.</div>
+    <div class="callout" style="margin-top:10px; border-left-color:#3a7afe">💡 <b>Neden sin/cos, başka bir şey değil?</b> Çünkü sin/cos'un periyodik olması, modelin "3 kelime ötesi" gibi <b>göreli</b> mesafeleri de matematiksel olarak çıkarabilmesini sağlıyor (iki açının farkı sabitse, dalga değerleri arasındaki ilişki de sabit kalır). Ayrıca değerleri hep [−1,1] aralığında kalır — kelime vektörünün büyüklüğünü bozmaz. Bunun ayrıntısını ve gerçek boyutuyla (512+ boyut) uygulamasını <b>Zekapedia → 📍 Positional Encoding</b> sayfasında ve Multi-Head Attention modülünde bulabilirsin.</div>
   </div>
 
   </div>
@@ -3866,7 +3866,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     <p>19. yüzyılın ortasında iki matematikçi, birbirlerinden habersiz, aynı devrimi hazırladı. Almanya'da <b>Hermann Grassmann</b> (1844) — bir lise öğretmeni — cebiri geometriden çıkarıp saf bir "büyüklük hesabı" olarak yazdı: yönlü sayılar, dış çarpımlar, tam bir vektör uzayı teorisi. Kimse anlamadı; kitap unutuldu. Aynı yıllarda İskoçya'da <b>William Rowan Hamilton</b>, 3B rotasyonları hesaplayabilmek için "kuaterniyon" adında dört boyutlu sayılar icat etti — bu, o zamana kadar hiç kimsenin görmediği bir şeydi.</p>
     <p>50 yıl sonra Amerika'da <b>Josiah Willard Gibbs</b> (1881, Yale), fizikçilere yakınmıştı: "Kuaterniyonun büyük kısmı gereksiz, işimize yarayanı çekip alalım." Grassmann'ın unutulmuş fikirlerini, Hamilton'ın kuaterniyonunu ve fiziğin ihtiyaçlarını birleştirdi — bugün kullandığımız <b>vektör analizi</b> doğdu. <b>Nokta çarpım</b> (a·b = aₓbₓ + a_y b_y) tam olarak bu sadeleştirmeden çıktı: "İki yönlü büyüklüğün ne kadar aynı yöne baktığını söyleyen tek sayı."</p>
     <p>Sonra 2013'te Google'da <b>Tomáš Mikolov</b> word2vec ile kelimeleri vektöre çevirdi. Ortaya çıkan sonuç şaşırtıcıydı: <i>vec("kral") − vec("erkek") + vec("kadın") ≈ vec("kraliçe")</i>. Grassmann'ın 170 yıl önce yazdığı cebir, kelimelerin anlamını taşıyabiliyordu. Attention mekanizması (2017) da aynı Q·K nokta çarpımını kullanır. Yani öğreneceğin bu tek işlem, iki yüzyıllık bir hattın devamıdır.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Civilopedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Zekapedia'da</button>
   </div>
 
   <div class="lesson-examples">
@@ -3966,7 +3966,7 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   <h1>🗺️ Teknoloji Ağacı — Bilim Zaferi: "Attention Is All You Need"</h1>
   <p class="sub">Civ 6'daki gibi <b id="ttDir">soldan sağa çağlar</b> halinde ilerliyorsun: 📜 Temeller → ⚙️ Nöral → 🌉 Dizi Modelleme → 🎯 Transformer → 🏆 <b>Bilim Zaferi</b> (makaleyi ana dilin gibi okumak). Yeşil hatlarda <b>güç akıyor</b>; turuncu yanıp sönen teknoloji <b>araştırılmaya hazır</b>.</p>
 
-  <div class="callout">📖 <b>Civilopedia:</b> Her teknolojiye tıkla → <b>kim, nasıl keşfetti</b> (Bernoulli'nin bileşik faizden e'yi bulması, Gauss'un kayıp asteroidi regresyonla yakalaması...) ve <b>gerçek dünyada neyin kilidini açtığı</b> (kartların altındaki emojiler: 💰 finans, 🦠 salgın modelleri, 🌍 Google Translate...) görünür. Alt başlıkları bitirdikçe işaretle → hepsi dolunca teknoloji <b>araştırılmış</b> sayılır ve sonraki çağın kilidi açılır. İlerlemen tarayıcıda saklanır.</div>
+  <div class="callout">📖 <b>Zekapedia:</b> Her teknolojiye tıkla → <b>kim, nasıl keşfetti</b> (Bernoulli'nin bileşik faizden e'yi bulması, Gauss'un kayıp asteroidi regresyonla yakalaması...) ve <b>gerçek dünyada neyin kilidini açtığı</b> (kartların altındaki emojiler: 💰 finans, 🦠 salgın modelleri, 🌍 Google Translate...) görünür. Alt başlıkları bitirdikçe işaretle → hepsi dolunca teknoloji <b>araştırılmış</b> sayılır ve sonraki çağın kilidi açılır. İlerlemen tarayıcıda saklanır.</div>
 
   <div class="pts">
     <div id="techProg" style="font-size:14px; color:#ccd5e8; margin-bottom:10px"></div>
@@ -3978,13 +3978,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
       <span id="ttHint">➡️ sağa kaydırarak çağlarda ilerle</span>
     </div>
     <div style="overflow-x:auto"><svg id="techSvg" role="img"></svg></div>
-    <div id="techInfo" class="callout" style="margin-top:14px">Bir teknolojiye tıkla → Civilopedia burada açılsın.</div>
+    <div id="techInfo" class="callout" style="margin-top:14px">Bir teknolojiye tıkla → Zekapedia burada açılsın.</div>
   </div>
 
 
   <div class="sechead">🏛️ İnşa Edilen Harikalar</div>
   <div class="pts">
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Araştırdığın her teknoloji gerçek dünyada bir <b>anıt</b> diker. Bir düğümü tamamla → harikası "inşa edilir". (Detayı Civilopedia'da.)</div>
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Araştırdığın her teknoloji gerçek dünyada bir <b>anıt</b> diker. Bir düğümü tamamla → harikası "inşa edilir". (Detayı Zekapedia'da.)</div>
     <div id="techWonders"></div>
   </div>
 
@@ -4002,11 +4002,11 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /model-yol -->
 
 
-  <!-- ===================== CİVİLOPEDİA ===================== -->
+  <!-- ===================== ZEKAPEDİA ===================== -->
   <div class="model" id="model-pedia">
 
-  <h1>📖 Civilopedia — Kâşifler, Keşifler ve Gerçek Dünya</h1>
-  <p class="sub">Ağaçtaki her teknolojinin tam ansiklopedi maddesi: <b>kim buldu, nasıl buldu, dünyayı nasıl değiştirdi</b> — rakamlarla, hikâyelerle. Soldaki fihristten atla ya da ağaçtan "📖 Civilopedia'da oku" ile gel.</p>
+  <h1 class="pedia-h1">📖 Zekapedia — Kâşifler, Keşifler ve Gerçek Dünya</h1>
+  <p class="sub">Ağaçtaki her teknolojinin tam ansiklopedi maddesi: <b>kim buldu, nasıl buldu, dünyayı nasıl değiştirdi</b> — rakamlarla, hikâyelerle. Soldaki fihristten atla ya da ağaçtan "📖 Zekapedia'da oku" ile gel.</p>
 
   <div class="sechead" id="pedia-mat">🧱 Yapı Taşları — e Sayısı ve Kalkülüs</div>
   <div class="pts pedia-art">
@@ -4409,20 +4409,20 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     <div class="ped-links"><button class="addbtn" data-ped-tree="llm" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button></div>
   </div>
 
-  <p class="footer">Civilopedia • kâşifler · keşif hikâyeleri · rakamlarla gerçek dünya — ağaçla senkron 14 madde</p>
+  <p class="footer">Zekapedia • kâşifler · keşif hikâyeleri · rakamlarla gerçek dünya — ağaçla senkron 14 madde</p>
   </div><!-- /model-pedia -->
 
 
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608250821"></script>
-<script src="js/lesson-turev.js?v=202608250821"></script>
-<script src="js/lesson-xor.js?v=202608250821"></script>
-<script src="js/lesson-nn.js?v=202608250821"></script>
-<script src="js/lesson-trig.js?v=202608250821"></script>
+<script src="js/lesson-linreg.js?v=202608250828"></script>
+<script src="js/lesson-turev.js?v=202608250828"></script>
+<script src="js/lesson-xor.js?v=202608250828"></script>
+<script src="js/lesson-nn.js?v=202608250828"></script>
+<script src="js/lesson-trig.js?v=202608250828"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608250821"></script>
-<script src="js/app.js?v=202608250821"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608250828"></script>
+<script src="js/app.js?v=202608250828"></script>
 </body>
 </html>
