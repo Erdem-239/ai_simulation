@@ -1692,7 +1692,7 @@
   });
 })();
 
-/* ---- Yol Haritası: tech tree (v3: Civ6 yatay + çağlar + Keşifpedia) ---- */
+/* ---- Yol Haritası: tech tree (v3: Civ6 yatay + çağlar + AIpedia) ---- */
 (function(){
   const svg=document.getElementById('techSvg'); if(!svg) return;
   const info=document.getElementById('techInfo');
@@ -1961,12 +1961,12 @@
     }).join('');
     let btns='';
     if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'" style="background:var(--blue); color:#fff">Sayfada aç →</button> ';
-    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 Keşifpedia&#39;da oku</button> ';
+    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 AIpedia&#39;da oku</button> ';
     if(st!=='locked') btns+='<button class="addbtn" data-tg="'+n.id+'" style="background:'+(done.has(n.id)?'var(--panel); color:var(--muted); border:1px solid var(--line)':'var(--green); color:#0b2a12')+'">'+(done.has(n.id)?'↩ Hepsini geri al':'✔ Hepsini tamamladım')+'</button>';
     info.innerHTML='<b style="font-size:16px">'+esc(n.nm)+'</b>'
       +' <span style="font-size:12px; color:var(--muted)">('+(st==='done'?'araştırıldı':st==='avail'?'araştırılabilir':'kilitli — önce gerekenleri aç')+')</span>'
       +'<div style="margin:8px 0; line-height:1.6">'+n.d+'</div>'
-      +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">👤 KEŞİF — Keşifpedia</div>'
+      +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">👤 KEŞİF — AIpedia</div>'
       +'<div style="font-size:13px; line-height:1.6; color:#ccd5e8">'+n.sci+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">🌍 GERÇEK DÜNYADA NEYİ AÇTI</div>'
       +'<div style="font-size:13px; line-height:1.5; color:#ccd5e8">'+reals+'</div>'
@@ -2074,7 +2074,7 @@
     seq.forEach(b=>{
       const m=b.dataset.model;
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
-      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/Keşifpedia/RNN Test)
+      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/AIpedia/RNN Test)
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
       if(!e) return;
       b.style.setProperty('--era-c', e.c);
@@ -2310,7 +2310,7 @@ function setupFloatingPanel(ids){
   });
 })();
 
-/* ---- Keşifpedia gezinme ---- */
+/* ---- AIpedia gezinme ---- */
 (function(){
   document.querySelectorAll('[data-ped-tree]').forEach(b=>b.addEventListener('click',()=>{
     const id=b.dataset.pedTree;
