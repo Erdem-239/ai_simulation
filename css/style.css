@@ -667,6 +667,24 @@
      imleç AIpedia AKTİFKEN üstünde dururken altın rengin turuncu zemini
      ezmemesi için üç sınıflı bu kural (0,3,0) ile açıkça kazandırılıyor */
   .navbtn.active.navbtn-ai, .navbtn.active.navbtn-ai:hover{color:#101830}
+  /* Hareketli RGB çerçeve: kategori kartlarındaki gökkuşağı halkasıyla (catRgbSpin)
+     AYNI 7 renk durağı, ama pseudo-elementler değil doğrudan border-color/box-shadow
+     animasyonu — çünkü .navbtn zaten ::before/::after'ı güç hattı noktası/çizgisi
+     için kullanıyor. Tarayıcı renkler arası geçişi otomatik yumuşatır (ayrı kare
+     sayısına gerek yok). Animasyon, border-color/box-shadow'u statik hover/active
+     kurallarının üzerine sürekli yazdığı için renk oyunu tüm durumlarda devam eder. */
+  @keyframes aiRgbBorder{
+    0%   {border-color:#ff3d5a; box-shadow:0 0 12px -1px rgba(255,61,90,.65), inset 0 0 10px -6px rgba(255,61,90,.5)}
+    14%  {border-color:#ff9d3d; box-shadow:0 0 12px -1px rgba(255,157,61,.65), inset 0 0 10px -6px rgba(255,157,61,.5)}
+    28%  {border-color:#f5e93d; box-shadow:0 0 12px -1px rgba(245,233,61,.65), inset 0 0 10px -6px rgba(245,233,61,.5)}
+    42%  {border-color:#4dff6e; box-shadow:0 0 12px -1px rgba(77,255,110,.65), inset 0 0 10px -6px rgba(77,255,110,.5)}
+    57%  {border-color:#3dd9ff; box-shadow:0 0 12px -1px rgba(61,217,255,.65), inset 0 0 10px -6px rgba(61,217,255,.5)}
+    71%  {border-color:#5a6bff; box-shadow:0 0 12px -1px rgba(90,107,255,.65), inset 0 0 10px -6px rgba(90,107,255,.5)}
+    85%  {border-color:#c93dff; box-shadow:0 0 12px -1px rgba(201,61,255,.65), inset 0 0 10px -6px rgba(201,61,255,.5)}
+    100% {border-color:#ff3d5a; box-shadow:0 0 12px -1px rgba(255,61,90,.65), inset 0 0 10px -6px rgba(255,61,90,.5)}
+  }
+  .navbtn-ai{border-width:2px; animation:aiRgbBorder 6s linear infinite}
+  @media(prefers-reduced-motion:reduce){ .navbtn-ai{animation:none; border-color:#e3c26b} }
   .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:700; font-style:italic; letter-spacing:.2px; color:#e3c26b}
   #model-pedia .sechead{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
   .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
