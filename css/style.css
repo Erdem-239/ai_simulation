@@ -683,7 +683,27 @@
     85%  {border-color:#c93dff; box-shadow:0 0 12px -1px rgba(201,61,255,.65), inset 0 0 10px -6px rgba(201,61,255,.5)}
     100% {border-color:#ff3d5a; box-shadow:0 0 12px -1px rgba(255,61,90,.65), inset 0 0 10px -6px rgba(255,61,90,.5)}
   }
-  .navbtn-ai{border-width:2px; animation:aiRgbBorder 6s linear infinite}
+  /* Hareketli RGB DOLGU: kutunun İÇİ de oynasın (sadece kenarlık değil). Aynı 7 renk,
+     bu kez soluk (rgba .35-.45) bir gökkuşağı yaması — devasa bir gradyanın (400%×400%)
+     içinde kayarak dolaşıyor, koyu lacivert taban üstte metnin okunurluğunu koruyor.
+     .navbtn'in taban katmanları (parıltı sweep + ilerleme çubuğu) burada BİLEREK
+     basitleştirildi: background-position animasyonu çalışırken zaten hover/active'in
+     statik pozisyon değerlerini sürekli eziyor, sweep efekti bu kutuda anlamsız kalırdı. */
+  @keyframes aiRgbFill{
+    0%,100%{background-position:0 100%, 0% 30%}
+    50%{background-position:0 100%, 100% 70%}
+  }
+  .navbtn-ai{
+    border-width:2px;
+    background:
+      linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
+      linear-gradient(120deg, rgba(255,61,90,.5),rgba(255,157,61,.5),rgba(245,233,61,.45),rgba(77,255,110,.45),rgba(61,217,255,.45),rgba(90,107,255,.5),rgba(201,61,255,.5),rgba(255,61,90,.5)),
+      #16203a;
+    background-size:100% 2px, 400% 400%, 100% 100%;
+    background-position:0 100%, 0% 30%, 0 0;
+    background-repeat:no-repeat;
+    animation:aiRgbBorder 6s linear infinite, aiRgbFill 10s ease-in-out infinite;
+  }
   @media(prefers-reduced-motion:reduce){ .navbtn-ai{animation:none; border-color:#e3c26b} }
   .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:700; font-style:italic; letter-spacing:.2px; color:#e3c26b}
   #model-pedia .sechead{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
