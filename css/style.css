@@ -313,7 +313,7 @@
        rail-done  = araştırıldı  → yeşil düğüm + hattan akan enerji
        rail-avail = sıradaki     → nabız atan altın düğüm
        rail-locked= kilitli      → sönük içi boş düğüm
-       rail-meta  = ders değil (Yol Haritası / Zekapedia / RNN Test) → mavi elmas
+       rail-meta  = ders değil (Yol Haritası / Keşifpedia / RNN Test) → mavi elmas
      Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
      Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
   .sb-prog{background:linear-gradient(160deg,#26325a,#16203a); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
@@ -649,24 +649,24 @@
      seçicisi tek başına #techSvg'den daha spesifik olduğu için yukarıdaki tüm
      min-width kurallarını (masaüstü + @media 720px) ezer, sıralarına bakılmaksızın. */
   #techSvg.techSvg-vert{min-width:0; max-width:100%}
-  /* ---- Zekapedia ---- */
+  /* ---- Keşifpedia ---- */
   /* Bilinçli tipografik kopuş: geri kalan bütün site tek bir sans-serif yığınıyla
-     (Segoe UI/Roboto...) konuşuyor — Zekapedia bir ansiklopedi/kitap gibi hissetsin
+     (Segoe UI/Roboto...) konuşuyor — Keşifpedia bir ansiklopedi/kitap gibi hissetsin
      diye klasik bir serif yığınına geçiyor. Yeni font indirilmiyor (indirme
      başarısız olursa çirkin bir boşluk kalır); evrensel, her işletim sisteminde
      zaten yüklü serif fontlar zincirleniyor. Kapsam: sidebar butonu + sayfa başlığı
-     + Zekapedia'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
+     + Keşifpedia'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
      kalanındaki paylaşılan .sechead'lere DOKUNULMUYOR.  */
   /* Sadece font ailesi değişince gözle fark edilmeyebiliyor (bazı Android
      cihazlarda Georgia/Times yok, sisteme en yakın serif'e düşüyor). Bu yüzden
      stil KATMANLI: italik + kalın + eski-altın/yaldız rengi — kitabın cildindeki
      yaldızlı başlık gibi, hangi cihazda olursa olsun kesin ayrışsın. */
-  .navbtn-zeka{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-style:italic; font-weight:700; letter-spacing:.3px; color:#e3c26b}
-  .navbtn-zeka:hover{color:#f5d98a}
-  /* .navbtn.active (0,2,0) ile .navbtn-zeka:hover (0,2,0) eşit özgüllükte —
-     imleç Zekapedia AKTİFKEN üstünde dururken altın rengin turuncu zemini
+  .navbtn-kesif{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-style:italic; font-weight:700; letter-spacing:.3px; color:#e3c26b}
+  .navbtn-kesif:hover{color:#f5d98a}
+  /* .navbtn.active (0,2,0) ile .navbtn-kesif:hover (0,2,0) eşit özgüllükte —
+     imleç Keşifpedia AKTİFKEN üstünde dururken altın rengin turuncu zemini
      ezmemesi için üç sınıflı bu kural (0,3,0) ile açıkça kazandırılıyor */
-  .navbtn.active.navbtn-zeka, .navbtn.active.navbtn-zeka:hover{color:#101830}
+  .navbtn.active.navbtn-kesif, .navbtn.active.navbtn-kesif:hover{color:#101830}
   .pedia-h1{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-weight:700; font-style:italic; letter-spacing:.2px; color:#e3c26b}
   #model-pedia .sechead{font-family:Georgia,"Times New Roman","Noto Serif",serif; letter-spacing:.2px}
   .pedia-art p{font-size:14px; line-height:1.75; color:#ccd5e8; margin:6px 0 14px}
@@ -675,7 +675,7 @@
   .ped-h{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin:14px 0 4px}
   .ped-h:first-child{margin-top:0}
   .ped-links{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-  /* ---- Zekapedia v2: portreler + hook ---- */
+  /* ---- Keşifpedia v2: portreler + hook ---- */
   .ped-hook{font-size:15px; font-style:italic; color:#e8dcbf; border-left:3px solid var(--accent); padding:10px 14px; background:rgba(240,160,50,.06); border-radius:4px; line-height:1.75; margin:0 0 16px}
   .ped-people{display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 14px}
   .ped-card{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; flex:0 1 auto; max-width:290px}
