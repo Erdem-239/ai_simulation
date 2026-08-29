@@ -459,7 +459,7 @@
   const row=document.getElementById('trRow');
   const r1=document.getElementById('trResizer1'), r2=document.getElementById('trResizer2');
   if(!row||!r1||!r2) return;
-  let w1=320, w2=260;
+  let w1=320, w2=460;
   try{ const s=parseInt(localStorage.getItem('attn_tr1w')||'',10); if(s>=180&&s<=700) w1=s; }catch(e){}
   try{ const s=parseInt(localStorage.getItem('attn_tr2w')||'',10); if(s>=160&&s<=600) w2=s; }catch(e){}
   row.style.setProperty('--tr1w', w1+'px');
