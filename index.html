@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292355"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292355">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300012"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300012">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:55 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:12 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -773,21 +773,6 @@
       </div>
     </div>
 
-    <div id="trCol1" style="display:none; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:10px 0 0; position:relative">
-      <span class="dbg-badge">2</span>
-      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
-        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
-      </div>
-      <div style="flex:1 1 100px; min-width:96px">
-        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
-          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
-          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
-          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
-          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
-        </div>
-        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
-      </div>
-    </div>
 
         <div class="sc-vresizer" id="scVResizer" title="Sürükle: diyagramın yüksekliğini ayarla"></div>
 
@@ -886,6 +871,21 @@
               <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
             </div>
           </div>
+    <div id="trCol1" style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:12px 0 0; position:relative">
+      <span class="dbg-badge">2</span>
+      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
+        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+      </div>
+      <div style="flex:1 1 100px; min-width:96px">
+        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
+          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
+          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
+          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
+          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
+        </div>
+        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
+      </div>
+    </div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
@@ -4497,13 +4497,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292355"></script>
-<script src="js/lesson-turev.js?v=202608292355"></script>
-<script src="js/lesson-xor.js?v=202608292355"></script>
-<script src="js/lesson-nn.js?v=202608292355"></script>
-<script src="js/lesson-trig.js?v=202608292355"></script>
+<script src="js/lesson-linreg.js?v=202608300012"></script>
+<script src="js/lesson-turev.js?v=202608300012"></script>
+<script src="js/lesson-xor.js?v=202608300012"></script>
+<script src="js/lesson-nn.js?v=202608300012"></script>
+<script src="js/lesson-trig.js?v=202608300012"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292355"></script>
-<script src="js/app.js?v=202608292355"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300012"></script>
+<script src="js/app.js?v=202608300012"></script>
 </body>
 </html>
