@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292235"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292235">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292242"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292242">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 22:35 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 22:42 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -748,6 +748,11 @@
       <div class="rc-float-body" id="rcFloatBody"></div>
     </div>
 
+    <div style="position:relative; margin-bottom:2px">
+      <span class="dbg-badge">4</span>
+      <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
+      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
+    </div>
     <div class="sc-cols">
       <div class="sc-center">
     <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue); position:relative">
@@ -832,10 +837,7 @@
 
       <div class="sc-resizer" id="scResizerR" title="Sürükle: diyagram boyutunu ayarla"></div>
 
-      <div class="sc-right" style="position:relative">
-      <span class="dbg-badge">4</span>
-      <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
-      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
+      <div class="sc-right">
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
           <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
           <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
@@ -4501,13 +4503,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292235"></script>
-<script src="js/lesson-turev.js?v=202608292235"></script>
-<script src="js/lesson-xor.js?v=202608292235"></script>
-<script src="js/lesson-nn.js?v=202608292235"></script>
-<script src="js/lesson-trig.js?v=202608292235"></script>
+<script src="js/lesson-linreg.js?v=202608292242"></script>
+<script src="js/lesson-turev.js?v=202608292242"></script>
+<script src="js/lesson-xor.js?v=202608292242"></script>
+<script src="js/lesson-nn.js?v=202608292242"></script>
+<script src="js/lesson-trig.js?v=202608292242"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292235"></script>
-<script src="js/app.js?v=202608292235"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292242"></script>
+<script src="js/app.js?v=202608292242"></script>
 </body>
 </html>
