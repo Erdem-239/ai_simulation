@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300012"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300012">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300036"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300036">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:12 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:36 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -841,19 +841,6 @@
       <div class="sc-right" style="align-self:stretch; display:flex; flex-direction:column">
         <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0; flex:1 1 auto; display:flex; flex-direction:column">
           <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:stretch; flex-wrap:wrap; flex:1 1 auto">
-            <div id="trCol2" style="display:none; flex:0 0 var(--tr2w,460px); min-width:200px; position:relative">
-              <span class="dbg-badge">3</span>
-              <div class="loss-valley-row">
-                <div class="loss-valley-col">
-                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
-                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
-                </div>
-                <div class="loss-valley-col">
-                  <div id="lossSurface3D" class="loss-surface-3d"></div>
-                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
-                </div>
-              </div>
-            </div>
             <div class="tr-resizer" id="trResizer2" title="Sürükle: genişliği ayarla" style="display:none"></div>
       <div class="step stepc" id="gAdim1" style="flex:1 1 320px; position:relative; overflow:visible">
         <span class="dbg-badge">5</span>
@@ -951,6 +938,19 @@
               <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
             </div>
           </div>
+            <div id="trCol2" style="display:block; margin:6px 0 0; position:relative">
+              <span class="dbg-badge">3</span>
+              <div class="loss-valley-row">
+                <div class="loss-valley-col">
+                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
+                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
+                </div>
+                <div class="loss-valley-col">
+                  <div id="lossSurface3D" class="loss-surface-3d"></div>
+                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
+                </div>
+              </div>
+            </div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
@@ -4497,13 +4497,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300012"></script>
-<script src="js/lesson-turev.js?v=202608300012"></script>
-<script src="js/lesson-xor.js?v=202608300012"></script>
-<script src="js/lesson-nn.js?v=202608300012"></script>
-<script src="js/lesson-trig.js?v=202608300012"></script>
+<script src="js/lesson-linreg.js?v=202608300036"></script>
+<script src="js/lesson-turev.js?v=202608300036"></script>
+<script src="js/lesson-xor.js?v=202608300036"></script>
+<script src="js/lesson-nn.js?v=202608300036"></script>
+<script src="js/lesson-trig.js?v=202608300036"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300012"></script>
-<script src="js/app.js?v=202608300012"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300036"></script>
+<script src="js/app.js?v=202608300036"></script>
 </body>
 </html>
