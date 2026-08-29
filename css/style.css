@@ -378,7 +378,10 @@
   @keyframes railFlow{to{background-position:0 12px}}
   @keyframes railPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,160,50,.55)}50%{box-shadow:0 0 0 6px rgba(240,160,50,0)}}
 
-  .navbtn:hover{border-color:rgb(var(--era-c, 240,160,50)); color:#fff; transform:translateX(2px); background-position:-50% 0, 0 100%, 0 0; box-shadow:0 6px 20px -9px rgba(var(--era-c, 240,160,50),.7)}
+  /* Hover'da era rengi parlamaya devam eder AMA ayrıca ince bir mavi halka eklenir —
+     Yol Haritası'ndaki "seçili düğüm = mavi kenarlık" diliyle aynı: "buraya
+     dokunuyorsun" sinyali her yerde aynı renk. */
+  .navbtn:hover{border-color:rgb(var(--era-c, 240,160,50)); color:#fff; transform:translateX(2px); background-position:-50% 0, 0 100%, 0 0; box-shadow:0 6px 20px -9px rgba(var(--era-c, 240,160,50),.7), 0 0 0 2px rgba(47,106,224,.5)}
   .navbtn:hover::after{box-shadow:0 0 12px rgba(240,160,50,.55)}
   .navbtn.active{
     background:
@@ -439,7 +442,12 @@
   #techSvg .tn-locked .tn-emoji{opacity:.5}
   #techSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.5}
   #techSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
-  #techSvg .tn.sel rect.tn-card{stroke-width:4.5; filter:drop-shadow(0 0 8px rgba(184,134,11,.7))}
+  /* "Seçili" (tıklanan) düğüm: durum rengiyle (yeşil/altın/kahve) karışmasın diye
+     bambaşka, hep aynı mavi — kilitli bir düğüme tıklasan bile fill'i kahve/soluk
+     kalır (durumu hâlâ "kilitli" der) ama kenarlık maviye döner ("bunu tıkladım" der).
+     Bu kural .tn-locked/.tn-avail/.tn-done'un stroke kurallarından daha spesifik
+     olduğu için (üç sınıf vs iki) otomatik kazanır. */
+  #techSvg .tn.sel rect.tn-card{stroke:#2f6ae0; stroke-width:4.5; filter:drop-shadow(0 0 9px rgba(47,106,224,.85))}
   #techSvg .te-off{stroke:#9c8354; stroke-width:1.8; fill:none; stroke-linejoin:round}
   #techSvg .te-on{stroke:#3f7d3f; stroke-width:2.6; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.9; stroke-linejoin:round}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
