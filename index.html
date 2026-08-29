@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292254"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292254">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292307"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292307">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 22:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:07 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -773,7 +773,7 @@
       </div>
     </div>
 
-    <div id="trCol1" style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:10px 0 0; position:relative">
+    <div id="trCol1" style="display:none; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:10px 0 0; position:relative">
       <span class="dbg-badge">2</span>
       <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
         <canvas id="rc_costCanvas" width="380" height="140"></canvas>
@@ -858,7 +858,7 @@
           <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
           <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
           <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:flex-start; flex-wrap:wrap">
-            <div id="trCol2" style="flex:0 0 var(--tr2w,460px); min-width:200px; position:relative">
+            <div id="trCol2" style="display:none; flex:0 0 var(--tr2w,460px); min-width:200px; position:relative">
               <span class="dbg-badge">3</span>
               <div class="loss-valley-row">
                 <div class="loss-valley-col">
@@ -871,7 +871,7 @@
                 </div>
               </div>
             </div>
-            <div class="tr-resizer" id="trResizer2" title="Sürükle: genişliği ayarla"></div>
+            <div class="tr-resizer" id="trResizer2" title="Sürükle: genişliği ayarla" style="display:none"></div>
       <div class="step" id="gAdim1" style="flex:1 1 100%; position:relative; overflow:visible">
         <span class="dbg-badge">5</span>
         <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
@@ -904,46 +904,10 @@
       </div>
           </div>
         </div>
-      </div>
-    </div>
-
-
-
-    <!-- ADIM ADIM — HER ADIM NEDEN? (many-to-one'a özgü — tip seçiciyle birlikte gizlenir/gösterilir) -->
-    <div id="gAdimSection">
+    <div style="margin-top:16px">
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
     <div class="steps">
       <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla"></div>
-      <div class="step" id="gAdim2">
-        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
-        <div class="stepbody">
-          <div class="step-graph-row">
-            <div class="step-graph-formula">
-              <div id="rcS2Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h \) = <span style="color:var(--muted)" id="rcS2sub1"></span> = <span class="v" id="rcS2val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \) = <span class="v" id="rcS2val2"></span></div>
-              </div>
-              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
-            </div>
-            <div class="step-graph-plot">
-              <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
-              <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
-            </div>
-          </div>
-          <div class="detail">
-            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
-            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
-            <div class="deriv-why">W<sub>hy</sub>'ye göre türetelim; h ve b<sub>y</sub>'yi sabit sayarız (onlar W<sub>hy</sub> değil). W<sub>hy</sub>·h terimi = sabit(h)×değişken(W<sub>hy</sub>) → türevi o sabitin kendisi, yani h. b<sub>y</sub> terimi içinde hiç W<sub>hy</sub> yok → türevi 0:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial W_{hy}} = h + 0 = h \)</div>
-            <div class="deriv-why">Aynı mantıkla b<sub>y</sub>'ye göre türetelim (şimdi W<sub>hy</sub>·h sabit sayılır → içinde b<sub>y</sub> yok, türevi 0; b<sub>y</sub>'nin kendine göre türevi her zaman 1'dir):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial b_y} = 0 + 1 = 1 \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> asıl istediğimiz L'nin bu ağırlıklara göre türevi; zincir kuralıyla ∂L/∂z<sub>y</sub> ile çarparak oraya ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile çarp (×giriş kuralı):</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h,\qquad \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \)</div>
-          </div>
-        </div>
-      </div>
       <div class="step" id="gAdim3">
         <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -987,6 +951,36 @@
             </div>
             <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z<sub>h</sub>'ye duyarlılığını (∂L/∂z<sub>h</sub>) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
+          </div>
+        </div>
+      </div>
+      <div class="step" id="gAdim2">
+        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS2Live" class="rc-card">
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h \) = <span style="color:var(--muted)" id="rcS2sub1"></span> = <span class="v" id="rcS2val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \) = <span class="v" id="rcS2val2"></span></div>
+              </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
+            </div>
+          </div>
+          <div class="detail">
+            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
+            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
+            <div class="deriv-why">W<sub>hy</sub>'ye göre türetelim; h ve b<sub>y</sub>'yi sabit sayarız (onlar W<sub>hy</sub> değil). W<sub>hy</sub>·h terimi = sabit(h)×değişken(W<sub>hy</sub>) → türevi o sabitin kendisi, yani h. b<sub>y</sub> terimi içinde hiç W<sub>hy</sub> yok → türevi 0:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial W_{hy}} = h + 0 = h \)</div>
+            <div class="deriv-why">Aynı mantıkla b<sub>y</sub>'ye göre türetelim (şimdi W<sub>hy</sub>·h sabit sayılır → içinde b<sub>y</sub> yok, türevi 0; b<sub>y</sub>'nin kendine göre türevi her zaman 1'dir):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial b_y} = 0 + 1 = 1 \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> asıl istediğimiz L'nin bu ağırlıklara göre türevi; zincir kuralıyla ∂L/∂z<sub>y</sub> ile çarparak oraya ulaşırız. Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile çarp (×giriş kuralı):</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial W_{hy}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial W_{hy}}=(\hat y-y)\,h,\qquad \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \)</div>
           </div>
         </div>
       </div>
@@ -1054,6 +1048,14 @@
         </div>
       </div>
     </div>
+    </div>
+      </div>
+    </div>
+
+
+
+    <!-- ADIM ADIM — HER ADIM NEDEN? (many-to-one'a özgü — tip seçiciyle birlikte gizlenir/gösterilir) -->
+    <div id="gAdimSection">
     <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \) — yokuş aşağı bir adım.</div>
     <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↑ Yukarıdaki kaydırıcılarla oynadın mı? Aşağıda aynı hesabın <b>tam sayısal dökümü</b> var, istersen aç.</p>
 
@@ -4503,13 +4505,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292254"></script>
-<script src="js/lesson-turev.js?v=202608292254"></script>
-<script src="js/lesson-xor.js?v=202608292254"></script>
-<script src="js/lesson-nn.js?v=202608292254"></script>
-<script src="js/lesson-trig.js?v=202608292254"></script>
+<script src="js/lesson-linreg.js?v=202608292307"></script>
+<script src="js/lesson-turev.js?v=202608292307"></script>
+<script src="js/lesson-xor.js?v=202608292307"></script>
+<script src="js/lesson-nn.js?v=202608292307"></script>
+<script src="js/lesson-trig.js?v=202608292307"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292254"></script>
-<script src="js/app.js?v=202608292254"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292307"></script>
+<script src="js/app.js?v=202608292307"></script>
 </body>
 </html>
