@@ -61,6 +61,17 @@ placeholder eklenmeli. Bu iş her modülde ayrı bir PR olarak, kullanıcıyla
 birlikte (kullanıcı içeriği tekrar ederken/incelerken) ilerliyor —
 tek seferde tüm siteyi otomatik dönüştürmeye kalkma.
 
+**Kapsam güncellemesi**: ilerleyiş katı bir "çağ sırasıyla ileri" akışı
+değil — kullanıcı Temeller Çağı ile Nöral Çağ arasında "git gel"
+yapabileceğini belirtti (bir çağ bitmeden diğerine geçip geri dönmek
+normal). Şu an aktif odak: kullanıcı **RNN (BPTT)** modülünün içeriğini
+kendi düzenliyor/düzeltiyor; o modülde oturttuğu düzeni netleştirdikten
+sonra bu düzeni hem GERİYE DÖNÜK olarak diğer (zaten işlenmiş) modüllere
+hem de İLERİYE doğru **LSTM/GRU**'ya entegre edeceğiz. Yani RNN, Nöral
+Çağ'ın geri kalanı için de bir şablon/referans noktası olacak — RNN'de
+netleşen yapıyı bekleyip ona göre hareket et, aceleyle tahmin ederek diğer
+modüllere uygulamaya başlama.
+
 ## Yol Haritası (tech-tree) notları
 
 - `js/app.js` içinde büyük bir IIFE: `NODES`, `ERAS`, dual-mode (yatay
