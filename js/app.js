@@ -1781,12 +1781,14 @@
       sub:['Decoder-only mimari','Next-token eğitimi','Ölçekleme fikri']}
   ];
   const byId={}; NODES.forEach(n=>byId[n.id]=n);
+  // c: sidebar'daki ERAC ile AYNI 5 çağ rengi (rgb triple) — kablo renklerinde
+  // de kullanılıyor ki site genelinde "bu çağ = bu renk" dili tutarlı kalsın.
   const ERAS=[
-    {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI'},
-    {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ'},
-    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI'},
-    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI'},
-    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ'}
+    {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI',c:'46,134,255'},
+    {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ',c:'156,77,255'},
+    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI',c:'229,71,155'},
+    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI',c:'255,122,51'},
+    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ',c:'255,201,60'}
   ];
 
   const KD='attn_tt_done_v2', KS='attn_tt_sub_v1';
@@ -1917,7 +1919,11 @@
         // çünkü kümeyi kurarken her düğümün ön koşullarını da ekledik) —
         // done/kilitli farketmez, "seni açmak için köke kadar bunlar lazım"
         // anlamında tıklanan düğüme özel yanıp sönüyor (bkz. style.css .te-req).
-        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" d="'+path+'"/>';
+        // --ec: kablonun bağlandığı düğümün (n) çağ rengi — her çağ kendi
+        // renginde kablolara sahip olsun diye (bkz. style.css .te-off/.te-on).
+        // te-req devredeyken bu renk zaten rainbow animasyonuyla eziliyor.
+        const era=ERAS.find(e=>n.tier>=e.t0 && n.tier<=e.t1)||ERAS[0];
+        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" style="--ec:'+era.c+'" d="'+path+'"/>';
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
