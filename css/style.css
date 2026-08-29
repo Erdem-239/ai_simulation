@@ -443,15 +443,34 @@
   #techSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.5}
   #techSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
   /* "Seçili" (tıklanan) düğüm: durum rengiyle (yeşil/altın/kahve) karışmasın diye
-     bambaşka, hep aynı mavi — kilitli bir düğüme tıklasan bile fill'i kahve/soluk
-     kalır (durumu hâlâ "kilitli" der) ama kenarlık maviye döner ("bunu tıkladım" der).
-     Bu kural .tn-locked/.tn-avail/.tn-done'un stroke kurallarından daha spesifik
-     olduğu için (üç sınıf vs iki) otomatik kazanır. */
-  #techSvg .tn.sel rect.tn-card{stroke:#2f6ae0; stroke-width:4.5; filter:drop-shadow(0 0 9px rgba(47,106,224,.85))}
-  #techSvg .te-off{stroke:#9c8354; stroke-width:1.8; fill:none; stroke-linejoin:round}
-  #techSvg .te-on{stroke:#3f7d3f; stroke-width:2.6; fill:none; stroke-dasharray:6 5; animation:ttflow .8s linear infinite; opacity:.9; stroke-linejoin:round}
+     bambaşka bir renk — kilitli bir düğüme tıklasan bile fill'i kahve/soluk kalır
+     (durumu hâlâ "kilitli" der) ama kenarlık bu renge döner ("bunu tıkladım" der).
+     Mavi parşömen zeminiyle çakışıp soğuk/yabancı durduğu için sıcak tonlu bir
+     "mühür kırmızısı"na çevrildi — eski haritalardaki kırmızı mühür/işaret gibi,
+     yeşil/altın/kahve durum renklerinden yine de kesin ayrışıyor. Bu kural
+     .tn-locked/.tn-avail/.tn-done'un stroke kurallarından daha spesifik olduğu
+     için (üç sınıf vs iki) otomatik kazanır. */
+  #techSvg .tn.sel rect.tn-card{stroke:#b8264a; stroke-width:4.5; filter:drop-shadow(0 0 9px rgba(184,38,74,.8))}
+  /* Bağlantı kabloları: kategori kartları / AIpedia kutusuyla AYNI 7 renk durağı,
+     ama SVG stroke rengi olarak akan bir kablo gibi sürekli renk değiştiriyor.
+     te-off (henüz güçlenmemiş) ve te-on (güç akan, üstüne ayrıca ttflow ile kesikli
+     çizgi akışı biner) aynı renk döngüsünü paylaşıyor — ikisinin farkı artık renk
+     değil, te-on'un kesikli/akan çizgisi (durum bilgisini renk yerine hareket taşıyor). */
+  @keyframes teRgbFlow{
+    0%   {stroke:#ff3d5a}
+    14%  {stroke:#ff9d3d}
+    28%  {stroke:#f5e93d}
+    42%  {stroke:#4dff6e}
+    57%  {stroke:#3dd9ff}
+    71%  {stroke:#5a6bff}
+    85%  {stroke:#c93dff}
+    100% {stroke:#ff3d5a}
+  }
+  #techSvg .te-off{stroke-width:2; fill:none; stroke-linejoin:round; opacity:.6; animation:teRgbFlow 9s linear infinite}
+  #techSvg .te-on{stroke-width:3; fill:none; stroke-dasharray:6 5; stroke-linejoin:round; opacity:.95; animation:teRgbFlow 9s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
+  @media(prefers-reduced-motion:reduce){ #techSvg .te-off,#techSvg .te-on{animation:none; stroke:#9c8354} #techSvg .te-on{stroke:#3f7d3f} }
   /* ---- sol panel yeniden boyutlandırma ---- */
   .sb-resizer{position:absolute; top:0; right:-7px; width:14px; height:100%; cursor:col-resize; z-index:5; touch-action:none}
   .sb-resizer::after{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:transparent; transition:.15s}
