@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300036"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300036">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300054"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300054">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:36 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -858,21 +858,19 @@
               <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
             </div>
           </div>
-    <div id="trCol1" style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:12px 0 0; position:relative">
-      <span class="dbg-badge">2</span>
-      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
-        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
-      </div>
-      <div style="flex:1 1 100px; min-width:96px">
-        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
-          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
-          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
-          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
-          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
-        </div>
-        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
-      </div>
-    </div>
+            <div id="trCol2" style="display:block; margin:6px 0 0; position:relative">
+              <span class="dbg-badge">3</span>
+              <div class="loss-valley-row">
+                <div class="loss-valley-col">
+                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
+                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
+                </div>
+                <div class="loss-valley-col">
+                  <div id="lossSurface3D" class="loss-surface-3d"></div>
+                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
+                </div>
+              </div>
+            </div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
@@ -902,6 +900,21 @@
               <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
             </div>
           </div>
+    <div id="trCol1" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; width:100%; max-width:560px; margin:6px 0 0; position:relative">
+      <span class="dbg-badge">2</span>
+      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
+        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+      </div>
+      <div style="flex:1 1 100px; min-width:96px">
+        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
+          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
+          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
+          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
+          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
+        </div>
+        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
+      </div>
+    </div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
@@ -938,19 +951,6 @@
               <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
             </div>
           </div>
-            <div id="trCol2" style="display:block; margin:6px 0 0; position:relative">
-              <span class="dbg-badge">3</span>
-              <div class="loss-valley-row">
-                <div class="loss-valley-col">
-                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
-                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
-                </div>
-                <div class="loss-valley-col">
-                  <div id="lossSurface3D" class="loss-surface-3d"></div>
-                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
-                </div>
-              </div>
-            </div>
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
@@ -4497,13 +4497,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300036"></script>
-<script src="js/lesson-turev.js?v=202608300036"></script>
-<script src="js/lesson-xor.js?v=202608300036"></script>
-<script src="js/lesson-nn.js?v=202608300036"></script>
-<script src="js/lesson-trig.js?v=202608300036"></script>
+<script src="js/lesson-linreg.js?v=202608300054"></script>
+<script src="js/lesson-turev.js?v=202608300054"></script>
+<script src="js/lesson-xor.js?v=202608300054"></script>
+<script src="js/lesson-nn.js?v=202608300054"></script>
+<script src="js/lesson-trig.js?v=202608300054"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300036"></script>
-<script src="js/app.js?v=202608300036"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300054"></script>
+<script src="js/app.js?v=202608300054"></script>
 </body>
 </html>
