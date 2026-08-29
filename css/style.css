@@ -451,26 +451,30 @@
      .tn-locked/.tn-avail/.tn-done'un stroke kurallarından daha spesifik olduğu
      için (üç sınıf vs iki) otomatik kazanır. */
   #techSvg .tn.sel rect.tn-card{stroke:#b8264a; stroke-width:4.5; filter:drop-shadow(0 0 9px rgba(184,38,74,.8))}
-  /* Bağlantı kabloları: kategori kartları / AIpedia kutusuyla AYNI 7 renk durağı,
-     ama SVG stroke rengi olarak akan bir kablo gibi sürekli renk değiştiriyor.
-     te-off (henüz güçlenmemiş) ve te-on (güç akan, üstüne ayrıca ttflow ile kesikli
-     çizgi akışı biner) aynı renk döngüsünü paylaşıyor — ikisinin farkı artık renk
-     değil, te-on'un kesikli/akan çizgisi (durum bilgisini renk yerine hareket taşıyor). */
+  /* Bağlantı kabloları: te-off (henüz güçlenmemiş, kaynağı hâlâ kilitli) sakin ve
+     sabit kalıyor — "burası henüz açılmadı" der. te-on (kaynağı zaten araştırılmış,
+     yani "şu ana kadar açılmış modüller arası") her zaman akan kesikli çizgiyle
+     (ttflow) güç taşıdığını gösterir, AMA rengarenk/"cafcaflı" gökkuşağı akışı
+     (AIpedia kutusuyla AYNI 7 renk durağı + o kutudaki gibi renkle eşleşen bir
+     parıltı/drop-shadow) sadece bir düğüme TIKLANDIĞINDA devreye girer
+     (#techSvg:has(g.tn.sel) ile) — durağan haritada sürekli göz yormaz, tıklayınca
+     "ödül" gibi canlanır. */
   @keyframes teRgbFlow{
-    0%   {stroke:#ff3d5a}
-    14%  {stroke:#ff9d3d}
-    28%  {stroke:#f5e93d}
-    42%  {stroke:#4dff6e}
-    57%  {stroke:#3dd9ff}
-    71%  {stroke:#5a6bff}
-    85%  {stroke:#c93dff}
-    100% {stroke:#ff3d5a}
+    0%   {stroke:#ff3d5a; filter:drop-shadow(0 0 4px rgba(255,61,90,.75))}
+    14%  {stroke:#ff9d3d; filter:drop-shadow(0 0 4px rgba(255,157,61,.75))}
+    28%  {stroke:#f5e93d; filter:drop-shadow(0 0 4px rgba(245,233,61,.75))}
+    42%  {stroke:#4dff6e; filter:drop-shadow(0 0 4px rgba(77,255,110,.75))}
+    57%  {stroke:#3dd9ff; filter:drop-shadow(0 0 4px rgba(61,217,255,.75))}
+    71%  {stroke:#5a6bff; filter:drop-shadow(0 0 4px rgba(90,107,255,.75))}
+    85%  {stroke:#c93dff; filter:drop-shadow(0 0 4px rgba(201,61,255,.75))}
+    100% {stroke:#ff3d5a; filter:drop-shadow(0 0 4px rgba(255,61,90,.75))}
   }
-  #techSvg .te-off{stroke-width:2; fill:none; stroke-linejoin:round; opacity:.6; animation:teRgbFlow 9s linear infinite}
-  #techSvg .te-on{stroke-width:3; fill:none; stroke-dasharray:6 5; stroke-linejoin:round; opacity:.95; animation:teRgbFlow 9s linear infinite, ttflow .8s linear infinite}
+  #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; opacity:.65}
+  #techSvg .te-on{stroke:#3f7d3f; stroke-width:4; fill:none; stroke-dasharray:7 5; stroke-linejoin:round; opacity:.95; animation:ttflow .8s linear infinite}
+  #techSvg:has(g.tn.sel) .te-on{animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
-  @media(prefers-reduced-motion:reduce){ #techSvg .te-off,#techSvg .te-on{animation:none; stroke:#9c8354} #techSvg .te-on{stroke:#3f7d3f} }
+  @media(prefers-reduced-motion:reduce){ #techSvg .te-on{animation:none} #techSvg:has(g.tn.sel) .te-on{animation:none; filter:none} }
   /* ---- sol panel yeniden boyutlandırma ---- */
   .sb-resizer{position:absolute; top:0; right:-7px; width:14px; height:100%; cursor:col-resize; z-index:5; touch-action:none}
   .sb-resizer::after{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:transparent; transition:.15s}
