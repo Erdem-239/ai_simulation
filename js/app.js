@@ -1894,7 +1894,10 @@
           const x1=X(a)+NW(a)/2, y1=Y(a), x2=X(n)-NW(n)/2, y2=Y(n), mx=(x1+x2)/2;
           path='M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2;
         }
-        s+='<path class="'+(done.has(p)?'te-on':'te-off')+'" d="'+path+'"/>';
+        // te-req: bu kablo, o an SEÇİLİ düğümü açmak için gereken doğrudan
+        // ön koşul — done/kilitli farketmez, "seni açmak için bunlar lazım"
+        // anlamında tıklanan düğüme özel yanıp sönüyor (bkz. style.css .te-req).
+        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(sel===n.id?' te-req':'')+'" d="'+path+'"/>';
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
@@ -1912,7 +1915,7 @@
       const icx=x+ICR+9, icy=Y(n), tx=icx+ICR+11;
       if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ BİLİM ZAFERİ ★</text>';
       s+='<g class="tn tn-'+st+(sel===n.id?' sel':'')+'" data-id="'+n.id+'">'
-        +'<rect class="tn-card" x="'+x+'" y="'+y+'" width="'+w+'" height="'+NH+'" rx="12"/>'
+        +'<rect class="tn-card" x="'+x+'" y="'+y+'" width="'+w+'" height="'+NH+'" rx="12" pathLength="100"/>'
         +'<circle class="tn-icon-bg" cx="'+icx+'" cy="'+icy+'" r="'+ICR+'"/>'
         +'<text class="tn-emoji" x="'+icx+'" y="'+(icy+6.5)+'" text-anchor="middle" font-size="19">'+icon+'</text>'
         +'<line class="tn-div" x1="'+(tx-6)+'" y1="'+(y+9)+'" x2="'+(tx-6)+'" y2="'+(y+NH-9)+'"/>'

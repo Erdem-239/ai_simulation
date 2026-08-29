@@ -449,16 +449,28 @@
      "mühür kırmızısı"na çevrildi — eski haritalardaki kırmızı mühür/işaret gibi,
      yeşil/altın/kahve durum renklerinden yine de kesin ayrışıyor. Bu kural
      .tn-locked/.tn-avail/.tn-done'un stroke kurallarından daha spesifik olduğu
-     için (üç sınıf vs iki) otomatik kazanır. */
-  #techSvg .tn.sel rect.tn-card{stroke:#b8264a; stroke-width:4.5; filter:drop-shadow(0 0 9px rgba(184,38,74,.8))}
-  /* Bağlantı kabloları: te-off (henüz güçlenmemiş, kaynağı hâlâ kilitli) sakin ve
-     sabit kalıyor — "burası henüz açılmadı" der. te-on (kaynağı zaten araştırılmış,
-     yani "şu ana kadar açılmış modüller arası") her zaman akan kesikli çizgiyle
-     (ttflow) güç taşıdığını gösterir, AMA rengarenk/"cafcaflı" gökkuşağı akışı
-     (AIpedia kutusuyla AYNI 7 renk durağı + o kutudaki gibi renkle eşleşen bir
-     parıltı/drop-shadow) sadece bir düğüme TIKLANDIĞINDA devreye girer
-     (#techSvg:has(g.tn.sel) ile) — durağan haritada sürekli göz yormaz, tıklayınca
-     "ödül" gibi canlanır. */
+     için (üç sınıf vs iki) otomatik kazanır. İnce bir çizgi + tek bir renk parçası
+     kartın çevresinde sürekli dolaşıyor (yılan oyunu gibi baştan sona gidip
+     başa dönüyor) — rect'e pathLength="100" verildiği için (bkz. app.js) kart
+     boyu (normal/kraliyet) farketmeksizin dasharray/dashoffset yüzdeleri hep
+     aynı davranıyor. */
+  #techSvg .tn.sel rect.tn-card{
+    stroke:#b8264a; stroke-width:2.4; stroke-linecap:round;
+    stroke-dasharray:18 82;
+    filter:drop-shadow(0 0 5px rgba(184,38,74,.85));
+    animation:ttSnake 2.4s linear infinite;
+  }
+  @keyframes ttSnake{ to{ stroke-dashoffset:-100 } }
+  /* Bağlantı kabloları: te-off (kaynağı hâlâ kilitli) ve te-on (kaynağı zaten
+     araştırılmış) varsayılan durumda sakin — sırasıyla sabit kahverengi ve
+     sabit yeşil + hep akan kesikli çizgi (ttflow, "güç akıyor" der). Rengarenk/
+     "cafcaflı" gökkuşağı akışı (AIpedia kutusuyla AYNI 7 renk durağı + o
+     kutudaki gibi renkle eşleşen parıltı/drop-shadow) sadece o an SEÇİLİ
+     düğümü açmak için gereken doğrudan ön koşul kablolarında yanıyor — te-req
+     sınıfı (bkz. app.js render()) tıklanan düğüme göre her çizimde yeniden
+     hesaplanıyor. Kilitli olsun/olmasın farketmez: "seni açmak için bunlar
+     lazım" mesajı hem "burası hâlâ kilitli" (te-off) hem "burası zaten açık"
+     (te-on) kablolarında aynı şekilde çalışır. */
   @keyframes teRgbFlow{
     0%   {stroke:#ff3d5a; filter:drop-shadow(0 0 4px rgba(255,61,90,.75))}
     14%  {stroke:#ff9d3d; filter:drop-shadow(0 0 4px rgba(255,157,61,.75))}
@@ -471,10 +483,14 @@
   }
   #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; opacity:.65}
   #techSvg .te-on{stroke:#3f7d3f; stroke-width:4; fill:none; stroke-dasharray:7 5; stroke-linejoin:round; opacity:.95; animation:ttflow .8s linear infinite}
-  #techSvg:has(g.tn.sel) .te-on{animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
+  #techSvg .te-off.te-req, #techSvg .te-on.te-req{stroke-width:4; stroke-dasharray:7 5; opacity:1; animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
-  @media(prefers-reduced-motion:reduce){ #techSvg .te-on{animation:none} #techSvg:has(g.tn.sel) .te-on{animation:none; filter:none} }
+  @media(prefers-reduced-motion:reduce){
+    #techSvg .tn.sel rect.tn-card{animation:none; stroke-dasharray:none}
+    #techSvg .te-on{animation:none}
+    #techSvg .te-off.te-req, #techSvg .te-on.te-req{animation:none; filter:none}
+  }
   /* ---- sol panel yeniden boyutlandırma ---- */
   .sb-resizer{position:absolute; top:0; right:-7px; width:14px; height:100%; cursor:col-resize; z-index:5; touch-action:none}
   .sb-resizer::after{content:''; position:absolute; left:6px; top:0; width:2px; height:100%; background:transparent; transition:.15s}
