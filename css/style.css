@@ -513,19 +513,19 @@
   }
   /* Çağ renklerinden vazgeçildi (era-tinted kablo denemesi geri alındı) —
      varsayılan durumda kablolar yine eski sade renklerine döndü: kilitli
-     kahverengi, güçlü yeşil. Ama "içinde bir şey akıyor" hissi kaybolmasın
-     diye, düğüm seçim kenarlığındaki (.tn.sel rect.tn-card, yukarıda)
-     BİREBİR AYNI yılan tekniği kablolara da uygulandı — küçük bir segment
-     rengsiz olarak kablo boyunca sürekli kayıyor (pathLength="100" her
-     path'e app.js'te veriliyor, kablo gerçek uzunluğu ne olursa olsun
-     dasharray/dashoffset yüzdeleri hep aynı davranır). te-on'un akışı
-     te-off'tan daha hızlı — "güç zaten akıyor" ile "henüz kilitli, durgun"
-     arasındaki farkı renk değil hız taşıyor. Rengarenk/"cafcaflı" gökkuşağı
-     akışı (teRgbFlow) hâlâ SADECE o an SEÇİLİ düğümü açmak için gereken
-     .te-req kablolarında devreye giriyor (bkz. app.js render()). */
-  #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:14 86; opacity:.75; animation:ttSnakeWire 3.6s linear infinite}
-  #techSvg .te-on{stroke:#3f7d3f; stroke-width:3.2; fill:none; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:16 84; opacity:.95; animation:ttSnakeWire 1.8s linear infinite}
-  @keyframes ttSnakeWire{ to{ stroke-dashoffset:-100 } }
+     kahverengi, güçlü yeşil. İlk yılan denemesinde (tek bir küçük segment +
+     kablonun büyük kısmı boş) hat "kopuk" görünüyordu — kullanıcı baştan
+     sona BAĞLI, sadece kesikli çizgili ve hareketli bir hat istedi. Bu
+     yüzden pathLength/yüzde yerine GERÇEK piksel dasharray'e dönüldü
+     (klasik "6 5" tipi, .te-req'in de zaten kullandığı desenin aynısı) —
+     kısa da uzun da olsa kablo boyunca eşit aralıklı, sürekli görünen bir
+     kesikli çizgi. te-on'un akışı te-off'tan daha hızlı — "güç zaten
+     akıyor" ile "henüz kilitli, durgun" arasındaki farkı renk değil hız
+     taşıyor. Rengarenk/"cafcaflı" gökkuşağı akışı (teRgbFlow) hâlâ SADECE
+     o an SEÇİLİ düğümü açmak için gereken .te-req kablolarında devreye
+     giriyor (bkz. app.js render()). */
+  #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; stroke-dasharray:6 5; opacity:.8; animation:ttflow 1.6s linear infinite}
+  #techSvg .te-on{stroke:#3f7d3f; stroke-width:3.2; fill:none; stroke-linejoin:round; stroke-dasharray:7 5; opacity:.95; animation:ttflow .8s linear infinite}
   #techSvg .te-off.te-req, #techSvg .te-on.te-req{stroke-width:4; stroke-dasharray:7 5; opacity:1; animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}

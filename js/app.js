@@ -1917,10 +1917,9 @@
         // çünkü kümeyi kurarken her düğümün ön koşullarını da ekledik) —
         // done/kilitli farketmez, "seni açmak için köke kadar bunlar lazım"
         // anlamında tıklanan düğüme özel yanıp sönüyor (bkz. style.css .te-req).
-        // pathLength="100": .tn.sel rect.tn-card'daki yılan tekniğiyle aynı —
-        // kablo gerçek uzunluğu ne olursa olsun dasharray/dashoffset yüzdeleri
-        // sabit kalsın diye (bkz. style.css .te-off/.te-on'daki ttSnakeWire).
-        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" pathLength="100" d="'+path+'"/>';
+        // (pathLength YOK — kablolar gerçek piksel dasharray kullanıyor, ki
+        // kısa/uzun kablolarda tire boyu hep aynı görünsün; bkz. style.css.)
+        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" d="'+path+'"/>';
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
