@@ -511,18 +511,27 @@
     85%  {stroke:#c93dff; filter:drop-shadow(0 0 4px rgba(201,61,255,.75))}
     100% {stroke:#ff3d5a; filter:drop-shadow(0 0 4px rgba(255,61,90,.75))}
   }
-  /* --ec: app.js'in her kabloya inline yazdığı, o kablonun bağlandığı düğümün
-     çağına ait renk (sidebar'daki ERAC ile aynı 5 renk) — her çağ artık kendi
-     rengindeki kablolarla çiziliyor. Kilitliyken soluk/yarı saydam (henüz
-     "güç" yok), açıldığında aynı rengin tam doygun hali (parlıyor). */
-  #techSvg .te-off{stroke:rgba(var(--ec,156,120,60),.5); stroke-width:2.5; fill:none; stroke-linejoin:round}
-  #techSvg .te-on{stroke:rgb(var(--ec,63,125,63)); stroke-width:4; fill:none; stroke-dasharray:7 5; stroke-linejoin:round; opacity:.95; animation:ttflow .8s linear infinite}
+  /* Çağ renklerinden vazgeçildi (era-tinted kablo denemesi geri alındı) —
+     varsayılan durumda kablolar yine eski sade renklerine döndü: kilitli
+     kahverengi, güçlü yeşil. Ama "içinde bir şey akıyor" hissi kaybolmasın
+     diye, düğüm seçim kenarlığındaki (.tn.sel rect.tn-card, yukarıda)
+     BİREBİR AYNI yılan tekniği kablolara da uygulandı — küçük bir segment
+     rengsiz olarak kablo boyunca sürekli kayıyor (pathLength="100" her
+     path'e app.js'te veriliyor, kablo gerçek uzunluğu ne olursa olsun
+     dasharray/dashoffset yüzdeleri hep aynı davranır). te-on'un akışı
+     te-off'tan daha hızlı — "güç zaten akıyor" ile "henüz kilitli, durgun"
+     arasındaki farkı renk değil hız taşıyor. Rengarenk/"cafcaflı" gökkuşağı
+     akışı (teRgbFlow) hâlâ SADECE o an SEÇİLİ düğümü açmak için gereken
+     .te-req kablolarında devreye giriyor (bkz. app.js render()). */
+  #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:14 86; opacity:.75; animation:ttSnakeWire 3.6s linear infinite}
+  #techSvg .te-on{stroke:#3f7d3f; stroke-width:3.2; fill:none; stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:16 84; opacity:.95; animation:ttSnakeWire 1.8s linear infinite}
+  @keyframes ttSnakeWire{ to{ stroke-dashoffset:-100 } }
   #techSvg .te-off.te-req, #techSvg .te-on.te-req{stroke-width:4; stroke-dasharray:7 5; opacity:1; animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
   @media(prefers-reduced-motion:reduce){
     #techSvg .tn.sel rect.tn-card{animation:none; stroke-dasharray:none}
-    #techSvg .te-on{animation:none}
+    #techSvg .te-off, #techSvg .te-on{animation:none}
     #techSvg .te-off.te-req, #techSvg .te-on.te-req{animation:none; filter:none}
   }
   /* ---- sol panel yeniden boyutlandırma ---- */
