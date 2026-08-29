@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292307"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292307">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292315"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292315">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:07 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:15 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -788,6 +788,52 @@
         <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
       </div>
     </div>
+      <div class="step" id="gAdim3" style="margin-top:10px">
+        <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="step-graph-row">
+            <div class="step-graph-formula">
+              <div id="rcS3Live" class="rc-card">
+                <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
+              </div>
+              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
+              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
+            </div>
+            <div class="step-graph-plot">
+              <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
+              <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
+            </div>
+          </div>
+          <div class="detail">
+            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
+            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
+            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
+            <div class="deriv-why">Bu kez h'ye göre türetelim; W<sub>hy</sub> ve b<sub>y</sub>'yi sabit sayarız. W<sub>hy</sub>·h terimi = sabit(W<sub>hy</sub>)×değişken(h) → türevi W<sub>hy</sub>'nin kendisi. b<sub>y</sub> terimi içinde h yok → türevi 0:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h} = W_{hy}+0=W_{hy} \)</div>
+            <div class="deriv-why">Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
+            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> h=tanh(z<sub>h</sub>) olduğu için z<sub>h</sub>'ye inmek üzere tanh'ın türevini bilmemiz lazım. z<sub>h</sub>'nin açık hali (1. bölümdeki "① h" kartından hatırla): z<sub>h</sub>=W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub>, h'nin açık hali (h=tanh(z<sub>h</sub>)); z<sub>h</sub>'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
+            <div class="eq" style="margin:4px 0">\( h=\tanh(z_h) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z_h}=1-\tanh^2(z_h)=1-h^2 \)</div>
+            <div class="acc">
+              <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
+              <div class="acc-body">
+                <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
+                \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
+                <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
+                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
+                <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
+                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
+                <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
+                \[ \tanh'(z)=1-h^{2} \]
+                <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
+              </div>
+            </div>
+            <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z<sub>h</sub>'ye duyarlılığını (∂L/∂z<sub>h</sub>) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
+            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
+          </div>
+        </div>
+      </div>
 
         <div class="sc-vresizer" id="scVResizer" title="Sürükle: diyagramın yüksekliğini ayarla"></div>
 
@@ -908,52 +954,6 @@
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
     <div class="steps">
       <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla"></div>
-      <div class="step" id="gAdim3">
-        <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
-        <div class="stepbody">
-          <div class="step-graph-row">
-            <div class="step-graph-formula">
-              <div id="rcS3Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \) = <span style="color:var(--muted)" id="rcS3sub1"></span> = <span class="v" id="rcS3val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
-              </div>
-              <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
-            </div>
-            <div class="step-graph-plot">
-              <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
-              <div class="step-graph-cap">h = tanh(z<sub>h</sub>) — nokta: şu anki z<sub>h</sub> · sarı: teğet (eğim = 1−h²)</div>
-            </div>
-          </div>
-          <div class="detail">
-            <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> içerideki ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) inebilmek için geri-sinyali önce h'ye, sonra z<sub>h</sub>'ye taşımak. <b>z<sub>h</sub></b>, gizli katmanın ham toplamı — 1. bölümdeki "① h" kartında gördüğümüz aynı z<sub>h</sub> (z<sub>y</sub>'nin çıktı katmanındaki eşleniği, ama bu kez gizli katmanda).</div>
-            <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> h, içerideki ağırlıklara bağlanan köprü; önce z<sub>y</sub>'nin h'ye duyarlılığını bulup ∂L/∂h'ye geçiyoruz. z<sub>y</sub>'nin açık hali (tekrar):</div>
-            <div class="eq" style="margin:4px 0">\( z_y=W_{hy}\,h+b_y \)</div>
-            <div class="deriv-why">Bu kez h'ye göre türetelim; W<sub>hy</sub> ve b<sub>y</sub>'yi sabit sayarız. W<sub>hy</sub>·h terimi = sabit(W<sub>hy</sub>)×değişken(h) → türevi W<sub>hy</sub>'nin kendisi. b<sub>y</sub> terimi içinde h yok → türevi 0:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h} = W_{hy}+0=W_{hy} \)</div>
-            <div class="deriv-why">Bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>=(ŷ−y) ile zincir kuralıyla çarp:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial h}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial h}=(\hat y-y)\,W_{hy} \)</div>
-            <div class="deriv-why"><b>Adım 2</b> — <i>neden:</i> h=tanh(z<sub>h</sub>) olduğu için z<sub>h</sub>'ye inmek üzere tanh'ın türevini bilmemiz lazım. z<sub>h</sub>'nin açık hali (1. bölümdeki "① h" kartından hatırla): z<sub>h</sub>=W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub>, h'nin açık hali (h=tanh(z<sub>h</sub>)); z<sub>h</sub>'ye göre türetirsek (tanh'ın türevi, ispatı aşağıdaki akordeonda):</div>
-            <div class="eq" style="margin:4px 0">\( h=\tanh(z_h) \quad\Rightarrow\quad \dfrac{\partial h}{\partial z_h}=1-\tanh^2(z_h)=1-h^2 \)</div>
-            <div class="acc">
-              <div class="acc-head"><span class="ac">▸</span> Neden tanh'ın türevi (1 − h²)? — uzun yol ispatı</div>
-              <div class="acc-body">
-                <p>tanh'ın e (Euler) sayısıyla açık hali:</p>
-                \[ \tanh(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \]
-                <p>Bölüm türevi kuralı \(\left(\frac{u}{v}\right)'=\frac{u'v-uv'}{v^2}\). Burada \(u=e^{z}-e^{-z}\) (türevi \(e^{z}+e^{-z}\)) ve \(v=e^{z}+e^{-z}\) (türevi \(e^{z}-e^{-z}\)):</p>
-                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})(e^{z}+e^{-z})-(e^{z}-e^{-z})(e^{z}-e^{-z})}{(e^{z}+e^{-z})^{2}} \]
-                <p>Pay \(=(e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}\). Kesri iki parçaya bölelim:</p>
-                \[ \tanh'(z)=\frac{(e^{z}+e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}-\frac{(e^{z}-e^{-z})^{2}}{(e^{z}+e^{-z})^{2}}=1-\tanh^{2}(z) \]
-                <p>İlk parça aynı sayının kendisine bölümü = 1; ikinci parça tanh'ın karesi. Ve \(h=\tanh(z)\) olduğundan:</p>
-                \[ \tanh'(z)=1-h^{2} \]
-                <div class="tip">İşte gradyan geri akarken her tanh'tan geçişte beliren o <b>(1 − h²)</b> çarpanı buradan gelir. h, ±1'e yaklaştıkça (1 − h²) → 0 olur; vanishing gradient'in bir sebebi de budur.</div>
-              </div>
-            </div>
-            <div class="deriv-why"><b>Adım 3</b> — <i>neden:</i> iki parçayı çarparak L'nin z<sub>h</sub>'ye duyarlılığını (∂L/∂z<sub>h</sub>) buluruz — Adım 4'teki tüm içerideki ağırlıklar bunu kullanacak. Zincir kuralı: ikisini çarp:</div>
-            <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big]\times(1-h^2) \)</div>
-          </div>
-        </div>
-      </div>
       <div class="step" id="gAdim2">
         <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -4505,13 +4505,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292307"></script>
-<script src="js/lesson-turev.js?v=202608292307"></script>
-<script src="js/lesson-xor.js?v=202608292307"></script>
-<script src="js/lesson-nn.js?v=202608292307"></script>
-<script src="js/lesson-trig.js?v=202608292307"></script>
+<script src="js/lesson-linreg.js?v=202608292315"></script>
+<script src="js/lesson-turev.js?v=202608292315"></script>
+<script src="js/lesson-xor.js?v=202608292315"></script>
+<script src="js/lesson-nn.js?v=202608292315"></script>
+<script src="js/lesson-trig.js?v=202608292315"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292307"></script>
-<script src="js/app.js?v=202608292307"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292315"></script>
+<script src="js/app.js?v=202608292315"></script>
 </body>
 </html>
