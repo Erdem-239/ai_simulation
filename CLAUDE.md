@@ -65,15 +65,25 @@ tek seferde tüm siteyi otomatik dönüştürmeye kalkma.
 
 - `js/app.js` içinde büyük bir IIFE: `NODES`, `ERAS`, dual-mode (yatay
   masaüstü / dikey mobil, `VERT` bayrağı) SVG çizim mantığı.
-- Düğüm seçimi (`.tn.sel`) ve bağlantı kabloları (`.te-off`/`.te-on`)
-  "yılan" tekniğini kullanıyor: `pathLength="100"` + küçük
-  `stroke-dasharray` + sürekli `stroke-dashoffset` animasyonu — gerçek
-  boyuttan/uzunluktan bağımsız, kartın/kablonun üzerinde sürekli dolaşan
-  küçük bir ışık şeridi izlenimi verir.
-- Kablolar varsayılan durumda RENKSİZ (kilitli=kahverengi, güçlü=yeşil) —
-  bir düğüme tıklanınca SADECE o düğümü açmak için gereken (köke kadar
-  geçişli/transitive) kabloları `.te-req` sınıfı alıp rengarenk/"cafcaflı"
-  akışa (AIpedia kutusuyla aynı 7 renk durağı) geçiyor. Çağ bazlı kalıcı
-  kablo renklendirmesi bir ara denendi, kullanıcı geri istedi — kalıcı
-  olarak DENENMESİN (bkz. git geçmişi, "her çağın bağlantı kablosu kendi
-  çağ renginde olsun" → sonra "eskisi gibi renksiz olsun" geri alımı).
+- Düğüm seçim kenarlığı (`.tn.sel rect.tn-card`) "yılan" tekniğini
+  kullanıyor: `pathLength="100"` (rect'e app.js'te veriliyor) + küçük
+  yüzdesel `stroke-dasharray` (18/82) + sürekli `stroke-dashoffset`
+  animasyonu — kart boyutundan bağımsız, kartın çevresinde sürekli
+  dolaşan küçük bir ışık şeridi izlenimi verir. **Bu teknik SADECE kapalı
+  bir döngü/kutu çevresi için uygun** — açık uçtan uca bir hat (kablo)
+  için denendi ama hattın "kopuk" görünmesine yol açtığı için kablolarda
+  KULLANILMIYOR, geri alındı (bkz. git geçmişi).
+- Bağlantı kabloları (`.te-off`/`.te-on`) klasik GERÇEK PİKSEL
+  `stroke-dasharray` (`6 5` / `7 5`) + `@keyframes ttflow`
+  (`stroke-dashoffset:-11`) kullanıyor — kablo kısa da uzun da olsa tire
+  boyu sabit kalır, hat baştan sona bağlı/sürekli görünür, sadece kayarak
+  akar. `te-off` (kilitli) daha yavaş (1.6s), `te-on` (güçlü) daha hızlı
+  (.8s) akıyor — farkı renk değil hız taşıyor.
+- Kablolar varsayılan durumda RENKSİZ (kilitli=kahverengi #9c8354,
+  güçlü=yeşil #3f7d3f) — bir düğüme tıklanınca SADECE o düğümü açmak için
+  gereken (köke kadar geçişli/transitive) kabloları `.te-req` sınıfı alıp
+  rengarenk/"cafcaflı" akışa (AIpedia kutusuyla aynı 7 renk durağı,
+  `teRgbFlow`) geçiyor. Çağ bazlı kalıcı kablo renklendirmesi bir ara
+  denendi, kullanıcı geri istedi — kalıcı olarak DENENMESİN (bkz. git
+  geçmişi, "her çağın bağlantı kablosu kendi çağ renginde olsun" → sonra
+  "eskisi gibi renksiz olsun" geri alımı).
