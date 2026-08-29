@@ -247,6 +247,15 @@
       if(body && body.classList.contains('rnn-secbody')) body.classList.toggle('closed');
     });
   });
+  // ---- şablon kümeleri (1-Giriş...6-Kendini Test Et + Ekstra) aç/kapa ----
+  // Aynı mekanik: varsayılan AÇIK, tıklayınca .closed eklenir/kalkar.
+  document.querySelectorAll('.tpl-head').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      h.classList.toggle('closed');
+      const body=h.nextElementSibling;
+      if(body && body.classList.contains('tpl-body')) body.classList.toggle('closed');
+    });
+  });
   // ---- ispat panelleri (accordion) aç/kapa ----
   document.querySelectorAll('.acc-head').forEach(h=>{
     h.addEventListener('click', e=>{ e.stopPropagation(); h.closest('.acc').classList.toggle('open'); });
