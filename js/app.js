@@ -482,14 +482,20 @@
   bind(r2, ()=>w2, w=>{ w2=w; row.style.setProperty('--tr2w', w2+'px'); }, 'attn_tr2w', 160, 600);
 })();
 
-/* ---- Geri Adım kartları ızgarası: sütun genişliğini sürükle-ayarla ---- */
+/* ---- Geri Adım kartları ızgarası: sütun genişliğini sürükle-ayarla ----
+   --stepsw artık :root'a yazılıyor, #gAdimSection'a değil — .steps grid'i
+   (Geri Adım 2-5) artık #gAdimSection'ın DIŞINDA, .sc-right içine taşındı
+   (Geri Adım 1 ile aynı sütunda görünsün diye); CSS custom property'ler
+   sadece SOYAĞACI boyunca miras alınır, farklı bir dala taşınan .steps
+   artık #gAdimSection'ın torunu değil — :root her yerden erişilebilir
+   olduğu için bu sorunu ortadan kaldırıyor. */
 (function(){
-  const section=document.getElementById('gAdimSection');
+  const root=document.documentElement;
   const handle=document.getElementById('gAdimStepsResizer');
-  if(!section||!handle) return;
+  if(!handle) return;
   let pct=50;
   try{ const s=parseFloat(localStorage.getItem('attn_stepsw')||''); if(s>=25&&s<=75) pct=s; }catch(e){}
-  section.style.setProperty('--stepsw', pct+'%');
+  root.style.setProperty('--stepsw', pct+'%');
   let drag=false, sx=0, spct=50, sw=0;
   handle.addEventListener('pointerdown', e=>{
     drag=true; sx=e.clientX; spct=pct; sw=handle.parentElement.getBoundingClientRect().width;
@@ -498,7 +504,7 @@
   handle.addEventListener('pointermove', e=>{
     if(!drag||!sw) return;
     pct=Math.max(25, Math.min(75, spct+(e.clientX-sx)/sw*100));
-    section.style.setProperty('--stepsw', pct+'%');
+    root.style.setProperty('--stepsw', pct+'%');
   });
   handle.addEventListener('pointerup', ()=>{
     drag=false; handle.classList.remove('on');
