@@ -699,6 +699,19 @@
   @media(max-width:560px){ .step-graph-formula .eq{overflow-x:auto} }
   .step-graph-plot canvas{width:100%; height:auto; background:#0d1426; border:1px solid var(--line); border-radius:6px}
   .step-graph-cap{font-size:10.5px; color:var(--muted); text-align:center; margin-top:4px; line-height:1.4}
+  /* Kompakt adım kartı — RNN tek-hücre kartları (gAdim1-5) üç sütunlu ızgarada
+     duruyor; varsayılan 320px formül + 240px grafik kart genişliğine sığmayıp
+     grafiği ALTA sarıyor ve kartı ~200px uzatıyordu. Daha küçük taban
+     genişlikleriyle grafik formülün YANINA geliyor: simülasyon + 5 geri adım
+     tek ekrana sığıyor. min-width:0, formülün (MathJax) hücreyi taşırmasını
+     engeller — geniş formül kendi içinde yatay kayar. */
+  .step.stepc .step-graph-formula{flex:1 1 190px; min-width:0}
+  .step.stepc .step-graph-plot{flex:0 0 150px}
+  .step.stepc .step-graph-cap{font-size:9.5px}
+  /* Dar ekranda kart daralınca formül+grafik yan yana sıkışıp denklemi
+     taşırıyordu. Bu genişliklerde zaten her şey tek ekrana sığmıyor; formülü
+     tam genişliğe alıp grafiği ALTINA sarmak okunurluk açısından daha doğru. */
+  @media(max-width:1600px){ .step.stepc .step-graph-formula{flex:1 1 100%} }
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
   .loss-valley-row{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin-top:6px}
   .loss-valley-col{flex:1 1 150px; max-width:210px; text-align:center}
