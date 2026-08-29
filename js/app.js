@@ -454,15 +454,17 @@
   });
 })();
 
-/* ---- eğitim döngüsü satırı: Eğitim döngüsü / Kayıp Vadisi / Adım 1 sütunlarını sürükle-genişlet ---- */
+/* ---- Kayıp Vadisi sütunu: sürükle-genişlet ----
+   trCol1 (maliyet grafiği + kontroller) artık diyagram kutusunun altına
+   taşındı, trCol2 (gradyan pusulası + 3B yüzey) ile aynı satırda değil —
+   bu yüzden aralarındaki eski trResizer1 kaldırıldı, sadece trCol2'nin
+   kendi genişliği (trResizer2) ayarlanabilir kaldı. */
 (function(){
   const row=document.getElementById('trRow');
-  const r1=document.getElementById('trResizer1'), r2=document.getElementById('trResizer2');
-  if(!row||!r1||!r2) return;
-  let w1=320, w2=460;
-  try{ const s=parseInt(localStorage.getItem('attn_tr1w')||'',10); if(s>=180&&s<=700) w1=s; }catch(e){}
+  const r2=document.getElementById('trResizer2');
+  if(!row||!r2) return;
+  let w2=460;
   try{ const s=parseInt(localStorage.getItem('attn_tr2w')||'',10); if(s>=160&&s<=600) w2=s; }catch(e){}
-  row.style.setProperty('--tr1w', w1+'px');
   row.style.setProperty('--tr2w', w2+'px');
   function bind(handle, getW, setW, storageKey, min, max){
     let drag=false, sx=0, sw=0;
@@ -477,7 +479,6 @@
       try{ localStorage.setItem(storageKey, String(Math.round(getW()))); }catch(e){}
     });
   }
-  bind(r1, ()=>w1, w=>{ w1=w; row.style.setProperty('--tr1w', w1+'px'); }, 'attn_tr1w', 180, 700);
   bind(r2, ()=>w2, w=>{ w2=w; row.style.setProperty('--tr2w', w2+'px'); }, 'attn_tr2w', 160, 600);
 })();
 
