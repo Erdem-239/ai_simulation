@@ -415,6 +415,36 @@
   .sechead.rnn-toggle:not(.closed) .chev{transform:rotate(90deg); color:var(--accent)}
   .rnn-secbody{overflow:hidden}
   .rnn-secbody.closed{display:none}
+
+  /* ---- Şablon kümeleri (tpl-cl) --------------------------------------------
+     Her modülün genel 6 maddelik akışını (1-Giriş, 2-Hikâye, 3-Gerçek Hayatta,
+     4-Nedir/Nasıl Çalışır, 5-Simülasyon, 6-Kendini Test Et) + varsa aradaki
+     "Ekstra/Derinleşme" tangent'lerini görünür, açılıp kapanabilen kümeler
+     halinde sınırlıyor — hangi kümenin nerede başlayıp bittiği, içine ne
+     eklenebileceği net görünsün diye. Mekanik .rnn-toggle ile birebir aynı
+     (varsayılan AÇIK, tıklayınca .closed eklenir) — tutarlılık için. */
+  .tpl-cl{margin:22px 0; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .tpl-cl[data-stage="1"]{border-color:rgba(58,122,254,.45)}
+  .tpl-cl[data-stage="2"]{border-color:rgba(240,160,50,.45)}
+  .tpl-cl[data-stage="3"]{border-color:rgba(46,196,106,.45)}
+  .tpl-cl[data-stage="4"]{border-color:rgba(156,77,255,.45)}
+  .tpl-cl[data-stage="5"]{border-color:rgba(47,155,255,.45)}
+  .tpl-cl[data-stage="6"]{border-color:rgba(224,106,106,.45)}
+  .tpl-cl[data-stage="x"]{border-color:rgba(149,162,194,.4); border-style:dashed}
+  .tpl-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 16px; cursor:pointer; user-select:none; font-size:14px; font-weight:700; color:var(--text)}
+  .tpl-cl[data-stage="1"] .tpl-head{background:rgba(58,122,254,.13)}
+  .tpl-cl[data-stage="2"] .tpl-head{background:rgba(240,160,50,.13)}
+  .tpl-cl[data-stage="3"] .tpl-head{background:rgba(46,196,106,.13)}
+  .tpl-cl[data-stage="4"] .tpl-head{background:rgba(156,77,255,.13)}
+  .tpl-cl[data-stage="5"] .tpl-head{background:rgba(47,155,255,.13)}
+  .tpl-cl[data-stage="6"] .tpl-head{background:rgba(224,106,106,.13)}
+  .tpl-cl[data-stage="x"] .tpl-head{background:rgba(149,162,194,.08)}
+  .tpl-head .chev{transition:.2s; flex:0 0 auto; font-size:14px; color:var(--muted)}
+  .tpl-head:not(.closed) .chev{transform:rotate(90deg)}
+  .tpl-empty-tag{font-size:10px; font-weight:700; letter-spacing:.4px; background:rgba(224,106,106,.22); color:#ffb0b0; border:1px solid rgba(224,106,106,.45); border-radius:10px; padding:2px 9px; white-space:nowrap}
+  .tpl-body{padding:16px}
+  .tpl-body.closed{display:none}
+  .tpl-empty{font-size:13px; color:var(--muted); font-style:italic; line-height:1.75}
   /* ---- Stanford-tarzı bölüm alt-navigasyonu ---- */
   /* alt-navigasyon aktif butonun ARDINA giriyor → güç hattının devamı gibi hizalandı (rail-x=15px) */
   .subnav{display:none; margin:-2px 0 10px 14px; border-left:2px solid var(--line)}
