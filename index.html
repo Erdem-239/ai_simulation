@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300054"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300054">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300112"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300112">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 00:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 01:12 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -757,12 +757,32 @@
       <div class="sc-center">
     <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue); position:relative">
       <span class="dbg-badge">1</span>
-      <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px">
+      <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px">
         <button class="addbtn" id="scStep" style="background:var(--blue); color:#fff; padding:5px 8px; font-size:12px">İleri ▶</button>
-        <button class="addbtn" id="scAuto" style="background:var(--blue); color:#fff; opacity:.8; padding:5px 8px; font-size:12px">İleri ⏩</button>
-        <button class="addbtn" id="scBack" style="background:var(--accent); color:#101830; padding:5px 8px; font-size:12px">◀ BPTT</button>
-        <button class="addbtn" id="scBackAuto" style="background:var(--accent); color:#101830; opacity:.8; padding:5px 8px; font-size:12px">◀ BPTT⏩</button>
         <button class="addbtn" id="scRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line); padding:5px 8px; font-size:12px">↺ Sıfırla</button>
+      </div>
+      <div class="acc" style="margin:0 0 4px">
+        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
+        <div class="acc-body">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; font-size:12px; color:#ccd5e8; line-height:1.6">
+            <div><b>x</b> — o adımın girdisi</div>
+            <div><b>h₋₁</b> — önceki hafıza</div>
+            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
+            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
+            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
+            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
+            <div><b>y</b> — gerçek cevap</div>
+            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
+            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
+            <div><b>W<sub>xh</sub></b> — x → h</div>
+            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+            <div><b>α</b> — öğrenme oranı</div>
+            <div><b>(1−h²)</b> — tanh türevi</div>
+          </div>
+        </div>
       </div>
       <div class="cell-layout" style="gap:6px">
         <div class="cell-diagram" style="overflow-x:auto"><svg id="scSvg" role="img"></svg></div>
@@ -810,29 +830,6 @@
         </div>
       </div>
 
-      <div class="acc">
-        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
-        <div class="acc-body">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:2px 14px; font-size:12px; color:#ccd5e8; line-height:1.6">
-            <div><b>x</b> — o adımın girdisi</div>
-            <div><b>h₋₁</b> — önceki hafıza</div>
-            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
-            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
-            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
-            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
-            <div><b>y</b> — gerçek cevap</div>
-            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
-            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
-            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
-            <div><b>W<sub>xh</sub></b> — x → h</div>
-            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
-            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
-            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
-            <div><b>α</b> — öğrenme oranı</div>
-            <div><b>(1−h²)</b> — tanh türevi</div>
-          </div>
-        </div>
-      </div>
       </div>
       </div>
 
@@ -4497,13 +4494,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300054"></script>
-<script src="js/lesson-turev.js?v=202608300054"></script>
-<script src="js/lesson-xor.js?v=202608300054"></script>
-<script src="js/lesson-nn.js?v=202608300054"></script>
-<script src="js/lesson-trig.js?v=202608300054"></script>
+<script src="js/lesson-linreg.js?v=202608300112"></script>
+<script src="js/lesson-turev.js?v=202608300112"></script>
+<script src="js/lesson-xor.js?v=202608300112"></script>
+<script src="js/lesson-nn.js?v=202608300112"></script>
+<script src="js/lesson-trig.js?v=202608300112"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300054"></script>
-<script src="js/app.js?v=202608300054"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300112"></script>
+<script src="js/app.js?v=202608300112"></script>
 </body>
 </html>

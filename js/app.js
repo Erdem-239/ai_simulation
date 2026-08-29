@@ -400,11 +400,16 @@
   function bStep(){ ensure('bwd'); if(cstep>=bSteps.length) return false; apply(bSteps[cstep],'cell-hl-b'); cstep++; return true; }
   function auto(fn){ clr(); cstep=0; playMode=null; timer=setInterval(()=>{ if(!fn()){ clearInterval(timer); timer=null; } }, 800); }
 
-  document.getElementById('scStep').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=fSteps.length){ reset(); } else { fStep(); } });
-  document.getElementById('scBack').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=bSteps.length){ reset(); } else { bStep(); } });
-  document.getElementById('scAuto').addEventListener('click', ()=>auto(fStep));
-  document.getElementById('scBackAuto').addEventListener('click', ()=>auto(bStep));
-  document.getElementById('scRst').addEventListener('click', reset);
+  /* Bu tuşların bir kısmı arayüzden kaldırılabiliyor (ör. tek-hücre kutusunda
+     yalnız "İleri ▶" ve "↺ Sıfırla" duruyor; geri yayılımı Geri Adım 2'deki
+     eğitim döngüsü tuşları yürütüyor). Bu yüzden hepsi opsiyonel bağlanıyor —
+     olmayan bir tuş sayfayı çökertmesin. */
+  const scOn=(id,fn)=>{ const el=document.getElementById(id); if(el) el.addEventListener('click', fn); };
+  scOn('scStep', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=fSteps.length){ reset(); } else { fStep(); } });
+  scOn('scBack', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=bSteps.length){ reset(); } else { bStep(); } });
+  scOn('scAuto', ()=>auto(fStep));
+  scOn('scBackAuto', ()=>auto(bStep));
+  scOn('scRst', reset);
 
   reset();
 })();
