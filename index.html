@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292334"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292334">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292355"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292355">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:34 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:55 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -853,11 +853,9 @@
 
       <div class="sc-resizer" id="scResizerR" title="Sürükle: diyagram boyutunu ayarla"></div>
 
-      <div class="sc-right">
-        <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0">
-          <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
-          <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
-          <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:flex-start; flex-wrap:wrap">
+      <div class="sc-right" style="align-self:stretch; display:flex; flex-direction:column">
+        <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0; flex:1 1 auto; display:flex; flex-direction:column">
+          <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:stretch; flex-wrap:wrap; flex:1 1 auto">
             <div id="trCol2" style="display:none; flex:0 0 var(--tr2w,460px); min-width:200px; position:relative">
               <span class="dbg-badge">3</span>
               <div class="loss-valley-row">
@@ -872,7 +870,7 @@
               </div>
             </div>
             <div class="tr-resizer" id="trResizer2" title="Sürükle: genişliği ayarla" style="display:none"></div>
-      <div class="step" id="gAdim1" style="flex:1 1 320px; position:relative; overflow:visible">
+      <div class="step stepc" id="gAdim1" style="flex:1 1 320px; position:relative; overflow:visible">
         <span class="dbg-badge">5</span>
         <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -882,7 +880,6 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial z_y}=(\hat y-y) \) = <span style="color:var(--muted)" id="rcS1sub">(0.0000 − 0.00)</span> = <span class="v" id="rcS1val">0.0000</span></div>
               </div>
               <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> işaret, ŷ'nin y'ye göre hangi yönde olduğunu söylüyor — küre vadinin hangi yamacında. Büyüklük ise dibe ne kadar uzak olduğumuzu gösterir; sıfıra yaklaştıkça minimuma varmışız demektir.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu sinyali bulduk, ama asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanı — bu sinyal onlara nasıl ulaşacak? Geri Adım 2'de bu köprüyü kuruyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep1Canvas" width="240" height="170"></canvas>
@@ -902,7 +899,7 @@
           </div>
         </div>
       </div>
-      <div class="step" id="gAdim2" style="flex:1 1 320px">
+      <div class="step stepc" id="gAdim2" style="flex:1 1 320px">
         <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W<sub>hy</sub>, b<sub>y</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -912,7 +909,6 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial b_y}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial b_y}=(\hat y-y) \) = <span class="v" id="rcS2val2"></span></div>
               </div>
               <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu iki sayı, W<sub>hy</sub> ve b<sub>y</sub>'yi bu yönde değiştirirsek kaybın ne kadar hızlı azalacağını gösteriyor. W<sub>hy</sub>'nin gradyanı h ile çarpılı — hafıza (h) büyükse W<sub>hy</sub> daha büyük adımla güncellenir.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> W<sub>hy</sub>, b<sub>y</sub>'ye ulaştık, ama içerideki W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'ye nasıl ineceğiz? Önce sinyali h'ye, oradan z<sub>h</sub>'ye taşımamız lazım — Geri Adım 3'te bunu yapıyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep2Canvas" width="240" height="170"></canvas>
@@ -936,11 +932,10 @@
         </div>
       </div>
     </div>
-    <div style="margin-top:16px">
-    <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
-    <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
+    <div style="margin-top:4px">
+    <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); align-items:stretch">
       <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla" style="display:none"></div>
-      <div class="step" id="gAdim3">
+      <div class="step stepc" id="gAdim3">
         <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -950,7 +945,6 @@
                 <div class="eq">\( \dfrac{\partial L}{\partial z_h}=\dfrac{\partial L}{\partial h}\times\dfrac{\partial h}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span style="color:var(--muted)" id="rcS3sub2"></span> = <span class="v" id="rcS3val2"></span></div>
               </div>
               <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> sinyal tanh'tan geçerken (1−h²) kadar küçülüyor. h, ±1'e (tanh'ın doyduğu uçlara) yaklaştıkça bu çarpan sıfıra yaklaşır ve sinyal zayıflar — vanishing gradient tam burada başlıyor.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> artık z<sub>h</sub>'ye ulaşan sinyalimiz var — z<sub>h</sub>'nin formülünde W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> doğrudan görünüyor. Geri Adım 4'te bu üçüne birden ulaşıyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep3Canvas" width="240" height="170"></canvas>
@@ -986,18 +980,17 @@
           </div>
         </div>
       </div>
-      <div class="step" id="gAdim4">
+      <div class="step stepc" id="gAdim4">
         <div class="stephead"><h2>Geri Adım 4) İçerideki ağırlıklara — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'nin gradyanı</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS4Live" class="rc-card">
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\cdot x=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1}=\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
-                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h}=\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span class="v" id="rcS4val3"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{xh}}=\dfrac{\partial L}{\partial z_h}\cdot x \) \( =\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot x \) = <span style="color:var(--muted)" id="rcS4sub1"></span> = <span class="v" id="rcS4val1"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial W_{hh}}=\dfrac{\partial L}{\partial z_h}\cdot h_{t-1} \) \( =\big[(\hat y-y)\,W_{hy}\big](1-h^2)\cdot h_{t-1} \) = <span style="color:var(--muted)" id="rcS4sub2"></span> = <span class="v" id="rcS4val2"></span></div>
+                <div class="eq">\( \dfrac{\partial L}{\partial b_h}=\dfrac{\partial L}{\partial z_h}\times\dfrac{\partial z_h}{\partial b_h}=\dfrac{\partial L}{\partial z_h} \) \( =\big[(\hat y-y)\,W_{hy}\big](1-h^2) \) = <span class="v" id="rcS4val3"></span></div>
               </div>
               <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> bu üç sayı, x, h₋₁ ve sabit terimin kayba katkısını gösteriyor — hangisinin mutlak değeri büyükse, o ağırlık bu turda en çok değişecek demek.</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu, TEK bir zaman adımının gradyanıydı. Ama RNN'de aynı ağırlık her adımda kullanılıyor — asıl gradyan hepsinin toplamı. Geri Adım 5'te bunu topluyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep4Canvas" width="240" height="170"></canvas>
@@ -1019,7 +1012,7 @@
           </div>
         </div>
       </div>
-      <div class="step" id="gAdim5">
+      <div class="step stepc" id="gAdim5">
         <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -1032,7 +1025,6 @@
                 <div class="eq">\( \displaystyle\sum_{k=0}^{3} g_{T-k} = g_T(1+r+r^2+r^3) \) = <span class="v" id="rcS5sum">0.0000</span></div>
               </div>
               <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> aynı ağırlık her adımda kullanıldığı için asıl gradyan, tüm zaman adımlarının katkısının <b>toplamı</b>. |r|&lt;1 ise eski adımların etkisi hızla söner (vanishing gradient) — |r|&gt;1 ise patlar (exploding gradient).</div>
-              <div class="callout" style="margin:6px 0 0; border-left-color:var(--blue)">➡️ <b>Sırada:</b> bu toplam gradyanla her ağırlığı güncelliyoruz — aşağıdaki <b>🔻 Güncelle</b> satırı bunu gösteriyor; sonraki bölümde bu döngüyü tekrar tekrar çalıştırıp modeli eğitiyoruz.</div>
             </div>
             <div class="step-graph-plot">
               <canvas id="rcStep5Canvas" width="240" height="170"></canvas>
@@ -4505,13 +4497,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292334"></script>
-<script src="js/lesson-turev.js?v=202608292334"></script>
-<script src="js/lesson-xor.js?v=202608292334"></script>
-<script src="js/lesson-nn.js?v=202608292334"></script>
-<script src="js/lesson-trig.js?v=202608292334"></script>
+<script src="js/lesson-linreg.js?v=202608292355"></script>
+<script src="js/lesson-turev.js?v=202608292355"></script>
+<script src="js/lesson-xor.js?v=202608292355"></script>
+<script src="js/lesson-nn.js?v=202608292355"></script>
+<script src="js/lesson-trig.js?v=202608292355"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292334"></script>
-<script src="js/app.js?v=202608292334"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292355"></script>
+<script src="js/app.js?v=202608292355"></script>
 </body>
 </html>
