@@ -481,8 +481,12 @@
     85%  {stroke:#c93dff; filter:drop-shadow(0 0 4px rgba(201,61,255,.75))}
     100% {stroke:#ff3d5a; filter:drop-shadow(0 0 4px rgba(255,61,90,.75))}
   }
-  #techSvg .te-off{stroke:#9c8354; stroke-width:2.5; fill:none; stroke-linejoin:round; opacity:.65}
-  #techSvg .te-on{stroke:#3f7d3f; stroke-width:4; fill:none; stroke-dasharray:7 5; stroke-linejoin:round; opacity:.95; animation:ttflow .8s linear infinite}
+  /* --ec: app.js'in her kabloya inline yazdığı, o kablonun bağlandığı düğümün
+     çağına ait renk (sidebar'daki ERAC ile aynı 5 renk) — her çağ artık kendi
+     rengindeki kablolarla çiziliyor. Kilitliyken soluk/yarı saydam (henüz
+     "güç" yok), açıldığında aynı rengin tam doygun hali (parlıyor). */
+  #techSvg .te-off{stroke:rgba(var(--ec,156,120,60),.5); stroke-width:2.5; fill:none; stroke-linejoin:round}
+  #techSvg .te-on{stroke:rgb(var(--ec,63,125,63)); stroke-width:4; fill:none; stroke-dasharray:7 5; stroke-linejoin:round; opacity:.95; animation:ttflow .8s linear infinite}
   #techSvg .te-off.te-req, #techSvg .te-on.te-req{stroke-width:4; stroke-dasharray:7 5; opacity:1; animation:teRgbFlow 3s linear infinite, ttflow .8s linear infinite}
   @keyframes ttpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
   @keyframes ttflow{to{stroke-dashoffset:-11}}
