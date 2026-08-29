@@ -705,6 +705,10 @@
      genişlikleriyle grafik formülün YANINA geliyor: simülasyon + 5 geri adım
      tek ekrana sığıyor. min-width:0, formülün (MathJax) hücreyi taşırmasını
      engeller — geniş formül kendi içinde yatay kayar. */
+  /* Tek-hücre kutusundaki notasyon akordeonu: kutu satır A yüksekliğini
+     belirlediği için başlık şeridi biraz sıkılaştırıldı, kart ölçüleri
+     (414/380/445) korunsun diye. */
+  #scDiagramPanel .acc-head{padding:5px 10px; font-size:12px}
   .step.stepc .step-graph-formula{flex:1 1 190px; min-width:0}
   .step.stepc .step-graph-plot{flex:0 0 150px}
   .step.stepc .step-graph-cap{font-size:9.5px}
