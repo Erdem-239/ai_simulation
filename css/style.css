@@ -714,9 +714,9 @@
   @media(max-width:1600px){ .step.stepc .step-graph-formula{flex:1 1 100%} }
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
   .loss-valley-row{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin-top:6px}
-  .loss-valley-col{flex:1 1 104px; max-width:112px; text-align:center}
-  #gradRadarCanvas{background:#0d1426; border:1px solid var(--line); border-radius:8px; width:100%; height:auto; aspect-ratio:1/1; max-width:112px}
-  .loss-surface-3d{width:100%; max-width:112px; height:112px; margin:0 auto; background:#0e1830; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+  .loss-valley-col{flex:1 1 130px; max-width:142px; text-align:center}
+  #gradRadarCanvas{background:#0d1426; border:1px solid var(--line); border-radius:8px; width:100%; height:auto; aspect-ratio:1/1; max-width:142px}
+  .loss-surface-3d{width:100%; max-width:142px; height:142px; margin:0 auto; background:#0e1830; border:1px solid var(--line); border-radius:8px; overflow:hidden}
   .loss-surface-3d canvas{display:block; width:100%!important; height:100%!important}
   /* sağ sütun: türetme kartları (accordion) */
   .rnn-deriv-cards .acc{margin:5px 0}
