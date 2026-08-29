@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292323"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292323">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292334"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292334">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:23 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 23:34 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -934,10 +934,12 @@
       </div>
           </div>
         </div>
+      </div>
+    </div>
     <div style="margin-top:16px">
     <div class="sechead" style="font-size:17px">Geri yayılım — adım adım, her adım neden?</div>
-    <div class="steps">
-      <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla"></div>
+    <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))">
+      <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla" style="display:none"></div>
       <div class="step" id="gAdim3">
         <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -1048,8 +1050,6 @@
         </div>
       </div>
     </div>
-    </div>
-      </div>
     </div>
 
 
@@ -4505,13 +4505,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292323"></script>
-<script src="js/lesson-turev.js?v=202608292323"></script>
-<script src="js/lesson-xor.js?v=202608292323"></script>
-<script src="js/lesson-nn.js?v=202608292323"></script>
-<script src="js/lesson-trig.js?v=202608292323"></script>
+<script src="js/lesson-linreg.js?v=202608292334"></script>
+<script src="js/lesson-turev.js?v=202608292334"></script>
+<script src="js/lesson-xor.js?v=202608292334"></script>
+<script src="js/lesson-nn.js?v=202608292334"></script>
+<script src="js/lesson-trig.js?v=202608292334"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292323"></script>
-<script src="js/app.js?v=202608292323"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292334"></script>
+<script src="js/app.js?v=202608292334"></script>
 </body>
 </html>
