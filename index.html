@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608292242"></script>
-<link rel="stylesheet" href="css/style.css?v=202608292242">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608292254"></script>
+<link rel="stylesheet" href="css/style.css?v=202608292254">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 22:42 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-29 22:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -751,13 +751,12 @@
     <div style="position:relative; margin-bottom:2px">
       <span class="dbg-badge">4</span>
       <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
-      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
+      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu). Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
     </div>
     <div class="sc-cols">
       <div class="sc-center">
     <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue); position:relative">
       <span class="dbg-badge">1</span>
-      <div style="font-size:12px; color:#ccd5e8; margin-bottom:8px; line-height:1.45">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu).</div>
       <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px">
         <button class="addbtn" id="scStep" style="background:var(--blue); color:#fff; padding:5px 8px; font-size:12px">İleri ▶</button>
         <button class="addbtn" id="scAuto" style="background:var(--blue); color:#fff; opacity:.8; padding:5px 8px; font-size:12px">İleri ⏩</button>
@@ -773,6 +772,23 @@
         </div>
       </div>
     </div>
+
+    <div id="trCol1" style="display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; width:100%; max-width:380px; margin:10px 0 0; position:relative">
+      <span class="dbg-badge">2</span>
+      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
+        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+      </div>
+      <div style="flex:1 1 100px; min-width:96px">
+        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
+          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
+          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
+          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
+          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
+        </div>
+        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
+      </div>
+    </div>
+
         <div class="sc-vresizer" id="scVResizer" title="Sürükle: diyagramın yüksekliğini ayarla"></div>
 
       <div class="rnn-deriv-cards" style="margin-top:10px; display:none">
@@ -842,23 +858,7 @@
           <h3 style="color:var(--accent); font-size:13.5px; margin-bottom:4px">🏃 Eğitim döngüsü — geri yayılımla kendini düzeltsin</h3>
           <div style="font-size:11px; color:var(--muted); margin-bottom:8px">▶/⏩ ile ağırlıklar geri yayılımla otomatik güncellenir, kayıp minimuma iner.</div>
           <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:flex-start; flex-wrap:wrap">
-            <div id="trCol1" style="display:flex; gap:12px; align-items:flex-start; flex:0 0 var(--tr1w,320px); min-width:220px; padding-right:12px; position:relative">
-              <span class="dbg-badge">2</span>
-              <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
-                <canvas id="rc_costCanvas" width="380" height="140"></canvas>
-              </div>
-              <div style="flex:1 1 100px; min-width:96px">
-                <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
-                  <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
-                  <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
-                  <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
-                  <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
-                </div>
-                <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
-              </div>
-            </div>
-            <div class="tr-resizer" id="trResizer1" title="Sürükle: genişliği ayarla"></div>
-            <div id="trCol2" style="flex:0 0 var(--tr2w,460px); min-width:200px; border-left:1px solid var(--line); padding-left:16px; padding-right:12px; position:relative">
+            <div id="trCol2" style="flex:0 0 var(--tr2w,460px); min-width:200px; position:relative">
               <span class="dbg-badge">3</span>
               <div class="loss-valley-row">
                 <div class="loss-valley-col">
@@ -4503,13 +4503,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608292242"></script>
-<script src="js/lesson-turev.js?v=202608292242"></script>
-<script src="js/lesson-xor.js?v=202608292242"></script>
-<script src="js/lesson-nn.js?v=202608292242"></script>
-<script src="js/lesson-trig.js?v=202608292242"></script>
+<script src="js/lesson-linreg.js?v=202608292254"></script>
+<script src="js/lesson-turev.js?v=202608292254"></script>
+<script src="js/lesson-xor.js?v=202608292254"></script>
+<script src="js/lesson-nn.js?v=202608292254"></script>
+<script src="js/lesson-trig.js?v=202608292254"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608292242"></script>
-<script src="js/app.js?v=202608292242"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608292254"></script>
+<script src="js/app.js?v=202608292254"></script>
 </body>
 </html>
