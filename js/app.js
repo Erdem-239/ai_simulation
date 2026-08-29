@@ -1882,6 +1882,24 @@
         s+='<text class="era-lbl" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
       }
     });
+    // "req" kümesi: seçili düğümü açmak için gereken TÜM zincir — sadece
+    // doğrudan ön koşullar değil, onların da ön koşulları, onların da...
+    // köke kadar geriye doğru (BFS/DFS ile .pre üzerinden). Seq2Seq'e
+    // tıklarsan sadece LSTM/Kelime Temsili değil, LSTM'in gerektirdiği
+    // Vanishing/Exploding, Kelime Temsili'nin gerektirdiği Vektör & Nokta
+    // Çarpım da bu kümeye girer — "self-attention'a tıklayınca köke kadar
+    // her şey yansın" isteği.
+    const req=new Set();
+    if(sel){
+      const stack=[sel];
+      while(stack.length){
+        const id=stack.pop();
+        if(req.has(id)) continue;
+        req.add(id);
+        const nd=byId[id];
+        if(nd) nd.pre.forEach(p=>stack.push(p));
+      }
+    }
     // kenarlar (Civ tarzı dik hatlar) — yatayda sol/sağ kart kenarından, dikeyde üst/alt kart kenarından
     NODES.forEach(n=>{
       n.pre.forEach(p=>{
@@ -1894,10 +1912,12 @@
           const x1=X(a)+NW(a)/2, y1=Y(a), x2=X(n)-NW(n)/2, y2=Y(n), mx=(x1+x2)/2;
           path='M'+x1+' '+y1+' H'+mx+' V'+y2+' H'+x2;
         }
-        // te-req: bu kablo, o an SEÇİLİ düğümü açmak için gereken doğrudan
-        // ön koşul — done/kilitli farketmez, "seni açmak için bunlar lazım"
+        // te-req: bu kablo, o an SEÇİLİ düğümü açmak için gereken zincirin bir
+        // parçası (hedef n, req kümesindeyse kaynağı p de otomatik req'tedir,
+        // çünkü kümeyi kurarken her düğümün ön koşullarını da ekledik) —
+        // done/kilitli farketmez, "seni açmak için köke kadar bunlar lazım"
         // anlamında tıklanan düğüme özel yanıp sönüyor (bkz. style.css .te-req).
-        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(sel===n.id?' te-req':'')+'" d="'+path+'"/>';
+        s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" d="'+path+'"/>';
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
