@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300925"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300925">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300933"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300933">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 09:25 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 09:33 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -47,8 +47,8 @@
   <div class="model" id="model-linreg">
 
   <div class="tpl-cl" data-stage="1">
-    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <h1>Lineer Regresyon — Gradyan Alçalma (Canlı Simülasyon + Türev Notlarım)</h1>
   <p class="sub">Noktaları aşağıdan düzenle, grafiğe tıklayarak ekle veya sürükleyerek taşı. Her <b>Adım</b> kutusuna tıklayınca ayrıntılı anlatımı açılır.</p>
       <div class="tpl-empty">📌 Not: bu girişte henüz bir görsel/diyagram yok, sadece başlık ve tek cümlelik özet.</div>
@@ -56,29 +56,29 @@
   </div>
 
   <div class="tpl-cl" data-stage="2">
-    <div class="tpl-head"><span>2️⃣ Hikâye <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
       <div class="tpl-empty">Bu modülde henüz bir hikâye bölümü yok — buraya gradyan alçalma / en küçük kareler yönteminin keşif hikâyesi (ör. Legendre &amp; Gauss'un 1805'te bağımsız birbirinden habersiz aynı yönteme ulaşması) eklenebilir.</div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="3">
-    <div class="tpl-head"><span>3️⃣ Gerçek Hayatta Nerede <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
       <div class="tpl-empty">Bu modülde henüz bir "gerçek hayatta nerede" bölümü yok — buraya ev fiyatı tahmini, satış/trend çizgisi, A/B test regresyonu gibi kısa örnek kartları eklenebilir.</div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="4">
-    <div class="tpl-head"><span>4️⃣ Nedir &amp; Nasıl Çalışır <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
       <div class="tpl-empty">Bu sayfada ayrı, bağımsız bir "nedir &amp; nasıl çalışır" özeti yok — anlatım doğrudan aşağıdaki simülasyon adımlarının (Adım 0-4) içine gömülü. Buraya 2-3 cümlelik bağımsız bir özet eklenebilir.</div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <!-- ===== NOKTA EDİTÖRÜ ===== -->
   <div class="pts">
     <h3>Veri noktaları (<span id="ptcount">2</span> nokta)</h3>
@@ -414,8 +414,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head"><span>➕ Ekstra / Derinleşme — Notasyon &amp; Türev Notlarım</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Notasyon &amp; Türev Notlarım</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <!-- ===== NOTASYON ===== -->
   <div class="pts" style="margin-top:30px">
     <h3>Notasyon</h3>
@@ -582,8 +582,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Gradyan Alçalma</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -618,8 +618,8 @@
   <div class="model" id="model-rnn">
 
   <div class="tpl-cl" data-stage="1">
-    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri (ders şablonu) ===== -->
     <div class="lesson-hero">
       <svg class="lesson-hero-svg" viewBox="0 0 760 210" role="img" aria-label="Bir kelime dizisi RNN hücrelerinden geçerken hafızanın zincirle taşınmasını gösteren şema">
@@ -672,8 +672,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="2">
-    <div class="tpl-head"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <div class="pts lesson-story">
       <div class="lesson-story-h">💡 HİKÂYE — Ağa hafıza takmak</div>
       <p>1986'da yapay zekâ camiası uzun bir kıştan çıkmaya çalışıyordu: Marvin Minsky'nin on yıllar önceki eleştirisi fonları kurutmuş, kimse basit ağların işe yarayacağına inanmıyordu. Sonra David Rumelhart, Geoffrey Hinton ve Ronald Williams'ın imzaladığı bir <i>Nature</i> makalesi buzu kırdı: çok katmanlı bir ağ, kendi hatasını geriye yayarak öğrenebiliyordu. (İlginç bir ayrıntı: bu matematiği aslında Paul Werbos on iki yıl önce, 1974 doktora tezinde bulmuştu — ama kimse okumamıştı. Bilim bazen doğru fikri, yanlış zamanda söyleyeni duymaz.)</p>
@@ -684,8 +684,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="3">
-    <div class="tpl-head"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <div class="lesson-examples">
       <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
       <div class="ex-grid">
@@ -702,8 +702,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="4">
-    <div class="tpl-head"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <p class="sub">Aynı gradyan alçalma mantığı; ama bu kez <b>sıralı veri</b> ve <b>hafıza (gizli durum)</b> var. Türevler "<b>zaman boyunca zincir kuralı</b>" ile alınır (BPTT = Backpropagation Through Time).</p>
 
     <div class="pts" style="border-left:3px solid var(--blue)">
@@ -718,8 +718,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı ileri + geri yayılım <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody2">
 
@@ -1442,8 +1442,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head"><span>➕ Ekstra / Derinleşme — Vanishing/Exploding &amp; Karşılaştırma</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Vanishing/Exploding &amp; Karşılaştırma</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <div class="sechead rnn-toggle" data-rnnsec="3">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient) <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody3">
     <div class="pts">
@@ -1474,8 +1474,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
     <div class="sechead">🧠 Kendini Test Et — BPTT</div>
     <div class="pts">
       <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et. Amaç ezber değil, mantığı yakalamak.</div>
@@ -1627,8 +1627,8 @@
 
   <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri ===== -->
   <div class="tpl-cl" data-stage="1">
-    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="lesson-hero">
     <svg class="lesson-hero-svg" viewBox="0 0 760 220" role="img" aria-label="Nöron: girdi × ağırlık toplandı z oldu, aktivasyondan geçti eğri şekle döndü">
       <defs>
@@ -1681,8 +1681,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="2">
-    <div class="tpl-head"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="pts lesson-story">
     <div class="lesson-story-h">💡 HİKÂYE — Basit bir eşikten S eğrisine, oradan bükülmüş bir doğruya</div>
     <p>1943'te iki bilim insanı — nörofizyolog <b>Warren McCulloch</b> ve mantıkçı <b>Walter Pitts</b> — beynin çalışma prensibini matematiksel olarak yazdı: nöron, girdilerini toplar, bir <b>eşiği</b> geçerse ateşlenir, geçmezse susar. Bu "step function" (basamak fonksiyonu) aktivasyonun ilk halidir — sadece 0 ya da 1 verir, keskin bir sıçrama.</p>
@@ -1694,8 +1694,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="3">
-    <div class="tpl-head"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
     <div class="ex-grid">
@@ -1710,8 +1710,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="4">
-    <div class="tpl-head"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <!-- 🧩 SEZGİ AÇILIŞI: XOR bulmacası — aktivasyona neden ihtiyacımız var, elle keşfet -->
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent); margin-top:0">🧩 Neden aktivasyona ihtiyacımız var? — XOR bulmacası (elle dene)</h3>
@@ -1807,8 +1807,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <!-- fonksiyon seçici -->
   <div class="pts">
     <h3 style="color:var(--accent)">Fonksiyon seç</h3>
@@ -1874,8 +1874,8 @@
   </div>
 
   <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head"><span>➕ Ekstra / Derinleşme — Euler sayısı (e)</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Euler sayısı (e)</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <!-- TEMEL: Euler sayısı e -->
   <div class="pts" style="border-left:3px solid var(--green)">
     <h3 style="color:var(--green)">📐 Önce konunun başı: Euler sayısı (e ≈ 2.71828) nereden çıkıyor?</h3>
@@ -1942,8 +1942,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
-    <div class="tpl-body">
+    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Aktivasyon</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -4525,13 +4525,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300925"></script>
-<script src="js/lesson-turev.js?v=202608300925"></script>
-<script src="js/lesson-xor.js?v=202608300925"></script>
-<script src="js/lesson-nn.js?v=202608300925"></script>
-<script src="js/lesson-trig.js?v=202608300925"></script>
+<script src="js/lesson-linreg.js?v=202608300933"></script>
+<script src="js/lesson-turev.js?v=202608300933"></script>
+<script src="js/lesson-xor.js?v=202608300933"></script>
+<script src="js/lesson-nn.js?v=202608300933"></script>
+<script src="js/lesson-trig.js?v=202608300933"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300925"></script>
-<script src="js/app.js?v=202608300925"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300933"></script>
+<script src="js/app.js?v=202608300933"></script>
 </body>
 </html>
