@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300112"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300112">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608300925"></script>
+<link rel="stylesheet" href="css/style.css?v=202608300925">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 01:12 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 09:25 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -617,6 +617,9 @@
   <!-- ===================== RNN MODELİ ===================== -->
   <div class="model" id="model-rnn">
 
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri (ders şablonu) ===== -->
     <div class="lesson-hero">
       <svg class="lesson-hero-svg" viewBox="0 0 760 210" role="img" aria-label="Bir kelime dizisi RNN hücrelerinden geçerken hafızanın zincirle taşınmasını gösteren şema">
@@ -665,14 +668,24 @@
       <h1>RNN — Zaman İçinde Geri Yayılım (BPTT)</h1>
       <p class="lesson-hook">🌌 Bu cümlenin sonunu anlaman, başını hatırlamana bağlı — hafıza olmadan düşünce olmaz. 1990'da bir dilbilimci, ağlara ilk kez "geçmişini taşı" demeyi öğretti. O tek fikir, bugün konuştuğun her dil modelinin soy ağacının başlangıcı oldu.</p>
     </div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <div class="pts lesson-story">
       <div class="lesson-story-h">💡 HİKÂYE — Ağa hafıza takmak</div>
       <p>1986'da yapay zekâ camiası uzun bir kıştan çıkmaya çalışıyordu: Marvin Minsky'nin on yıllar önceki eleştirisi fonları kurutmuş, kimse basit ağların işe yarayacağına inanmıyordu. Sonra David Rumelhart, Geoffrey Hinton ve Ronald Williams'ın imzaladığı bir <i>Nature</i> makalesi buzu kırdı: çok katmanlı bir ağ, kendi hatasını geriye yayarak öğrenebiliyordu. (İlginç bir ayrıntı: bu matematiği aslında Paul Werbos on iki yıl önce, 1974 doktora tezinde bulmuştu — ama kimse okumamıştı. Bilim bazen doğru fikri, yanlış zamanda söyleyeni duymaz.)</p>
       <p>Asıl sıçramayı dilbilimci Jeffrey Elman yaptı. 1990'da basit ama zarif bir fikir denedi: ağın çıktısını bir sonraki adıma geri besle. Böylece ağ, o anki girdiyle birlikte "az önce ne gördüğünü" de hatırlayabiliyordu — zamanı hissediyordu. "Finding Structure in Time" makalesi, ağın hiçbir gramer kuralı verilmeden cümle yapısını kendi başına sezdiğini gösterdi.</p>
       <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
     </div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <div class="lesson-examples">
       <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
       <div class="ex-grid">
@@ -685,7 +698,12 @@
     </div>
 
     <div class="scroll-cue"><span class="sc-arrow">▼</span> şimdi mekanizmanın içine inelim: formüller, notasyon ve kendi sayılarınla canlı simülasyon aşağıda <span class="sc-arrow">▼</span></div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <p class="sub">Aynı gradyan alçalma mantığı; ama bu kez <b>sıralı veri</b> ve <b>hafıza (gizli durum)</b> var. Türevler "<b>zaman boyunca zincir kuralı</b>" ile alınır (BPTT = Backpropagation Through Time).</p>
 
     <div class="pts" style="border-left:3px solid var(--blue)">
@@ -696,10 +714,12 @@
     </div>
 
     <div class="callout">🔗 <b>En önemli bağlantı:</b> Lineer regresyonda öğrendiğin <b>zincir kuralı</b>, RNN'de aynen geçerli — sadece <b>zaman adımları boyunca zincirleme</b> uygulanıyor. Her \(h_t\), bir önceki \(h_{t-1}\)'e bağlı; o da \(h_{t-2}\)'ye… Bu yüzden türev "geçmişe doğru" akar. Adı bu yüzden <b>zaman içinde geri yayılım</b>.</div>
+    </div>
+  </div>
 
-
-
-
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı ileri + geri yayılım <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody2">
 
@@ -1418,8 +1438,12 @@
       <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> aynı kural — her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \), toplam gradyanla (güncelleme mekanizması many-to-one bölümündeki ile aynı).</div>
     </div>
     </div><!-- /rnnBody2 -->
+    </div>
+  </div>
 
-
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head"><span>➕ Ekstra / Derinleşme — Vanishing/Exploding &amp; Karşılaştırma</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <div class="sechead rnn-toggle" data-rnnsec="3">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient) <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody3">
     <div class="pts">
@@ -1446,7 +1470,12 @@
       <tr><td>Güncelleme</td><td>Θ := Θ − α·türev</td><td>W := W − α·türev</td></tr>
       <tr><td>Tipik sorun</td><td>yavaş yakınsama</td><td>vanishing / exploding gradient</td></tr>
     </table>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
     <div class="sechead">🧠 Kendini Test Et — BPTT</div>
     <div class="pts">
       <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et. Amaç ezber değil, mantığı yakalamak.</div>
@@ -1472,6 +1501,8 @@
         <div class="acc-body">Baştaki kelimenin sondaki kayba etkisi, geriye akarken o çarpanla ~adım sayısı kadar çarpılır. Çarpan &lt;1 ise sinyal <b>baştaki ağırlıklara ulaşamadan söner</b> → <b>uzun menzilli bağımlılık öğrenilemez</b>. İşte <b>LSTM</b> bunu, gradyanın bozulmadan aktığı bir <b>cell-state "otoyolu"</b> ile çözer — sıradaki konumuz.</div>
       </div>
     </div>
+    </div>
+  </div>
 
     <p class="footer">RNN bölümü • İleri yayılım + BPTT (zaman içinde geri yayılım)</p>
   </div><!-- /model-rnn -->
@@ -4494,13 +4525,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300112"></script>
-<script src="js/lesson-turev.js?v=202608300112"></script>
-<script src="js/lesson-xor.js?v=202608300112"></script>
-<script src="js/lesson-nn.js?v=202608300112"></script>
-<script src="js/lesson-trig.js?v=202608300112"></script>
+<script src="js/lesson-linreg.js?v=202608300925"></script>
+<script src="js/lesson-turev.js?v=202608300925"></script>
+<script src="js/lesson-xor.js?v=202608300925"></script>
+<script src="js/lesson-nn.js?v=202608300925"></script>
+<script src="js/lesson-trig.js?v=202608300925"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300112"></script>
-<script src="js/app.js?v=202608300112"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608300925"></script>
+<script src="js/app.js?v=202608300925"></script>
 </body>
 </html>
