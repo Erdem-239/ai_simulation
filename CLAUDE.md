@@ -29,9 +29,17 @@ bir "1→2→3→4→5→Ekstra→6" sırası için.
 ayrı bir sınıf adıyla ki sol panel alt-navigasyonu — `.sechead` tabanlı —
 bu kümelerle kirlenmesin) açılıp kapanabilen, aşamaya göre renkli
 (1-mavi, 2-turuncu, 3-yeşil, 4-mor, 5-camgöbeği, 6-kırmızı, ekstra-noktalı
-gri) bir kutuya sarılıyor. Varsayılan durum **hepsi açık** (kullanıcı
-tercihi — sayfa ilk yüklendiğinde eskisi gibi görünsün, simülasyon
-canvas'ları vb. gizliyken yanlış boyutlanmasın diye). Bir modülde bir küme
+gri) bir kutuya sarılıyor. Varsayılan durum **hepsi kapalı** (kullanıcı
+tercihi, güncellendi — HTML'de her `.tpl-head`/`.tpl-body` çifti baştan
+`closed` sınıfıyla geliyor; `js/lesson-linreg.js`'teki tek satırlık toggle
+bunu açar/kapar). Önceki "hepsi açık" kararının gerekçesi olan
+canvas/Three.js yanlış boyutlanma riski kontrol edildi: sayfadaki
+canvas'lar sabit `width`/`height` HTML özniteliğiyle çiziliyor (konteyner
+`clientWidth`'ine bakmıyor) ve tek istisna olan 3B kayıp yüzeyi
+(`initLoss3D`, `js/app.js`) zaten sayfa yüklenişinde `.model` katmanı
+`display:none` iken tek seferlik kuruluyor — yani tpl-cl açık/kapalı
+durumundan bağımsız olarak hep aynı sabit-boyut fallback'i kullanıyor;
+tpl-cl'nin kapalı gelmesi ek bir regresyon yaratmıyor. Bir modülde bir küme
 hiç yoksa, o küme yine de boş bir `.tpl-cl` olarak eklenir, kırmızı
 `<span class="tpl-empty-tag">BOŞ — eklenebilir</span>` rozeti ve
 `.tpl-empty` içinde neyin eklenebileceğine dair kısa bir not taşır —

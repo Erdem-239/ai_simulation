@@ -248,7 +248,8 @@
     });
   });
   // ---- şablon kümeleri (1-Giriş...6-Kendini Test Et + Ekstra) aç/kapa ----
-  // Aynı mekanik: varsayılan AÇIK, tıklayınca .closed eklenir/kalkar.
+  // Varsayılan KAPALI (HTML'de her .tpl-head/.tpl-body zaten "closed" sınıfıyla
+  // geliyor) — tıklayınca .closed kalkar/eklenir.
   document.querySelectorAll('.tpl-head').forEach(h=>{
     h.addEventListener('click', ()=>{
       h.classList.toggle('closed');
