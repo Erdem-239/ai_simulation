@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202608300933"></script>
-<link rel="stylesheet" href="css/style.css?v=202608300933">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202608310854"></script>
+<link rel="stylesheet" href="css/style.css?v=202608310854">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-30 09:33 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-08-31 08:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1456,6 +1456,7 @@
         </ul>
       </div>
       <p style="font-size:14px; color:#ccd5e8">Kurabiye analojisindeki "8x" gibi: orada tek bir çarpan vardı; RNN'de bu çarpan <b>zaman adımı kadar</b> üst üste biner. Çözüm olarak <b>LSTM/GRU</b> (kapılı hücreler) ve <b>gradient clipping</b> geliştirildi.</p>
+      <div class="callout" style="margin-top:10px; border-left-color:#9c4dff">🧮 <b>Gerçek (çok boyutlu) RNN'lerde bu nasıl görünür?</b> Burada h tek bir sayı, W<sub>hh</sub> tek bir sayı olduğu için çarpan da tek bir sayıydı (r). Gerçek RNN'lerde h bir <b>vektör</b>, W<sub>hh</sub> bir <b>matris</b>tir — aynı "çarpıla çarpıla küçül/büyü" hikâyesi bu kez W<sub>hh</sub>'nin <b>özdeğerlerinin (eigenvalue)</b> büyüklüğüne bakar: özdeğerlerin tümü 1'den küçükse (spektral yarıçap &lt;1) vanishing, biri bile 1'den büyükse exploding olur. r=W<sub>hh</sub>(1−h²) burada gördüğün skaler çarpan, aslında bu matrisin özdeğerlerinin 1 boyutlu (tek sayılık) hali. (<b>Vektör &amp; Nokta Çarpım</b> dersindeki "matris = raf" sezgisini hatırlarsan: bir matris, çarptığı vektörü döndürüp uzatır/kısaltır — özdeğer/özvektör, matrisin bir vektörü yönünü <b>değiştirmeden</b> sadece ne kadar uzatıp kısalttığını söyler.)</div>
     </div>
     </div><!-- /rnnBody3 -->
 
@@ -4030,6 +4031,21 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   <div class="sechead">4) Matris = vektör rafı → QKᵀ sezgisi</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Matris, üst üste dizilmiş vektörlerden ibarettir — bir <b>raf</b>. Matris çarpımı da gizemli değildir: <b>her rafla her rafın nokta çarpımı</b>, tablo halinde.</p>
+
+    <div class="tip">📐 <b>Genel kural — boyutlar eşleşmeli:</b> \( m\times n \) boyutlu bir matrisi ancak \( n\times p \) boyutlu bir matrisle çarpabilirsin — <b>SOLDAKİNİN sütun sayısı, SAĞDAKİNİN satır sayısına</b> eşit olmalı. Sonuç \( m\times p \) boyutunda çıkar. Bu yüzden \(AB\) ile \(BA\) genelde <b>farklı</b> şeylerdir (çoğu zaman biri tanımsızdır bile) — sayı çarpımının aksine matris çarpımında <b>sıra önemlidir</b>.</div>
+
+    <h4 style="color:var(--accent); margin:14px 0 6px">🔄 Transpoz (ᵀ) — rafı yan yatırmak</h4>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Transpoz, bir matrisin <b>satırlarını sütun yapar</b> (ve sütunlarını satır). \(K\) rafında her <b>SATIR</b> bir vektördür (k₁, k₂, …); \(K^{\top}\)'de aynı vektörler artık <b>SÜTUN</b> olarak durur:</p>
+    <div class="work" style="white-space:pre-wrap; line-height:1.9">K rafı (satırlar = vektörler):      Kᵀ (aynı vektörler, sütun oldu):
+k₁ = (1, 0)                            [ 1   1 ]
+k₂ = (1, 1)      ── transpoz ──►       [ 0   1 ]
+
+Standart matris çarpımı kuralı "SATIR × SÜTUN" ister — ama biz aslında
+"k₁ · k₂'yi SATIR × SATIR olarak" karşılaştırmak istiyoruz. Kᵀ almak
+tam bu köprüyü kurar: K'nin satırlarını sütuna çevirip kuralın istediği
+şekle sokar. Sonuç yine de "her satırın her satırla nokta çarpımı".</div>
+    <div class="callout">🎯 Yani QKᵀ'deki ᵀ süs değil — Q'nun her satırını (her soruyu), K'nin her satırıyla (her etiketle) nokta çarpımına sokabilmek için gereken teknik köprü. Boyut kuralını unutma: Q, \(n\times d\) ise ve K de \(n\times d\) ise, \(K^{\top}\) \(d\times n\) olur — \(QK^{\top}\) böylece \(n\times d\) çarpı \(d\times n\) = geçerli, sonuç \(n\times n\) (her kelimenin her kelimeyle benzerliği).</div>
+
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Şimdi büyük an — attention'daki \(QK^{\top}\)'yi okuyalım: Q rafında her satır bir <b>soru</b> vektörü, K rafında her satır bir <b>etiket</b> vektörü. \(QK^{\top}\) çarpımının (i, j) hücresi = <b>i. sorunun j. etiketle nokta çarpımı = benzerliği</b>. Yani:</p>
     <div class="callout">🎯 <b>Attention skor tablosu, bir benzerlik tablosudur.</b> "Her kelime her kelimeye bakar" cümlesinin matematiği: her Q satırı, her K satırıyla nokta çarpımdan geçer. Az önce elinle döndürdüğün şey — büyütülmüş hali bu kadar.</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">📝 Mini örnek — elle</h4>
@@ -4525,13 +4541,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202608300933"></script>
-<script src="js/lesson-turev.js?v=202608300933"></script>
-<script src="js/lesson-xor.js?v=202608300933"></script>
-<script src="js/lesson-nn.js?v=202608300933"></script>
-<script src="js/lesson-trig.js?v=202608300933"></script>
+<script src="js/lesson-linreg.js?v=202608310854"></script>
+<script src="js/lesson-turev.js?v=202608310854"></script>
+<script src="js/lesson-xor.js?v=202608310854"></script>
+<script src="js/lesson-nn.js?v=202608310854"></script>
+<script src="js/lesson-trig.js?v=202608310854"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202608300933"></script>
-<script src="js/app.js?v=202608300933"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202608310854"></script>
+<script src="js/app.js?v=202608310854"></script>
 </body>
 </html>
