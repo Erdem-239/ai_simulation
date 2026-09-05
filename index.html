@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609051704"></script>
-<link rel="stylesheet" href="css/style.css?v=202609051704">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609051723"></script>
+<link rel="stylesheet" href="css/style.css?v=202609051723">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 17:04 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 17:23 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2228,54 +2228,91 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
 
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent); margin-top:0">✏️ Elle 1 epoch — gradyan alçalma kağıt üzerinde</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda ağırlıkları <b>biz seçtik</b>. Peki makine kendi bulsaydı? İlk turu (1 epoch) baştan sona elle yapalım. Bu sefer <b>tek nöronlu</b> basit bir model kuruyoruz (sonuç: XOR'u çözemeyecek — ama mekanizmayı en yalın haliyle göreceğiz).</p>
-    <div class="work" style="white-space:pre-wrap; line-height:1.9">Başlangıç şartları:
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda ağırlıkları <b>biz seçtik</b>. Peki makine kendi bulsaydı? İlk turu (1 epoch) baştan sona elle yapalım — dört kart, dört adım. Bu sefer <b>tek nöronlu</b> basit bir model kuruyoruz (sonuç: XOR'u çözemeyecek — ama mekanizmayı en yalın haliyle göreceğiz).</p>
+
+    <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px">Başlangıç şartları:
   X  = [[0,0], [0,1], [1,0], [1,1]]      girdiler
   y  = [ 0,     1,     1,     0    ]      gerçek cevaplar (XOR)
   w  = [0.7, -0.3]                        başlangıç ağırlıkları
   b  = 0.1                                başlangıç sapması
   lr = 0.5                                öğrenme oranı (α)</div>
 
-    <div class="deriv-h" style="margin:14px 0 6px">Adım 1 — İleri besleme: \( z = X\!\cdot\!w + b \), sonra \( p=\sigma(z) \)</div>
-    <table class="calc">
-      <tr><th>nokta</th><th>z hesabı</th><th>z</th><th>p = σ(z)</th></tr>
-      <tr><td>(0,0)</td><td>0(0.7) + 0(−0.3) + 0.1</td><td class="num">0.1</td><td class="num">0.5250</td></tr>
-      <tr><td>(0,1)</td><td>0(0.7) + 1(−0.3) + 0.1</td><td class="num">−0.2</td><td class="num">0.4502</td></tr>
-      <tr><td>(1,0)</td><td>1(0.7) + 0(−0.3) + 0.1</td><td class="num">0.8</td><td class="num">0.6900</td></tr>
-      <tr><td>(1,1)</td><td>1(0.7) + 1(−0.3) + 0.1</td><td class="num">0.5</td><td class="num">0.6225</td></tr>
-    </table>
+    <div class="xe-cards">
 
-    <div class="deriv-h" style="margin:14px 0 6px">Adım 2 — Kayıp (log-loss)</div>
-    <div class="eq">\[ L=-\frac{1}{m}\sum_{i}\Big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\Big]=\mathbf{0.7219} \]</div>
-    <div class="deriv-why">Model şu an kararsız: dört tahmin de 0.45–0.69 arasında, yani "bilmiyorum" diyor. Fatura yüksek.</div>
+      <!-- ===== KART 1 ===== -->
+      <div class="step" id="xeAdim1">
+        <div class="stephead"><h2>Adım 1) İleri besleme — tahminleri üret</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq">\[ z = X\!\cdot\!w + b \quad\Rightarrow\quad p=\sigma(z) \]</div>
+          <table class="calc">
+            <tr><th>nokta</th><th>z hesabı</th><th>z</th><th>p = σ(z)</th></tr>
+            <tr><td>(0,0)</td><td>0(0.7) + 0(−0.3) + 0.1</td><td class="num">0.1</td><td class="num">0.5250</td></tr>
+            <tr><td>(0,1)</td><td>0(0.7) + 1(−0.3) + 0.1</td><td class="num">−0.2</td><td class="num">0.4502</td></tr>
+            <tr><td>(1,0)</td><td>1(0.7) + 0(−0.3) + 0.1</td><td class="num">0.8</td><td class="num">0.6900</td></tr>
+            <tr><td>(1,1)</td><td>1(0.7) + 1(−0.3) + 0.1</td><td class="num">0.5</td><td class="num">0.6225</td></tr>
+          </table>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> ham skor <b>z</b> sınırsız bir sayı; sigmoid onu 0–1 aralığına sıkıştırıp "olasılık" haline getiriyor. Dört tahmin de 0.45–0.69 arasında — model henüz hiçbir şeye emin değil.</div>
+          <div class="detail">Neden doğrudan z'yi kullanmıyoruz? Çünkü kaybı olasılık üzerinden ölçmek istiyoruz: "%52 yeşil dedim, gerçek kırmızıydı" cümlesi, "0.1 dedim" cümlesinden çok daha anlamlı bir hata sinyali verir. Sigmoid'in ikinci faydası birazdan görülecek: log-loss ile birleşince türev inanılmaz sadeleşiyor.</div>
+        </div>
+      </div>
 
-    <div class="deriv-h" style="margin:14px 0 6px">Adım 3 — Gradyan: hata = p − y</div>
-    <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Sigmoid + log-loss birlikte kullanılınca türev muazzam sadeleşir — geriye sadece <b>tahmin eksi gerçek</b> kalır (Lineer Regresyon dersindeki \(2\)'lerin sadeleşmesiyle aynı zarafet):</p>
-    <table class="calc">
-      <tr><th>nokta</th><th>p</th><th>y</th><th>hata = p − y</th></tr>
-      <tr><td>(0,0)</td><td class="num">0.5250</td><td class="num">0</td><td class="num">+0.5250</td></tr>
-      <tr><td>(0,1)</td><td class="num">0.4502</td><td class="num">1</td><td class="num">−0.5498</td></tr>
-      <tr><td>(1,0)</td><td class="num">0.6900</td><td class="num">1</td><td class="num">−0.3100</td></tr>
-      <tr><td>(1,1)</td><td class="num">0.6225</td><td class="num">0</td><td class="num">+0.6225</td></tr>
-    </table>
-    <div class="work" style="white-space:pre-wrap; line-height:1.9; margin-top:10px">grad_w = Xᵀ @ hata / m     (her girdinin kendi hatasıyla çarpımının ortalaması)
+      <!-- ===== KART 2 ===== -->
+      <div class="step" id="xeAdim2">
+        <div class="stephead"><h2>Adım 2) Kayıp — ne kadar kötüyüz?</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq">\[ \begin{aligned} L=-\frac{1}{m}\sum_{i}\Big[\;&y_i\ln p_i \\[-2pt] &+(1-y_i)\ln(1-p_i)\Big] \end{aligned} \]</div>
+          <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px">L = 0.7219      ← bu turun faturası</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> log-loss, "emin olup yanılmayı" ağır cezalandırır. Model şu an dört noktada da kararsız (0.45–0.69), yani aslında "bilmiyorum" diyor — bu yüzden fatura orta-yüksek ama felaket değil. Tamamen yanlış <b>ve</b> emin olsaydı çok daha yüksek olurdu.</div>
+          <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de aşağıdaki gibi tertemiz çıkar.</div>
+        </div>
+      </div>
 
-  grad_w₁ = [0(+0.5250) + 0(−0.5498) + 1(−0.3100) + 1(+0.6225)] / 4
-          = 0.3125 / 4 = +0.0781
-          ↑ x₁=1 olan noktalar (yani 3. ve 4.) hesaba katılır
+      <!-- ===== KART 3 ===== -->
+      <div class="step" id="xeAdim3">
+        <div class="stephead"><h2>Adım 3) Gradyan — hangi yöne gideceğiz?</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq">\[ \text{hata} = p - y \]</div>
+          <table class="calc">
+            <tr><th>nokta</th><th>p</th><th>y</th><th>hata = p − y</th></tr>
+            <tr><td>(0,0)</td><td class="num">0.5250</td><td class="num">0</td><td class="num">+0.5250</td></tr>
+            <tr><td>(0,1)</td><td class="num">0.4502</td><td class="num">1</td><td class="num">−0.5498</td></tr>
+            <tr><td>(1,0)</td><td class="num">0.6900</td><td class="num">1</td><td class="num">−0.3100</td></tr>
+            <tr><td>(1,1)</td><td class="num">0.6225</td><td class="num">0</td><td class="num">+0.6225</td></tr>
+          </table>
+          <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px; margin-top:8px">grad_w = Xᵀ @ hata / m
 
-  grad_w₂ = [0(+0.5250) + 1(−0.5498) + 0(−0.3100) + 1(+0.6225)] / 4
-          = 0.0727 / 4 = +0.0182
-          ↑ x₂=1 olan noktalar (yani 2. ve 4.)
+grad_w₁ = <b>+0.0781</b>   ← x₁=1 olanlar
+grad_w₂ = <b>+0.0182</b>   ← x₂=1 olanlar
+grad_b  = <b>+0.0719</b>   ← hepsi</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> sigmoid + log-loss birlikte kullanılınca türev muazzam sadeleşiyor — geriye sadece <b>tahmin eksi gerçek</b> kalıyor. Her ağırlık, <b>kendi girdisiyle</b> çarpılmış hatanın ortalamasını alıyor: girdi 0 ise o nokta o ağırlığa hiç söz söylemiyor.</div>
+          <div class="detail">Açık hesap:<div class="work" style="white-space:pre-wrap; line-height:1.8; font-size:12px; margin-top:6px">grad_w₁ = [0(+0.5250) + 0(−0.5498)
+           + 1(−0.3100) + 1(+0.6225)] / 4 = +0.0781
 
-grad_b  = (+0.5250 − 0.5498 − 0.3100 + 0.6225) / 4 = 0.2877 / 4 = +0.0719
-          ↑ b'nin yanında çarpılacak x yok → hataların düz ortalaması</div>
+grad_w₂ = [0(+0.5250) + 1(−0.5498)
+           + 0(−0.3100) + 1(+0.6225)] / 4 = +0.0182
 
-    <div class="deriv-h" style="margin:14px 0 6px">Adım 4 — Güncelle: \( w := w-\alpha\,\nabla w \)</div>
-    <div class="work" style="white-space:pre-wrap; line-height:1.9">w₁ :  0.7  − (0.5 × 0.0781) = 0.7  − 0.0391 =  0.6609
-w₂ : −0.3  − (0.5 × 0.0182) = −0.3 − 0.0091 = −0.3091
-b  :  0.1  − (0.5 × 0.0719) = 0.1  − 0.0360 =  0.0640</div>
-    <div class="callout">🎉 <b>İlk tur bitti.</b> Ağırlıklar <code>[0.7, −0.3], b=0.1</code> → <code>[0.6609, −0.3091], b=0.0640</code> oldu. Kodu çalıştırdığında saniyenin binde birinde dönen o "devasa matris dansı", kağıt üzerinde tam olarak bu dört adımdan ibaret — sadece binlerce kez tekrarlanıyor.</div>
+grad_b  = (+0.5250 − 0.5498
+           − 0.3100 + 0.6225) / 4 = +0.0719</div>
+          <p style="margin:8px 0 0">"Sadece p − y kalır" sonucu tesadüf değil: log-loss'un türevi \( \frac{p-y}{p(1-p)} \), sigmoid'in türevi ise \( p(1-p) \). Zincir kuralında çarpıldıklarında \( p(1-p) \) terimleri birbirini götürür ve geriye \( p-y \) kalır. İkisinin birlikte kullanılmasının asıl sebebi budur.</p></div>
+        </div>
+      </div>
+
+      <!-- ===== KART 4 ===== -->
+      <div class="step" id="xeAdim4">
+        <div class="stephead"><h2>Adım 4) Güncelle — yokuş aşağı bir adım</h2><span class="chev">▸</span></div>
+        <div class="stepbody">
+          <div class="eq">\[ w := w-\alpha\,\nabla w \qquad b := b-\alpha\,\nabla b \]</div>
+          <div class="work" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px">w₁ :  0.7  − (0.5 × 0.0781) =  <b>0.6609</b>
+w₂ : −0.3  − (0.5 × 0.0182) = <b>−0.3091</b>
+b  :  0.1  − (0.5 × 0.0719) =  <b>0.0640</b></div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> <b>eksi işaret</b> kritik — gradyan kaybın <i>arttığı</i> yönü gösterir, biz tersine yürürüz. Üç gradyan da pozitif çıktığı için üç parametre de <b>küçüldü</b>. α=0.5 adım boyunu belirliyor: büyük olsaydı vadinin karşı yamacına aşabilirdik, küçük olsaydı sürünürdük.</div>
+          <div class="detail">Dikkat: adımlar minicik (0.0391, 0.0091, 0.0360). Bir epoch neredeyse hiçbir şeyi değiştirmiyor — öğrenme, bu küçük düzeltmelerin binlerce kez üst üste binmesiyle oluyor. "Model eğitmek" dediğimiz şey tam olarak bu döngüyü tekrar tekrar çevirmek.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout" style="margin-top:12px">🎉 <b>İlk tur bitti.</b> Ağırlıklar <code>[0.7, −0.3], b=0.1</code> → <code>[0.6609, −0.3091], b=0.0640</code> oldu. Kodu çalıştırdığında saniyenin binde birinde dönen o "devasa matris dansı", kağıt üzerinde tam olarak bu dört karttan ibaret — sadece binlerce kez tekrarlanıyor.</div>
     <div class="tip">⚠️ <b>Ama unutma:</b> bu tek nöronlu model bu döngüyü <b>bir milyon kez</b> çalıştırsa da XOR'u çözemez — çizgisi hep düz kalır. Kayıp bir yere kadar iner, sonra takılır. Çözüm için gizli katman şart; makinenin bunu <b>rastgele başlayıp kendi kendine</b> bulmasını görmek istersen: <button class="addbtn" data-ped-tab="neural" style="background:var(--green); color:#0b2a12; border:none; padding:4px 10px; font-size:12.5px">🧠 Neural Network — canlı eğitim</button></div>
   </div>
     </div>
@@ -4910,14 +4947,14 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609051704"></script>
-<script src="js/lesson-turev.js?v=202609051704"></script>
-<script src="js/lesson-xor.js?v=202609051704"></script>
-<script src="js/lesson-xor-arch.js?v=202609051704"></script>
-<script src="js/lesson-nn.js?v=202609051704"></script>
-<script src="js/lesson-trig.js?v=202609051704"></script>
+<script src="js/lesson-linreg.js?v=202609051723"></script>
+<script src="js/lesson-turev.js?v=202609051723"></script>
+<script src="js/lesson-xor.js?v=202609051723"></script>
+<script src="js/lesson-xor-arch.js?v=202609051723"></script>
+<script src="js/lesson-nn.js?v=202609051723"></script>
+<script src="js/lesson-trig.js?v=202609051723"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609051704"></script>
-<script src="js/app.js?v=202609051704"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609051723"></script>
+<script src="js/app.js?v=202609051723"></script>
 </body>
 </html>

@@ -716,6 +716,15 @@
      taşırıyordu. Bu genişliklerde zaten her şey tek ekrana sığmıyor; formülü
      tam genişliğe alıp grafiği ALTINA sarmak okunurluk açısından daha doğru. */
   @media(max-width:1600px){ .step.stepc .step-graph-formula{flex:1 1 100%} }
+  /* XOR — "elle 1 epoch" kart ızgarası. auto-fit ile bırakılınca geniş
+     ekranda 3+1 gibi dengesiz kırılmalar oluyordu; kırılma noktaları sabit:
+     mobilde alt alta, orta boyda 2×2, geniş ekranda dördü tek satırda
+     (böylece dört adım da tek ekranda görünür). */
+  .xe-cards{display:grid; gap:10px; align-items:stretch; margin-top:12px; grid-template-columns:1fr}
+  @media(min-width:760px){  .xe-cards{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:1500px){ .xe-cards{grid-template-columns:repeat(4,1fr)} }
+  .xe-cards .calc{font-size:12px}
+  .xe-cards .calc th, .xe-cards .calc td{padding:3px 6px}
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
   .loss-valley-row{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin-top:6px}
   .loss-valley-col{flex:1 1 130px; max-width:142px; text-align:center}
