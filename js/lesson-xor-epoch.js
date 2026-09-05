@@ -195,16 +195,32 @@
   function render(){
     const s = state();
 
-    // durum şeridi
-    $('xeState').textContent =
-      `epoch ${epoch}   ·   w = [${N(w[0],4)}, ${N(w[1],4)}]   ·   b = ${N(b,4)}   ·   L = ${N(s.L,6)}`;
+    // tahminler: p ≥ 0.5 → 1
+    const tah = s.p.map(pi => pi >= 0.5 ? 1 : 0);
+    const dogru = tah.filter((t,i) => t === Y[i]).length;
+
+    // durum şeridi — "tahmin nerede?" sorusunun tek bakışta cevabı
+    $('xeState').innerHTML =
+      `epoch <b>${epoch}</b>   ·   w = [${N(w[0],4)}, ${N(w[1],4)}]   ·   b = ${N(b,4)}   ·   kayıp L = <b>${N(s.L,6)}</b>\n` +
+      `TAHMİNLER:  ` +
+      X.map((x,i) => {
+        const ok = tah[i] === Y[i];
+        return `(${x[0]},${x[1]})→<b style="color:${ok?'#46c46a':'#e06a6a'}">${tah[i]}</b>${ok?'✓':'✗'}`;
+      }).join('   ') +
+      `   ·   doğru: <b style="color:${dogru===4?'#46c46a':'#f0a032'}">${dogru}/4</b>`;
 
     // Kart 1
     for(let i=0;i<4;i++){
-      $('xe1c'+i).textContent = `${X[i][0]}(${N(w[0],2)}) + ${X[i][1]}(${N(w[1],2)}) + ${N(b,2)}`;
       $('xe1z'+i).textContent = N(s.z[i],3);
       $('xe1p'+i).textContent = N(s.p[i],4);
+      $('xe1t'+i).textContent = tah[i];
+      const ok = tah[i] === Y[i];
+      const k = $('xe1k'+i);
+      k.textContent = ok ? '✓' : '✗';
+      k.style.color = ok ? '#46c46a' : '#e06a6a';
     }
+    $('xe1c').textContent =
+      `ör. (1,1):  1(${N(w[0],3)}) + 1(${N(w[1],3)}) + ${N(b,3)} = ${N(s.z[3],3)}   →   doğru: ${dogru}/4`;
     draw1(s);
 
     // Kart 2
@@ -218,7 +234,6 @@
       $('xe3e'+i).textContent = (s.err[i]>=0?'+':'') + N(s.err[i],4);
     }
     $('xe3g').textContent =
-      `grad_w = Xᵀ @ hata / m\n\n` +
       `grad_w₁ = ${(s.gw[0]>=0?'+':'')}${N(s.gw[0],4)}   ← x₁=1 olanlar\n` +
       `grad_w₂ = ${(s.gw[1]>=0?'+':'')}${N(s.gw[1],4)}   ← x₂=1 olanlar\n` +
       `grad_b  = ${(s.gb>=0?'+':'')}${N(s.gb,4)}   ← hepsi`;
@@ -236,16 +251,16 @@
     const box = $('xeSonuc');
     if(converged()){
       box.innerHTML = `🏁 <b>Eğitim bitti — ve sonuç şaşırtıcı.</b> ${epoch} epoch sonunda makinenin bulduğu "en uygun ağırlıklar": ` +
-        `<b>w = [${N(w[0],4)}, ${N(w[1],4)}]</b>, <b>b = ${N(b,4)}</b> — yani <b>hepsi sıfır</b>. ` +
-        `Kayıp da <b>ln2 = 0.6931</b>'de takıldı; bu, "her noktaya %50 diyorum" demenin kaybıdır. ` +
-        `Model bir çözüm bulamadı, <b>tahmin etmeyi bıraktı</b>: dört noktanın hepsine 0.5 diyor. ` +
-        `Tek doğruyla XOR ayrılamadığı için gradyan alçalmanın yapabileceği en iyi şey buydu — ` +
-        `matematiksel olarak "pes etmek" en düşük kayıplı strateji.`;
+        `<b>w = [${N(w[0],4)}, ${N(w[1],4)}]</b>, <b>b = ${N(b,4)}</b> — yani <b>hepsi sıfır</b>. Kayıp <b>ln2 = 0.6931</b>'de takıldı: ` +
+        `bu, "her noktaya %50 diyorum" demenin kaybı. Dört noktaya da p=0.5 dediği için skoru <b>${dogru}/4</b> — yazı tura atmakla aynı. ` +
+        `Tek doğruyla XOR ayrılamadığı için gradyan alçalmanın yapabileceği en iyi şey buydu: <b>pes etmek</b>. ` +
+        `Yukarıdaki 2 nöronlu ağın 4/4 yaptığını hatırla — fark, gizli katman.`;
     } else if(epoch === 0){
-      box.innerHTML = `▶ <b>Başlamak için "1 epoch"a bas.</b> Her basışta dört kart da o turun sayılarıyla güncellenir: ` +
-        `tahminler, kayıp, gradyanlar ve yeni ağırlıklar. Sonra <b>⏩ hızlı</b> ile bırak dönsün — nereye yakınsadığına bak.`;
+      box.innerHTML = `▶ <b>Başlamak için "1 epoch"a bas.</b> Her basışta dört kart da o turun sayılarıyla güncellenir. ` +
+        `Tahminleri yukarıdaki <b>TAHMİNLER</b> satırından ve <b>Adım 1</b> kartının "tahmin" sütunundan takip et. ` +
+        `Sonra <b>⏩ hızlı</b> ile bırak dönsün.`;
     } else {
-      box.innerHTML = `🔄 <b>${epoch}. epoch bitti.</b> Ağırlıklar <b>[${N(w[0],4)}, ${N(w[1],4)}]</b>, b = <b>${N(b,4)}</b>, ` +
+      box.innerHTML = `🔄 <b>${epoch}. epoch bitti.</b> Şu an <b>${dogru}/4</b> doğru · ağırlıklar <b>[${N(w[0],4)}, ${N(w[1],4)}]</b>, b = <b>${N(b,4)}</b> · ` +
         `kayıp <b>${N(s.L,6)}</b> — tabana (ln2 = 0.693147) <b>${N(fark,6)}</b> kaldı. Devam et.`;
     }
   }
