@@ -1,8 +1,10 @@
 /* XOR modülü — "elle 1 epoch" kartları: canlı eğitim döngüsü + dört grafik.
-   2 GİZLİ NÖRONLU ağ (yukarıdaki Python koduyla AYNI mimari) — ama burada
-   ağırlıklar elle seçilmiyor, rastgele/asimetrik bir başlangıçtan gradyan
-   alçalma ile öğreniliyor. Amaç: gerçek geri yayılımın dört adımını
-   sayılarla izletmek ve ağın kendi kendine XOR'u çözdüğünü göstermek. */
+   2 GİZLİ NÖRONLU ağ; ağırlıklar rastgele/asimetrik bir başlangıçtan gradyan
+   alçalma ile öğreniliyor. Amaç: gerçek geri yayılımın dört adımını sayılarla
+   izletmek ve ağın kendi kendine XOR'u çözdüğünü göstermek.
+   Her render'da ağırlıklar window.XORNET'e yazılır ve hemen yukarıdaki canlı
+   mimari şeması (js/lesson-xor-arch.js) yeniden çizdirilir — şema ile kartlar
+   TEK bir ağı gösterir. */
 (function(){
   'use strict';
   const cv1 = document.getElementById('xe1Canvas');
@@ -197,6 +199,10 @@
     const tah = s.p.map(pi => pi>=0.5 ? 1 : 0);
     const dogru = tah.filter((t,i)=>t===Y[i]).length;
 
+    // yukarıdaki canlı mimari şeması aynı ağırlıkları okusun
+    window.XORNET = {W1: W1.map(r=>r.slice()), B1: B1.slice(), W2: W2.slice(), B2, epoch, L: s.L};
+    if(window.__xorArchRender) window.__xorArchRender();
+
     $('xeState').innerHTML =
       `epoch <b>${epoch}</b>   ·   kayıp L = <b>${N(s.L,6)}</b>\n` +
       `TAHMİNLER:  ` +
@@ -251,7 +257,7 @@
     if(converged()){
       box.innerHTML = `🏁 <b>Başardı!</b> ${epoch} epoch sonunda ağ <b>4/4</b> doğru — kayıp <b>${N(s.L,5)}</b>, ln2 tabanının çok altında. ` +
         `Gizli katman kendi kendine, hiçbir OR/AND etiketi görmeden, elle kurduğumuz mantığa benzer bir ayrım buldu. ` +
-        `Az önce TEK nöronla aynı döngüyü denediğimizde model pes edip w,b→0'a, kayıp ln2'ye takılmıştı — <b>fark birebir bu gizli katman</b>.`;
+        `Yukarıdaki şemada ağırlıkların nereye oturduğuna bak — TEK nöronlu bir modelde aynı döngü kayıp ln2'de takılı kalırdı (➕ Ekstra'daki oyuncakta "🌊 Sigmoid ile TEK nöron" moduyla görebilirsin); <b>fark birebir bu gizli katman</b>.`;
     } else if(epoch === 0){
       box.innerHTML = `▶ <b>Başlamak için "1 epoch"a bas.</b> İlk epoch'larda kayıp neredeyse hiç düşmüyor gibi görünebilir (ln2 civarında dolaşır) — ` +
         `sabırlı ol, ⏩ ile devam et. Bir noktadan sonra hızla düşmeye başlayacak.`;
