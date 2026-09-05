@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609051607"></script>
-<link rel="stylesheet" href="css/style.css?v=202609051607">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609051627"></script>
+<link rel="stylesheet" href="css/style.css?v=202609051627">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 16:07 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 16:27 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2001,7 +2001,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   <div class="pts" style="border-left:3px solid #e06a6a">
     <h3 style="color:#e06a6a; margin-top:0">❌ Neden tek doğru yetmez?</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aktivasyonsuz tek bir nöron şunu hesaplar: \( z = w_1x_1 + w_2x_2 + b \). Kararı <b>z'nin işareti</b> verir — yani \( w_1x_1 + w_2x_2 + b = 0 \) denklemi bir <b>doğru</b> çizer ve düzlemi ikiye böler: bir yan "yeşil", öbür yan "kırmızı".</p>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Ama tek bir doğru düzlemi ancak <b>iki yarı-düzleme</b> ayırabilir. XOR'da ise aynı sınıfın iki noktası (yeşiller) <b>karşılıklı köşelerde</b> duruyor; aralarında öbür sınıfın noktaları var. Hangi açıyı, hangi konumu denersen dene en fazla <b>3/4</b> tutturursun — dördüncüsü hep yanlış tarafta kalır. (Yukarıdaki simülasyonda "En iyi açıyı tara" ile 100 farklı doğruyu deneyip bunu kendin doğrulayabilirsin.)</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Ama tek bir doğru düzlemi ancak <b>iki yarı-düzleme</b> ayırabilir. XOR'da ise aynı sınıfın iki noktası (yeşiller) <b>karşılıklı köşelerde</b> duruyor; aralarında öbür sınıfın noktaları var. Hangi açıyı, hangi konumu denersen dene en fazla <b>3/4</b> tutturursun — dördüncüsü hep yanlış tarafta kalır. (Aşağıdaki <b>5️⃣ Simülasyon</b> kümesinde "En iyi açıyı tara" ile 100 farklı doğruyu deneyip bunu kendin doğrulayabilirsin.)</p>
     <div class="callout">🔑 <b>Kritik ayrım:</b> tek nörona <b>sigmoid eklemek de yetmez</b>. Sigmoid çizgiyi sadece <i>yumuşatır</i> (keskin karar yerine kademeli geçiş), ama karar sınırının kendisi hâlâ \( w_1x_1+w_2x_2+b=0 \) doğrusudur — hâlâ düz. Aktivasyon tek başına değil, <b>birden fazla nöronla birlikte</b> güç kazanır.</div>
   </div>
 
@@ -2044,8 +2044,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <div class="tpl-body closed">
   <!-- 🧩 SEZGİ AÇILIŞI: XOR bulmacası — aktivasyona neden ihtiyacımız var, elle keşfet -->
   <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent); margin-top:0">🧩 Neden aktivasyona ihtiyacımız var? — XOR bulmacası (elle dene)</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">4 nokta var: (0,0) ve (1,1) <b style="color:#e06a6a">kırmızı</b> (sınıf 0), (0,1) ve (1,0) <b style="color:#46c46a">yeşil</b> (sınıf 1) — bu desene <b>XOR</b> deniyor. Aşağıda önce <b>lineer</b> modda bir çizgi sürükleyip kırmızıları yeşillerden ayırmaya çalış — kaç tanesini doğru ayırabildiğini canlı gör. Sonra <b>aktivasyon ekle</b> moduna geç, 2 gizli nöronun (her biri kendi kıvrımıyla) bu imkânsız görünen işi nasıl çözdüğünü izle.</p>
+    <h3 style="color:var(--accent); margin-top:0">🎛️ Kendin dene — üç modu karşılaştır</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda anlattığımız her şeyi şimdi elinle sına. Üç mod var, sırayla dene: <b>📏 Lineer</b> — çizgiyi sürükleyip 4/4 yapmayı dene (yapamayacaksın, en fazla 3/4). <b>🌊 Sigmoid ile tek nöron</b> — aktivasyon eklemenin tek başına <i>yetmediğini</i> gör: aynı noktalar yanlış kalır, çünkü sınır hâlâ düz. <b>🧠 Aktivasyon ekle</b> — iki gizli nöron devreye girsin, 4️⃣'te kurduğumuz h₁=OR / h₂=AND mantığının bandı ekranda belirsin.</p>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0">
       <button class="addbtn" id="actXorModeLin" style="background:var(--blue); color:#fff">📏 Lineer dene (aktivasyonsuz)</button>
       <button class="addbtn" id="actXorModeNL" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🧠 Aktivasyon ekle (2 nöron)</button>
@@ -2120,11 +2120,11 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <text x="350" y="300" text-anchor="middle" font-size="11" fill="#95a2c2" font-family="Segoe UI, Arial">her ok bir ağırlık; her düğüm kendi z=Σwx+b'sini hesaplayıp aktivasyondan geçiriyor</text>
     </svg>
 
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bizim elle yazdığımız <code>h1=step(x1+x2−0.5)</code> formülü aslında şunu diyordu: <b>x1 ve x2'den h1'e giden ağırlıklar ikisi de "1", bias "−0.5"</b>. Gerçek bir kütüphanede (PyTorch, TensorFlow) bunu elle yazmazsın — <b>rastgele ağırlıklarla başlar, gradyan alçalma ile kendi kendine bulur</b> (tam olarak bugün Jupyter'de/artifact'te elle yaptığımız <code>w := w − α·gradyan</code> döngüsü, sadece binlerce ağırlık için aynı anda).</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bizim elle yazdığımız <code>h1=step(x1+x2−0.5)</code> formülü aslında şunu diyordu: <b>x1 ve x2'den h1'e giden ağırlıklar ikisi de "1", bias "−0.5"</b>. Gerçek bir kütüphanede (PyTorch, TensorFlow) bunu elle yazmazsın — <b>rastgele ağırlıklarla başlar, gradyan alçalma ile kendi kendine bulur</b> (tam olarak aşağıdaki <b>➕ Ekstra</b> kümesinde elle çevirdiğimiz <code>w := w − α·gradyan</code> döngüsü, sadece binlerce ağırlık için aynı anda).</p>
 
     <div class="tip"><b>Terminoloji köprüsü:</b> "girdi katmanı" = x'lerin durduğu yer (öğrenilmez, sadece veri) · "gizli katman" (hidden layer) = aradaki nöronlar, dışarıdan görünmezler · "ileri yayılım" (forward pass) = girdiden çıktıya doğru z→aktivasyon→z→aktivasyon zincirini bir kere baştan sona işletmek (tam olarak XOR'da 4 nokta için yaptığımız hesap) · "ağırlık matrisi" (W) = bir katmandaki TÜM ağırlıkların tablo hâli — burada girdi→gizli arası 2×2'lik bir matris (Vektör dersindeki "matris = vektör rafı" fikri burada da geçerli).</div>
 
-    <div class="callout" style="margin-top:10px">🔍 <b>Peki gerçek ağlar (GPT, ResNet...) bundan ne kadar farklı?</b> Boyut olarak devasa farklı (girdi binlerce sayı, gizli katmanlarda milyonlarca nöron, onlarca-yüzlerce katman) — ama <b>temel yapı taşı birebir aynı</b>: ağırlıklı toplam (<code>z=Wx+b</code>) + aktivasyon (<code>ReLU, GELU...</code>), üst üste dizilmiş. Bugün elle çözdüğün 3-nöronluk XOR ağı, milyarlarca parametreli bir dil modeliyle <b>aynı DNA'yı</b> taşıyor — sadece ölçek farklı.</div>
+    <div class="callout" style="margin-top:10px">🔍 <b>Peki gerçek ağlar (GPT, ResNet...) bundan ne kadar farklı?</b> Boyut olarak devasa farklı (girdi binlerce sayı, gizli katmanlarda milyonlarca nöron, onlarca-yüzlerce katman) — ama <b>temel yapı taşı birebir aynı</b>: ağırlıklı toplam (<code>z=Wx+b</code>) + aktivasyon (<code>ReLU, GELU...</code>), üst üste dizilmiş. Bugün elle çözdüğün <b>3 nöronluk</b> (2 gizli + 1 çıktı) XOR ağı, milyarlarca parametreli bir dil modeliyle <b>aynı DNA'yı</b> taşıyor — sadece ölçek farklı.</div>
     <div class="tip" style="margin-top:10px">👉 Ağırlıkları burada elle biz seçtik (<code>h1=step(x1+x2−0.5)</code> gibi). Peki bir makine bu ağırlıkları <b>rastgele başlayıp kendi kendine</b> nasıl bulur? İşte tam bu soru — geri yayılım, adım adım, ve canlı bir eğitim simülasyonuyla — <button class="addbtn" data-ped-tab="neural" style="background:var(--green); color:#0b2a12; border:none; padding:4px 10px; font-size:12.5px">🧠 Neural Network sayfasında</button></div>
   </div>
     </div>
@@ -2137,6 +2137,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   <div class="pts" style="border-left:3px solid var(--blue)">
     <h3 style="color:var(--blue); margin-top:0">🐍 2 nöronlu ağın kodu — elle seçilmiş ağırlıklarla</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döktük. Hiçbir kütüphane yok — saf Python:</p>
+    <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, yukarıdaki simülasyonun ta kendisi.</b> Simülasyon <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: simülasyondaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç bölüm (anlatı → simülasyon → kod) tek bir ağın üç görünümü.</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
 
 def sigmoid(z):
@@ -4855,13 +4856,13 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609051607"></script>
-<script src="js/lesson-turev.js?v=202609051607"></script>
-<script src="js/lesson-xor.js?v=202609051607"></script>
-<script src="js/lesson-nn.js?v=202609051607"></script>
-<script src="js/lesson-trig.js?v=202609051607"></script>
+<script src="js/lesson-linreg.js?v=202609051627"></script>
+<script src="js/lesson-turev.js?v=202609051627"></script>
+<script src="js/lesson-xor.js?v=202609051627"></script>
+<script src="js/lesson-nn.js?v=202609051627"></script>
+<script src="js/lesson-trig.js?v=202609051627"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609051607"></script>
-<script src="js/app.js?v=202609051607"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609051627"></script>
+<script src="js/app.js?v=202609051627"></script>
 </body>
 </html>
