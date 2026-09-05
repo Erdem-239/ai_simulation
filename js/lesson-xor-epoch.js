@@ -204,8 +204,7 @@
     if(window.__xorArchRender) window.__xorArchRender();
 
     $('xeState').innerHTML =
-      `epoch <b>${epoch}</b>   ·   kayıp L = <b>${N(s.L,6)}</b>\n` +
-      `TAHMİNLER:  ` +
+      `epoch <b>${epoch}</b>  ·  kayıp L = <b>${N(s.L,6)}</b>  ·  TAHMİNLER:  ` +
       X.map((x,i) => {
         const ok = tah[i]===Y[i];
         return `(${x[0]},${x[1]})→<b style="color:${ok?'#46c46a':'#e06a6a'}">${tah[i]}</b>${ok?'✓':'✗'}`;
@@ -221,7 +220,6 @@
       const ok = tah[i]===Y[i];
       const k = $('xe1k'+i); k.textContent = ok?'✓':'✗'; k.style.color = ok?'#46c46a':'#e06a6a';
     }
-    $('xe1c').textContent = `doğru: ${dogru}/4`;
     $('xe1detail').textContent =
       `z₁=[${N(s.z1[3][0],2)}, ${N(s.z1[3][1],2)}] → h=[${N(s.h[3][0],3)}, ${N(s.h[3][1],3)}] → z₂=${N(s.z2[3],2)} → p=${N(s.p[3],3)}`;
     draw1(s);
@@ -236,9 +234,10 @@
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
     $('xe3g').textContent =
-      `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   (gizli katmana geri akan pay)\n\n` +
       `dW₂=[${N(s.dW2[0],3)},${N(s.dW2[1],3)}]  dB₂=${N(s.dB2,3)}\n` +
       `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
+    $('xe3detail').textContent =
+      `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz₁ ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
     draw3(s);
 
     // Kart 4
