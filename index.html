@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609052128"></script>
-<link rel="stylesheet" href="css/style.css?v=202609052128">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609052150"></script>
+<link rel="stylesheet" href="css/style.css?v=202609052150">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 21:28 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 21:50 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2042,48 +2042,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   <div class="tpl-cl" data-stage="5">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-  <div class="pts" style="border-left:3px solid var(--blue)">
-    <h3 style="color:var(--blue); margin-top:0">🐍 2 nöronlu ağın kodu — elle seçilmiş ağırlıklarla</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döktük. Hiçbir kütüphane yok — saf Python:</p>
-    <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, ➕ Ekstra kümesindeki oyuncağın matematiksel karşılığı.</b> Oyuncak <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: oyuncaktaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç anlatım (4️⃣'teki mantık, bu kod, Ekstra'daki oyuncak) tek bir ağın üç görünümü.</div>
-    <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
-
-def sigmoid(z):
-    return 1 / (1 + math.exp(-z))
-
-# ---- Gizli katman (2 nöron) ----
-W1 = [[20, 20],    # h1'in ağırlıkları (x1,x2 -> h1)
-      [20, 20]]    # h2'nin ağırlıkları (x1,x2 -> h2)
-b1 = [-10, -30]    # h1 eşiği düşük (OR), h2 eşiği yüksek (AND)
-
-# ---- Çıktı katmanı (1 nöron) ----
-W2 = [20, -20]     # h1'e pozitif, h2'ye NEGATİF ağırlık  ->  "h1 VE DEĞİL h2"
-b2 = -10
-
-def forward(x1, x2):
-    x = [x1, x2]
-    h = []
-    for i in range(2):                                    # her gizli nöron için
-        z = sum(W1[i][j] * x[j] for j in range(2)) + b1[i]  # nokta çarpım + sapma
-        h.append(sigmoid(z))                              # AKTİVASYON
-    z2 = sum(W2[i] * h[i] for i in range(2)) + b2
-    return h, sigmoid(z2)                                 # yine AKTİVASYON
-
-for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
-    h, y = forward(x1, x2)
-    print(f"x=({x1},{x2})  h1={h[0]:.3f}  h2={h[1]:.3f}  y={y:.3f}")</div>
-    <div style="font-size:13px; color:var(--muted); margin:10px 0 4px">Çıktısı:</div>
-    <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px">x=(0,0)  h1=0.000  h2=0.000  y=0.000   -> KIRMIZI ✓
-x=(0,1)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
-x=(1,0)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
-x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
-    <div class="tip"><b>Ağırlıklar neden 20 gibi büyük?</b> Sigmoid'i doygunluk bölgesine itip neredeyse bir basamak fonksiyonu gibi çalıştırmak için — böylece h₁/h₂ belirsiz 0.4-0.6 değerleri yerine net 0/1 verir. Küçük ağırlıklarla da çözüm bulunur, ama sınırlar bulanık olur.</div>
-  </div>
-
   <!-- NEURAL NETWORK GENEL YAPI — XOR ornegimizin formalize hali -->
   <div class="pts" style="border-left:3px solid #46c46a">
-    <h3 style="color:#46c46a; margin-top:0">🧠 Yukarıdaki kodun mimarisi budur</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki Python kodunda kurduğun <code>h1, h2, y</code> sistemi — resmi adıyla — <b>2 katmanlı bir sinir ağı</b>. Aşağıdaki şema o ağın <b>içini</b> gösteriyor: her nöron iki bölmeli — solda <b>Σ</b> (ağırlıklı toplam, <code>z</code>), sağda <b>σ</b> (sigmoid aktivasyon). <b>Bir girdi seç</b>, bütün sayıların katman katman nasıl aktığını izle:</p>
+    <h3 style="color:#46c46a; margin-top:0">🧠 Simüle edeceğimiz ağın mimarisi</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">4️⃣'te kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> sistemi — resmi adıyla — <b>2 katmanlı bir sinir ağı</b>. Bu kümenin geri kalanında (matematiği, kodu, canlı eğitimi) hep <b>bu ağı</b> göreceğiz. Aşağıdaki şema o ağın <b>içini</b> gösteriyor: her nöron iki bölmeli — solda <b>Σ</b> (ağırlıklı toplam, <code>z</code>), sağda <b>σ</b> (sigmoid aktivasyon). <b>Bir girdi seç</b>, bütün sayıların katman katman nasıl aktığını izle:</p>
 
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 8px; align-items:center">
       <span style="font-size:13px; color:var(--muted)">Girdi (x₁, x₂):</span>
@@ -2176,7 +2138,7 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
     <div class="work" id="xaWork" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px"></div>
     <div class="callout" id="xaVerdict" style="margin-top:8px"></div>
 
-    <div class="tip" style="margin-top:10px">🐍 <b>Bu şema, yukarıdaki <code>forward()</code> fonksiyonunun resmi.</b> Kodda <code>z = sum(W1[i][j]*x[j] ...) + b1[i]</code> satırı buradaki <b>Σ</b> bölmesi, <code>sigmoid(z)</code> satırı ise <b>σ</b> bölmesi. Dört girdiye de tıklayıp buradaki sayıları kodun çıktısıyla karşılaştırabilirsin — birebir aynı.</div>
+    <div class="tip" style="margin-top:10px">🐍 <b>Bu şema, aşağıdaki <code>forward()</code> fonksiyonunun resmi.</b> Kodda <code>z = sum(W1[i][j]*x[j] ...) + b1[i]</code> satırı buradaki <b>Σ</b> bölmesi, <code>sigmoid(z)</code> satırı ise <b>σ</b> bölmesi. Dört girdiye de tıklayıp buradaki sayıları kodun çıktısıyla karşılaştırabilirsin — birebir aynı.</div>
 
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bizim elle yazdığımız <code>h1=step(x1+x2−0.5)</code> formülü aslında şunu diyordu: <b>x1 ve x2'den h1'e giden ağırlıklar ikisi de "1", bias "−0.5"</b>. Gerçek bir kütüphanede (PyTorch, TensorFlow) bunu elle yazmazsın — <b>rastgele ağırlıklarla başlar, gradyan alçalma ile kendi kendine bulur</b> (tam olarak hemen aşağıda elle çevireceğimiz <code>w := w − α·gradyan</code> döngüsü, sadece binlerce ağırlık için aynı anda).</p>
 
@@ -2186,6 +2148,52 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
     <div class="tip" style="margin-top:10px">👉 Ağırlıkları burada elle biz seçtik (<code>h1=step(x1+x2−0.5)</code> gibi). Peki bir makine bu ağırlıkları <b>rastgele başlayıp kendi kendine</b> nasıl bulur? İşte tam bu sorunun cevabı — <b>hemen aşağıda</b>, geri yayılım adım adım ve canlı bir eğitimle gösteriliyor.</div>
   </div>
 
+
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">📐 Bu ağın matematiği — ileri besleme</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki şemanın tamamı <b>iki satır matematiğe</b> sığıyor. Bu simülasyonun geri kalanında (kod, elle epoch kartları) tekrar tekrar göreceğin denklem bu:</p>
+    <div class="eq">\[ \begin{aligned} z_1&=X\!\cdot\!W_1{+}b_1,\;\; h=\sigma(z_1) \\ z_2&=h\!\cdot\!W_2{+}b_2,\;\; p=\sigma(z_2) \end{aligned} \]</div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Şemadaki her <b>Σ</b> bölmesi bu satırların <b>z</b> kısmı, her <b>σ</b> bölmesi de <b>σ(z)</b> kısmı. İlk satır <b>gizli katman</b> (2 nöron birden, bu yüzden \(W_1\) bir matris), ikinci satır <b>çıktı katmanı</b> (tek nöron, \(W_2\) bir vektör). \(p\) ise ağın nihai tahmini — 0'a yakınsa kırmızı, 1'e yakınsa yeşil.</p>
+    <div class="tip">🔁 <b>Bütün mesele bu iki satırı doğru yapan \(W_1, b_1, W_2, b_2\) sayılarını bulmak.</b> Aşağıda önce bunları <b>elle seçip</b> (kod bloğu) çalıştığını göreceğiz, sonra ağı <b>rastgele başlatıp</b> gradyan alçalmayla kendi kendine bulmasını izleyeceğiz (canlı kartlar).</div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <h3 style="color:var(--blue); margin-top:0">🐍 2 nöronlu ağın kodu — elle seçilmiş ağırlıklarla</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döktük. Hiçbir kütüphane yok — saf Python:</p>
+    <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, ➕ Ekstra kümesindeki oyuncağın matematiksel karşılığı.</b> Oyuncak <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: oyuncaktaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç anlatım (4️⃣'teki mantık, bu kod, Ekstra'daki oyuncak) tek bir ağın üç görünümü.</div>
+    <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+# ---- Gizli katman (2 nöron) ----
+W1 = [[20, 20],    # h1'in ağırlıkları (x1,x2 -> h1)
+      [20, 20]]    # h2'nin ağırlıkları (x1,x2 -> h2)
+b1 = [-10, -30]    # h1 eşiği düşük (OR), h2 eşiği yüksek (AND)
+
+# ---- Çıktı katmanı (1 nöron) ----
+W2 = [20, -20]     # h1'e pozitif, h2'ye NEGATİF ağırlık  ->  "h1 VE DEĞİL h2"
+b2 = -10
+
+def forward(x1, x2):
+    x = [x1, x2]
+    h = []
+    for i in range(2):                                    # her gizli nöron için
+        z = sum(W1[i][j] * x[j] for j in range(2)) + b1[i]  # nokta çarpım + sapma
+        h.append(sigmoid(z))                              # AKTİVASYON
+    z2 = sum(W2[i] * h[i] for i in range(2)) + b2
+    return h, sigmoid(z2)                                 # yine AKTİVASYON
+
+for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
+    h, y = forward(x1, x2)
+    print(f"x=({x1},{x2})  h1={h[0]:.3f}  h2={h[1]:.3f}  y={y:.3f}")</div>
+    <div style="font-size:13px; color:var(--muted); margin:10px 0 4px">Çıktısı:</div>
+    <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px">x=(0,0)  h1=0.000  h2=0.000  y=0.000   -> KIRMIZI ✓
+x=(0,1)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
+x=(1,0)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
+x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
+    <div class="tip"><b>Ağırlıklar neden 20 gibi büyük?</b> Sigmoid'i doygunluk bölgesine itip neredeyse bir basamak fonksiyonu gibi çalıştırmak için — böylece h₁/h₂ belirsiz 0.4-0.6 değerleri yerine net 0/1 verir. Küçük ağırlıklarla da çözüm bulunur, ama sınırlar bulanık olur.</div>
+  </div>
 
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent); margin-top:0">✏️ Aynı ağ, rastgele başlangıç — kendi kendine bulabilir mi?</h3>
@@ -2207,7 +2215,7 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
       <div class="step" id="xeAdim1">
         <div class="stephead"><h2>Adım 1) İleri besleme — iki katmandan geç</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ \begin{aligned} z_1&=X\!\cdot\!W_1{+}b_1,\;\; h=\sigma(z_1) \\ z_2&=h\!\cdot\!W_2{+}b_2,\;\; p=\sigma(z_2) \end{aligned} \]</div>
+          <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">\( z_1{=}X W_1{+}b_1 \to h \to z_2 \to p \) <span style="opacity:.75">(kümenin başındaki denklem)</span></div>
           <table class="calc">
             <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>p</th><th>tahmin</th><th>y</th><th></th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe1h10"></td><td class="num" id="xe1h20"></td><td class="num" id="xe1p0"></td><td class="num" id="xe1t0"></td><td class="num">0</td><td id="xe1k0"></td></tr>
@@ -4955,15 +4963,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609052128"></script>
-<script src="js/lesson-turev.js?v=202609052128"></script>
-<script src="js/lesson-xor.js?v=202609052128"></script>
-<script src="js/lesson-xor-arch.js?v=202609052128"></script>
-<script src="js/lesson-xor-epoch.js?v=202609052128"></script>
-<script src="js/lesson-nn.js?v=202609052128"></script>
-<script src="js/lesson-trig.js?v=202609052128"></script>
+<script src="js/lesson-linreg.js?v=202609052150"></script>
+<script src="js/lesson-turev.js?v=202609052150"></script>
+<script src="js/lesson-xor.js?v=202609052150"></script>
+<script src="js/lesson-xor-arch.js?v=202609052150"></script>
+<script src="js/lesson-xor-epoch.js?v=202609052150"></script>
+<script src="js/lesson-nn.js?v=202609052150"></script>
+<script src="js/lesson-trig.js?v=202609052150"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609052128"></script>
-<script src="js/app.js?v=202609052128"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609052150"></script>
+<script src="js/app.js?v=202609052150"></script>
 </body>
 </html>
