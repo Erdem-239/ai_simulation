@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609051749"></script>
-<link rel="stylesheet" href="css/style.css?v=202609051749">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609052100"></script>
+<link rel="stylesheet" href="css/style.css?v=202609052100">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 17:49 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-05 21:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2227,16 +2227,16 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
   </div>
 
   <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent); margin-top:0">✏️ Makine kendi bulsaydı? — canlı eğitim, adım adım</h3>
+    <h3 style="color:var(--accent); margin-top:0">✏️ Aynı ağ, rastgele başlangıç — kendi kendine bulabilir mi?</h3>
 
-    <div class="callout" style="margin:0 0 10px; border-left-color:#e06a6a"><b style="color:#e06a6a">⚠️ Dikkat — bu, yukarıdaki ağ DEĞİL.</b> Yukarıdaki <b>2 nöronlu</b> ağ (ağırlıklarını elle biz seçtik) XOR'u <b>4/4 doğru</b> çözüyordu. Burada bilerek <b>TEK nöronlu</b> bir model eğitiyoruz — yani gizli katmanı olmayan, tek bir düz çizgi çizebilen model. Amaç: eğitim döngüsünün dört adımını canlı izlemek <b>ve</b> tek nöronun XOR karşısında ne yaptığını kendi gözünle görmek. (Spoiler değil, kendin bak: <b>⏩ hızlı</b>'ya basıp sonucu izle.)</div>
+    <div class="callout" style="margin:0 0 8px; border-left-color:#46c46a"><b style="color:#46c46a">🔁 Yukarıda ağırlıkları biz seçmiştik.</b> Şimdi <b>aynı mimariyi</b> (2 gizli nöron + 1 çıktı) rastgele başlangıçla eğitelim — kendi kendine bulabilecek mi? <span style="color:var(--muted)">(Az önce TEK nöron pes edip w,b→0'a takılmıştı — farkı göreceğiz.)</span></div>
 
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 8px">
       <button class="addbtn" id="xeStep" style="background:var(--blue); color:#fff">▶ 1 epoch</button>
       <button class="addbtn" id="xeAuto" style="background:var(--accent); color:#1a1204">⏩ hızlı</button>
       <button class="addbtn" id="xeStop" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">⏹ dur</button>
       <button class="addbtn" id="xeReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ sıfırla</button>
-      <span style="font-size:12px; color:var(--muted)">başlangıç: w=[0.7, −0.3] · b=0.1 · α=0.5</span>
+      <span style="font-size:11.5px; color:var(--muted)">başlangıç: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · W₂=[1.2,−0.9] · b₂=−1.2 · α=3.0</span>
     </div>
     <div class="work" id="xeState" style="white-space:pre-wrap; line-height:1.8; font-size:12.5px; margin:0"></div>
 
@@ -2244,23 +2244,23 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
 
       <!-- ===== KART 1 ===== -->
       <div class="step" id="xeAdim1">
-        <div class="stephead"><h2>Adım 1) İleri besleme — tahminleri üret</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Adım 1) İleri besleme — iki katmandan geç</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ z = X\!\cdot\!w + b \quad\Rightarrow\quad p=\sigma(z) \]</div>
+          <div class="eq">\[ z_1=X\!\cdot\!W_1{+}b_1,\; h=\sigma(z_1) \;\Rightarrow\; z_2=h\!\cdot\!W_2{+}b_2,\; p=\sigma(z_2) \]</div>
           <table class="calc">
-            <tr><th>nokta</th><th>z</th><th>p = σ(z)</th><th>tahmin<br><span style="font-weight:400; font-size:9.5px">p ≥ 0.5 →&nbsp;1</span></th><th>y</th><th></th></tr>
-            <tr><td>(0,0)</td><td class="num" id="xe1z0"></td><td class="num" id="xe1p0"></td><td class="num" id="xe1t0"></td><td class="num">0</td><td id="xe1k0"></td></tr>
-            <tr><td>(0,1)</td><td class="num" id="xe1z1"></td><td class="num" id="xe1p1"></td><td class="num" id="xe1t1"></td><td class="num">1</td><td id="xe1k1"></td></tr>
-            <tr><td>(1,0)</td><td class="num" id="xe1z2"></td><td class="num" id="xe1p2"></td><td class="num" id="xe1t2"></td><td class="num">1</td><td id="xe1k2"></td></tr>
-            <tr><td>(1,1)</td><td class="num" id="xe1z3"></td><td class="num" id="xe1p3"></td><td class="num" id="xe1t3"></td><td class="num">0</td><td id="xe1k3"></td></tr>
+            <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>p</th><th>tahmin</th><th>y</th><th></th></tr>
+            <tr><td>(0,0)</td><td class="num" id="xe1h10"></td><td class="num" id="xe1h20"></td><td class="num" id="xe1p0"></td><td class="num" id="xe1t0"></td><td class="num">0</td><td id="xe1k0"></td></tr>
+            <tr><td>(0,1)</td><td class="num" id="xe1h11"></td><td class="num" id="xe1h21"></td><td class="num" id="xe1p1"></td><td class="num" id="xe1t1"></td><td class="num">1</td><td id="xe1k1"></td></tr>
+            <tr><td>(1,0)</td><td class="num" id="xe1h12"></td><td class="num" id="xe1h22"></td><td class="num" id="xe1p2"></td><td class="num" id="xe1t2"></td><td class="num">1</td><td id="xe1k2"></td></tr>
+            <tr><td>(1,1)</td><td class="num" id="xe1h13"></td><td class="num" id="xe1h23"></td><td class="num" id="xe1p3"></td><td class="num" id="xe1t3"></td><td class="num">0</td><td id="xe1k3"></td></tr>
           </table>
           <div class="work" id="xe1c" style="white-space:pre-wrap; line-height:1.7; font-size:11.5px; margin-top:6px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe1Canvas" width="300" height="88"></canvas>
-            <div class="step-graph-cap">Sigmoid eğrisi + dört noktanın (z, p) konumu</div>
+            <div class="step-graph-cap">Çıktı katmanının sigmoid'i + dört noktanın (z₂, p) konumu</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> ham skor <b>z</b> sınırsız bir sayı; sigmoid onu 0–1 aralığına sıkıştırıp "olasılık" haline getiriyor. Noktalar eğrinin neresinde duruyorsa model o kadar emin demektir.</div>
-          <div class="detail">Neden doğrudan z'yi kullanmıyoruz? Çünkü kaybı olasılık üzerinden ölçmek istiyoruz: "%52 yeşil dedim, gerçek kırmızıydı" cümlesi, "0.1 dedim" cümlesinden çok daha anlamlı bir hata sinyali verir. Sigmoid'in ikinci faydası birazdan görülecek: log-loss ile birleşince türev inanılmaz sadeleşiyor.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> girdi İKİ basamaktan geçiyor — gizli katman (h₁,h₂) kendi temsilini kurar, çıktı nöronu ona bakıp karar verir.</div>
+          <div class="detail">Gizli katman aslında girdiyi (x₁,x₂) uzayından (h₁,h₂) uzayına taşıyor. Bu yeni uzayda problem lineer ayrılabilir hale geliyorsa (4️⃣'te elle kurduğumuz OR/AND örneğindeki gibi), çıktı nöronu tek bir düz çizgiyle işi bitirebilir. Eğitim boyunca izlediğin şey tam olarak ağın bu uygun temsili aramasıdır.<br><br>Açık hesap, ör. (1,1): <span id="xe1detail"></span></div>
         </div>
       </div>
 
@@ -2272,54 +2272,54 @@ x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
           <div class="work" id="xe2L" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe2Canvas" width="300" height="88"></canvas>
-            <div class="step-graph-cap">Kayıp eğrisi · kesikli çizgi = <b>ln2</b> tabanı ("her şeye 0.5 de" seviyesi)</div>
+            <div class="step-graph-cap">Kayıp eğrisi · kesikli çizgi = <b>ln2</b> tabanı (tek nöronun takıldığı yer)</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> log-loss, "emin olup yanılmayı" ağır cezalandırır. Kayıp düşüyor ama <b>nereye kadar</b> düştüğüne dikkat et — bu modelin bir tabanı var.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> bu eğri <b>ln2 tabanına yapışıp kalmıyor</b> — gizli katman sayesinde altına inebiliyor. Tek fark bu.</div>
           <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de aşağıdaki gibi tertemiz çıkar.</div>
         </div>
       </div>
 
       <!-- ===== KART 3 ===== -->
       <div class="step" id="xeAdim3">
-        <div class="stephead"><h2>Adım 3) Gradyan — hangi yöne gideceğiz?</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Adım 3) Gradyan — geri yayılım</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ \text{hata} = p - y \]</div>
+          <div class="eq">\[ dz_2=p-y \quad\Rightarrow\quad dh=dz_2 W_2 \quad\Rightarrow\quad dz_1=dh\cdot h(1{-}h) \]</div>
           <table class="calc">
-            <tr><th>nokta</th><th>p</th><th>y</th><th>hata = p − y</th></tr>
+            <tr><th>nokta</th><th>p</th><th>y</th><th>hata=p−y</th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe3p0"></td><td class="num">0</td><td class="num" id="xe3e0"></td></tr>
             <tr><td>(0,1)</td><td class="num" id="xe3p1"></td><td class="num">1</td><td class="num" id="xe3e1"></td></tr>
             <tr><td>(1,0)</td><td class="num" id="xe3p2"></td><td class="num">1</td><td class="num" id="xe3e2"></td></tr>
             <tr><td>(1,1)</td><td class="num" id="xe3p3"></td><td class="num">0</td><td class="num" id="xe3e3"></td></tr>
           </table>
-          <div class="work" id="xe3g" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px; margin-top:8px"></div>
+          <div class="work" id="xe3g" style="white-space:pre-wrap; line-height:1.7; font-size:11px; margin-top:8px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe3Canvas" width="300" height="88"></canvas>
-            <div class="step-graph-cap">Her noktanın hatası (p − y) · sıfırdan uzak = daha yanlış</div>
+            <div class="step-graph-cap">Çıktı katmanının hatası (p − y) · sıfırdan uzak = daha yanlış</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> türev sadeleşiyor, geriye <b>tahmin eksi gerçek</b> kalıyor. Her ağırlık kendi girdisiyle çarpılmış hatanın ortalamasını alır.</div>
-          <div class="detail">"Sadece p − y kalır" sonucu tesadüf değil: log-loss'un türevi \( \frac{p-y}{p(1-p)} \), sigmoid'in türevi ise \( p(1-p) \). Zincir kuralında çarpıldıklarında \( p(1-p) \) terimleri birbirini götürür ve geriye \( p-y \) kalır. İkisinin birlikte kullanılmasının asıl sebebi budur.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> hata çıktıda oluşur (dz₂=p−y), <b>W₂ üzerinden gizli katmana geri akar</b> (dh). RNN'deki zaman-boyunca akışın, burada KATMAN-boyunca hali.</div>
+          <div class="detail">"dz₂=p−y" sadeliği yine sigmoid+log-loss'un armağanı. dh=dz₂·W₂ satırı, çıktı nöronunun hatasının hangi gizli nörona NE KADAR "suç" yüklediğini söylüyor — W₂ büyükse o nöron daha çok pay alır. dz₁=dh·h(1−h) ise bu payı, o gizli nöronun KENDİ doygunluğuna göre ölçekler (aynı vanishing-gradient mantığı: h, 0 ya da 1'e çok yakınsa h(1−h)≈0 olur, sinyal zayıflar).</div>
         </div>
       </div>
 
       <!-- ===== KART 4 ===== -->
       <div class="step" id="xeAdim4">
-        <div class="stephead"><h2>Adım 4) Güncelle — yokuş aşağı bir adım</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Adım 4) Güncelle — dört ağırlık grubu birden</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ w := w-\alpha\,\nabla w \qquad b := b-\alpha\,\nabla b \]</div>
-          <div class="work" id="xe4u" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
+          <div class="eq">\[ W_1{:=}W_1{-}\alpha\nabla W_1,\;\; W_2{:=}W_2{-}\alpha\nabla W_2 \]</div>
+          <div class="work" id="xe4u" style="white-space:pre-wrap; line-height:1.65; font-size:10.8px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe4Canvas" width="300" height="88"></canvas>
-            <div class="step-graph-cap">Ağırlıkların yolculuğu · w₁, w₂, b nereye gidiyor?</div>
+            <div class="step-graph-cap">İki gizli nöronun ayırıcı çizgisi · dört XOR noktası</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> <b>eksi işaret</b> kritik — gradyan kaybın <i>arttığı</i> yönü gösterir, biz tersine yürürüz. α=0.5 adım boyunu belirliyor: büyük olsaydı vadinin karşı yamacına aşabilirdik, küçük olsaydı sürünürdük.</div>
-          <div class="detail">Dikkat: adımlar minicik (binde birler mertebesinde). Bir epoch neredeyse hiçbir şeyi değiştirmiyor — öğrenme, bu küçük düzeltmelerin binlerce kez üst üste binmesiyle oluyor. "Model eğitmek" dediğimiz şey tam olarak bu döngüyü tekrar tekrar çevirmek.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> dört ayrı ağırlık grubu aynı anda güncelleniyor. Alttaki grafikte iki çizginin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
+          <div class="detail">Bu, gizli katmanın "kendi OR/AND mantığını" bulma anı. Başta rastgele/işe yaramaz konumda duran iki çizgi, gradyan alçalma ile — hiçbir OR/AND etiketi verilmeden, sadece nihai hatadan geriye yayılan sinyalle — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div>
         </div>
       </div>
 
     </div>
 
     <div class="callout" id="xeSonuc" style="margin-top:12px"></div>
-    <div class="tip">Gizli katmanlı bir ağın aynı döngüyle XOR'u <b>kendi kendine</b> öğrenmesini görmek istersen: <button class="addbtn" data-ped-tab="neural" style="background:var(--green); color:#0b2a12; border:none; padding:4px 10px; font-size:12.5px">🧠 Neural Network — canlı eğitim</button></div>
+    <div class="tip">👉 PyTorch'ta bunu yazmazsın — <code>loss.backward()</code> Adım 3'ü, <code>optimizer.step()</code> Adım 4'ü otomatik yapar. Kütüphane sihir yapmıyor, birebir bunu yapıyor.</div>
   </div>
     </div>
   </div>
@@ -4953,15 +4953,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609051749"></script>
-<script src="js/lesson-turev.js?v=202609051749"></script>
-<script src="js/lesson-xor.js?v=202609051749"></script>
-<script src="js/lesson-xor-arch.js?v=202609051749"></script>
-<script src="js/lesson-xor-epoch.js?v=202609051749"></script>
-<script src="js/lesson-nn.js?v=202609051749"></script>
-<script src="js/lesson-trig.js?v=202609051749"></script>
+<script src="js/lesson-linreg.js?v=202609052100"></script>
+<script src="js/lesson-turev.js?v=202609052100"></script>
+<script src="js/lesson-xor.js?v=202609052100"></script>
+<script src="js/lesson-xor-arch.js?v=202609052100"></script>
+<script src="js/lesson-xor-epoch.js?v=202609052100"></script>
+<script src="js/lesson-nn.js?v=202609052100"></script>
+<script src="js/lesson-trig.js?v=202609052100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609051749"></script>
-<script src="js/app.js?v=202609051749"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609052100"></script>
+<script src="js/app.js?v=202609052100"></script>
 </body>
 </html>
