@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609062148"></script>
-<link rel="stylesheet" href="css/style.css?v=202609062148">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609062218"></script>
+<link rel="stylesheet" href="css/style.css?v=202609062218">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 21:48 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 22:18 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2398,12 +2398,18 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   </div>
 
   <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Python Kodu &amp; Terminoloji</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Üç Kod Hâli &amp; Terminoloji</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 
+  <div class="callout" style="margin:0 0 14px; font-size:13.5px; line-height:1.7">🗺️ <b>Bu bölüm aynı ağı üç kod hâlinde gösteriyor</b> — hepsi derste gördüğün aynı iki katman:<br>
+    <b>1)</b> elle seçilmiş ağırlıklarla, <b>sadece ileri yayılım</b> (4️⃣'teki mantığın kodu) &nbsp;·&nbsp;
+    <b>2)</b> ağırlıkları <b>kendi bulan</b> saf Python — 5️⃣'teki sekiz kartın birebir karşılığı &nbsp;·&nbsp;
+    <b>3)</b> aynı işin <b>PyTorch</b> hali, on satır.<br>
+    <span style="color:var(--muted)">Üçünü yan yana okuyunca "kütüphane ne yapıyor" sorusunun cevabı kendiliğinden çıkıyor.</span></div>
+
   <div class="pts" style="border-left:3px solid var(--blue)">
-    <h3 style="color:var(--blue); margin-top:0">🐍 Aynı ağın kodu — elle seçilmiş ağırlıklarla, saf Python</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">5️⃣'te ağ ağırlıkları <b>kendi</b> buldu. Peki 4️⃣'te elle kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döksek nasıl görünürdü? Hiçbir kütüphane yok — saf Python:</p>
+    <h3 style="color:var(--blue); margin-top:0">🐍 1) Elle seçilmiş ağırlıklarla — sadece ileri yayılım</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">5️⃣'te ağ ağırlıkları <b>kendi</b> buldu. Peki 4️⃣'te elle kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döksek nasıl görünürdü? Hiçbir kütüphane yok, hiç eğitim yok — sadece <b>▶ İleri Yayılım</b>:</p>
     <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, 1️⃣'teki oyuncağın matematiksel karşılığı.</b> Oyuncak <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: oyuncaktaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç anlatım (4️⃣'teki mantık, bu kod, 1️⃣'teki oyuncak) tek bir ağın üç görünümü.</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
 
@@ -2416,8 +2422,8 @@ W1 = [[20, 20],    # h1'in ağırlıkları (x1,x2 -> h1)
 b1 = [-10, -30]    # h1 eşiği düşük (OR), h2 eşiği yüksek (AND)
 
 # ---- Çıktı katmanı (1 nöron) ----
-W2 = [20, -20]     # h1'e pozitif, h2'ye NEGATİF ağırlık  ->  "h1 VE DEĞİL h2"
-b2 = -10
+V  = [20, -20]     # v1, v2 : h1'e pozitif, h2'ye NEGATİF  ->  "h1 VE DEĞİL h2"
+b3 = -10           # çıktı nöronunun sapması
 
 def forward(x1, x2):
     x = [x1, x2]
@@ -2425,7 +2431,7 @@ def forward(x1, x2):
     for i in range(2):                                    # her gizli nöron için
         zh = sum(W1[i][j] * x[j] for j in range(2)) + b1[i] # nokta çarpım + sapma
         h.append(sigmoid(zh))                             # AKTİVASYON
-    zy = sum(W2[i] * h[i] for i in range(2)) + b2
+    zy = sum(V[i] * h[i] for i in range(2)) + b3
     return h, sigmoid(zy)                                 # yine AKTİVASYON
 
 for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
@@ -2436,13 +2442,109 @@ for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
 x=(0,1)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
 x=(1,0)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
 x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
+    <div class="tip" style="margin-bottom:10px">📑 <b>Notasyon:</b> kodda <code>W1</code>/<code>b1</code> gizli katman (w₁₁,w₁₂,w₂₁,w₂₂ ve b₁,b₂), <code>V</code>/<code>b3</code> ise çıktı katmanı (v₁,v₂ ve b₃) — 5️⃣'teki <b>📑 Notasyon</b> kutusuyla birebir aynı. (Çıktı sapmasına <code>b2</code> demiyoruz: b₂ zaten <b>h₂'nin</b> sapması.)</div>
     <div class="tip"><b>Ağırlıklar neden 20 gibi büyük?</b> Sigmoid'i doygunluk bölgesine itip neredeyse bir basamak fonksiyonu gibi çalıştırmak için — böylece h₁/h₂ belirsiz 0.4-0.6 değerleri yerine net 0/1 verir. Küçük ağırlıklarla da çözüm bulunur, ama sınırlar bulanık olur.</div>
     <div class="tip" style="margin-top:10px">🔬 <b>5️⃣'teki canlı ağla karşılaştır.</b> Orada eğitim sonunda W₁ ≈ [[5.7,−5.9],[−5.6,5.2]] gibi sayılara oturuyor — buradaki 20'ler kadar keskin değil, işaretleri de farklı. <b>Tek bir "doğru" ağırlık takımı yok</b>: XOR'u çözen sonsuz çözüm var, gradyan alçalma bunlardan birine iner.</div>
   </div>
 
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent); margin-top:0">🔁 2) Ağırlıkları kendi bulan saf Python — 5️⃣'teki sekiz kartın kodu</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki kodda ağırlıkları <b>biz</b> yazdık. Burada hiç yazmıyoruz: başlangıç 5️⃣'teki ile <b>birebir aynı</b> (W₁=[[1.3,−0.3],[−1.4,1.0]], b₁=[−1.2,0.25], v=[1.2,−0.9], b₃=−1.2, α=3.0) ve döngü kartların yaptığını sırasıyla yapıyor. Sağ taraftaki yorumlar <b>hangi satırın hangi kart olduğunu</b> söylüyor:</p>
+    <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
+
+X = [(0,0), (0,1), (1,0), (1,1)]
+Y = [0, 1, 1, 0]
+m, LR = 4, 3.0
+
+W1 = [[1.3, -0.3], [-1.4, 1.0]]    # w11,w12 / w21,w22
+b1 = [-1.2, 0.25]                  # b1, b2
+V  = [1.2, -0.9]                   # v1, v2
+b3 = -1.2
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+def epoch_step():
+    global W1, b1, V, b3
+    h, p, dz_y = [], [], []
+    for i, (x1, x2) in enumerate(X):
+        hi = [sigmoid(W1[k][0]*x1 + W1[k][1]*x2 + b1[k])
+              for k in range(2)]                                  # ⮕ İleri 1
+        pi = sigmoid(V[0]*hi[0] + V[1]*hi[1] + b3)                 # ⮕ İleri 2
+        h.append(hi); p.append(pi)
+        dz_y.append(pi - Y[i])                                    # ⬅ Geri 1
+
+    L = -sum(Y[i]*math.log(p[i]) + (1-Y[i])*math.log(1-p[i])
+             for i in range(m)) / m                               # ⮕ İleri 3
+
+    dV  = [sum(h[i][k]*dz_y[i] for i in range(m)) / m
+           for k in range(2)]                                     # ⬅ Geri 2
+    db3 =  sum(dz_y[i] for i in range(m)) / m
+
+    dz_h = [[dz_y[i]*V[k] * h[i][k]*(1-h[i][k])
+             for k in range(2)] for i in range(m)]                # ⬅ Geri 3
+
+    dW1 = [[sum(X[i][j]*dz_h[i][k] for i in range(m)) / m
+            for j in range(2)] for k in range(2)]                 # ⬅ Geri 4
+    db1 = [ sum(dz_h[i][k] for i in range(m)) / m
+            for k in range(2)]
+
+    for k in range(2):                                            # ⬅ Geri 5
+        for j in range(2):
+            W1[k][j] -= LR * dW1[k][j]
+        b1[k] -= LR * db1[k]
+        V[k]  -= LR * dV[k]
+    b3 -= LR * db3
+    return L, p
+
+for e in range(400):
+    L, p = epoch_step()
+    dogru = sum((p[i] >= 0.5) == (Y[i] == 1) for i in range(m))
+    if dogru == 4 and L &lt; 0.03:
+        break</div>
+    <div style="font-size:13px; color:var(--muted); margin:10px 0 4px">Çıktısı:</div>
+    <div class="work" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px">epoch 0    L=0.880374   doğru 2/4
+epoch 1    L=0.704039   doğru 2/4
+epoch 2    L=0.701213   doğru 2/4
+   ...
+epoch 186  L=0.029988   doğru 4/4   &lt;-- yakınsadı
+
+W1 = [[5.7263, -5.8707], [-5.5634, 5.2259]]
+b1 = [-3.2408, -2.8855]
+V  = [8.3735, 8.3881]
+b3 = -4.0901</div>
+    <div class="callout" style="margin-top:10px">🧮 <b>Bu sayılar tanıdık gelmeli.</b> 5️⃣'teki simülasyonu ⏩ ile sonuna kadar çalıştırınca <b>aynı epoch'ta</b> (186) <b>aynı kayıpta</b> (L=0.029988) duruyor; şemadaki iki satır da <code>5.72·x₁−5.86·x₂−3.24</code> ve <code>8.36·h₁+8.37·h₂−4.08</code> yazıyor — yukarıdaki W₁, b₁, V, b₃ ile birebir. Sayfadaki JavaScript ile buradaki Python <b>aynı hesabı</b> yapıyor.</div>
+    <div class="tip" style="margin-top:10px">👀 <b>Dikkat edilecek tek incelik:</b> döngünün sonundaki güncelleme bloğu çalışana kadar <b>hiçbir ağırlık değişmiyor</b> — bütün gradyanlar <b>eski</b> ağırlıklarla hesaplanıyor. Geri 5'in "dokuzu aynı anda" uyarısının kodda görünüşü budur.</div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid #46c46a">
+    <h3 style="color:#46c46a; margin-top:0">⚡ 3) Aynı işin PyTorch hâli — on satır</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki kırk satırlık döngünün gerçek hayattaki karşılığı. Kütüphane <b>sihir yapmıyor</b> — 2. koddaki gradyan satırlarının aynısını kendisi türetiyor:</p>
+    <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import torch
+import torch.nn as nn
+
+X = torch.tensor([[0.,0.], [0.,1.], [1.,0.], [1.,1.]])
+Y = torch.tensor([[0.],    [1.],    [1.],    [0.]])
+
+net = nn.Sequential(nn.Linear(2, 2), nn.Sigmoid(),   # gizli katman
+                    nn.Linear(2, 1), nn.Sigmoid())   # çıktı katmanı
+kayip = nn.BCELoss()                                 # log-loss
+opt   = torch.optim.SGD(net.parameters(), lr=3.0)
+
+for epoch in range(400):
+    p = net(X)             # ⮕ İleri 1 + İleri 2
+    L = kayip(p, Y)        # ⮕ İleri 3
+    opt.zero_grad()
+    L.backward()           # ⬅ Geri 1 + 2 + 3 + 4   (dördü birden)
+    opt.step()             # ⬅ Geri 5</div>
+    <div class="callout" style="margin-top:10px">💡 <b>Sekiz kartın tamamı beş satıra iniyor.</b> <code>net(X)</code> ileri yayılımı, <code>L.backward()</code> tüm zincir kuralını, <code>opt.step()</code> ise güncellemeyi yapıyor. Dersin bütün amacı <b>bu iki satırın içini bilmek</b>: bir şey ters gittiğinde (kayıp düşmüyor, gradyan sönüyor) hata <b>tam olarak</b> Geri 1-5'ten birindedir.</div>
+    <div class="tip" style="margin-top:10px">⚠️ Bu kodun çıktısını yazmıyoruz çünkü <code>nn.Linear</code> ağırlıkları <b>rastgele</b> başlatır — her çalıştırmada farklı epoch'ta yakınsar. 2. koddaki sayıları aynen görmek istersen <code>net[0].weight</code>, <code>net[0].bias</code>, <code>net[2].weight</code>, <code>net[2].bias</code> değerlerini elle 5️⃣'teki başlangıçla doldurman gerekir.</div>
+  </div>
+
   <div class="pts" style="border-left:3px solid #9c4dff">
     <h3 style="color:#9c4dff; margin-top:0">📚 Terminoloji &amp; ölçek — bu 3 nöron nereye bağlanıyor</h3>
-    <div class="tip"><b>Terminoloji köprüsü:</b> "girdi katmanı" = x'lerin durduğu yer (öğrenilmez, sadece veri) · "gizli katman" (hidden layer) = aradaki nöronlar, dışarıdan görünmezler · "ileri yayılım" (forward pass) = girdiden çıktıya doğru z→aktivasyon→z→aktivasyon zincirini bir kere baştan sona işletmek (tam olarak XOR'da 4 nokta için yaptığımız hesap) · "ağırlık matrisi" (W) = bir katmandaki TÜM ağırlıkların tablo hâli — burada girdi→gizli arası 2×2'lik bir matris (Vektör dersindeki "matris = vektör rafı" fikri burada da geçerli).</div>
+    <div class="tip"><b>Terminoloji köprüsü:</b> "girdi katmanı" = x'lerin durduğu yer (öğrenilmez, sadece veri) · "gizli katman" (hidden layer) = aradaki nöronlar, dışarıdan görünmezler · "ileri yayılım" (forward pass) = girdiden çıktıya doğru z→aktivasyon→z→aktivasyon zincirini bir kere baştan sona işletmek (5️⃣'teki <b>▶ İleri Yayılım</b> modunun tamamı) · "ağırlık matrisi" (W) = bir katmandaki TÜM ağırlıkların tablo hâli — burada girdi→gizli arası 2×2'lik bir matris (Vektör dersindeki "matris = vektör rafı" fikri burada da geçerli).</div>
+    <div class="tip" style="margin-top:10px"><b>Geri yayılım sözlüğü</b> (5️⃣'teki <b>◀ Geri Yayılım</b> modunun kelimeleri): "kayıp fonksiyonu" (loss) = tek bir sayıya indirilmiş yanlışlık, burada log-loss · "gradyan" = kaybın bir ağırlığa göre türevi, yani "bu ağırlığı bir tık artırırsam kayıp ne olur" · "zincir kuralı" = uzaktaki bir ağırlığa ulaşmak için aradaki türevleri çarpma kuralı · "geri yayılım" (backpropagation) = bu zincirin sondan başa, halka halka işletilmesi · "gradyan alçalma" (gradient descent) = gradyanın <b>ters</b> yönüne adım atma · "öğrenme oranı" (α, learning rate) = o adımın boyu · "epoch" = tüm veriyi bir kez baştan sona görüp bir kez güncelleme · "batch" = bir güncellemede kullanılan örnek kümesi (burada dördünün hepsi = tam batch).</div>
     <div class="callout" style="margin-top:10px">🔍 <b>Peki gerçek ağlar (GPT, ResNet...) bundan ne kadar farklı?</b> Boyut olarak devasa farklı (girdi binlerce sayı, gizli katmanlarda milyonlarca nöron, onlarca-yüzlerce katman) — ama <b>temel yapı taşı birebir aynı</b>: ağırlıklı toplam (<code>z=Wx+b</code>) + aktivasyon (<code>ReLU, GELU...</code>), üst üste dizilmiş. Bugün elle çözdüğün <b>3 nöronluk</b> (2 gizli + 1 çıktı) XOR ağı, milyarlarca parametreli bir dil modeliyle <b>aynı DNA'yı</b> taşıyor — sadece ölçek farklı.</div>
   </div>
 
@@ -5078,15 +5180,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609062148"></script>
-<script src="js/lesson-turev.js?v=202609062148"></script>
-<script src="js/lesson-xor.js?v=202609062148"></script>
-<script src="js/lesson-xor-arch.js?v=202609062148"></script>
-<script src="js/lesson-xor-epoch.js?v=202609062148"></script>
-<script src="js/lesson-nn.js?v=202609062148"></script>
-<script src="js/lesson-trig.js?v=202609062148"></script>
+<script src="js/lesson-linreg.js?v=202609062218"></script>
+<script src="js/lesson-turev.js?v=202609062218"></script>
+<script src="js/lesson-xor.js?v=202609062218"></script>
+<script src="js/lesson-xor-arch.js?v=202609062218"></script>
+<script src="js/lesson-xor-epoch.js?v=202609062218"></script>
+<script src="js/lesson-nn.js?v=202609062218"></script>
+<script src="js/lesson-trig.js?v=202609062218"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609062148"></script>
-<script src="js/app.js?v=202609062148"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609062218"></script>
+<script src="js/app.js?v=202609062218"></script>
 </body>
 </html>
