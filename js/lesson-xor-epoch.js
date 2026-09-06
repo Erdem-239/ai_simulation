@@ -253,7 +253,7 @@
       `dB₂ = ort(hata) = <b>${N(s.dB2,3)}</b>\n` +
       `dW₂[h₁] = ort(h₁·hata) = <b>${N(s.dW2[0],3)}</b>\n` +
       `dW₂[h₂] = ort(h₂·hata) = <b>${N(s.dW2[1],3)}</b>\n` +
-      `dW₁,dB₁ → aynı formül (x, dz_h ile):\n` +
+      `dW₁,dB₁ → yukarıdaki AYNI formül, x ve dz_h ile hesaplanıyor:\n` +
       `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
     $('xe3detail').textContent =
       `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz_h ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
