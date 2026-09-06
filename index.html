@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061020"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061020">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061448"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061448">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 10:20 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 14:48 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2149,7 +2149,15 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <button class="addbtn xa-btn" data-xa="1,1">(1, 1)</button>
         </div>
         <div class="work" id="xeState" style="white-space:pre-wrap; line-height:1.7; font-size:12.5px; margin:0 0 6px; padding:6px 10px"></div>
-        <div class="tip" style="margin:0 0 6px; padding:7px 11px; font-size:12.5px; line-height:1.55">📐 <b>Şema ile aşağıdaki dört kart tek ve aynı ağ</b> — şema ağın o anki hâli, kartlar bir epoch'ta ona ne olduğu. Şema, şu iki satırın resmi: \( z_h{=}X\!\cdot\!W_1{+}b_1,\; h{=}\sigma(z_h) \) &nbsp;·&nbsp; \( z_y{=}h\!\cdot\!W_2{+}b_2,\; p{=}\sigma(z_y) \). Her <b>Σ</b> bölmesi <b>z</b> kısmı, her <b>σ</b> bölmesi <b>σ(z)</b> kısmı. <b>Alt indis katmanı söyler:</b> \(z_h\) gizli katmanın, \(z_y\) çıktının ham toplamı. <span style="color:var(--muted)">(Tüm semboller: aşağıdaki notasyon listesinde.)</span></div>
+        <div class="tip" style="margin:0 0 6px; padding:7px 11px; font-size:12.5px; line-height:1.6">
+          📐 <b>Şema = aşağıdaki 4 kartla AYNI ağ.</b> Şema bu ağın <b>şu anki fotoğrafı</b>; kartlar ise ona <b>bir epoch boyunca</b> (ileri besleme→kayıp→gradyan→güncelleme) ne olduğunu gösteriyor.
+          <div style="margin:6px 0; padding:5px 8px; background:rgba(0,0,0,.15); border-radius:5px">
+            Bu ağın matematiği <b>iki satır</b>:<br>
+            1️⃣ gizli katman: \(z_h{=}X\!\cdot\!W_1{+}b_1\), sonra \(h{=}\sigma(z_h)\)<br>
+            2️⃣ çıktı katmanı: \(z_y{=}h\!\cdot\!W_2{+}b_2\), sonra \(p{=}\sigma(z_y)\)
+          </div>
+          Şemadaki her <b>Σ</b> kutusu bu satırların <b>z</b> kısmını hesaplıyor (ağırlıklı toplam); her <b>σ</b> kutusu da hemen ardından <b>σ(z)</b>'yi (aktivasyonu) hesaplıyor. <b>Alt indis hangi katman olduğunu söyler:</b> \(z_h\) = gizli katmanın toplamı, \(z_y\) = çıktının toplamı — ikisi farklı katman, o yüzden farklı harf. <span style="color:var(--muted)">(Tüm semboller: aşağıdaki notasyon listesinde.)</span>
+        </div>
         <div class="acc" style="margin:0 0 4px">
         <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?) &amp; seçili girdinin adım adım hesabı</div>
         <div class="acc-body">
@@ -4987,15 +4995,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061020"></script>
-<script src="js/lesson-turev.js?v=202609061020"></script>
-<script src="js/lesson-xor.js?v=202609061020"></script>
-<script src="js/lesson-xor-arch.js?v=202609061020"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061020"></script>
-<script src="js/lesson-nn.js?v=202609061020"></script>
-<script src="js/lesson-trig.js?v=202609061020"></script>
+<script src="js/lesson-linreg.js?v=202609061448"></script>
+<script src="js/lesson-turev.js?v=202609061448"></script>
+<script src="js/lesson-xor.js?v=202609061448"></script>
+<script src="js/lesson-xor-arch.js?v=202609061448"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061448"></script>
+<script src="js/lesson-nn.js?v=202609061448"></script>
+<script src="js/lesson-trig.js?v=202609061448"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061020"></script>
-<script src="js/app.js?v=202609061020"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061448"></script>
+<script src="js/app.js?v=202609061448"></script>
 </body>
 </html>
