@@ -211,20 +211,37 @@
       }).join('   ') +
       `   ·   doğru: <b style="color:${dogru===4?'#46c46a':'#f0a032'}">${dogru}/4</b>`;
 
-    // Kart 1
-    for(let i=0;i<4;i++){
-      $('xe1h1'+i).textContent = N(s.h[i][0],3);
-      $('xe1h2'+i).textContent = N(s.h[i][1],3);
-      $('xe1p'+i).textContent  = N(s.p[i],4);
-      $('xe1t'+i).textContent  = tah[i];
-      const ok = tah[i]===Y[i];
-      const k = $('xe1k'+i); k.textContent = ok?'✓':'✗'; k.style.color = ok?'#46c46a':'#e06a6a';
-    }
-    $('xe1detail').textContent =
-      `z_h=[${N(s.z1[3][0],2)}, ${N(s.z1[3][1],2)}] → h=[${N(s.h[3][0],3)}, ${N(s.h[3][1],3)}] → z_y=${N(s.z2[3],2)} → p=${N(s.p[3],3)}`;
+    const Sg  = v => (v>=0?'+':'')+N(v,4);
+    const AD4 = ['(0,0)','(0,1)','(1,0)','(1,1)'];
+    const trh = a => `<tr>${a.map(c=>`<th>${c}</th>`).join('')}</tr>`;
+    const trd = a => `<tr>${a.map((c,j)=>j?`<td class="num">${c}</td>`:`<td>${c}</td>`).join('')}</tr>`;
+
+    /* ===================== İLERİ 1 — gizli katman ===================== */
+    $('xeF1tab').innerHTML =
+      trh(['nokta','z<sub>h1</sub>','h₁','z<sub>h2</sub>','h₂']) +
+      [0,1,2,3].map(i => trd([AD4[i], Sg(s.z1[i][0]), N(s.h[i][0],4), Sg(s.z1[i][1]), N(s.h[i][1],4)])).join('');
+    $('xeF1ornek').innerHTML =
+      `ör. (1,0) için:\n` +
+      `  z_h1 = ${N(W1[0][0],2)}×1 + ${N(W1[0][1],2)}×0 + ${N(B1[0],2)} = <b>${Sg(s.z1[2][0])}</b>\n` +
+      `  h₁   = σ(${Sg(s.z1[2][0])}) = <b>${N(s.h[2][0],4)}</b>`;
+
+    /* ===================== İLERİ 2 — çıktı katmanı ==================== */
+    $('xeF2tab').innerHTML =
+      trh(['nokta','z<sub>y</sub>','p','tahmin','y','']) +
+      [0,1,2,3].map(i => {
+        const ok = tah[i]===Y[i];
+        return `<tr><td>${AD4[i]}</td><td class="num">${Sg(s.z2[i])}</td>` +
+               `<td class="num">${N(s.p[i],4)}</td><td class="num">${tah[i]}</td>` +
+               `<td class="num">${Y[i]}</td>` +
+               `<td style="color:${ok?'#46c46a':'#e06a6a'}">${ok?'✓':'✗'}</td></tr>`;
+      }).join('');
+    $('xeF2ornek').innerHTML =
+      `ör. (1,0) için:\n` +
+      `  z_y = ${N(W2[0],2)}×${N(s.h[2][0],3)} + ${N(W2[1],2)}×${N(s.h[2][1],3)} + ${N(B2,2)} = <b>${Sg(s.z2[2])}</b>\n` +
+      `  p   = σ(${Sg(s.z2[2])}) = <b>${N(s.p[2],4)}</b>  →  tahmin ${tah[2]}`;
     draw1(s);
 
-    // Kart 2
+    /* ===================== İLERİ 3 — kayıp ============================ */
     let xe2toplam = 0;
     for(let i=0;i<4;i++){
       const pi = s.p[i], yi = Y[i];
@@ -243,141 +260,78 @@
       `fark = ${N(xe2fark,4)}  ${xe2fark>0 ? '→ ondan KÖTÜYÜZ' : '→ ondan İYİYİZ'}`;
     draw2();
 
-    // Kart 3
+    /* ===================== GERİ 1 — dz_y ============================== */
     for(let i=0;i<4;i++){
-      $('xe3p'+i).textContent  = N(s.p[i],4);
-      $('xe3h1'+i).textContent = N(s.h[i][0],3);
-      $('xe3h2'+i).textContent = N(s.h[i][1],3);
-      $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
+      $('xe3p'+i).textContent = N(s.p[i],4);
+      $('xe3e'+i).textContent = Sg(s.dz2[i]);
     }
-    /* ② dh ve dz_h tablosu — gradyan formülünün EKSİK girdisiydi, artık
-       kartta görünüyor ki formül elle yerine konabilsin. */
-    const Sg = v => (v>=0?'+':'')+N(v,4);
-    const AD4 = ['(0,0)','(0,1)','(1,0)','(1,1)'];
+    draw3(s);
+
+    /* ===================== GERİ 2 — dW₂, dB₂ ========================== */
+    const carp2 = [0,1,2,3].map(i => s.h[i][0]*s.dz2[i]);
+    $('xeB2yerine').innerHTML =
+      `<b>dW₂[h₁]</b> = ¼ × Σ(h₁ × dz_y)\n` +
+      [0,1,2,3].map(i =>
+        `  ${AD4[i]}  ${N(s.h[i][0],4)} × ${Sg(s.dz2[i])} = ${Sg(carp2[i])}`).join('\n') + '\n' +
+      `  ¼ × (${Sg(carp2.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW2[0],4)}</b>`;
+    $('xeB2tab').innerHTML =
+      trh(['gradyan','değer']) +
+      [['dW₂[h₁]', s.dW2[0]], ['dW₂[h₂]', s.dW2[1]], ['dB₂', s.dB2]].map(([ad,v]) =>
+        `<tr><td>${ad}</td><td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
+
+    /* ===================== GERİ 3 — dz_h ============================== */
     $('xe3tab2').innerHTML =
-      `<tr><th>nokta</th><th>dh₁</th><th>dz<sub>h1</sub></th><th>dh₂</th><th>dz<sub>h2</sub></th></tr>` +
+      trh(['nokta','dh₁','dz<sub>h1</sub>','dh₂','dz<sub>h2</sub>']) +
       [0,1,2,3].map(i =>
         `<tr><td>${AD4[i]}</td>` +
         `<td class="num" style="opacity:.75">${Sg(s.dh[i][0])}</td><td class="num">${Sg(s.dz1[i][0])}</td>` +
         `<td class="num" style="opacity:.75">${Sg(s.dh[i][1])}</td><td class="num">${Sg(s.dz1[i][1])}</td></tr>`).join('');
     $('xe3ornek2').innerHTML =
       `ör. (1,0) için dz_h₁:\n` +
-      `  dh₁ = hata × v₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
+      `  dh₁ = dz_y × v₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
       `  h₁(1−h₁) = ${N(s.h[2][0],4)} × ${N(1-s.h[2][0],4)} = ${N(s.h[2][0]*(1-s.h[2][0]),4)}\n` +
       `  dz_h₁ = ${Sg(s.dh[2][0])} × ${N(s.h[2][0]*(1-s.h[2][0]),4)} = <b>${Sg(s.dz1[2][0])}</b>`;
 
-    /* ③ Formülü YERİNE KOYALIM — dört formül şeklinin her biri için,
-       linreg kartlarındaki gibi bütün sayılar açık. */
-    const carp1 = [0,1,2,3].map(i => X[i][0]*s.dz1[i][0]);   // dW₁[x₁→h₁]
+    /* ===================== GERİ 4 — dW₁, dB₁ ========================== */
+    const carp1 = [0,1,2,3].map(i => X[i][0]*s.dz1[i][0]);
     $('xe3yerine').innerHTML =
       `<b>dW₁[x₁→h₁]</b> = ¼ × Σ(x₁ × dz_h₁)\n` +
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${X[i][0]} × ${Sg(s.dz1[i][0])} = ${Sg(carp1[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp1.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW1[0][0],4)}</b>`;
-
-    /* Ham dizi dökümü yerine ETİKETLİ tablo — satır adları Kart 4'le birebir
-       aynı, böylece aynı sayı iki kartta da tanınabiliyor. */
-    const grad = [
-      ['1. katman', 'dW₁[x₁→h₁]', s.dW1[0][0]],
-      ['',          'dW₁[x₂→h₁]', s.dW1[0][1]],
-      ['',          'dW₁[x₁→h₂]', s.dW1[1][0]],
-      ['',          'dW₁[x₂→h₂]', s.dW1[1][1]],
-      ['',          'dB₁[h₁]',    s.dB1[0]],
-      ['',          'dB₁[h₂]',    s.dB1[1]],
-      ['2. katman', 'dW₂[h₁]',    s.dW2[0]],
-      ['',          'dW₂[h₂]',    s.dW2[1]],
-      ['',          'dB₂',        s.dB2]
-    ];
     $('xe3tab').innerHTML =
-      `<tr><th>katman</th><th>gradyan</th><th>değer</th></tr>` +
-      grad.map(([kat, ad, v]) =>
-        `<tr><td style="color:var(--muted); font-size:10px">${kat}</td><td>${ad}</td>` +
-        `<td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
+      trh(['gradyan','değer']) +
+      [['dW₁[x₁→h₁]', s.dW1[0][0]], ['dW₁[x₂→h₁]', s.dW1[0][1]],
+       ['dW₁[x₁→h₂]', s.dW1[1][0]], ['dW₁[x₂→h₂]', s.dW1[1][1]],
+       ['dB₁[h₁]', s.dB1[0]], ['dB₁[h₂]', s.dB1[1]]].map(([ad,v]) =>
+        `<tr><td>${ad}</td><td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
 
-    /* --- .detail: HER sayının tam aritmetiği, 4 nokta üzerinden --- */
-    const S  = v => (v>=0?'+':'')+N(v,4);          // işaretli
-    const AD = ['(0,0)','(0,1)','(1,0)','(1,1)'];
-    const kutu = (bas, govde) =>
-      `<div style="font-size:11px; color:var(--accent); font-weight:600; margin:9px 0 3px">${bas}</div>` +
-      `<div class="work" style="white-space:pre-wrap; line-height:1.65; font-size:10.5px; margin:0">${govde}</div>`;
-
-    // ① dW₂ / dB₂ — h × hata çarpımları
-    const ortSatir = (dizi, sonuc) =>
-      `  ortalama = (${dizi.map(v=>S(v)).join(' ')}) / 4 = ${N(sonuc,4)}`;
-    let g1 = '';
-    [0,1].forEach(k => {
-      const carp = [0,1,2,3].map(i => s.h[i][k]*s.dz2[i]);
-      g1 += `dW₂[h${k?'₂':'₁'}] = ortalama(h${k?'₂':'₁'} × hata)\n` +
-            [0,1,2,3].map(i =>
-              `  ${AD[i]}  ${N(s.h[i][k],4)} × ${S(s.dz2[i])} = ${S(carp[i])}`).join('\n') + '\n' +
-            ortSatir(carp, s.dW2[k]) + '\n\n';
-    });
-    g1 += `dB₂ = ortalama(hata)\n` + ortSatir(s.dz2, s.dB2);
-
-    // ② dz_h — hata W₂ üzerinden geri akıyor, sonra h(1−h) ile ölçekleniyor
-    let g2 = `dh = hata × v   (v₁=${N(W2[0],2)}, v₂=${N(W2[1],2)})\n` +
-             `dz_h = dh × h(1−h)\n\n`;
-    [0,1,2,3].forEach(i => {
-      g2 += `${AD[i]}\n`;
-      [0,1].forEach(k => {
-        const tur = s.h[i][k]*(1-s.h[i][k]);
-        g2 += `  dh${k?'₂':'₁'} = ${S(s.dz2[i])} × ${N(W2[k],2)} = ${S(s.dh[i][k])}\n` +
-              `  h${k?'₂':'₁'}(1−h${k?'₂':'₁'}) = ${N(s.h[i][k],4)} × ${N(1-s.h[i][k],4)} = ${N(tur,4)}\n` +
-              `  dz_h${k?'₂':'₁'} = ${S(s.dh[i][k])} × ${N(tur,4)} = ${S(s.dz1[i][k])}\n`;
-      });
-      g2 += '\n';
-    });
-
-    // ③ dW₁ / dB₁ — x × dz_h (x hep 0/1 olduğu için satırlar okunaklı)
-    let g3 = '';
-    [0,1].forEach(k => {            // k = hedef gizli nöron
-      [0,1].forEach(j => {          // j = kaynak girdi
-        const carp = [0,1,2,3].map(i => X[i][j]*s.dz1[i][k]);
-        g3 += `dW₁[x${j?'₂':'₁'}→h${k?'₂':'₁'}] = ortalama(x${j?'₂':'₁'} × dz_h${k?'₂':'₁'})\n` +
-              `  (${[0,1,2,3].map(i=>`${X[i][j]}×${S(s.dz1[i][k])}`).join('  ')})\n` +
-              ortSatir(carp, s.dW1[k][j]) + '\n\n';
-      });
-    });
-    [0,1].forEach(k => {
-      g3 += `dB₁[h${k?'₂':'₁'}] = ortalama(dz_h${k?'₂':'₁'})\n` +
-            ortSatir([0,1,2,3].map(i=>s.dz1[i][k]), s.dB1[k]) + '\n\n';
-    });
-
-    $('xe3detail').innerHTML =
-      `<b>🔍 Bu karttaki her sayının tam hesabı</b>` +
-      kutu('① dW₂ ve dB₂ — çıktı katmanının gradyanı', g1) +
-      kutu('② dz_h — hata gizli katmana geri akıyor', g2.trimEnd()) +
-      kutu('③ dW₁ ve dB₁ — gizli katmanın gradyanı', g3.trimEnd());
-    draw3(s);
-
-    // Kart 4
+    /* ===================== GERİ 5 — güncelle ========================== */
     const nW1 = [0,1].map(k=>[0,1].map(j=>W1[k][j]-LR*s.dW1[k][j]));
     const nB1 = [0,1].map(k=>B1[k]-LR*s.dB1[k]);
     const nW2 = [0,1].map(k=>W2[k]-LR*s.dW2[k]);
     const nB2 = B2-LR*s.dB2;
-    /* Adım 3'ün ürettiği gradyanlar burada TEKRAR görünür — buharlaşmasın:
-       her satır "eski − 3.0×gradyan = yeni" hesabının açık hâli. */
     const satirlar = [
-      ['W₁[x₁→h₁]', W1[0][0], s.dW1[0][0], nW1[0][0]],
-      ['W₁[x₂→h₁]', W1[0][1], s.dW1[0][1], nW1[0][1]],
-      ['W₁[x₁→h₂]', W1[1][0], s.dW1[1][0], nW1[1][0]],
-      ['W₁[x₂→h₂]', W1[1][1], s.dW1[1][1], nW1[1][1]],
-      ['b₁[h₁]',    B1[0],    s.dB1[0],    nB1[0]],
-      ['b₁[h₂]',    B1[1],    s.dB1[1],    nB1[1]],
-      ['W₂[h₁]',    W2[0],    s.dW2[0],    nW2[0]],
-      ['W₂[h₂]',    W2[1],    s.dW2[1],    nW2[1]],
-      ['b₂',        B2,       s.dB2,       nB2]
+      ['w₁₁ (x₁→h₁)', W1[0][0], s.dW1[0][0], nW1[0][0]],
+      ['w₁₂ (x₂→h₁)', W1[0][1], s.dW1[0][1], nW1[0][1]],
+      ['w₂₁ (x₁→h₂)', W1[1][0], s.dW1[1][0], nW1[1][0]],
+      ['w₂₂ (x₂→h₂)', W1[1][1], s.dW1[1][1], nW1[1][1]],
+      ['b₁ (h₁)',     B1[0],    s.dB1[0],    nB1[0]],
+      ['b₂ (h₂)',     B1[1],    s.dB1[1],    nB1[1]],
+      ['v₁ (h₁→p)',   W2[0],    s.dW2[0],    nW2[0]],
+      ['v₂ (h₂→p)',   W2[1],    s.dW2[1],    nW2[1]],
+      ['b₃ (çıktı)',  B2,       s.dB2,       nB2]
     ];
     $('xe4tab').innerHTML =
-      `<tr><th>parametre</th><th>eski</th><th>gradyan<br><span style="font-weight:400; opacity:.7">(Adım 3)</span></th><th>yeni</th></tr>` +
+      `<tr><th>ağırlık</th><th>eski</th><th>gradyan<br><span style="font-weight:400; opacity:.7">(Geri 2/4)</span></th><th>yeni</th></tr>` +
       satirlar.map(([ad, eski, grad, yeni]) =>
         `<tr><td>${ad}</td><td class="num">${N(eski,4)}</td>` +
         `<td class="num" style="color:#f0a032">${N(grad,4)}</td>` +
         `<td class="num" style="color:#46c46a">${N(yeni,4)}</td></tr>`).join('');
-    // ilk satırın hesabını açıkça yaz ki kural somutlaşsın
     $('xe4ornek').innerHTML =
       `ör. ilk satır: <b>${N(W1[0][0],4)}</b> − 3.0×(<b>${N(s.dW1[0][0],4)}</b>) = <b>${N(nW1[0][0],4)}</b>`;
     draw4();
+
 
     const box = $('xeSonuc');
     if(converged()){
@@ -398,5 +352,24 @@
   on('xeStop',  stop);
   on('xeReset', () => { stop(); reset(); });
 
+  /* ---------- ileri / geri yayılım modu ---------- */
+  const MOD_NOT = {
+    ileri: 'Girdiden tahmine: x → z<sub>h</sub> → h → z<sub>y</sub> → p → L. Ağırlıklar bu modda <b>değişmez</b>, sadece kullanılır.',
+    geri:  'Kayıptan ağırlıklara: L → dz<sub>y</sub> → dz<sub>h</sub> → dW,dB → güncelleme. Zincir kuralı <b>sondan başa</b> işler.'
+  };
+  function setMod(m){
+    const fwd = $('xeFwd'), bwd = $('xeBwd');
+    if(fwd) fwd.style.display = (m === 'ileri') ? '' : 'none';
+    if(bwd) bwd.style.display = (m === 'geri')  ? '' : 'none';
+    document.querySelectorAll('.xe-mod-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.xm === m));
+    const not = $('xeModNote');
+    if(not) not.innerHTML = MOD_NOT[m] || '';
+    render();   // gizliyken çizilmeyen canvas'lar mod açılınca doldurulsun
+  }
+  document.querySelectorAll('.xe-mod-btn').forEach(b =>
+    b.addEventListener('click', () => setMod(b.dataset.xm)));
+
   reset();
+  setMod('ileri');
 })();
