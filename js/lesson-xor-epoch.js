@@ -245,12 +245,15 @@
 
     // Kart 3
     for(let i=0;i<4;i++){
-      $('xe3p'+i).textContent = N(s.p[i],4);
+      $('xe3h1'+i).textContent = N(s.h[i][0],3);
+      $('xe3h2'+i).textContent = N(s.h[i][1],3);
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
-    $('xe3g').textContent =
-      `(hata'dan hesaplanan ortalama gradyanlar)\n` +
-      `dW₂=[${N(s.dW2[0],3)},${N(s.dW2[1],3)}]  dB₂=${N(s.dB2,3)}\n` +
+    $('xe3g').innerHTML =
+      `dB₂ = ort(hata) = <b>${N(s.dB2,3)}</b>\n` +
+      `dW₂[h₁] = ort(h₁·hata) = <b>${N(s.dW2[0],3)}</b>\n` +
+      `dW₂[h₂] = ort(h₂·hata) = <b>${N(s.dW2[1],3)}</b>\n` +
+      `dW₁,dB₁ → aynı formül (x, dz_h ile):\n` +
       `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
     $('xe3detail').textContent =
       `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz_h ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
