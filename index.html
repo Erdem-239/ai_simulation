@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061801"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061801">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061850"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061850">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 18:01 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 18:50 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2246,6 +2246,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <div class="xe-flow"><b>girdi:</b> h <span class="xe-to">← Adım 1</span>, hata <span class="xe-to">← Adım 2</span> &nbsp;·&nbsp; <b>çıktı:</b> dW,dB <span class="xe-to">→ Adım 4</span></div>
           <div class="eq">\[ \begin{aligned} dz_y&=p-y \;\Rightarrow\; dh=dz_y W_2 \\ dz_h&=dh\cdot h(1{-}h) \end{aligned} \]</div>
           <div style="font-size:11px; color:var(--muted); margin:-2px 0 6px">↩︎ Sinyal <b>sondan başa</b> akar (dz<sub>y</sub> → dz<sub>h</sub>) — adı bu yüzden "geri yayılım". Sonuçlar aşağıda <b>1→2</b> sırasıyla.</div>
+          <div class="xe-asama">① hata doğuyor</div>
           <table class="calc">
             <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>y</th><th>hata=p−y</th><th>h₁ <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>h₂</th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe3p0"></td><td class="num">0</td><td class="num" id="xe3e0"></td><td class="num" id="xe3h10"></td><td class="num" id="xe3h20"></td></tr>
@@ -2254,8 +2255,16 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <tr><td>(1,1)</td><td class="num" id="xe3p3"></td><td class="num">0</td><td class="num" id="xe3e3"></td><td class="num" id="xe3h13"></td><td class="num" id="xe3h23"></td></tr>
           </table>
           <div style="font-size:10.5px; color:var(--muted); margin:3px 0 0">↑ <b>hata</b> yalnızca p ve y'den çıkar (ör. (1,0): 0.3129−1=−0.6871). <b>h₁,h₂</b> bu hesaba girmez — onlar aşağıdaki dW₂ çarpımlarında kullanılacak.</div>
-          <div class="eq" style="font-size:82%; margin-top:6px">\[ \begin{aligned} dW_1&=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, & dB_1&=\tfrac{1}{m}\!\sum_i dz_{h,i} \\ dW_2&=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, & dB_2&=\tfrac{1}{m}\!\sum_i dz_{y,i} \end{aligned} \]</div>
-          <div style="font-size:10.5px; color:var(--muted); margin:8px 0 3px">Bu kartın <b>ürettiği 9 sayı</b> (Adım 4 bunları kullanacak):</div>
+          <div class="xe-asama">② hata gizli katmana geri akıyor</div>
+          <div style="font-size:10.5px; color:var(--muted); margin:0 0 3px">önce <b>dh = hata × v</b>, sonra <b>dz<sub>h</sub> = dh × h(1−h)</b></div>
+          <table class="calc" id="xe3tab2"></table>
+          <div class="work" id="xe3ornek2" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
+
+          <div class="xe-asama">③ gradyanlar — formülü yerine koyalım</div>
+          <div class="eq" style="font-size:82%; margin-top:2px">\[ \begin{aligned} dW_1&=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, & dB_1&=\tfrac{1}{m}\!\sum_i dz_{h,i} \\ dW_2&=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, & dB_2&=\tfrac{1}{m}\!\sum_i dz_{y,i} \end{aligned} \]</div>
+          <div class="work" id="xe3yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
+          <div style="font-size:10.5px; color:var(--muted); margin-top:4px">Diğer sekizi de <b>birebir aynı yöntemle</b> — dördünün de tam dökümü başlıktaki <b>"ayrıntı ▸"</b>de.</div>
+          <div style="font-size:10.5px; color:var(--muted); margin:9px 0 3px">Aynı yöntemle dokuzunun hepsi — <b>Adım 4 bunları kullanacak</b>:</div>
           <table class="calc" id="xe3tab"></table>
           <div style="font-size:10.5px; color:var(--muted); margin-top:4px">↳ her birinin 4 nokta üzerinden tam hesabı: başlıktaki <b>"ayrıntı ▸"</b>yı aç.</div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
@@ -5007,15 +5016,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061801"></script>
-<script src="js/lesson-turev.js?v=202609061801"></script>
-<script src="js/lesson-xor.js?v=202609061801"></script>
-<script src="js/lesson-xor-arch.js?v=202609061801"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061801"></script>
-<script src="js/lesson-nn.js?v=202609061801"></script>
-<script src="js/lesson-trig.js?v=202609061801"></script>
+<script src="js/lesson-linreg.js?v=202609061850"></script>
+<script src="js/lesson-turev.js?v=202609061850"></script>
+<script src="js/lesson-xor.js?v=202609061850"></script>
+<script src="js/lesson-xor-arch.js?v=202609061850"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061850"></script>
+<script src="js/lesson-nn.js?v=202609061850"></script>
+<script src="js/lesson-trig.js?v=202609061850"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061801"></script>
-<script src="js/app.js?v=202609061801"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061850"></script>
+<script src="js/app.js?v=202609061850"></script>
 </body>
 </html>
