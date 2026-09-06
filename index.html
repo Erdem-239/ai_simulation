@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609060847"></script>
-<link rel="stylesheet" href="css/style.css?v=202609060847">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609060907"></script>
+<link rel="stylesheet" href="css/style.css?v=202609060907">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 08:47 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:07 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2199,7 +2199,14 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeAdim2">
         <div class="stephead"><h2>Adım 2) Kayıp — ne kadar kötüyüz?</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ \begin{aligned} L=-\frac{1}{m}\sum_{i}\Big[\;&y_i\ln p_i \\[-2pt] &+(1-y_i)\ln(1-p_i)\Big] \end{aligned} \]</div>
+          <div class="eq" style="font-size:90%">\[ L=-\frac{1}{m}\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big] \]</div>
+          <table class="calc">
+            <tr><th>nokta</th><th>p</th><th>y</th><th>katkı</th></tr>
+            <tr><td>(0,0)</td><td class="num" id="xe2p0"></td><td class="num">0</td><td id="xe2c0"></td></tr>
+            <tr><td>(0,1)</td><td class="num" id="xe2p1"></td><td class="num">1</td><td id="xe2c1"></td></tr>
+            <tr><td>(1,0)</td><td class="num" id="xe2p2"></td><td class="num">1</td><td id="xe2c2"></td></tr>
+            <tr><td>(1,1)</td><td class="num" id="xe2p3"></td><td class="num">0</td><td id="xe2c3"></td></tr>
+          </table>
           <div class="work" id="xe2L" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe2Canvas" width="420" height="76"></canvas>
@@ -4969,15 +4976,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609060847"></script>
-<script src="js/lesson-turev.js?v=202609060847"></script>
-<script src="js/lesson-xor.js?v=202609060847"></script>
-<script src="js/lesson-xor-arch.js?v=202609060847"></script>
-<script src="js/lesson-xor-epoch.js?v=202609060847"></script>
-<script src="js/lesson-nn.js?v=202609060847"></script>
-<script src="js/lesson-trig.js?v=202609060847"></script>
+<script src="js/lesson-linreg.js?v=202609060907"></script>
+<script src="js/lesson-turev.js?v=202609060907"></script>
+<script src="js/lesson-xor.js?v=202609060907"></script>
+<script src="js/lesson-xor-arch.js?v=202609060907"></script>
+<script src="js/lesson-xor-epoch.js?v=202609060907"></script>
+<script src="js/lesson-nn.js?v=202609060907"></script>
+<script src="js/lesson-trig.js?v=202609060907"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609060847"></script>
-<script src="js/app.js?v=202609060847"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609060907"></script>
+<script src="js/app.js?v=202609060907"></script>
 </body>
 </html>

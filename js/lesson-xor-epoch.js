@@ -225,7 +225,15 @@
     draw1(s);
 
     // Kart 2
-    $('xe2L').textContent = `L = ${N(s.L,6)}\ntaban (ln2) = 0.693147\nfark = ${N(s.L-LN2,6)}`;
+    for(let i=0;i<4;i++){
+      const pi = s.p[i], yi = Y[i];
+      $('xe2p'+i).textContent = N(pi,4);
+      const terim = yi ? Math.log(pi+1e-12) : Math.log(1-pi+1e-12);
+      $('xe2c'+i).textContent = yi
+        ? `ln(${N(pi,4)})=${N(terim,4)}`
+        : `ln(1−${N(pi,4)})=${N(terim,4)}`;
+    }
+    $('xe2L').textContent = `bu 4 katkının ortalaması × (−1):\nL = ${N(s.L,6)}\ntaban (ln2) = 0.693147\nfark = ${N(s.L-LN2,6)}`;
     draw2();
 
     // Kart 3
