@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609060907"></script>
-<link rel="stylesheet" href="css/style.css?v=202609060907">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609060922"></script>
+<link rel="stylesheet" href="css/style.css?v=202609060922">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:07 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:22 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2212,7 +2212,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <canvas id="xe2Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">Kayıp eğrisi · kesikli çizgi = <b>ln2</b> tabanı (tek nöronun takıldığı yer)</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> bu eğri <b>ln2 tabanına yapışıp kalmıyor</b> — gizli katman sayesinde altına inebiliyor. Tek fark bu.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> katkılar hep negatif olduğu için işareti çeviriyoruz (×−1); <b>ln2</b> ise "vazgeçmiş" bir modelin kaybı (her girdiye p=0.5 dese). <b>fark</b> negatife düşünce ondan iyiyiz demektir — turuncu çizginin kesikliyi geçip altına inmesi bunun görsel kanıtı.</div>
           <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de aşağıdaki gibi tertemiz çıkar.</div>
         </div>
       </div>
@@ -2234,7 +2234,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <canvas id="xe3Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">Çıktı katmanının hatası (p − y) · sıfırdan uzak = daha yanlış</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> hata çıktıda oluşur (dz<sub>y</sub>=p−y), <b>W₂ üzerinden gizli katmana geri akar</b> (dh).</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> yukarıdaki <b>hata</b> (p−y) burada başlar; <b>W₂ üzerinden gizli katmana yayılıp</b> (dh), altta dört ağırlık grubunun <b>ortalama gradyanına</b> dönüşüyor — ne kadar büyükse Adım 4'te o ağırlık o kadar çok değişecek.</div>
           <div class="detail"><span id="xe3detail" style="color:var(--muted)"></span><br><br>"dz<sub>y</sub>=p−y" sadeliği yine sigmoid+log-loss'un armağanı. dh=dz<sub>y</sub>·W₂ satırı, çıktı nöronunun hatasının hangi gizli nörona NE KADAR "suç" yüklediğini söylüyor — W₂ büyükse o nöron daha çok pay alır. dz<sub>h</sub>=dh·h(1−h) ise bu payı, o gizli nöronun KENDİ doygunluğuna göre ölçekler (aynı vanishing-gradient mantığı: h, 0 ya da 1'e çok yakınsa h(1−h)≈0 olur, sinyal zayıflar).</div>
         </div>
       </div>
@@ -2249,7 +2249,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <canvas id="xe4Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">İki gizli nöronun ayırıcı çizgisi · dört XOR noktası</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> dört ayrı ağırlık grubu aynı anda güncelleniyor. Alttaki grafikte iki çizginin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her ok, <b>Adım 3'teki gradyanın α(=3.0) katı</b> çıkarılarak elde ediliyor (<code>W:=W−α·gradyan</code>); dört grup aynı anda güncelleniyor. Alttaki grafikte çizgilerin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
           <div class="detail"><b>👉 PyTorch'ta bunu yazmazsın</b> — <code>loss.backward()</code> Adım 3'ü, <code>optimizer.step()</code> Adım 4'ü otomatik yapar; kütüphane sihir yapmıyor, birebir bunu yapıyor. (Aynı ağın elle seçilmiş ağırlıklarla saf-Python hâli ➕ Ekstra kümesinde.)<br><br>Bu, gizli katmanın "kendi OR/AND mantığını" bulma anı. Başta rastgele/işe yaramaz konumda duran iki çizgi, gradyan alçalma ile — hiçbir OR/AND etiketi verilmeden, sadece nihai hatadan geriye yayılan sinyalle — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div>
         </div>
       </div>
@@ -4976,15 +4976,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609060907"></script>
-<script src="js/lesson-turev.js?v=202609060907"></script>
-<script src="js/lesson-xor.js?v=202609060907"></script>
-<script src="js/lesson-xor-arch.js?v=202609060907"></script>
-<script src="js/lesson-xor-epoch.js?v=202609060907"></script>
-<script src="js/lesson-nn.js?v=202609060907"></script>
-<script src="js/lesson-trig.js?v=202609060907"></script>
+<script src="js/lesson-linreg.js?v=202609060922"></script>
+<script src="js/lesson-turev.js?v=202609060922"></script>
+<script src="js/lesson-xor.js?v=202609060922"></script>
+<script src="js/lesson-xor-arch.js?v=202609060922"></script>
+<script src="js/lesson-xor-epoch.js?v=202609060922"></script>
+<script src="js/lesson-nn.js?v=202609060922"></script>
+<script src="js/lesson-trig.js?v=202609060922"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609060907"></script>
-<script src="js/app.js?v=202609060907"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609060922"></script>
+<script src="js/app.js?v=202609060922"></script>
 </body>
 </html>
