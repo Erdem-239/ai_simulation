@@ -250,6 +250,31 @@
       $('xe3h2'+i).textContent = N(s.h[i][1],3);
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
+    /* ② dh ve dz_h tablosu — gradyan formülünün EKSİK girdisiydi, artık
+       kartta görünüyor ki formül elle yerine konabilsin. */
+    const Sg = v => (v>=0?'+':'')+N(v,4);
+    const AD4 = ['(0,0)','(0,1)','(1,0)','(1,1)'];
+    $('xe3tab2').innerHTML =
+      `<tr><th>nokta</th><th>dh₁</th><th>dz<sub>h1</sub></th><th>dh₂</th><th>dz<sub>h2</sub></th></tr>` +
+      [0,1,2,3].map(i =>
+        `<tr><td>${AD4[i]}</td>` +
+        `<td class="num" style="opacity:.75">${Sg(s.dh[i][0])}</td><td class="num">${Sg(s.dz1[i][0])}</td>` +
+        `<td class="num" style="opacity:.75">${Sg(s.dh[i][1])}</td><td class="num">${Sg(s.dz1[i][1])}</td></tr>`).join('');
+    $('xe3ornek2').innerHTML =
+      `ör. (1,0) için dz_h₁:\n` +
+      `  dh₁ = hata × v₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
+      `  h₁(1−h₁) = ${N(s.h[2][0],4)} × ${N(1-s.h[2][0],4)} = ${N(s.h[2][0]*(1-s.h[2][0]),4)}\n` +
+      `  dz_h₁ = ${Sg(s.dh[2][0])} × ${N(s.h[2][0]*(1-s.h[2][0]),4)} = <b>${Sg(s.dz1[2][0])}</b>`;
+
+    /* ③ Formülü YERİNE KOYALIM — dört formül şeklinin her biri için,
+       linreg kartlarındaki gibi bütün sayılar açık. */
+    const carp1 = [0,1,2,3].map(i => X[i][0]*s.dz1[i][0]);   // dW₁[x₁→h₁]
+    $('xe3yerine').innerHTML =
+      `<b>dW₁[x₁→h₁]</b> = ¼ × Σ(x₁ × dz_h₁)\n` +
+      [0,1,2,3].map(i =>
+        `  ${AD4[i]}  ${X[i][0]} × ${Sg(s.dz1[i][0])} = ${Sg(carp1[i])}`).join('\n') + '\n' +
+      `  ¼ × (${Sg(carp1.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW1[0][0],4)}</b>`;
+
     /* Ham dizi dökümü yerine ETİKETLİ tablo — satır adları Kart 4'le birebir
        aynı, böylece aynı sayı iki kartta da tanınabiliyor. */
     const grad = [
