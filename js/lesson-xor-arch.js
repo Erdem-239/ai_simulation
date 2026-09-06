@@ -33,12 +33,22 @@
     el.setAttribute('fill-opacity', v >= 0.5 ? '0.45' : '0.35');
   }
 
-  /* bağlantı etiketi: değeri yaz, işaretine göre renklendir */
-  function wlab(id, v){
+  /* Bağlantı etiketi + o bağlantının ÇİZGİSİ: ikisi de ağırlığın işaretine
+     göre renklenir (yeşil = pozitif, kırmızı = negatif). Etiket ayrıca
+     "kimden kime" yazar — çapraz giden dört çizgide hangi w'nin hangisine
+     ait olduğu karışmasın diye. */
+  function wlab(id, lineId, kimden, kime, v){
     const el = $(id);
-    if(!el) return;
-    el.textContent = 'w=' + N(v, 2);
-    el.setAttribute('fill', v >= 0 ? '#46c46a' : '#e06a6a');
+    if(el){
+      el.textContent = `${kimden}→${kime} = ${N(v, 2)}`;
+      el.setAttribute('fill', v >= 0 ? '#46c46a' : '#e06a6a');
+    }
+    const ln = $(lineId);
+    if(ln){
+      ln.setAttribute('stroke', v >= 0 ? 'rgba(70,196,106,.55)' : 'rgba(224,106,106,.55)');
+      ln.setAttribute('stroke-width', (1.5 + Math.min(2.2, Math.abs(v)/4)).toFixed(2));
+      ln.setAttribute('marker-end', v >= 0 ? 'url(#xaArG)' : 'url(#xaArR)');
+    }
   }
 
   /* "1.30·x₁−0.30·x₂−1.20" biçiminde kısa Σ formülü */
@@ -75,12 +85,12 @@
     $('xafy').textContent = lin(W2[0], W2[1], B2, 'h₁', 'h₂');
     $('xaEpoch').textContent = `epoch ${epoch} · L = ${N(L, 3)}`;
 
-    wlab('xaw11', W1[0][0]);  // x₁ → h₁
-    wlab('xaw12', W1[0][1]);  // x₂ → h₁
-    wlab('xaw21', W1[1][0]);  // x₁ → h₂
-    wlab('xaw22', W1[1][1]);  // x₂ → h₂
-    wlab('xav1',  W2[0]);     // h₁ → çıktı
-    wlab('xav2',  W2[1]);     // h₂ → çıktı
+    wlab('xaw11', 'xaL11', 'x₁', 'h₁', W1[0][0]);
+    wlab('xaw12', 'xaL12', 'x₂', 'h₁', W1[0][1]);
+    wlab('xaw21', 'xaL21', 'x₁', 'h₂', W1[1][0]);
+    wlab('xaw22', 'xaL22', 'x₂', 'h₂', W1[1][1]);
+    wlab('xav1',  'xaLv1', 'h₁', 'p',  W2[0]);
+    wlab('xav2',  'xaLv2', 'h₂', 'p',  W2[1]);
 
     tint('xasig1bg', h1);
     tint('xasig2bg', h2);
