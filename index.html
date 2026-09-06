@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061713"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061713">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061741"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061741">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 17:13 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 17:41 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2151,7 +2151,11 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="work" id="xeState" style="white-space:pre-wrap; line-height:1.7; font-size:12.5px; margin:0 0 6px; padding:6px 10px"></div>
         <div class="tip" style="margin:0 0 6px; padding:7px 11px; font-size:12.5px; line-height:1.6">
           📐 <b>Şema = aşağıdaki 4 kartla AYNI ağ.</b> Şema bu ağın <b>şu anki fotoğrafı</b>; kartlar ise ona <b>bir epoch boyunca</b> (ileri besleme→kayıp→gradyan→güncelleme) ne olduğunu gösteriyor.
-          <div style="margin:6px 0; padding:6px 8px; background:rgba(0,0,0,.15); border-radius:5px">
+        </div>
+        <div class="acc" style="margin:0 0 4px">
+        <div class="acc-head"><span class="ac">▸</span> 📐 Bu ağın matematiği — iki satır, tüm ağırlıklar açık</div>
+        <div class="acc-body">
+          <div style="margin:0 0 8px; padding:6px 8px; background:rgba(0,0,0,.15); border-radius:5px">
             Bu ağın matematiği <b>iki satır</b> (W₁'in 4, W₂'nin 2 sayısı tek tek açık):
             <div style="font-size:11px; color:var(--muted); margin:4px 0 -2px">1️⃣ gizli katman:</div>
             <div class="eq" style="font-size:118%; margin:2px 0">\[ z_{h1}=w_{11}x_1+w_{12}x_2+b_1,\;\; h_1=\sigma(z_{h1}) \]</div>
@@ -2160,7 +2164,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <div class="eq" style="font-size:118%; margin:2px 0 4px">\[ z_y=v_1h_1+v_2h_2+b_3,\;\; p=\sigma(z_y) \]</div>
             <span style="color:var(--muted); font-size:92%">(kısaca <code>z<sub>h</sub>=X·W₁+b₁</code>, <code>z<sub>y</sub>=h·W₂+b₂</code> da yazılır — W₁={w₁₁,w₁₂,w₂₁,w₂₂}, W₂={v₁,v₂})</span>
           </div>
-          Şemadaki her <b>Σ</b> kutusu bu satırların <b>z</b> kısmını hesaplıyor (ağırlıklı toplam); her <b>σ</b> kutusu da hemen ardından <b>σ(z)</b>'yi (aktivasyonu) hesaplıyor. <b>Alt indis hangi katman olduğunu söyler:</b> \(z_h\) = gizli katmanın toplamı, \(z_y\) = çıktının toplamı — ikisi farklı katman, o yüzden farklı harf. <span style="color:var(--muted)">(Tüm semboller: aşağıdaki notasyon listesinde.)</span>
+          <p style="font-size:12.5px; color:#ccd5e8; line-height:1.6; margin:0">Şemadaki her <b>Σ</b> kutusu bu satırların <b>z</b> kısmını hesaplıyor (ağırlıklı toplam); her <b>σ</b> kutusu da hemen ardından <b>σ(z)</b>'yi (aktivasyonu) hesaplıyor. <b>Alt indis hangi katman olduğunu söyler:</b> \(z_h\) = gizli katmanın toplamı, \(z_y\) = çıktının toplamı — ikisi farklı katman, o yüzden farklı harf.</p>
+        </div>
         </div>
         <div class="acc" style="margin:0 0 4px">
         <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?) &amp; seçili girdinin adım adım hesabı</div>
@@ -4999,15 +5004,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061713"></script>
-<script src="js/lesson-turev.js?v=202609061713"></script>
-<script src="js/lesson-xor.js?v=202609061713"></script>
-<script src="js/lesson-xor-arch.js?v=202609061713"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061713"></script>
-<script src="js/lesson-nn.js?v=202609061713"></script>
-<script src="js/lesson-trig.js?v=202609061713"></script>
+<script src="js/lesson-linreg.js?v=202609061741"></script>
+<script src="js/lesson-turev.js?v=202609061741"></script>
+<script src="js/lesson-xor.js?v=202609061741"></script>
+<script src="js/lesson-xor-arch.js?v=202609061741"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061741"></script>
+<script src="js/lesson-nn.js?v=202609061741"></script>
+<script src="js/lesson-trig.js?v=202609061741"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061713"></script>
-<script src="js/app.js?v=202609061713"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061741"></script>
+<script src="js/app.js?v=202609061741"></script>
 </body>
 </html>
