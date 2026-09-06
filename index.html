@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061952"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061952">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609062012"></script>
+<link rel="stylesheet" href="css/style.css?v=202609062012">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 19:52 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 20:12 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2168,7 +2168,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         </div>
         </div>
         <div class="acc" style="margin:0 0 4px">
-        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?) &amp; seçili girdinin adım adım hesabı</div>
+        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?)</div>
         <div class="acc-body">
         <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:3px 18px; font-size:12.5px; color:#ccd5e8; line-height:1.65; margin:0 0 10px">
           <div><b>x₁, x₂</b> — girdi (0 ya da 1)</div>
@@ -2185,8 +2185,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <div><b>dz<sub>h</sub></b> — gizli katmana ulaşan geri-sinyal</div>
         </div>
         <div class="callout" style="margin:0 0 10px; font-size:12.5px; line-height:1.6">⚠️ <b>Alt indis karışıklığına dikkat:</b> <b>1/2</b> rakamları <b>KATMAN</b> numarasıdır (W₁ = 1. katman, W₂ = 2. katman) — nöronlar ise <b>h₁/h₂</b> diye anılır. Bu yüzden gizli katmanın toplamına z₁ değil <b>z<sub>h</sub></b>, çıktınınkine z₂ değil <b>z<sub>y</sub></b> diyoruz. Şemada gizli nöronların tek tek toplamları <b>z<sub>h1</sub></b> ve <b>z<sub>h2</sub></b> olarak yazılı; ikisi birlikte \(z_h\) vektörünü oluşturur.</div>
-        <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Denklemin ilk satırı <b>gizli katman</b> (2 nöron birden — bu yüzden \(W_1\) bir matris), ikinci satırı <b>çıktı katmanı</b> (tek nöron, \(W_2\) bir vektör). Başlangıç değerleri: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · W₂=[1.2,−0.9] · b₂=−1.2 · α=3.0. Aşağıda seçili girdi için bu iki satırın tek tek sayıya dökülmüş hâli var:</p>
-        <div class="work" id="xaWork" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px"></div>
+        <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Denklemin ilk satırı <b>gizli katman</b> (2 nöron birden — bu yüzden \(W_1\) bir matris), ikinci satırı <b>çıktı katmanı</b> (tek nöron, \(W_2\) bir vektör). Başlangıç değerleri: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · W₂=[1.2,−0.9] · b₂=−1.2 · α=3.0. Bu iki satırın seçili girdi için tek tek sayıya dökülmüş hâli, aşağıdaki <b>▶ İleri Yayılım</b> kartlarında adım adım duruyor.</p>
         <div class="callout" id="xaVerdict" style="margin-top:8px"></div>
         </div>
         </div>
@@ -2251,7 +2250,12 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <div class="step-graph-cap">Kayıp eğrisi · kesikli çizgi = <b>ln2</b> tabanı (tek nöronun takıldığı yer)</div>
           </div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> katkılar hep negatif olduğu için işareti çeviriyoruz (×−1); <b>ln2</b> ise "vazgeçmiş" bir modelin kaybı (her girdiye p=0.5 dese). <b>fark</b> negatife düşünce ondan iyiyiz demektir.</div>
-          <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de <b>◀ Geri Yayılım</b>'daki gibi tertemiz çıkar.</div>
+          <div class="detail"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Dört noktanın hepsindeki yanlışlığı <b>tek bir sayıya</b> indirmek — geri yayılımın küçültmeye çalışacağı sayı bu.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden iki terim var, hep biri sönüyor</b></div><div class="deriv-why">Tek bir nokta için kayıp:</div><div class="eq" style="margin:4px 0">\( L_i=-\big[y\ln p+(1-y)\ln(1-p)\big] \)</div><div class="deriv-why">y yalnızca 0 ya da 1 olabildiği için terimlerden biri <b>her zaman</b> sıfırla çarpılıp yok olur:</div><div class="eq" style="margin:4px 0">\( y=1\ \Rightarrow\ L_i=-\ln p \)</div><div class="eq" style="margin:4px 0">\( y=0\ \Rightarrow\ L_i=-\ln(1-p) \)</div><div class="deriv-why">Yani formül aslında bir "eğer" ifadesi: <b>doğru cevaba verdiğin olasılığın</b> logaritmasını al. Yukarıdaki tabloda "katkı" sütununda tam olarak bu görünüyor — y=1 satırlarında \(\ln p\), y=0 satırlarında \(\ln(1-p)\).</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden logaritma?</b></div><div class="deriv-why">Ceza, model <b>emin ve yanlış</b> oldukça hızla büyüsün istiyoruz. ln bunu yapar:</div><div class="work" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0">doğru cevaba verilen p  →  ceza (−ln p)
+  0.9  →  0.105   (neredeyse bedava)
+  0.5  →  0.693   (kararsız)
+  0.1  →  2.303   (pahalı)
+  0.01 →  4.605   (çok pahalı)
+  0    →  ∞       (affedilmez)</div><div class="deriv-why">Doğrusal bir ceza (ör. |p−y|) 0.5 ile 0.01 arasındaki farkı bu kadar sert ayırt edemezdi. ln, "emin olup yanılmayı" katlanarak cezalandırır.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden başta eksi (×−1) var?</b></div><div class="deriv-why">p her zaman 0 ile 1 arasında, ve 0-1 arasındaki sayıların logaritması <b>negatiftir</b>. Eksi ile çevirmezsek "kayıp" negatif çıkar ve küçültmek anlamsızlaşır. Çevirince: <b>iyi tahmin → 0'a yakın, kötü tahmin → büyük pozitif</b>.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 4 — dört noktanın ortalaması</b></div><div class="eq" style="margin:4px 0">\( L=\tfrac{1}{m}\sum_i L_i,\qquad m=4 \)</div><div class="deriv-why">Toplam yerine ortalama alıyoruz ki L, veri sayısından bağımsız kalsın — 4 nokta da olsa 4000 nokta da olsa "0.69" aynı şeyi anlatsın.</div><div class="callout" style="margin-top:8px">🎯 <b>ln2 tabanı nereden geliyor?</b> Hiçbir şey öğrenmemiş, her girdiye "bilmiyorum, p=0.5" diyen bir model düşün. Her nokta için cezası \(-\ln 0.5=\ln 2=0.693147\), ortalaması da aynı. Yani <b>0.693147 = vazgeçmiş modelin skoru</b>. Bunun üstündeysek modelimiz sadece kararsız değil, <b>yanlış yönde emin</b> demektir. 4️⃣'teki tek nöron tam da bu tabanda takılıp kalıyordu.</div><div class="callout" style="margin-top:8px">⚠️ <b>Neden kare hata (MSE) değil?</b> Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss'ta bu çarpan <b>sadeleşir</b> (ispatı <b>◀ Geri Yayılım → Geri 1</b>'de) ve türev tertemiz \(p-y\) olur.</div></div>
         </div>
       </div>
 
@@ -2335,7 +2339,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <div class="step-graph-cap">İki gizli nöronun ayırıcı çizgisi · dört XOR noktası</div>
           </div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her ok, <b>gradyanın α(=3.0) katı</b> çıkarılarak elde ediliyor; dokuz ağırlık aynı anda güncelleniyor. Alttaki grafikte çizgilerin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
-          <div class="detail"><b>👉 PyTorch'ta bunu yazmazsın</b> — <code>loss.backward()</code> Geri 1-4'ü, <code>optimizer.step()</code> Geri 5'i otomatik yapar; kütüphane sihir yapmıyor, birebir bunu yapıyor. (Aynı ağın elle seçilmiş ağırlıklarla saf-Python hâli ➕ Ekstra kümesinde.)<br><br>Bu, gizli katmanın "kendi OR/AND mantığını" bulma anı. Başta rastgele/işe yaramaz konumda duran iki çizgi, gradyan alçalma ile — hiçbir OR/AND etiketi verilmeden, sadece nihai hatadan geriye yayılan sinyalle — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div>
+          <div class="detail"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Geri 2 ve Geri 4'te bulduğumuz gradyanları kullanıp dokuz ağırlığı, kaybı <b>azaltan</b> yöne kaydırmak. Bir epoch burada kapanıyor.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden eksi işareti?</b></div><div class="deriv-why">Gradyan tanım gereği <b>yokuş yukarıyı</b> gösterir: \(\partial L/\partial w>0\) demek "w'yi artırırsan L de artar" demek. Bizim istediğimiz tam tersi, o yüzden gradyanın <b>tersi</b> yönde adım atıyoruz:</div><div class="eq" style="margin:4px 0">\( w := w-\alpha\,\dfrac{\partial L}{\partial w} \)</div><div class="deriv-why">Kendi kendini denetleyen bir kural: gradyan pozitifse w küçülür, negatifse büyür. Her iki durumda da L aşağı iner. Adı da buradan: <b>gradyan alçalma</b> (gradient descent).</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden ayrıca bir α gerekiyor?</b></div><div class="deriv-why">Gradyan bize <b>yön</b> verir, <b>ne kadar gidileceğini</b> değil. Türev yalnızca o noktadaki eğimi bilir; "bu eğim ne kadar uzağa kadar geçerli" bilgisi yoktur. Adım boyunu biz seçeriz — buna <b>öğrenme oranı</b> denir.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — α=3.0 çok büyük değil mi?</b></div><div class="deriv-why">İlk bakışta öyle, ama gradyanların <b>ölçeğine</b> bak: yukarıdaki tabloda çoğu 0.01–0.05 aralığında. Sebebi zincirdeki iki küçültücü çarpan — \(h(1-h)\le 0.25\) ve dört noktanın \(\tfrac{1}{4}\) ortalaması. 3.0 ile çarpınca adım ≈0.1 olur; makul bir adım. α=0.1 olsaydı adım 0.003 olur, XOR'un çözümü binlerce epoch sürerdi.</div><div class="work" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0">α çok küçük →  sürünür, epoch'lar boşa gider
+α iyi        →  kayıp düzgün iner (bizim durum)
+α çok büyük  →  vadinin karşı yamacına zıplar,
+                kayıp inip çıkar ya da patlar</div><div class="callout" style="margin-top:8px">⚠️ <b>Dokuzu da AYNI ANDA güncelliyoruz.</b> Tablodaki bütün gradyanlar <b>eski</b> ağırlıklarla hesaplandı. Sırayla güncelleyip her seferinde gradyanı yeniden hesaplamıyoruz — o başka (ve yanlış) bir algoritma olurdu. Önce hepsinin gradyanı, sonra hepsinin güncellemesi.</div><div class="deriv-why" style="margin-top:8px"><b>👉 PyTorch'ta bunu yazmazsın</b></div><div class="deriv-why"><code>loss.backward()</code> Geri 1-4'ü, <code>optimizer.step()</code> ise tam olarak bu kartı yapar. Kütüphane sihir yapmıyor — birebir bunu yapıyor. (Aynı ağın elle seçilmiş ağırlıklarla saf-Python hâli ➕ Ekstra kümesinde.)</div><div class="callout" style="margin-top:8px">✨ <b>Gizli katmanın kendi mantığını bulma anı.</b> Başta rastgele konumda duran iki çizgi, yalnızca nihai hatadan geriye yayılan sinyalle — kimse ona "sen OR ol, sen AND ol" demeden — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div></div>
         </div>
       </div>
 
@@ -5061,15 +5068,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061952"></script>
-<script src="js/lesson-turev.js?v=202609061952"></script>
-<script src="js/lesson-xor.js?v=202609061952"></script>
-<script src="js/lesson-xor-arch.js?v=202609061952"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061952"></script>
-<script src="js/lesson-nn.js?v=202609061952"></script>
-<script src="js/lesson-trig.js?v=202609061952"></script>
+<script src="js/lesson-linreg.js?v=202609062012"></script>
+<script src="js/lesson-turev.js?v=202609062012"></script>
+<script src="js/lesson-xor.js?v=202609062012"></script>
+<script src="js/lesson-xor-arch.js?v=202609062012"></script>
+<script src="js/lesson-xor-epoch.js?v=202609062012"></script>
+<script src="js/lesson-nn.js?v=202609062012"></script>
+<script src="js/lesson-trig.js?v=202609062012"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061952"></script>
-<script src="js/app.js?v=202609061952"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609062012"></script>
+<script src="js/app.js?v=202609062012"></script>
 </body>
 </html>
