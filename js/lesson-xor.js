@@ -132,7 +132,7 @@
     if(correctCount===4){
       verdict.innerHTML = '🤔 4/4 doğru görünüyor mu? Kaydırıcıları biraz daha oynat — tam 4 noktayı AYNI ANDA tutan bir açı/konum YOK, sadece geçici bir çakışma olabilir. Deneye devam et.';
     } else {
-      verdict.innerHTML = '📏 Şu an <b>'+correctCount+'/4</b> doğru. Açıyı ve konumu değiştirip dene — <b>4/4'+'\'e asla ulaşamayacaksın</b>, en fazla 3/4 çıkar. Bu, biraz önceki cebirsel kanıtın (çelişki: 2≠0) görsel hali.';
+      verdict.innerHTML = '📏 Şu an <b>'+correctCount+'/4</b> doğru. Açıyı ve konumu değiştirip dene — <b>4/4'+'\'e asla ulaşamayacaksın</b>, en fazla 3/4 çıkar. Neden imkânsız olduğunun cebirsel kanıtı (çelişki: 2≠0) 4️⃣\'te.';
     }
   }
 

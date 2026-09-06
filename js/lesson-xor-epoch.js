@@ -337,7 +337,7 @@
     if(converged()){
       box.innerHTML = `🏁 <b>Başardı!</b> ${epoch} epoch sonunda ağ <b>4/4</b> doğru — kayıp <b>${N(s.L,5)}</b>, ln2 tabanının çok altında. ` +
         `Gizli katman kendi kendine, hiçbir OR/AND etiketi görmeden, elle kurduğumuz mantığa benzer bir ayrım buldu. ` +
-        `Yukarıdaki şemada ağırlıkların nereye oturduğuna bak — TEK nöronlu bir modelde aynı döngü kayıp ln2'de takılı kalırdı (➕ Ekstra'daki oyuncakta "🌊 Sigmoid ile TEK nöron" moduyla görebilirsin); <b>fark birebir bu gizli katman</b>.`;
+        `Yukarıdaki şemada ağırlıkların nereye oturduğuna bak — TEK nöronlu bir modelde aynı döngü kayıp ln2'de takılı kalırdı (1️⃣'teki oyuncakta "🌊 Sigmoid ile TEK nöron" moduyla görebilirsin); <b>fark birebir bu gizli katman</b>.`;
     } else if(epoch === 0){
       box.innerHTML = `▶ <b>Başlamak için "1 epoch"a bas.</b> İlk epoch'larda kayıp neredeyse hiç düşmüyor gibi görünebilir (ln2 civarında dolaşır) — ` +
         `sabırlı ol, ⏩ ile devam et. Bir noktadan sonra hızla düşmeye başlayacak.`;
