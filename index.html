@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609062112"></script>
-<link rel="stylesheet" href="css/style.css?v=202609062112">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609062134"></script>
+<link rel="stylesheet" href="css/style.css?v=202609062134">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 21:12 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 21:34 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1945,6 +1945,46 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <h1>XOR Problemi — Tek Doğrunun Çözemediği Bulmaca</h1>
     <p class="lesson-hook">🧩 Dört nokta. İki renk. Ve bir cetvel. Bu kadar basit görünen bir bulmaca, yapay zekâ araştırmalarını <b>15 yıl</b> durdurdu — çünkü tek bir doğruyla çözülemiyordu. Bu ders, o duvarın neden var olduğunu ve <b>iki nöronun</b> onu nasıl aştığını, kendi ellerinle deneyerek gösteriyor. Lineer modelden sinir ağına geçtiğin tam kırılma noktası burası.</p>
   </div>
+  <!-- 🎮 GİRİŞ SİMÜLASYONU: derse okuyarak değil deneyerek başla -->
+  <div class="pts" style="border-left:3px solid var(--accent); margin-top:14px">
+    <h3 style="color:var(--accent); margin-top:0">🎮 Önce sen dene — duvara kendi ellerinle çarp</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu derse okuyarak değil <b>deneyerek</b> başlayalım: yukarıdaki <b>soldaki</b> tabloyu kendi elinle üret. Üç mod var, sırayla dene — aralarındaki fark bütün dersin özü:</p>
+    <div style="font-size:13.5px; color:#ccd5e8; line-height:1.75; margin:0 0 4px">
+      <div><b>📏 Lineer</b> — çizgiyi sürükleyip dört noktayı da doğru ayırmayı dene. <b>Yapamayacaksın</b>; en iyi ihtimalle 3/4 çıkıyor.</div>
+      <div><b>🌊 Sigmoid ile tek nöron</b> — "aktivasyon eklersem düzelir" diye düşünmek çok doğal. Düzelmediğini gör: eğri bir fonksiyon eklesen de sınır hâlâ <b>düz bir çizgi</b>.</div>
+      <div><b>🧠 Aktivasyon ekle (2 nöron)</b> — iki gizli nöron devreye girsin; 4/4'ü veren <b>şerit</b> ekranda belirsin.</div>
+    </div>
+    <div class="callout" style="margin:8px 0 0">🧭 Üçüncü modda tam olarak ne olduğunu <b>4️⃣</b>'te adım adım kuracağız, <b>5️⃣</b>'te ise ağ o ağırlıkları kimse söylemeden <b>kendi</b> bulacak. Şimdilik tek amacımız: ilk iki modun neden tıkandığını <b>hissetmek</b>.</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0">
+      <button class="addbtn" id="actXorModeLin" style="background:var(--blue); color:#fff">📏 Lineer dene (aktivasyonsuz)</button>
+      <button class="addbtn" id="actXorModeNL" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🧠 Aktivasyon ekle (2 nöron)</button>
+      <button class="addbtn" id="actXorModeSig" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🌊 Sigmoid ile TEK nöron dene</button>
+    </div>
+    <div class="plots">
+      <div class="plotbox" style="flex:0 1 380px">
+        <h3 id="actXorCanvasTitle">Çizgiyi sürükleyerek ayır</h3>
+        <canvas id="actXorCanvas" width="360" height="360"></canvas>
+      </div>
+      <div class="plotbox" style="flex:1 1 300px">
+        <div id="actXorLinControls" style="margin-bottom:10px">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
+            <span style="font-size:13px; min-width:70px">açı</span>
+            <input type="range" id="actXorAngle" min="0" max="179" step="1" value="45" style="flex:1">
+            <b id="actXorAngleV" style="color:var(--accent); min-width:40px; text-align:right">45°</b>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px">
+            <span style="font-size:13px; min-width:70px">konum</span>
+            <input type="range" id="actXorOffset" min="-1" max="2" step="0.02" value="0.5" style="flex:1">
+            <b id="actXorOffsetV" style="color:var(--accent); min-width:40px; text-align:right">0.50</b>
+          </div>
+          <button class="addbtn" id="actXorBest" style="margin-top:8px; font-size:12px; padding:5px 10px; background:var(--panel); color:var(--text); border:1px solid var(--line)">🔍 En iyi açıyı tara (100 deneme)</button>
+        </div>
+        <div class="work" id="actXorRead" style="white-space:pre-wrap; line-height:1.9; font-size:13px"></div>
+        <div class="callout" id="actXorVerdict" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
     </div>
   </div>
 
@@ -2399,47 +2439,13 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   </div>
 
   <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Oyuncakla Dene, Python Kodu &amp; Terminoloji</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Python Kodu &amp; Terminoloji</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-
-  <!-- 🧩 SEZGİ AÇILIŞI: XOR bulmacası — aktivasyona neden ihtiyacımız var, elle keşfet -->
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent); margin-top:0">🎛️ Kendin dene — üç modu karşılaştır</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda anlattığımız her şeyi şimdi elinle sına. Üç mod var, sırayla dene: <b>📏 Lineer</b> — çizgiyi sürükleyip 4/4 yapmayı dene (yapamayacaksın, en fazla 3/4). <b>🌊 Sigmoid ile tek nöron</b> — aktivasyon eklemenin tek başına <i>yetmediğini</i> gör: aynı noktalar yanlış kalır, çünkü sınır hâlâ düz. <b>🧠 Aktivasyon ekle</b> — iki gizli nöron devreye girsin, 4️⃣'te kurduğumuz h₁=OR / h₂=AND mantığının bandı ekranda belirsin.</p>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0">
-      <button class="addbtn" id="actXorModeLin" style="background:var(--blue); color:#fff">📏 Lineer dene (aktivasyonsuz)</button>
-      <button class="addbtn" id="actXorModeNL" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🧠 Aktivasyon ekle (2 nöron)</button>
-      <button class="addbtn" id="actXorModeSig" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🌊 Sigmoid ile TEK nöron dene</button>
-    </div>
-    <div class="plots">
-      <div class="plotbox" style="flex:0 1 380px">
-        <h3 id="actXorCanvasTitle">Çizgiyi sürükleyerek ayır</h3>
-        <canvas id="actXorCanvas" width="360" height="360"></canvas>
-      </div>
-      <div class="plotbox" style="flex:1 1 300px">
-        <div id="actXorLinControls" style="margin-bottom:10px">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px">
-            <span style="font-size:13px; min-width:70px">açı</span>
-            <input type="range" id="actXorAngle" min="0" max="179" step="1" value="45" style="flex:1">
-            <b id="actXorAngleV" style="color:var(--accent); min-width:40px; text-align:right">45°</b>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px">
-            <span style="font-size:13px; min-width:70px">konum</span>
-            <input type="range" id="actXorOffset" min="-1" max="2" step="0.02" value="0.5" style="flex:1">
-            <b id="actXorOffsetV" style="color:var(--accent); min-width:40px; text-align:right">0.50</b>
-          </div>
-          <button class="addbtn" id="actXorBest" style="margin-top:8px; font-size:12px; padding:5px 10px; background:var(--panel); color:var(--text); border:1px solid var(--line)">🔍 En iyi açıyı tara (100 deneme)</button>
-        </div>
-        <div class="work" id="actXorRead" style="white-space:pre-wrap; line-height:1.9; font-size:13px"></div>
-        <div class="callout" id="actXorVerdict" style="margin-top:10px"></div>
-      </div>
-    </div>
-  </div>
 
   <div class="pts" style="border-left:3px solid var(--blue)">
     <h3 style="color:var(--blue); margin-top:0">🐍 Aynı ağın kodu — elle seçilmiş ağırlıklarla, saf Python</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">5️⃣'te ağ ağırlıkları <b>kendi</b> buldu. Peki 4️⃣'te elle kurduğumuz <b>h₁=OR, h₂=AND, y = h₁ ∧ ¬h₂</b> mantığını doğrudan sayıya döksek nasıl görünürdü? Hiçbir kütüphane yok — saf Python:</p>
-    <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, yukarıdaki oyuncağın matematiksel karşılığı.</b> Oyuncak <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: oyuncaktaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç anlatım (4️⃣'teki mantık, bu kod, yukarıdaki oyuncak) tek bir ağın üç görünümü.</div>
+    <div class="callout" style="margin:0 0 12px">🔗 <b>Bu kod, 1️⃣'teki oyuncağın matematiksel karşılığı.</b> Oyuncak <code>step</code> kullanıyor, kod <code>sigmoid</code> — ama <b>eşikler birebir aynı</b>: oyuncaktaki <code>h1=step(x₁+x₂−0.5)</code> ile kodun <code>σ(20x₁+20x₂−10)</code>'u aynı yerde, <b>x₁+x₂=0.5</b> çizgisinde karar değiştirir (20 ile bölünce 0.5 çıkar). Aynı şekilde h₂'nin eşiği ikisinde de <b>1.5</b>, çıktı nöronununki ise <b>h₁−h₂=0.5</b>. Yani üç anlatım (4️⃣'teki mantık, bu kod, 1️⃣'teki oyuncak) tek bir ağın üç görünümü.</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
 
 def sigmoid(z):
@@ -5113,15 +5119,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609062112"></script>
-<script src="js/lesson-turev.js?v=202609062112"></script>
-<script src="js/lesson-xor.js?v=202609062112"></script>
-<script src="js/lesson-xor-arch.js?v=202609062112"></script>
-<script src="js/lesson-xor-epoch.js?v=202609062112"></script>
-<script src="js/lesson-nn.js?v=202609062112"></script>
-<script src="js/lesson-trig.js?v=202609062112"></script>
+<script src="js/lesson-linreg.js?v=202609062134"></script>
+<script src="js/lesson-turev.js?v=202609062134"></script>
+<script src="js/lesson-xor.js?v=202609062134"></script>
+<script src="js/lesson-xor-arch.js?v=202609062134"></script>
+<script src="js/lesson-xor-epoch.js?v=202609062134"></script>
+<script src="js/lesson-nn.js?v=202609062134"></script>
+<script src="js/lesson-trig.js?v=202609062134"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609062112"></script>
-<script src="js/app.js?v=202609062112"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609062134"></script>
+<script src="js/app.js?v=202609062134"></script>
 </body>
 </html>
