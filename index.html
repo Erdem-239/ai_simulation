@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609062012"></script>
-<link rel="stylesheet" href="css/style.css?v=202609062012">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609062030"></script>
+<link rel="stylesheet" href="css/style.css?v=202609062030">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 20:12 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 20:30 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2187,6 +2187,54 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="callout" style="margin:0 0 10px; font-size:12.5px; line-height:1.6">⚠️ <b>Alt indis karışıklığına dikkat:</b> <b>1/2</b> rakamları <b>KATMAN</b> numarasıdır (W₁ = 1. katman, W₂ = 2. katman) — nöronlar ise <b>h₁/h₂</b> diye anılır. Bu yüzden gizli katmanın toplamına z₁ değil <b>z<sub>h</sub></b>, çıktınınkine z₂ değil <b>z<sub>y</sub></b> diyoruz. Şemada gizli nöronların tek tek toplamları <b>z<sub>h1</sub></b> ve <b>z<sub>h2</sub></b> olarak yazılı; ikisi birlikte \(z_h\) vektörünü oluşturur.</div>
         <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Denklemin ilk satırı <b>gizli katman</b> (2 nöron birden — bu yüzden \(W_1\) bir matris), ikinci satırı <b>çıktı katmanı</b> (tek nöron, \(W_2\) bir vektör). Başlangıç değerleri: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · W₂=[1.2,−0.9] · b₂=−1.2 · α=3.0. Bu iki satırın seçili girdi için tek tek sayıya dökülmüş hâli, aşağıdaki <b>▶ İleri Yayılım</b> kartlarında adım adım duruyor.</p>
         <div class="callout" id="xaVerdict" style="margin-top:8px"></div>
+        </div>
+        </div>
+        <div class="acc" style="margin:0 0 4px">
+        <div class="acc-head"><span class="ac">▸</span> 🔗 Türev zinciri — bütün resim tek yerde</div>
+        <div class="acc-body">
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 6px">Aşağıdaki kartlar zinciri <b>halka halka</b> gösteriyor. Burası ise <b>zincirin tamamı</b> — hangi halkanın hangi kartta olduğu dahil.</p>
+
+        <div style="font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:10px 0 4px">▶ İLERİ YOL — ne neye bağlı</div>
+        <div class="eq" style="margin:3px 0">\( x \xrightarrow{\;W_1,b_1\;} z_h \xrightarrow{\;\sigma\;} h \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 1</div>
+        <div class="eq" style="margin:3px 0">\( h \xrightarrow{\;W_2,b_2\;} z_y \xrightarrow{\;\sigma\;} p \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 2</div>
+        <div class="eq" style="margin:3px 0">\( p \xrightarrow{\;\text{log-loss}\;} L \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 3</div>
+
+        <div style="font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:12px 0 4px">◀ GERİ YOL — aynı okları tersten yürü</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 6px">En uzun yol <b>w₁₁</b>'inki: L'den w₁₁'e beş halka var. Zincir kuralı bunları <b>çarpar</b>:</p>
+        <div class="eq" style="margin:3px 0">\( \dfrac{\partial L}{\partial w_{11}}=\tfrac{\partial L}{\partial p}\cdot\tfrac{\partial p}{\partial z_y}\cdot\tfrac{\partial z_y}{\partial h_1} \)</div>
+        <div class="eq" style="margin:3px 0">\( \qquad\cdot\;\tfrac{\partial h_1}{\partial z_{h1}}\cdot\tfrac{\partial z_{h1}}{\partial w_{11}} \)</div>
+        <table class="calc" style="margin-top:7px">
+          <tr><th>halka</th><th>eşittir</th><th>kart</th></tr>
+          <tr><td>\( \tfrac{\partial L}{\partial p} \)</td><td class="num">\( \tfrac{p-y}{p(1-p)} \)</td><td>Geri 1</td></tr>
+          <tr><td>\( \tfrac{\partial p}{\partial z_y} \)</td><td class="num">\( p(1-p) \)</td><td>Geri 1</td></tr>
+          <tr><td>\( \tfrac{\partial z_y}{\partial h_1} \)</td><td class="num">\( v_1 \)</td><td>Geri 3</td></tr>
+          <tr><td>\( \tfrac{\partial h_1}{\partial z_{h1}} \)</td><td class="num">\( h_1(1-h_1) \)</td><td>Geri 3</td></tr>
+          <tr><td>\( \tfrac{\partial z_{h1}}{\partial w_{11}} \)</td><td class="num">\( x_1 \)</td><td>Geri 4</td></tr>
+        </table>
+        <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">✨ <b>İlk iki halka sadeleşiyor</b> — log-loss'un paydasındaki \(p(1-p)\), sigmoid türevinin ta kendisi:</div>
+        <div class="eq" style="margin:4px 0">\( \tfrac{\partial L}{\partial p}\cdot\tfrac{\partial p}{\partial z_y}=\tfrac{p-y}{p(1-p)}\cdot p(1-p) \)</div>
+        <div class="eq" style="margin:4px 0">\( =\;p-y\;=\;dz_y \)</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:6px 0">Beş halkalı zincir böylece dört çarpana iniyor — <b>geri yayılımın tamamı bu tek satır</b>:</p>
+        <div class="eq" style="margin:4px 0; font-size:105%">\( \dfrac{\partial L}{\partial w_{11}}=(p-y)\cdot v_1\cdot h_1(1-h_1)\cdot x_1 \)</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:8px 0 4px">Kartlardaki isimlerle <b>birebir aynı şey</b>, sadece parça parça saklanıyor:</p>
+        <div class="eq" style="margin:3px 0">\( dz_y=p-y \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 1</div>
+        <div class="eq" style="margin:3px 0">\( dh_1=dz_y\,v_1 \)</div>
+        <div class="eq" style="margin:3px 0">\( dz_{h1}=dh_1\cdot h_1(1-h_1) \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 3</div>
+        <div class="eq" style="margin:3px 0">\( dW_1[x_1\!\to\!h_1]=\tfrac{1}{m}\sum_i x_{1,i}\,dz_{h1,i} \)</div>
+        <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 4 <span style="opacity:.8">(dört noktanın ortalaması)</span></div>
+
+        <div style="font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:12px 0 4px">◀ KISA ZİNCİR — çıktı katmanı</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 5px">v₁, v₂ ve b₃ kayba çok daha yakın: aralarında yalnızca <b>iki</b> halka var.</p>
+        <div class="eq" style="margin:3px 0">\( \dfrac{\partial L}{\partial v_1}=\tfrac{\partial L}{\partial z_y}\cdot\tfrac{\partial z_y}{\partial v_1} \)</div>
+        <div class="eq" style="margin:3px 0">\( =\;(p-y)\cdot h_1 \)</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:5px 0 0"><b>Geri 2'nin Geri 4'ten kısa olmasının sebebi bu</b> — dokuz ağırlığın üçü kısa zinciri, altısı (w₁₁…w₂₂, b₁, b₂) uzun zinciri kullanıyor.</p>
+        <div class="callout" style="margin-top:10px; font-size:12.5px; line-height:1.6">🧭 <b>Bütün resim:</b> geri yayılım "her ağırlık için ayrı bir formül" değil — <b>tek bir zincir</b>. Bir ağırlık kayba ne kadar uzaksa, gradyanı o kadar çok çarpanın içinden geçer. Derin bir ağda ortadaki <b>\(v\cdot h(1-h)\)</b> halkası katman sayısı kadar tekrarlanır; \(h(1-h)\le 0.25\) olduğu için bu çarpanlar üst üste binince sinyal söner — <b>vanishing gradient</b> tam olarak bu satırda saklı.</div>
+        <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">📌 <b>Küçük bir not:</b> burada \(dh_1=dz_y\,v_1\) tek terim, çünkü <b>tek</b> çıktı nöronumuz var. h₁ birden çok nörona bağlı olsaydı, hepsinden gelen katkılar <b>toplanırdı</b>: \(dh_1=\sum_k dz_{y,k}\,v_{1k}\). Zincir kuralının "bir düğüm kaç yere gidiyorsa o kadar yoldan sinyal alır" kuralı.</div>
         </div>
         </div>
       </div>
@@ -5068,15 +5116,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609062012"></script>
-<script src="js/lesson-turev.js?v=202609062012"></script>
-<script src="js/lesson-xor.js?v=202609062012"></script>
-<script src="js/lesson-xor-arch.js?v=202609062012"></script>
-<script src="js/lesson-xor-epoch.js?v=202609062012"></script>
-<script src="js/lesson-nn.js?v=202609062012"></script>
-<script src="js/lesson-trig.js?v=202609062012"></script>
+<script src="js/lesson-linreg.js?v=202609062030"></script>
+<script src="js/lesson-turev.js?v=202609062030"></script>
+<script src="js/lesson-xor.js?v=202609062030"></script>
+<script src="js/lesson-xor-arch.js?v=202609062030"></script>
+<script src="js/lesson-xor-epoch.js?v=202609062030"></script>
+<script src="js/lesson-nn.js?v=202609062030"></script>
+<script src="js/lesson-trig.js?v=202609062030"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609062012"></script>
-<script src="js/app.js?v=202609062012"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609062030"></script>
+<script src="js/app.js?v=202609062030"></script>
 </body>
 </html>
