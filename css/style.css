@@ -930,3 +930,10 @@
   .fm-t-delta{background:#2a1a33; color:#d29bff}
   @media(max-width:720px){ .fm-row{flex-direction:column; gap:2px} .fm-tag{flex:0 0 auto; align-self:flex-start} }
   @media(max-width:720px){ #cellSvg,#scSvg,#lstmPipe,#attSvg,.lesson-hero-svg{min-width:0} }
+
+/* Türev zinciri kutusundaki tam-zincir denklemleri: sağ sütun dar olduğu
+   için tek satırda tutulup boyutları iki kritik bantta kısılıyor —
+   1240-1300 (iki sütunlu düzenin en dar hâli) ve mobil tek sütun. */
+.xe-chain-eq{font-size:118%}
+@media(min-width:1240px) and (max-width:1300px){ .xe-chain-eq{font-size:104%} }
+@media(max-width:640px){ .xe-chain-eq{font-size:86%} }
