@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061448"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061448">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061506"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061506">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 14:48 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 15:06 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2152,9 +2152,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="tip" style="margin:0 0 6px; padding:7px 11px; font-size:12.5px; line-height:1.6">
           📐 <b>Şema = aşağıdaki 4 kartla AYNI ağ.</b> Şema bu ağın <b>şu anki fotoğrafı</b>; kartlar ise ona <b>bir epoch boyunca</b> (ileri besleme→kayıp→gradyan→güncelleme) ne olduğunu gösteriyor.
           <div style="margin:6px 0; padding:5px 8px; background:rgba(0,0,0,.15); border-radius:5px">
-            Bu ağın matematiği <b>iki satır</b>:<br>
-            1️⃣ gizli katman: \(z_h{=}X\!\cdot\!W_1{+}b_1\), sonra \(h{=}\sigma(z_h)\)<br>
-            2️⃣ çıktı katmanı: \(z_y{=}h\!\cdot\!W_2{+}b_2\), sonra \(p{=}\sigma(z_y)\)
+            Bu ağın matematiği <b>iki satır</b> (W₁'in 4, W₂'nin 2 sayısı tek tek açık):<br>
+            1️⃣ gizli katman: \(z_{h1}{=}w_{11}x_1{+}w_{12}x_2{+}b_1\), \(z_{h2}{=}w_{21}x_1{+}w_{22}x_2{+}b_2\), sonra \(h_1{=}\sigma(z_{h1})\), \(h_2{=}\sigma(z_{h2})\)<br>
+            2️⃣ çıktı katmanı: \(z_y{=}v_1h_1{+}v_2h_2{+}b_3\), sonra \(p{=}\sigma(z_y)\)<br>
+            <span style="color:var(--muted); font-size:92%">(kısaca <code>z<sub>h</sub>=X·W₁+b₁</code>, <code>z<sub>y</sub>=h·W₂+b₂</code> da yazılır — W₁={w₁₁,w₁₂,w₂₁,w₂₂}, W₂={v₁,v₂})</span>
           </div>
           Şemadaki her <b>Σ</b> kutusu bu satırların <b>z</b> kısmını hesaplıyor (ağırlıklı toplam); her <b>σ</b> kutusu da hemen ardından <b>σ(z)</b>'yi (aktivasyonu) hesaplıyor. <b>Alt indis hangi katman olduğunu söyler:</b> \(z_h\) = gizli katmanın toplamı, \(z_y\) = çıktının toplamı — ikisi farklı katman, o yüzden farklı harf. <span style="color:var(--muted)">(Tüm semboller: aşağıdaki notasyon listesinde.)</span>
         </div>
@@ -2190,7 +2191,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="stephead"><h2>Adım 1) İleri besleme — iki katmandan geç</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="xe-flow"><b>girdi:</b> 4 nokta + o anki ağırlıklar &nbsp;·&nbsp; <b>çıktı:</b> h₁,h₂ <span class="xe-to">→ Adım 3</span> · p <span class="xe-to">→ Adım 2</span></div>
-          <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">\( z_h{=}X W_1{+}b_1 \to h \to z_y \to p \) <span style="opacity:.75">(kümenin başındaki denklem)</span></div>
+          <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">\( z_{h1}{=}w_{11}x_1{+}w_{12}x_2{+}b_1 \to h_1 \) &nbsp;·&nbsp; \( z_{h2}{=}w_{21}x_1{+}w_{22}x_2{+}b_2 \to h_2 \) &nbsp;·&nbsp; \( z_y{=}v_1h_1{+}v_2h_2{+}b_3 \to p \) <span style="opacity:.75">(kümenin başındaki denklem)</span></div>
           <table class="calc">
             <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>p</th><th>tahmin</th><th>y</th><th></th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe1h10"></td><td class="num" id="xe1h20"></td><td class="num" id="xe1p0"></td><td class="num" id="xe1t0"></td><td class="num">0</td><td id="xe1k0"></td></tr>
@@ -4995,15 +4996,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061448"></script>
-<script src="js/lesson-turev.js?v=202609061448"></script>
-<script src="js/lesson-xor.js?v=202609061448"></script>
-<script src="js/lesson-xor-arch.js?v=202609061448"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061448"></script>
-<script src="js/lesson-nn.js?v=202609061448"></script>
-<script src="js/lesson-trig.js?v=202609061448"></script>
+<script src="js/lesson-linreg.js?v=202609061506"></script>
+<script src="js/lesson-turev.js?v=202609061506"></script>
+<script src="js/lesson-xor.js?v=202609061506"></script>
+<script src="js/lesson-xor-arch.js?v=202609061506"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061506"></script>
+<script src="js/lesson-nn.js?v=202609061506"></script>
+<script src="js/lesson-trig.js?v=202609061506"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061448"></script>
-<script src="js/app.js?v=202609061448"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061506"></script>
+<script src="js/app.js?v=202609061506"></script>
 </body>
 </html>
