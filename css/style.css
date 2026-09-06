@@ -734,6 +734,11 @@
   .xe-cards .step-graph-cap{font-size:9.5px; margin-top:2px; line-height:1.3}
   .xe-cards .work{line-height:1.5 !important; padding:6px 9px}
   .xe-cards .eq mjx-container{font-size:88% !important}
+  /* kartlar arası veri akışı: bu kartın girdisi nereden geldi, çıktısı nereye gidiyor */
+  .xe-flow{font-size:10.5px; line-height:1.5; color:var(--muted); background:rgba(90,160,224,.07);
+           border-left:2px solid rgba(90,160,224,.5); border-radius:0 4px 4px 0; padding:4px 7px; margin:0 0 7px}
+  .xe-flow b{color:#9dc4ea; font-weight:600}
+  .xe-flow .xe-to{color:var(--accent); font-weight:600; white-space:nowrap}
   /* mimari şema solda, kontrol/durum/hesap sağda — üst bant tek sıraya insin */
   .xs-top{display:grid; gap:12px; grid-template-columns:1fr; align-items:start; margin:0 0 8px}
   @media(min-width:1240px){ .xs-top{grid-template-columns:minmax(0,1.32fr) minmax(320px,1fr)} }

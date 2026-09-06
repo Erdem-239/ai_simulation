@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609060944"></script>
-<link rel="stylesheet" href="css/style.css?v=202609060944">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609060954"></script>
+<link rel="stylesheet" href="css/style.css?v=202609060954">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:44 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2178,6 +2178,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeAdim1">
         <div class="stephead"><h2>Adım 1) İleri besleme — iki katmandan geç</h2><span class="chev">▸</span></div>
         <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> 4 nokta + o anki ağırlıklar &nbsp;·&nbsp; <b>çıktı:</b> h₁,h₂ <span class="xe-to">→ Adım 3</span> · p <span class="xe-to">→ Adım 2</span></div>
           <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">\( z_h{=}X W_1{+}b_1 \to h \to z_y \to p \) <span style="opacity:.75">(kümenin başındaki denklem)</span></div>
           <table class="calc">
             <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>p</th><th>tahmin</th><th>y</th><th></th></tr>
@@ -2199,9 +2200,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeAdim2">
         <div class="stephead"><h2>Adım 2) Kayıp — ne kadar kötüyüz?</h2><span class="chev">▸</span></div>
         <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> p <span class="xe-to">← Adım 1</span>, y &nbsp;·&nbsp; <b>çıktı:</b> L · hata=p−y <span class="xe-to">→ Adım 3</span></div>
           <div class="eq" style="font-size:90%">\[ L=-\frac{1}{m}\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big] \]</div>
           <table class="calc">
-            <tr><th>nokta</th><th>p</th><th>y</th><th>katkı</th></tr>
+            <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>y</th><th>katkı</th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe2p0"></td><td class="num">0</td><td id="xe2c0"></td></tr>
             <tr><td>(0,1)</td><td class="num" id="xe2p1"></td><td class="num">1</td><td id="xe2c1"></td></tr>
             <tr><td>(1,0)</td><td class="num" id="xe2p2"></td><td class="num">1</td><td id="xe2c2"></td></tr>
@@ -2221,15 +2223,17 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeAdim3">
         <div class="stephead"><h2>Adım 3) Gradyan — geri yayılım</h2><span class="chev">▸</span></div>
         <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> h <span class="xe-to">← Adım 1</span>, hata <span class="xe-to">← Adım 2</span> &nbsp;·&nbsp; <b>çıktı:</b> dW,dB <span class="xe-to">→ Adım 4</span></div>
           <div class="eq">\[ \begin{aligned} dz_y&=p-y \;\Rightarrow\; dh=dz_y W_2 \\ dz_h&=dh\cdot h(1{-}h) \end{aligned} \]</div>
+          <div style="font-size:11px; color:var(--muted); margin:-2px 0 6px">↩︎ Sinyal <b>sondan başa</b> akar (dz<sub>y</sub> → dz<sub>h</sub>) — adı bu yüzden "geri yayılım". Sonuçlar aşağıda <b>1→2</b> sırasıyla.</div>
           <table class="calc">
-            <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>hata=dz<sub>y</sub></th></tr>
+            <tr><th>nokta</th><th>h₁ <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>h₂</th><th>hata=dz<sub>y</sub></th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe3h10"></td><td class="num" id="xe3h20"></td><td class="num" id="xe3e0"></td></tr>
             <tr><td>(0,1)</td><td class="num" id="xe3h11"></td><td class="num" id="xe3h21"></td><td class="num" id="xe3e1"></td></tr>
             <tr><td>(1,0)</td><td class="num" id="xe3h12"></td><td class="num" id="xe3h22"></td><td class="num" id="xe3e2"></td></tr>
             <tr><td>(1,1)</td><td class="num" id="xe3h13"></td><td class="num" id="xe3h23"></td><td class="num" id="xe3e3"></td></tr>
           </table>
-          <div class="eq" style="font-size:82%; margin-top:6px">\[ \begin{aligned} dW_2&=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, & dB_2&=\tfrac{1}{m}\!\sum_i dz_{y,i} \\ dW_1&=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, & dB_1&=\tfrac{1}{m}\!\sum_i dz_{h,i} \end{aligned} \]</div>
+          <div class="eq" style="font-size:82%; margin-top:6px">\[ \begin{aligned} dW_1&=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, & dB_1&=\tfrac{1}{m}\!\sum_i dz_{h,i} \\ dW_2&=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, & dB_2&=\tfrac{1}{m}\!\sum_i dz_{y,i} \end{aligned} \]</div>
           <div class="work" id="xe3g" style="white-space:pre-wrap; line-height:1.7; font-size:11px; margin-top:8px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe3Canvas" width="420" height="76"></canvas>
@@ -2244,8 +2248,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeAdim4">
         <div class="stephead"><h2>Adım 4) Güncelle — dört ağırlık grubu birden</h2><span class="chev">▸</span></div>
         <div class="stepbody">
-          <div class="eq">\[ W_1{:=}W_1{-}\alpha\nabla W_1,\;\; W_2{:=}W_2{-}\alpha\nabla W_2 \]</div>
-          <div class="work" id="xe4u" style="white-space:pre-wrap; line-height:1.65; font-size:10.8px"></div>
+          <div class="xe-flow"><b>girdi:</b> eski ağırlıklar, dW,dB <span class="xe-to">← Adım 3</span> &nbsp;·&nbsp; <b>çıktı:</b> yeni ağırlıklar <span class="xe-to">→ Adım 1</span></div>
+          <div class="eq" style="font-size:92%">\[ \text{yeni} := \text{eski} - \alpha\cdot\text{gradyan},\quad \alpha=3.0 \]</div>
+          <table class="calc" id="xe4tab"></table>
+          <div id="xe4ornek" style="font-size:11px; color:var(--muted); margin-top:5px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe4Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">İki gizli nöronun ayırıcı çizgisi · dört XOR noktası</div>
@@ -4977,15 +4983,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609060944"></script>
-<script src="js/lesson-turev.js?v=202609060944"></script>
-<script src="js/lesson-xor.js?v=202609060944"></script>
-<script src="js/lesson-xor-arch.js?v=202609060944"></script>
-<script src="js/lesson-xor-epoch.js?v=202609060944"></script>
-<script src="js/lesson-nn.js?v=202609060944"></script>
-<script src="js/lesson-trig.js?v=202609060944"></script>
+<script src="js/lesson-linreg.js?v=202609060954"></script>
+<script src="js/lesson-turev.js?v=202609060954"></script>
+<script src="js/lesson-xor.js?v=202609060954"></script>
+<script src="js/lesson-xor-arch.js?v=202609060954"></script>
+<script src="js/lesson-xor-epoch.js?v=202609060954"></script>
+<script src="js/lesson-nn.js?v=202609060954"></script>
+<script src="js/lesson-trig.js?v=202609060954"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609060944"></script>
-<script src="js/app.js?v=202609060944"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609060954"></script>
+<script src="js/app.js?v=202609060954"></script>
 </body>
 </html>
