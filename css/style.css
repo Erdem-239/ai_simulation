@@ -937,3 +937,12 @@
 .xe-chain-eq{font-size:118%}
 @media(min-width:1240px) and (max-width:1300px){ .xe-chain-eq{font-size:104%} }
 @media(max-width:640px){ .xe-chain-eq{font-size:86%} }
+
+/* Türev zinciri tablosunun "anlamı" sütunu: sayı değil düz metin, sola
+   dayalı ve dar sütunda sarmalanabilsin diye küçük punto. */
+table.calc td.xz-anlam{text-align:left; font-size:11px; line-height:1.5;
+  color:#ccd5e8; font-weight:400; padding:5px 8px; max-width:250px}
+table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
+@media(max-width:640px){
+  table.calc td.xz-anlam{font-size:10px; padding:4px 5px; max-width:150px}
+}

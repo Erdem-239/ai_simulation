@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609062052"></script>
-<link rel="stylesheet" href="css/style.css?v=202609062052">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609062112"></script>
+<link rel="stylesheet" href="css/style.css?v=202609062112">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 20:52 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 21:12 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2206,12 +2206,12 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 6px">En uzun yol <b>w₁₁</b>'inki: L'den w₁₁'e beş halka var. Zincir kuralı bunları <b>çarpar</b>:</p>
         <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial w_{11}}=\dfrac{\partial L}{\partial p}\cdot\dfrac{\partial p}{\partial z_y}\cdot\dfrac{\partial z_y}{\partial h_1}\cdot\dfrac{\partial h_1}{\partial z_{h1}}\cdot\dfrac{\partial z_{h1}}{\partial w_{11}} \)</div>
         <table class="calc" style="margin-top:7px">
-          <tr><th>halka</th><th>eşittir</th><th>kart</th></tr>
-          <tr><td>\( \tfrac{\partial L}{\partial p} \)</td><td class="num">\( \tfrac{p-y}{p(1-p)} \)</td><td>Geri 1</td></tr>
-          <tr><td>\( \tfrac{\partial p}{\partial z_y} \)</td><td class="num">\( p(1-p) \)</td><td>Geri 1</td></tr>
-          <tr><td>\( \tfrac{\partial z_y}{\partial h_1} \)</td><td class="num">\( v_1 \)</td><td>Geri 3</td></tr>
-          <tr><td>\( \tfrac{\partial h_1}{\partial z_{h1}} \)</td><td class="num">\( h_1(1-h_1) \)</td><td>Geri 3</td></tr>
-          <tr><td>\( \tfrac{\partial z_{h1}}{\partial w_{11}} \)</td><td class="num">\( x_1 \)</td><td>Geri 4</td></tr>
+          <tr><th>halka</th><th>eşittir</th><th>kart</th><th>anlamı</th></tr>
+          <tr><td>\( \tfrac{\partial L}{\partial p} \)</td><td class="num">\( \tfrac{p-y}{p(1-p)} \)</td><td class="xz-kart">Geri 1</td><td class="xz-anlam">Tahmin biraz oynayınca <b>kayıp</b> ne kadar oynar. Yanlış tarafta ne kadar eminsen o kadar büyür.</td></tr>
+          <tr><td>\( \tfrac{\partial p}{\partial z_y} \)</td><td class="num">\( p(1-p) \)</td><td class="xz-kart">Geri 1</td><td class="xz-anlam">Ham toplamı ittiğinde <b>olasılık</b> ne kadar kıpırdar. p 0 ya da 1'e yapışıksa ≈0 — sigmoid doymuş, itmek işe yaramaz.</td></tr>
+          <tr><td>\( \tfrac{\partial z_y}{\partial h_1} \)</td><td class="num">\( v_1 \)</td><td class="xz-kart">Geri 3</td><td class="xz-anlam">h₁ bir birim artarsa çıktının toplamı <b>v₁ kadar</b> artar. Hata bu ağırlık üzerinden geri akar: v büyükse o nöronun suç payı büyük.</td></tr>
+          <tr><td>\( \tfrac{\partial h_1}{\partial z_{h1}} \)</td><td class="num">\( h_1(1-h_1) \)</td><td class="xz-kart">Geri 3</td><td class="xz-anlam">Gizli nöronun sigmoid'i o an <b>ne kadar duyarlı</b>. En büyük h=0.5'te (0.25); 0 ya da 1'e yapıştıysa sinyal söner.</td></tr>
+          <tr><td>\( \tfrac{\partial z_{h1}}{\partial w_{11}} \)</td><td class="num">\( x_1 \)</td><td class="xz-kart">Geri 4</td><td class="xz-anlam">w₁₁'i oynatmanın etkisi <b>kendi girdisi kadar</b>. x₁=0 ise o örnekte bu ağırlık hiç rol oynamamış — katkı da yok.</td></tr>
         </table>
         <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">✨ <b>İlk iki halka sadeleşiyor</b> — log-loss'un paydasındaki \(p(1-p)\), sigmoid türevinin ta kendisi:</div>
         <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial p}\cdot\dfrac{\partial p}{\partial z_y}=\dfrac{p-y}{p(1-p)}\cdot p(1-p)=p-y=dz_y \)</div>
@@ -5113,15 +5113,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609062052"></script>
-<script src="js/lesson-turev.js?v=202609062052"></script>
-<script src="js/lesson-xor.js?v=202609062052"></script>
-<script src="js/lesson-xor-arch.js?v=202609062052"></script>
-<script src="js/lesson-xor-epoch.js?v=202609062052"></script>
-<script src="js/lesson-nn.js?v=202609062052"></script>
-<script src="js/lesson-trig.js?v=202609062052"></script>
+<script src="js/lesson-linreg.js?v=202609062112"></script>
+<script src="js/lesson-turev.js?v=202609062112"></script>
+<script src="js/lesson-xor.js?v=202609062112"></script>
+<script src="js/lesson-xor-arch.js?v=202609062112"></script>
+<script src="js/lesson-xor-epoch.js?v=202609062112"></script>
+<script src="js/lesson-nn.js?v=202609062112"></script>
+<script src="js/lesson-trig.js?v=202609062112"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609062052"></script>
-<script src="js/app.js?v=202609062052"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609062112"></script>
+<script src="js/app.js?v=202609062112"></script>
 </body>
 </html>
