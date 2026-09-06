@@ -36,9 +36,9 @@
 
   /* tam ileri besleme + kayıp + gradyanlar (batch, 4 örnek) */
   function state(){
-    const z1 = X.map(x => [0,1].map(k => x[0]*W1[k][0] + x[1]*W1[k][1] + B1[k]));
+    const z1 = X.map(x => [0,1].map(k => x[0]*W1[k][0] + x[1]*W1[k][1] + B1[k]));  // z_h
     const h  = z1.map(row => row.map(sig));
-    const z2 = h.map(hi => hi[0]*W2[0] + hi[1]*W2[1] + B2);
+    const z2 = h.map(hi => hi[0]*W2[0] + hi[1]*W2[1] + B2);                        // z_y
     const p  = z2.map(sig);
     const dz2 = p.map((pi,i) => pi - Y[i]);
     const L = -p.reduce((s,pi,i) => s + (Y[i]*Math.log(pi+1e-12) + (1-Y[i])*Math.log(1-pi+1e-12)), 0)/4;
@@ -92,7 +92,7 @@
     c.beginPath(); c.moveTo(x0,y0); c.lineTo(x0,y1); c.stroke();
   }
 
-  /* 1) çıktı katmanının sigmoid eğrisi + dört noktanın (z2,p) konumu */
+  /* 1) çıktı katmanının sigmoid eğrisi + dört noktanın (z_y,p) konumu */
   function draw1(s){
     const cv = cv1, c = clr(cv);
     const L=30, R=cv.width-8, T=10, B=cv.height-20;
@@ -113,7 +113,7 @@
     });
     c.fillStyle='#6b7794'; c.font='9px Segoe UI';
     c.fillText('0.5', 6, py(0.5)+3);
-    c.textAlign='center'; c.fillText('z₂', (L+R)/2, cv.height-6); c.textAlign='start';
+    c.textAlign='center'; c.fillText('z_y', (L+R)/2, cv.height-6); c.textAlign='start';
   }
 
   /* 2) kayıp eğrisi + ln2 tabanı */
@@ -221,7 +221,7 @@
       const k = $('xe1k'+i); k.textContent = ok?'✓':'✗'; k.style.color = ok?'#46c46a':'#e06a6a';
     }
     $('xe1detail').textContent =
-      `z₁=[${N(s.z1[3][0],2)}, ${N(s.z1[3][1],2)}] → h=[${N(s.h[3][0],3)}, ${N(s.h[3][1],3)}] → z₂=${N(s.z2[3],2)} → p=${N(s.p[3],3)}`;
+      `z_h=[${N(s.z1[3][0],2)}, ${N(s.z1[3][1],2)}] → h=[${N(s.h[3][0],3)}, ${N(s.h[3][1],3)}] → z_y=${N(s.z2[3],2)} → p=${N(s.p[3],3)}`;
     draw1(s);
 
     // Kart 2
@@ -237,7 +237,7 @@
       `dW₂=[${N(s.dW2[0],3)},${N(s.dW2[1],3)}]  dB₂=${N(s.dB2,3)}\n` +
       `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
     $('xe3detail').textContent =
-      `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz₁ ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
+      `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz_h ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
     draw3(s);
 
     // Kart 4

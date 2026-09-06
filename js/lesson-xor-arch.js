@@ -51,8 +51,8 @@
     const { W1, B1, W2, B2, epoch, L } = net();
     const [x1, x2] = cur;
 
-    const z1 = W1[0][0]*x1 + W1[0][1]*x2 + B1[0];
-    const z2 = W1[1][0]*x1 + W1[1][1]*x2 + B1[1];
+    const z1 = W1[0][0]*x1 + W1[0][1]*x2 + B1[0];   // z_h1
+    const z2 = W1[1][0]*x1 + W1[1][1]*x2 + B1[1];   // z_h2
     const h1 = sigmoid(z1), h2 = sigmoid(z2);
     const zy = W2[0]*h1 + W2[1]*h2 + B2;
     const p  = sigmoid(zy);
@@ -97,16 +97,16 @@
 AĞIRLIKLAR: eğitimin ${epoch}. epoch'undaki hâli
 
 ① GİZLİ NÖRON h₁
-   Σ :  z₁ = ${N(W1[0][0],2)}·${x1} + (${N(W1[0][1],2)})·${x2} + (${N(B1[0],2)}) = ${N(z1,2)}
-   σ :  h₁ = σ(${N(z1,2)}) = ${N(h1,4)}          ${z1 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
+   Σ :  z_h1 = ${N(W1[0][0],2)}·${x1} + (${N(W1[0][1],2)})·${x2} + (${N(B1[0],2)}) = ${N(z1,2)}
+   σ :  h₁   = σ(${N(z1,2)}) = ${N(h1,4)}          ${z1 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
 
 ② GİZLİ NÖRON h₂
-   Σ :  z₂ = ${N(W1[1][0],2)}·${x1} + (${N(W1[1][1],2)})·${x2} + (${N(B1[1],2)}) = ${N(z2,2)}
-   σ :  h₂ = σ(${N(z2,2)}) = ${N(h2,4)}          ${z2 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
+   Σ :  z_h2 = ${N(W1[1][0],2)}·${x1} + (${N(W1[1][1],2)})·${x2} + (${N(B1[1],2)}) = ${N(z2,2)}
+   σ :  h₂   = σ(${N(z2,2)}) = ${N(h2,4)}          ${z2 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
 
 ③ ÇIKTI NÖRONU
-   Σ :  z_y = ${N(W2[0],2)}·${N(h1,3)} + (${N(W2[1],2)})·${N(h2,3)} + (${N(B2,2)}) = ${N(zy,2)}
-   σ :  p  = σ(${N(zy,2)}) = ${N(p,4)}
+   Σ :  z_y  = ${N(W2[0],2)}·${N(h1,3)} + (${N(W2[1],2)})·${N(h2,3)} + (${N(B2,2)}) = ${N(zy,2)}
+   σ :  p    = σ(${N(zy,2)}) = ${N(p,4)}
 
 KARAR:  p = ${N(p,4)} ${p >= 0.5 ? '≥' : '<'} 0.5  →  tahmin = ${tahmin}`;
     }
