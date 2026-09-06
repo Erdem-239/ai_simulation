@@ -225,15 +225,22 @@
     draw1(s);
 
     // Kart 2
+    let xe2toplam = 0;
     for(let i=0;i<4;i++){
       const pi = s.p[i], yi = Y[i];
       $('xe2p'+i).textContent = N(pi,4);
       const terim = yi ? Math.log(pi+1e-12) : Math.log(1-pi+1e-12);
+      xe2toplam += terim;
       $('xe2c'+i).textContent = yi
         ? `ln(${N(pi,4)})=${N(terim,4)}`
         : `ln(1−${N(pi,4)})=${N(terim,4)}`;
     }
-    $('xe2L').textContent = `bu 4 katkının ortalaması × (−1):\nL = ${N(s.L,6)}\ntaban (ln2) = 0.693147\nfark = ${N(s.L-LN2,6)}`;
+    const xe2ort = xe2toplam/4, xe2fark = s.L-LN2;
+    $('xe2L').innerHTML =
+      `ortalama(katkı) = ${N(xe2ort,4)}  →  ×(−1)\n` +
+      `L = <b>${N(s.L,6)}</b>\n` +
+      `ln2 ("vazgeçmiş" model) = 0.693147\n` +
+      `fark = ${N(xe2fark,4)}  ${xe2fark>0 ? '→ ondan KÖTÜYÜZ' : '→ ondan İYİYİZ'}`;
     draw2();
 
     // Kart 3
@@ -242,6 +249,7 @@
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
     $('xe3g').textContent =
+      `(hata'dan hesaplanan ortalama gradyanlar)\n` +
       `dW₂=[${N(s.dW2[0],3)},${N(s.dW2[1],3)}]  dB₂=${N(s.dB2,3)}\n` +
       `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
     $('xe3detail').textContent =
