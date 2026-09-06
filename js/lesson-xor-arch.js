@@ -13,7 +13,6 @@
   // −0.00 gibi çirkin çıktıları engelle
   const N = (v, d) => (Object.is(Math.round(v * 10**d) / 10**d, -0) ? 0 : v).toFixed(d).replace('-', '−');
 
-  const work    = $('xaWork');
   const verdict = $('xaVerdict');
   const btns    = [...document.querySelectorAll('.xa-btn')];
 
@@ -99,27 +98,6 @@
     const tgt = $('xaTgt');
     tgt.textContent = `tahmin ${tahmin} · doğru cevap y = ${hedef} ${dogru ? '✓' : '✗'}`;
     tgt.setAttribute('fill', dogru ? '#46c46a' : '#e06a6a');
-
-    // --- adım adım hesap dökümü ---
-    if(work){
-      work.textContent =
-`GİRDİ:  x₁ = ${x1} ,  x₂ = ${x2}          (XOR'un doğru cevabı: ${hedef})
-AĞIRLIKLAR: eğitimin ${epoch}. epoch'undaki hâli
-
-① GİZLİ NÖRON h₁
-   Σ :  z_h1 = ${N(W1[0][0],2)}·${x1} + (${N(W1[0][1],2)})·${x2} + (${N(B1[0],2)}) = ${N(z1,2)}
-   σ :  h₁   = σ(${N(z1,2)}) = ${N(h1,4)}          ${z1 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
-
-② GİZLİ NÖRON h₂
-   Σ :  z_h2 = ${N(W1[1][0],2)}·${x1} + (${N(W1[1][1],2)})·${x2} + (${N(B1[1],2)}) = ${N(z2,2)}
-   σ :  h₂   = σ(${N(z2,2)}) = ${N(h2,4)}          ${z2 > 0 ? '← z pozitif, sigmoid 1\'e doğru' : '← z negatif, sigmoid 0\'a doğru'}
-
-③ ÇIKTI NÖRONU
-   Σ :  z_y  = ${N(W2[0],2)}·${N(h1,3)} + (${N(W2[1],2)})·${N(h2,3)} + (${N(B2,2)}) = ${N(zy,2)}
-   σ :  p    = σ(${N(zy,2)}) = ${N(p,4)}
-
-KARAR:  p = ${N(p,4)} ${p >= 0.5 ? '≥' : '<'} 0.5  →  tahmin = ${tahmin}`;
-    }
 
     if(verdict){
       verdict.innerHTML = dogru
