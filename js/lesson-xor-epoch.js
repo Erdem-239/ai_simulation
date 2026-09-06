@@ -250,11 +250,11 @@
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
     $('xe3g').innerHTML =
-      `dB₂ = ort(hata) = <b>${N(s.dB2,3)}</b>\n` +
-      `dW₂[h₁] = ort(h₁·hata) = <b>${N(s.dW2[0],3)}</b>\n` +
-      `dW₂[h₂] = ort(h₂·hata) = <b>${N(s.dW2[1],3)}</b>\n` +
-      `dW₁,dB₁ → yukarıdaki AYNI formül, x ve dz_h ile hesaplanıyor:\n` +
-      `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]`;
+      `1. KATMAN (x → h)\n` +
+      `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]\n` +
+      `2. KATMAN (h → çıktı)\n` +
+      `dW₂=[<b>${N(s.dW2[0],3)}</b>,<b>${N(s.dW2[1],3)}</b>]  dB₂=<b>${N(s.dB2,3)}</b>\n` +
+      `ör: dW₂[h₁] = ort(h₁·hata) = ${N(s.dW2[0],3)}`;
     $('xe3detail').textContent =
       `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz_h ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
     draw3(s);
@@ -264,11 +264,28 @@
     const nB1 = [0,1].map(k=>B1[k]-LR*s.dB1[k]);
     const nW2 = [0,1].map(k=>W2[k]-LR*s.dW2[k]);
     const nB2 = B2-LR*s.dB2;
-    $('xe4u').textContent =
-      `W₁: [[${N(W1[0][0],3)},${N(W1[0][1],3)}],[${N(W1[1][0],3)},${N(W1[1][1],3)}]] → [[${N(nW1[0][0],3)},${N(nW1[0][1],3)}],[${N(nW1[1][0],3)},${N(nW1[1][1],3)}]]\n` +
-      `b₁: [${N(B1[0],3)},${N(B1[1],3)}] → [${N(nB1[0],3)},${N(nB1[1],3)}]\n` +
-      `W₂: [${N(W2[0],3)},${N(W2[1],3)}] → [${N(nW2[0],3)},${N(nW2[1],3)}]\n` +
-      `b₂: ${N(B2,3)} → ${N(nB2,3)}`;
+    /* Adım 3'ün ürettiği gradyanlar burada TEKRAR görünür — buharlaşmasın:
+       her satır "eski − 3.0×gradyan = yeni" hesabının açık hâli. */
+    const satirlar = [
+      ['W₁[x₁→h₁]', W1[0][0], s.dW1[0][0], nW1[0][0]],
+      ['W₁[x₂→h₁]', W1[0][1], s.dW1[0][1], nW1[0][1]],
+      ['W₁[x₁→h₂]', W1[1][0], s.dW1[1][0], nW1[1][0]],
+      ['W₁[x₂→h₂]', W1[1][1], s.dW1[1][1], nW1[1][1]],
+      ['b₁[h₁]',    B1[0],    s.dB1[0],    nB1[0]],
+      ['b₁[h₂]',    B1[1],    s.dB1[1],    nB1[1]],
+      ['W₂[h₁]',    W2[0],    s.dW2[0],    nW2[0]],
+      ['W₂[h₂]',    W2[1],    s.dW2[1],    nW2[1]],
+      ['b₂',        B2,       s.dB2,       nB2]
+    ];
+    $('xe4tab').innerHTML =
+      `<tr><th>parametre</th><th>eski</th><th>gradyan<br><span style="font-weight:400; opacity:.7">(Adım 3)</span></th><th>yeni</th></tr>` +
+      satirlar.map(([ad, eski, grad, yeni]) =>
+        `<tr><td>${ad}</td><td class="num">${N(eski,4)}</td>` +
+        `<td class="num" style="color:#f0a032">${N(grad,4)}</td>` +
+        `<td class="num" style="color:#46c46a">${N(yeni,4)}</td></tr>`).join('');
+    // ilk satırın hesabını açıkça yaz ki kural somutlaşsın
+    $('xe4ornek').innerHTML =
+      `ör. ilk satır: <b>${N(W1[0][0],4)}</b> − 3.0×(<b>${N(s.dW1[0][0],4)}</b>) = <b>${N(nW1[0][0],4)}</b>`;
     draw4();
 
     const box = $('xeSonuc');
