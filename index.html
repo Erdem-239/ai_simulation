@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609060954"></script>
-<link rel="stylesheet" href="css/style.css?v=202609060954">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061013"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061013">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 09:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 10:13 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2052,6 +2052,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <defs>
         <marker id="xaAr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5aa0e0"/></marker>
         <marker id="xaAo" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
+        <marker id="xaArG" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#46c46a"/></marker>
+        <marker id="xaArR" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e06a6a"/></marker>
         </defs>
 
         <text x="62"  y="22" text-anchor="middle" font-size="12" fill="#5b9dd9" font-weight="700" font-family="Segoe UI, Arial">GİRDİ</text>
@@ -2063,19 +2065,19 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <text id="xaEpoch" x="939" y="52" text-anchor="middle" font-size="11.5" fill="#f0d8a0" font-weight="700" font-family="Segoe UI, Arial">epoch 0 · L = 0.880</text>
 
         <!-- ==== baglantilar ==== -->
-        <line x1="92" y1="108" x2="196" y2="80"  stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
-        <line x1="92" y1="132" x2="196" y2="236" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
-        <line x1="92" y1="236" x2="196" y2="124" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
-        <line x1="92" y1="260" x2="196" y2="280" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
-        <text id="xaw11" x="148" y="80"  text-anchor="middle" font-size="11.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.30</text>
-        <text id="xaw12" x="188" y="168" text-anchor="middle" font-size="11.5" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−0.30</text>
-        <text id="xaw21" x="112" y="200" text-anchor="middle" font-size="11.5" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−1.40</text>
-        <text id="xaw22" x="148" y="288" text-anchor="middle" font-size="11.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.00</text>
+        <line id="xaL11" x1="92" y1="108" x2="196" y2="80"  stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
+        <line id="xaL21" x1="92" y1="132" x2="196" y2="236" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
+        <line id="xaL12" x1="92" y1="236" x2="196" y2="124" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
+        <line id="xaL22" x1="92" y1="260" x2="196" y2="280" stroke="#334063" stroke-width="1.8" marker-end="url(#xaAr)"/>
+        <text id="xaw11" x="150" y="78"  text-anchor="middle" font-size="10.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.30</text>
+        <text id="xaw12" x="120" y="220" text-anchor="middle" font-size="10.5" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−0.30</text>
+        <text id="xaw21" x="120" y="102" text-anchor="middle" font-size="10.5" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−1.40</text>
+        <text id="xaw22" x="150" y="290" text-anchor="middle" font-size="10.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.00</text>
 
-        <line x1="472" y1="104" x2="676" y2="155" stroke="#334063" stroke-width="2" marker-end="url(#xaAo)"/>
-        <line x1="472" y1="256" x2="676" y2="205" stroke="#334063" stroke-width="2" marker-end="url(#xaAo)"/>
-        <text id="xav1" x="574" y="112" text-anchor="middle" font-size="12" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.20</text>
-        <text id="xav2" x="574" y="252" text-anchor="middle" font-size="12" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−0.90</text>
+        <line id="xaLv1" x1="472" y1="104" x2="676" y2="155" stroke="#334063" stroke-width="2" marker-end="url(#xaAo)"/>
+        <line id="xaLv2" x1="472" y1="256" x2="676" y2="205" stroke="#334063" stroke-width="2" marker-end="url(#xaAo)"/>
+        <text id="xav1" x="574" y="112" text-anchor="middle" font-size="10.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">w=1.20</text>
+        <text id="xav2" x="574" y="252" text-anchor="middle" font-size="10.5" fill="#e06a6a" font-weight="700" font-family="Segoe UI, Arial">w=−0.90</text>
 
         <!-- ==== girdi dugumleri ==== -->
         <circle cx="62" cy="120" r="28" fill="#16324f" stroke="#5aa0e0" stroke-width="2.4"/>
@@ -2129,7 +2131,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <text id="xaTgt" x="815" y="258" text-anchor="middle" font-size="11.5" fill="#95a2c2" font-family="Segoe UI, Arial">tahmin 0 · doğru cevap y = 0 ✓</text>
 
         <!-- ==== alt aciklama ==== -->
-        <text x="520" y="334" text-anchor="middle" font-size="11" fill="#6b7794" font-family="Segoe UI, Arial">her nöron İKİ iş yapar: önce Σ (ağırlıklı toplam → ham skor z), sonra σ (sigmoid → 0-1 arası çıktı) · şemadaki BÜTÜN sayılar canlı</text>
+        <text x="520" y="326" text-anchor="middle" font-size="11" font-family="Segoe UI, Arial"><tspan fill="#46c46a" font-weight="700">yeşil w = pozitif</tspan><tspan fill="#6b7794"> (o girdi nöronu ATEŞLEMEYE iter) &#160;·&#160; </tspan><tspan fill="#e06a6a" font-weight="700">kırmızı w = negatif</tspan><tspan fill="#6b7794"> (SUSTURMAYA iter) · büyüklük = etkinin gücü</tspan></text>
+        <text x="520" y="344" text-anchor="middle" font-size="10.5" fill="#6b7794" font-family="Segoe UI, Arial">her nöron İKİ iş yapar: önce Σ (ağırlıklı toplam → ham skor z), sonra σ (sigmoid → 0-1 arası çıktı) · bütün sayılar canlı</text>
         </svg>
       </div>
       <div class="xs-side">
@@ -4983,15 +4986,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609060954"></script>
-<script src="js/lesson-turev.js?v=202609060954"></script>
-<script src="js/lesson-xor.js?v=202609060954"></script>
-<script src="js/lesson-xor-arch.js?v=202609060954"></script>
-<script src="js/lesson-xor-epoch.js?v=202609060954"></script>
-<script src="js/lesson-nn.js?v=202609060954"></script>
-<script src="js/lesson-trig.js?v=202609060954"></script>
+<script src="js/lesson-linreg.js?v=202609061013"></script>
+<script src="js/lesson-turev.js?v=202609061013"></script>
+<script src="js/lesson-xor.js?v=202609061013"></script>
+<script src="js/lesson-xor-arch.js?v=202609061013"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061013"></script>
+<script src="js/lesson-nn.js?v=202609061013"></script>
+<script src="js/lesson-trig.js?v=202609061013"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609060954"></script>
-<script src="js/app.js?v=202609060954"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061013"></script>
+<script src="js/app.js?v=202609061013"></script>
 </body>
 </html>
