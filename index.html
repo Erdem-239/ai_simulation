@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609061850"></script>
-<link rel="stylesheet" href="css/style.css?v=202609061850">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609061931"></script>
+<link rel="stylesheet" href="css/style.css?v=202609061931">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 18:50 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 19:31 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2192,105 +2192,150 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         </div>
       </div>
     </div>
-    <div class="xe-cards">
+    <!-- ==== MOD SEÇİCİ: ileri / geri yayılım ==== -->
+    <div class="xe-mod-btns">
+      <button class="rnn-type-btn xe-mod-btn active" data-xm="ileri">▶ İleri Yayılım</button>
+      <button class="rnn-type-btn xe-mod-btn" data-xm="geri">◀ Geri Yayılım</button>
+      <span class="xe-mod-note" id="xeModNote"></span>
+    </div>
 
-      <!-- ===== KART 1 ===== -->
-      <div class="step" id="xeAdim1">
-        <div class="stephead"><h2>Adım 1) İleri besleme — iki katmandan geç</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+    <!-- ================= İLERİ YAYILIM (3 kart) ================= -->
+    <div class="xe-cards" id="xeFwd">
+
+      <!-- İ1 -->
+      <div class="step" id="xeF1">
+        <div class="stephead"><h2>İleri 1) Gizli katman — z<sub>h</sub> ve h</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> 4 nokta + o anki ağırlıklar &nbsp;·&nbsp; <b>çıktı:</b> h₁,h₂ <span class="xe-to">→ Adım 3</span> · p <span class="xe-to">→ Adım 2</span></div>
-          <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">\( z_{h1}{=}w_{11}x_1{+}w_{12}x_2{+}b_1 \to h_1 \) &nbsp;·&nbsp; \( z_{h2}{=}w_{21}x_1{+}w_{22}x_2{+}b_2 \to h_2 \) &nbsp;·&nbsp; \( z_y{=}v_1h_1{+}v_2h_2{+}b_3 \to p \) <span style="opacity:.75">(kümenin başındaki denklem)</span></div>
-          <table class="calc">
-            <tr><th>nokta</th><th>h₁</th><th>h₂</th><th>p</th><th>tahmin</th><th>y</th><th></th></tr>
-            <tr><td>(0,0)</td><td class="num" id="xe1h10"></td><td class="num" id="xe1h20"></td><td class="num" id="xe1p0"></td><td class="num" id="xe1t0"></td><td class="num">0</td><td id="xe1k0"></td></tr>
-            <tr><td>(0,1)</td><td class="num" id="xe1h11"></td><td class="num" id="xe1h21"></td><td class="num" id="xe1p1"></td><td class="num" id="xe1t1"></td><td class="num">1</td><td id="xe1k1"></td></tr>
-            <tr><td>(1,0)</td><td class="num" id="xe1h12"></td><td class="num" id="xe1h22"></td><td class="num" id="xe1p2"></td><td class="num" id="xe1t2"></td><td class="num">1</td><td id="xe1k2"></td></tr>
-            <tr><td>(1,1)</td><td class="num" id="xe1h13"></td><td class="num" id="xe1h23"></td><td class="num" id="xe1p3"></td><td class="num" id="xe1t3"></td><td class="num">0</td><td id="xe1k3"></td></tr>
-          </table>
+          <div class="xe-flow"><b>girdi:</b> 4 nokta + ağırlıklar &nbsp;·&nbsp; <b>çıktı:</b> h₁,h₂ <span class="xe-to">→ İleri 2</span></div>
+          <div class="eq" style="font-size:88%">\[ \begin{aligned} z_{h1}&=w_{11}x_1+w_{12}x_2+b_1, & h_1&=\sigma(z_{h1}) \\ z_{h2}&=w_{21}x_1+w_{22}x_2+b_2, & h_2&=\sigma(z_{h2}) \end{aligned} \]</div>
+          <table class="calc" id="xeF1tab"></table>
+          <div class="work" id="xeF1ornek" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> iki gizli nöron <b>aynı</b> x₁,x₂'yi görüyor ama <b>kendi ağırlıklarıyla</b> — o yüzden farklı sonuç veriyorlar. σ ham toplamı 0-1 arasına sıkıştırıyor.</div>
+          <div class="detail" id="xeF1det"></div>
+        </div>
+      </div>
+
+      <!-- İ2 -->
+      <div class="step" id="xeF2">
+        <div class="stephead"><h2>İleri 2) Çıktı katmanı — z<sub>y</sub> ve p</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> h₁,h₂ <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> p <span class="xe-to">→ İleri 3</span></div>
+          <div class="eq" style="font-size:88%">\[ z_y=v_1h_1+v_2h_2+b_3, \quad p=\sigma(z_y) \]</div>
+          <table class="calc" id="xeF2tab"></table>
+          <div class="work" id="xeF2ornek" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe1Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">Çıktı katmanının sigmoid'i + dört noktanın (z<sub>y</sub>, p) konumu</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> girdi İKİ basamaktan geçiyor — gizli katman (h₁,h₂) kendi temsilini kurar, çıktı nöronu ona bakıp karar verir.</div>
-          <div class="detail">Gizli katman aslında girdiyi (x₁,x₂) uzayından (h₁,h₂) uzayına taşıyor. Bu yeni uzayda problem lineer ayrılabilir hale geliyorsa (4️⃣'te elle kurduğumuz OR/AND örneğindeki gibi), çıktı nöronu tek bir düz çizgiyle işi bitirebilir. Eğitim boyunca izlediğin şey tam olarak ağın bu uygun temsili aramasıdır.<br><br>Açık hesap, ör. (1,1): <span id="xe1detail"></span></div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> çıktı nöronu artık x'lere değil, gizli katmanın kurduğu <b>(h₁,h₂) temsiline</b> bakıyor. Karar: p ≥ 0.5 ise 1, değilse 0.</div>
+          <div class="detail" id="xeF2det"></div>
         </div>
       </div>
 
-      <!-- ===== KART 2 ===== -->
-      <div class="step" id="xeAdim2">
-        <div class="stephead"><h2>Adım 2) Kayıp — ne kadar kötüyüz?</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+      <!-- İ3 -->
+      <div class="step" id="xeF3">
+        <div class="stephead"><h2>İleri 3) Kayıp — ne kadar kötüyüz?</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> p <span class="xe-to">← Adım 1</span>, y &nbsp;·&nbsp; <b>çıktı:</b> L · hata=p−y <span class="xe-to">→ Adım 3</span></div>
+          <div class="xe-flow"><b>girdi:</b> p <span class="xe-to">← İleri 2</span>, y &nbsp;·&nbsp; <b>çıktı:</b> L <span class="xe-to">→ Geri 1</span></div>
           <div class="eq" style="font-size:90%">\[ L=-\frac{1}{m}\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big] \]</div>
           <table class="calc">
-            <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>y</th><th>katkı</th></tr>
+            <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(İleri 2)</span></th><th>y</th><th>katkı</th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe2p0"></td><td class="num">0</td><td id="xe2c0"></td></tr>
             <tr><td>(0,1)</td><td class="num" id="xe2p1"></td><td class="num">1</td><td id="xe2c1"></td></tr>
             <tr><td>(1,0)</td><td class="num" id="xe2p2"></td><td class="num">1</td><td id="xe2c2"></td></tr>
             <tr><td>(1,1)</td><td class="num" id="xe2p3"></td><td class="num">0</td><td id="xe2c3"></td></tr>
           </table>
-          <div class="work" id="xe2L" style="white-space:pre-wrap; line-height:1.85; font-size:12.5px"></div>
+          <div class="work" id="xe2L" style="white-space:pre-wrap; line-height:1.6; font-size:11px; margin-top:6px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe2Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">Kayıp eğrisi · kesikli çizgi = <b>ln2</b> tabanı (tek nöronun takıldığı yer)</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> katkılar hep negatif olduğu için işareti çeviriyoruz (×−1); <b>ln2</b> ise "vazgeçmiş" bir modelin kaybı (her girdiye p=0.5 dese). <b>fark</b> negatife düşünce ondan iyiyiz demektir — turuncu çizginin kesikliyi geçip altına inmesi bunun görsel kanıtı.</div>
-          <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de aşağıdaki gibi tertemiz çıkar.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> katkılar hep negatif olduğu için işareti çeviriyoruz (×−1); <b>ln2</b> ise "vazgeçmiş" bir modelin kaybı (her girdiye p=0.5 dese). <b>fark</b> negatife düşünce ondan iyiyiz demektir.</div>
+          <div class="detail">Neden kare hata (MSE) değil? Sigmoid + MSE birleşimi, çıktı doygunluk bölgesine (0 ya da 1'e çok yakın) girdiğinde gradyanı neredeyse sıfırlar — model yanılsa bile öğrenemez hale gelir. Log-loss bu sorunu ortadan kaldırır; üstelik türevi de <b>◀ Geri Yayılım</b>'daki gibi tertemiz çıkar.</div>
         </div>
       </div>
 
-      <!-- ===== KART 3 ===== -->
-      <div class="step" id="xeAdim3">
-        <div class="stephead"><h2>Adım 3) Gradyan — geri yayılım</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
-        <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> h <span class="xe-to">← Adım 1</span>, hata <span class="xe-to">← Adım 2</span> &nbsp;·&nbsp; <b>çıktı:</b> dW,dB <span class="xe-to">→ Adım 4</span></div>
-          <div class="eq">\[ \begin{aligned} dz_y&=p-y \;\Rightarrow\; dh=dz_y W_2 \\ dz_h&=dh\cdot h(1{-}h) \end{aligned} \]</div>
-          <div style="font-size:11px; color:var(--muted); margin:-2px 0 6px">↩︎ Sinyal <b>sondan başa</b> akar (dz<sub>y</sub> → dz<sub>h</sub>) — adı bu yüzden "geri yayılım". Sonuçlar aşağıda <b>1→2</b> sırasıyla.</div>
-          <div class="xe-asama">① hata doğuyor</div>
-          <table class="calc">
-            <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>y</th><th>hata=p−y</th><th>h₁ <span style="font-weight:400; opacity:.7">(Adım 1)</span></th><th>h₂</th></tr>
-            <tr><td>(0,0)</td><td class="num" id="xe3p0"></td><td class="num">0</td><td class="num" id="xe3e0"></td><td class="num" id="xe3h10"></td><td class="num" id="xe3h20"></td></tr>
-            <tr><td>(0,1)</td><td class="num" id="xe3p1"></td><td class="num">1</td><td class="num" id="xe3e1"></td><td class="num" id="xe3h11"></td><td class="num" id="xe3h21"></td></tr>
-            <tr><td>(1,0)</td><td class="num" id="xe3p2"></td><td class="num">1</td><td class="num" id="xe3e2"></td><td class="num" id="xe3h12"></td><td class="num" id="xe3h22"></td></tr>
-            <tr><td>(1,1)</td><td class="num" id="xe3p3"></td><td class="num">0</td><td class="num" id="xe3e3"></td><td class="num" id="xe3h13"></td><td class="num" id="xe3h23"></td></tr>
-          </table>
-          <div style="font-size:10.5px; color:var(--muted); margin:3px 0 0">↑ <b>hata</b> yalnızca p ve y'den çıkar (ör. (1,0): 0.3129−1=−0.6871). <b>h₁,h₂</b> bu hesaba girmez — onlar aşağıdaki dW₂ çarpımlarında kullanılacak.</div>
-          <div class="xe-asama">② hata gizli katmana geri akıyor</div>
-          <div style="font-size:10.5px; color:var(--muted); margin:0 0 3px">önce <b>dh = hata × v</b>, sonra <b>dz<sub>h</sub> = dh × h(1−h)</b></div>
-          <table class="calc" id="xe3tab2"></table>
-          <div class="work" id="xe3ornek2" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
+    </div>
 
-          <div class="xe-asama">③ gradyanlar — formülü yerine koyalım</div>
-          <div class="eq" style="font-size:82%; margin-top:2px">\[ \begin{aligned} dW_1&=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, & dB_1&=\tfrac{1}{m}\!\sum_i dz_{h,i} \\ dW_2&=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, & dB_2&=\tfrac{1}{m}\!\sum_i dz_{y,i} \end{aligned} \]</div>
-          <div class="work" id="xe3yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
-          <div style="font-size:10.5px; color:var(--muted); margin-top:4px">Diğer sekizi de <b>birebir aynı yöntemle</b> — dördünün de tam dökümü başlıktaki <b>"ayrıntı ▸"</b>de.</div>
-          <div style="font-size:10.5px; color:var(--muted); margin:9px 0 3px">Aynı yöntemle dokuzunun hepsi — <b>Adım 4 bunları kullanacak</b>:</div>
-          <table class="calc" id="xe3tab"></table>
-          <div style="font-size:10.5px; color:var(--muted); margin-top:4px">↳ her birinin 4 nokta üzerinden tam hesabı: başlıktaki <b>"ayrıntı ▸"</b>yı aç.</div>
+    <!-- ================= GERİ YAYILIM (5 kart) ================= -->
+    <div class="xe-cards" id="xeBwd" style="display:none">
+
+      <!-- G1 -->
+      <div class="step" id="xeB1">
+        <div class="stephead"><h2>Geri 1) Kayıptan başla — ∂L/∂z<sub>y</sub></h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> p, y <span class="xe-to">← İleri 2/3</span> &nbsp;·&nbsp; <b>çıktı:</b> dz<sub>y</sub> <span class="xe-to">→ Geri 2 & 3</span></div>
+          <div class="eq">\[ dz_y=\frac{\partial L}{\partial z_y}=p-y \]</div>
+          <table class="calc">
+            <tr><th>nokta</th><th>p</th><th>y</th><th>dz<sub>y</sub>=p−y</th></tr>
+            <tr><td>(0,0)</td><td class="num" id="xe3p0"></td><td class="num">0</td><td class="num" id="xe3e0"></td></tr>
+            <tr><td>(0,1)</td><td class="num" id="xe3p1"></td><td class="num">1</td><td class="num" id="xe3e1"></td></tr>
+            <tr><td>(1,0)</td><td class="num" id="xe3p2"></td><td class="num">1</td><td class="num" id="xe3e2"></td></tr>
+            <tr><td>(1,1)</td><td class="num" id="xe3p3"></td><td class="num">0</td><td class="num" id="xe3e3"></td></tr>
+          </table>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe3Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">Çıktı katmanının hatası (p − y) · sıfırdan uzak = daha yanlış</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> yukarıdaki <b>hata</b> (p−y) burada başlar; <b>W₂ üzerinden gizli katmana yayılıp</b> (dh), altta dört ağırlık grubunun <b>ortalama gradyanına</b> dönüşüyor — ne kadar büyükse Adım 4'te o ağırlık o kadar çok değişecek.</div>
-          <div class="detail"><div id="xe3detail"></div><div style="margin-top:10px">"dz<sub>y</sub>=p−y" sadeliği yine sigmoid+log-loss'un armağanı. dh=dz<sub>y</sub>·W₂ satırı, çıktı nöronunun hatasının hangi gizli nörona NE KADAR "suç" yüklediğini söylüyor — W₂ büyükse o nöron daha çok pay alır. dz<sub>h</sub>=dh·h(1−h) ise bu payı, o gizli nöronun KENDİ doygunluğuna göre ölçekler (aynı vanishing-gradient mantığı: h, 0 ya da 1'e çok yakınsa h(1−h)≈0 olur, sinyal zayıflar).</div></div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> zincirin ilk halkası şaşırtıcı derecede sade: sadece <b>p − y</b>. Bu sadelik <b>sigmoid + log-loss</b> ikilisinin armağanı — ayrıntıda türetiyoruz.</div>
+          <div class="detail" id="xeB1det"></div>
         </div>
       </div>
 
-      <!-- ===== KART 4 ===== -->
-      <div class="step" id="xeAdim4">
-        <div class="stephead"><h2>Adım 4) Güncelle — dört ağırlık grubu birden</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+      <!-- G2 -->
+      <div class="step" id="xeB2">
+        <div class="stephead"><h2>Geri 2) Çıktı katmanının ağırlıkları — v₁, v₂, b₃</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> eski ağırlıklar, dW,dB <span class="xe-to">← Adım 3</span> &nbsp;·&nbsp; <b>çıktı:</b> yeni ağırlıklar <span class="xe-to">→ Adım 1</span></div>
+          <div class="xe-flow"><b>girdi:</b> dz<sub>y</sub> <span class="xe-to">← Geri 1</span>, h <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> dW₂, dB₂ <span class="xe-to">→ Geri 5</span></div>
+          <div class="eq" style="font-size:88%">\[ dW_2=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, \quad dB_2=\tfrac{1}{m}\!\sum_i dz_{y,i} \]</div>
+          <div class="work" id="xeB2yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
+          <table class="calc" id="xeB2tab" style="margin-top:8px"></table>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her gizli nöronun gradyanı <b>kendi h değeriyle</b> ölçekleniyor — h büyükse o ağırlık daha çok değişir. b₃'te çarpan yok, çünkü bias'ın girdisi sabit 1.</div>
+          <div class="detail" id="xeB2det"></div>
+        </div>
+      </div>
+
+      <!-- G3 -->
+      <div class="step" id="xeB3">
+        <div class="stephead"><h2>Geri 3) Sigmoid'den geri — ∂L/∂z<sub>h</sub></h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> dz<sub>y</sub> <span class="xe-to">← Geri 1</span>, h <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> dz<sub>h</sub> <span class="xe-to">→ Geri 4</span></div>
+          <div class="eq" style="font-size:88%">\[ dh=dz_y\,v, \qquad dz_h=dh\cdot h(1-h) \]</div>
+          <table class="calc" id="xe3tab2"></table>
+          <div class="work" id="xe3ornek2" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> hata <b>v ağırlığı üzerinden</b> geri akıyor (büyük v = daha çok "suç payı"), sonra <b>h(1−h)</b> ile ölçekleniyor. h 0 ya da 1'e yapışıksa bu çarpan ≈0 olur ve sinyal söner — vanishing gradient'in ta kendisi.</div>
+          <div class="detail" id="xeB3det"></div>
+        </div>
+      </div>
+
+      <!-- G4 -->
+      <div class="step" id="xeB4">
+        <div class="stephead"><h2>Geri 4) Gizli katmanın ağırlıkları — w₁₁…w₂₂, b₁, b₂</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> dz<sub>h</sub> <span class="xe-to">← Geri 3</span>, x &nbsp;·&nbsp; <b>çıktı:</b> dW₁, dB₁ <span class="xe-to">→ Geri 5</span></div>
+          <div class="eq" style="font-size:88%">\[ dW_1=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, \quad dB_1=\tfrac{1}{m}\!\sum_i dz_{h,i} \]</div>
+          <div class="work" id="xe3yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
+          <table class="calc" id="xe3tab" style="margin-top:8px"></table>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> x₁=0 olan noktalar w₁₁'e <b>hiç katkı vermiyor</b> (0 ile çarpılıyor). Bir ağırlık yalnızca kendi girdisinin açık olduğu örneklerden öğrenir.</div>
+          <div class="detail" id="xeB4det"></div>
+        </div>
+      </div>
+
+      <!-- G5 -->
+      <div class="step" id="xeB5">
+        <div class="stephead"><h2>Geri 5) Güncelle — dokuz ağırlık birden</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stepbody">
+          <div class="xe-flow"><b>girdi:</b> eski ağırlıklar, dW,dB <span class="xe-to">← Geri 2 & 4</span> &nbsp;·&nbsp; <b>çıktı:</b> yeni ağırlıklar <span class="xe-to">→ İleri 1</span></div>
           <div class="eq" style="font-size:92%">\[ \text{yeni} := \text{eski} - \alpha\cdot\text{gradyan},\quad \alpha=3.0 \]</div>
           <table class="calc" id="xe4tab"></table>
-          <div style="font-size:10.5px; color:var(--muted); margin-top:5px; line-height:1.5">📐 <b>Neden W₁'de 4, W₂'de 2 satır var?</b> ağırlık sayısı = <b>girdi sayısı × o katmandaki nöron sayısı</b>. W₁: 2 girdi (x₁,x₂) × 2 gizli nöron (h₁,h₂) = <b>4</b>. W₂: 2 girdi (h₁,h₂) × 1 çıktı nöronu = <b>2</b>. Çıktı katmanında tek nöron olduğu için W₂ hep daha az.</div>
+          <div style="font-size:10.5px; color:var(--muted); margin-top:5px; line-height:1.5">📐 <b>Neden W₁'de 4, W₂'de 2 satır var?</b> ağırlık sayısı = <b>girdi sayısı × o katmandaki nöron sayısı</b>. W₁: 2 girdi (x₁,x₂) × 2 gizli nöron (h₁,h₂) = <b>4</b>. W₂: 2 girdi (h₁,h₂) × 1 çıktı nöronu = <b>2</b>.</div>
           <div id="xe4ornek" style="font-size:11px; color:var(--muted); margin-top:5px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe4Canvas" width="420" height="76"></canvas>
             <div class="step-graph-cap">İki gizli nöronun ayırıcı çizgisi · dört XOR noktası</div>
           </div>
-          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her ok, <b>Adım 3'teki gradyanın α(=3.0) katı</b> çıkarılarak elde ediliyor (<code>W:=W−α·gradyan</code>); dört grup aynı anda güncelleniyor. Alttaki grafikte çizgilerin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
-          <div class="detail"><b>👉 PyTorch'ta bunu yazmazsın</b> — <code>loss.backward()</code> Adım 3'ü, <code>optimizer.step()</code> Adım 4'ü otomatik yapar; kütüphane sihir yapmıyor, birebir bunu yapıyor. (Aynı ağın elle seçilmiş ağırlıklarla saf-Python hâli ➕ Ekstra kümesinde.)<br><br>Bu, gizli katmanın "kendi OR/AND mantığını" bulma anı. Başta rastgele/işe yaramaz konumda duran iki çizgi, gradyan alçalma ile — hiçbir OR/AND etiketi verilmeden, sadece nihai hatadan geriye yayılan sinyalle — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div>
+          <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her ok, <b>gradyanın α(=3.0) katı</b> çıkarılarak elde ediliyor; dokuz ağırlık aynı anda güncelleniyor. Alttaki grafikte çizgilerin <b>4 noktayı ayıracak konuma</b> kaydığını izle.</div>
+          <div class="detail"><b>👉 PyTorch'ta bunu yazmazsın</b> — <code>loss.backward()</code> Geri 1-4'ü, <code>optimizer.step()</code> Geri 5'i otomatik yapar; kütüphane sihir yapmıyor, birebir bunu yapıyor. (Aynı ağın elle seçilmiş ağırlıklarla saf-Python hâli ➕ Ekstra kümesinde.)<br><br>Bu, gizli katmanın "kendi OR/AND mantığını" bulma anı. Başta rastgele/işe yaramaz konumda duran iki çizgi, gradyan alçalma ile — hiçbir OR/AND etiketi verilmeden, sadece nihai hatadan geriye yayılan sinyalle — 4️⃣'te elle kurduğumuz ayrıma benzer bir konuma kayıyor.</div>
         </div>
       </div>
 
@@ -5016,15 +5061,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609061850"></script>
-<script src="js/lesson-turev.js?v=202609061850"></script>
-<script src="js/lesson-xor.js?v=202609061850"></script>
-<script src="js/lesson-xor-arch.js?v=202609061850"></script>
-<script src="js/lesson-xor-epoch.js?v=202609061850"></script>
-<script src="js/lesson-nn.js?v=202609061850"></script>
-<script src="js/lesson-trig.js?v=202609061850"></script>
+<script src="js/lesson-linreg.js?v=202609061931"></script>
+<script src="js/lesson-turev.js?v=202609061931"></script>
+<script src="js/lesson-xor.js?v=202609061931"></script>
+<script src="js/lesson-xor-arch.js?v=202609061931"></script>
+<script src="js/lesson-xor-epoch.js?v=202609061931"></script>
+<script src="js/lesson-nn.js?v=202609061931"></script>
+<script src="js/lesson-trig.js?v=202609061931"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609061850"></script>
-<script src="js/app.js?v=202609061850"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609061931"></script>
+<script src="js/app.js?v=202609061931"></script>
 </body>
 </html>
