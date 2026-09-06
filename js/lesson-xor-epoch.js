@@ -245,18 +245,84 @@
 
     // Kart 3
     for(let i=0;i<4;i++){
+      $('xe3p'+i).textContent  = N(s.p[i],4);
       $('xe3h1'+i).textContent = N(s.h[i][0],3);
       $('xe3h2'+i).textContent = N(s.h[i][1],3);
       $('xe3e'+i).textContent = (s.dz2[i]>=0?'+':'')+N(s.dz2[i],4);
     }
-    $('xe3g').innerHTML =
-      `1. KATMAN (x → h)\n` +
-      `dW₁=[[${N(s.dW1[0][0],3)},${N(s.dW1[0][1],3)}],[${N(s.dW1[1][0],3)},${N(s.dW1[1][1],3)}]]  dB₁=[${N(s.dB1[0],3)},${N(s.dB1[1],3)}]\n` +
-      `2. KATMAN (h → çıktı)\n` +
-      `dW₂=[<b>${N(s.dW2[0],3)}</b>,<b>${N(s.dW2[1],3)}</b>]  dB₂=<b>${N(s.dB2,3)}</b>\n` +
-      `ör: dW₂[h₁] = ort(h₁·hata) = ${N(s.dW2[0],3)}`;
-    $('xe3detail').textContent =
-      `dh ör. (1,1) → [${N(s.dh[3][0],3)}, ${N(s.dh[3][1],3)}]   ·   dz_h ör. (1,1) → [${N(s.dz1[3][0],3)}, ${N(s.dz1[3][1],3)}]`;
+    /* Ham dizi dökümü yerine ETİKETLİ tablo — satır adları Kart 4'le birebir
+       aynı, böylece aynı sayı iki kartta da tanınabiliyor. */
+    const grad = [
+      ['1. katman', 'dW₁[x₁→h₁]', s.dW1[0][0]],
+      ['',          'dW₁[x₂→h₁]', s.dW1[0][1]],
+      ['',          'dW₁[x₁→h₂]', s.dW1[1][0]],
+      ['',          'dW₁[x₂→h₂]', s.dW1[1][1]],
+      ['',          'dB₁[h₁]',    s.dB1[0]],
+      ['',          'dB₁[h₂]',    s.dB1[1]],
+      ['2. katman', 'dW₂[h₁]',    s.dW2[0]],
+      ['',          'dW₂[h₂]',    s.dW2[1]],
+      ['',          'dB₂',        s.dB2]
+    ];
+    $('xe3tab').innerHTML =
+      `<tr><th>katman</th><th>gradyan</th><th>değer</th></tr>` +
+      grad.map(([kat, ad, v]) =>
+        `<tr><td style="color:var(--muted); font-size:10px">${kat}</td><td>${ad}</td>` +
+        `<td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
+
+    /* --- .detail: HER sayının tam aritmetiği, 4 nokta üzerinden --- */
+    const S  = v => (v>=0?'+':'')+N(v,4);          // işaretli
+    const AD = ['(0,0)','(0,1)','(1,0)','(1,1)'];
+    const kutu = (bas, govde) =>
+      `<div style="font-size:11px; color:var(--accent); font-weight:600; margin:9px 0 3px">${bas}</div>` +
+      `<div class="work" style="white-space:pre-wrap; line-height:1.65; font-size:10.5px; margin:0">${govde}</div>`;
+
+    // ① dW₂ / dB₂ — h × hata çarpımları
+    const ortSatir = (dizi, sonuc) =>
+      `  ortalama = (${dizi.map(v=>S(v)).join(' ')}) / 4 = ${N(sonuc,4)}`;
+    let g1 = '';
+    [0,1].forEach(k => {
+      const carp = [0,1,2,3].map(i => s.h[i][k]*s.dz2[i]);
+      g1 += `dW₂[h${k?'₂':'₁'}] = ortalama(h${k?'₂':'₁'} × hata)\n` +
+            [0,1,2,3].map(i =>
+              `  ${AD[i]}  ${N(s.h[i][k],4)} × ${S(s.dz2[i])} = ${S(carp[i])}`).join('\n') + '\n' +
+            ortSatir(carp, s.dW2[k]) + '\n\n';
+    });
+    g1 += `dB₂ = ortalama(hata)\n` + ortSatir(s.dz2, s.dB2);
+
+    // ② dz_h — hata W₂ üzerinden geri akıyor, sonra h(1−h) ile ölçekleniyor
+    let g2 = `dh = hata × v   (v₁=${N(W2[0],2)}, v₂=${N(W2[1],2)})\n` +
+             `dz_h = dh × h(1−h)\n\n`;
+    [0,1,2,3].forEach(i => {
+      g2 += `${AD[i]}\n`;
+      [0,1].forEach(k => {
+        const tur = s.h[i][k]*(1-s.h[i][k]);
+        g2 += `  dh${k?'₂':'₁'} = ${S(s.dz2[i])} × ${N(W2[k],2)} = ${S(s.dh[i][k])}\n` +
+              `  h${k?'₂':'₁'}(1−h${k?'₂':'₁'}) = ${N(s.h[i][k],4)} × ${N(1-s.h[i][k],4)} = ${N(tur,4)}\n` +
+              `  dz_h${k?'₂':'₁'} = ${S(s.dh[i][k])} × ${N(tur,4)} = ${S(s.dz1[i][k])}\n`;
+      });
+      g2 += '\n';
+    });
+
+    // ③ dW₁ / dB₁ — x × dz_h (x hep 0/1 olduğu için satırlar okunaklı)
+    let g3 = '';
+    [0,1].forEach(k => {            // k = hedef gizli nöron
+      [0,1].forEach(j => {          // j = kaynak girdi
+        const carp = [0,1,2,3].map(i => X[i][j]*s.dz1[i][k]);
+        g3 += `dW₁[x${j?'₂':'₁'}→h${k?'₂':'₁'}] = ortalama(x${j?'₂':'₁'} × dz_h${k?'₂':'₁'})\n` +
+              `  (${[0,1,2,3].map(i=>`${X[i][j]}×${S(s.dz1[i][k])}`).join('  ')})\n` +
+              ortSatir(carp, s.dW1[k][j]) + '\n\n';
+      });
+    });
+    [0,1].forEach(k => {
+      g3 += `dB₁[h${k?'₂':'₁'}] = ortalama(dz_h${k?'₂':'₁'})\n` +
+            ortSatir([0,1,2,3].map(i=>s.dz1[i][k]), s.dB1[k]) + '\n\n';
+    });
+
+    $('xe3detail').innerHTML =
+      `<b>🔍 Bu karttaki her sayının tam hesabı</b>` +
+      kutu('① dW₂ ve dB₂ — çıktı katmanının gradyanı', g1) +
+      kutu('② dz_h — hata gizli katmana geri akıyor', g2.trimEnd()) +
+      kutu('③ dW₁ ve dB₁ — gizli katmanın gradyanı', g3.trimEnd());
     draw3(s);
 
     // Kart 4
