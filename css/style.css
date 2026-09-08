@@ -756,6 +756,15 @@
   /* mimari şema solda, kontrol/durum/hesap sağda — üst bant tek sıraya insin */
   .xs-top{display:grid; gap:12px; grid-template-columns:1fr; align-items:start; margin:0 0 8px}
   @media(min-width:1240px){ .xs-top{grid-template-columns:minmax(0,1.32fr) minmax(320px,1fr)} }
+  /* Notasyon ve Türev zinciri: xs-side'ın dar sütununda alt alta açılınca
+     ikisi bir arada tek ekrana sığmıyordu — tam genişlikte, yan yana iki
+     sütuna taşındı. Sabit bir @media kırılımı yerine auto-fit/minmax:
+     sütun genişliği 420px'in altına düşecekse otomatik tek sütuna iner
+     (dar/orta ekranlarda 500-1240 arası da dahil) — .xe-chain-eq/.xz-anlam
+     boyutlarını hep 420px'e yakın bir sütun için ayarlamak yeterli.
+     min(420px,100%) mobilde sütunun kendisinden taşmasını önlüyor. */
+  .xs-extra{display:grid; gap:12px; align-items:start; margin:0 0 8px;
+    grid-template-columns:repeat(auto-fit, minmax(min(420px,100%), 1fr))}
   .xs-diagram, .xs-side{min-width:0}
   .xs-side .xa-btn{padding:5px 9px; font-size:12px}
   /* Kayıp Vadisi: gradyan pusulası + 3B yüzey */
