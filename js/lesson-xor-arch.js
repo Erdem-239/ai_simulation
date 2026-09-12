@@ -33,13 +33,13 @@
   }
 
   /* Bağlantı etiketi + o bağlantının ÇİZGİSİ: ikisi de ağırlığın işaretine
-     göre renklenir (yeşil = pozitif, kırmızı = negatif). Etiket ayrıca
-     "kimden kime" yazar — çapraz giden dört çizgide hangi w'nin hangisine
-     ait olduğu karışmasın diye. */
-  function wlab(id, lineId, kimden, kime, v){
+     göre renklenir (yeşil = pozitif, kırmızı = negatif). Etiket ağırlığın
+     ADINI yazar (w₁₁, w₃₂ ...) — indisin nasıl okunacağı şemanın altındaki
+     açıklamada ve 📑 Notasyon kutusunda anlatılıyor. */
+  function wlab(id, lineId, ad, v){
     const el = $(id);
     if(el){
-      el.textContent = `${kimden}→${kime} = ${N(v, 2)}`;
+      el.textContent = `${ad} = ${N(v, 2)}`;
       el.setAttribute('fill', v >= 0 ? '#46c46a' : '#e06a6a');
     }
     const ln = $(lineId);
@@ -84,12 +84,12 @@
     $('xafy').textContent = lin(W2[0], W2[1], B2, 'h₁', 'h₂');
     $('xaEpoch').textContent = `epoch ${epoch} · L = ${N(L, 3)}`;
 
-    wlab('xaw11', 'xaL11', 'x₁', 'h₁', W1[0][0]);
-    wlab('xaw12', 'xaL12', 'x₂', 'h₁', W1[0][1]);
-    wlab('xaw21', 'xaL21', 'x₁', 'h₂', W1[1][0]);
-    wlab('xaw22', 'xaL22', 'x₂', 'h₂', W1[1][1]);
-    wlab('xav1',  'xaLv1', 'h₁', 'p',  W2[0]);
-    wlab('xav2',  'xaLv2', 'h₂', 'p',  W2[1]);
+    wlab('xaw11', 'xaL11', 'w₁₁', W1[0][0]);
+    wlab('xaw12', 'xaL12', 'w₁₂', W1[0][1]);
+    wlab('xaw21', 'xaL21', 'w₂₁', W1[1][0]);
+    wlab('xaw22', 'xaL22', 'w₂₂', W1[1][1]);
+    wlab('xav1',  'xaLv1', 'w₃₁', W2[0]);
+    wlab('xav2',  'xaLv2', 'w₃₂', W2[1]);
 
     tint('xasig1bg', h1);
     tint('xasig2bg', h2);
