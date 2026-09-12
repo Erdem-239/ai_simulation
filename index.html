@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609062245"></script>
-<link rel="stylesheet" href="css/style.css?v=202609062245">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609120916"></script>
+<link rel="stylesheet" href="css/style.css?v=202609120916">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-06 22:45 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 09:16 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2174,6 +2174,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?)</div>
         <div class="acc-body">
         <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:3px 18px; font-size:12.5px; color:#ccd5e8; line-height:1.65; margin:0 0 10px">
+          <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:0 0 2px">▶ İleri Yayılım — bu sırayla hesaplanır</div>
           <div><b>x₁, x₂</b> — girdi (0 ya da 1)</div>
           <div><b>y</b> — XOR'un doğru cevabı (0/1)</div>
           <div><b>W₁, b₁</b> — <b>1. katmanın</b> (gizli) ağırlık matrisi (2×2) ve sapmaları</div>
@@ -2183,9 +2184,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <div><b>z<sub>y</sub></b> — çıktı nöronunun ham toplamı: h·W₂+b₂ <span style="color:var(--muted)">(tek sayı)</span></div>
           <div><b>p</b> — modelin tahmini = σ(z<sub>y</sub>), 0-1 arası</div>
           <div><b>L</b> — kayıp (log-loss), ne kadar yanlışız</div>
-          <div><b>α</b> — öğrenme oranı (burada 3.0)</div>
+          <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:8px 0 2px">◀ Geri Yayılım — kayıptan geriye doğru</div>
           <div><b>dz<sub>y</sub></b> — çıktıya ulaşan geri-sinyal = p − y</div>
           <div><b>dz<sub>h</sub></b> — gizli katmana ulaşan geri-sinyal</div>
+          <div><b>α</b> — öğrenme oranı (burada 3.0) <span style="color:var(--muted)">— son adımda, güncellemede kullanılır</span></div>
         </div>
         <div class="callout" style="margin:0 0 10px; font-size:12.5px; line-height:1.6">⚠️ <b>Alt indis karışıklığına dikkat:</b> <b>1/2</b> rakamları <b>KATMAN</b> numarasıdır (W₁ = 1. katman, W₂ = 2. katman) — nöronlar ise <b>h₁/h₂</b> diye anılır. Bu yüzden gizli katmanın toplamına z₁ değil <b>z<sub>h</sub></b>, çıktınınkine z₂ değil <b>z<sub>y</sub></b> diyoruz. Şemada gizli nöronların tek tek toplamları <b>z<sub>h1</sub></b> ve <b>z<sub>h2</sub></b> olarak yazılı; ikisi birlikte \(z_h\) vektörünü oluşturur.</div>
         <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Denklemin ilk satırı <b>gizli katman</b> (2 nöron birden — bu yüzden \(W_1\) bir matris), ikinci satırı <b>çıktı katmanı</b> (tek nöron, \(W_2\) bir vektör). Başlangıç değerleri: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · W₂=[1.2,−0.9] · b₂=−1.2 · α=3.0. Bu iki satırın seçili girdi için tek tek sayıya dökülmüş hâli, aşağıdaki <b>▶ İleri Yayılım</b> kartlarında adım adım duruyor.</p>
@@ -5183,15 +5185,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609062245"></script>
-<script src="js/lesson-turev.js?v=202609062245"></script>
-<script src="js/lesson-xor.js?v=202609062245"></script>
-<script src="js/lesson-xor-arch.js?v=202609062245"></script>
-<script src="js/lesson-xor-epoch.js?v=202609062245"></script>
-<script src="js/lesson-nn.js?v=202609062245"></script>
-<script src="js/lesson-trig.js?v=202609062245"></script>
+<script src="js/lesson-linreg.js?v=202609120916"></script>
+<script src="js/lesson-turev.js?v=202609120916"></script>
+<script src="js/lesson-xor.js?v=202609120916"></script>
+<script src="js/lesson-xor-arch.js?v=202609120916"></script>
+<script src="js/lesson-xor-epoch.js?v=202609120916"></script>
+<script src="js/lesson-nn.js?v=202609120916"></script>
+<script src="js/lesson-trig.js?v=202609120916"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609062245"></script>
-<script src="js/app.js?v=202609062245"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609120916"></script>
+<script src="js/app.js?v=202609120916"></script>
 </body>
 </html>
