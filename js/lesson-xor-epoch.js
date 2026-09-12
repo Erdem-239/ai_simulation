@@ -267,16 +267,16 @@
     }
     draw3(s);
 
-    /* ===================== GERİ 2 — dV, db₃ ============================ */
+    /* ================= GERİ 2 — dw₃₁, dw₃₂, db₃ ======================== */
     const carp2 = [0,1,2,3].map(i => s.h[i][0]*s.dz2[i]);
     $('xeB2yerine').innerHTML =
-      `<b>dv₁</b> = ¼ × Σ(h₁ × dz_y)\n` +
+      `<b>dw₃₁</b> = ¼ × Σ(h₁ × dz_y)\n` +
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${N(s.h[i][0],4)} × ${Sg(s.dz2[i])} = ${Sg(carp2[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp2.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW2[0],4)}</b>`;
     $('xeB2tab').innerHTML =
       trh(['gradyan','değer']) +
-      [['dv₁', s.dW2[0]], ['dv₂', s.dW2[1]], ['db₃', s.dB2]].map(([ad,v]) =>
+      [['dw₃₁', s.dW2[0]], ['dw₃₂', s.dW2[1]], ['db₃', s.dB2]].map(([ad,v]) =>
         `<tr><td>${ad}</td><td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
 
     /* ===================== GERİ 3 — dz_h ============================== */
@@ -288,22 +288,22 @@
         `<td class="num" style="opacity:.75">${Sg(s.dh[i][1])}</td><td class="num">${Sg(s.dz1[i][1])}</td></tr>`).join('');
     $('xe3ornek2').innerHTML =
       `ör. (1,0) için dz_h₁:\n` +
-      `  dh₁ = dz_y × v₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
+      `  dh₁ = dz_y × w₃₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
       `  h₁(1−h₁) = ${N(s.h[2][0],4)} × ${N(1-s.h[2][0],4)} = ${N(s.h[2][0]*(1-s.h[2][0]),4)}\n` +
       `  dz_h₁ = ${Sg(s.dh[2][0])} × ${N(s.h[2][0]*(1-s.h[2][0]),4)} = <b>${Sg(s.dz1[2][0])}</b>`;
 
-    /* ===================== GERİ 4 — dW₁, dB₁ ========================== */
+    /* ========= GERİ 4 — dw₁₁, dw₁₂, dw₂₁, dw₂₂, db₁, db₂ ============== */
     const carp1 = [0,1,2,3].map(i => X[i][0]*s.dz1[i][0]);
     $('xe3yerine').innerHTML =
-      `<b>dW₁[x₁→h₁]</b> = ¼ × Σ(x₁ × dz_h₁)\n` +
+      `<b>dw₁₁</b> = ¼ × Σ(x₁ × dz_h₁)\n` +
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${X[i][0]} × ${Sg(s.dz1[i][0])} = ${Sg(carp1[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp1.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW1[0][0],4)}</b>`;
     $('xe3tab').innerHTML =
       trh(['gradyan','değer']) +
-      [['dW₁[x₁→h₁]', s.dW1[0][0]], ['dW₁[x₂→h₁]', s.dW1[0][1]],
-       ['dW₁[x₁→h₂]', s.dW1[1][0]], ['dW₁[x₂→h₂]', s.dW1[1][1]],
-       ['dB₁[h₁]', s.dB1[0]], ['dB₁[h₂]', s.dB1[1]]].map(([ad,v]) =>
+      [['dw₁₁', s.dW1[0][0]], ['dw₁₂', s.dW1[0][1]],
+       ['dw₂₁', s.dW1[1][0]], ['dw₂₂', s.dW1[1][1]],
+       ['db₁', s.dB1[0]], ['db₂', s.dB1[1]]].map(([ad,v]) =>
         `<tr><td>${ad}</td><td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
 
     /* ===================== GERİ 5 — güncelle ========================== */
@@ -312,15 +312,15 @@
     const nW2 = [0,1].map(k=>W2[k]-LR*s.dW2[k]);
     const nB2 = B2-LR*s.dB2;
     const satirlar = [
-      ['w₁₁ (x₁→h₁)', W1[0][0], s.dW1[0][0], nW1[0][0]],
-      ['w₁₂ (x₂→h₁)', W1[0][1], s.dW1[0][1], nW1[0][1]],
-      ['w₂₁ (x₁→h₂)', W1[1][0], s.dW1[1][0], nW1[1][0]],
-      ['w₂₂ (x₂→h₂)', W1[1][1], s.dW1[1][1], nW1[1][1]],
-      ['b₁ (h₁)',     B1[0],    s.dB1[0],    nB1[0]],
-      ['b₂ (h₂)',     B1[1],    s.dB1[1],    nB1[1]],
-      ['v₁ (h₁→p)',   W2[0],    s.dW2[0],    nW2[0]],
-      ['v₂ (h₂→p)',   W2[1],    s.dW2[1],    nW2[1]],
-      ['b₃ (çıktı)',  B2,       s.dB2,       nB2]
+      ['w₁₁', W1[0][0], s.dW1[0][0], nW1[0][0]],
+      ['w₁₂', W1[0][1], s.dW1[0][1], nW1[0][1]],
+      ['w₂₁', W1[1][0], s.dW1[1][0], nW1[1][0]],
+      ['w₂₂', W1[1][1], s.dW1[1][1], nW1[1][1]],
+      ['b₁',  B1[0],    s.dB1[0],    nB1[0]],
+      ['b₂',  B1[1],    s.dB1[1],    nB1[1]],
+      ['w₃₁', W2[0],    s.dW2[0],    nW2[0]],
+      ['w₃₂', W2[1],    s.dW2[1],    nW2[1]],
+      ['b₃',  B2,       s.dB2,       nB2]
     ];
     $('xe4tab').innerHTML =
       `<tr><th>ağırlık</th><th>eski</th><th>gradyan<br><span style="font-weight:400; opacity:.7">(Geri 2/4)</span></th><th>yeni</th></tr>` +

@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609121256"></script>
-<link rel="stylesheet" href="css/style.css?v=202609121256">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609121334"></script>
+<link rel="stylesheet" href="css/style.css?v=202609121334">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 12:56 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 13:34 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2047,7 +2047,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <div class="xs-top">
       <div class="xs-diagram">
         <!-- ==== CANLI MIMARI SEMASI (asagidaki kartlarla ayni agi gosterir) ==== -->
-        <svg id="xaSvg" viewBox="0 0 1040 350" style="width:100%; max-width:1000px; height:auto; display:block; margin:0 auto 4px; background:#0c1224; border-radius:10px" role="img" aria-label="XOR ağının canlı mimarisi: ağırlıklar, ara toplamlar ve sigmoid çıktıları eğitim ilerledikçe güncellenir">
+        <svg id="xaSvg" viewBox="0 0 1040 370" style="width:100%; max-width:1000px; height:auto; display:block; margin:0 auto 4px; background:#0c1224; border-radius:10px" role="img" aria-label="XOR ağının canlı mimarisi: ağırlıklar, ara toplamlar ve sigmoid çıktıları eğitim ilerledikçe güncellenir">
         <defs>
         <marker id="xaAr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5aa0e0"/></marker>
         <marker id="xaAo" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
@@ -2132,6 +2132,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <!-- ==== alt aciklama ==== -->
         <text x="520" y="326" text-anchor="middle" font-size="11" font-family="Segoe UI, Arial"><tspan fill="#46c46a" font-weight="700">yeşil w = pozitif</tspan><tspan fill="#6b7794"> (o girdi nöronu ATEŞLEMEYE iter) &#160;·&#160; </tspan><tspan fill="#e06a6a" font-weight="700">kırmızı w = negatif</tspan><tspan fill="#6b7794"> (SUSTURMAYA iter) · büyüklük = etkinin gücü</tspan></text>
         <text x="520" y="344" text-anchor="middle" font-size="10.5" fill="#6b7794" font-family="Segoe UI, Arial">her nöron İKİ iş yapar: önce Σ (ağırlıklı toplam → ham skor z), sonra σ (sigmoid → 0-1 arası çıktı) · bütün sayılar canlı</text>
+        <text x="520" y="361" text-anchor="middle" font-size="10.5" font-family="Segoe UI, Arial"><tspan fill="#95a2c2" font-weight="700">w'nin ilk rakamı HANGİ NÖRONA, ikinci rakamı HANGİ GİRDİDEN</tspan><tspan fill="#6b7794"> — nöronlar: h₁=1, h₂=2, p=3. Örnek: w₃₁ = 3. nörona (p), 1. girdiden (h₁).</tspan></text>
         </svg>
       </div>
       <div class="xs-side">
@@ -2152,16 +2153,20 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           📐 <b>Şema = aşağıdaki 4 kartla AYNI ağ.</b> Şema bu ağın <b>şu anki fotoğrafı</b>; kartlar ise ona <b>bir epoch boyunca</b> (ileri besleme→kayıp→gradyan→güncelleme) ne olduğunu gösteriyor.
         </div>
         <div class="acc" style="margin:0 0 4px">
-        <div class="acc-head"><span class="ac">▸</span> 📐 Bu ağın matematiği — iki satır, tüm ağırlıklar açık</div>
+        <div class="acc-head"><span class="ac">▸</span> 📐 Bu ağın matematiği — üç nöron, dokuz sayı, hepsi açık</div>
         <div class="acc-body">
           <div style="margin:0 0 8px; padding:6px 8px; background:rgba(0,0,0,.15); border-radius:5px">
-            Bu ağın matematiği <b>iki satır</b> (W₁'in 4, V'nin 2 sayısı tek tek açık):
-            <div style="font-size:11px; color:var(--muted); margin:4px 0 -2px">1️⃣ gizli katman:</div>
-            <div class="eq" style="font-size:118%; margin:2px 0">\[ z_{h1}=w_{11}x_1+w_{12}x_2+b_1,\;\; h_1=\sigma(z_{h1}) \]</div>
-            <div class="eq" style="font-size:118%; margin:2px 0">\[ z_{h2}=w_{21}x_1+w_{22}x_2+b_2,\;\; h_2=\sigma(z_{h2}) \]</div>
-            <div style="font-size:11px; color:var(--muted); margin:4px 0 -2px">2️⃣ çıktı katmanı:</div>
-            <div class="eq" style="font-size:118%; margin:2px 0 4px">\[ z_y=v_1h_1+v_2h_2+b_3,\;\; p=\sigma(z_y) \]</div>
-            <span style="color:var(--muted); font-size:92%">(kısaca <code>z<sub>h</sub>=X·W₁+b₁</code>, <code>z<sub>y</sub>=h·V+b₃</code> da yazılır — W₁={w₁₁,w₁₂,w₂₁,w₂₂}, V={v₁,v₂})</span>
+            Bu ağın <b>üç nöronu</b> var. Her nöronun hesabı tek tek, açık açık:
+            <div style="font-size:11px; color:var(--muted); margin:6px 0 -2px">1️⃣ gizli nöron h₁:</div>
+            <div class="eq" style="font-size:112%; margin:2px 0">\[ z_{h1}=w_{11}\cdot x_1+w_{12}\cdot x_2+b_1 \]</div>
+            <div class="eq" style="font-size:112%; margin:2px 0">\[ h_1=\sigma(z_{h1}) \]</div>
+            <div style="font-size:11px; color:var(--muted); margin:6px 0 -2px">2️⃣ gizli nöron h₂:</div>
+            <div class="eq" style="font-size:112%; margin:2px 0">\[ z_{h2}=w_{21}\cdot x_1+w_{22}\cdot x_2+b_2 \]</div>
+            <div class="eq" style="font-size:112%; margin:2px 0">\[ h_2=\sigma(z_{h2}) \]</div>
+            <div style="font-size:11px; color:var(--muted); margin:6px 0 -2px">3️⃣ çıktı nöronu p:</div>
+            <div class="eq" style="font-size:112%; margin:2px 0">\[ z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3 \]</div>
+            <div class="eq" style="font-size:112%; margin:2px 0 4px">\[ p=\sigma(z_y) \]</div>
+            <span style="color:var(--muted); font-size:92%">Toplam <b>9 sayı</b> öğreniliyor: altı ağırlık (w₁₁, w₁₂, w₂₁, w₂₂, w₃₁, w₃₂) ve üç sapma (b₁, b₂, b₃).</span>
           </div>
           <p style="font-size:12.5px; color:#ccd5e8; line-height:1.6; margin:0">Şemadaki her <b>Σ</b> kutusu bu satırların <b>z</b> kısmını hesaplıyor (ağırlıklı toplam); her <b>σ</b> kutusu da hemen ardından <b>σ(z)</b>'yi (aktivasyonu) hesaplıyor. <b>Alt indis hangi katman olduğunu söyler:</b> \(z_h\) = gizli katmanın toplamı, \(z_y\) = çıktının toplamı — ikisi farklı katman, o yüzden farklı harf.</p>
         </div>
@@ -2177,20 +2182,42 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:0 0 2px">▶ İleri Yayılım — bu sırayla hesaplanır</div>
           <div><b>x₁, x₂</b> — girdi (0 ya da 1)</div>
           <div><b>y</b> — XOR'un doğru cevabı (0/1)</div>
-          <div><b>W₁, b₁</b> — <b>1. katmanın</b> (gizli) ağırlık matrisi (2×2) ve sapmaları</div>
-          <div><b>z<sub>h</sub></b> — gizli katmanın <b>ham toplamı</b>: X·W₁+b₁ <span style="color:var(--muted)">(iki sayı: z<sub>h1</sub>, z<sub>h2</sub>)</span></div>
-          <div><b>h₁, h₂</b> — gizli nöronların çıktısı = σ(z<sub>h</sub>)</div>
-          <div><b>V, b₃</b> — <b>çıktı katmanının</b> ağırlıkları (v₁,v₂ — 2 sayı) ve sapması</div>
-          <div><b>z<sub>y</sub></b> — çıktı nöronunun ham toplamı: h·V+b₃ <span style="color:var(--muted)">(tek sayı)</span></div>
+<div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">1️⃣ gizli nöron h₁</div>
+          <div><b>w₁₁</b> — h₁ nöronuna, x₁'den gelen ağırlık</div>
+          <div><b>w₁₂</b> — h₁ nöronuna, x₂'den gelen ağırlık</div>
+          <div><b>b₁</b> — h₁ nöronunun sapması</div>
+          <div><b>z<sub>h1</sub></b> — h₁'in ham toplamı: w₁₁·x₁ + w₁₂·x₂ + b₁</div>
+          <div><b>h₁</b> — h₁'in çıktısı = σ(z<sub>h1</sub>)</div>
+<div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">2️⃣ gizli nöron h₂</div>
+          <div><b>w₂₁</b> — h₂ nöronuna, x₁'den gelen ağırlık</div>
+          <div><b>w₂₂</b> — h₂ nöronuna, x₂'den gelen ağırlık</div>
+          <div><b>b₂</b> — h₂ nöronunun sapması</div>
+          <div><b>z<sub>h2</sub></b> — h₂'nin ham toplamı: w₂₁·x₁ + w₂₂·x₂ + b₂</div>
+          <div><b>h₂</b> — h₂'nin çıktısı = σ(z<sub>h2</sub>)</div>
+<div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">3️⃣ çıktı nöronu p</div>
+          <div><b>w₃₁</b> — çıktı nöronuna, h₁'den gelen ağırlık</div>
+          <div><b>w₃₂</b> — çıktı nöronuna, h₂'den gelen ağırlık</div>
+          <div><b>b₃</b> — çıktı nöronunun sapması</div>
+          <div><b>z<sub>y</sub></b> — çıktının ham toplamı: w₃₁·h₁ + w₃₂·h₂ + b₃</div>
           <div><b>p</b> — modelin tahmini = σ(z<sub>y</sub>), 0-1 arası</div>
+<div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">4️⃣ kayıp</div>
           <div><b>L</b> — kayıp (log-loss), ne kadar yanlışız</div>
           <div style="grid-column:1/-1; font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:8px 0 2px">◀ Geri Yayılım — kayıptan geriye doğru</div>
-          <div><b>dz<sub>y</sub></b> — çıktıya ulaşan geri-sinyal = p − y</div>
-          <div><b>dz<sub>h</sub></b> — gizli katmana ulaşan geri-sinyal</div>
+<div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">Geri 1</div>
+          <div><b>dz<sub>y</sub></b> — çıktı nöronuna ulaşan geri-sinyal = p − y</div><div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">Geri 2</div>
+          <div><b>dw₃₁, dw₃₂</b> — w₃₁ ve w₃₂'nin gradyanları</div>
+          <div><b>db₃</b> — b₃'ün gradyanı</div><div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">Geri 3</div>
+          <div><b>dz<sub>h1</sub></b> — h₁ nöronuna ulaşan geri-sinyal</div>
+          <div><b>dz<sub>h2</sub></b> — h₂ nöronuna ulaşan geri-sinyal</div><div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">Geri 4</div>
+          <div><b>dw₁₁, dw₁₂</b> — w₁₁ ve w₁₂'nin gradyanları</div>
+          <div><b>dw₂₁, dw₂₂</b> — w₂₁ ve w₂₂'nin gradyanları</div>
+          <div><b>db₁, db₂</b> — b₁ ve b₂'nin gradyanları</div><div style="grid-column:1/-1; font-size:10.5px; font-weight:700; color:#95a2c2; margin:6px 0 0">Geri 5</div>
           <div><b>α</b> — öğrenme oranı (burada 3.0) <span style="color:var(--muted)">— son adımda, güncellemede kullanılır</span></div>
         </div>
-        <div class="callout" style="margin:0 0 10px; font-size:12.5px; line-height:1.6">⚠️ <b>Alt indis karışıklığına dikkat:</b> Gizli katmanın toplu adı <b>W₁,b₁</b> — buradaki <b>1</b> KATMAN numarası. Çıktı katmanına da aynı mantıkla "W₂,b₂" denebilirdi, ama <b>b₂</b> zaten <b>h₂'nin</b> (gizli katmanın 2. nöronu) sapması olarak kullanılıyor — o yüzden çıktı katmanına W₂,b₂ değil <b>V,b₃</b> diyoruz. Aynı çakışma <b>z</b>'de de vardı: gizli katmanın toplamına z₁ değil <b>z<sub>h</sub></b>, çıktınınkine z₂ değil <b>z<sub>y</sub></b> diyoruz. Şemada gizli nöronların tek tek toplamları <b>z<sub>h1</sub></b> ve <b>z<sub>h2</sub></b> olarak yazılı; ikisi birlikte \(z_h\) vektörünü oluşturur.</div>
-        <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Denklemin ilk satırı <b>gizli katman</b> (2 nöron birden — bu yüzden \(W_1\) bir matris), ikinci satırı <b>çıktı katmanı</b> (tek nöron, \(V\) bir vektör). Başlangıç değerleri: W₁=[[1.3,−0.3],[−1.4,1.0]] · b₁=[−1.2,0.25] · V=[1.2,−0.9] · b₃=−1.2 · α=3.0. Bu iki satırın seçili girdi için tek tek sayıya dökülmüş hâli, aşağıdaki <b>▶ İleri Yayılım</b> kartlarında adım adım duruyor.</p>
+        <div class="callout" style="margin:0 0 10px; font-size:12.5px; line-height:1.6">🔑 <b>w'nin iki rakamı nasıl okunur:</b> <b>ilk rakam HANGİ NÖRONA</b> gittiğini, <b>ikinci rakam HANGİ GİRDİDEN</b> geldiğini söyler. Nöronları baştan sona numaralıyoruz: <b>h₁ = 1. nöron</b>, <b>h₂ = 2. nöron</b>, <b>p = 3. nöron</b>. Yani <b>w₃₁</b> = "3. nörona (p), 1. girdiden (h₁) gelen ağırlık". Sapmalar da nöronun numarasını taşır: <b>b₁</b> h₁'in, <b>b₂</b> h₂'nin, <b>b₃</b> p'nin sapması. Ham toplamlarda ise harf kullanıyoruz: <b>z<sub>h1</sub></b>, <b>z<sub>h2</sub></b> gizli nöronların, <b>z<sub>y</sub></b> çıktının ham toplamı.</div>
+        <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:0">Dokuz sayının <b>başlangıç değerleri</b> (eğitim bunları değiştirecek):<br>
+        w₁₁=1.3 · w₁₂=−0.3 · b₁=−1.2 &nbsp;|&nbsp; w₂₁=−1.4 · w₂₂=1.0 · b₂=0.25 &nbsp;|&nbsp; w₃₁=1.2 · w₃₂=−0.9 · b₃=−1.2 &nbsp;|&nbsp; α=3.0<br>
+        Bu sayıların seçili girdi için tek tek yerine konmuş hâli, aşağıdaki <b>▶ İleri Yayılım</b> kartlarında adım adım duruyor.</p>
         <div class="callout" id="xaVerdict" style="margin-top:8px"></div>
         </div>
         </div>
@@ -2200,9 +2227,9 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 6px">Aşağıdaki kartlar zinciri <b>halka halka</b> gösteriyor. Burası ise <b>zincirin tamamı</b> — hangi halkanın hangi kartta olduğu dahil.</p>
 
         <div style="font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:10px 0 4px">▶ İLERİ YOL — ne neye bağlı</div>
-        <div class="eq" style="margin:3px 0">\( x \xrightarrow{\;W_1,b_1\;} z_h \xrightarrow{\;\sigma\;} h \)</div>
+        <div class="eq" style="margin:3px 0">\( x \xrightarrow{\;\text{ağırlıklı toplam}\;} z_h \xrightarrow{\;\sigma\;} h \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 1</div>
-        <div class="eq" style="margin:3px 0">\( h \xrightarrow{\;V,b_3\;} z_y \xrightarrow{\;\sigma\;} p \)</div>
+        <div class="eq" style="margin:3px 0">\( h \xrightarrow{\;\text{ağırlıklı toplam}\;} z_y \xrightarrow{\;\sigma\;} p \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 2</div>
         <div class="eq" style="margin:3px 0">\( p \xrightarrow{\;\text{log-loss}\;} L \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 5px">↑ İleri 3</div>
@@ -2214,29 +2241,29 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <tr><th>halka</th><th>eşittir</th><th>kart</th><th>anlamı</th></tr>
           <tr><td>\( \tfrac{\partial L}{\partial p} \)</td><td class="num">\( \tfrac{p-y}{p(1-p)} \)</td><td class="xz-kart">Geri 1</td><td class="xz-anlam">Tahmin biraz oynayınca <b>kayıp</b> ne kadar oynar. Yanlış tarafta ne kadar eminsen o kadar büyür.</td></tr>
           <tr><td>\( \tfrac{\partial p}{\partial z_y} \)</td><td class="num">\( p(1-p) \)</td><td class="xz-kart">Geri 1</td><td class="xz-anlam">Ham toplamı ittiğinde <b>olasılık</b> ne kadar kıpırdar. p 0 ya da 1'e yapışıksa ≈0 — sigmoid doymuş, itmek işe yaramaz.</td></tr>
-          <tr><td>\( \tfrac{\partial z_y}{\partial h_1} \)</td><td class="num">\( v_1 \)</td><td class="xz-kart">Geri 3</td><td class="xz-anlam">h₁ bir birim artarsa çıktının toplamı <b>v₁ kadar</b> artar. Hata bu ağırlık üzerinden geri akar: v büyükse o nöronun suç payı büyük.</td></tr>
+          <tr><td>\( \tfrac{\partial z_y}{\partial h_1} \)</td><td class="num">\( w_{31} \)</td><td class="xz-kart">Geri 3</td><td class="xz-anlam">h₁ bir birim artarsa çıktının toplamı <b>w₃₁ kadar</b> artar. Hata bu ağırlık üzerinden geri akar: w₃₁ büyükse o nöronun suç payı büyük.</td></tr>
           <tr><td>\( \tfrac{\partial h_1}{\partial z_{h1}} \)</td><td class="num">\( h_1(1-h_1) \)</td><td class="xz-kart">Geri 3</td><td class="xz-anlam">Gizli nöronun sigmoid'i o an <b>ne kadar duyarlı</b>. En büyük h=0.5'te (0.25); 0 ya da 1'e yapıştıysa sinyal söner.</td></tr>
           <tr><td>\( \tfrac{\partial z_{h1}}{\partial w_{11}} \)</td><td class="num">\( x_1 \)</td><td class="xz-kart">Geri 4</td><td class="xz-anlam">w₁₁'i oynatmanın etkisi <b>kendi girdisi kadar</b>. x₁=0 ise o örnekte bu ağırlık hiç rol oynamamış — katkı da yok.</td></tr>
         </table>
         <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">✨ <b>İlk iki halka sadeleşiyor</b> — log-loss'un paydasındaki \(p(1-p)\), sigmoid türevinin ta kendisi:</div>
         <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial p}\cdot\dfrac{\partial p}{\partial z_y}=\dfrac{p-y}{p(1-p)}\cdot p(1-p)=p-y=dz_y \)</div>
         <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:6px 0">Beş halkalı zincir böylece dört çarpana iniyor — <b>geri yayılımın tamamı bu tek satır</b>:</p>
-        <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial w_{11}}=(p-y)\cdot v_1\cdot h_1(1-h_1)\cdot x_1 \)</div>
+        <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial w_{11}}=(p-y)\cdot w_{31}\cdot h_1(1-h_1)\cdot x_1 \)</div>
         <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:8px 0 4px">Kartlardaki isimlerle <b>birebir aynı şey</b>, sadece parça parça saklanıyor:</p>
         <div class="eq" style="margin:3px 0">\( dz_y=p-y \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 1</div>
-        <div class="eq" style="margin:3px 0">\( dh_1=dz_y\,v_1 \)</div>
+        <div class="eq" style="margin:3px 0">\( dh_1=dz_y\cdot w_{31} \)</div>
         <div class="eq" style="margin:3px 0">\( dz_{h1}=dh_1\cdot h_1(1-h_1) \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 3</div>
-        <div class="eq" style="margin:3px 0">\( dW_1[x_1\!\to\!h_1]=\tfrac{1}{m}\sum_i x_{1,i}\,dz_{h1,i} \)</div>
+        <div class="eq" style="margin:3px 0">\( dw_{11}=\tfrac{1}{m}\sum_i x_{1,i}\cdot dz_{h1,i} \)</div>
         <div style="font-size:10.5px; color:var(--muted); margin:-1px 0 4px">↑ Geri 4 <span style="opacity:.8">(dört noktanın ortalaması)</span></div>
 
         <div style="font-size:11px; font-weight:700; color:var(--accent); border-left:3px solid var(--accent); padding-left:7px; margin:12px 0 4px">◀ KISA ZİNCİR — çıktı katmanı</div>
-        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 5px">v₁, v₂ ve b₃ kayba çok daha yakın: aralarında yalnızca <b>iki</b> halka var.</p>
-        <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial v_1}=\dfrac{\partial L}{\partial z_y}\cdot\dfrac{\partial z_y}{\partial v_1}=(p-y)\cdot h_1 \)</div>
-        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:5px 0 0"><b>Geri 2'nin Geri 4'ten kısa olmasının sebebi bu</b> — dokuz ağırlığın üçü kısa zinciri, altısı (w₁₁…w₂₂, b₁, b₂) uzun zinciri kullanıyor.</p>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 5px">w₃₁, w₃₂ ve b₃ kayba çok daha yakın: aralarında yalnızca <b>iki</b> halka var.</p>
+        <div class="eq xe-chain-eq" style="margin:5px 0">\( \dfrac{\partial L}{\partial w_{31}}=\dfrac{\partial L}{\partial z_y}\cdot\dfrac{\partial z_y}{\partial w_{31}}=(p-y)\cdot h_1 \)</div>
+        <p style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:5px 0 0"><b>Geri 2'nin Geri 4'ten kısa olmasının sebebi bu</b> — dokuz sayının üçü (w₃₁, w₃₂, b₃) kısa zinciri, altısı (w₁₁, w₁₂, w₂₁, w₂₂, b₁, b₂) uzun zinciri kullanıyor.</p>
         <div class="callout" style="margin-top:10px; font-size:12.5px; line-height:1.6">🧭 <b>Bütün resim:</b> geri yayılım "her ağırlık için ayrı bir formül" değil — <b>tek bir zincir</b>. Bir ağırlık kayba ne kadar uzaksa, gradyanı o kadar çok çarpanın içinden geçer. Derin bir ağda ortadaki <b>\(v\cdot h(1-h)\)</b> halkası katman sayısı kadar tekrarlanır; \(h(1-h)\le 0.25\) olduğu için bu çarpanlar üst üste binince sinyal söner — <b>vanishing gradient</b> tam olarak bu satırda saklı.</div>
-        <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">📌 <b>Küçük bir not:</b> burada \(dh_1=dz_y\,v_1\) tek terim, çünkü <b>tek</b> çıktı nöronumuz var. h₁ birden çok nörona bağlı olsaydı, hepsinden gelen katkılar <b>toplanırdı</b>: \(dh_1=\sum_k dz_{y,k}\,v_{1k}\). Zincir kuralının "bir düğüm kaç yere gidiyorsa o kadar yoldan sinyal alır" kuralı.</div>
+        <div class="callout" style="margin-top:8px; font-size:12.5px; line-height:1.6">📌 <b>Küçük bir not:</b> burada \(dh_1=dz_y\cdot w_{31}\) tek terim, çünkü <b>tek</b> çıktı nöronumuz var. h₁ birden çok nörona bağlı olsaydı, hepsinden gelen katkılar <b>toplanırdı</b>: \(dh_1=\sum_k dz_{y,k}\cdot w_{k1}\). Zincir kuralının "bir düğüm kaç yere gidiyorsa o kadar yoldan sinyal alır" kuralı.</div>
         </div>
         </div>
     </div>
@@ -2255,7 +2282,10 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="stephead"><h2>İleri 1) Gizli katman — z<sub>h</sub> ve h</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
           <div class="xe-flow"><b>girdi:</b> 4 nokta + ağırlıklar &nbsp;·&nbsp; <b>çıktı:</b> h₁,h₂ <span class="xe-to">→ İleri 2</span></div>
-          <div class="eq" style="font-size:88%">\[ \begin{aligned} z_{h1}&=w_{11}x_1+w_{12}x_2+b_1, & h_1&=\sigma(z_{h1}) \\ z_{h2}&=w_{21}x_1+w_{22}x_2+b_2, & h_2&=\sigma(z_{h2}) \end{aligned} \]</div>
+          <div class="eq" style="font-size:88%">\[ z_{h1}=w_{11}\cdot x_1+w_{12}\cdot x_2+b_1 \]</div>
+          <div class="eq" style="font-size:88%">\[ h_1=\sigma(z_{h1}) \]</div>
+          <div class="eq" style="font-size:88%">\[ z_{h2}=w_{21}\cdot x_1+w_{22}\cdot x_2+b_2 \]</div>
+          <div class="eq" style="font-size:88%">\[ h_2=\sigma(z_{h2}) \]</div>
           <table class="calc" id="xeF1tab"></table>
           <div class="work" id="xeF1ornek" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> iki gizli nöron <b>aynı</b> x₁,x₂'yi görüyor ama <b>kendi ağırlıklarıyla</b> — o yüzden farklı sonuç veriyorlar. σ ham toplamı 0-1 arasına sıkıştırıyor.</div>
@@ -2268,7 +2298,8 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="stephead"><h2>İleri 2) Çıktı katmanı — z<sub>y</sub> ve p</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
           <div class="xe-flow"><b>girdi:</b> h₁,h₂ <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> p <span class="xe-to">→ İleri 3</span></div>
-          <div class="eq" style="font-size:88%">\[ z_y=v_1h_1+v_2h_2+b_3, \quad p=\sigma(z_y) \]</div>
+          <div class="eq" style="font-size:88%">\[ z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3 \]</div>
+          <div class="eq" style="font-size:88%">\[ p=\sigma(z_y) \]</div>
           <table class="calc" id="xeF2tab"></table>
           <div class="work" id="xeF2ornek" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
@@ -2276,7 +2307,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <div class="step-graph-cap">Çıktı katmanının sigmoid'i + dört noktanın (z<sub>y</sub>, p) konumu</div>
           </div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> çıktı nöronu artık x'lere değil, gizli katmanın kurduğu <b>(h₁,h₂) temsiline</b> bakıyor. Karar: p ≥ 0.5 ise 1, değilse 0.</div>
-          <div class="detail" id="xeF2det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Gizli katmanın kurduğu temsilden tek bir olasılık (p) üretmek.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — ham toplamı kur</b></div><div class="deriv-why">Çıktı nöronu artık x₁,x₂'ye <b>bakmıyor</b>; girdisi h₁ ve h₂:</div><div class="eq" style="margin:4px 0">\( z_y=v_1h_1+v_2h_2+b_3 \)</div><div class="deriv-why">v₁ ve v₂, iki gizli nöronun çıktıya ne kadar (ve hangi işaretle) katkı vereceğini söyler. Negatif bir v, o nöron ateşlediğinde çıktıyı <b>aşağı</b> çeker — XOR'un "ama ikisi birden değil" kısmı böyle kurulur.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — aktivasyonu uygula</b></div><div class="eq" style="margin:4px 0">\( p=\sigma(z_y) \)</div><div class="deriv-why">p artık 0-1 arası bir sayı; "bu nokta 1 sınıfına ait olma olasılığı" gibi okunur. Karar eşiği 0.5: p ≥ 0.5 → tahmin 1.</div><div class="deriv-why" style="margin-top:8px"><b>Neden bu, tek nöronla yapılamıyordu?</b></div><div class="deriv-why">Tek nöron doğrudan x₁,x₂ üzerinde çalışsaydı sınırı <b>tek bir düz çizgi</b> olurdu ve XOR'un dört noktası tek çizgiyle ayrılamaz. Burada çıktı nöronu (h₁,h₂) uzayında çalışıyor; gizli katman noktaları o uzayda <b>ayrılabilir</b> hale getirdiği için tek çizgi yetiyor.</div></div>
+          <div class="detail" id="xeF2det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Gizli katmanın kurduğu temsilden tek bir olasılık (p) üretmek.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — ham toplamı kur</b></div><div class="deriv-why">Çıktı nöronu artık x₁,x₂'ye <b>bakmıyor</b>; girdisi h₁ ve h₂:</div><div class="eq" style="margin:4px 0">\( z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3 \)</div><div class="deriv-why">w₃₁ ve w₃₂, iki gizli nöronun çıktıya ne kadar (ve hangi işaretle) katkı vereceğini söyler. Negatif bir ağırlık, o nöron ateşlediğinde çıktıyı <b>aşağı</b> çeker — XOR'un "ama ikisi birden değil" kısmı böyle kurulur.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — aktivasyonu uygula</b></div><div class="eq" style="margin:4px 0">\( p=\sigma(z_y) \)</div><div class="deriv-why">p artık 0-1 arası bir sayı; "bu nokta 1 sınıfına ait olma olasılığı" gibi okunur. Karar eşiği 0.5: p ≥ 0.5 → tahmin 1.</div><div class="deriv-why" style="margin-top:8px"><b>Neden bu, tek nöronla yapılamıyordu?</b></div><div class="deriv-why">Tek nöron doğrudan x₁,x₂ üzerinde çalışsaydı sınırı <b>tek bir düz çizgi</b> olurdu ve XOR'un dört noktası tek çizgiyle ayrılamaz. Burada çıktı nöronu (h₁,h₂) uzayında çalışıyor; gizli katman noktaları o uzayda <b>ayrılabilir</b> hale getirdiği için tek çizgi yetiyor.</div></div>
         </div>
       </div>
 
@@ -2331,20 +2362,22 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
             <div class="step-graph-cap">Çıktı katmanının hatası (p − y) · sıfırdan uzak = daha yanlış</div>
           </div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> zincirin ilk halkası şaşırtıcı derecede sade: sadece <b>p − y</b>. Bu sadelik <b>sigmoid + log-loss</b> ikilisinin armağanı — ayrıntıda türetiyoruz.</div>
-          <div class="detail" id="xeB1det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Kaybın, çıktı nöronunun ham toplamına (z<sub>y</sub>) duyarlılığını bulmak — zincirin ilk halkası. Bundan sonraki her gradyan buna dayanacak.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: L doğrudan p'yi içeriyor, önce oraya bakalım</b></div><div class="deriv-why">Tek bir nokta için log-loss:</div><div class="eq" style="margin:4px 0">\( L=-\big[y\ln p+(1-y)\ln(1-p)\big] \)</div><div class="deriv-why">p'ye göre türetelim. \(\ln p\)'nin türevi \(1/p\); \(\ln(1-p)\)'nin türevi \(-1/(1-p)\) (içteki \(1-p\)'nin kendi türevi \(-1\) olduğu için):</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial p}=-\left[\dfrac{y}{p}-\dfrac{1-y}{1-p}\right] \)</div><div class="deriv-why">Paydaları eşitleyip tek kesre indirelim:</div><div class="eq" style="margin:4px 0">\( =\dfrac{-y(1-p)+p(1-y)}{p(1-p)} \)</div><div class="deriv-why">Payı açalım:</div><div class="eq" style="margin:4px 0">\( =\dfrac{-y+yp+p-yp}{p(1-p)} \)</div><div class="deriv-why">Payda \(yp\) terimleri birbirini götürüyor:</div><div class="eq" style="margin:4px 0">\( =\dfrac{p-y}{p(1-p)} \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: p, z<sub>y</sub>'nin sigmoid'i; z<sub>y</sub>'ye inmek için o bağ lazım</b></div><div class="eq" style="margin:4px 0">\( p=\sigma(z_y)\quad\Rightarrow\quad \dfrac{\partial p}{\partial z_y}=p(1-p) \)</div><div class="deriv-why"><span style="color:var(--muted)">(bu türevin ispatı <b>Geri 3</b> kartının ayrıntısında)</span></div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: zincir kuralıyla ikisini çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_y}=\dfrac{p-y}{p(1-p)}\times p(1-p)=p-y \)</div><div class="callout" style="margin-top:8px">✨ <b>İşte sadeliğin sebebi:</b> \(p(1-p)\) çarpanı <b>tam olarak sadeleşiyor</b>. Log-loss'un paydasında beliren şey, sigmoid'in türevinin ta kendisi. Bu yüzden dz<sub>y</sub> = p − y gibi tertemiz bir sonuç çıkıyor — ve bu, "neden MSE değil de log-loss" sorusunun da cevabı: MSE ile bu sadeleşme olmaz, \(p(1-p)\) çarpanı ayakta kalır ve doygunlukta gradyanı öldürür.</div><div class="deriv-why"><span style="color:var(--muted)">Not: bu türev <b>tek bir nokta</b> için. Dört noktanın ortalaması, Geri 2 ve Geri 4'teki \(\tfrac{1}{m}\) çarpanıyla alınıyor.</span></div></div>
+          <div class="detail" id="xeB1det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Kaybın, çıktı nöronunun ham toplamına (z<sub>y</sub>) duyarlılığını bulmak — zincirin ilk halkası. Bundan sonraki her gradyan buna dayanacak.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: L doğrudan p'yi içeriyor, önce oraya bakalım</b></div><div class="deriv-why">Tek bir nokta için log-loss:</div><div class="eq" style="margin:4px 0">\( L=-\big[y\ln p+(1-y)\ln(1-p)\big] \)</div><div class="deriv-why">p'ye göre türetelim. \(\ln p\)'nin türevi \(1/p\); \(\ln(1-p)\)'nin türevi \(-1/(1-p)\) (içteki \(1-p\)'nin kendi türevi \(-1\) olduğu için):</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial p}=-\left[\dfrac{y}{p}-\dfrac{1-y}{1-p}\right] \)</div><div class="deriv-why">Paydaları eşitleyip tek kesre indirelim:</div><div class="eq" style="margin:4px 0">\( =\dfrac{-y(1-p)+p(1-y)}{p(1-p)} \)</div><div class="deriv-why">Payı açalım:</div><div class="eq" style="margin:4px 0">\( =\dfrac{-y+yp+p-yp}{p(1-p)} \)</div><div class="deriv-why">Payda \(yp\) terimleri birbirini götürüyor:</div><div class="eq" style="margin:4px 0">\( =\dfrac{p-y}{p(1-p)} \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: p, z<sub>y</sub>'nin sigmoid'i; z<sub>y</sub>'ye inmek için o bağ lazım</b></div><div class="eq" style="margin:4px 0">\( p=\sigma(z_y)\quad\Rightarrow\quad \dfrac{\partial p}{\partial z_y}=p(1-p) \)</div><div class="deriv-why"><span style="color:var(--muted)">(bu türevin ispatı <b>Geri 3</b> kartının ayrıntısında)</span></div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: zincir kuralıyla ikisini çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_y}=\dfrac{p-y}{p(1-p)}\times p(1-p) \)</div><div class="eq" style="margin:4px 0">\( =p-y \)</div><div class="callout" style="margin-top:8px">✨ <b>İşte sadeliğin sebebi:</b> \(p(1-p)\) çarpanı <b>tam olarak sadeleşiyor</b>. Log-loss'un paydasında beliren şey, sigmoid'in türevinin ta kendisi. Bu yüzden dz<sub>y</sub> = p − y gibi tertemiz bir sonuç çıkıyor — ve bu, "neden MSE değil de log-loss" sorusunun da cevabı: MSE ile bu sadeleşme olmaz, \(p(1-p)\) çarpanı ayakta kalır ve doygunlukta gradyanı öldürür.</div><div class="deriv-why"><span style="color:var(--muted)">Not: bu türev <b>tek bir nokta</b> için. Dört noktanın ortalaması, Geri 2 ve Geri 4'teki \(\tfrac{1}{m}\) çarpanıyla alınıyor.</span></div></div>
         </div>
       </div>
 
       <!-- G2 -->
       <div class="step" id="xeB2">
-        <div class="stephead"><h2>Geri 2) Çıktı katmanının ağırlıkları — v₁, v₂, b₃</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
+        <div class="stephead"><h2>Geri 2) Çıktı nöronunun ağırlıkları — w₃₁, w₃₂, b₃</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> dz<sub>y</sub> <span class="xe-to">← Geri 1</span>, h <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> dV, db₃ <span class="xe-to">→ Geri 5</span></div>
-          <div class="eq" style="font-size:88%">\[ dV=\tfrac{1}{m}\!\sum_i h_i\,dz_{y,i}, \quad db_3=\tfrac{1}{m}\!\sum_i dz_{y,i} \]</div>
+          <div class="xe-flow"><b>girdi:</b> dz<sub>y</sub> <span class="xe-to">← Geri 1</span>, h <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> dw₃₁, dw₃₂, db₃ <span class="xe-to">→ Geri 5</span></div>
+          <div class="eq" style="font-size:88%">\[ dw_{31}=\tfrac{1}{m}\sum_i h_{1,i}\cdot dz_{y,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ dw_{32}=\tfrac{1}{m}\sum_i h_{2,i}\cdot dz_{y,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ db_3=\tfrac{1}{m}\sum_i dz_{y,i} \]</div>
           <div class="work" id="xeB2yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
           <table class="calc" id="xeB2tab" style="margin-top:8px"></table>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> her gizli nöronun gradyanı <b>kendi h değeriyle</b> ölçekleniyor — h büyükse o ağırlık daha çok değişir. b₃'te çarpan yok, çünkü bias'ın girdisi sabit 1.</div>
-          <div class="detail" id="xeB2det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Geri 1'de bulduğumuz dz<sub>y</sub>'yi kullanıp çıktı katmanının kendi ağırlıklarına (v₁, v₂, b₃) inmek.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: bu ağırlıklar z<sub>y</sub>'nin formülünde açıkça duruyor</b></div><div class="eq" style="margin:4px 0">\( z_y=v_1h_1+v_2h_2+b_3 \)</div><div class="deriv-why">v₁'e göre türetelim. \(v_1h_1\) terimi = sabit(h₁) × değişken(v₁) → türevi o sabitin kendisi, yani h₁. Diğer iki terimde v₁ hiç geçmiyor → türevleri 0:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial v_1}=h_1,\quad \dfrac{\partial z_y}{\partial v_2}=h_2,\quad \dfrac{\partial z_y}{\partial b_3}=1 \)</div><div class="deriv-why">b₃'ün türevi 1, çünkü bias hiçbir şeyle çarpılmıyor — girdisi sabit 1 gibi düşünülebilir.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: zincir kuralıyla dz<sub>y</sub> ile çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial v_1}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial v_1}=dz_y\,h_1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: dört nokta var, hepsinin ortalamasını alıyoruz</b></div><div class="eq" style="margin:4px 0">\( dv_1=\tfrac{1}{m}\sum_i h_{1,i}\,dz_{y,i} \)</div><div class="eq" style="margin:4px 0">\( db_3=\tfrac{1}{m}\sum_i dz_{y,i} \)</div><div class="callout" style="margin-top:8px">💡 Gradyanda <b>h₁ çarpanı</b> olması şunu söylüyor: bir ağırlık, <b>kendi girdisi büyükken</b> daha çok güncellenir. h₁≈0 ise o nöronun ağırlığı neredeyse hiç değişmez — çünkü o örnekte hataya katkısı da olmamıştır.</div></div>
+          <div class="detail" id="xeB2det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Geri 1'de bulduğumuz dz<sub>y</sub>'yi kullanıp çıktı nöronunun kendi ağırlıklarına (w₃₁, w₃₂, b₃) inmek.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: bu ağırlıklar z<sub>y</sub>'nin formülünde açıkça duruyor</b></div><div class="eq" style="margin:4px 0">\( z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3 \)</div><div class="deriv-why">w₃₁'e göre türetelim. \(w_{31}\cdot h_1\) terimi = değişken(w₃₁) × sabit(h₁) → türevi o sabitin kendisi, yani h₁. Diğer iki terimde w₃₁ hiç geçmiyor → türevleri 0:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial w_{31}}=h_1 \)</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial w_{32}}=h_2 \)</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial b_3}=1 \)</div><div class="deriv-why">b₃'ün türevi 1, çünkü bias hiçbir şeyle çarpılmıyor — girdisi sabit 1 gibi düşünülebilir.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: zincir kuralıyla dz<sub>y</sub> ile çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial w_{31}}=\dfrac{\partial L}{\partial z_y}\times\dfrac{\partial z_y}{\partial w_{31}}=dz_y\cdot h_1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: dört nokta var, hepsinin ortalamasını alıyoruz</b></div><div class="eq" style="margin:4px 0">\( dw_{31}=\tfrac{1}{m}\sum_i h_{1,i}\cdot dz_{y,i} \)</div><div class="eq" style="margin:4px 0">\( dw_{32}=\tfrac{1}{m}\sum_i h_{2,i}\cdot dz_{y,i} \)</div><div class="eq" style="margin:4px 0">\( db_3=\tfrac{1}{m}\sum_i dz_{y,i} \)</div><div class="callout" style="margin-top:8px">💡 Gradyanda <b>h₁ çarpanı</b> olması şunu söylüyor: bir ağırlık, <b>kendi girdisi büyükken</b> daha çok güncellenir. h₁≈0 ise o nöronun ağırlığı neredeyse hiç değişmez — çünkü o örnekte hataya katkısı da olmamıştır.</div></div>
         </div>
       </div>
 
@@ -2353,11 +2386,14 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="stephead"><h2>Geri 3) Sigmoid'den geri — ∂L/∂z<sub>h</sub></h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
           <div class="xe-flow"><b>girdi:</b> dz<sub>y</sub> <span class="xe-to">← Geri 1</span>, h <span class="xe-to">← İleri 1</span> &nbsp;·&nbsp; <b>çıktı:</b> dz<sub>h</sub> <span class="xe-to">→ Geri 4</span></div>
-          <div class="eq" style="font-size:88%">\[ dh=dz_y\,v, \qquad dz_h=dh\cdot h(1-h) \]</div>
+          <div class="eq" style="font-size:88%">\[ dh_1=dz_y\cdot w_{31} \]</div>
+          <div class="eq" style="font-size:88%">\[ dh_2=dz_y\cdot w_{32} \]</div>
+          <div class="eq" style="font-size:88%">\[ dz_{h1}=dh_1\cdot h_1(1-h_1) \]</div>
+          <div class="eq" style="font-size:88%">\[ dz_{h2}=dh_2\cdot h_2(1-h_2) \]</div>
           <table class="calc" id="xe3tab2"></table>
           <div class="work" id="xe3ornek2" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:6px 0 0"></div>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> hata <b>v ağırlığı üzerinden</b> geri akıyor (büyük v = daha çok "suç payı"), sonra <b>h(1−h)</b> ile ölçekleniyor. h 0 ya da 1'e yapışıksa bu çarpan ≈0 olur ve sinyal söner — vanishing gradient'in ta kendisi.</div>
-          <div class="detail" id="xeB3det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Hatayı gizli katmanın ham toplamına (z<sub>h</sub>) taşımak — böylece bir sonraki kartta w₁₁…w₂₂'ye inebiliriz.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: önce h'ye ulaşmalıyız (z<sub>y</sub> içinde h var)</b></div><div class="deriv-why">\(z_y=v_1h_1+v_2h_2+b_3\) ifadesini h₁'e göre türetirsek, h₁ ile çarpılan sabit kalır:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h_1}=v_1 \quad\Rightarrow\quad dh_1=\dfrac{\partial L}{\partial h_1}=dz_y\,v_1 \)</div><div class="deriv-why">Yorum: hata, <b>v ağırlığı üzerinden</b> geri akıyor. v büyükse o gizli nöron hatadan daha büyük "suç payı" alır.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: h, z<sub>h</sub>'nin sigmoid'i; aradaki türev lazım</b></div><div class="deriv-why">Sigmoid'in türevini bir kez düzgünce çıkaralım. \(\sigma(z)=(1+e^{-z})^{-1}\). Zincir kuralı: dış fonksiyon \(u^{-1}\) (türevi \(-u^{-2}\)), iç fonksiyon \(u=1+e^{-z}\) (türevi \(-e^{-z}\)):</div><div class="eq" style="margin:4px 0">\( \sigma'(z)=-\left(1+e^{-z}\right)^{-2}\times\left(-e^{-z}\right) \)</div><div class="eq" style="margin:4px 0">\( =\dfrac{e^{-z}}{\left(1+e^{-z}\right)^{2}} \)</div><div class="deriv-why">Şimdi bunu σ cinsinden yazalım — çarpanlara ayıralım:</div><div class="eq" style="margin:4px 0">\( =\underbrace{\dfrac{1}{1+e^{-z}}}_{\sigma(z)}\times\underbrace{\dfrac{e^{-z}}{1+e^{-z}}}_{?} \)</div><div class="deriv-why">İkinci parçayı sadeleştirelim: payda \(e^{-z}=\left(1+e^{-z}\right)-1\) yazarsak</div><div class="eq" style="margin:4px 0">\( \dfrac{e^{-z}}{1+e^{-z}}=\dfrac{\left(1+e^{-z}\right)-1}{1+e^{-z}} \)</div><div class="eq" style="margin:4px 0">\( =1-\dfrac{1}{1+e^{-z}}=1-\sigma(z) \)</div><div class="eq" style="margin:4px 0">\( \Rightarrow\quad \sigma'(z)=\sigma(z)\big(1-\sigma(z)\big) \)</div><div class="callout" style="margin-top:8px">✨ <b>Çok kullanışlı bir sonuç:</b> sigmoid'in türevini bulmak için z'ye geri dönmeye gerek yok — elimizdeki <b>h</b> yetiyor: \(\partial h/\partial z_h=h(1-h)\). İleri yayılımda zaten hesapladığımız sayıyı yeniden kullanıyoruz.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: zincir kuralıyla ikisini çarp</b></div><div class="eq" style="margin:4px 0">\( dz_{h1}=\dfrac{\partial L}{\partial z_{h1}}=dh_1\times h_1(1-h_1) \)</div><div class="callout" style="margin-top:8px">⚠️ <b>Vanishing gradient buradan doğar:</b> h₁ 0'a ya da 1'e yapışıksa \(h_1(1-h_1)\approx 0\) olur ve sinyal <b>söner</b>. h=0.5'te çarpan en büyüktür (0.25). Katman sayısı arttıkça bu 0.25'ten küçük çarpanlar üst üste çarpılır — derin ağlarda sinyalin neden kaybolduğunun ve neden ReLU'ya geçildiğinin kökü budur. <span style="color:var(--muted)">(Dizi Modelleme Çağı'ndaki Vanishing/Exploding dersi bunun zaman-boyunca hâli.)</span></div></div>
+          <div class="detail" id="xeB3det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Hatayı gizli nöronların ham toplamına (z<sub>h1</sub>, z<sub>h2</sub>) taşımak — böylece bir sonraki kartta w₁₁, w₁₂, w₂₁, w₂₂'ye inebiliriz.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: önce h'ye ulaşmalıyız (z<sub>y</sub> içinde h var)</b></div><div class="deriv-why">\(z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3\) ifadesini h₁'e göre türetirsek, h₁ ile çarpılan sabit kalır:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_y}{\partial h_1}=w_{31} \)</div><div class="eq" style="margin:4px 0">\( dh_1=\dfrac{\partial L}{\partial h_1}=dz_y\cdot w_{31} \)</div><div class="deriv-why">Yorum: hata, <b>w₃₁ ağırlığı üzerinden</b> geri akıyor. w₃₁ büyükse o gizli nöron hatadan daha büyük "suç payı" alır.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: h, z<sub>h</sub>'nin sigmoid'i; aradaki türev lazım</b></div><div class="deriv-why">Sigmoid'in türevini bir kez düzgünce çıkaralım. \(\sigma(z)=(1+e^{-z})^{-1}\). Zincir kuralı: dış fonksiyon \(u^{-1}\) (türevi \(-u^{-2}\)), iç fonksiyon \(u=1+e^{-z}\) (türevi \(-e^{-z}\)):</div><div class="eq" style="margin:4px 0">\( \sigma'(z)=-\left(1+e^{-z}\right)^{-2}\times\left(-e^{-z}\right) \)</div><div class="eq" style="margin:4px 0">\( =\dfrac{e^{-z}}{\left(1+e^{-z}\right)^{2}} \)</div><div class="deriv-why">Şimdi bunu σ cinsinden yazalım — çarpanlara ayıralım:</div><div class="eq" style="margin:4px 0">\( =\underbrace{\dfrac{1}{1+e^{-z}}}_{\sigma(z)}\times\underbrace{\dfrac{e^{-z}}{1+e^{-z}}}_{?} \)</div><div class="deriv-why">İkinci parçayı sadeleştirelim: payda \(e^{-z}=\left(1+e^{-z}\right)-1\) yazarsak</div><div class="eq" style="margin:4px 0">\( \dfrac{e^{-z}}{1+e^{-z}}=\dfrac{\left(1+e^{-z}\right)-1}{1+e^{-z}} \)</div><div class="eq" style="margin:4px 0">\( =1-\dfrac{1}{1+e^{-z}}=1-\sigma(z) \)</div><div class="eq" style="margin:4px 0">\( \Rightarrow\quad \sigma'(z)=\sigma(z)\big(1-\sigma(z)\big) \)</div><div class="callout" style="margin-top:8px">✨ <b>Çok kullanışlı bir sonuç:</b> sigmoid'in türevini bulmak için z'ye geri dönmeye gerek yok — elimizdeki <b>h</b> yetiyor: \(\partial h/\partial z_h=h(1-h)\). İleri yayılımda zaten hesapladığımız sayıyı yeniden kullanıyoruz.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — neden: zincir kuralıyla ikisini çarp</b></div><div class="eq" style="margin:4px 0">\( dz_{h1}=\dfrac{\partial L}{\partial z_{h1}}=dh_1\times h_1(1-h_1) \)</div><div class="callout" style="margin-top:8px">⚠️ <b>Vanishing gradient buradan doğar:</b> h₁ 0'a ya da 1'e yapışıksa \(h_1(1-h_1)\approx 0\) olur ve sinyal <b>söner</b>. h=0.5'te çarpan en büyüktür (0.25). Katman sayısı arttıkça bu 0.25'ten küçük çarpanlar üst üste çarpılır — derin ağlarda sinyalin neden kaybolduğunun ve neden ReLU'ya geçildiğinin kökü budur. <span style="color:var(--muted)">(Dizi Modelleme Çağı'ndaki Vanishing/Exploding dersi bunun zaman-boyunca hâli.)</span></div></div>
         </div>
       </div>
 
@@ -2365,12 +2401,17 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="step" id="xeB4">
         <div class="stephead"><h2>Geri 4) Gizli katmanın ağırlıkları — w₁₁…w₂₂, b₁, b₂</h2><span class="step-more">ayrıntı <span class="chev">▸</span></span></div>
         <div class="stepbody">
-          <div class="xe-flow"><b>girdi:</b> dz<sub>h</sub> <span class="xe-to">← Geri 3</span>, x &nbsp;·&nbsp; <b>çıktı:</b> dW₁, dB₁ <span class="xe-to">→ Geri 5</span></div>
-          <div class="eq" style="font-size:88%">\[ dW_1=\tfrac{1}{m}\!\sum_i x_i\,dz_{h,i}, \quad dB_1=\tfrac{1}{m}\!\sum_i dz_{h,i} \]</div>
+          <div class="xe-flow"><b>girdi:</b> dz<sub>h</sub> <span class="xe-to">← Geri 3</span>, x &nbsp;·&nbsp; <b>çıktı:</b> dw₁₁, dw₁₂, dw₂₁, dw₂₂, db₁, db₂ <span class="xe-to">→ Geri 5</span></div>
+          <div class="eq" style="font-size:88%">\[ dw_{11}=\tfrac{1}{m}\sum_i x_{1,i}\cdot dz_{h1,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ dw_{12}=\tfrac{1}{m}\sum_i x_{2,i}\cdot dz_{h1,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ dw_{21}=\tfrac{1}{m}\sum_i x_{1,i}\cdot dz_{h2,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ dw_{22}=\tfrac{1}{m}\sum_i x_{2,i}\cdot dz_{h2,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ db_1=\tfrac{1}{m}\sum_i dz_{h1,i} \]</div>
+          <div class="eq" style="font-size:88%">\[ db_2=\tfrac{1}{m}\sum_i dz_{h2,i} \]</div>
           <div class="work" id="xe3yerine" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:4px 0 0"></div>
           <table class="calc" id="xe3tab" style="margin-top:8px"></table>
           <div class="callout" style="margin-top:8px">💡 <b>Ne öğrendik:</b> x₁=0 olan noktalar w₁₁'e <b>hiç katkı vermiyor</b> (0 ile çarpılıyor). Bir ağırlık yalnızca kendi girdisinin açık olduğu örneklerden öğrenir.</div>
-          <div class="detail" id="xeB4det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Geri 3'te bulduğumuz dz<sub>h</sub>'yi kullanıp gizli katmanın kendi ağırlıklarına (w₁₁…w₂₂, b₁, b₂) inmek — zincirin son halkası.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: bu ağırlıklar z<sub>h</sub>'nin formülünde açıkça duruyor</b></div><div class="eq" style="margin:4px 0">\( z_{h1}=w_{11}x_1+w_{12}x_2+b_1 \)</div><div class="deriv-why">w₁₁'e göre türetelim: \(w_{11}x_1\) terimi = değişken(w₁₁) × sabit(x₁) → türevi x₁. Diğer terimlerde w₁₁ yok → 0:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_{h1}}{\partial w_{11}}=x_1,\quad \dfrac{\partial z_{h1}}{\partial w_{12}}=x_2,\quad \dfrac{\partial z_{h1}}{\partial b_1}=1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: zincir kuralıyla dz<sub>h1</sub> ile çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial w_{11}}=dz_{h1}\times x_1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — dört noktanın ortalaması</b></div><div class="eq" style="margin:4px 0">\( dW_1[x_1\!\to\! h_1]=\tfrac{1}{m}\sum_i x_{1,i}\,dz_{h1,i} \)</div><div class="callout" style="margin-top:8px">💡 <b>x₁=0 olan noktalar bu ağırlığa hiç katkı vermez</b> — çünkü çarpan sıfır. Mantıklı: o örnekte x₁ kapalıysa, w₁₁'in ne olduğu sonucu hiç etkilememiştir; dolayısıyla hatadan da sorumlu değildir. Bir ağırlık yalnızca <b>kendi girdisinin açık olduğu</b> örneklerden öğrenir.</div></div>
+          <div class="detail" id="xeB4det"><div class="deriv-why" style="margin-top:2px; color:#f0a032"><b>Amaç:</b> Geri 3'te bulduğumuz dz<sub>h1</sub> ve dz<sub>h2</sub>'yi kullanıp gizli nöronların kendi ağırlıklarına (w₁₁, w₁₂, w₂₁, w₂₂, b₁, b₂) inmek — zincirin son halkası.</div><div class="deriv-why" style="margin-top:8px"><b>Adım 1 — neden: bu ağırlıklar z<sub>h</sub>'nin formülünde açıkça duruyor</b></div><div class="eq" style="margin:4px 0">\( z_{h1}=w_{11}\cdot x_1+w_{12}\cdot x_2+b_1 \)</div><div class="deriv-why">w₁₁'e göre türetelim: \(w_{11}\cdot x_1\) terimi = değişken(w₁₁) × sabit(x₁) → türevi x₁. Diğer terimlerde w₁₁ yok → 0:</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_{h1}}{\partial w_{11}}=x_1 \)</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_{h1}}{\partial w_{12}}=x_2 \)</div><div class="eq" style="margin:4px 0">\( \dfrac{\partial z_{h1}}{\partial b_1}=1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 2 — neden: zincir kuralıyla dz<sub>h1</sub> ile çarp</b></div><div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial w_{11}}=dz_{h1}\times x_1 \)</div><div class="deriv-why" style="margin-top:8px"><b>Adım 3 — dört noktanın ortalaması</b></div><div class="eq" style="margin:4px 0">\( dw_{11}=\tfrac{1}{m}\sum_i x_{1,i}\cdot dz_{h1,i} \)</div><div class="callout" style="margin-top:8px">💡 <b>x₁=0 olan noktalar bu ağırlığa hiç katkı vermez</b> — çünkü çarpan sıfır. Mantıklı: o örnekte x₁ kapalıysa, w₁₁'in ne olduğu sonucu hiç etkilememiştir; dolayısıyla hatadan da sorumlu değildir. Bir ağırlık yalnızca <b>kendi girdisinin açık olduğu</b> örneklerden öğrenir.</div></div>
         </div>
       </div>
 
@@ -2381,7 +2422,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
           <div class="xe-flow"><b>girdi:</b> eski ağırlıklar, dW,dB <span class="xe-to">← Geri 2 & 4</span> &nbsp;·&nbsp; <b>çıktı:</b> yeni ağırlıklar <span class="xe-to">→ İleri 1</span></div>
           <div class="eq" style="font-size:92%">\[ \text{yeni} := \text{eski} - \alpha\cdot\text{gradyan},\quad \alpha=3.0 \]</div>
           <table class="calc" id="xe4tab"></table>
-          <div style="font-size:10.5px; color:var(--muted); margin-top:5px; line-height:1.5">📐 <b>Neden W₁'de 4, V'de 2 satır var?</b> ağırlık sayısı = <b>girdi sayısı × o katmandaki nöron sayısı</b>. W₁: 2 girdi (x₁,x₂) × 2 gizli nöron (h₁,h₂) = <b>4</b>. V: 2 girdi (h₁,h₂) × 1 çıktı nöronu = <b>2</b>.</div>
+          <div style="font-size:10.5px; color:var(--muted); margin-top:5px; line-height:1.5">📐 <b>Neden gizli katmanda 4, çıktıda 2 ağırlık var?</b> ağırlık sayısı = <b>girdi sayısı × o katmandaki nöron sayısı</b>. Gizli katman: 2 girdi (x₁,x₂) × 2 nöron (h₁,h₂) = <b>4</b> (w₁₁, w₁₂, w₂₁, w₂₂). Çıktı katmanı: 2 girdi (h₁,h₂) × 1 nöron (p) = <b>2</b> (w₃₁, w₃₂).</div>
           <div id="xe4ornek" style="font-size:11px; color:var(--muted); margin-top:5px"></div>
           <div class="step-graph-plot" style="flex:none; margin-top:8px">
             <canvas id="xe4Canvas" width="420" height="76"></canvas>
@@ -2427,7 +2468,7 @@ W1 = [[20, 20],    # h1'in ağırlıkları (x1,x2 -> h1)
 b1 = [-10, -30]    # h1 eşiği düşük (OR), h2 eşiği yüksek (AND)
 
 # ---- Çıktı katmanı (1 nöron) ----
-V  = [20, -20]     # v1, v2 : h1'e pozitif, h2'ye NEGATİF  ->  "h1 VE DEĞİL h2"
+W3 = [20, -20]     # w31, w32 : h1'e pozitif, h2'ye NEGATİF -> "h1 VE DEĞİL h2"
 b3 = -10           # çıktı nöronunun sapması
 
 def forward(x1, x2):
@@ -2436,7 +2477,7 @@ def forward(x1, x2):
     for i in range(2):                                    # her gizli nöron için
         zh = sum(W1[i][j] * x[j] for j in range(2)) + b1[i] # nokta çarpım + sapma
         h.append(sigmoid(zh))                             # AKTİVASYON
-    zy = sum(V[i] * h[i] for i in range(2)) + b3
+    zy = sum(W3[i] * h[i] for i in range(2)) + b3
     return h, sigmoid(zy)                                 # yine AKTİVASYON
 
 for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
@@ -2447,14 +2488,14 @@ for x1, x2 in [(0,0), (0,1), (1,0), (1,1)]:
 x=(0,1)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
 x=(1,0)  h1=1.000  h2=0.000  y=1.000   -> YEŞİL   ✓
 x=(1,1)  h1=1.000  h2=1.000  y=0.000   -> KIRMIZI ✓</div>
-    <div class="tip" style="margin-bottom:10px">📑 <b>Notasyon:</b> kodda <code>W1</code>/<code>b1</code> gizli katman (w₁₁,w₁₂,w₂₁,w₂₂ ve b₁,b₂), <code>V</code>/<code>b3</code> ise çıktı katmanı (v₁,v₂ ve b₃) — 5️⃣'teki <b>📑 Notasyon</b> kutusuyla birebir aynı. (Çıktı sapmasına <code>b2</code> demiyoruz: b₂ zaten <b>h₂'nin</b> sapması.)</div>
+    <div class="tip" style="margin-bottom:10px">📑 <b>Notasyon:</b> kodda <code>W1</code>/<code>b1</code> gizli nöronlar (w₁₁,w₁₂,w₂₁,w₂₂ ve b₁,b₂), <code>W3</code>/<code>b3</code> ise çıktı nöronu (w₃₁,w₃₂ ve b₃) — 5️⃣'teki <b>📑 Notasyon</b> kutusuyla birebir aynı. (Çıktı sapmasına <code>b2</code> demiyoruz: b₂ zaten <b>h₂'nin</b> sapması.)</div>
     <div class="tip"><b>Ağırlıklar neden 20 gibi büyük?</b> Sigmoid'i doygunluk bölgesine itip neredeyse bir basamak fonksiyonu gibi çalıştırmak için — böylece h₁/h₂ belirsiz 0.4-0.6 değerleri yerine net 0/1 verir. Küçük ağırlıklarla da çözüm bulunur, ama sınırlar bulanık olur.</div>
-    <div class="tip" style="margin-top:10px">🔬 <b>5️⃣'teki canlı ağla karşılaştır.</b> Orada eğitim sonunda W₁ ≈ [[5.7,−5.9],[−5.6,5.2]] gibi sayılara oturuyor — buradaki 20'ler kadar keskin değil, işaretleri de farklı. <b>Tek bir "doğru" ağırlık takımı yok</b>: XOR'u çözen sonsuz çözüm var, gradyan alçalma bunlardan birine iner.</div>
+    <div class="tip" style="margin-top:10px">🔬 <b>5️⃣'teki canlı ağla karşılaştır.</b> Orada eğitim sonunda w₁₁≈5.7, w₁₂≈−5.9, w₂₁≈−5.6, w₂₂≈5.2 gibi sayılara oturuyor — buradaki 20'ler kadar keskin değil, işaretleri de farklı. <b>Tek bir "doğru" ağırlık takımı yok</b>: XOR'u çözen sonsuz çözüm var, gradyan alçalma bunlardan birine iner.</div>
   </div>
 
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent); margin-top:0">🔁 2) Ağırlıkları kendi bulan saf Python — 5️⃣'teki sekiz kartın kodu</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki kodda ağırlıkları <b>biz</b> yazdık. Burada hiç yazmıyoruz: başlangıç 5️⃣'teki ile <b>birebir aynı</b> (W₁=[[1.3,−0.3],[−1.4,1.0]], b₁=[−1.2,0.25], v=[1.2,−0.9], b₃=−1.2, α=3.0) ve döngü kartların yaptığını sırasıyla yapıyor. Sağ taraftaki yorumlar <b>hangi satırın hangi kart olduğunu</b> söylüyor:</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki kodda ağırlıkları <b>biz</b> yazdık. Burada hiç yazmıyoruz: başlangıç 5️⃣'teki ile <b>birebir aynı</b> (w₁₁=1.3, w₁₂=−0.3, b₁=−1.2; w₂₁=−1.4, w₂₂=1.0, b₂=0.25; w₃₁=1.2, w₃₂=−0.9, b₃=−1.2; α=3.0) ve döngü kartların yaptığını sırasıyla yapıyor. Sağ taraftaki yorumlar <b>hangi satırın hangi kart olduğunu</b> söylüyor:</p>
     <div class="work" style="white-space:pre-wrap; line-height:1.75; font-size:12.5px">import math
 
 X = [(0,0), (0,1), (1,0), (1,1)]
@@ -2463,30 +2504,30 @@ m, LR = 4, 3.0
 
 W1 = [[1.3, -0.3], [-1.4, 1.0]]    # w11,w12 / w21,w22
 b1 = [-1.2, 0.25]                  # b1, b2
-V  = [1.2, -0.9]                   # v1, v2
+W3 = [1.2, -0.9]                   # w31, w32
 b3 = -1.2
 
 def sigmoid(z):
     return 1 / (1 + math.exp(-z))
 
 def epoch_step():
-    global W1, b1, V, b3
+    global W1, b1, W3, b3
     h, p, dz_y = [], [], []
     for i, (x1, x2) in enumerate(X):
         hi = [sigmoid(W1[k][0]*x1 + W1[k][1]*x2 + b1[k])
               for k in range(2)]                                  # ⮕ İleri 1
-        pi = sigmoid(V[0]*hi[0] + V[1]*hi[1] + b3)                 # ⮕ İleri 2
+        pi = sigmoid(W3[0]*hi[0] + W3[1]*hi[1] + b3)               # ⮕ İleri 2
         h.append(hi); p.append(pi)
         dz_y.append(pi - Y[i])                                    # ⬅ Geri 1
 
     L = -sum(Y[i]*math.log(p[i]) + (1-Y[i])*math.log(1-p[i])
              for i in range(m)) / m                               # ⮕ İleri 3
 
-    dV  = [sum(h[i][k]*dz_y[i] for i in range(m)) / m
+    dW3 = [sum(h[i][k]*dz_y[i] for i in range(m)) / m
            for k in range(2)]                                     # ⬅ Geri 2
     db3 =  sum(dz_y[i] for i in range(m)) / m
 
-    dz_h = [[dz_y[i]*V[k] * h[i][k]*(1-h[i][k])
+    dz_h = [[dz_y[i]*W3[k] * h[i][k]*(1-h[i][k])
              for k in range(2)] for i in range(m)]                # ⬅ Geri 3
 
     dW1 = [[sum(X[i][j]*dz_h[i][k] for i in range(m)) / m
@@ -2498,7 +2539,7 @@ def epoch_step():
         for j in range(2):
             W1[k][j] -= LR * dW1[k][j]
         b1[k] -= LR * db1[k]
-        V[k]  -= LR * dV[k]
+        W3[k] -= LR * dW3[k]
     b3 -= LR * db3
     return L, p
 
@@ -2516,9 +2557,9 @@ epoch 186  L=0.029988   doğru 4/4   &lt;-- yakınsadı
 
 W1 = [[5.7263, -5.8707], [-5.5634, 5.2259]]
 b1 = [-3.2408, -2.8855]
-V  = [8.3735, 8.3881]
+W3 = [8.3735, 8.3881]
 b3 = -4.0901</div>
-    <div class="callout" style="margin-top:10px">🧮 <b>Bu sayılar tanıdık gelmeli.</b> 5️⃣'teki simülasyonu ⏩ ile sonuna kadar çalıştırınca <b>aynı epoch'ta</b> (186) <b>aynı kayıpta</b> (L=0.029988) duruyor; şemadaki iki satır da <code>5.72·x₁−5.86·x₂−3.24</code> ve <code>8.36·h₁+8.37·h₂−4.08</code> yazıyor — yukarıdaki W₁, b₁, V, b₃ ile birebir. Sayfadaki JavaScript ile buradaki Python <b>aynı hesabı</b> yapıyor.</div>
+    <div class="callout" style="margin-top:10px">🧮 <b>Bu sayılar tanıdık gelmeli.</b> 5️⃣'teki simülasyonu ⏩ ile sonuna kadar çalıştırınca <b>aynı epoch'ta</b> (186) <b>aynı kayıpta</b> (L=0.029988) duruyor; şemadaki iki satır da <code>5.72·x₁−5.86·x₂−3.24</code> ve <code>8.36·h₁+8.37·h₂−4.08</code> yazıyor — yukarıdaki W1, b1, W3, b3 ile birebir. Sayfadaki JavaScript ile buradaki Python <b>aynı hesabı</b> yapıyor.</div>
     <div class="tip" style="margin-top:10px">👀 <b>Dikkat edilecek tek incelik:</b> döngünün sonundaki güncelleme bloğu çalışana kadar <b>hiçbir ağırlık değişmiyor</b> — bütün gradyanlar <b>eski</b> ağırlıklarla hesaplanıyor. Geri 5'in "dokuzu aynı anda" uyarısının kodda görünüşü budur.</div>
   </div>
 
@@ -2572,7 +2613,7 @@ for epoch in range(400):
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 3) h₁ = OR ve h₂ = AND ise, XOR'u vermek için bunları nasıl birleştiririz?</div>
-      <div class="acc-body"><b>y = h₁ VE (DEĞİL h₂)</b> — "en az biri 1, ama ikisi birden değil". Çıktı nöronunda bu, h₁'e <b>pozitif</b>, h₂'ye <b>negatif</b> ağırlık vermek demektir (kodda <code>V = [20, −20]</code>). (0,0)'da h₁=0 olduğu için 0; (1,1)'de h₂=1 devreye girip sinyali bastırdığı için yine 0; aradaki iki noktada ise h₁=1, h₂=0 → 1.</div>
+      <div class="acc-body"><b>y = h₁ VE (DEĞİL h₂)</b> — "en az biri 1, ama ikisi birden değil". Çıktı nöronunda bu, h₁'e <b>pozitif</b>, h₂'ye <b>negatif</b> ağırlık vermek demektir (kodda <code>W3 = [20, −20]</code>). (0,0)'da h₁=0 olduğu için 0; (1,1)'de h₂=1 devreye girip sinyali bastırdığı için yine 0; aradaki iki noktada ise h₁=1, h₂=0 → 1.</div>
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 4) "Gizli katman veriyi yeni bir uzaya taşır" ne demek? XOR'da ne oluyor?</div>
@@ -5185,15 +5226,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609121256"></script>
-<script src="js/lesson-turev.js?v=202609121256"></script>
-<script src="js/lesson-xor.js?v=202609121256"></script>
-<script src="js/lesson-xor-arch.js?v=202609121256"></script>
-<script src="js/lesson-xor-epoch.js?v=202609121256"></script>
-<script src="js/lesson-nn.js?v=202609121256"></script>
-<script src="js/lesson-trig.js?v=202609121256"></script>
+<script src="js/lesson-linreg.js?v=202609121334"></script>
+<script src="js/lesson-turev.js?v=202609121334"></script>
+<script src="js/lesson-xor.js?v=202609121334"></script>
+<script src="js/lesson-xor-arch.js?v=202609121334"></script>
+<script src="js/lesson-xor-epoch.js?v=202609121334"></script>
+<script src="js/lesson-nn.js?v=202609121334"></script>
+<script src="js/lesson-trig.js?v=202609121334"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609121256"></script>
-<script src="js/app.js?v=202609121256"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609121334"></script>
+<script src="js/app.js?v=202609121334"></script>
 </body>
 </html>
