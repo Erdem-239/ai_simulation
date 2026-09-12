@@ -955,3 +955,7 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 @media(max-width:640px){
   table.calc td.xz-anlam{font-size:10px; padding:4px 5px; max-width:150px}
 }
+
+/* "Bu formül nasıl okunur" listesindeki maddeler — dar kartta sarmalanır */
+.xoku{margin:0 0 5px; line-height:1.55; color:#ccd5e8}
+.xoku b{color:#dbe2f2}

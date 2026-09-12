@@ -258,6 +258,19 @@
       `L = <b>${N(s.L,6)}</b>\n` +
       `ln2 ("vazgeçmiş" model) = 0.693147\n` +
       `fark = ${N(xe2fark,4)}  ${xe2fark>0 ? '→ ondan KÖTÜYÜZ' : '→ ondan İYİYİZ'}`;
+    /* "bu formül nasıl okunur" kutusundaki canlı yerine-koyma — (0,1) noktası */
+    const oku = $('xeOkuma');
+    if(oku){
+      const oi = 1, oP = s.p[oi], oY = Y[oi];
+      const oTer = oY ? Math.log(oP+1e-12) : Math.log(1-oP+1e-12);
+      oku.innerHTML =
+        `y = ${oY} ,  p = ${N(oP,4)}\n` +
+        `1) y=${oY} olduğu için çalışan terim: ${oY ? 'ln(p)' : 'ln(1−p)'}\n` +
+        `2) ${oY ? `ln(${N(oP,4)})` : `ln(1−${N(oP,4)}) = ln(${N(1-oP,4)})`} = <b>${N(oTer,4)}</b>   ← bu noktanın skoru\n` +
+        `3) dört noktanın toplamı = ${N(xe2toplam,4)}\n` +
+        `4) ortalama = ${N(xe2toplam,4)} / 4 = ${N(xe2ort,4)}\n` +
+        `5) işareti çevir → L = <b>${N(s.L,6)}</b>`;
+    }
     draw2();
 
     /* ===================== GERİ 1 — dz_y ============================== */
