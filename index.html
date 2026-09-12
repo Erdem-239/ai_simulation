@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609121347"></script>
-<link rel="stylesheet" href="css/style.css?v=202609121347">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609121428"></script>
+<link rel="stylesheet" href="css/style.css?v=202609121428">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 13:47 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 14:28 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2321,6 +2321,24 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <div class="stepbody">
           <div class="xe-flow"><b>girdi:</b> p <span class="xe-to">← İleri 2</span>, y &nbsp;·&nbsp; <b>çıktı:</b> L <span class="xe-to">→ Geri 1</span></div>
           <div class="eq" style="font-size:90%">\[ L=-\frac{1}{m}\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big] \]</div>
+          <div class="acc" style="margin:6px 0 0">
+          <div class="acc-head" style="font-size:11px; padding:6px 9px"><span class="ac">▸</span> ❓ Bu formül nasıl okunur — parça parça</div>
+          <div class="acc-body" style="font-size:11.5px; padding:7px 10px 10px">
+            <div style="color:var(--muted); margin:0 0 6px">İçten dışa, her parçanın işi:</div>
+            <div class="xoku"><b>p<sub>i</sub></b> — modelin tahmini: "bu nokta <b>1</b> olma olasılığı". Her zaman 0 ile 1 arasında.</div>
+            <div class="xoku"><b>y<sub>i</sub></b> — o noktanın <b>gerçek</b> cevabı. Sadece 0 ya da 1; arası yok.</div>
+            <div class="xoku"><b>1−p<sub>i</sub></b> — madem p "1 olma olasılığı", bu da <b>"0 olma olasılığı"</b>. İkisinin toplamı her zaman 1.</div>
+            <div class="xoku"><b>ln</b> — olasılığı <b>cezaya</b> çevirir: 1'e yakın olasılık ≈ sıfır ceza, 0'a yakın olasılık dev ceza. <span style="color:var(--muted)">(neden logaritma? → ayrıntı ▸)</span></div>
+            <div class="xoku"><b>y<sub>i</sub>·</b> ve <b>(1−y<sub>i</sub>)·</b> çarpanları — bunlar hesap değil, <b>anahtar</b>: y=1 iken birincisi açık ikincisi kapalı, y=0 iken tam tersi. İki terim yazılmasının tek sebebi "eğer"i tek satıra sığdırmak.</div>
+            <div class="xoku"><b>[ ... ]</b> — buraya kadarı <b>tek bir noktanın</b> skoru. Dört nokta varsa bu parantez dört kez ayrı ayrı hesaplanır.</div>
+            <div class="xoku"><b>Σ<sub>i</sub></b> — dört noktanın skorunu <b>topla</b> ("i" = kaçıncı nokta).</div>
+            <div class="xoku"><b>1/m</b> — toplamı <b>ortalamaya</b> çevirir (m = örnek sayısı = 4). Böylece L, veri sayısından bağımsız kalır.</div>
+            <div class="xoku"><b>baştaki −</b> — işareti çevirir. 0-1 arası sayıların ln'i <b>her zaman</b> negatif olduğu için buraya kadarki sonuç garantili negatiftir; çevirince kayıp pozitif olur ve "küçük = iyi" anlamı kazanır.</div>
+            <div class="callout" style="margin:8px 0 0; font-size:11.5px; line-height:1.55">🧩 <b>Hepsi tek cümleye iniyor:</b> her nokta için modelin <b>doğru cevaba</b> verdiği olasılığın logaritmasını al, dördünün ortalamasını al, işaretini çevir.<br><span style="color:var(--muted)">y=1 → ceza = −ln(p) &#160;·&#160; y=0 → ceza = −ln(1−p)</span></div>
+            <div style="font-size:10.5px; color:var(--accent); font-weight:700; margin:9px 0 3px">📐 Şu anki sayılarla, (0,1) noktası için</div>
+            <div class="work" id="xeOkuma" style="white-space:pre-wrap; line-height:1.6; font-size:10.5px; margin:0"></div>
+          </div>
+          </div>
           <table class="calc">
             <tr><th>nokta</th><th>p <span style="font-weight:400; opacity:.7">(İleri 2)</span></th><th>y</th><th>katkı</th></tr>
             <tr><td>(0,0)</td><td class="num" id="xe2p0"></td><td class="num">0</td><td id="xe2c0"></td></tr>
@@ -5230,15 +5248,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609121347"></script>
-<script src="js/lesson-turev.js?v=202609121347"></script>
-<script src="js/lesson-xor.js?v=202609121347"></script>
-<script src="js/lesson-xor-arch.js?v=202609121347"></script>
-<script src="js/lesson-xor-epoch.js?v=202609121347"></script>
-<script src="js/lesson-nn.js?v=202609121347"></script>
-<script src="js/lesson-trig.js?v=202609121347"></script>
+<script src="js/lesson-linreg.js?v=202609121428"></script>
+<script src="js/lesson-turev.js?v=202609121428"></script>
+<script src="js/lesson-xor.js?v=202609121428"></script>
+<script src="js/lesson-xor-arch.js?v=202609121428"></script>
+<script src="js/lesson-xor-epoch.js?v=202609121428"></script>
+<script src="js/lesson-nn.js?v=202609121428"></script>
+<script src="js/lesson-trig.js?v=202609121428"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609121347"></script>
-<script src="js/app.js?v=202609121347"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609121428"></script>
+<script src="js/app.js?v=202609121428"></script>
 </body>
 </html>
