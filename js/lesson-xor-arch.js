@@ -50,10 +50,13 @@
     }
   }
 
-  /* "1.30·x₁−0.30·x₂−1.20" biçiminde kısa Σ formülü */
+  /* "1.30·x₁−0.30·x₂−1.20" biçiminde kısa Σ formülü.
+     Sapma (bias) terimi MOR tspan içinde döner — hemen üstündeki isim
+     satırındaki mor b₁/b₂/b₃ ile göz hizalansın diye. */
   function lin(w0, w1, b, n0, n1){
     const t = (v, nm) => (v < 0 ? '−' : '+') + N(Math.abs(v), 2) + (nm ? '·' + nm : '');
-    return N(w0, 2) + '·' + n0 + t(w1, n1) + t(b, '');
+    return N(w0, 2) + '·' + n0 + t(w1, n1) +
+           '<tspan fill="#c9a0ff" font-weight="700">' + t(b, '') + '</tspan>';
   }
 
   function render(){
@@ -79,9 +82,9 @@
     $('xah1').textContent = N(h1, 3);
     $('xah2').textContent = N(h2, 3);
     $('xayv').textContent = N(p, 3);
-    $('xaf1').textContent = lin(W1[0][0], W1[0][1], B1[0], 'x₁', 'x₂');
-    $('xaf2').textContent = lin(W1[1][0], W1[1][1], B1[1], 'x₁', 'x₂');
-    $('xafy').textContent = lin(W2[0], W2[1], B2, 'h₁', 'h₂');
+    $('xaf1').innerHTML = lin(W1[0][0], W1[0][1], B1[0], 'x₁', 'x₂');
+    $('xaf2').innerHTML = lin(W1[1][0], W1[1][1], B1[1], 'x₁', 'x₂');
+    $('xafy').innerHTML = lin(W2[0], W2[1], B2, 'h₁', 'h₂');
     $('xaEpoch').textContent = `epoch ${epoch} · L = ${N(L, 3)}`;
 
     wlab('xaw11', 'xaL11', 'w₁₁', W1[0][0]);
