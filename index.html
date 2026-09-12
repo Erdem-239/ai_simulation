@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609121334"></script>
-<link rel="stylesheet" href="css/style.css?v=202609121334">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609121347"></script>
+<link rel="stylesheet" href="css/style.css?v=202609121347">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 13:34 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-12 13:47 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2047,7 +2047,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <div class="xs-top">
       <div class="xs-diagram">
         <!-- ==== CANLI MIMARI SEMASI (asagidaki kartlarla ayni agi gosterir) ==== -->
-        <svg id="xaSvg" viewBox="0 0 1040 370" style="width:100%; max-width:1000px; height:auto; display:block; margin:0 auto 4px; background:#0c1224; border-radius:10px" role="img" aria-label="XOR ağının canlı mimarisi: ağırlıklar, ara toplamlar ve sigmoid çıktıları eğitim ilerledikçe güncellenir">
+        <svg id="xaSvg" viewBox="0 0 1040 388" style="width:100%; max-width:1000px; height:auto; display:block; margin:0 auto 4px; background:#0c1224; border-radius:10px" role="img" aria-label="XOR ağının canlı mimarisi: ağırlıklar, ara toplamlar ve sigmoid çıktıları eğitim ilerledikçe güncellenir">
         <defs>
         <marker id="xaAr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5aa0e0"/></marker>
         <marker id="xaAo" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#f0a032"/></marker>
@@ -2090,8 +2090,9 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <rect x="200" y="52" width="270" height="104" rx="12" fill="#151a2e" stroke="#f0a032" stroke-width="2"/>
         <line x1="340" y1="52" x2="340" y2="156" stroke="#f0a032" stroke-width="1.1" stroke-dasharray="4 3"/>
         <text x="208" y="46" font-size="11.5" fill="#f0a032" font-weight="700" font-family="Segoe UI, Arial">h<tspan font-size="9" dy="3">1</tspan><tspan dy="-3"> nöronu  (gizli)</tspan></text>
-        <text x="270" y="82" text-anchor="middle" font-size="15" fill="#f0d8a0" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
-        <text id="xaf1" x="270" y="102" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">1.30·x₁−0.30·x₂−1.20</text>
+        <text x="270" y="80" text-anchor="middle" font-size="15" fill="#f0d8a0" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
+        <text x="270" y="99" text-anchor="middle" font-size="9.5" fill="#6b7794" font-family="Segoe UI, Arial">w₁₁·x₁ + w₁₂·x₂ + <tspan fill="#c9a0ff" font-weight="700">b₁</tspan></text>
+        <text id="xaf1" x="270" y="113" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">1.30·x₁−0.30·x₂−1.20</text>
         <text x="266" y="136" text-anchor="end" font-size="11" fill="#95a2c2" font-family="Segoe UI, Arial">z<tspan font-size="8.5" dy="3">h1</tspan><tspan dy="-3"> =</tspan></text>
         <text id="xaz1" x="272" y="136" text-anchor="start" font-size="15" fill="#ffd24a" font-weight="700" font-family="Segoe UI, Arial">−0.20</text>
         <rect id="xasig1bg" x="342" y="54" width="126" height="100" rx="10" fill="#3a1414" fill-opacity="0.35"/>
@@ -2104,8 +2105,9 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <rect x="200" y="204" width="270" height="104" rx="12" fill="#151a2e" stroke="#f0a032" stroke-width="2"/>
         <line x1="340" y1="204" x2="340" y2="308" stroke="#f0a032" stroke-width="1.1" stroke-dasharray="4 3"/>
         <text x="208" y="198" font-size="11.5" fill="#f0a032" font-weight="700" font-family="Segoe UI, Arial">h<tspan font-size="9" dy="3">2</tspan><tspan dy="-3"> nöronu  (gizli)</tspan></text>
-        <text x="270" y="234" text-anchor="middle" font-size="15" fill="#f0d8a0" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
-        <text id="xaf2" x="270" y="254" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">−1.40·x₁+1.00·x₂+0.25</text>
+        <text x="270" y="232" text-anchor="middle" font-size="15" fill="#f0d8a0" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
+        <text x="270" y="251" text-anchor="middle" font-size="9.5" fill="#6b7794" font-family="Segoe UI, Arial">w₂₁·x₁ + w₂₂·x₂ + <tspan fill="#c9a0ff" font-weight="700">b₂</tspan></text>
+        <text id="xaf2" x="270" y="265" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">−1.40·x₁+1.00·x₂+0.25</text>
         <text x="266" y="288" text-anchor="end" font-size="11" fill="#95a2c2" font-family="Segoe UI, Arial">z<tspan font-size="8.5" dy="3">h2</tspan><tspan dy="-3"> =</tspan></text>
         <text id="xaz2" x="272" y="288" text-anchor="start" font-size="15" fill="#ffd24a" font-weight="700" font-family="Segoe UI, Arial">−0.15</text>
         <rect id="xasig2bg" x="342" y="206" width="126" height="100" rx="10" fill="#3a1414" fill-opacity="0.35"/>
@@ -2118,8 +2120,9 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <rect x="680" y="128" width="270" height="104" rx="12" fill="#12211a" stroke="#46c46a" stroke-width="2"/>
         <line x1="820" y1="128" x2="820" y2="232" stroke="#46c46a" stroke-width="1.1" stroke-dasharray="4 3"/>
         <text x="688" y="122" font-size="11.5" fill="#46c46a" font-weight="700" font-family="Segoe UI, Arial">çıktı nöronu</text>
-        <text x="750" y="158" text-anchor="middle" font-size="15" fill="#a8e6b8" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
-        <text id="xafy" x="750" y="178" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">1.20·h₁−0.90·h₂−1.20</text>
+        <text x="750" y="156" text-anchor="middle" font-size="15" fill="#a8e6b8" font-weight="700" font-family="Segoe UI, Arial">Σ</text>
+        <text x="750" y="175" text-anchor="middle" font-size="9.5" fill="#6b7794" font-family="Segoe UI, Arial">w₃₁·h₁ + w₃₂·h₂ + <tspan fill="#c9a0ff" font-weight="700">b₃</tspan></text>
+        <text id="xafy" x="750" y="189" text-anchor="middle" font-size="10" fill="#95a2c2" font-family="Segoe UI, Arial">1.20·h₁−0.90·h₂−1.20</text>
         <text x="746" y="212" text-anchor="end" font-size="11" fill="#95a2c2" font-family="Segoe UI, Arial">z<tspan font-size="8.5" dy="3">y</tspan><tspan dy="-3"> =</tspan></text>
         <text id="xazy" x="752" y="212" text-anchor="start" font-size="15" fill="#ffd24a" font-weight="700" font-family="Segoe UI, Arial">−1.08</text>
         <rect id="xasigybg" x="822" y="130" width="126" height="100" rx="10" fill="#3a1414" fill-opacity="0.35"/>
@@ -2133,6 +2136,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
         <text x="520" y="326" text-anchor="middle" font-size="11" font-family="Segoe UI, Arial"><tspan fill="#46c46a" font-weight="700">yeşil w = pozitif</tspan><tspan fill="#6b7794"> (o girdi nöronu ATEŞLEMEYE iter) &#160;·&#160; </tspan><tspan fill="#e06a6a" font-weight="700">kırmızı w = negatif</tspan><tspan fill="#6b7794"> (SUSTURMAYA iter) · büyüklük = etkinin gücü</tspan></text>
         <text x="520" y="344" text-anchor="middle" font-size="10.5" fill="#6b7794" font-family="Segoe UI, Arial">her nöron İKİ iş yapar: önce Σ (ağırlıklı toplam → ham skor z), sonra σ (sigmoid → 0-1 arası çıktı) · bütün sayılar canlı</text>
         <text x="520" y="361" text-anchor="middle" font-size="10.5" font-family="Segoe UI, Arial"><tspan fill="#95a2c2" font-weight="700">w'nin ilk rakamı HANGİ NÖRONA, ikinci rakamı HANGİ GİRDİDEN</tspan><tspan fill="#6b7794"> — nöronlar: h₁=1, h₂=2, p=3. Örnek: w₃₁ = 3. nörona (p), 1. girdiden (h₁).</tspan></text>
+        <text x="520" y="378" text-anchor="middle" font-size="10.5" font-family="Segoe UI, Arial"><tspan fill="#c9a0ff" font-weight="700">mor = sapma (bias)</tspan><tspan fill="#6b7794"> — her nöronun kendi b'si var; hiçbir girdiyle çarpılmaz, toplama doğrudan eklenir. Σ kutusunda üstteki satır isimleri, alttaki satır o isimlerin şu anki sayılarını gösteriyor.</tspan></text>
         </svg>
       </div>
       <div class="xs-side">
@@ -5226,15 +5230,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609121334"></script>
-<script src="js/lesson-turev.js?v=202609121334"></script>
-<script src="js/lesson-xor.js?v=202609121334"></script>
-<script src="js/lesson-xor-arch.js?v=202609121334"></script>
-<script src="js/lesson-xor-epoch.js?v=202609121334"></script>
-<script src="js/lesson-nn.js?v=202609121334"></script>
-<script src="js/lesson-trig.js?v=202609121334"></script>
+<script src="js/lesson-linreg.js?v=202609121347"></script>
+<script src="js/lesson-turev.js?v=202609121347"></script>
+<script src="js/lesson-xor.js?v=202609121347"></script>
+<script src="js/lesson-xor-arch.js?v=202609121347"></script>
+<script src="js/lesson-xor-epoch.js?v=202609121347"></script>
+<script src="js/lesson-nn.js?v=202609121347"></script>
+<script src="js/lesson-trig.js?v=202609121347"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609121334"></script>
-<script src="js/app.js?v=202609121334"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609121347"></script>
+<script src="js/app.js?v=202609121347"></script>
 </body>
 </html>
