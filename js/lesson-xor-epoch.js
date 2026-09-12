@@ -267,16 +267,16 @@
     }
     draw3(s);
 
-    /* ===================== GERİ 2 — dW₂, dB₂ ========================== */
+    /* ===================== GERİ 2 — dV, db₃ ============================ */
     const carp2 = [0,1,2,3].map(i => s.h[i][0]*s.dz2[i]);
     $('xeB2yerine').innerHTML =
-      `<b>dW₂[h₁]</b> = ¼ × Σ(h₁ × dz_y)\n` +
+      `<b>dv₁</b> = ¼ × Σ(h₁ × dz_y)\n` +
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${N(s.h[i][0],4)} × ${Sg(s.dz2[i])} = ${Sg(carp2[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp2.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW2[0],4)}</b>`;
     $('xeB2tab').innerHTML =
       trh(['gradyan','değer']) +
-      [['dW₂[h₁]', s.dW2[0]], ['dW₂[h₂]', s.dW2[1]], ['dB₂', s.dB2]].map(([ad,v]) =>
+      [['dv₁', s.dW2[0]], ['dv₂', s.dW2[1]], ['db₃', s.dB2]].map(([ad,v]) =>
         `<tr><td>${ad}</td><td class="num" style="color:#f0a032">${N(v,4)}</td></tr>`).join('');
 
     /* ===================== GERİ 3 — dz_h ============================== */
