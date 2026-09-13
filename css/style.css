@@ -1076,3 +1076,13 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 .xt-pop .xp-son b{color:#ffd24a}
 .xt-pop .xp-k{color:#f0a032; font-weight:700}
 @media(max-width:640px){ .xt-pop{font-size:11px; padding:8px 10px 10px} }
+
+/* pop-up sonundaki "peki gradyan nasil cikiyor" blogu */
+.xt-pop .xp-zin{margin-top:8px; padding-top:7px; border-top:2px solid #4a6d9e}
+.xt-pop .xp-zin b{color:#dbe2f2}
+.xt-pop .xp-hes{margin-top:5px; background:#0c1426; border:1px solid #2c3a5c;
+  border-radius:6px; padding:7px 9px; white-space:pre-wrap;
+  font-family:Consolas,"Courier New",monospace; font-size:10.5px; line-height:1.75;
+  color:#ccd5e8; overflow-x:auto}
+.xt-pop .xp-hes b{color:#f0a032}
+.xt-pop .xp-gri{color:var(--muted); font-family:"Segoe UI",Arial,sans-serif}

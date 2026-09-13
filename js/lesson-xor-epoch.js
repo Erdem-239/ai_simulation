@@ -302,6 +302,90 @@
     tvc('xpv-sh1', s.h[2][0]*(1-s.h[2][0]));
     tvc('xpv-sh2', s.h[2][1]*(1-s.h[2][1]));
 
+    /* --- pop-up'larin sonundaki CANLI "peki gradyan nasil cikiyor" blogu ---
+       Kullanicinin tespiti: turev (or. h1 = 0.5250) ile gradyan (dw31 =
+       -0.0888) arasindaki carpma + ortalama adimi eksikti. */
+    const zin = (ad, html) => document.querySelectorAll('[data-zincir="' + ad + '"]')
+      .forEach(e => { e.innerHTML = html; });
+    const R  = 2;                                   // temsilci nokta: (1,0)
+    const PT = ['(0,0)','(0,1)','(1,0)','(1,1)'];
+    const ort = ts => '¼(' + ts.map(Sg).join(' ') + ')';
+
+    /* yaprak gradyanlari: halka -> carp -> dort noktanin ortalamasi */
+    function yaprak(gradAd, carpAd, carpanlar, tekSol, tekSag, sonuc){
+      const tek = carpanlar[R];
+      return '<b>🔗 Peki gradyan buradan nasıl çıkıyor?</b> Bu türev zincirin ' +
+        '<b>bir halkası</b> — geri-sinyalle çarpılıp <b>dört noktanın ortalaması</b> alınıyor:' +
+        '<div class="xp-hes">' + gradAd + ' = ¼ · Σ<sub>i</sub> ( ' + carpAd + ' )\n' +
+        '  ' + PT[R] + ' için:  ' + tekSol + ' × ' + tekSag + ' = ' + Sg(tek) +
+        '   <span class="xp-gri">← dörtten sadece biri</span>\n' +
+        '  dördü birden: ' + ort(carpanlar) + ' = <b>' + N(sonuc,4) + '</b> = ' + gradAd +
+        '</div>';
+    }
+    /* ara halkalar: tek satirlik carpim */
+    function ara(bas, satir){
+      return '<b>🔗 ' + bas + '</b><div class="xp-hes">' + satir + '</div>';
+    }
+
+    const q1 = s.h[R][0]*(1-s.h[R][0]), q2 = s.h[R][1]*(1-s.h[R][1]);
+    const pR = s.p[R], dLdp = (pR - Y[R])/(pR*(1-pR)), pq = pR*(1-pR);
+
+    zin('Lp', ara('Sonra ne oluyor?',
+      PT[R] + ' noktası için:\n' +
+      '  ∂L/∂p   = (' + N(pR,4) + ' − ' + Y[R] + ') / (' + N(pR,4) + '×' + N(1-pR,4) + ') = ' + Sg(dLdp) + '\n' +
+      '  ∂p/∂z_y = ' + N(pq,4) + '\n' +
+      '  çarpım  = ' + Sg(dLdp) + ' × ' + N(pq,4) + ' = <b>' + Sg(s.dz2[R]) + '</b> = dz_y'));
+
+    zin('pz', ara('Sonra ne oluyor?',
+      PT[R] + ' noktası için:\n' +
+      '  ∂p/∂z_y = ' + N(pR,4) + ' × ' + N(1-pR,4) + ' = ' + N(pq,4) + '\n' +
+      '  bir önceki halka ∂L/∂p = ' + Sg(dLdp) + ' ile çarpılınca:\n' +
+      '  ' + Sg(dLdp) + ' × ' + N(pq,4) + ' = <b>' + Sg(s.dz2[R]) + '</b> = dz_y'));
+
+    zin('sade', ara('Şu anki sayılarla:',
+      PT[R] + ':  dz_y = p − y = ' + N(pR,4) + ' − ' + Y[R] + ' = <b>' + Sg(s.dz2[R]) + '</b>\n' +
+      'Bu sayı artık ağacın <b>bütün dallarına</b> aynen dağılıyor.'));
+
+    zin('zw31', yaprak('dw₃₁', 'h₁,i × dz_y,i', [0,1,2,3].map(i => s.h[i][0]*s.dz2[i]),
+      N(s.h[R][0],4), '(' + Sg(s.dz2[R]) + ')', s.dW2[0]));
+    zin('zw32', yaprak('dw₃₂', 'h₂,i × dz_y,i', [0,1,2,3].map(i => s.h[i][1]*s.dz2[i]),
+      N(s.h[R][1],4), '(' + Sg(s.dz2[R]) + ')', s.dW2[1]));
+    zin('zb3',  yaprak('db₃', '1 × dz_y,i', s.dz2.slice(),
+      '1', '(' + Sg(s.dz2[R]) + ')', s.dB2));
+
+    zin('zh1', ara('Sonra ne oluyor?',
+      PT[R] + ':  dh₁ = dz_y × w₃₁ = ' + Sg(s.dz2[R]) + ' × ' + N(W2[0],4) +
+      ' = <b>' + Sg(s.dh[R][0]) + '</b>\nBu, h₁ nöronuna düşen <b>suç payı</b>. Sıradaki halka: sigmoid.'));
+    zin('zh2', ara('Sonra ne oluyor?',
+      PT[R] + ':  dh₂ = dz_y × w₃₂ = ' + Sg(s.dz2[R]) + ' × ' + N(W2[1],4) +
+      ' = <b>' + Sg(s.dh[R][1]) + '</b>\nBu, h₂ nöronuna düşen <b>suç payı</b>. Sıradaki halka: sigmoid.'));
+
+    zin('hz1', ara('Sonra ne oluyor?',
+      PT[R] + ':  dz_h1 = dh₁ × h₁(1−h₁) = ' + Sg(s.dh[R][0]) + ' × ' + N(q1,4) +
+      ' = <b>' + Sg(s.dz1[R][0]) + '</b>\nArtık h₁\'in üç ağırlığına (w₁₁, w₁₂, b₁) inebiliriz.'));
+    zin('hz2', ara('Sonra ne oluyor?',
+      PT[R] + ':  dz_h2 = dh₂ × h₂(1−h₂) = ' + Sg(s.dh[R][1]) + ' × ' + N(q2,4) +
+      ' = <b>' + Sg(s.dz1[R][1]) + '</b>\nArtık h₂\'nin üç ağırlığına (w₂₁, w₂₂, b₂) inebiliriz.'));
+
+    zin('w11', yaprak('dw₁₁', 'x₁,i × dz_h1,i', [0,1,2,3].map(i => X[i][0]*s.dz1[i][0]),
+      String(X[R][0]), '(' + Sg(s.dz1[R][0]) + ')', s.dW1[0][0]));
+    zin('w12', yaprak('dw₁₂', 'x₂,i × dz_h1,i', [0,1,2,3].map(i => X[i][1]*s.dz1[i][0]),
+      String(X[R][1]), '(' + Sg(s.dz1[R][0]) + ')', s.dW1[0][1]));
+    zin('b1',  yaprak('db₁', '1 × dz_h1,i', [0,1,2,3].map(i => s.dz1[i][0]),
+      '1', '(' + Sg(s.dz1[R][0]) + ')', s.dB1[0]));
+    zin('w21', yaprak('dw₂₁', 'x₁,i × dz_h2,i', [0,1,2,3].map(i => X[i][0]*s.dz1[i][1]),
+      String(X[R][0]), '(' + Sg(s.dz1[R][1]) + ')', s.dW1[1][0]));
+    zin('w22', yaprak('dw₂₂', 'x₂,i × dz_h2,i', [0,1,2,3].map(i => X[i][1]*s.dz1[i][1]),
+      String(X[R][1]), '(' + Sg(s.dz1[R][1]) + ')', s.dW1[1][1]));
+    zin('b2',  yaprak('db₂', '1 × dz_h2,i', [0,1,2,3].map(i => s.dz1[i][1]),
+      '1', '(' + Sg(s.dz1[R][1]) + ')', s.dB1[1]));
+
+    zin('guncelle', ara('Şu anki sayılarla, ilk ağırlık için:',
+      'w₁₁ (yeni) = eski − α × gradyan\n' +
+      '           = ' + N(W1[0][0],4) + ' − 3.0 × (' + N(s.dW1[0][0],4) + ')' +
+      ' = <b>' + N(W1[0][0] - LR*s.dW1[0][0],4) + '</b>\n' +
+      'Aynı satır dokuz sayı için de aynı anda işliyor.'));
+
     hd('xeHd1', 'dz_y', 'p − y',
        `${N(s.p[2],4)} − ${Y[2]}`, Sg(s.dz2[2]), '← (1,0) noktası için');
     draw3(s);
