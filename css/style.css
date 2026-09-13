@@ -986,6 +986,38 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 .xt-wrap > .acc-body{padding:10px 12px 12px; border-top-color:#2a3350}
 .xt-basalt{font-size:10.5px; font-weight:400; color:var(--muted); margin-left:auto}
 @media(max-width:640px){ .xt-basalt{display:none} }
+
+/* tam ekran dugmesi — acc-head her zaman flex, sagda sabit dursun diye
+   xt-basalt yoksa da margin-left:auto tekrarlandi */
+.xt-full-btn{margin-left:auto; flex:none; font-size:14px; line-height:1; color:var(--muted);
+  background:#1b2440; border:1px solid #33415f; border-radius:6px; padding:4px 8px;
+  cursor:pointer}
+.xt-full-btn:hover{color:#fff; border-color:#5aa0e0; background:#22304f}
+.xt-basalt + .xt-full-btn{margin-left:10px}
+
+/* agac tam ekran modu — sayfanin geri kalanini kapatip agaca butun ekrani verir */
+.xt-wrap.xt-full{position:fixed; inset:0; z-index:9990; margin:0; border-radius:0;
+  display:flex; flex-direction:column; background:#0e1426}
+.xt-wrap.xt-full > .acc-head{border-radius:0; flex:none}
+.xt-wrap.xt-full > .acc-body{flex:1; overflow-y:auto; padding:16px 18px 22px}
+.xt-wrap.xt-full .xt-scroll{overflow:auto; padding:2px 0 10px}
+.xt-wrap.xt-full .xt-tree{padding:8px}
+.xt-wrap.xt-full .xt-box{font-size:15px; padding:6px 13px}
+.xt-wrap.xt-full .xt-cap{font-size:11px}
+.xt-wrap.xt-full .xt-val{font-size:15px}
+.xt-wrap.xt-full .xt-edge{font-size:13.5px; padding:4px 9px}
+.xt-wrap.xt-full .xt-kids{padding-left:32px; gap:10px}
+.xt-wrap.xt-full .xt-kid::before{left:-32px; width:32px}
+.xt-wrap.xt-full .xt-kid::after{left:-32px}
+.xt-wrap.xt-full .xt-ipucu{display:none}
+body.xt-full-lock{overflow:hidden}
+@media(max-width:640px){
+  .xt-wrap.xt-full .xt-box{font-size:12px; padding:4px 9px}
+  .xt-wrap.xt-full .xt-edge{font-size:11px}
+  .xt-wrap.xt-full .xt-kids{padding-left:20px}
+  .xt-wrap.xt-full .xt-kid::before{left:-20px; width:20px}
+  .xt-wrap.xt-full .xt-kid::after{left:-20px}
+}
 .xt-title{font-size:13.5px; font-weight:700; color:#dbe2f2; margin:0 0 4px}
 .xt-sub{font-size:11.5px; color:#ccd5e8; line-height:1.65; margin:0 0 9px}
 .xt-sub b{color:#dbe2f2}
