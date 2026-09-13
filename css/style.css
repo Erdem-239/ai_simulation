@@ -959,3 +959,17 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 /* "Bu formül nasıl okunur" listesindeki maddeler — dar kartta sarmalanır */
 .xoku{margin:0 0 5px; line-height:1.55; color:#ccd5e8}
 .xoku b{color:#dbe2f2}
+
+/* Geri kartlarinin CANLI baslik satiri — RNN'deki .rc-card'in XOR karsiligi:
+   sembolik formul, yerine konmus sayilar ve sonuc AYNI satirda dursun diye
+   duz metin (MathJax degil) — dar kartta sarmalanabilsin. */
+.xe-head-eq{background:rgba(90,160,224,.10); border:1px solid rgba(90,160,224,.30);
+  border-radius:6px; padding:6px 8px; margin:4px 0 6px;
+  font-size:11px; line-height:1.65; color:#ccd5e8; overflow-wrap:anywhere}
+.xe-head-eq .ad{color:#dbe2f2; font-weight:700}
+.xe-head-eq .sub{color:var(--muted)}
+.xe-head-eq .val{color:#f0a032; font-weight:700}
+.xe-head-eq .not{color:var(--muted); font-size:10px}
+
+/* Dar kartta 5-6 kolonlu .calc tablosu kartin disina tasmasin: yatay kaydirilsin */
+.tblwrap{overflow-x:auto; max-width:100%}

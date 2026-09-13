@@ -212,6 +212,14 @@
       `   ·   doğru: <b style="color:${dogru===4?'#46c46a':'#f0a032'}">${dogru}/4</b>`;
 
     const Sg  = v => (v>=0?'+':'')+N(v,4);
+    /* RNN'deki .rc-card gibi: sembol = yerine koyma = sonuç, tek satırda canlı */
+    const hd = (id, ad, sembol, yerine, sonuc, not) => {
+      const el = $(id);
+      if(!el) return;
+      el.innerHTML = `<span class="ad">${ad}</span> = ${sembol} = ` +
+        `<span class="sub">${yerine}</span> = <span class="val">${sonuc}</span>` +
+        (not ? ` <span class="not">${not}</span>` : '');
+    };
     const AD4 = ['(0,0)','(0,1)','(1,0)','(1,1)'];
     const trh = a => `<tr>${a.map(c=>`<th>${c}</th>`).join('')}</tr>`;
     const trd = a => `<tr>${a.map((c,j)=>j?`<td class="num">${c}</td>`:`<td>${c}</td>`).join('')}</tr>`;
@@ -278,6 +286,8 @@
       $('xe3p'+i).textContent = N(s.p[i],4);
       $('xe3e'+i).textContent = Sg(s.dz2[i]);
     }
+    hd('xeHd1', 'dz_y', 'p − y',
+       `${N(s.p[2],4)} − ${Y[2]}`, Sg(s.dz2[2]), '← (1,0) noktası için');
     draw3(s);
 
     /* ================= GERİ 2 — dw₃₁, dw₃₂, db₃ ======================== */
@@ -287,6 +297,8 @@
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${N(s.h[i][0],4)} × ${Sg(s.dz2[i])} = ${Sg(carp2[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp2.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW2[0],4)}</b>`;
+    hd('xeHd2', 'dw₃₁', '¼·Σ(h₁ × dz_y)',
+       `¼(${carp2.map(Sg).join(' ')})`, N(s.dW2[0],4));
     $('xeB2tab').innerHTML =
       trh(['gradyan','değer']) +
       [['dw₃₁', s.dW2[0]], ['dw₃₂', s.dW2[1]], ['db₃', s.dB2]].map(([ad,v]) =>
@@ -299,6 +311,9 @@
         `<tr><td>${AD4[i]}</td>` +
         `<td class="num" style="opacity:.75">${Sg(s.dh[i][0])}</td><td class="num">${Sg(s.dz1[i][0])}</td>` +
         `<td class="num" style="opacity:.75">${Sg(s.dh[i][1])}</td><td class="num">${Sg(s.dz1[i][1])}</td></tr>`).join('');
+    hd('xeHd3', 'dz_h₁', 'dh₁ × h₁(1−h₁)',
+       `${Sg(s.dh[2][0])} × ${N(s.h[2][0]*(1-s.h[2][0]),4)}`, Sg(s.dz1[2][0]),
+       '← (1,0) noktası için');
     $('xe3ornek2').innerHTML =
       `ör. (1,0) için dz_h₁:\n` +
       `  dh₁ = dz_y × w₃₁ = ${Sg(s.dz2[2])} × ${N(W2[0],2)} = <b>${Sg(s.dh[2][0])}</b>\n` +
@@ -312,6 +327,8 @@
       [0,1,2,3].map(i =>
         `  ${AD4[i]}  ${X[i][0]} × ${Sg(s.dz1[i][0])} = ${Sg(carp1[i])}`).join('\n') + '\n' +
       `  ¼ × (${Sg(carp1.reduce((t,v)=>t+v,0))}) = <b>${N(s.dW1[0][0],4)}</b>`;
+    hd('xeHd4', 'dw₁₁', '¼·Σ(x₁ × dz_h₁)',
+       `¼(${carp1.map(Sg).join(' ')})`, N(s.dW1[0][0],4));
     $('xe3tab').innerHTML =
       trh(['gradyan','değer']) +
       [['dw₁₁', s.dW1[0][0]], ['dw₁₂', s.dW1[0][1]],
@@ -341,6 +358,8 @@
         `<tr><td>${ad}</td><td class="num">${N(eski,4)}</td>` +
         `<td class="num" style="color:#f0a032">${N(grad,4)}</td>` +
         `<td class="num" style="color:#46c46a">${N(yeni,4)}</td></tr>`).join('');
+    hd('xeHd5', 'w₁₁ (yeni)', 'eski − α·gradyan',
+       `${N(W1[0][0],4)} − 3.0×(${N(s.dW1[0][0],4)})`, N(nW1[0][0],4));
     $('xe4ornek').innerHTML =
       `ör. ilk satır: <b>${N(W1[0][0],4)}</b> − 3.0×(<b>${N(s.dW1[0][0],4)}</b>) = <b>${N(nW1[0][0],4)}</b>`;
     draw4();
