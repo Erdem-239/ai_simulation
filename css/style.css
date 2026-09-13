@@ -973,3 +973,73 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 
 /* Dar kartta 5-6 kolonlu .calc tablosu kartin disina tasmasin: yatay kaydirilsin */
 .tblwrap{overflow-x:auto; max-width:100%}
+
+/* ==================== GERI YAYILIM AGACI (xtree) ====================
+   Butun geri yayilim tek bir agacta: govde L->p->z_y, sonra dallar.
+   Sol->sag ic ice flex "soyagaci" duzeni — kutu genislikleri MathJax'e
+   gore kendiliginden ayarlansin diye mutlak konumlandirma YOK. */
+.xt-wrap{border:1px solid #2a3350; border-radius:10px; background:#0e1426;
+  padding:10px 12px 12px; margin:12px 0 2px}
+.xt-title{font-size:13.5px; font-weight:700; color:#dbe2f2; margin:0 0 4px}
+.xt-sub{font-size:11.5px; color:#ccd5e8; line-height:1.65; margin:0 0 9px}
+.xt-sub b{color:#dbe2f2}
+.xt-scroll{overflow-x:auto; padding:2px 0 6px}
+.xt-tree{display:inline-block; padding:2px}
+
+.xt-node{display:flex; align-items:center}
+.xt-kids{display:flex; flex-direction:column; gap:7px; padding-left:24px; position:relative}
+.xt-kid{position:relative; display:flex; align-items:center}
+/* yatay bagli: omurgadan cocuga */
+.xt-kid::before{content:''; position:absolute; left:-24px; top:50%;
+  width:24px; height:2px; background:#33415f}
+/* dikey omurga: ilk cocugun ortasindan son cocugun ortasina */
+.xt-kid::after{content:''; position:absolute; left:-24px; width:2px;
+  top:-5px; bottom:-5px; background:#33415f}
+.xt-kid:first-child::after{top:50%}
+.xt-kid:last-child::after{bottom:50%}
+.xt-kid:only-child::after{content:none}
+
+.xt-box{border:1.5px solid #33415f; border-radius:8px; padding:4px 10px;
+  background:#151a2e; white-space:nowrap; text-align:center; font-size:12px;
+  color:#dbe2f2; line-height:1.35}
+.xt-box.kok{padding:6px 14px}
+.xt-cap{display:block; font-size:9.5px; color:var(--muted); font-weight:400; margin-top:1px}
+.xt-val{display:block; font-size:12px; font-weight:700; color:#f0a032; margin-top:1px;
+  font-variant-numeric:tabular-nums}
+.xt-box.yaprak{border-style:solid; border-width:2px}
+
+/* ok uzerindeki formul rozeti — cizginin ustune otursun diye opak zemin */
+.xt-edge{position:relative; z-index:1; background:#101731; border:1px solid #2c3a5c;
+  border-radius:6px; padding:3px 7px; margin-left:4px; white-space:nowrap; font-size:11px}
+.xt-edge mjx-container{font-size:106% !important; margin:0 !important}
+.xt-ar{color:#5b6785; font-size:12px; margin:0 5px}
+
+/* kart renkleri: g1 Geri1 ... g4 Geri4 */
+.xt-box.g1{border-color:#5aa0e0}  .xt-edge.g1{border-color:#5aa0e0; color:#9dc4ea}
+.xt-box.g2{border-color:#46c46a}  .xt-edge.g2{border-color:#46c46a; color:#8fe0a5}
+.xt-box.g3{border-color:#f0a032}  .xt-edge.g3{border-color:#f0a032; color:#f0d8a0}
+.xt-box.g4{border-color:#c9a0ff}  .xt-edge.g4{border-color:#c9a0ff; color:#dcc4ff}
+
+.xt-ipucu{display:none; font-size:10.5px; color:var(--accent); margin:0 0 5px}
+@media(max-width:1180px){ .xt-ipucu{display:block} }
+.xt-leg{display:flex; flex-wrap:wrap; gap:6px 10px; margin-top:6px; font-size:10.5px}
+.xt-lg{display:inline-flex; align-items:center; gap:5px; color:var(--muted)}
+.xt-lg::before{content:''; width:12px; height:3px; border-radius:2px; background:#33415f}
+.xt-lg.g1::before{background:#5aa0e0} .xt-lg.g2::before{background:#46c46a}
+.xt-lg.g3::before{background:#f0a032} .xt-lg.g4::before{background:#c9a0ff}
+.xt-lg.g5::before{background:#e06a6a}
+
+@media(max-width:640px){
+  .xt-box{font-size:11px; padding:3px 7px}
+  .xt-edge{font-size:10px; padding:1px 5px}
+  .xt-kids{padding-left:18px}
+  .xt-kid::before{left:-18px; width:18px}
+  .xt-kid::after{left:-18px}
+}
+
+/* kart basindaki formul kutusu — .xe-flow'un (makine dili) yerine gecti */
+.xe-formul{background:rgba(90,160,224,.08); border:1px solid rgba(90,160,224,.28);
+  border-radius:7px; padding:5px 8px 6px; margin:0 0 6px}
+.xe-formul .eq{margin:1px 0; overflow-x:auto}
+.xe-formul-son{border-top:1px dashed rgba(90,160,224,.35); margin-top:4px; padding-top:3px}
+.xe-formul-not{font-size:10px; color:var(--muted); text-align:center; margin-top:3px}
