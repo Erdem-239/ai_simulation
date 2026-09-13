@@ -286,6 +286,12 @@
       $('xe3p'+i).textContent = N(s.p[i],4);
       $('xe3e'+i).textContent = Sg(s.dz2[i]);
     }
+    /* agactaki dokuz yaprak — kartlarla ayni sayilar */
+    const tv = (id, v) => { const e = $(id); if(e) e.textContent = N(v,4); };
+    tv('xtv31', s.dW2[0]);    tv('xtv32', s.dW2[1]);    tv('xtvb3', s.dB2);
+    tv('xtv11', s.dW1[0][0]); tv('xtv12', s.dW1[0][1]); tv('xtvb1', s.dB1[0]);
+    tv('xtv21', s.dW1[1][0]); tv('xtv22', s.dW1[1][1]); tv('xtvb2', s.dB1[1]);
+
     hd('xeHd1', 'dz_y', 'p − y',
        `${N(s.p[2],4)} − ${Y[2]}`, Sg(s.dz2[2]), '← (1,0) noktası için');
     draw3(s);
@@ -393,6 +399,8 @@
     const fwd = $('xeFwd'), bwd = $('xeBwd');
     if(fwd) fwd.style.display = (m === 'ileri') ? '' : 'none';
     if(bwd) bwd.style.display = (m === 'geri')  ? '' : 'none';
+    const agac = $('xeTreeWrap');
+    if(agac) agac.style.display = (m === 'geri') ? '' : 'none';
     document.querySelectorAll('.xe-mod-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.xm === m));
     const not = $('xeModNote');
