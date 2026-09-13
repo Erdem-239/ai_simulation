@@ -80,6 +80,55 @@ hem de İLERİYE doğru **LSTM/GRU**'ya entegre edeceğiz. Yani RNN, Nöral
 netleşen yapıyı bekleyip ona göre hareket et, aceleyle tahmin ederek diğer
 modüllere uygulamaya başlama.
 
+**Güncelleme — XOR'un 5️⃣ Simülasyon'u da bir referans noktası oldu**:
+kullanıcı uzun bir oturumda **XOR modülünün geri yayılım kartlarını**
+(RNN kart anatomisinden esinlenerek) baştan ayrıntılandırdı ve
+"taslağı XOR üzerinden kuracağız, bu sayfayı en son haline getirip
+burası için özel bir şablon yazacağız — şu anki 6 maddelik şablonun
+5. maddesinin (Simülasyon) güncellenmiş, daha ayrıntılı hâli" dedi.
+Yani plan: **önce XOR sayfasını kendi içinde tamamla, sonra bu yapıyı
+resmî bir alt-şablon olarak yaz** (RNN ile aynı ilişki — bekle, netleş,
+sonra genelleştir; aceleyle diğer modüllere taşımaya kalkma).
+
+XOR'un geri yayılım kartlarında şu ana kadar oturan somut bileşenler
+(gelecekte şablonlaştırılacak envanter):
+1. **Kart başlığı `.xe-formul`** — kartın en üstünde, o kartın hesapladığı
+   halkanın MathJax formülü duruyor (RNN'deki gibi; eski `girdi:/çıktı:`
+   makine-dili şeridi `.xe-flow` kaldırıldı).
+2. **Canlı tek satır `.xe-head-eq`** — RNN'deki `.rc-card` mantığının
+   aynısı: `sembol = yerine konmuş sayılar = sonuç`, epoch ilerledikçe
+   güncelleniyor; hemen altında "💡 Ne öğrendik" callout'u.
+3. **`#xeTreeWrap` — bütün geri yayılımı gösteren TEK ağaç**: kartların
+   ÜSTÜNDE, gövde (L→p→z_y) + z_y'de dallanma (çıktı ağırlıkları + gizli
+   nöronlar) + yapraklar (dokuz gradyan, canlı). `.acc` ile açılıp
+   kapanabilir (varsayılan açık), başlıkta sağ üstte **⛶ tam ekran**
+   düğmesi (`.xt-full` — `position:fixed; inset:0`, Esc/✕ ile kapanır,
+   Esc önce açık pop-up'ı kapatır, sonra tam ekrandan çıkar).
+4. **Türetme pop-up'ları (`data-pop` + `.xt-src`)** — ağaçtaki her
+   ok/kutu ve kart başlığındaki her formül üstüne gelince (tıklayınca
+   sabitlenir) o türevin K1–K6 kurallarıyla adım adım nasıl bulunduğunu
+   gösteriyor; sonunda **"🔗 Peki gradyan buradan nasıl çıkıyor?"**
+   bloğuyla türevden gradyana geçişi (çarpma + dört noktanın ortalaması)
+   canlı sayılarla tamamlıyor — bu son adım, kullanıcının "türev ile
+   sonuç arasında bir boşluk var, bir anda geçmiş gibi oluyor" tespitiyle
+   eklendi, atlanmamalı.
+5. Paylaşılan **K1–K6 türev kuralları** kutusu, hem kart detaylarından
+   hem pop-up'lardan referans veriliyor.
+6. Her şey responsive (dar ekranda taşmıyor, tablo/agaç yatay kaydırılır)
+   ve canlı (epoch ilerledikçe hem kartlar hem ağaç hem pop-up'lar
+   güncellenir).
+
+**Önemli site-geneli ders (bugün yaşandı)**: sayfadaki görünen
+`v202X-XX-XX HH:MM TR` sürüm etiketini güncellemek, script/stylesheet
+etiketlerindeki `?v=` cache-bust parametresini OTOMATİK güncellemiyor
+— ikisi ayrı sistemler. `index.html`'de her ikisi de aynı damgayı
+taşıyor (`<script src="...js?v=YYYYMMDDHHMM">` ve görünen metin); bir
+JS/CSS dosyası değiştiğinde **ikisi de aynı anda** bump edilmeli, yoksa
+GitHub Pages'in önbellek penceresinde kullanıcılar eski JS'i çalıştırmaya
+devam eder ve yeni özellik "hiç çalışmıyormuş" gibi görünür (bkz. git
+geçmişi — tam ekran düğmesinin ilk PR'ı tam da bu yüzden canlıda
+çalışmadı).
+
 ## Yol Haritası (tech-tree) notları
 
 - `js/app.js` içinde büyük bir IIFE: `NODES`, `ERAS`, dual-mode (yatay
