@@ -1127,3 +1127,42 @@ body.xt-full-lock{overflow:hidden}
   color:#ccd5e8; overflow-x:auto}
 .xt-pop .xp-hes b{color:#f0a032}
 .xt-pop .xp-gri{color:var(--muted); font-family:"Segoe UI",Arial,sans-serif}
+
+/* ================= HARITANIN "ILERI YOL" SERIDI =================
+   Geri yol bir AGAC (dallanan) ama ileri yol bir ZINCIR (yakinsayan) —
+   o yuzden agac CSS'i degil, basit bir sutun dizisi kullaniliyor. */
+.xf-baslik{font-size:11px; font-weight:700; color:var(--accent);
+  border-left:3px solid var(--accent); padding-left:7px; margin:4px 0 6px}
+.xf-baslik span{font-weight:400; color:var(--muted)}
+.xf-scroll{overflow-x:auto; padding:2px 0 6px}
+.xf-akis{display:inline-flex; align-items:center; gap:2px; padding:2px}
+.xf-kol{display:flex; flex-direction:column; gap:5px; align-items:stretch}
+.xf-kolad{font-size:9.5px; color:var(--muted); text-align:center; margin-top:1px}
+.xf-box{border:1.5px solid #33415f; border-radius:8px; padding:4px 11px;
+  background:#151a2e; white-space:nowrap; text-align:center;
+  font-size:12px; color:#dbe2f2; line-height:1.35}
+.xf-val{display:block; font-size:13px; font-weight:700; color:#ffd24a;
+  margin-top:1px; font-variant-numeric:tabular-nums}
+.xf-cap{display:block; font-size:9px; color:var(--muted); margin-top:1px}
+.xf-box.gi{border-color:#5aa0e0}
+.xf-box.gh{border-color:#f0a032}
+.xf-box.gy{border-color:#46c46a}
+.xf-box.gl{border-color:#e06a6a}
+.xf-ok{display:flex; flex-direction:column; align-items:center; gap:2px; padding:0 3px}
+.xf-chip{background:#101731; border:1px solid #2c3a5c; border-radius:6px;
+  padding:3px 7px; white-space:nowrap; font-size:10.5px}
+.xf-chip mjx-container{font-size:100% !important; margin:0 !important}
+.xf-chip[data-pop]:hover, .xf-chip[data-pop].acik{border-color:#8fc4ff; background:#18243f}
+.xf-ar{color:#5b6785; font-size:13px; line-height:1}
+.xf-donus{font-size:11.5px; line-height:1.6; color:#ccd5e8; background:rgba(240,160,50,.09);
+  border:1px solid rgba(240,160,50,.28); border-radius:7px;
+  padding:6px 9px; margin:2px 0 10px}
+.xf-donus b{color:#f0d8a0}
+/* tam ekranda ileri yol da buyusun */
+.xt-wrap.xt-full .xf-box{font-size:14px; padding:6px 13px}
+.xt-wrap.xt-full .xf-val{font-size:15px}
+.xt-wrap.xt-full .xf-chip{font-size:12.5px; padding:4px 9px}
+@media(max-width:640px){
+  .xf-box{font-size:11px; padding:3px 8px}
+  .xf-chip{font-size:9.5px; padding:2px 5px}
+}
