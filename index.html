@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-13 10:22 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-13 10:29 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2410,8 +2410,9 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     </div>
 
     <!-- ============ GERİ YAYILIM AĞACI — bütün resim ============ -->
-    <div id="xeTreeWrap" class="xt-wrap" style="display:none">
-      <div class="xt-title">🌳 Bütün resim — geri yayılımın ağacı</div>
+    <div id="xeTreeWrap" class="xt-wrap acc open" style="display:none">
+      <div class="acc-head"><span class="ac">▸</span> 🌳 Bütün resim — geri yayılımın ağacı <span class="xt-basalt">ağacı kapatıp kartlara odaklanabilirsin</span></div>
+      <div class="acc-body">
       <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, soldan sağa tek yol izler. z<sub>y</sub>'ye varınca <b>dallanır</b>: üç dal doğrudan çıktı ağırlıklarına iner, iki dal gizli nöronlara girip orada tekrar üçe ayrılır. <b>Her ok bir türev</b> — okun üstündeki formül o halkanın kendisi. Bir yaprağın gradyanı, köke kadar olan bütün okların <b>çarpımıdır</b>. Renkler aşağıdaki kartlara denk geliyor; yapraklardaki sayılar <b>canlı</b>.</p>
       <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
       <div class="xt-ipucu">↔ Ağaç geniş — dalları görmek için <b>yatay kaydır</b>.</div>
@@ -2443,6 +2444,7 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       <div class="xt-src" id="xtsrc-hz1"><div class="xp-bas">\( \tfrac{\partial h_1}{\partial z_{h1}}=h_1(1-h_1) \) — yine sigmoid</div><div class="xp-sat">\(h_1=\sigma(z_{h1})\) — yani bu <b>tam olarak</b> yukarıdaki \(\partial p/\partial z_y\) ile aynı türev, sadece harfler değişti.</div><div class="eq">\( \sigma'(z)=\sigma(z)\big(1-\sigma(z)\big) \)</div><div class="xp-sat">İspatı için gövdedeki \(\partial p/\partial z_y\) okuna bak — <span class="xp-k">K4</span> + <span class="xp-k">K6</span> ile çıkarılıyor.</div><div class="xp-sat"><b>Neden bedava?</b> İleri yayılımda zaten hesapladığımız h1 sayısını yeniden kullanıyoruz; z’ye geri dönmeye gerek yok.</div><div class="xp-son">Şu an (1,0) noktası için <b>h1(1−h1) = <span class="xpv-sh1">—</span></b>. Bu çarpan <b>en fazla 0.25</b> olabilir (h=0.5’te); h 0 ya da 1’e yapıştıysa ≈0 olur ve sinyal söner — <b>vanishing gradient</b> tam olarak bu.</div></div>
       <div class="xt-src" id="xtsrc-hz2"><div class="xp-bas">\( \tfrac{\partial h_2}{\partial z_{h2}}=h_2(1-h_2) \) — yine sigmoid</div><div class="xp-sat">\(h_2=\sigma(z_{h2})\) — yani bu <b>tam olarak</b> yukarıdaki \(\partial p/\partial z_y\) ile aynı türev, sadece harfler değişti.</div><div class="eq">\( \sigma'(z)=\sigma(z)\big(1-\sigma(z)\big) \)</div><div class="xp-sat">İspatı için gövdedeki \(\partial p/\partial z_y\) okuna bak — <span class="xp-k">K4</span> + <span class="xp-k">K6</span> ile çıkarılıyor.</div><div class="xp-sat"><b>Neden bedava?</b> İleri yayılımda zaten hesapladığımız h2 sayısını yeniden kullanıyoruz; z’ye geri dönmeye gerek yok.</div><div class="xp-son">Şu an (1,0) noktası için <b>h2(1−h2) = <span class="xpv-sh2">—</span></b>. Bu çarpan <b>en fazla 0.25</b> olabilir (h=0.5’te); h 0 ya da 1’e yapıştıysa ≈0 olur ve sinyal söner — <b>vanishing gradient</b> tam olarak bu.</div></div>
       <div class="xt-src" id="xtsrc-guncelle"><div class="xp-bas">\( w:=w-\alpha\cdot\tfrac{\partial L}{\partial w} \) — güncelleme</div><div class="xp-sat"><b>Neden eksi?</b> Gradyan, kaybı <b>artıran</b> yönü gösterir. Biz kaybı <b>azaltmak</b> istediğimiz için tam ters yöne adım atıyoruz.</div><div class="xp-sat"><b>α (öğrenme oranı) ne işe yarar?</b> Adımın boyu. Burada α = 3.0.</div><div class="xp-sat">• α çok küçük → doğru yöne gidersin ama çok yavaş.</div><div class="xp-sat">• α çok büyük → hedefin üstünden atlarsın, kayıp zıplar ya da patlar.</div><div class="xp-sat">Dokuz sayının hepsi (w₁₁, w₁₂, w₂₁, w₂₂, b₁, b₂, w₃₁, w₃₂, b₃) <b>aynı anda</b> güncellenir — gradyanların hepsi <b>eski</b> ağırlıklarla hesaplandığı için sıra önemli değil.</div><div class="xp-son">Bu satır her epoch’ta bir kez çalışır; ondan sonra tekrar İleri 1’e dönülür.</div></div>
+      </div>
     </div>
 
     <!-- ================= GERİ YAYILIM (5 kart) ================= -->
