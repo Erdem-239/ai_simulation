@@ -302,6 +302,14 @@
     tvc('xpv-sh1', s.h[2][0]*(1-s.h[2][0]));
     tvc('xpv-sh2', s.h[2][1]*(1-s.h[2][1]));
 
+    /* haritadaki ILERI YOL seridi — temsilci nokta (1,0) */
+    const fv = (id, v, d) => { const e = $(id); if(e) e.textContent = N(v, d===undefined?4:d); };
+    fv('xfx1', X[2][0], 0);   fv('xfx2', X[2][1], 0);
+    fv('xfz1', s.z1[2][0]);   fv('xfz2', s.z1[2][1]);
+    fv('xfh1', s.h[2][0]);    fv('xfh2', s.h[2][1]);
+    fv('xfzy', s.z2[2]);      fv('xfp',  s.p[2]);
+    fv('xfL',  s.L, 6);
+
     /* --- pop-up'larin sonundaki CANLI "peki gradyan nasil cikiyor" blogu ---
        Kullanicinin tespiti: turev (or. h1 = 0.5250) ile gradyan (dw31 =
        -0.0888) arasindaki carpma + ortalama adimi eksikti. */

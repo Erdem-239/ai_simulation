@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609131419"></script>
-<link rel="stylesheet" href="css/style.css?v=202609131419">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609131424"></script>
+<link rel="stylesheet" href="css/style.css?v=202609131424">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-13 14:19 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-13 14:24 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2039,13 +2039,14 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
   </div>
 
   <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed"><span>5️⃣ Bütün Resim — geri yayılımın haritası</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Bütün Resim — ileri ve geri yol</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
   <div class="pts" style="border-left:3px solid var(--accent)">
-    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Aşağıdaki <b>6️⃣ Simülasyon</b>'da geri yayılımı sekiz karta bölüp adım adım işleyeceğiz. Ama önce <b>bütünü</b> görelim: hangi türev nereden çıkıyor, hangi dal nereye iniyor, dokuz gradyanın her biri hangi yoldan geliyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır.</p>
+    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Aşağıdaki <b>6️⃣ Simülasyon</b>'da geri yayılımı sekiz karta bölüp adım adım işleyeceğiz. Ama önce <b>bütünü</b> görelim — önce verinin girdiden kayba nasıl aktığını (<b>ileri yol</b>), sonra kaybın aynı yolu tersten yürüyüp dokuz ağırlığa nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor, dokuz gradyanın her biri hangi yoldan geliyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır.</p>
 <div id="xeTreeWrap" class="xt-wrap acc open">
-      <div class="acc-head"><span class="ac">▸</span> 🌳 Bütün resim — geri yayılımın ağacı <span class="xt-basalt">ağacı kapatıp kartlara odaklanabilirsin</span><button type="button" id="xtFullBtn" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+      <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" id="xtFullBtn" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
+      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(bir noktanın, (1,0), canlı yolculuğu)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="xfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="xfx2">—</span></div><div class="xf-kolad">girdi</div></div><div class="xf-ok"><span class="xf-chip" data-pop="f_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( w\cdot x+b \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="xfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="xfz2">—</span></div><div class="xf-kolad">ağırlıklı toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="f_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="xfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="xfh2">—</span></div><div class="xf-kolad">gizli katman</div></div><div class="xf-ok"><span class="xf-chip" data-pop="f_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( w_3\cdot h+b_3 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="xfzy">—</span></div><div class="xf-kolad">çıktı toplamı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="f_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">p<span class="xf-val" id="xfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">olasılık</div></div><div class="xf-ok"><span class="xf-chip" data-pop="f_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( -[y\ln p+(1-y)\ln(1-p)] \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl">L<span class="xf-val" id="xfL">—</span><span class="xf-cap">4 noktanın ort.</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım tam da bu noktadan — <b>L</b>'den — başlayıp aynı yolu <b>tersten</b> yürüyor. Aşağıdaki ağacın kökü, yukarıdaki zincirin son halkası:</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan dokuz ağırlığa</div>
       <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, soldan sağa tek yol izler. z<sub>y</sub>'ye varınca <b>dallanır</b>: üç dal doğrudan çıktı ağırlıklarına iner, iki dal gizli nöronlara girip orada tekrar üçe ayrılır. <b>Her ok bir türev</b> — okun üstündeki formül o halkanın kendisi. Bir yaprağın gradyanı, köke kadar olan bütün okların <b>çarpımıdır</b>. Renkler aşağıdaki kartlara denk geliyor; yapraklardaki sayılar <b>canlı</b>.</p>
       <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
       <div class="xt-ipucu">↔ Ağaç geniş — dalları görmek için <b>yatay kaydır</b>.</div>
@@ -2059,6 +2060,11 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
       </div>
       <div class="callout" style="margin:8px 0 0; font-size:11.5px; line-height:1.6">🍃 <b>Dokuz yaprak = dokuz gradyan.</b> Her yaprak bir ağırlığın (ya da bias'ın) gradyanı; hepsi <b>Geri 5</b>'te aynı anda güncellenir. Yapraklardaki sayılar <b>dört noktanın ortalaması</b> — gövdedeki oklar ise her nokta için ayrı ayrı işler.</div>
 
+      <div class="xt-src" id="xtsrc-f_zh"><div class="xp-bas">Ağırlıklı toplam — nöronun tek işi</div><div class="xp-sat">Her gizli nöron <b>aynı</b> x₁, x₂ çiftini görür ama <b>kendi</b> ağırlıklarıyla:</div><div class="eq">\( z_{h1}=w_{11}\cdot x_1+w_{12}\cdot x_2+b_1 \)</div><div class="eq">\( z_{h2}=w_{21}\cdot x_1+w_{22}\cdot x_2+b_2 \)</div><div class="xp-sat"><b>Çarp, topla, bias ekle</b> — hepsi bu. Ağırlık o girdinin <i>ne kadar önemli</i> olduğunu, bias ise <i>eşiğin nerede</i> olduğunu söyler.</div><div class="xp-sat">İki nöron farklı ağırlık takımı taşıdığı için farklı şeylere bakar; ağırlıklar birebir aynı olsaydı ikisi tek nöronun kopyası olurdu.</div><div class="xp-zin" data-zincir="f_zh"></div></div>
+      <div class="xt-src" id="xtsrc-f_sig"><div class="xp-bas">σ (sigmoid) — neden araya giriyor?</div><div class="eq">\( h=\sigma(z)=\dfrac{1}{1+e^{-z}} \)</div><div class="xp-sat">z her değeri alabilir (−∞…+∞); σ bunu <b>0–1 aralığına</b> sıkıştırır. z büyükse σ→1 ("nöron ateşledi"), küçükse σ→0, z=0 iken tam 0.5.</div><div class="xp-sat">⚠️ <b>Asıl kritik nokta doğrusal olmaması.</b> σ olmasaydı iki katman üst üste tek bir doğruya çökerdi ve XOR <b>asla</b> çözülemezdi — 4️⃣'teki tek-çizgi tıkanmasının çıkışı tam olarak buradan geçiyor.</div><div class="xp-zin" data-zincir="f_sig"></div></div>
+      <div class="xt-src" id="xtsrc-f_zy"><div class="xp-bas">Çıktı katmanı — artık x'e değil h'ye bakıyor</div><div class="eq">\( z_y=w_{31}\cdot h_1+w_{32}\cdot h_2+b_3 \)</div><div class="xp-sat">Dikkat: bu satırda <b>x yok</b>. Çıktı nöronu ham veriyi değil, gizli katmanın kurduğu <b>(h₁, h₂) temsilini</b> görüyor.</div><div class="xp-sat">İşin sırrı burada: XOR dört noktası (x₁,x₂) uzayında tek çizgiyle ayrılamaz, ama (h₁,h₂) uzayında <b>ayrılabilir</b> hâle geliyor — o yüzden tek çizgi yetiyor.</div><div class="xp-sat">Negatif bir ağırlık, o nöron ateşlediğinde çıktıyı <b>aşağı</b> çeker; XOR'un "ama ikisi birden değil" kısmı böyle kuruluyor.</div><div class="xp-zin" data-zincir="f_zy"></div></div>
+      <div class="xt-src" id="xtsrc-f_p"><div class="xp-bas">p — modelin cevabı</div><div class="eq">\( p=\sigma(z_y) \)</div><div class="xp-sat">p, 0 ile 1 arasında bir sayı: <b>"bu nokta 1 sınıfına ait olma olasılığı"</b>.</div><div class="xp-sat">Karar eşiği <b>0.5</b>: p ≥ 0.5 ise tahmin <b>1</b>, değilse <b>0</b>. Ama eğitim eşiğe değil, p'nin <b>kendisine</b> bakar — 0.51 ile 0.99 aynı tahmini verir, farklı ceza alır.</div><div class="xp-zin" data-zincir="f_p"></div></div>
+      <div class="xt-src" id="xtsrc-f_L"><div class="xp-bas">L — ne kadar kötüyüz?</div><div class="eq">\( L=-\tfrac{1}{m}\sum_i\big[y_i\ln p_i+(1-y_i)\ln(1-p_i)\big] \)</div><div class="xp-sat">Her nokta için modelin <b>doğru cevaba</b> verdiği olasılığın logaritmasını al, dördünün ortalamasını al, işaretini çevir.</div><div class="xp-sat">y=1 → ceza = −ln(p) &#160;·&#160; y=0 → ceza = −ln(1−p). ln, "emin olup yanılmayı" katlanarak cezalandırır.</div><div class="xp-sat"><b>Geri yayılım tam buradan başlıyor</b>: L'yi küçültmek için dokuz ağırlığın her birini hangi yöne itmeliyiz?</div><div class="xp-zin" data-zincir="f_L"></div></div>
       <!-- pop-up kaynaklari: DOM'da duruyor ki MathJax sayfa yuklenirken islesin -->
       <div class="xt-src" id="xtsrc-Lp"><div class="xp-bas">\( \tfrac{\partial L}{\partial p} \) — kayıp, tahmine göre</div><div class="xp-sat">Tek bir noktanın kaybı:</div><div class="eq">\( L=-\big[\,y\ln p+(1-y)\ln(1-p)\,\big] \)</div><div class="xp-sat"><span class="xp-k">K1</span> ile iki terimi <b>tek tek</b> türetiyoruz.</div><div class="xp-sat"><b>1. terim</b> \(y\ln p\): y sabit, <span class="xp-k">K5</span> gereği \((\ln p)'=1/p\) →</div><div class="eq">\( \tfrac{y}{p} \)</div><div class="xp-sat"><b>2. terim</b> \((1-y)\ln(1-p)\): (1−y) sabit; <span class="xp-k">K5</span> + iç türev \(-1\) →</div><div class="eq">\( -\tfrac{1-y}{1-p} \)</div><div class="xp-sat">Baştaki eksiyle ikisini birleştir:</div><div class="eq">\( \tfrac{\partial L}{\partial p}=-\tfrac{y}{p}+\tfrac{1-y}{1-p} \)</div><div class="xp-sat">Ortak payda \(p(1-p)\):</div><div class="eq">\( =\tfrac{-y(1-p)+p(1-y)}{p(1-p)} \)</div><div class="xp-sat">Payı açalım: \(-y+yp+p-py\). Ortadaki <b>yp</b> ile <b>py</b> aynı şey — biri artı biri eksi, birbirini götürüyor:</div><div class="eq">\( =\tfrac{-y+p}{p(1-p)} \)</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial p}=\tfrac{p-y}{p(1-p)} \)</div><div class="xp-zin" data-zincir="Lp"></div></div>
       <div class="xt-src" id="xtsrc-pz"><div class="xp-bas">\( \tfrac{\partial p}{\partial z_y} \) — sigmoid’in türevi</div><div class="xp-sat">\(p=\sigma(z_y)\). Sigmoid’i üslü yazalım:</div><div class="eq">\( \sigma(z)=\tfrac{1}{1+e^{-z}}=\left(1+e^{-z}\right)^{-1} \)</div><div class="xp-sat">İç içe fonksiyon → <span class="xp-k">K4</span> + <span class="xp-k">K6</span>: dış \(u^{-1}\) (türevi \(-u^{-2}\)), iç \(1+e^{-z}\) (türevi \(-e^{-z}\)).</div><div class="eq">\( \sigma'(z)=-\left(1+e^{-z}\right)^{-2}\cdot\left(-e^{-z}\right)=\tfrac{e^{-z}}{(1+e^{-z})^{2}} \)</div><div class="xp-sat">Paydayı ikiye böl:</div><div class="eq">\( =\underbrace{\tfrac{1}{1+e^{-z}}}_{\sigma}\cdot\underbrace{\tfrac{e^{-z}}{1+e^{-z}}}_{?} \)</div><div class="xp-sat">Numara: \(e^{-z}=(1+e^{-z})-1\) yazınca ikinci parça \(1-\sigma\) oluyor.</div><div class="xp-son">Sonuç: \( \tfrac{\partial p}{\partial z_y}=p(1-p) \) — z’ye dönmeye gerek yok, elimizdeki p yetiyor.</div><div class="xp-zin" data-zincir="pz"></div></div>
@@ -5433,15 +5439,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609131419"></script>
-<script src="js/lesson-turev.js?v=202609131419"></script>
-<script src="js/lesson-xor.js?v=202609131419"></script>
-<script src="js/lesson-xor-arch.js?v=202609131419"></script>
-<script src="js/lesson-xor-epoch.js?v=202609131419"></script>
-<script src="js/lesson-nn.js?v=202609131419"></script>
-<script src="js/lesson-trig.js?v=202609131419"></script>
+<script src="js/lesson-linreg.js?v=202609131424"></script>
+<script src="js/lesson-turev.js?v=202609131424"></script>
+<script src="js/lesson-xor.js?v=202609131424"></script>
+<script src="js/lesson-xor-arch.js?v=202609131424"></script>
+<script src="js/lesson-xor-epoch.js?v=202609131424"></script>
+<script src="js/lesson-nn.js?v=202609131424"></script>
+<script src="js/lesson-trig.js?v=202609131424"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609131419"></script>
-<script src="js/app.js?v=202609131419"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609131424"></script>
+<script src="js/app.js?v=202609131424"></script>
 </body>
 </html>
