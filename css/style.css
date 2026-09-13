@@ -1057,6 +1057,7 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 .xt-src{display:none}
 [data-pop]{cursor:help}
 .xt-edge[data-pop]:hover, .xt-edge[data-pop].acik{border-color:#8fc4ff; background:#18243f}
+.xt-box[data-pop]:hover, .xt-box[data-pop].acik{border-color:#8fc4ff; box-shadow:0 0 0 1px #8fc4ff inset}
 .xe-formul .eq[data-pop]{border-radius:5px; transition:background .12s}
 .xe-formul .eq[data-pop]:hover, .xe-formul .eq[data-pop].acik{background:rgba(90,160,224,.18)}
 
