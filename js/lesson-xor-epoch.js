@@ -568,7 +568,32 @@
       }
       if(!(e.target.closest && e.target.closest('#xtPop'))) kapat();
     });
-    document.addEventListener('keydown', e => { if(e.key === 'Escape') kapat(); });
+    /* ---------- "bütün resim" ağacı tam ekran ---------- */
+    const wrap = document.getElementById('xeTreeWrap');
+    const fullBtn = document.getElementById('xtFullBtn');
+    function tamEkranAyarla(acik){
+      if(!wrap) return;
+      wrap.classList.toggle('xt-full', acik);
+      document.body.classList.toggle('xt-full-lock', acik);
+      if(fullBtn){
+        fullBtn.textContent = acik ? '✕' : '⛶';
+        fullBtn.title = acik ? 'Tam ekrandan çık' : 'Tam ekran';
+        fullBtn.setAttribute('aria-label', fullBtn.title);
+      }
+    }
+    if(fullBtn){
+      fullBtn.addEventListener('click', e => {
+        e.stopPropagation();               // acc-head'in ac/kapa'sini tetiklemesin
+        if(!wrap.classList.contains('open')) wrap.classList.add('open');  // kapaliysa once ac
+        tamEkranAyarla(!wrap.classList.contains('xt-full'));
+      });
+    }
+
+    document.addEventListener('keydown', e => {
+      if(e.key !== 'Escape') return;
+      if(!pop.hidden){ kapat(); return; }         // once acik pop-up'i kapat
+      if(wrap && wrap.classList.contains('xt-full')) tamEkranAyarla(false);
+    });
     document.addEventListener('scroll', () => { if(aktif) yerlestir(aktif); }, true);
     window.addEventListener('resize', kapat);
   })();
