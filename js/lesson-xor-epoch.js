@@ -493,8 +493,6 @@
     const fwd = $('xeFwd'), bwd = $('xeBwd');
     if(fwd) fwd.style.display = (m === 'ileri') ? '' : 'none';
     if(bwd) bwd.style.display = (m === 'geri')  ? '' : 'none';
-    const agac = $('xeTreeWrap');
-    if(agac) agac.style.display = (m === 'geri') ? '' : 'none';
     document.querySelectorAll('.xe-mod-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.xm === m));
     const not = $('xeModNote');
