@@ -292,6 +292,16 @@
     tv('xtv11', s.dW1[0][0]); tv('xtv12', s.dW1[0][1]); tv('xtvb1', s.dB1[0]);
     tv('xtv21', s.dW1[1][0]); tv('xtv22', s.dW1[1][1]); tv('xtvb2', s.dB1[1]);
 
+    /* pop-up'lardaki canli sayilar — (1,0) temsilci noktasi.
+       id degil SINIF kullaniyoruz: acik pop-up bir KOPYA oldugu icin
+       ikisi birden guncellensin. */
+    const tvc = (cls, v) => document.querySelectorAll('.' + cls)
+      .forEach(e => { e.textContent = N(v,4); });
+    tvc('xpv-h1',  s.h[2][0]);   tvc('xpv-h2',  s.h[2][1]);
+    tvc('xpv-w31', W2[0]);       tvc('xpv-w32', W2[1]);
+    tvc('xpv-sh1', s.h[2][0]*(1-s.h[2][0]));
+    tvc('xpv-sh2', s.h[2][1]*(1-s.h[2][1]));
+
     hd('xeHd1', 'dz_y', 'p − y',
        `${N(s.p[2],4)} − ${Y[2]}`, Sg(s.dz2[2]), '← (1,0) noktası için');
     draw3(s);
@@ -409,6 +419,75 @@
   }
   document.querySelectorAll('.xe-mod-btn').forEach(b =>
     b.addEventListener('click', () => setMod(b.dataset.xm)));
+
+  /* ---------- ok / formul uzerine gelince acilan turetme kutusu ----------
+     Kaynak icerik DOM'da gizli duruyor (.xt-src) — MathJax'i sayfa
+     yuklenirken isliyor, biz sadece kopyalayip konumlandiriyoruz. */
+  (function(){
+    const pop = document.createElement('div');
+    pop.className = 'xt-pop'; pop.id = 'xtPop'; pop.hidden = true;
+    pop.setAttribute('role','dialog');
+    document.body.appendChild(pop);
+    let aktif = null, sabit = false, zam = null;
+
+    function kapat(){
+      pop.hidden = true; sabit = false;
+      if(aktif) aktif.classList.remove('acik');
+      aktif = null;
+    }
+    function yerlestir(el){
+      const r = el.getBoundingClientRect(), g = 8;
+      const pw = pop.offsetWidth, ph = pop.offsetHeight;
+      let x = r.left + r.width/2 - pw/2;
+      x = Math.max(g, Math.min(x, window.innerWidth  - pw - g));
+      let y = r.bottom + 8;
+      if(y + ph > window.innerHeight - g) y = r.top - ph - 8;   // ustune al
+      y = Math.max(g, Math.min(y, window.innerHeight - ph - g)); // her halukarda ekranda kal
+      pop.style.left = Math.round(x) + 'px';
+      pop.style.top  = Math.round(y) + 'px';
+    }
+    function ac(el){
+      const kaynak = document.getElementById('xtsrc-' + el.dataset.pop);
+      if(!kaynak) return;
+      if(aktif && aktif !== el) aktif.classList.remove('acik');
+      pop.innerHTML = kaynak.innerHTML;
+      pop.style.left = '-9999px'; pop.style.top = '0px';
+      pop.hidden = false;
+      aktif = el; el.classList.add('acik');
+      yerlestir(el);
+    }
+
+    document.addEventListener('mouseover', e => {
+      if(sabit) return;
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(!el) return;
+      clearTimeout(zam);
+      if(aktif !== el) ac(el);
+    });
+    document.addEventListener('mouseout', e => {
+      if(sabit) return;
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(!el) return;
+      clearTimeout(zam);
+      zam = setTimeout(() => { if(!pop.matches(':hover')) kapat(); }, 180);
+    });
+    pop.addEventListener('mouseenter', () => clearTimeout(zam));
+    pop.addEventListener('mouseleave', () => { if(!sabit) kapat(); });
+
+    document.addEventListener('click', e => {
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(el){
+        e.preventDefault();
+        if(sabit && aktif === el) kapat();
+        else { ac(el); sabit = true; }
+        return;
+      }
+      if(!(e.target.closest && e.target.closest('#xtPop'))) kapat();
+    });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') kapat(); });
+    document.addEventListener('scroll', () => { if(aktif) yerlestir(aktif); }, true);
+    window.addEventListener('resize', kapat);
+  })();
 
   reset();
   setMod('ileri');

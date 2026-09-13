@@ -1043,3 +1043,30 @@ table.calc td.xz-kart{white-space:nowrap; padding:5px 8px}
 .xe-formul .eq{margin:1px 0; overflow-x:auto}
 .xe-formul-son{border-top:1px dashed rgba(90,160,224,.35); margin-top:4px; padding-top:3px}
 .xe-formul-not{font-size:10px; color:var(--muted); text-align:center; margin-top:3px}
+
+/* ---- ok/formul uzerine gelince acilan turetme kutusu ---- */
+.xt-ara{font-size:11px; color:#9dc4ea; background:rgba(90,160,224,.09);
+  border:1px solid rgba(90,160,224,.25); border-radius:6px;
+  padding:4px 8px; margin:0 0 6px; line-height:1.55}
+.xt-src{display:none}
+[data-pop]{cursor:help}
+.xt-edge[data-pop]:hover, .xt-edge[data-pop].acik{border-color:#8fc4ff; background:#18243f}
+.xe-formul .eq[data-pop]{border-radius:5px; transition:background .12s}
+.xe-formul .eq[data-pop]:hover, .xe-formul .eq[data-pop].acik{background:rgba(90,160,224,.18)}
+
+.xt-pop{position:fixed; z-index:9999; width:min(390px, 92vw);
+  max-height:min(72vh, 620px); overflow-y:auto;
+  background:#111a30; border:1px solid #4a6d9e; border-radius:10px;
+  box-shadow:0 12px 34px rgba(0,0,0,.6); padding:9px 12px 11px;
+  font-size:11.5px; line-height:1.62; color:#ccd5e8}
+.xt-pop[hidden]{display:none}
+.xt-pop b{color:#dbe2f2}
+.xt-pop .xp-bas{font-size:12px; font-weight:700; color:#9dc4ea;
+  border-bottom:1px solid #2a3350; padding-bottom:5px; margin:0 0 6px}
+.xt-pop .xp-sat{margin:4px 0}
+.xt-pop .eq{margin:4px 0; overflow-x:auto}
+.xt-pop .xp-son{margin-top:7px; padding-top:6px; border-top:1px dashed #4a6d9e;
+  color:#f0d8a0}
+.xt-pop .xp-son b{color:#ffd24a}
+.xt-pop .xp-k{color:#f0a032; font-weight:700}
+@media(max-width:640px){ .xt-pop{font-size:11px; padding:8px 10px 10px} }
