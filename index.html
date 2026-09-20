@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609131424"></script>
-<link rel="stylesheet" href="css/style.css?v=202609131424">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609201310"></script>
+<link rel="stylesheet" href="css/style.css?v=202609201310">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-13 14:24 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:10 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2925,20 +2925,20 @@ for epoch in range(400):
   <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki 9 sayı (W⁽¹⁾'in 4 ağırlığı + 2 bias'ı, W⁽²⁾'nin 2 ağırlığı + 1 bias'ı) <b>tüm</b> ağın parametreleri. Varsayılan değerler, Aktivasyon dersindeki <code>step(x1+x2−0.5)</code> eşiklerinin <b>keskinleştirilmiş sigmoid</b> hâli (×20 büyütülmüş) — dene, XOR'u hâlâ 4/4 çözüyor. Sayıları değiştirip ağın nasıl bozulduğunu/düzeldiğini gör.</p>
-    <div class="ptrow" style="margin-bottom:6px"><b style="color:var(--blue); font-size:12.5px; width:100%">W⁽¹⁾ (girdi → gizli) ve b⁽¹⁾</b></div>
+    <div class="ptrow" style="margin-bottom:6px"><b style="color:var(--blue); font-size:12.5px; width:100%">W⁽¹⁾ (girdi → gizli) ve b⁽¹⁾ &nbsp;<span style="font-weight:400; color:var(--muted)">— ilk rakam NÖRON, ikinci rakam GİRDİ (XOR'daki kuralla aynı)</span></b></div>
     <div class="ptrow">
-      <div class="ptcell"><label>w₁₁ (x1→h1)</label><input type="number" id="nnW1_11" value="20" step="0.5"></div>
-      <div class="ptcell"><label>w₂₁ (x2→h1)</label><input type="number" id="nnW1_21" value="20" step="0.5"></div>
-      <div class="ptcell"><label>b1 (h1)</label><input type="number" id="nnB1_1" value="-10" step="0.5"></div>
-      <div class="ptcell"><label>w₁₂ (x1→h2)</label><input type="number" id="nnW1_12" value="20" step="0.5"></div>
-      <div class="ptcell"><label>w₂₂ (x2→h2)</label><input type="number" id="nnW1_22" value="20" step="0.5"></div>
-      <div class="ptcell"><label>b2 (h2)</label><input type="number" id="nnB1_2" value="-30" step="0.5"></div>
+      <div class="ptcell"><label>w₁₁ (h1←x1)</label><input type="number" id="nnW11" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w₁₂ (h1←x2)</label><input type="number" id="nnW12" value="20" step="0.5"></div>
+      <div class="ptcell"><label>b₁ (h1)</label><input type="number" id="nnB1" value="-10" step="0.5"></div>
+      <div class="ptcell"><label>w₂₁ (h2←x1)</label><input type="number" id="nnW21" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w₂₂ (h2←x2)</label><input type="number" id="nnW22" value="20" step="0.5"></div>
+      <div class="ptcell"><label>b₂ (h2)</label><input type="number" id="nnB2" value="-30" step="0.5"></div>
     </div>
     <div class="ptrow" style="margin:10px 0 6px"><b style="color:var(--green); font-size:12.5px; width:100%">W⁽²⁾ (gizli → çıktı) ve b⁽²⁾</b></div>
     <div class="ptrow">
-      <div class="ptcell"><label>w1 (h1→y)</label><input type="number" id="nnW2_1" value="20" step="0.5"></div>
-      <div class="ptcell"><label>w2 (h2→y)</label><input type="number" id="nnW2_2" value="-20" step="0.5"></div>
-      <div class="ptcell"><label>b (y)</label><input type="number" id="nnB2" value="-10" step="0.5"></div>
+      <div class="ptcell"><label>w₃₁ (y←h1)</label><input type="number" id="nnW31" value="20" step="0.5"></div>
+      <div class="ptcell"><label>w₃₂ (y←h2)</label><input type="number" id="nnW32" value="-20" step="0.5"></div>
+      <div class="ptcell"><label>b₃ (y)</label><input type="number" id="nnB3" value="-10" step="0.5"></div>
       <button class="addbtn" id="nnFwdReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Varsayılana dön</button>
     </div>
     <div class="work" id="nnFwdTable" style="white-space:pre; overflow-x:auto; line-height:1.9; font-size:12.5px; margin-top:12px"></div>
@@ -5439,15 +5439,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609131424"></script>
-<script src="js/lesson-turev.js?v=202609131424"></script>
-<script src="js/lesson-xor.js?v=202609131424"></script>
-<script src="js/lesson-xor-arch.js?v=202609131424"></script>
-<script src="js/lesson-xor-epoch.js?v=202609131424"></script>
-<script src="js/lesson-nn.js?v=202609131424"></script>
-<script src="js/lesson-trig.js?v=202609131424"></script>
+<script src="js/lesson-linreg.js?v=202609201310"></script>
+<script src="js/lesson-turev.js?v=202609201310"></script>
+<script src="js/lesson-xor.js?v=202609201310"></script>
+<script src="js/lesson-xor-arch.js?v=202609201310"></script>
+<script src="js/lesson-xor-epoch.js?v=202609201310"></script>
+<script src="js/lesson-nn.js?v=202609201310"></script>
+<script src="js/lesson-trig.js?v=202609201310"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609131424"></script>
-<script src="js/app.js?v=202609131424"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609201310"></script>
+<script src="js/app.js?v=202609201310"></script>
 </body>
 </html>
