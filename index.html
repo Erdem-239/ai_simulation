@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609201310"></script>
-<link rel="stylesheet" href="css/style.css?v=202609201310">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609201316"></script>
+<link rel="stylesheet" href="css/style.css?v=202609201316">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:10 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:16 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2847,6 +2847,10 @@ for epoch in range(400):
 
   <!-- ===================== NEURAL NETWORK MODELİ ===================== -->
   <div class="model" id="model-neural">
+    <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+
 
   <!-- ===== HERO: ileri+geri yayılım döngüsü ===== -->
   <div class="lesson-hero">
@@ -2885,7 +2889,14 @@ for epoch in range(400):
     <p class="lesson-hook">🧠 Aktivasyon dersinde XOR'u <b>elle</b> çözdük — h1, h2, y ağırlıklarını biz seçtik. Ama gerçek bir ağ bunları <b>kendi bulur</b>: rastgele başlar, tahmininin ne kadar yanlış olduğunu ölçer (kayıp), sonra bu hatayı geriye doğru katman katman yayarak <b>her ağırlığı</b> "biraz daha az yanlış" olacak yöne kaydırır. Bu derste tam olarak bunu izleyeceksin — <b>rastgele ağırlıklarla başlayan bir ağ, gözünün önünde XOR'u kendi kendine öğrenecek.</b></p>
   </div>
 
-  <div class="pts lesson-story">
+  
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="pts lesson-story">
     <div class="lesson-story-h">💡 HİKÂYE — Bir buzul çağı ve ondan çıkış</div>
     <p>1958'de <b>Frank Rosenblatt</b>, Aktivasyon dersinde tanıdığın tek nöronu bir makineye dönüştürdü: <b>Perceptron</b>. New York Times bunu manşete taşıdı — "yürüyen, konuşan, kendi kendini kopyalayan bir elektronik beyin" vaat ediliyordu. Heyecan büyüktü.</p>
     <p>1969'da matematikçi <b>Marvin Minsky</b> ve <b>Seymour Papert</b> "Perceptrons" adlı kitapta soğuk bir gerçeği kanıtladılar: <b>tek katmanlı bir perceptron XOR'u asla öğrenemez</b> — tam olarak Aktivasyon dersinde senin de elle keşfettiğin şey (tek çizgi en fazla 3/4 doğru). Bu kanıt o kadar etkili oldu ki sinir ağı araştırmalarına giden fonlar kurudu; tarihe <b>"yapay zeka kışı" (AI winter)</b> olarak geçen ~15 yıllık bir durgunluk başladı.</p>
@@ -2893,7 +2904,14 @@ for epoch in range(400):
     <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
   </div>
 
-  <div class="lesson-examples">
+  
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
     <div class="ex-grid">
       <div class="ex-card"><span class="ex-ico">🏦</span><b>Kredi kartı dolandırıcılığı</b> — bankalar, işlemin "normal mi şüpheli mi" olduğunu saniyeler içinde karar veren küçük sinir ağları kullanır; her biri temelde bugün kuracağın gibi bir girdi→gizli→çıktı zinciri.</div>
@@ -2904,7 +2922,14 @@ for epoch in range(400):
     </div>
   </div>
 
-  <!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
+  
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
   <div class="sechead">1) 1 nörondan ağa — katman kavramı ve W matrisi</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aktivasyon dersindeki tek nöron: <code>çıktı = g(w·x+b)</code> — girdileri ağırlıkla çarp, topla, aktivasyondan geçir. Bir <b>ağ</b>, bunun yan yana ve üst üste dizilmiş hâlidir:</p>
@@ -2921,7 +2946,25 @@ for epoch in range(400):
     <div class="tip"><b>Neden matris?</b> Çünkü <code>W·x</code> (matris-vektör çarpımı), "her rafın x ile nokta çarpımı"ndan başka bir şey değil — yani h1 ve h2'nin z'lerini <b>TEK bir işlemde</b>, aynı anda hesaplar. Gerçek ağlarda W, binlerce×binlerce boyutlu olur ama işlem birebir aynı; GPU'ların bu kadar işine yaraması da tam bu yüzden — matris çarpımını paralel yapabiliyorlar.</div>
   </div>
 
-  <!-- ===== 2) İleri yayılım simülasyonu ===== -->
+  
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>5️⃣ Bütün Resim — katman ve matris zinciri</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="pts tpl-empty" style="border-left:3px solid var(--muted)">
+    <span class="tpl-empty-tag">BOŞ — eklenebilir</span>
+    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:8px">XOR'daki "Bütün Resim" bir <b>ağaç</b>ti (geri yayılımın dallanması). Bu modülün kendi kimliği <b>katman + W matrisi</b> olduğu için burada ağaç değil, tek karede <b>x → W⁽¹⁾x+b⁽¹⁾ → h → W⁽²⁾h+b⁽²⁾ → ŷ</b> matris zincirini gösteren, her okuna gelince o matris çarpımının açılımının çıktığı bir şerit eklenecek — ayrı bir PR'da.</p>
+  </div>
+
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>6️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<!-- ===== 2) İleri yayılım simülasyonu ===== -->
   <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki 9 sayı (W⁽¹⁾'in 4 ağırlığı + 2 bias'ı, W⁽²⁾'nin 2 ağırlığı + 1 bias'ı) <b>tüm</b> ağın parametreleri. Varsayılan değerler, Aktivasyon dersindeki <code>step(x1+x2−0.5)</code> eşiklerinin <b>keskinleştirilmiş sigmoid</b> hâli (×20 büyütülmüş) — dene, XOR'u hâlâ 4/4 çözüyor. Sayıları değiştirip ağın nasıl bozulduğunu/düzeldiğini gör.</p>
@@ -3018,7 +3061,25 @@ for epoch in range(400):
 
   <div class="callout" style="margin-top:8px">💡 <b>Özet sezgi:</b> Bir sinir ağı = katman katman dizilmiş <b>W·x+b</b> + aktivasyon. Öğrenme = kayıptan başlayıp zincir kuralıyla geriye doğru inen, her ağırlığı kendi gradyanı kadar kaydıran bir döngü. Bugün 9 parametrede elle izlediğin bu döngü, GPT'nin trilyonlarca parametresinde de <b>aynı</b> — sadece ölçek, donanım ve bazı pratik hileler (Adam optimizer, batch'ler, öğrenme oranı planları) eklenir.</div>
 
-  <div class="sechead">🧠 Kendini Test Et — Neural Network</div>
+  
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="pts tpl-empty" style="border-left:3px solid var(--muted)">
+    <span class="tpl-empty-tag">BOŞ — eklenebilir</span>
+    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:8px">Şimdilik bu modülde 6️⃣'yı uzatan ayrı bir tanjant yok. İleride eklenebilecek adaylar: PyTorch/NumPy karşılığı (<code>nn.Linear</code>, <code>@</code> operatörü ile matris çarpımı), ya da farklı katman genişlikleriyle (3-4-5 gizli nöron) deney.</p>
+  </div>
+
+    </div>
+    </div>
+
+    <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">🧠 Kendini Test Et — Neural Network</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -3042,7 +3103,10 @@ for epoch in range(400):
       <div class="acc-body">Fikir <b>birebir aynı</b>: W·x+b + aktivasyon, katman katman, geri yayılımla eğitilir. Fark tamamen <b>ölçek ve mimari detaylar</b> — milyarlarca parametre, onlarca-yüzlerce katman, attention gibi ek yapı taşları (bu sitenin sonraki dersleri) ve eğitimi mümkün kılan pratik hileler (Adam, dropout, normalization). Temel döngü bugün elle izlediğinin tıpatıp aynısı.</div>
     </div>
   </div>
-  <p class="footer">Neural Network • katmanlar, W matrisi, geri yayılım ve canlı öğrenme</p>
+  
+    </div>
+    </div>
+<p class="footer">Neural Network • katmanlar, W matrisi, geri yayılım ve canlı öğrenme</p>
   </div><!-- /model-neural -->
 
 
@@ -5439,15 +5503,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609201310"></script>
-<script src="js/lesson-turev.js?v=202609201310"></script>
-<script src="js/lesson-xor.js?v=202609201310"></script>
-<script src="js/lesson-xor-arch.js?v=202609201310"></script>
-<script src="js/lesson-xor-epoch.js?v=202609201310"></script>
-<script src="js/lesson-nn.js?v=202609201310"></script>
-<script src="js/lesson-trig.js?v=202609201310"></script>
+<script src="js/lesson-linreg.js?v=202609201316"></script>
+<script src="js/lesson-turev.js?v=202609201316"></script>
+<script src="js/lesson-xor.js?v=202609201316"></script>
+<script src="js/lesson-xor-arch.js?v=202609201316"></script>
+<script src="js/lesson-xor-epoch.js?v=202609201316"></script>
+<script src="js/lesson-nn.js?v=202609201316"></script>
+<script src="js/lesson-trig.js?v=202609201316"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609201310"></script>
-<script src="js/app.js?v=202609201310"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609201316"></script>
+<script src="js/app.js?v=202609201316"></script>
 </body>
 </html>
