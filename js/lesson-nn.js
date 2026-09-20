@@ -61,6 +61,36 @@
   const fwdTable = $('nnFwdTable');
   const fwdVerdict = $('nnFwdVerdict');
 
+  /* ---------- 5. bolum: "Butun resim" matris zinciri ----------
+     Temsilci nokta (1,0) — XOR'daki POINTS[2] ile ayni sira/index. */
+  function renderMatrixChain(){
+    const el = $('mfx1'); if(!el) return;   // sayfa henuz yoksa cik
+    const W = readWeights();
+    const pt = POINTS[2];                    // (1,0)
+    const r = forward(pt.x1, pt.x2, W);
+    const fv = (id, v, d) => { const e = $(id); if(e) e.textContent = F(v, d===undefined?4:d); };
+    fv('mfx1', pt.x1, 0);  fv('mfx2', pt.x2, 0);
+    fv('mfz1', r.h1_raw);  fv('mfz2', r.h2_raw);
+    fv('mfh1', r.a1);      fv('mfh2', r.a2);
+    fv('mfzy', r.y_raw);   fv('mfp',  r.p);
+
+    const hes = (id, satirlar) => { const e = $(id); if(e) e.innerHTML = satirlar.join('\n'); };
+    hes('mfzh_hes', [
+      'z_h1 = w11·x1 + w12·x2 + b1 = '+F(W.w11,2)+'×'+pt.x1+' + '+F(W.w12,2)+'×'+pt.x2+' + '+F(W.b1,2)+' = <b>'+F(r.h1_raw,4)+'</b>',
+      'z_h2 = w21·x1 + w22·x2 + b2 = '+F(W.w21,2)+'×'+pt.x1+' + '+F(W.w22,2)+'×'+pt.x2+' + '+F(W.b2,2)+' = <b>'+F(r.h2_raw,4)+'</b>'
+    ]);
+    hes('mfsig_hes', [
+      'h1 = σ('+F(r.h1_raw,4)+') = <b>'+F(r.a1,4)+'</b>',
+      'h2 = σ('+F(r.h2_raw,4)+') = <b>'+F(r.a2,4)+'</b>'
+    ]);
+    hes('mfzy_hes', [
+      'z_y = w31·h1 + w32·h2 + b3 = '+F(W.w31,2)+'×'+F(r.a1,4)+' + '+F(W.w32,2)+'×'+F(r.a2,4)+' + '+F(W.b3,2)+' = <b>'+F(r.y_raw,4)+'</b>'
+    ]);
+    hes('mfp_hes', [
+      'ŷ = σ('+F(r.y_raw,4)+') = <b>'+F(r.p,4)+'</b>'+(r.p>=0.5?' → tahmin 1':' → tahmin 0')
+    ]);
+  }
+
   function renderForward(){
     if(!fwdTable) return;
     const W = readWeights();
@@ -79,6 +109,7 @@
       );
     });
     fwdTable.textContent = rows.join('\n');
+    renderMatrixChain();
     const avgLoss = totalLoss/POINTS.length;
     if(correct===4){
       fwdVerdict.innerHTML = '🎉 <b>4/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklar XOR\'u çözüyor. Sayıları biraz oynat (örn. w₁₁\'i 5\'e indir), 4/4\'ün ne kadar kırılgan olduğunu gör.';
@@ -296,4 +327,5 @@
   /* ---- ilk render ---- */
   renderForward();
   renderBackprop();
+  renderMatrixChain();
 })();

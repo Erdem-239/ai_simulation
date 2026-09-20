@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609201320"></script>
-<link rel="stylesheet" href="css/style.css?v=202609201320">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609201324"></script>
+<link rel="stylesheet" href="css/style.css?v=202609201324">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:20 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:24 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2953,10 +2953,18 @@ for epoch in range(400):
     <div class="tpl-cl" data-stage="5">
     <div class="tpl-head closed"><span>5️⃣ Bütün Resim — katman ve matris zinciri</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-  <div class="pts tpl-empty" style="border-left:3px solid var(--muted)">
-    <span class="tpl-empty-tag">BOŞ — eklenebilir</span>
-    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:8px">XOR'daki "Bütün Resim" bir <b>ağaç</b>ti (geri yayılımın dallanması). Bu modülün kendi kimliği <b>katman + W matrisi</b> olduğu için burada ağaç değil, tek karede <b>x → W⁽¹⁾x+b⁽¹⁾ → h → W⁽²⁾h+b⁽²⁾ → ŷ</b> matris zincirini gösteren, her okuna gelince o matris çarpımının açılımının çıktığı bir şerit eklenecek — ayrı bir PR'da.</p>
+  <div id="nnMatrixWrap" class="xt-wrap acc open">
+    <div class="acc-head"><span class="ac">▸</span> 🧮 Bütün resim — katman katman matris zinciri<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+    <div class="acc-body">
+      <p class="xt-sub">Her katman aynı iki adımı yapar: <b>ağırlıklı toplam</b> (<code>z=Wx+b</code>, matris-vektör çarpımı) ve <b>aktivasyon</b> (σ, her bileşene ayrı ayrı). Girdi katmandan katmana geçerken boyutu değişir (2 → 2 → 1) ama işlem hep aynı. <b>Bir oka gelince</b> o matris çarpımının açılımı hemen orada görünür.</p>
+<div class="xf-baslik">▶ x'ten ŷ'ye — bir noktanın ((1,0)) canlı yolculuğu</div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="mfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="mfx2">—</span></div><div class="xf-kolad">girdi vektörü x</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(1)}x+b^{(1)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="mfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="mfz2">—</span></div><div class="xf-kolad">z⁽¹⁾ vektörü</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="mfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="mfh2">—</span></div><div class="xf-kolad">h vektörü (gizli katman)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(2)}h+b^{(2)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="mfzy">—</span></div><div class="xf-kolad">z⁽²⁾ (1×1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">ŷ<span class="xf-val" id="mfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div></div></div><div class="xf-donus">🧩 <b>Bütün ağ, iki satırlık bir döngü:</b> her katmanda <code>z = Wx + b</code>, sonra <code>σ</code> — bu ağda 2 katman, GPT'de yüzlerce, ama satır aynı. Aşağıdaki <b>6️⃣ Simülasyon</b>'da bu dokuz sayı (W⁽¹⁾, b⁽¹⁾, W⁽²⁾, b⁽²⁾) önce elle, sonra <b>rastgele başlayıp kendi kendine</b> öğreniyor.</div>
+    </div>
   </div>
+
+  <div class="xt-src" id="xtsrc-m_zh"><div class="xp-bas">z⁽¹⁾ = W⁽¹⁾x + b⁽¹⁾ — matris-vektör çarpımı</div><div class="xp-sat">W⁽¹⁾ 2×2 bir matris, x ise 2×1 bir vektör. Matris çarpımının kuralı: sonucun <b>her satırı</b>, W'nin o satırıyla x'in <b>nokta çarpımı</b>:</div><div class="eq">\( \begin{bmatrix}z_{h1}\\z_{h2}\end{bmatrix}=\begin{bmatrix}w_{11}&w_{12}\\w_{21}&w_{22}\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}+\begin{bmatrix}b_1\\b_2\end{bmatrix} \)</div><div class="xp-sat">Açılımı: <b>1. satır</b> → \(z_{h1}=w_{11}x_1+w_{12}x_2+b_1\). <b>2. satır</b> → \(z_{h2}=w_{21}x_1+w_{22}x_2+b_2\).</div><div class="xp-sat"><b>W'nin i. satırı = i. nöronun kendi ağırlık vektörü.</b> Matris, aslında Vektör dersindeki "vektör rafı" fikrinin ta kendisi — iki nöronun ağırlıklarını tek bir nesnede üst üste dizdik.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzh_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_sig"><div class="xp-bas">σ vektöre elementwise uygulanıyor</div><div class="xp-sat">z⁽¹⁾ vektörünün <b>her bileşenine ayrı ayrı</b> uygulanır — boyut değişmez, sadece her sayı 0-1 arasına sıkışır:</div><div class="eq">\( h=\sigma(z^{(1)})=\begin{bmatrix}\sigma(z_{h1})\\\sigma(z_{h2})\end{bmatrix} \)</div><div class="xp-sat">Vektörler arasında matris çarpımı <b>doğrusal</b> — W(Wx)=W'x gibi tek bir matrise sıkışabilirdi. σ olmasaydı iki katman üst üste tek bir doğruya çökerdi ve XOR <b>asla</b> çözülemezdi.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfsig_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_zy"><div class="xp-bas">z⁽²⁾ = W⁽²⁾h + b⁽²⁾ — bu sefer tek satır</div><div class="xp-sat">W⁽²⁾ artık <b>1×2</b> — çıktı katmanında tek nöron var, yani tek satır:</div><div class="eq">\( z_y=\begin{bmatrix}w_{31}&w_{32}\end{bmatrix}\begin{bmatrix}h_1\\h_2\end{bmatrix}+b_3=w_{31}h_1+w_{32}h_2+b_3 \)</div><div class="xp-sat"><b>Neden 1×2?</b> Çıktı boyutu = W'nin satır sayısı. Bir katmanın çıktısında kaç nöron varsa, o katmanın W matrisinde o kadar satır olur.</div><div class="xp-sat">Dikkat: bu satırda <b>x yok</b> — çıktı nöronu ham veriyi değil, gizli katmanın kurduğu (h₁,h₂) temsilini görüyor.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzy_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_p"><div class="xp-bas">ŷ — modelin cevabı</div><div class="eq">\( \hat y=\sigma(z_y) \)</div><div class="xp-sat">ŷ, 0 ile 1 arasında bir sayı: <b>"bu nokta 1 sınıfına ait olma olasılığı"</b>.</div><div class="xp-sat">Karar eşiği <b>0.5</b>: ŷ ≥ 0.5 ise tahmin <b>1</b>, değilse <b>0</b>.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfp_hes"></div></div>
 
     </div>
     </div>
@@ -5503,15 +5511,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609201320"></script>
-<script src="js/lesson-turev.js?v=202609201320"></script>
-<script src="js/lesson-xor.js?v=202609201320"></script>
-<script src="js/lesson-xor-arch.js?v=202609201320"></script>
-<script src="js/lesson-xor-epoch.js?v=202609201320"></script>
-<script src="js/lesson-nn.js?v=202609201320"></script>
-<script src="js/lesson-trig.js?v=202609201320"></script>
+<script src="js/lesson-linreg.js?v=202609201324"></script>
+<script src="js/lesson-turev.js?v=202609201324"></script>
+<script src="js/lesson-xor.js?v=202609201324"></script>
+<script src="js/lesson-xor-arch.js?v=202609201324"></script>
+<script src="js/lesson-xor-epoch.js?v=202609201324"></script>
+<script src="js/lesson-nn.js?v=202609201324"></script>
+<script src="js/lesson-trig.js?v=202609201324"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609201320"></script>
-<script src="js/app.js?v=202609201320"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609201324"></script>
+<script src="js/app.js?v=202609201324"></script>
 </body>
 </html>
