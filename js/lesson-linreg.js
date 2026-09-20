@@ -285,6 +285,108 @@
   $('delpt').onclick=()=>{ if(data.length<=2){ alert('En az 2 nokta gerekir.'); return; }
     data.pop(); renderPointsEditor(); rebuildStep1(); fullReset(); };
 
+
+  /* ==================================================================
+     [data-pop] POP-UP MOTORU + .xt-wrap TAM EKRAN — TUM sayfalar icin
+     global. Herhangi bir modulde data-pop="X" + id="xtsrc-X" (gizli
+     kaynak) ciftiyle turetme pop-up'i; .xt-wrap + .xt-full-btn ciftiyle
+     tam ekran acilir/kapanir. Ilk XOR'da yapildi, artik her modul
+     kendi ekleyebilir. ================================================== */
+  (function(){
+    const kaynakVarMi = document.querySelector('[data-pop]');
+    if(!kaynakVarMi) return;   // hicbir modulde yoksa kur bile
+
+    const pop = document.createElement('div');
+    pop.className = 'xt-pop'; pop.id = 'xtPop'; pop.hidden = true;
+    pop.setAttribute('role','dialog');
+    document.body.appendChild(pop);
+    let aktif = null, sabit = false, zam = null;
+
+    function kapat(){
+      pop.hidden = true; sabit = false;
+      if(aktif) aktif.classList.remove('acik');
+      aktif = null;
+    }
+    function yerlestir(el){
+      const r = el.getBoundingClientRect(), g = 8;
+      const pw = pop.offsetWidth, ph = pop.offsetHeight;
+      let x = r.left + r.width/2 - pw/2;
+      x = Math.max(g, Math.min(x, window.innerWidth  - pw - g));
+      let y = r.bottom + 8;
+      if(y + ph > window.innerHeight - g) y = r.top - ph - 8;   // ustune al
+      y = Math.max(g, Math.min(y, window.innerHeight - ph - g)); // her halukarda ekranda kal
+      pop.style.left = Math.round(x) + 'px';
+      pop.style.top  = Math.round(y) + 'px';
+    }
+    function ac(el){
+      const kaynak = document.getElementById('xtsrc-' + el.dataset.pop);
+      if(!kaynak) return;
+      if(aktif && aktif !== el) aktif.classList.remove('acik');
+      pop.innerHTML = kaynak.innerHTML;
+      pop.style.left = '-9999px'; pop.style.top = '0px';
+      pop.hidden = false;
+      aktif = el; el.classList.add('acik');
+      yerlestir(el);
+    }
+
+    document.addEventListener('mouseover', e => {
+      if(sabit) return;
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(!el) return;
+      clearTimeout(zam);
+      if(aktif !== el) ac(el);
+    });
+    document.addEventListener('mouseout', e => {
+      if(sabit) return;
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(!el) return;
+      clearTimeout(zam);
+      zam = setTimeout(() => { if(!pop.matches(':hover')) kapat(); }, 180);
+    });
+    pop.addEventListener('mouseenter', () => clearTimeout(zam));
+    pop.addEventListener('mouseleave', () => { if(!sabit) kapat(); });
+
+    document.addEventListener('click', e => {
+      const el = e.target.closest && e.target.closest('[data-pop]');
+      if(el){
+        e.preventDefault();
+        if(sabit && aktif === el) kapat();
+        else { ac(el); sabit = true; }
+        return;
+      }
+      if(!(e.target.closest && e.target.closest('#xtPop'))) kapat();
+    });
+
+    /* ---------- ".xt-wrap" tam ekran — sayfada birden fazla olabilir ---------- */
+    function tamEkranAyarla(wrap, btn, acik){
+      wrap.classList.toggle('xt-full', acik);
+      document.body.classList.toggle('xt-full-lock', acik);
+      if(btn){
+        btn.textContent = acik ? '✕' : '⛶';
+        btn.title = acik ? 'Tam ekrandan çık' : 'Tam ekran';
+        btn.setAttribute('aria-label', btn.title);
+      }
+    }
+    document.querySelectorAll('.xt-full-btn').forEach(btn => {
+      const wrap = btn.closest('.xt-wrap');
+      if(!wrap) return;
+      btn.addEventListener('click', e => {
+        e.stopPropagation();               // acc-head'in ac/kapa'sini tetiklemesin
+        if(!wrap.classList.contains('open')) wrap.classList.add('open');  // kapaliysa once ac
+        tamEkranAyarla(wrap, btn, !wrap.classList.contains('xt-full'));
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if(e.key !== 'Escape') return;
+      if(!pop.hidden){ kapat(); return; }         // once acik pop-up'i kapat
+      const acikWrap = document.querySelector('.xt-wrap.xt-full');
+      if(acikWrap) tamEkranAyarla(acikWrap, acikWrap.querySelector('.xt-full-btn'), false);
+    });
+    document.addEventListener('scroll', () => { if(aktif) yerlestir(aktif); }, true);
+    window.addEventListener('resize', kapat);
+  })();
+
   // ---- başlangıç ----
   renderPointsEditor(); rebuildStep1(); setAlpha(0.01); softReset();
 })();
