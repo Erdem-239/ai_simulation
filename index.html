@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609211155"></script>
-<link rel="stylesheet" href="css/style.css?v=202609211155">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609211353"></script>
+<link rel="stylesheet" href="css/style.css?v=202609211353">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 11:55 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 13:53 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4210,7 +4210,18 @@ d/dx (7)       = 0</div>
       <input type="range" id="tzSigZ" min="-5" max="5" step="0.05" value="1" style="flex:1; min-width:180px; max-width:400px">
       <b id="tzSigZv" style="color:var(--accent); min-width:44px">1.00</b>
     </div>
-    <div style="max-width:720px"><canvas id="tzSigCanvas" width="700" height="240" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
+    <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; margin-top:2px">
+      <div style="flex:1 1 420px; max-width:600px"><canvas id="tzSigCanvas" width="700" height="240" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
+      <div class="work" style="flex:1 1 260px; min-width:240px; line-height:2; font-size:13px">
+        <div style="font-weight:700; color:#d4a94a; margin-bottom:4px">🧮 Adım adım, açık formüllerle</div>
+        <div>1) İç halka: \( u=e^{-z} \) &nbsp;→&nbsp; \( \dfrac{du}{dz}=-e^{-z} \)</div>
+        <div style="margin-top:6px">2) Orta halka: \( s=1+u \) &nbsp;→&nbsp; \( \dfrac{ds}{du}=1 \)</div>
+        <div style="margin-top:6px">3) Dış halka: \( \sigma=\dfrac{1}{s} \) &nbsp;→&nbsp; \( \dfrac{d\sigma}{ds}=-\dfrac{1}{s^{2}} \)</div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--line)">Zincir kuralı — üçünü çarp:</div>
+        \[ \frac{d\sigma}{dz}=\frac{du}{dz}\cdot\frac{ds}{du}\cdot\frac{d\sigma}{ds} \]
+        <div id="tzSigLive" style="color:#f0a032; margin-top:2px"></div>
+      </div>
+    </div>
     <div class="work" id="tzSigRead" style="margin-top:10px; line-height:1.85; font-size:13.5px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Bak, buradan σ'=σ(1−σ) çıkıyor:</b> üç kuru elle çarpıp sadeleştirince tam olarak σ(1−σ) elde ediliyor (Aktivasyon sayfasındaki tam ispat orada). Ama ezberlemene gerek yok — zincir kuralını bildiğin sürece her aktivasyonu bu yöntemle <i>elden çıkarabilirsin</i>. tanh, softmax, GELU, hepsi aynı mantık. <b>Türev sıralamayı bildikten sonra derin öğrenmenin tüm matematiği açılır.</b><br><br>📉 <b>Vanishing gradient tam burada doğuyor:</b> z kaydırıcısını yukarı çekip σ'nin grafiğine bak — z=0'da tepe yapıp en fazla <b>0.25</b>'e çıkıyor, uçlara gidince neredeyse 0'a düşüyor. Sinir ağında her sigmoid katmanı geri yayılım zincirine "×en fazla 0.25 küçültücü" bir halka ekler. 20 katmanlı bir ağda gradyan 0.25²⁰ ≈ 10⁻¹² gibi bir sayıyla çarpılır → pratikte yok olur. ReLU'da pozitif bölgede kur = 1 → hiç sönmez — LSTM/ReLU'nun neden tercih edildiğinin cevabı bu tek satırda.</div>
   </div>
@@ -5575,15 +5586,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609211155"></script>
-<script src="js/lesson-turev.js?v=202609211155"></script>
-<script src="js/lesson-xor.js?v=202609211155"></script>
-<script src="js/lesson-xor-arch.js?v=202609211155"></script>
-<script src="js/lesson-xor-epoch.js?v=202609211155"></script>
-<script src="js/lesson-nn.js?v=202609211155"></script>
-<script src="js/lesson-trig.js?v=202609211155"></script>
+<script src="js/lesson-linreg.js?v=202609211353"></script>
+<script src="js/lesson-turev.js?v=202609211353"></script>
+<script src="js/lesson-xor.js?v=202609211353"></script>
+<script src="js/lesson-xor-arch.js?v=202609211353"></script>
+<script src="js/lesson-xor-epoch.js?v=202609211353"></script>
+<script src="js/lesson-nn.js?v=202609211353"></script>
+<script src="js/lesson-trig.js?v=202609211353"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609211155"></script>
-<script src="js/app.js?v=202609211155"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609211353"></script>
+<script src="js/app.js?v=202609211353"></script>
 </body>
 </html>

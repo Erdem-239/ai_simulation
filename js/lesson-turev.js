@@ -599,7 +599,22 @@
     const zI = document.getElementById('tzSigZ');
     const zV = document.getElementById('tzSigZv');
     const read = document.getElementById('tzSigRead');
+    const live = document.getElementById('tzSigLive');
     const ctx = cv.getContext('2d');
+
+    // MathJax'i kaydirma surukleme sirasinda her input'ta degil, en fazla
+    // frame basina bir kez yeniden typeset et (performans icin debounce).
+    let typesetQueued = null;
+    function typesetLive(){
+      if(typesetQueued) return;
+      typesetQueued = requestAnimationFrame(() => {
+        typesetQueued = null;
+        if(window.MathJax && MathJax.typesetPromise){
+          try{ MathJax.typesetClear && MathJax.typesetClear([live]); }catch(e){}
+          MathJax.typesetPromise([live]).catch(()=>{});
+        }
+      });
+    }
 
     function render(){
       const W=cv.width, H=cv.height;
@@ -662,6 +677,15 @@
         '<b>Zincir çarpımı:</b> dσ/dz = (du/dz) × (ds/du) × (dσ/ds) = ('+F(du_dz,4)+') × ('+F(ds_du,2)+') × ('+F(dsigma_ds,4)+') = <b style="color:#f0a032">'+F(total,5)+'</b>'+
         '<br><b>Analitik kontrol:</b> σ·(1−σ) = '+F(sigma,4)+'·'+F(1-sigma,4)+' = <b style="color:#46c46a">'+F(analytic,5)+'</b> &nbsp;<span style="color:var(--muted)">← ikisi aynı ✓</span>'+
         '<br><span style="color:var(--muted); font-size:12px">↳ z=0 iken σ\' = 0.25 (maksimum). z uçlara giderse σ\' → 0 (doyma = vanishing gradient).</span>';
+
+      if(live){
+        // dar ekranlarda (mjx-container{overflow-x:auto}) tek satirda tasip
+        // gizli bir yatay kaydirma gerektirmesin diye iki ayri denklem
+        live.innerHTML =
+          '\\[ \\frac{d\\sigma}{dz} = ('+F(du_dz,3)+')\\times('+F(ds_du,2)+')\\times('+F(dsigma_ds,3)+') \\]'+
+          '\\[ = '+F(total,4)+' \\]';
+        typesetLive();
+      }
     }
     zI.addEventListener('input', ()=>{ zV.textContent=F(parseFloat(zI.value),2); render(); });
     render();
