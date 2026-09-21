@@ -129,6 +129,70 @@ devam eder ve yeni özellik "hiç çalışmıyormuş" gibi görünür (bkz. git
 geçmişi — tam ekran düğmesinin ilk PR'ı tam da bu yüzden canlıda
 çalışmadı).
 
+## Yapı Taşları — ilerleme ağaçları (mini-yol-haritaları)
+
+Yapı Taşları (`#model-matematik`) kendi `.acc-category`/`.acc-module`
+"ders kitabı" yapısını koruyor (yukarıdaki `.tpl-cl` şablonunun dışında,
+bkz. üstteki not) ama kullanıcı buraya da ana Yol Haritası'yla **aynı
+görsel dilde** (SVG kart + kablo + kilit animasyonu, `.tn`/`.te-*` stili)
+ilerleme ağaçları istedi — kod olarak ana `#techSvg`'ye HİÇ dokunulmadan,
+her biri kasıtlı olarak KOPYALANMIŞ, kendi id/sınıf/localStorage'ına sahip
+ayrı sistemler halinde:
+
+1. **`#matSvg`** (PR #261) — Türev Kuralları kategorisinin İÇİNDE, o
+   kategorinin 4 modülünü gösteren küçük ağaç. Sınıflar `.mtn`/`.mte`,
+   gradient/keyframe adları `mtnGrad*`/`mtSnake`/`mtRgbFlow`/`mtflow`/
+   `mtpulse`. localStorage: `attn_mat_done_v1`. Modül eşlemesi
+   `data-mat-id` HTML özniteliğiyle (MathJax textContent'i değiştirebildiği
+   için metin eşleştirme KULLANILMADI). Her modülün `.acc-body`'sinin en
+   üstüne JS ile enjekte edilen `.mat-done-btn` ("✓ Bu modülü tamamladım")
+   ile işaretleniyor.
+2. **`#ytSvg`** (PR #263) — Yapı Taşları'nın EN TEPESİNDE (6 kategori
+   kartının hemen üstünde), 6 kategoriyi gösteren üst-seviye ağaç. Sınıflar
+   `.ytn`/`.yte`, adlar `ytnGrad*`/`ytSnake`/`ytRgbFlow`/`ytflow`/`ytpulse`.
+   localStorage: `attn_yt_done_v1` (matSvg'den tamamen bağımsız, biri
+   diğerini temsil etmiyor). Önkoşul zinciri: Sayı Sistemleri → Türev
+   Kuralları → {Aktivasyon Fonksiyonlarının Türevleri, İleri Konular};
+   İstatistik ve Trigonometri kasıtlı olarak bağımsız/kilitsiz (kullanıcı
+   onayladı). Kategori eşlemesi `data-yt-id` özniteliğiyle, her kategorinin
+   `.acc-body`'sinin en üstüne `.yt-done-btn` enjekte ediliyor.
+
+Her iki ağaç da ortak global pop-up motorunu (`[data-pop]`+`.xt-src`,
+`js/lesson-linreg.js`) ve tam ekran mekanizmasını (`.xt-wrap`/
+`.xt-full-btn`) kullanıyor — o kısım gerçekten paylaşılan/genel (PR #257).
+Sadece SVG çizim/kilit-durumu mantığı (node/cable renk-durum CSS'i,
+localStorage, `stateOf()`) her ağaçta bilinçli olarak tekrar yazılıyor.
+
+**Bulunan ve düzeltilen site-geneli hata (PR #262)**: genel `.acc`
+accordion sisteminde `.acc.open .acc-body{display:block}` kuralı boşluklu
+(descendant) bir seçiciydi — bu yüzden açık bir üst `.acc` (ör. bir
+kategori) içindeki TÜM `.acc-body`'leri (kendi `.open` durumundan bağımsız)
+gösteriyordu; kategori açılınca içindeki modüller/`.gecis-karti`/`matSvg`
+hep açık görünüyor, tıklayınca kapanmıyordu. Üç kural (`.acc-head` rengi,
+ok dönüşü, `.acc-body` display) `>` (doğrudan çocuk) seçiciye çevrildi —
+sitedeki TÜM `.acc` blokları zaten doğrudan çocuk yapısı kullandığı için
+güvenli bir düzeltmeydi. Yeni bir ağaç/accordion eklerken bu seçici
+kuralına dikkat: descendant (boşluklu) selector'lar iç içe `.acc` yapılarda
+sızıntı yapar, `>` kullan.
+
+**Sıradaki iş — `#ytSvg`'yi daha ayrıntılı bir haritaya çevirmek**:
+kullanıcı PR #263'ü inceledikten sonra "harita her modülün içindekilerle
+birlikte göstersin ... en temel derse kadar gözüksün" dedi — yani `#ytSvg`
+sadece 6 kategori düğümünde durmayacak, bir kategori düğümüne
+tıklanınca/seçilince o kategorinin modülleri (14 modülün tamamı, en
+temel/tek tek ders seviyesine kadar) ağacın İÇİNDE, o düğümün altına
+sıralanacak (yer var, kutu genişleyebilir). İstatistik/Trigonometri'nin
+diğerlerinden bağımsız kalması kararı kullanıcı tarafından onaylandı,
+değişmiyor — ama onlara tıklandığında da kendi modülleri aynı şekilde
+altlarında listelenecek. Bu, `#matSvg`'nin (şu an sadece Türev Kuralları
+için var) mantığını kavramsal olarak `#ytSvg`'nin içine taşımak/genelleştirmek
+anlamına geliyor — ama TAM tasarımı (her kategori-modül grubu kendi kilit
+zincirine mi sahip olacak, yoksa sadece düz bir liste mi, diğer 5
+kategorinin modülleri için henüz `matSvg` tipi bir tamamlanma takibi
+olmadığı için o modüller nötr/kilitsiz mi görünecek) netleşmedi — bir
+sonraki oturumda kullanıcıyla birlikte netleştirilecek, aceleyle tahmin
+edip uygulamaya başlama.
+
 ## Yol Haritası (tech-tree) notları
 
 - `js/app.js` içinde büyük bir IIFE: `NODES`, `ERAS`, dual-mode (yatay
