@@ -1380,3 +1380,11 @@ body.xt-full-lock{overflow:hidden}
 .yt-ml-inline .yt-ml-row:hover{background:rgba(90,160,224,.14); color:#fff}
 .yt-ml-inline .yt-ml-n{flex:none; color:var(--muted); font-variant-numeric:tabular-nums;
   font-size:10.5px; min-width:1.3em; text-align:right}
+
+/* bir modul satirina tiklaninca hemen altina acilan SORU listesi --
+   "dalin dali": ayni gomulu/reflow mantigi bir seviye daha derin, hafif
+   girintili ve daha soluk bir govde ile ayirt ediliyor. */
+.yt-ml-sub{margin:4px 0 6px 10px; padding:6px 8px; background:rgba(0,0,0,.22);
+  border-left:2px solid var(--muted); border-radius:6px}
+.yt-ml-sub .yt-ml-row{font-size:10.5px; padding:4px 6px}
+.yt-ml-sub .yt-ml-n{font-size:9.5px}

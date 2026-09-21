@@ -2211,6 +2211,35 @@
     ],
   };
 
+  // modul -> o modulun ✏️ Alıştırmalar sorulari (bir dalin dali — kullanici
+  // isteği: "herşeyin temsilini göstermek istiyorum"). Bir mod listesi
+  // satirina tiklaninca (sorusu varsa) hemen altina, ayni gomulu/reflow
+  // mantigiyla acilir; bir soruya tiklaninca asagidaki gercek soru
+  // acordion'una scroll+ac (openQuestion). Modul 14'in sorusu yok — ona
+  // tiklamak dogrudan openModule'e duser.
+  const MOD_QUESTIONS = {
+    "ytmod-1": [{n:1, id:"ytq-1-1", label:"Soru 1: \\(e^{-0}=?\\)"}, {n:2, id:"ytq-1-2", label:"Soru 2: \\(\\dfrac{e^{3}}{e^{1}}=?\\)"}, {n:3, id:"ytq-1-3", label:"Soru 3: \\(z=-1\\) için \\(e^{-z}=?\\)"}],
+    "ytmod-2": [{n:1, id:"ytq-2-1", label:"Soru 1: \\(\\log_{3}(9)=?\\)"}, {n:2, id:"ytq-2-2", label:"Soru 2: \\(\\ln(e^{5})=?\\)"}, {n:3, id:"ytq-2-3", label:"Soru 3: \\(\\log(20)\\)'yi \\(\\log(2)\\) ve \\(\\log(10)\\) cinsinden yaz."}, {n:4, id:"ytq-2-4", label:"Soru 4: Bir dil modeli neden kelime olasılıklarını çarpmak yerine loglarını toplar?"}],
+    "ytmod-3": [{n:1, id:"ytq-3-1", label:"Soru 1: \\(\\dfrac{d}{dx}x^{3}=?\\)"}, {n:2, id:"ytq-3-2", label:"Soru 2: \\(\\dfrac{d}{dx}(4x)=?\\)"}, {n:3, id:"ytq-3-3", label:"Soru 3: \\(\\dfrac{d}{dx}(x^{2}-2x+1)=?\\)"}],
+    "ytmod-4": [{n:1, id:"ytq-4-1", label:"Soru 1: \\(\\dfrac{d}{dx}(5x)^{2}=?\\)"}, {n:2, id:"ytq-4-2", label:"Soru 2: \\(\\dfrac{d}{dx}e^{3x}=?\\)"}, {n:3, id:"ytq-4-3", label:"Soru 3: \\(\\dfrac{d}{dz}\\big(1+e^{-z}\\big)=?\\)"}],
+    "ytmod-5": [{n:1, id:"ytq-5-1", label:"Soru 1: \\((e^{5x})'=?\\)"}, {n:2, id:"ytq-5-2", label:"Soru 2: \\((e^{-2z})'=?\\)"}],
+    "ytmod-6": [{n:1, id:"ytq-6-1", label:"Soru 1: \\(\\dfrac{d}{dx}\\dfrac{1}{1+x}=?\\)"}, {n:2, id:"ytq-6-2", label:"Soru 2: \\(\\sigma'(0)=?\\)"}],
+    "ytmod-7": [{n:1, id:"ytq-7-1", label:"Soru 1: \\(\\tanh'(z)\\) en büyük değerini nerede alır, kaçtır?"}, {n:2, id:"ytq-7-2", label:"Soru 2: \\(z\\to+\\infty\\) iken \\(\\tanh(z)\\) limiti?"}],
+    "ytmod-8": [{n:1, id:"ytq-8-1", label:"Soru 1: \\(\\mathrm{ReLU}(-0.3)=?\\)"}, {n:2, id:"ytq-8-2", label:"Soru 2: Leaky ReLU'nun \\(z<0\\)'daki türevi neden 0 değil de 0.01?"}],
+    "ytmod-9": [{n:1, id:"ytq-9-1", label:"Soru 1: \\(\\dfrac{\\partial}{\\partial x}\\big(xy+y^{2}\\big)=?\\)"}, {n:2, id:"ytq-9-2", label:"Soru 2: Gradyan nedir? (tek cümle)"}],
+    "ytmod-10": [{n:1, id:"ytq-10-1", label:"Soru 1: [2, 4, 6, 8] verisinin ortalaması kaçtır?"}, {n:2, id:"ytq-10-2", label:"Soru 2: Aynı veri [2, 4, 6, 8] için varyans kaçtır?"}, {n:3, id:"ytq-10-3", label:"Soru 3: Varyansın birimi verinin biriminin karesiyken, standart sapmanın birimi neden veriyle aynı?"}],
+    "ytmod-11": [{n:1, id:"ytq-11-1", label:"Soru 1: μ=50, σ=10 olan bir dağılımda x=65'in z-skoru kaçtır?"}, {n:2, id:"ytq-11-2", label:"Soru 2: 68-95-99.7 kuralına göre, ortalamanın ±2σ içindeki veri yüzdesi kaçtır?"}],
+    "ytmod-12": [{n:1, id:"ytq-12-1", label:"Soru 1: Doğru sınıfa model p=0.5 olasılık vermiş. Çapraz entropi kaybı kaçtır?"}, {n:2, id:"ytq-12-2", label:"Soru 2: Model A doğru sınıfa p=0.9, Model B p=0.1 veriyor. Hangisinin kaybı daha yüksek, neden?"}, {n:3, id:"ytq-12-3", label:"Soru 3: Adil bir yazı-tura (p=0.5, p=0.5) atışının entropisi kaç bittir?"}],
+    "ytmod-13": [{n:1, id:"ytq-13-1", label:"Soru 1: \\(\\sin(90°)+\\cos(180°)=?\\)"}, {n:2, id:"ytq-13-2", label:"Soru 2: 230V/50Hz'lik AC hatta t=15ms anındaki ani gerilim kaçtır? (V_tepe≈325V)"}, {n:3, id:"ytq-13-3", label:"Soru 3: \\(\\sin^2(37°)+\\cos^2(37°)=?\\)"}],
+  };
+
+  function typeset(el){
+    if(window.MathJax && MathJax.typesetPromise){
+      try{ MathJax.typesetClear && MathJax.typesetClear([el]); }catch(e){}
+      MathJax.typesetPromise([el]).catch(()=>{});
+    }
+  }
+
   function openModule(modId){
     const mod = document.getElementById(modId); if(!mod) return;
     const cat = mod.closest('.acc-category');
@@ -2218,6 +2247,18 @@
     mod.classList.add('open');
     requestAnimationFrame(() => requestAnimationFrame(() => {
       mod.scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+  }
+
+  function openQuestion(qid){
+    const q = document.getElementById(qid); if(!q) return;
+    const mod = q.closest('.acc-module');
+    const cat = q.closest('.acc-category');
+    if(cat) cat.classList.add('open');
+    if(mod) mod.classList.add('open');
+    q.classList.add('open');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      q.scrollIntoView({behavior:'smooth', block:'start'});
     }));
   }
 
@@ -2234,12 +2275,21 @@
     infoPanel.innerHTML = src ? src.innerHTML : PLACEHOLDER_HTML;
   }
 
+  // hangi MODUL'lerin kendi soru listesi acik (birden fazla olabilir) —
+  // openSet'ten (kategori seviyesi) AYRI bir seviye, ayni "dalin dali"
+  // mantigiyla.
+  let openQSet = new Set();
+
   // her ACIK kategorinin kendi kartinin hemen ALTINA (ayni sutun icinde,
   // .yt-ml-inline sibling'i olarak) mod listesini ekler — DOM akisinda
   // gercek reflow. Birden fazla kategori ayni anda acik olabilir
-  // ("hepsini goster" butonu).
+  // ("hepsini goster" butonu). Bir modulun sorulari varsa (MOD_QUESTIONS)
+  // ve openQSet'te acik ise, o modul satirinin hemen altina BIR DAL DAHA
+  // (soru listesi, .yt-ml-sub) ekleniyor — ayni gomulu/reflow mantigi bir
+  // seviye daha derin.
   function renderModList(){
     cols.querySelectorAll('.yt-ml-inline').forEach(el => el.remove());
+    const mathEls = [];
     openSet.forEach(id => {
       const mods = CAT_MODULES[id]; if(!mods) return;
       const card = cardOf(id); if(!card) return;
@@ -2249,9 +2299,27 @@
         + mods.map(m => '<div class="yt-ml-row" data-mod-id="' + m.id + '"><span class="yt-ml-n">' + m.n + '.</span><span>' + m.label + '</span></div>').join('');
       card.insertAdjacentElement('afterend', box);
       box.querySelectorAll('.yt-ml-row').forEach(row => {
-        row.addEventListener('click', e => { e.stopPropagation(); openModule(row.dataset.modId); });
+        const modId = row.dataset.modId;
+        const qs = MOD_QUESTIONS[modId];
+        row.addEventListener('click', e => {
+          e.stopPropagation();
+          if(!qs || !qs.length){ openModule(modId); return; }
+          if(openQSet.has(modId)) openQSet.delete(modId); else openQSet.add(modId);
+          render();
+        });
+        if(qs && qs.length && openQSet.has(modId)){
+          const subBox = document.createElement('div');
+          subBox.className = 'yt-ml-sub';
+          subBox.innerHTML = qs.map(q => '<div class="yt-ml-row yt-ml-q" data-q-id="' + q.id + '"><span class="yt-ml-n">' + q.n + '.</span><span>' + q.label + '</span></div>').join('');
+          row.insertAdjacentElement('afterend', subBox);
+          subBox.querySelectorAll('.yt-ml-q').forEach(qrow => {
+            qrow.addEventListener('click', e => { e.stopPropagation(); openQuestion(qrow.dataset.qId); });
+          });
+          mathEls.push(subBox);
+        }
       });
     });
+    mathEls.forEach(typeset);
   }
 
   // kablolari (.yt-cables) kartlarin O ANKI GERCEK ekran konumuna gore
@@ -2365,10 +2433,12 @@
   const showAllBtn = document.getElementById('ytShowAll');
   const hideAllBtn = document.getElementById('ytHideAll');
   if(showAllBtn) showAllBtn.addEventListener('click', () => {
-    openSet = new Set(YNODES.map(n => n.id)); highlightId = null; render();
+    openSet = new Set(YNODES.map(n => n.id));
+    openQSet = new Set(Object.keys(MOD_QUESTIONS));
+    highlightId = null; render();
   });
   if(hideAllBtn) hideAllBtn.addEventListener('click', () => {
-    openSet.clear(); highlightId = null; render();
+    openSet.clear(); openQSet.clear(); highlightId = null; render();
   });
 
   document.querySelectorAll('#model-matematik .acc-category[data-yt-id]').forEach(cat => {
