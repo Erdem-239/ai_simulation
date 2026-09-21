@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609211044"></script>
-<link rel="stylesheet" href="css/style.css?v=202609211044">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609211101"></script>
+<link rel="stylesheet" href="css/style.css?v=202609211101">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 10:44 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 11:01 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -3783,7 +3783,7 @@ e^(-1) = 1/e = 0.368
 e^2 · e^3 = e^(2+3) = e^5
 z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-1-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(e^{-0}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3794,7 +3794,7 @@ z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
         <div class="sol-body" style="display:none"><b>Cevap: 1.</b> Çünkü \(-0=0\) ve \(e^{0}=1\). (Sigmoid'de z=0 iken paydanın 1+1=2 olmasının sebebi bu.)</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-1-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(\dfrac{e^{3}}{e^{1}}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3805,7 +3805,7 @@ z = 2  için  e^(-z) = e^(-2) = 1/e² = 0.135</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(e^{3-1}=e^{2}\approx 7.389\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-1-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: \(z=-1\) için \(e^{-z}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3912,7 +3912,7 @@ log(2·5) = log(2)+log(5)      (çarpım → toplam, süper güç 1)
 ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="4" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/4 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-2-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\log_{3}(9)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3923,7 +3923,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
         <div class="sol-body" style="display:none"><b>Cevap: 2.</b> Çünkü \(3^{2}=9\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-2-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(\ln(e^{5})=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3934,7 +3934,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
         <div class="sol-body" style="display:none"><b>Cevap: 5.</b> \(\ln(e^{x})=x\) kuralı direkt uygulanır.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-2-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: \(\log(20)\)'yi \(\log(2)\) ve \(\log(10)\) cinsinden yaz.</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -3945,7 +3945,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(\log(20)=\log(2)+\log(10)\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-2-4">
       <div class="acc-head"><span class="ac">▸</span> Soru 4: Bir dil modeli neden kelime olasılıklarını çarpmak yerine loglarını toplar?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4101,7 +4101,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 d/dx (3x² + 5) = 3·2x + 0 = 6x
 d/dx (7)       = 0</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-3-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\dfrac{d}{dx}x^{3}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4112,7 +4112,7 @@ d/dx (7)       = 0</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(3x^{2}\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-3-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(\dfrac{d}{dx}(4x)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4123,7 +4123,7 @@ d/dx (7)       = 0</div>
         <div class="sol-body" style="display:none"><b>Cevap: 4.</b> \(4\cdot 1\cdot x^{0}=4\). Doğrunun eğimi sabittir.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-3-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: \(\dfrac{d}{dx}(x^{2}-2x+1)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4217,7 +4217,7 @@ d/dx (7)       = 0</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">d/dx (2x+1)³ = 3(2x+1)² · (2x+1)'  = 3(2x+1)² · 2 = 6(2x+1)²
 d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-4-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\dfrac{d}{dx}(5x)^{2}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4228,7 +4228,7 @@ d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(2(5x)\cdot 5=50x\). Kontrol: \((5x)^{2}=25x^{2}\) → türevi \(50x\) ✓ iki yol aynı.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-4-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(\dfrac{d}{dx}e^{3x}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4239,7 +4239,7 @@ d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(3e^{3x}\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-4-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: \(\dfrac{d}{dz}\big(1+e^{-z}\big)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4271,7 +4271,7 @@ d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">(e^(-z))' = (-1) · e^(-z) = -e^(-z)
 (e^(2x))' = 2 · e^(2x)</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-5-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \((e^{5x})'=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4282,7 +4282,7 @@ d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(5e^{5x}\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-5-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \((e^{-2z})'=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4316,7 +4316,7 @@ Zincir:  σ'(z) = -(1+e^(-z))^(-2) · (-e^(-z))  =  e^(-z) / (1+e^(-z))²
 Pay numarası:  e^(-z) = (1+e^(-z)) − 1
 ⇒ σ'(z) = 1/(1+e^(-z)) − 1/(1+e^(-z))²  =  σ − σ²  =  <b>σ(1−σ)</b></div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-6-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\dfrac{d}{dx}\dfrac{1}{1+x}=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4327,7 +4327,7 @@ Pay numarası:  e^(-z) = (1+e^(-z)) − 1
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(-\dfrac{1}{(1+x)^{2}}\). Yani \(-(1+x)^{-2}\cdot 1\).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-6-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(\sigma'(0)=?\) &nbsp;<span style="color:var(--muted); font-weight:400">(\(\sigma(0)=0.5\))</span></div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4365,7 +4365,7 @@ Pay numarası:  e^(-z) = (1+e^(-z)) − 1
 tanh'(0) = 1 − 0² = 1        (en dik nokta)
 z → +∞  :  tanh(z) → 1,  tanh'(z) → 1 − 1 = 0   (doyma)</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-7-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\tanh'(z)\) en büyük değerini nerede alır, kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4376,7 +4376,7 @@ z → +∞  :  tanh(z) → 1,  tanh'(z) → 1 − 1 = 0   (doyma)</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(z=0\)'da, değeri <b>1</b>. (Sigmoid'in 0.25'ine karşı 1 — tanh'ın gradyanı daha güçlü taşımasının sebebi.)</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-7-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: \(z\to+\infty\) iken \(\tanh(z)\) limiti?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4405,7 +4405,7 @@ z → +∞  :  tanh(z) → 1,  tanh'(z) → 1 − 1 = 0   (doyma)</div>
 ReLU'(3) = 1      ReLU'(−2) = 0
 Leaky'(−5) = 0.01</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-8-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\mathrm{ReLU}(-0.3)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4416,7 +4416,7 @@ Leaky'(−5) = 0.01</div>
         <div class="sol-body" style="display:none"><b>Cevap: 0.</b> \(\max(0,-0.3)=0\) — negatif girişte çıkış 0.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-8-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: Leaky ReLU'nun \(z&lt;0\)'daki türevi neden 0 değil de 0.01?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4452,7 +4452,7 @@ Leaky'(−5) = 0.01</div>
 ∂f/∂x = 2x·y     (y sabit kabul edildi)
 ∂f/∂y = x²       (x sabit kabul edildi)</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-9-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\dfrac{\partial}{\partial x}\big(xy+y^{2}\big)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4463,7 +4463,7 @@ Leaky'(−5) = 0.01</div>
         <div class="sol-body" style="display:none"><b>Cevap:</b> \(y\). Birinci terimde \(y\) katsayı gibi davranır (\(xy\to y\)); \(y^{2}\) x içermez → 0.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-9-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: Gradyan nedir? (tek cümle)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4545,7 +4545,7 @@ kareler:  225, 25, 25, 225   →  toplam = 500
 σ² = 500/4 = 125
 σ  = √125 ≈ 11.18</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-10-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: [2, 4, 6, 8] verisinin ortalaması kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4556,7 +4556,7 @@ kareler:  225, 25, 25, 225   →  toplam = 500
         <div class="sol-body" style="display:none"><b>Cevap:</b> (2+4+6+8)/4 = 20/4 = <b>5</b>.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-10-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: Aynı veri [2, 4, 6, 8] için varyans kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4567,7 +4567,7 @@ kareler:  225, 25, 25, 225   →  toplam = 500
         <div class="sol-body" style="display:none"><b>Cevap:</b> sapmalar −3,−1,1,3 → kareler 9,1,1,9 → toplam 20 → σ²=20/4=<b>5</b>.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-10-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: Varyansın birimi verinin biriminin karesiyken, standart sapmanın birimi neden veriyle aynı?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4636,7 +4636,7 @@ z = (x−μ)/σ = (130−100)/15 = 30/15 = 2
 Yorum: bu kişi ortalamanın TAM 2 standart sapma üstünde.
 68-95-99.7 kuralına göre: nüfusun ~%97.7'sinden daha yüksek IQ'ya sahip.</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-11-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: μ=50, σ=10 olan bir dağılımda x=65'in z-skoru kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4647,7 +4647,7 @@ Yorum: bu kişi ortalamanın TAM 2 standart sapma üstünde.
         <div class="sol-body" style="display:none"><b>Cevap:</b> (65−50)/10 = 1.5.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-11-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: 68-95-99.7 kuralına göre, ortalamanın ±2σ içindeki veri yüzdesi kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4721,7 +4721,7 @@ L = −(0·ln0.2 + 1·ln0.7 + 0·ln0.1) = −ln(0.7) ≈ 0.357
 Yorum: sadece "doğru sınıfa (köpek) ne kadar olasılık verildiği" önemli;
 diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor).</div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-12-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: Doğru sınıfa model p=0.5 olasılık vermiş. Çapraz entropi kaybı kaçtır?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4732,7 +4732,7 @@ diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor)
         <div class="sol-body" style="display:none"><b>Cevap:</b> −ln(0.5)=ln(2)≈<b>0.693</b> — tam olarak sklearn'ün XOR'da saplandığı sayı.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-12-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: Model A doğru sınıfa p=0.9, Model B p=0.1 veriyor. Hangisinin kaybı daha yüksek, neden?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4743,7 +4743,7 @@ diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor)
         <div class="sol-body" style="display:none"><b>Cevap:</b> <b>Model B</b> (−ln(0.1)≈2.303 > −ln(0.9)≈0.105). Doğru sınıfa düşük olasılık vermek ağır cezalandırılır — "kendinden emin ama yanlış" en pahalı hatadır.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-12-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: Adil bir yazı-tura (p=0.5, p=0.5) atışının entropisi kaç bittir?</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4853,7 +4853,7 @@ v(10ms) = 325·sin(2π×50×0.010) = 325·sin(180°) = 325×0 = 0V
   → 10ms tam olarak yarım periyot (T/2) — dalga sıfırı kesiyor</div>
 
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="3" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/3 çözüldü</span></h4>
-    <div class="acc">
+    <div class="acc" id="ytq-13-1">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\sin(90°)+\cos(180°)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4864,7 +4864,7 @@ v(10ms) = 325·sin(2π×50×0.010) = 325·sin(180°) = 325×0 = 0V
         <div class="sol-body" style="display:none"><b>Cevap:</b> sin(90°)=1, cos(180°)=−1 → 1+(−1)=<b>0</b>.</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-13-2">
       <div class="acc-head"><span class="ac">▸</span> Soru 2: 230V/50Hz'lik AC hatta t=15ms anındaki ani gerilim kaçtır? (V_tepe≈325V)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -4875,7 +4875,7 @@ v(10ms) = 325·sin(2π×50×0.010) = 325·sin(180°) = 325×0 = 0V
         <div class="sol-body" style="display:none"><b>Cevap:</b> 2π×50×0.015 = 270° → sin(270°)=−1 → v=325×(−1)=<b>−325V</b> (dalganın alt tepe noktası).</div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="ytq-13-3">
       <div class="acc-head"><span class="ac">▸</span> Soru 3: \(\sin^2(37°)+\cos^2(37°)=?\)</div>
       <div class="acc-body">
         <div style="display:flex; gap:8px; margin:4px 0 8px">
@@ -5571,15 +5571,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609211044"></script>
-<script src="js/lesson-turev.js?v=202609211044"></script>
-<script src="js/lesson-xor.js?v=202609211044"></script>
-<script src="js/lesson-xor-arch.js?v=202609211044"></script>
-<script src="js/lesson-xor-epoch.js?v=202609211044"></script>
-<script src="js/lesson-nn.js?v=202609211044"></script>
-<script src="js/lesson-trig.js?v=202609211044"></script>
+<script src="js/lesson-linreg.js?v=202609211101"></script>
+<script src="js/lesson-turev.js?v=202609211101"></script>
+<script src="js/lesson-xor.js?v=202609211101"></script>
+<script src="js/lesson-xor-arch.js?v=202609211101"></script>
+<script src="js/lesson-xor-epoch.js?v=202609211101"></script>
+<script src="js/lesson-nn.js?v=202609211101"></script>
+<script src="js/lesson-trig.js?v=202609211101"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609211044"></script>
-<script src="js/app.js?v=202609211044"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609211101"></script>
+<script src="js/app.js?v=202609211101"></script>
 </body>
 </html>
