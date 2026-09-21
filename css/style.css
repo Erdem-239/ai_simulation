@@ -1272,3 +1272,58 @@ body.xt-full-lock{overflow:hidden}
 .gecis-karti > .acc-body{display:none; padding:9px 13px 12px; font-size:12.5px;
   color:#ccd5e8; line-height:1.65; border-top:1px dashed rgba(149,162,194,.25)}
 .gecis-karti.open > .acc-body{display:block}
+
+/* ================= YAPI TASLARI: EN UST "6 kategori" mini-yol-haritasi =================
+   #matSvg'nin AYNI muhakemesiyle -- ama YINE ayri bir id (#ytSvg) altinda,
+   kasitli kod tekrari. Tek fark: burada duguim = kategori (6 tane), altta
+   Turev Kurallari'nin kendi ic-modul agaci (#matSvg) ayrica duruyor -- iki
+   agac birbirinden bagimsiz, biri digerini temsil etmiyor. */
+#ytSvg{width:100%; max-width:680px; height:auto; display:block; margin:0 auto;
+  background:#c9b283; border-radius:10px; box-shadow:inset 0 0 40px rgba(70,45,10,.35)}
+#ytSvg text{fill:#3a2a12; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+#ytSvg .tn rect.tn-card{fill:#f1e2ba; stroke-width:2.2; transition:.15s;
+  filter:drop-shadow(0 3px 3px rgba(40,25,5,.35)); cursor:help}
+#ytSvg .tn-done rect.tn-card{stroke:#3f7d3f; fill:#e3ecd6}
+#ytSvg .tn-done .tn-icon-bg{fill:url(#ytnGradDone)}
+#ytSvg .tn-done .tsub{fill:#2f6b2f}
+#ytSvg .tn-avail rect.tn-card{stroke:#b8860b; fill:#fbedc4; animation:ytpulse 1.6s ease-in-out infinite}
+#ytSvg .tn-avail .tn-icon-bg{fill:url(#ytnGradAvail)}
+#ytSvg .tn-avail .tsub{fill:#a06a10; font-weight:800}
+#ytSvg .tn-locked rect.tn-card{stroke:#8a7550; fill:#b9a578; opacity:.85}
+#ytSvg .tn-locked .tn-icon-bg{fill:url(#ytnGradLocked)}
+#ytSvg .tn-locked text{fill:#6b5a3a}
+#ytSvg .tn-locked .tn-emoji{opacity:.55}
+#ytSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.3}
+#ytSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
+#ytSvg .tn.sel rect.tn-card{
+  stroke:#b8264a; stroke-width:2.2; stroke-linecap:round;
+  stroke-dasharray:18 82;
+  filter:drop-shadow(0 0 5px rgba(184,38,74,.85));
+  animation:ytSnake 2.4s linear infinite;
+}
+@keyframes ytSnake{ to{ stroke-dashoffset:-100 } }
+#ytSvg .te-off{stroke:#9c8354; stroke-width:2.2; fill:none; stroke-linejoin:round;
+  stroke-dasharray:6 5; opacity:.8; animation:ytflow 1.6s linear infinite; cursor:help}
+#ytSvg .te-on{stroke:#3f7d3f; stroke-width:2.8; fill:none; stroke-linejoin:round;
+  stroke-dasharray:7 5; opacity:.95; animation:ytflow .8s linear infinite; cursor:help}
+#ytSvg .te-off.te-req, #ytSvg .te-on.te-req{stroke-width:3.6; stroke-dasharray:7 5; opacity:1;
+  animation:ytRgbFlow 3s linear infinite, ytflow .8s linear infinite}
+@keyframes ytRgbFlow{
+  0%   {stroke:#ff3d5a} 14%{stroke:#ff9d3d} 28%{stroke:#f5e93d} 42%{stroke:#4dff6e}
+  57%  {stroke:#3dd9ff} 71%{stroke:#5a6bff} 85%{stroke:#c93dff} 100%{stroke:#ff3d5a}
+}
+@keyframes ytpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
+@keyframes ytflow{to{stroke-dashoffset:-11}}
+@media(prefers-reduced-motion:reduce){
+  #ytSvg .tn.sel rect.tn-card{animation:none; stroke-dasharray:none}
+  #ytSvg .te-off, #ytSvg .te-on{animation:none}
+  #ytSvg .te-off.te-req, #ytSvg .te-on.te-req{animation:none}
+}
+
+/* "tamamladim" dugmesi -- her kategorinin en ustunde (mat-done-btn ile ayni gorunum) */
+.yt-done-btn{display:inline-flex; align-items:center; gap:6px; font-size:11.5px;
+  font-weight:600; padding:5px 12px; border-radius:20px; cursor:pointer;
+  border:1px solid var(--line); background:var(--panel); color:var(--text);
+  margin:0 0 10px; transition:.15s}
+.yt-done-btn:hover{border-color:var(--accent)}
+.yt-done-btn.done{background:var(--green); color:#0b2a12; border-color:var(--green)}

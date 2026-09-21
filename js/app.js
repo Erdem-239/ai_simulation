@@ -2142,6 +2142,103 @@
   render();
 })();
 
+/* ---- Yapı Taşları: EN ÜST "6 kategori" mini ilerleme ağacı (#ytSvg) ----
+   #matSvg ile AYNI mantık (ayrı görsel/lokal sistem, kasıtlı kod tekrarı) —
+   ama düğümler burada MODÜL değil KATEGORİ (6 tane, .acc-category seviyesi).
+   Ana tree'ye ve matSvg'ye dokunmuyor, ikisinden de hiçbir şey içe
+   aktarmıyor — iki ağaç birbirinden tamamen bağımsız. */
+(function(){
+  const svg = document.getElementById('ytSvg'); if(!svg) return;
+
+  const YNODES = [
+    {id:'t_sayi',  pre:[]},
+    {id:'t_turev', pre:['t_sayi']},
+    {id:'t_akt',   pre:['t_turev']},
+    {id:'t_ileri', pre:['t_turev']},
+    {id:'t_ist',   pre:[]},
+    {id:'t_trig',  pre:[]},
+  ];
+  const byId = {}; YNODES.forEach(n => byId[n.id] = n);
+
+  const EDGES = [
+    {pop:'yt_req_turev', from:'t_sayi',  to:'t_turev'},
+    {pop:'yt_req_akt',   from:'t_turev', to:'t_akt'},
+    {pop:'yt_req_ileri', from:'t_turev', to:'t_ileri'},
+  ];
+  const edgeByPop = {}; EDGES.forEach(e => edgeByPop[e.pop] = e);
+
+  const YK = 'attn_yt_done_v1';
+  let done;
+  try{ done = new Set(JSON.parse(localStorage.getItem(YK) || '[]')); }catch(e){ done = new Set(); }
+  function save(){ try{ localStorage.setItem(YK, JSON.stringify([...done])); }catch(e){} }
+
+  function stateOf(n){
+    if(done.has(n.id)) return 'done';
+    if(n.pre.every(p => done.has(p))) return 'avail';
+    return 'locked';
+  }
+
+  let sel = null;
+
+  function render(){
+    const req = new Set();
+    if(sel){
+      const stack = [sel];
+      while(stack.length){
+        const id = stack.pop();
+        if(req.has(id)) continue;
+        req.add(id);
+        const nd = byId[id];
+        if(nd) nd.pre.forEach(p => stack.push(p));
+      }
+    }
+    svg.querySelectorAll('.yte').forEach(p => {
+      const e = edgeByPop[p.dataset.pop]; if(!e) return;
+      p.classList.toggle('te-on', done.has(e.from));
+      p.classList.toggle('te-off', !done.has(e.from));
+      p.classList.toggle('te-req', req.has(e.to));
+    });
+    svg.querySelectorAll('.ytn').forEach(g => {
+      const n = byId[g.dataset.id]; if(!n) return;
+      const st = stateOf(n);
+      g.classList.remove('tn-done', 'tn-avail', 'tn-locked', 'sel');
+      g.classList.add('tn-' + st);
+      if(sel === n.id) g.classList.add('sel');
+      const sub = g.querySelector('.ytsub');
+      if(sub) sub.textContent = st === 'done' ? '✓ Tamamlandı' : st === 'avail' ? 'Sırada' : 'Önce öncekini bitir';
+    });
+    document.querySelectorAll('.yt-done-btn').forEach(btn => {
+      const id = btn.dataset.ytId;
+      const isDone = done.has(id);
+      btn.classList.toggle('done', isDone);
+      btn.textContent = isDone ? '✓ Tamamladın' : '✓ Bu kategoriyi tamamladım';
+    });
+  }
+
+  svg.querySelectorAll('.ytn').forEach(g => {
+    g.addEventListener('click', () => { sel = (sel === g.dataset.id) ? null : g.dataset.id; render(); });
+  });
+
+  document.querySelectorAll('#model-matematik .acc-category[data-yt-id]').forEach(cat => {
+    const matchId = cat.dataset.ytId;
+    if(!byId[matchId]) return;   // guvenlik: bilmedigimiz bir id gelirse dokunma
+    const body = cat.querySelector(':scope > .acc-body');
+    if(!body || body.querySelector(':scope > .yt-done-btn')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'yt-done-btn';
+    btn.dataset.ytId = matchId;
+    btn.textContent = '✓ Bu kategoriyi tamamladım';
+    btn.addEventListener('click', () => {
+      if(done.has(matchId)) done.delete(matchId); else done.add(matchId);
+      save(); render();
+    });
+    body.insertBefore(btn, body.firstChild);
+  });
+
+  render();
+})();
+
 /* ---- sol panel: ilerleme omurgası — sidebar'ı teknoloji ağacının canlı yansımasına çevirir ----
    Her ders butonu, ağaçtaki karşılık gelen düğümün durumunu (araştırıldı/sıradaki/kilitli) ve
    alt başlık ilerlemesini gösterir. Tek doğruluk kaynağı ağacın kendi localStorage durumu;
