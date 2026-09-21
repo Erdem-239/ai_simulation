@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609211133"></script>
-<link rel="stylesheet" href="css/style.css?v=202609211133">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609211155"></script>
+<link rel="stylesheet" href="css/style.css?v=202609211155">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 11:33 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 11:55 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4168,6 +4168,16 @@ d/dx (7)       = 0</div>
     </div>
     <div style="max-width:720px"><canvas id="tzChainCanvas" width="700" height="320" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
     <div class="work" id="tzChainRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
+    <div class="pts" style="border-left:3px solid #5aa0e0; margin-top:12px; padding-top:10px">
+      <h4 style="color:#5aa0e0; margin:0 0 6px">🔬 Doğrulama — h→0 limitinden de aynı sonuç çıkıyor mu?</h4>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.65; margin:0 0 8px">Zincir kuralına güvenmeden, <b>doğrudan tanımdan</b> (modül 3'teki "h → 0" sahnesindeki aynı yöntem) gidersek aynı eğimi bulmalıyız. h'yi küçült — mavi sekantın sarı teğete yapışıp aynı sayıya (dy/dx) yakınsadığını izle.</p>
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 8px; flex-wrap:wrap">
+        <span style="font-size:13px">h =</span>
+        <input type="range" id="tzChainH" min="0.02" max="0.2" step="0.01" value="0.12" style="flex:1; min-width:160px; max-width:300px">
+        <b id="tzChainHv" style="color:#5aa0e0; min-width:44px">0.12</b>
+      </div>
+      <div class="work" id="tzChainHRead" style="line-height:1.9; font-size:13.5px"></div>
+    </div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Bu, modül 3'teki köprü/kurabiye teğetleriyle AYNI mantık</b> — tek fark, eğrinin kendisi bileşke bir fonksiyon olduğu için eğimi bulmak için önce içini, sonra dışını türetip çarpman gerekiyor. Aşağıdaki "Yazıya dökmek" kutusundaki \(d/dx\,(2x+1)^{3}\) örneği de tam bu — burada canlı, eğriye teğet olarak görüyorsun.</div>
   </div>
 
@@ -5565,15 +5575,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609211133"></script>
-<script src="js/lesson-turev.js?v=202609211133"></script>
-<script src="js/lesson-xor.js?v=202609211133"></script>
-<script src="js/lesson-xor-arch.js?v=202609211133"></script>
-<script src="js/lesson-xor-epoch.js?v=202609211133"></script>
-<script src="js/lesson-nn.js?v=202609211133"></script>
-<script src="js/lesson-trig.js?v=202609211133"></script>
+<script src="js/lesson-linreg.js?v=202609211155"></script>
+<script src="js/lesson-turev.js?v=202609211155"></script>
+<script src="js/lesson-xor.js?v=202609211155"></script>
+<script src="js/lesson-xor-arch.js?v=202609211155"></script>
+<script src="js/lesson-xor-epoch.js?v=202609211155"></script>
+<script src="js/lesson-nn.js?v=202609211155"></script>
+<script src="js/lesson-trig.js?v=202609211155"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609211133"></script>
-<script src="js/app.js?v=202609211133"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609211155"></script>
+<script src="js/app.js?v=202609211155"></script>
 </body>
 </html>

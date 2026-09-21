@@ -472,8 +472,11 @@
     const cv = document.getElementById('tzChainCanvas');
     if(!cv) return;
     const xIn = document.getElementById('tzChainX');
+    const hIn = document.getElementById('tzChainH');
     const xVal = document.getElementById('tzChainXv');
+    const hVal = document.getElementById('tzChainHv');
     const read = document.getElementById('tzChainRead');
+    const hRead = document.getElementById('tzChainHRead');
     const ctx = cv.getContext('2d');
     const g = x => 2*x + 1;      // ic halka
     const gp = () => 2;          // g'(x) sabit
@@ -483,13 +486,23 @@
 
     function render(){
       const W=cv.width, H=cv.height;
-      const ax = drawAxes(ctx, W, H, -1.5, 1, -10, 30, {xLabel:'x', yLabel:'y=(2x+1)³', xTicks:5, yTicks:4});
-      drawCurve(ctx, ax.X, ax.Y, y, -1.5, 1, '#3a7afe', 2.2);
+      const ax = drawAxes(ctx, W, H, -1.5, 1.2, -10, 45, {xLabel:'x', yLabel:'y=(2x+1)³', xTicks:5, yTicks:4});
+      drawCurve(ctx, ax.X, ax.Y, y, -1.5, 1.2, '#3a7afe', 2.2);
       const x = parseFloat(xIn.value);
+      const h = parseFloat(hIn.value);
       const gx = g(x), y0 = y(x);
       const slope = fp(gx) * gp();
       const tanFn = xx => y0 + slope*(xx-x);
-      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-1.5,x-0.35), Math.min(1,x+0.35), '#ffd24a', 2.2);
+      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-1.5,x-0.35), Math.min(1.2,x+0.35), '#ffd24a', 2.2);
+
+      // sekant (h -> 0 doğrulaması, modul 3'teki "h" sahnesiyle ayni mantik)
+      const xh = x + h;
+      const y1 = y(xh);
+      const sec = (y1 - y0) / h;
+      const secFn = xx => y0 + sec*(xx-x);
+      drawCurve(ctx, ax.X, ax.Y, secFn, Math.max(-1.5,x-0.05), Math.min(1.2,xh+0.05), '#5aa0e0', 2, [5,3]);
+      ctx.fillStyle='#5aa0e0'; ctx.beginPath(); ctx.arc(ax.X(xh), ax.Y(y1), 4.5, 0, Math.PI*2); ctx.fill();
+
       ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ax.X(x), ax.Y(y0), 5, 0, Math.PI*2); ctx.fill();
       ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
 
@@ -497,8 +510,14 @@
         '<b>İç halka:</b> g(x) = 2x+1 = 2·'+F(x,2)+'+1 = <b style="color:#d4a94a">'+F(gx,2)+'</b> &nbsp; g′(x) = <b style="color:#d4a94a">2</b> (sabit)'+
         '<br><b>Dış halka:</b> f(u) = u³ → f(g(x)) = ('+F(gx,2)+')³ = <b style="color:#3a7afe">'+F(y0,2)+'</b> &nbsp; f′(u)=3u² → f′(g(x)) = 3·('+F(gx,2)+')² = <b style="color:#3a7afe">'+F(fp(gx),2)+'</b>'+
         '<br><b>Zincir (çarpım):</b> dy/dx = f′(g(x))·g′(x) = '+F(fp(gx),2)+' × 2 = <b style="color:#f0a032">'+F(slope,2)+'</b> ← sarı teğetin eğimi';
+
+      const err = Math.abs(sec - slope);
+      hRead.innerHTML =
+        '<b>Sekant eğimi:</b> [f('+F(x,2)+'+h) − f('+F(x,2)+')] / h = ['+F(y1,2)+' − '+F(y0,2)+'] / '+F(h,2)+' = <b style="color:#5aa0e0">'+F(sec,3)+'</b>'+
+        '<br><span style="color:var(--muted); font-size:12px">↳ zincir kuralının verdiği eğim: <b style="color:#f0a032">'+F(slope,2)+'</b> — fark: '+F(err,3)+'. h\'yi küçültükçe fark küçülür, sekant teğete yapışır.</span>';
     }
     xIn.addEventListener('input', ()=>{ xVal.textContent = F(parseFloat(xIn.value),2); render(); });
+    hIn.addEventListener('input', ()=>{ hVal.textContent = F(parseFloat(hIn.value),2); render(); });
     render();
   })();
 
