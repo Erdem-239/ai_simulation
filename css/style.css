@@ -568,6 +568,7 @@
     .pts{padding:10px 12px}
     .tabpane{padding:14px 12px}
     .work{font-size:12px}
+    #tzSigLive mjx-container{font-size:75% !important}
     table.calc{display:block; overflow-x:auto; max-width:100%}
     .plotbox{flex-basis:100%}
     .controls{gap:8px}
