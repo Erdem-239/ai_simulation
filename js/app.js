@@ -2142,13 +2142,19 @@
   render();
 })();
 
-/* ---- Yapı Taşları: EN ÜST "6 kategori" mini ilerleme ağacı (#ytSvg) ----
-   #matSvg ile AYNI mantık (ayrı görsel/lokal sistem, kasıtlı kod tekrarı) —
-   ama düğümler burada MODÜL değil KATEGORİ (6 tane, .acc-category seviyesi).
-   Ana tree'ye ve matSvg'ye dokunmuyor, ikisinden de hiçbir şey içe
-   aktarmıyor — iki ağaç birbirinden tamamen bağımsız. */
+/* ---- Yapı Taşları: EN ÜST "6 kategori" mini ilerleme ağacı ----
+   #matSvg'den FARKLI olarak burası saf SVG değil: kartlar gerçek DOM
+   elemanı (.yt-card), sadece bağlayıcı kablolar SVG (.yt-cables — JS her
+   render'da kartların GERÇEK ekran konumuna göre yeniden çiziyor). Bunun
+   nedeni: bir kategoriye tıklanınca modül listesinin GERÇEK DOM AKIŞINDA
+   (reflow, kendi sütunundaki sonraki kartı iterek) açılabilmesi —
+   floating/absolute değil, "gömülü", sitenin geri kalanıyla aynı fontu
+   kullanıyor. Ana tree'ye ve matSvg'ye hâlâ dokunmuyor, kasıtlı ayrı
+   sistem (kendi localStorage anahtarı, kendi düğümleri). */
 (function(){
-  const svg = document.getElementById('ytSvg'); if(!svg) return;
+  const cols = document.querySelector('#ytTreeWrap .yt-cols'); if(!cols) return;
+  const inner = document.querySelector('#ytTreeWrap .yt-tree-inner');
+  const cablesSvg = document.querySelector('#ytTreeWrap .yt-cables');
 
   const YNODES = [
     {id:'t_sayi',  pre:[]},
@@ -2165,11 +2171,11 @@
     {pop:'yt_req_akt',   from:'t_turev', to:'t_akt'},
     {pop:'yt_req_ileri', from:'t_turev', to:'t_ileri'},
   ];
-  const edgeByPop = {}; EDGES.forEach(e => edgeByPop[e.pop] = e);
 
   // kategori -> modul listesi (en temel ders seviyesine kadar) — bir
-  // kategori dugumune tiklaninca #ytModList bunu gosterir, satira
-  // tiklaninca asagidaki gercek modul acordion'una scroll+ac.
+  // kategori kartina tiklaninca hemen altina (kendi sutununda, gercek
+  // DOM akisinda) bunu gosterir, satira tiklaninca asagidaki gercek
+  // modul acordion'una scroll+ac.
   const CAT_LABEL = {
     t_sayi:'Sayı Sistemleri', t_turev:'Türev Kuralları', t_akt:'Aktivasyon Fonksiyonlarının Türevleri',
     t_ileri:'İleri Konular', t_ist:'İstatistik', t_trig:'Trigonometri',
@@ -2213,36 +2219,73 @@
     }));
   }
 
-  const modListEl = document.getElementById('ytModList');
-  const stageEl = document.querySelector('#ytTreeWrap .yt-tree-stage');
-  function positionModList(nodeG){
-    if(!stageEl || !nodeG) return;
-    const stageRect = stageEl.getBoundingClientRect();
-    const nodeRect = nodeG.getBoundingClientRect();
-    const top = nodeRect.bottom - stageRect.top + 8;
-    let left = nodeRect.left - stageRect.left;
-    left = Math.max(0, Math.min(left, stageRect.width - modListEl.offsetWidth));
-    modListEl.style.top = top + 'px';
-    modListEl.style.left = left + 'px';
-  }
+  function cardOf(id){ return cols.querySelector('.yt-card[data-id="' + id + '"]'); }
+
+  // sec ili kartin hemen ALTINA (ayni sutun icinde, .yt-ml-inline sibling'i
+  // olarak) mod listesini ekler/kaldirir — DOM akisinda gercek reflow.
   function renderModList(){
-    if(!modListEl) return;
-    const mods = sel && CAT_MODULES[sel];
-    if(!mods){ modListEl.classList.remove('show'); modListEl.innerHTML = ''; return; }
-    modListEl.innerHTML = '<div class="yt-ml-title">📂 ' + (CAT_LABEL[sel] || sel) + ' içindekiler</div>'
+    cols.querySelectorAll('.yt-ml-inline').forEach(el => el.remove());
+    if(!sel) return;
+    const mods = CAT_MODULES[sel]; if(!mods) return;
+    const card = cardOf(sel); if(!card) return;
+    const box = document.createElement('div');
+    box.className = 'yt-ml-inline';
+    box.innerHTML = '<div class="yt-ml-title">📂 ' + (CAT_LABEL[sel] || sel) + ' içindekiler</div>'
       + mods.map(m => '<div class="yt-ml-row" data-mod-id="' + m.id + '"><span class="yt-ml-n">' + m.n + '.</span><span>' + m.label + '</span></div>').join('');
-    modListEl.classList.add('show');
-    modListEl.querySelectorAll('.yt-ml-row').forEach(row => {
-      row.addEventListener('click', () => openModule(row.dataset.modId));
+    card.insertAdjacentElement('afterend', box);
+    box.querySelectorAll('.yt-ml-row').forEach(row => {
+      row.addEventListener('click', e => { e.stopPropagation(); openModule(row.dataset.modId); });
     });
-    positionModList(svg.querySelector('.ytn[data-id="' + sel + '"]'));
   }
+
+  // kablolari (.yt-cables) kartlarin O ANKI GERCEK ekran konumuna gore
+  // yeniden cizer — bir sutunda mod listesi acilip kartlar kayinca (ya da
+  // pencere resize olunca) cagrilir, statik koordinat TUTULMUYOR.
+  function drawCables(){
+    if(!cablesSvg || !inner) return;
+    const innerRect = inner.getBoundingClientRect();
+    cablesSvg.innerHTML = EDGES.map(e => {
+      const fromCard = cardOf(e.from), toCard = cardOf(e.to);
+      if(!fromCard || !toCard) return '';
+      const fr = fromCard.getBoundingClientRect(), tr = toCard.getBoundingClientRect();
+      const x1 = fr.right - innerRect.left, y1 = fr.top - innerRect.top + fr.height / 2;
+      const x2 = tr.left - innerRect.left, y2 = tr.top - innerRect.top + tr.height / 2;
+      const mx = (x1 + x2) / 2;
+      const d = y1 === y2 ? ('M' + x1 + ' ' + y1 + ' H' + x2)
+        : ('M' + x1 + ' ' + y1 + ' H' + mx + ' V' + y2 + ' H' + x2);
+      return '<path class="te-off" data-pop="' + e.pop + '" tabindex="0" role="button" aria-label="neden gerekli" d="' + d + '"/>';
+    }).join('');
+    // durum siniflarini (te-on/te-off/te-req) yeniden uygula (innerHTML sildi)
+    applyCableStates();
+  }
+
+  function applyCableStates(){
+    if(!cablesSvg) return;
+    const req = new Set();
+    if(sel){
+      const stack = [sel];
+      while(stack.length){
+        const id = stack.pop();
+        if(req.has(id)) continue;
+        req.add(id);
+        const nd = byId[id];
+        if(nd) nd.pre.forEach(p => stack.push(p));
+      }
+    }
+    cablesSvg.querySelectorAll('path').forEach(p => {
+      const e = EDGES.find(x => x.pop === p.dataset.pop); if(!e) return;
+      p.classList.toggle('te-on', done.has(e.from));
+      p.classList.toggle('te-off', !done.has(e.from));
+      p.classList.toggle('te-req', req.has(e.to));
+    });
+  }
+
   document.addEventListener('click', e => {
     if(!sel) return;
-    if(e.target.closest && (e.target.closest('.ytn') || e.target.closest('#ytModList'))) return;
+    if(e.target.closest && (e.target.closest('.yt-card') || e.target.closest('.yt-ml-inline'))) return;
     sel = null; render();
   });
-  window.addEventListener('resize', () => { if(sel) positionModList(svg.querySelector('.ytn[data-id="' + sel + '"]')); });
+  window.addEventListener('resize', () => drawCables());
 
   const YK = 'attn_yt_done_v1';
   let done;
@@ -2258,30 +2301,13 @@
   let sel = null;
 
   function render(){
-    const req = new Set();
-    if(sel){
-      const stack = [sel];
-      while(stack.length){
-        const id = stack.pop();
-        if(req.has(id)) continue;
-        req.add(id);
-        const nd = byId[id];
-        if(nd) nd.pre.forEach(p => stack.push(p));
-      }
-    }
-    svg.querySelectorAll('.yte').forEach(p => {
-      const e = edgeByPop[p.dataset.pop]; if(!e) return;
-      p.classList.toggle('te-on', done.has(e.from));
-      p.classList.toggle('te-off', !done.has(e.from));
-      p.classList.toggle('te-req', req.has(e.to));
-    });
-    svg.querySelectorAll('.ytn').forEach(g => {
-      const n = byId[g.dataset.id]; if(!n) return;
+    cols.querySelectorAll('.yt-card').forEach(card => {
+      const n = byId[card.dataset.id]; if(!n) return;
       const st = stateOf(n);
-      g.classList.remove('tn-done', 'tn-avail', 'tn-locked', 'sel');
-      g.classList.add('tn-' + st);
-      if(sel === n.id) g.classList.add('sel');
-      const sub = g.querySelector('.ytsub');
+      card.classList.remove('tn-done', 'tn-avail', 'tn-locked', 'sel');
+      card.classList.add('tn-' + st);
+      if(sel === n.id) card.classList.add('sel');
+      const sub = card.querySelector('.yt-card-sub');
       if(sub) sub.textContent = st === 'done' ? '✓ Tamamlandı' : st === 'avail' ? 'Sırada' : 'Önce öncekini bitir';
     });
     document.querySelectorAll('.yt-done-btn').forEach(btn => {
@@ -2291,10 +2317,17 @@
       btn.textContent = isDone ? '✓ Tamamladın' : '✓ Bu kategoriyi tamamladım';
     });
     renderModList();
+    // getBoundingClientRect() zaten senkron reflow tetikler, rAF'a gerek yok —
+    // mod listesi eklenip/kaldirilip sutunlar DOM'da guncellendikten hemen
+    // sonra kablolar dogru (guncel) konumla cizilir.
+    drawCables();
   }
 
-  svg.querySelectorAll('.ytn').forEach(g => {
-    g.addEventListener('click', () => { sel = (sel === g.dataset.id) ? null : g.dataset.id; render(); });
+  cols.querySelectorAll('.yt-card').forEach(card => {
+    card.addEventListener('click', e => {
+      e.stopPropagation();   // data-pop'un "tiklayinca pinle" davranisiyla catismasin
+      sel = (sel === card.dataset.id) ? null : card.dataset.id; render();
+    });
   });
 
   document.querySelectorAll('#model-matematik .acc-category[data-yt-id]').forEach(cat => {
