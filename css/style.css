@@ -1166,3 +1166,30 @@ body.xt-full-lock{overflow:hidden}
   .xf-box{font-size:11px; padding:3px 8px}
   .xf-chip{font-size:9.5px; padding:2px 5px}
 }
+
+/* ================= "ONKOSUL AGACI" (kavram haritasi) — Yapi Taslari =================
+   Turev Kurallari kategorisinin basindaki, hangi kuralin hangisini
+   gerektirdigini gosteren dikey elmas sekilli harita. XOR/NN'deki
+   .xf-* (zincir kutulari) ile ayni gorsel dil, ama DIKEY ve dallanan/
+   bulusan bir akis oldugu icin kendi duzen siniflari var. */
+.kt-sutun{display:flex; flex-direction:column; align-items:center; gap:2px; padding:4px 2px}
+.kt-ok{display:flex; flex-direction:column; align-items:center; gap:1px; margin:1px 0}
+.kt-cizgi{width:2px; height:11px; background:#33415f}
+.kt-ikili{display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap:26px; margin:0}
+.kt-kol{display:flex; flex-direction:column; align-items:center; gap:1px}
+
+.kt-sutun .xf-box{white-space:normal; text-align:center; min-width:150px; max-width:220px;
+  line-height:1.4; padding:7px 12px}
+.kt-sutun .xf-box .xf-cap{white-space:normal}
+.kt-sutun .xf-chip{white-space:normal; text-align:center; max-width:160px}
+
+.kt-n1{border-color:#5aa0e0}
+.kt-n2{border-color:#f0a032; border-width:2px; font-weight:700}
+.kt-n3{border-color:#46c46a}
+.kt-n4{border-color:#46c46a}
+.kt-n5{border-color:#e06a6a; border-width:2px; background:rgba(224,106,106,.08)}
+
+@media(max-width:520px){
+  .kt-ikili{gap:14px}
+  .kt-sutun .xf-box{min-width:130px; max-width:170px; font-size:12px}
+}
