@@ -175,23 +175,24 @@ güvenli bir düzeltmeydi. Yeni bir ağaç/accordion eklerken bu seçici
 kuralına dikkat: descendant (boşluklu) selector'lar iç içe `.acc` yapılarda
 sızıntı yapar, `>` kullan.
 
-**Sıradaki iş — `#ytSvg`'yi daha ayrıntılı bir haritaya çevirmek**:
-kullanıcı PR #263'ü inceledikten sonra "harita her modülün içindekilerle
-birlikte göstersin ... en temel derse kadar gözüksün" dedi — yani `#ytSvg`
-sadece 6 kategori düğümünde durmayacak, bir kategori düğümüne
-tıklanınca/seçilince o kategorinin modülleri (14 modülün tamamı, en
-temel/tek tek ders seviyesine kadar) ağacın İÇİNDE, o düğümün altına
-sıralanacak (yer var, kutu genişleyebilir). İstatistik/Trigonometri'nin
-diğerlerinden bağımsız kalması kararı kullanıcı tarafından onaylandı,
-değişmiyor — ama onlara tıklandığında da kendi modülleri aynı şekilde
-altlarında listelenecek. Bu, `#matSvg`'nin (şu an sadece Türev Kuralları
-için var) mantığını kavramsal olarak `#ytSvg`'nin içine taşımak/genelleştirmek
-anlamına geliyor — ama TAM tasarımı (her kategori-modül grubu kendi kilit
-zincirine mi sahip olacak, yoksa sadece düz bir liste mi, diğer 5
-kategorinin modülleri için henüz `matSvg` tipi bir tamamlanma takibi
-olmadığı için o modüller nötr/kilitsiz mi görünecek) netleşmedi — bir
-sonraki oturumda kullanıcıyla birlikte netleştirilecek, aceleyle tahmin
-edip uygulamaya başlama.
+**`#ytSvg` modül listesi (PR #265, tamamlandı)**: kullanıcı PR #263'ü
+inceledikten sonra "harita her modülün içindekilerle birlikte göstersin
+... en temel derse kadar gözüksün" dedi. Netleşen tasarım (kullanıcıyla
+AskUserQuestion ile doğrulandı): modüller SVG kartı DEĞİL, kategori
+düğümüne tıklanınca altında açılan sade/tıklanabilir bir liste
+(`#ytModList`, `.yt-modlist`) — kilit/tamamlanma durumu YOK, salt
+navigasyon dizini (diğer 5 kategoride henüz `matSvg` tipi modül-seviyesi
+tamamlanma takibi yok, bu liste onu beklemiyor). Bir modül satırına
+tıklanınca `openModule()` sayfada o gerçek modül accordion'una scroll
+edip hem kategoriyi hem modülü açıyor — harita gerçek bir navigasyon
+aracı oldu. Her `.acc-module`'e bunun için stabil `id="ytmod-N"` (1-14)
+eklendi. İstatistik/Trigonometri bağımsız kalma kararı değişmedi, onlara
+tıklanınca da kendi modülleri aynı şekilde listeleniyor.
+
+**Olası sonraki adım (henüz istenmedi, aceleyle başlama)**: diğer 5
+kategoriye de `matSvg` tipi gerçek modül-seviyesi tamamlanma/kilit takibi
+eklemek — şu an sadece Türev Kuralları'nda var. Kullanıcı bunu
+istediğinde konuşulacak.
 
 ## Yol Haritası (tech-tree) notları
 
