@@ -175,24 +175,66 @@ güvenli bir düzeltmeydi. Yeni bir ağaç/accordion eklerken bu seçici
 kuralına dikkat: descendant (boşluklu) selector'lar iç içe `.acc` yapılarda
 sızıntı yapar, `>` kullan.
 
-**`#ytSvg` modül listesi (PR #265, tamamlandı)**: kullanıcı PR #263'ü
-inceledikten sonra "harita her modülün içindekilerle birlikte göstersin
-... en temel derse kadar gözüksün" dedi. Netleşen tasarım (kullanıcıyla
-AskUserQuestion ile doğrulandı): modüller SVG kartı DEĞİL, kategori
-düğümüne tıklanınca altında açılan sade/tıklanabilir bir liste
-(`#ytModList`, `.yt-modlist`) — kilit/tamamlanma durumu YOK, salt
-navigasyon dizini (diğer 5 kategoride henüz `matSvg` tipi modül-seviyesi
-tamamlanma takibi yok, bu liste onu beklemiyor). Bir modül satırına
-tıklanınca `openModule()` sayfada o gerçek modül accordion'una scroll
-edip hem kategoriyi hem modülü açıyor — harita gerçek bir navigasyon
-aracı oldu. Her `.acc-module`'e bunun için stabil `id="ytmod-N"` (1-14)
-eklendi. İstatistik/Trigonometri bağımsız kalma kararı değişmedi, onlara
-tıklanınca da kendi modülleri aynı şekilde listeleniyor.
+**`#ytSvg`'nin evrimi (PR #265→#270) — GÜNCEL mimari**: `#ytSvg` PR
+#265'te "kategori kartına tıkla → altında sade bir modül listesi aç"
+olarak başladı ama kullanıcı geri bildirimleriyle üç kez önemli ölçüde
+değişti; en son (güncel) hâli şöyle:
+
+1. **Saf SVG DEĞİL, HTML kart + SVG-kablo-katmanı hibrit mimari** (PR
+   #268). `#matSvg`'nin aksine, 6 kategori artık gerçek DOM elemanı
+   (`.yt-card`, `.yt-cols` içinde 3 sütun — soldan sağa Yol Haritası
+   gibi, PR #267). Sadece bağlayıcı kablolar SVG (`.yt-cables`) ve JS her
+   render'da kartların GERÇEK ekran konumuna göre (`getBoundingClientRect`)
+   yeniden çiziyor. Neden: kategori altında açılan mod listesinin GERÇEK
+   DOM AKIŞINDA (reflow, komşu kartı iterek) açılabilmesi için — kullanıcı
+   floating/absolute bir kutunun komşu karta binmesini istemedi ("bizim
+   dizaynımıza gömülü olarak açılsın").
+2. **3 seviyeli iç içe açılan liste**, hepsi aynı "gömülü/reflow" mantığı:
+   - **Seviye 1→2**: bir `.yt-card`'a (kategori) tıklanınca, kendi
+     sütununda hemen altına `.yt-ml-inline` (o kategorinin modül listesi,
+     `ytmod-N` id'li 14 modül) açılıyor.
+   - **Seviye 2→3**: bir modül satırına tıklanınca (PR #270) artık
+     SAYFAYA GİTMİYOR — kendi altına `.yt-ml-sub` (o modülün ✏️
+     Alıştırma SORULARI, `ytq-M-N` id'li, MathJax ile dinamik typeset
+     ediliyor) açılıyor. Sorusu olmayan modüllerde (Modül 14) tıklamak
+     hâlâ doğrudan `openModule()`'e (sayfaya git) düşüyor.
+   - **Yaprak (soru) tıklaması**: `openQuestion()` — kategori+modül+soru
+     accordion'larının hepsini kademeli açıp sayfada o soruya scroll
+     ediyor. Bu üç seviyeli yapı `CAT_MODULES`/`MOD_QUESTIONS` sabitleri
+     + `openSet`/`openQSet` (Set — birden fazla eşzamanlı açık olabilir)
+     + `highlightId` (tek, sadece kablo önkoşul-zinciri vurgusu için) ile
+     yönetiliyor.
+   - **"Hepsini göster/gizle" araç çubuğu** (`#ytShowAll`/`#ytHideAll`,
+     PR #269): 3 seviyeyi de aynı anda açıp kapatıyor — kullanıcı
+     "herşeyin temsilini göstermek istiyorum" dedi.
+3. **Sağ-üst bilgi paneli** (`#ytInfoPanel`, PR #269) — kart/kablo
+   hover/tıklamasının açıklaması artık paylaşılan floating `#xtPop`
+   pop-up'ında DEĞİL (o, komşu içeriğin üstüne biniyordu), `.yt-tree-inner`
+   içinde GERÇEK bir flex sütunu olarak sağda duruyor (`position:absolute`
+   DEĞİL — dar pencerede asla üstüne binmez, sadece yatay kaydırmaya
+   katılır). Bunun için kart/kablolardaki tetikleyici öznitelik `data-pop`
+   DEĞİL `data-info` (paylaşılan pop-up motoru `[data-pop]` seçiyor, bu
+   yüzden `data-info` bilinçli olarak ondan ayrı tutuluyor).
+4. Mobil netlik: `#ytSvg`'nin genişlediği (yatay 3 sütun) için `min-width`
+   zorunlu (`.yt-tree-inner{min-width:fit-content}`) — shrink-to-fit YAPMA,
+   dar ekranda küçülüp okunmaz olmak yerine `.yt-tree-stage{overflow-x:auto}`
+   ile yatay kaydırılıyor (matSvg'nin aksine — matSvg 560px viewBox'ta
+   kalıyor, ytSvg şimdi çok daha geniş, aynı shrink mantığı orada
+   çalışmıyordu).
+
+**Ders — iç içe `.acc` deneme yapılırken bulunan bir hata (PR #269)**:
+manuel HTML düzenlemesi sırasında bir fazladan kapanış `</div>` kaldı,
+bu da `#model-matematik .acc-category` sorgusunun SESSİZCE boş dönmesine
+yol açtı (görünürde sayfa çalışıyordu ama tüm 6 kategori regresyon
+testinden kayboluyordu). Büyük HTML script'i DIŞINDA manuel `Edit` ile
+`.acc`/`.yt-*` yapısı değiştirilince MUTLAKA `s.count("<div") ==
+s.count("</div>")` ile denge kontrol edilmeli — sadece Python script'i
+kullanırken değil.
 
 **Olası sonraki adım (henüz istenmedi, aceleyle başlama)**: diğer 5
 kategoriye de `matSvg` tipi gerçek modül-seviyesi tamamlanma/kilit takibi
-eklemek — şu an sadece Türev Kuralları'nda var. Kullanıcı bunu
-istediğinde konuşulacak.
+eklemek — şu an sadece Türev Kuralları'nda var (`attn_mat_done_v1`).
+Kullanıcı bunu istediğinde konuşulacak.
 
 ## Yol Haritası (tech-tree) notları
 
