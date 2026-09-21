@@ -2214,6 +2214,17 @@
   }
 
   const modListEl = document.getElementById('ytModList');
+  const stageEl = document.querySelector('#ytTreeWrap .yt-tree-stage');
+  function positionModList(nodeG){
+    if(!stageEl || !nodeG) return;
+    const stageRect = stageEl.getBoundingClientRect();
+    const nodeRect = nodeG.getBoundingClientRect();
+    const top = nodeRect.bottom - stageRect.top + 8;
+    let left = nodeRect.left - stageRect.left;
+    left = Math.max(0, Math.min(left, stageRect.width - modListEl.offsetWidth));
+    modListEl.style.top = top + 'px';
+    modListEl.style.left = left + 'px';
+  }
   function renderModList(){
     if(!modListEl) return;
     const mods = sel && CAT_MODULES[sel];
@@ -2224,7 +2235,14 @@
     modListEl.querySelectorAll('.yt-ml-row').forEach(row => {
       row.addEventListener('click', () => openModule(row.dataset.modId));
     });
+    positionModList(svg.querySelector('.ytn[data-id="' + sel + '"]'));
   }
+  document.addEventListener('click', e => {
+    if(!sel) return;
+    if(e.target.closest && (e.target.closest('.ytn') || e.target.closest('#ytModList'))) return;
+    sel = null; render();
+  });
+  window.addEventListener('resize', () => { if(sel) positionModList(svg.querySelector('.ytn[data-id="' + sel + '"]')); });
 
   const YK = 'attn_yt_done_v1';
   let done;
