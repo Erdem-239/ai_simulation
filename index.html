@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609211031"></script>
-<link rel="stylesheet" href="css/style.css?v=202609211031">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609211044"></script>
+<link rel="stylesheet" href="css/style.css?v=202609211044">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 10:31 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 10:44 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -3654,15 +3654,20 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <div id="ytTreeWrap" class="xt-wrap acc">
   <div class="acc-head"><span class="ac">▸</span> 🗺️ Yapı Taşları'nın bütün resmi — 6 kategori nereden nereye<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
   <div class="acc-body">
-  <div class="mt-ipucu">🖱️ Bir kutuya ya da kabloya gel — o kategorinin ya da bağlantının açıklaması çıkar. Bir kutuya <b>tıkla</b> — altında o kategorinin modülleri listelenir, birine tıklayınca sayfada o modüle iner. Aşağıdaki 6 kategoriden birini <b>tamamladım</b> işaretlersen (kategorinin içinde, en üstte) kilit açılır — ama kilitli olsa da içeriği okumana engel değil, sadece <b>önerilen sırayı</b> gösterir. <b>İstatistik</b> ve <b>Trigonometri</b> diğerlerinden bağımsız, en baştan açık.</div>
+  <div class="mt-ipucu">🖱️ Bir kutuya ya da kabloya gel — sağ üstte açıklaması çıkar. Bir kutuya <b>tıkla</b> — altında o kategorinin modülleri listelenir, birine tıklayınca sayfada o modüle iner. Aşağıdaki 6 kategoriden birini <b>tamamladım</b> işaretlersen (kategorinin içinde, en üstte) kilit açılır — ama kilitli olsa da içeriği okumana engel değil, sadece <b>önerilen sırayı</b> gösterir. <b>İstatistik</b> ve <b>Trigonometri</b> diğerlerinden bağımsız, en baştan açık.</div>
+  <div class="yt-toolbar">
+    <button type="button" class="yt-bulk-btn" id="ytShowAll">📖 Hepsini göster</button>
+    <button type="button" class="yt-bulk-btn" id="ytHideAll">📕 Hepsini gizle</button>
+  </div>
   <div class="yt-tree-stage">
   <div class="yt-tree-inner">
   <svg class="yt-cables" aria-hidden="true"></svg>
   <div class="yt-cols">
-  <div class="yt-col"><div class="yt-card" data-id="t_sayi" data-pop="yt_sayi" tabindex="0" role="button"><div class="yt-card-icon">🔢</div><div class="yt-card-text"><div class="yt-card-title">Sayı Sistemleri</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_ist" data-pop="yt_ist" tabindex="0" role="button"><div class="yt-card-icon">📊</div><div class="yt-card-text"><div class="yt-card-title">İstatistik</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_trig" data-pop="yt_trig" tabindex="0" role="button"><div class="yt-card-icon">🌊</div><div class="yt-card-text"><div class="yt-card-title">Trigonometri</div><div class="yt-card-sub">—</div></div></div></div>
-  <div class="yt-col"><div class="yt-card" data-id="t_turev" data-pop="yt_turev" tabindex="0" role="button"><div class="yt-card-icon">📐</div><div class="yt-card-text"><div class="yt-card-title">Türev Kuralları</div><div class="yt-card-sub">—</div></div></div></div>
-  <div class="yt-col"><div class="yt-card" data-id="t_akt" data-pop="yt_akt" tabindex="0" role="button"><div class="yt-card-icon">🎯</div><div class="yt-card-text"><div class="yt-card-title">Aktivasyon Türevleri</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_ileri" data-pop="yt_ileri" tabindex="0" role="button"><div class="yt-card-icon">🚀</div><div class="yt-card-text"><div class="yt-card-title">İleri Konular</div><div class="yt-card-sub">—</div></div></div></div>
+  <div class="yt-col"><div class="yt-card" data-id="t_sayi" data-info="yt_sayi" tabindex="0" role="button"><div class="yt-card-icon">🔢</div><div class="yt-card-text"><div class="yt-card-title">Sayı Sistemleri</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_ist" data-info="yt_ist" tabindex="0" role="button"><div class="yt-card-icon">📊</div><div class="yt-card-text"><div class="yt-card-title">İstatistik</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_trig" data-info="yt_trig" tabindex="0" role="button"><div class="yt-card-icon">🌊</div><div class="yt-card-text"><div class="yt-card-title">Trigonometri</div><div class="yt-card-sub">—</div></div></div></div>
+  <div class="yt-col"><div class="yt-card" data-id="t_turev" data-info="yt_turev" tabindex="0" role="button"><div class="yt-card-icon">📐</div><div class="yt-card-text"><div class="yt-card-title">Türev Kuralları</div><div class="yt-card-sub">—</div></div></div></div>
+  <div class="yt-col"><div class="yt-card" data-id="t_akt" data-info="yt_akt" tabindex="0" role="button"><div class="yt-card-icon">🎯</div><div class="yt-card-text"><div class="yt-card-title">Aktivasyon Türevleri</div><div class="yt-card-sub">—</div></div></div><div class="yt-card" data-id="t_ileri" data-info="yt_ileri" tabindex="0" role="button"><div class="yt-card-icon">🚀</div><div class="yt-card-text"><div class="yt-card-title">İleri Konular</div><div class="yt-card-sub">—</div></div></div></div>
   </div>
+  <div class="xt-pop yt-info-panel" id="ytInfoPanel"><div class="yt-info-placeholder">🖱️ Bir kart ya da kabloya dokun — açıklaması burada görünür.</div></div>
   </div>
   </div>
   </div>
@@ -5566,15 +5571,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609211031"></script>
-<script src="js/lesson-turev.js?v=202609211031"></script>
-<script src="js/lesson-xor.js?v=202609211031"></script>
-<script src="js/lesson-xor-arch.js?v=202609211031"></script>
-<script src="js/lesson-xor-epoch.js?v=202609211031"></script>
-<script src="js/lesson-nn.js?v=202609211031"></script>
-<script src="js/lesson-trig.js?v=202609211031"></script>
+<script src="js/lesson-linreg.js?v=202609211044"></script>
+<script src="js/lesson-turev.js?v=202609211044"></script>
+<script src="js/lesson-xor.js?v=202609211044"></script>
+<script src="js/lesson-xor-arch.js?v=202609211044"></script>
+<script src="js/lesson-xor-epoch.js?v=202609211044"></script>
+<script src="js/lesson-nn.js?v=202609211044"></script>
+<script src="js/lesson-trig.js?v=202609211044"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609211031"></script>
-<script src="js/app.js?v=202609211031"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609211044"></script>
+<script src="js/app.js?v=202609211044"></script>
 </body>
 </html>
