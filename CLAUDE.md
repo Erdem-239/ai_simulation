@@ -193,17 +193,33 @@ değişti; en son (güncel) hâli şöyle:
    - **Seviye 1→2**: bir `.yt-card`'a (kategori) tıklanınca, kendi
      sütununda hemen altına `.yt-ml-inline` (o kategorinin modül listesi,
      `ytmod-N` id'li 14 modül) açılıyor.
-   - **Seviye 2→3**: bir modül satırına tıklanınca (PR #270) artık
-     SAYFAYA GİTMİYOR — kendi altına `.yt-ml-sub` (o modülün ✏️
-     Alıştırma SORULARI, `ytq-M-N` id'li, MathJax ile dinamik typeset
-     ediliyor) açılıyor. Sorusu olmayan modüllerde (Modül 14) tıklamak
-     hâlâ doğrudan `openModule()`'e (sayfaya git) düşüyor.
-   - **Yaprak (soru) tıklaması**: `openQuestion()` — kategori+modül+soru
-     accordion'larının hepsini kademeli açıp sayfada o soruya scroll
-     ediyor. Bu üç seviyeli yapı `CAT_MODULES`/`MOD_QUESTIONS` sabitleri
-     + `openSet`/`openQSet` (Set — birden fazla eşzamanlı açık olabilir)
-     + `highlightId` (tek, sadece kablo önkoşul-zinciri vurgusu için) ile
-     yönetiliyor.
+   - **Seviye 2→3**: bir modül satırına tıklanınca artık SAYFAYA
+     GİTMİYOR. İlk denemede (PR #270) ✏️ Alıştırma soruları altına
+     (`.yt-ml-sub`) açılıyordu — kullanıcı düzeltti: "bu değil ...
+     köprüden bırakılan top, h→0 tanımı ... bunları kastettim, altına
+     değil sağına dal gibi". PR #272'de düzeltildi: içerik artık modül
+     içindeki `.pts`/`<h3>` SAHNE/örnek bölümleri (`MOD_SCENES`,
+     `yts-M-N` id'li, 8 modülde 21 sahne) ve satırın **altına değil
+     AYNI satırın SAĞINA** açılıyor — satır + sahne kutusu bir
+     `.yt-ml-pair` flex sarmalayıcısında yan yana, aralarında
+     `.yt-cables`'a eklenen animasyonlu bir `.yt-scwire` bağlantı
+     çizgisiyle (kilit/durum taşımıyor, salt görsel "dal" bağlantısı).
+     Sahnesi olmayan modüllerde (5-9, 14) tıklamak hâlâ doğrudan
+     `openModule()`'e (sayfaya git) düşüyor.
+   - **Yaprak (sahne) tıklaması**: `openScene()` — kategori+modül
+     accordion'larını kademeli açıp sayfada o `.pts` bölümüne scroll
+     ediyor (`.pts` her zaman görünür/collapsible değil, sadece
+     ata'ların açılması + scroll yeterli). Bu üç seviyeli yapı
+     `CAT_MODULES`/`MOD_SCENES` sabitleri + `openSet`/`openScSet`
+     (Set — birden fazla eşzamanlı açık olabilir) + `highlightId` (tek,
+     sadece kablo önkoşul-zinciri vurgusu için) ile yönetiliyor.
+   - **Sağa-dal genişlemesi overlap yaratmadan**: `.yt-col` ve
+     `.yt-ml-inline` sabit `width:190px` DEĞİL, `width:max-content` +
+     `min-width:190px` — bir modülün sahne dalı açılınca o SÜTUN
+     gerçekten genişliyor, flexbox bunu komşu sütunları GERÇEK reflow
+     ile sağa iterek çözüyor (aynı `#ytInfoPanel`'de öğrenilen ders: asla
+     `position:absolute` ile "sağa doğru büyüme" simüle etme, gerçek
+     box-model büyümesi kullan).
    - **"Hepsini göster/gizle" araç çubuğu** (`#ytShowAll`/`#ytHideAll`,
      PR #269): 3 seviyeyi de aynı anda açıp kapatıyor — kullanıcı
      "herşeyin temsilini göstermek istiyorum" dedi.
