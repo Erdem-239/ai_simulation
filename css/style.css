@@ -1297,7 +1297,12 @@ body.xt-full-lock{overflow:hidden}
   padding:28px 36px}
 .yt-cables{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible}
 .yt-cols{display:flex; gap:90px; align-items:flex-start; position:relative; z-index:1; flex:none}
-.yt-col{display:flex; flex-direction:column; gap:22px; width:190px; flex:none}
+/* min-width:190px (kartlarin genisligi) taban, width:max-content ile
+   sutun gerektiginde (bir mod satirinin sahne dali acilinca) daha genis
+   olabiliyor -- flex:none oldugu icin bu buyume komsu sutunlari GERCEK
+   reflow ile saga iter, hicbir seyin ustune binmez (bkz. #ytInfoPanel
+   dersi: position:absolute yerine hep gercek box-model buyumesi). */
+.yt-col{display:flex; flex-direction:column; gap:22px; min-width:190px; width:max-content; flex:none}
 /* sag ustteki bilgi paneli -- kart/kablo hover'inin aciklamasi burada
    gorunur (komsu karti kapatan yuzen tooltip yerine). GERCEK bir flex
    sutunu (position:absolute DEGIL) -- boylece dar ekranda/pencerede asla
@@ -1371,20 +1376,26 @@ body.xt-full-lock{overflow:hidden}
    modullerin/panel govdelerinin gorunumune yakin "gomulu" bir kutu. */
 .yt-ml-inline{margin:10px 0 0; padding:10px 12px; background:rgba(20,27,49,.92);
   border:1px solid #2a3350; border-left:3px solid var(--accent); border-radius:8px;
-  width:190px}
+  min-width:190px; width:max-content; max-width:520px}
 .yt-ml-inline .yt-ml-title{font-size:11px; font-weight:700; color:var(--accent);
   margin:0 0 6px}
 .yt-ml-inline .yt-ml-row{display:flex; align-items:baseline; gap:7px;
   padding:5px 6px; border-radius:5px; cursor:pointer; font-size:11.5px;
-  color:#ccd5e8; line-height:1.4}
+  color:#ccd5e8; line-height:1.4; width:190px}
 .yt-ml-inline .yt-ml-row:hover{background:rgba(90,160,224,.14); color:#fff}
 .yt-ml-inline .yt-ml-n{flex:none; color:var(--muted); font-variant-numeric:tabular-nums;
   font-size:10.5px; min-width:1.3em; text-align:right}
 
-/* bir modul satirina tiklaninca hemen altina acilan SORU listesi --
-   "dalin dali": ayni gomulu/reflow mantigi bir seviye daha derin, hafif
-   girintili ve daha soluk bir govde ile ayirt ediliyor. */
-.yt-ml-sub{margin:4px 0 6px 10px; padding:6px 8px; background:rgba(0,0,0,.22);
-  border-left:2px solid var(--muted); border-radius:6px}
-.yt-ml-sub .yt-ml-row{font-size:10.5px; padding:4px 6px}
-.yt-ml-sub .yt-ml-n{font-size:9.5px}
+/* bir modul satirina tiklaninca AYNI satirin sağına (altına DEGIL —
+   kullanici: "altına değil sağına dal gibi") acilan SAHNE dali. .yt-ml-pair
+   satiri ve sahne kutusunu yan yana tutan flex sarmalayici; .yt-scwire
+   (yt-cables icinde, JS ile cizilir) ikisini agactaki kablolarla ayni
+   gorsel dilde baglar. */
+.yt-ml-pair{display:flex; align-items:flex-start; gap:10px}
+.yt-ml-pair .yt-ml-row{flex:none}
+.yt-ml-scenebox{flex:none; width:230px; padding:8px 10px; background:rgba(0,0,0,.24);
+  border:1px solid #2a3350; border-left:2px solid var(--muted); border-radius:6px}
+.yt-ml-scenebox .yt-ml-title{font-size:10px; margin:0 0 5px}
+.yt-ml-scenebox .yt-ml-row{font-size:10.5px; padding:4px 6px; width:auto}
+.yt-scwire{stroke:#5a6bff; stroke-width:1.6; fill:none; stroke-linejoin:round;
+  stroke-dasharray:5 4; opacity:.8; animation:ytflow 1s linear infinite}
