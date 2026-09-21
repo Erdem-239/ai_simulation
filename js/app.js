@@ -2052,6 +2052,96 @@
   window.__ttImport=function(d,s){ done.clear(); (d||[]).forEach(x=>done.add(x)); subs.clear(); (s||[]).forEach(x=>subs.add(x)); save(); render(); };
 })();
 
+/* ---- Yapı Taşları: "Türev Kuralları" mini ilerleme ağacı (#matSvg) ----
+   Ana Yol Haritası'yla AYNI GÖRSEL DİL (kart/kablo/kilit), TAMAMEN AYRI
+   bir sistem — kendi localStorage anahtarı, kendi 4 düğümü. Ana tree'ye
+   dokunmuyor, ondan hiçbir şey içe aktarmıyor (bilinçli kod tekrarı). */
+(function(){
+  const svg = document.getElementById('matSvg'); if(!svg) return;
+
+  const MNODES = [
+    {id:'t_turev',  pre:[]},
+    {id:'t_zincir', pre:['t_turev']},
+    {id:'t_ex',     pre:['t_zincir']},
+    {id:'t_bolum',  pre:['t_zincir']},
+  ];
+  const byId = {}; MNODES.forEach(n => byId[n.id] = n);
+
+  const MK = 'attn_mat_done_v1';
+  let done;
+  try{ done = new Set(JSON.parse(localStorage.getItem(MK) || '[]')); }catch(e){ done = new Set(); }
+  function save(){ try{ localStorage.setItem(MK, JSON.stringify([...done])); }catch(e){} }
+
+  function stateOf(n){
+    if(done.has(n.id)) return 'done';
+    if(n.pre.every(p => done.has(p))) return 'avail';
+    return 'locked';
+  }
+
+  let sel = null;
+
+  function render(){
+    const req = new Set();
+    if(sel){
+      const stack = [sel];
+      while(stack.length){
+        const id = stack.pop();
+        if(req.has(id)) continue;
+        req.add(id);
+        const nd = byId[id];
+        if(nd) nd.pre.forEach(p => stack.push(p));
+      }
+    }
+    svg.querySelectorAll('.mte').forEach(p => {
+      const targetId = p.dataset.pop === 'kt_34' ? 't_zincir'
+        : p.dataset.pop === 'kt_45' ? 't_ex'
+        : p.dataset.pop === 'kt_46' ? 't_bolum' : null;
+      const srcId = p.dataset.pop === 'kt_34' ? 't_turev' : 't_zincir';
+      p.classList.toggle('te-on', done.has(srcId));
+      p.classList.toggle('te-off', !done.has(srcId));
+      p.classList.toggle('te-req', !!(targetId && req.has(targetId)));
+    });
+    svg.querySelectorAll('.mtn').forEach(g => {
+      const n = byId[g.dataset.id]; if(!n) return;
+      const st = stateOf(n);
+      g.classList.remove('tn-done', 'tn-avail', 'tn-locked', 'sel');
+      g.classList.add('tn-' + st);
+      if(sel === n.id) g.classList.add('sel');
+      const sub = g.querySelector('.mtsub');
+      if(sub) sub.textContent = st === 'done' ? '✓ Tamamlandı' : st === 'avail' ? 'Sırada' : 'Önce öncekini bitir';
+    });
+    document.querySelectorAll('.mat-done-btn').forEach(btn => {
+      const id = btn.dataset.matId;
+      const isDone = done.has(id);
+      btn.classList.toggle('done', isDone);
+      btn.textContent = isDone ? '✓ Tamamladın' : '✓ Bu modülü tamamladım';
+    });
+  }
+
+  svg.querySelectorAll('.mtn').forEach(g => {
+    g.addEventListener('click', () => { sel = (sel === g.dataset.id) ? null : g.dataset.id; render(); });
+  });
+
+  document.querySelectorAll('#model-matematik .acc-module[data-mat-id]').forEach(mod => {
+    const matchId = mod.dataset.matId;
+    if(!byId[matchId]) return;   // guvenlik: bilmedigimiz bir id gelirse dokunma
+    const body = mod.querySelector(':scope > .acc-body');
+    if(!body || body.querySelector(':scope > .mat-done-btn')) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mat-done-btn';
+    btn.dataset.matId = matchId;
+    btn.textContent = '✓ Bu modülü tamamladım';
+    btn.addEventListener('click', () => {
+      if(done.has(matchId)) done.delete(matchId); else done.add(matchId);
+      save(); render();
+    });
+    body.insertBefore(btn, body.firstChild);
+  });
+
+  render();
+})();
+
 /* ---- sol panel: ilerleme omurgası — sidebar'ı teknoloji ağacının canlı yansımasına çevirir ----
    Her ders butonu, ağaçtaki karşılık gelen düğümün durumunu (araştırıldı/sıradaki/kilitli) ve
    alt başlık ilerlemesini gösterir. Tek doğruluk kaynağı ağacın kendi localStorage durumu;
