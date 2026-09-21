@@ -1193,3 +1193,82 @@ body.xt-full-lock{overflow:hidden}
   .kt-ikili{gap:14px}
   .kt-sutun .xf-box{min-width:130px; max-width:170px; font-size:12px}
 }
+
+/* ================= YAPI TASLARI: "ilerleme agaci" mini-yol-haritasi =================
+   Yol Haritasi'nin (#techSvg) GORSEL DILINI AYNEN kopyalar (kart/kablo/kilit
+   renkleri, snake kenarlik, akan kesikli kablo) ama TAMAMEN ayri bir id
+   (#matSvg) altinda — ana Yol Haritasi'na hicbir sekilde dokunulmuyor,
+   kurallar kasitli olarak TEKRAR yazildi (paylasilan/genellenmis DEGIL),
+   cunku ana navigasyonun CSS'ini riske atmamak, gorsel dili duplicate
+   etmekten daha onemli. */
+.mt-ipucu{font-size:11px; color:#9dc4ea; background:rgba(90,160,224,.09);
+  border:1px solid rgba(90,160,224,.25); border-radius:6px; padding:5px 9px;
+  margin:0 0 8px; line-height:1.55}
+.mt-svg-scroll{overflow-x:auto; padding:2px 0 4px}
+#matSvg{width:100%; max-width:560px; height:auto; display:block; margin:0 auto;
+  background:#c9b283; border-radius:10px; box-shadow:inset 0 0 40px rgba(70,45,10,.35)}
+#matSvg text{fill:#3a2a12; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
+#matSvg .tn rect.tn-card{fill:#f1e2ba; stroke-width:2.2; transition:.15s;
+  filter:drop-shadow(0 3px 3px rgba(40,25,5,.35)); cursor:help}
+#matSvg .tn-done rect.tn-card{stroke:#3f7d3f; fill:#e3ecd6}
+#matSvg .tn-done .tn-icon-bg{fill:url(#mtnGradDone)}
+#matSvg .tn-done .tsub{fill:#2f6b2f}
+#matSvg .tn-avail rect.tn-card{stroke:#b8860b; fill:#fbedc4; animation:mtpulse 1.6s ease-in-out infinite}
+#matSvg .tn-avail .tn-icon-bg{fill:url(#mtnGradAvail)}
+#matSvg .tn-avail .tsub{fill:#a06a10; font-weight:800}
+#matSvg .tn-locked rect.tn-card{stroke:#8a7550; fill:#b9a578; opacity:.85}
+#matSvg .tn-locked .tn-icon-bg{fill:url(#mtnGradLocked)}
+#matSvg .tn-locked text{fill:#6b5a3a}
+#matSvg .tn-locked .tn-emoji{opacity:.55}
+#matSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.3}
+#matSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
+#matSvg .tn.sel rect.tn-card{
+  stroke:#b8264a; stroke-width:2.2; stroke-linecap:round;
+  stroke-dasharray:18 82;
+  filter:drop-shadow(0 0 5px rgba(184,38,74,.85));
+  animation:mtSnake 2.4s linear infinite;
+}
+@keyframes mtSnake{ to{ stroke-dashoffset:-100 } }
+#matSvg .te-off{stroke:#9c8354; stroke-width:2.2; fill:none; stroke-linejoin:round;
+  stroke-dasharray:6 5; opacity:.8; animation:mtflow 1.6s linear infinite; cursor:help}
+#matSvg .te-on{stroke:#3f7d3f; stroke-width:2.8; fill:none; stroke-linejoin:round;
+  stroke-dasharray:7 5; opacity:.95; animation:mtflow .8s linear infinite; cursor:help}
+#matSvg .te-off.te-req, #matSvg .te-on.te-req{stroke-width:3.6; stroke-dasharray:7 5; opacity:1;
+  animation:mtRgbFlow 3s linear infinite, mtflow .8s linear infinite}
+@keyframes mtRgbFlow{
+  0%   {stroke:#ff3d5a} 14%{stroke:#ff9d3d} 28%{stroke:#f5e93d} 42%{stroke:#4dff6e}
+  57%  {stroke:#3dd9ff} 71%{stroke:#5a6bff} 85%{stroke:#c93dff} 100%{stroke:#ff3d5a}
+}
+@keyframes mtpulse{0%,100%{stroke-opacity:1}50%{stroke-opacity:.4}}
+@keyframes mtflow{to{stroke-dashoffset:-11}}
+@media(prefers-reduced-motion:reduce){
+  #matSvg .tn.sel rect.tn-card{animation:none; stroke-dasharray:none}
+  #matSvg .te-off, #matSvg .te-on{animation:none}
+  #matSvg .te-off.te-req, #matSvg .te-on.te-req{animation:none}
+}
+
+.mt-hedef{margin-top:8px; font-size:12px; color:#ccd5e8; background:rgba(224,106,106,.08);
+  border:1px solid rgba(224,106,106,.28); border-radius:7px; padding:6px 10px;
+  text-align:center; cursor:help}
+.mt-hedef b{color:#f0d8a0}
+.mt-hedef-not{color:var(--accent); cursor:help; margin-left:4px}
+
+/* "tamamladim" dugmesi — her modulun en ustunde */
+.mat-done-btn{display:inline-flex; align-items:center; gap:6px; font-size:11.5px;
+  font-weight:600; padding:5px 12px; border-radius:20px; cursor:pointer;
+  border:1px solid var(--line); background:var(--panel); color:var(--text);
+  margin:0 0 10px; transition:.15s}
+.mat-done-btn:hover{border-color:var(--accent)}
+.mat-done-btn.done{background:var(--green); color:#0b2a12; border-color:var(--green)}
+
+/* gecis kartlari — modul kartlari arasindaki koprü, farkli/notr bir gorunum */
+.gecis-karti{border:1px dashed rgba(149,162,194,.4); border-radius:8px; margin:10px 0}
+.gecis-karti > .acc-head{background:rgba(149,162,194,.06); padding:7px 11px;
+  font-size:12px; font-weight:600; color:#9dc4ea; cursor:pointer;
+  display:flex; align-items:center; gap:7px}
+.gecis-karti > .acc-head .ac{color:var(--muted)}
+.gecis-karti.open > .acc-head{color:var(--accent)}
+.gecis-karti.open > .acc-head .ac{transform:rotate(90deg); color:var(--accent)}
+.gecis-karti > .acc-body{display:none; padding:9px 13px 12px; font-size:12.5px;
+  color:#ccd5e8; line-height:1.65; border-top:1px dashed rgba(149,162,194,.25)}
+.gecis-karti.open > .acc-body{display:block}
