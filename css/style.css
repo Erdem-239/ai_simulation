@@ -1278,7 +1278,7 @@ body.xt-full-lock{overflow:hidden}
    kasitli kod tekrari. Tek fark: burada duguim = kategori (6 tane), altta
    Turev Kurallari'nin kendi ic-modul agaci (#matSvg) ayrica duruyor -- iki
    agac birbirinden bagimsiz, biri digerini temsil etmiyor. */
-#ytSvg{width:100%; max-width:680px; height:auto; display:block; margin:0 auto;
+#ytSvg{width:100%; min-width:810px; max-width:810px; height:auto; display:block; margin:0 auto;
   background:#c9b283; border-radius:10px; box-shadow:inset 0 0 40px rgba(70,45,10,.35)}
 #ytSvg text{fill:#3a2a12; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
 #ytSvg .tn rect.tn-card{fill:#f1e2ba; stroke-width:2.2; transition:.15s;
@@ -1328,10 +1328,15 @@ body.xt-full-lock{overflow:hidden}
 .yt-done-btn:hover{border-color:var(--accent)}
 .yt-done-btn.done{background:var(--green); color:#0b2a12; border-color:var(--green)}
 
-/* bir kategori dugumune tiklaninca altinda acilan mod-adi listesi --
-   basit, tiklanabilir satirlar (kilit/kart gorseli yok, salt navigasyon) */
-.yt-modlist{margin-top:10px; padding:10px 12px; background:#141b31;
-  border:1px solid #2a3350; border-radius:8px; display:none}
+/* bir kategori dugumune tiklaninca AYNI dugumun hemen altinda acilan
+   yuzen (floating) mod-adi listesi -- basit, tiklanabilir satirlar
+   (kilit/kart gorseli yok, salt navigasyon). .yt-tree-stage konumlandirma
+   baglami (position:relative), JS dugumun ekran konumuna gore #ytModList'i
+   tam altina yerlestirir. */
+.yt-tree-stage{position:relative}
+.yt-modlist{position:absolute; z-index:5; width:260px; max-width:calc(100% - 12px);
+  padding:10px 12px; background:#141b31; border:1px solid #2a3350;
+  border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.45); display:none}
 .yt-modlist.show{display:block}
 .yt-modlist .yt-ml-title{font-size:11.5px; font-weight:700; color:var(--accent);
   margin:0 0 6px}
