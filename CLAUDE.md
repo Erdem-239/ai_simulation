@@ -129,6 +129,55 @@ devam eder ve yeni özellik "hiç çalışmıyormuş" gibi görünür (bkz. git
 geçmişi — tam ekran düğmesinin ilk PR'ı tam da bu yüzden canlıda
 çalışmadı).
 
+## Zincir Kuralı modülü (Türev Kuralları → Modül 4) — sahne güncellemeleri
+
+Türev Kuralları kategorisinin içerik denetimi (kullanıcı "örnekleri
+incele, gereksiz/fazlalık var mı, rakamlar doğru mu" dedi) sonucunda
+Zincir Kuralı modülünün "Sahne 1" ve "Sahne 3" sahneleri sırayla
+güncellendi:
+
+1. **Sahne 1 — bisiklet vitesi → canlı f(g(x))=(2x+1)³ örneği (PR
+   #274)**: eski "Sahne 1 — Bisiklet vitesi" (`gears()` IIFE,
+   `js/lesson-turev.js`) ile "Sahne 2 — Döviz zinciri" aynı fikri
+   (zincirleme oranların çarpımı) iki farklı senaryoda tekrarlıyordu,
+   hiçbiri gerçek bir bileşke fonksiyonu türetmiyordu. Bisiklet sahnesi
+   kaldırıldı, yerine **teğet çizgisi canlı gösteren** bir sahne geldi
+   (`chainLive()` IIFE): `x` kaydırılabilir, iç halka `g(x)=2x+1`, dış
+   halka `f(u)=u³`, zincir kuralıyla `dy/dx = f′(g(x))·g′(x)` canlı
+   hesaplanıp sarı teğet çizgisi olarak çiziliyor. Bisiklet sahnesindeki
+   değerli "vanishing gradient / 0.25²⁰≈10⁻¹²" içgörüsü SİLİNMEDİ, daha
+   doğal bir yerine (Sahne 3 — Sigmoid'in callout'u) taşındı.
+2. **Sahne 1'e h→0 doğrulaması eklendi (PR #275)**: kullanıcının
+   "y=2x+1³'te direkt eğimi bulsak" sorusuna verilen yanıttan (x=1'de
+   sembolik türev = limit tanımı = 54, ikisi de eşleşiyor) esinlenerek,
+   aynı sahnenin İÇİNE (id'siz, `border-left:3px solid #5aa0e0` ile
+   ayrılan) bir doğrulama alt-bloğu eklendi: `h` kaydırılabilir, sekant
+   eğimi `(y(x+h)-y(x))/h` canlı hesaplanıp `h→0` yaklaşırken sembolik
+   türeve yakınsadığı gösteriliyor.
+3. **Sahne 3 (Sigmoid zinciri) — MathJax açıklama paneli (PR #276)**:
+   canvas üzerindeki düz-metin kutucuklar (z→u=e⁻ᶻ→s=1+u→σ=1/s) hangi
+   işlemin neyle çarpıldığını göstermekte yetersizdi ("karışık kutucuklar
+   birbirine girmiş, mathjax kullanmazsan anlaşılmıyor" — kullanıcı
+   geri bildirimi). Canvas'ın sağındaki boş alana gerçek MathJax'lı bir
+   panel eklendi: üç halkanın sembolik yerel türevleri + zincir kuralı
+   formülü + z kaydırıldıkça canlı güncellenen sayısal yerine-koyma
+   satırı (`#tzSigLive`, `js/lesson-turev.js`'teki `sig()` IIFE'sinde
+   `requestAnimationFrame` ile debounce'lanmış `MathJax.typesetClear`+
+   `typesetPromise` çağrısı — `js/app.js`'teki `typesetMath()`/`.dt-tree`
+   deseniyle aynı mantık).
+   - **Mobil ders**: canlı formülün render edilen SVG'si mobil (375px)
+     panel genişliğini aşıyor, site-geneli `mjx-container{overflow-x:
+     auto; max-width:100%}` kuralı (`css/style.css` satır 17) yüzünden
+     kesilmiş GÖRÜNMÜYOR, sadece görünmeyen/kolay-gözden-kaçan bir iç
+     mini-kaydırma-çubuğunun ardında saklanıyor — `scrollWidth`/
+     `clientWidth` gibi yüzeysel DOM kontrolleri bunu yakalamıyor, gerçek
+     `<svg>` `getBoundingClientRect()` genişliğini konteynerinkiyle
+     karşılaştırmak gerekiyor. Düzeltme iki parçalı: (a) tek satırlık
+     formül ikiye bölündü (çarpanlar / sonuç), (b) `#tzSigLive
+     mjx-container` için `@media(max-width:720px)` içine (satır ~570)
+     `font-size:75% !important` eklendi (`.xe-cards .eq mjx-container`
+     ile aynı scoped-font-size deseni, satır ~758).
+
 ## Yapı Taşları — ilerleme ağaçları (mini-yol-haritaları)
 
 Yapı Taşları (`#model-matematik`) kendi `.acc-category`/`.acc-module`
