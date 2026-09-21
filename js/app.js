@@ -2211,34 +2211,25 @@
     ],
   };
 
-  // modul -> o modulun ✏️ Alıştırmalar sorulari (bir dalin dali — kullanici
-  // isteği: "herşeyin temsilini göstermek istiyorum"). Bir mod listesi
-  // satirina tiklaninca (sorusu varsa) hemen altina, ayni gomulu/reflow
-  // mantigiyla acilir; bir soruya tiklaninca asagidaki gercek soru
-  // acordion'una scroll+ac (openQuestion). Modul 14'in sorusu yok — ona
-  // tiklamak dogrudan openModule'e duser.
-  const MOD_QUESTIONS = {
-    "ytmod-1": [{n:1, id:"ytq-1-1", label:"Soru 1: \\(e^{-0}=?\\)"}, {n:2, id:"ytq-1-2", label:"Soru 2: \\(\\dfrac{e^{3}}{e^{1}}=?\\)"}, {n:3, id:"ytq-1-3", label:"Soru 3: \\(z=-1\\) için \\(e^{-z}=?\\)"}],
-    "ytmod-2": [{n:1, id:"ytq-2-1", label:"Soru 1: \\(\\log_{3}(9)=?\\)"}, {n:2, id:"ytq-2-2", label:"Soru 2: \\(\\ln(e^{5})=?\\)"}, {n:3, id:"ytq-2-3", label:"Soru 3: \\(\\log(20)\\)'yi \\(\\log(2)\\) ve \\(\\log(10)\\) cinsinden yaz."}, {n:4, id:"ytq-2-4", label:"Soru 4: Bir dil modeli neden kelime olasılıklarını çarpmak yerine loglarını toplar?"}],
-    "ytmod-3": [{n:1, id:"ytq-3-1", label:"Soru 1: \\(\\dfrac{d}{dx}x^{3}=?\\)"}, {n:2, id:"ytq-3-2", label:"Soru 2: \\(\\dfrac{d}{dx}(4x)=?\\)"}, {n:3, id:"ytq-3-3", label:"Soru 3: \\(\\dfrac{d}{dx}(x^{2}-2x+1)=?\\)"}],
-    "ytmod-4": [{n:1, id:"ytq-4-1", label:"Soru 1: \\(\\dfrac{d}{dx}(5x)^{2}=?\\)"}, {n:2, id:"ytq-4-2", label:"Soru 2: \\(\\dfrac{d}{dx}e^{3x}=?\\)"}, {n:3, id:"ytq-4-3", label:"Soru 3: \\(\\dfrac{d}{dz}\\big(1+e^{-z}\\big)=?\\)"}],
-    "ytmod-5": [{n:1, id:"ytq-5-1", label:"Soru 1: \\((e^{5x})'=?\\)"}, {n:2, id:"ytq-5-2", label:"Soru 2: \\((e^{-2z})'=?\\)"}],
-    "ytmod-6": [{n:1, id:"ytq-6-1", label:"Soru 1: \\(\\dfrac{d}{dx}\\dfrac{1}{1+x}=?\\)"}, {n:2, id:"ytq-6-2", label:"Soru 2: \\(\\sigma'(0)=?\\)"}],
-    "ytmod-7": [{n:1, id:"ytq-7-1", label:"Soru 1: \\(\\tanh'(z)\\) en büyük değerini nerede alır, kaçtır?"}, {n:2, id:"ytq-7-2", label:"Soru 2: \\(z\\to+\\infty\\) iken \\(\\tanh(z)\\) limiti?"}],
-    "ytmod-8": [{n:1, id:"ytq-8-1", label:"Soru 1: \\(\\mathrm{ReLU}(-0.3)=?\\)"}, {n:2, id:"ytq-8-2", label:"Soru 2: Leaky ReLU'nun \\(z<0\\)'daki türevi neden 0 değil de 0.01?"}],
-    "ytmod-9": [{n:1, id:"ytq-9-1", label:"Soru 1: \\(\\dfrac{\\partial}{\\partial x}\\big(xy+y^{2}\\big)=?\\)"}, {n:2, id:"ytq-9-2", label:"Soru 2: Gradyan nedir? (tek cümle)"}],
-    "ytmod-10": [{n:1, id:"ytq-10-1", label:"Soru 1: [2, 4, 6, 8] verisinin ortalaması kaçtır?"}, {n:2, id:"ytq-10-2", label:"Soru 2: Aynı veri [2, 4, 6, 8] için varyans kaçtır?"}, {n:3, id:"ytq-10-3", label:"Soru 3: Varyansın birimi verinin biriminin karesiyken, standart sapmanın birimi neden veriyle aynı?"}],
-    "ytmod-11": [{n:1, id:"ytq-11-1", label:"Soru 1: μ=50, σ=10 olan bir dağılımda x=65'in z-skoru kaçtır?"}, {n:2, id:"ytq-11-2", label:"Soru 2: 68-95-99.7 kuralına göre, ortalamanın ±2σ içindeki veri yüzdesi kaçtır?"}],
-    "ytmod-12": [{n:1, id:"ytq-12-1", label:"Soru 1: Doğru sınıfa model p=0.5 olasılık vermiş. Çapraz entropi kaybı kaçtır?"}, {n:2, id:"ytq-12-2", label:"Soru 2: Model A doğru sınıfa p=0.9, Model B p=0.1 veriyor. Hangisinin kaybı daha yüksek, neden?"}, {n:3, id:"ytq-12-3", label:"Soru 3: Adil bir yazı-tura (p=0.5, p=0.5) atışının entropisi kaç bittir?"}],
-    "ytmod-13": [{n:1, id:"ytq-13-1", label:"Soru 1: \\(\\sin(90°)+\\cos(180°)=?\\)"}, {n:2, id:"ytq-13-2", label:"Soru 2: 230V/50Hz'lik AC hatta t=15ms anındaki ani gerilim kaçtır? (V_tepe≈325V)"}, {n:3, id:"ytq-13-3", label:"Soru 3: \\(\\sin^2(37°)+\\cos^2(37°)=?\\)"}],
+  // modul -> o modulun SAHNE/ornek bolumleri (bir dalin dali — kullanici
+  // isteği: "herşeyin temsilini göstermek istiyorum"). İlk denemede
+  // ✏️ Alıştırmalar soruları kullanılmıştı ama kullanıcı bunun yerine
+  // modül içindeki .pts/<h3> sahne başlıklarını istedi (Sahne 1 - köprüden
+  // top, "h→0" tanımı, Sahne 3 - en ucuz köprü, vb). Bir mod listesi
+  // satirina tiklaninca (sahnesi varsa) sagina — ayni AGAC/KABLO gorsel
+  // dilinde bir dal gibi — acilir; bir sahneye tiklaninca asagidaki gercek
+  // .pts bolumune scroll+ac (openScene). Modul 5-9 ve 14'un ayri sahnesi
+  // yok — onlara tiklamak dogrudan openModule'e duser.
+  const MOD_SCENES = {
+    "ytmod-1": [{n:1, id:"yts-1-1", label:"🔬 Kendin türet: kahveyi parçalara böl, e kendiliğinden çıksın"}, {n:2, id:"yts-1-2", label:"🎲 En çarpıcı örnek: %37 kuralı — e sana ne zaman \"dur\" diyeceğini söylüyor"}, {n:3, id:"yts-1-3", label:"📈 e'yi özel yapan şey: eğrinin eğimi, eğrinin kendisine eşit"}],
+    "ytmod-2": [{n:1, id:"yts-2-1", label:"📳 En çarpıcı örnek: \"7.8 ile 6.8 arası sadece 1 fark\" yanılgısı"}, {n:2, id:"yts-2-2", label:"🎯 Neden −ln(p)? — kayıp fonksiyonunun içindeki logaritma"}],
+    "ytmod-3": [{n:1, id:"yts-3-1", label:"🎯 Bir cümleyle: türev = o anki eğim = hızın kendisi"}, {n:2, id:"yts-3-2", label:"🌉 Sahne 1 — Köprüden bırakılan top"}, {n:3, id:"yts-3-3", label:"🍪 Sahne 2 — Kurabiye tezgahı"}, {n:4, id:"yts-3-4", label:"🔬 Türevin resmi tanımı — \"h → 0\" ne demek, elle küçült"}, {n:5, id:"yts-3-5", label:"🏗️ Sahne 3 — En ucuz köprü: türev = 0 nerede?"}, {n:6, id:"yts-3-6", label:"🧰 Pratik hesap kuralları (formal tanımdan çıkar; her seferinde limit almazsın)"}],
+    "ytmod-4": [{n:1, id:"yts-4-1", label:"🎯 Bir cümleyle: zincir kuralı = yol üstündeki oranları çarp"}, {n:2, id:"yts-4-2", label:"🚴 Sahne 1 — Bisiklet vitesi: pedal → dişli → tekerlek"}, {n:3, id:"yts-4-3", label:"💱 Sahne 2 — Döviz zinciri: TL → EUR → USD → Altın"}, {n:4, id:"yts-4-4", label:"🌡️ Sahne 3 — Sigmoid zinciri: z → e⁻ᶻ → 1+e⁻ᶻ → 1/(1+e⁻ᶻ) = σ"}, {n:5, id:"yts-4-5", label:"📝 Yazıya dökmek — kalıp örnekler"}],
+    "ytmod-10": [{n:1, id:"yts-10-1", label:"🎯 En çarpıcı örnek: neden fark kareleniyor, mutlak değer değil?"}],
+    "ytmod-11": [{n:1, id:"yts-11-1", label:"📐 En çarpıcı örnek: 68-95-99.7 kuralı"}],
+    "ytmod-12": [{n:1, id:"yts-12-1", label:"🔁 En çarpıcı örnek: bu formülü zaten görmüştün"}],
+    "ytmod-13": [{n:1, id:"yts-13-1", label:"⚡ En çarpıcı örnek: 45° neden RMS'in sırrı"}, {n:2, id:"yts-13-2", label:"🔬 Birim çember + dalga — açıyı kendin döndür"}],
   };
-
-  function typeset(el){
-    if(window.MathJax && MathJax.typesetPromise){
-      try{ MathJax.typesetClear && MathJax.typesetClear([el]); }catch(e){}
-      MathJax.typesetPromise([el]).catch(()=>{});
-    }
-  }
 
   function openModule(modId){
     const mod = document.getElementById(modId); if(!mod) return;
@@ -2250,15 +2241,14 @@
     }));
   }
 
-  function openQuestion(qid){
-    const q = document.getElementById(qid); if(!q) return;
-    const mod = q.closest('.acc-module');
-    const cat = q.closest('.acc-category');
+  function openScene(sid){
+    const sc = document.getElementById(sid); if(!sc) return;
+    const mod = sc.closest('.acc-module');
+    const cat = sc.closest('.acc-category');
     if(cat) cat.classList.add('open');
     if(mod) mod.classList.add('open');
-    q.classList.add('open');
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      q.scrollIntoView({behavior:'smooth', block:'start'});
+      sc.scrollIntoView({behavior:'smooth', block:'start'});
     }));
   }
 
@@ -2275,21 +2265,23 @@
     infoPanel.innerHTML = src ? src.innerHTML : PLACEHOLDER_HTML;
   }
 
-  // hangi MODUL'lerin kendi soru listesi acik (birden fazla olabilir) —
+  // hangi MODUL'lerin kendi sahne dali acik (birden fazla olabilir) —
   // openSet'ten (kategori seviyesi) AYRI bir seviye, ayni "dalin dali"
   // mantigiyla.
-  let openQSet = new Set();
+  let openScSet = new Set();
 
   // her ACIK kategorinin kendi kartinin hemen ALTINA (ayni sutun icinde,
   // .yt-ml-inline sibling'i olarak) mod listesini ekler — DOM akisinda
   // gercek reflow. Birden fazla kategori ayni anda acik olabilir
-  // ("hepsini goster" butonu). Bir modulun sorulari varsa (MOD_QUESTIONS)
-  // ve openQSet'te acik ise, o modul satirinin hemen altina BIR DAL DAHA
-  // (soru listesi, .yt-ml-sub) ekleniyor — ayni gomulu/reflow mantigi bir
-  // seviye daha derin.
+  // ("hepsini goster" butonu). Bir modulun sahnesi varsa (MOD_SCENES) ve
+  // openScSet'te acik ise, o modul satiri bir ".yt-ml-pair" flex
+  // sarmalayicisina alinip YANINA (altina DEGIL — kullanici: "altına
+  // değil sağına dal gibi") bir sahne kutusu (.yt-ml-scenebox) ekleniyor;
+  // .yt-col/.yt-ml-inline genislikleri max-content oldugu icin bu buyume
+  // GERCEK flex reflow ile komsu sutunlari saga iter, hicbir seyin
+  // ustune binmez (ayni #ytInfoPanel'de ogrenilen ders).
   function renderModList(){
     cols.querySelectorAll('.yt-ml-inline').forEach(el => el.remove());
-    const mathEls = [];
     openSet.forEach(id => {
       const mods = CAT_MODULES[id]; if(!mods) return;
       const card = cardOf(id); if(!card) return;
@@ -2300,26 +2292,29 @@
       card.insertAdjacentElement('afterend', box);
       box.querySelectorAll('.yt-ml-row').forEach(row => {
         const modId = row.dataset.modId;
-        const qs = MOD_QUESTIONS[modId];
+        const scenes = MOD_SCENES[modId];
         row.addEventListener('click', e => {
           e.stopPropagation();
-          if(!qs || !qs.length){ openModule(modId); return; }
-          if(openQSet.has(modId)) openQSet.delete(modId); else openQSet.add(modId);
+          if(!scenes || !scenes.length){ openModule(modId); return; }
+          if(openScSet.has(modId)) openScSet.delete(modId); else openScSet.add(modId);
           render();
         });
-        if(qs && qs.length && openQSet.has(modId)){
-          const subBox = document.createElement('div');
-          subBox.className = 'yt-ml-sub';
-          subBox.innerHTML = qs.map(q => '<div class="yt-ml-row yt-ml-q" data-q-id="' + q.id + '"><span class="yt-ml-n">' + q.n + '.</span><span>' + q.label + '</span></div>').join('');
-          row.insertAdjacentElement('afterend', subBox);
-          subBox.querySelectorAll('.yt-ml-q').forEach(qrow => {
-            qrow.addEventListener('click', e => { e.stopPropagation(); openQuestion(qrow.dataset.qId); });
+        if(scenes && scenes.length && openScSet.has(modId)){
+          const pair = document.createElement('div');
+          pair.className = 'yt-ml-pair';
+          row.replaceWith(pair);
+          pair.appendChild(row);
+          const sceneBox = document.createElement('div');
+          sceneBox.className = 'yt-ml-scenebox';
+          sceneBox.innerHTML = '<div class="yt-ml-title">🎬 Sahneler</div>'
+            + scenes.map(sc => '<div class="yt-ml-row yt-ml-scene" data-scene-id="' + sc.id + '">' + sc.label + '</div>').join('');
+          pair.appendChild(sceneBox);
+          sceneBox.querySelectorAll('.yt-ml-scene').forEach(srow => {
+            srow.addEventListener('click', e => { e.stopPropagation(); openScene(srow.dataset.sceneId); });
           });
-          mathEls.push(subBox);
         }
       });
     });
-    mathEls.forEach(typeset);
   }
 
   // kablolari (.yt-cables) kartlarin O ANKI GERCEK ekran konumuna gore
@@ -2328,17 +2323,32 @@
   function drawCables(){
     if(!cablesSvg || !inner) return;
     const innerRect = inner.getBoundingClientRect();
-    cablesSvg.innerHTML = EDGES.map(e => {
+    function bend(x1, y1, x2, y2){
+      const mx = (x1 + x2) / 2;
+      return y1 === y2 ? ('M' + x1 + ' ' + y1 + ' H' + x2)
+        : ('M' + x1 + ' ' + y1 + ' H' + mx + ' V' + y2 + ' H' + x2);
+    }
+    const mainPaths = EDGES.map(e => {
       const fromCard = cardOf(e.from), toCard = cardOf(e.to);
       if(!fromCard || !toCard) return '';
       const fr = fromCard.getBoundingClientRect(), tr = toCard.getBoundingClientRect();
-      const x1 = fr.right - innerRect.left, y1 = fr.top - innerRect.top + fr.height / 2;
-      const x2 = tr.left - innerRect.left, y2 = tr.top - innerRect.top + tr.height / 2;
-      const mx = (x1 + x2) / 2;
-      const d = y1 === y2 ? ('M' + x1 + ' ' + y1 + ' H' + x2)
-        : ('M' + x1 + ' ' + y1 + ' H' + mx + ' V' + y2 + ' H' + x2);
+      const d = bend(fr.right - innerRect.left, fr.top - innerRect.top + fr.height / 2,
+                      tr.left - innerRect.left, tr.top - innerRect.top + tr.height / 2);
       return '<path class="te-off" data-info="' + e.pop + '" tabindex="0" role="button" aria-label="neden gerekli" d="' + d + '"/>';
     }).join('');
+    // acik sahne dallarinin (.yt-ml-pair icindeki satir -> sahne kutusu)
+    // baglanti kablolari -- kilit/durum tasimiyorlar, sadece gorsel
+    // "dal" baglantisi (.yt-scwire).
+    const scenePaths = Array.from(cols.querySelectorAll('.yt-ml-pair')).map(pair => {
+      const row = pair.querySelector(':scope > .yt-ml-row');
+      const scBox = pair.querySelector(':scope > .yt-ml-scenebox');
+      if(!row || !scBox) return '';
+      const rr = row.getBoundingClientRect(), sr = scBox.getBoundingClientRect();
+      const d = bend(rr.right - innerRect.left, rr.top - innerRect.top + rr.height / 2,
+                      sr.left - innerRect.left, sr.top - innerRect.top + sr.height / 2);
+      return '<path class="yt-scwire" d="' + d + '"/>';
+    }).join('');
+    cablesSvg.innerHTML = mainPaths + scenePaths;
     // durum siniflarini (te-on/te-off/te-req) yeniden uygula (innerHTML sildi)
     applyCableStates();
   }
@@ -2434,11 +2444,11 @@
   const hideAllBtn = document.getElementById('ytHideAll');
   if(showAllBtn) showAllBtn.addEventListener('click', () => {
     openSet = new Set(YNODES.map(n => n.id));
-    openQSet = new Set(Object.keys(MOD_QUESTIONS));
+    openScSet = new Set(Object.keys(MOD_SCENES));
     highlightId = null; render();
   });
   if(hideAllBtn) hideAllBtn.addEventListener('click', () => {
-    openSet.clear(); openQSet.clear(); highlightId = null; render();
+    openSet.clear(); openScSet.clear(); highlightId = null; render();
   });
 
   document.querySelectorAll('#model-matematik .acc-category[data-yt-id]').forEach(cat => {
