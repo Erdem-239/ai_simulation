@@ -1282,13 +1282,31 @@ body.xt-full-lock{overflow:hidden}
    -- floating/absolute degil, "gomulu", modullerle ayni (siteninkiyle
    ayni) fontu kullaniyor. #matSvg/#techSvg'ye hala dokunulmuyor, kasitli
    ayri sistem. */
-.yt-tree-stage{overflow-x:auto; margin-top:4px; border-radius:10px}
-.yt-tree-inner{position:relative; min-width:800px; background:#c9b283;
+/* "hepsini goster/gizle" araç çubuğu -- her kategorinin mod listesini
+   tek tek tıklamadan topluca açıp kapatmak için (kullanıcı isteği). */
+.yt-toolbar{display:flex; gap:8px; margin:8px 0 0}
+.yt-bulk-btn{font-size:11.5px; font-weight:600; padding:5px 12px; border-radius:20px;
+  cursor:pointer; border:1px solid var(--line); background:var(--panel); color:var(--text);
+  transition:.15s}
+.yt-bulk-btn:hover{border-color:var(--accent); color:#fff}
+
+.yt-tree-stage{overflow-x:auto; margin-top:10px; border-radius:10px}
+.yt-tree-inner{position:relative; display:flex; align-items:flex-start; gap:28px;
+  min-width:fit-content; background:#c9b283;
   border-radius:10px; box-shadow:inset 0 0 40px rgba(70,45,10,.35);
   padding:28px 36px}
 .yt-cables{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible}
-.yt-cols{display:flex; gap:90px; align-items:flex-start; position:relative; z-index:1}
+.yt-cols{display:flex; gap:90px; align-items:flex-start; position:relative; z-index:1; flex:none}
 .yt-col{display:flex; flex-direction:column; gap:22px; width:190px; flex:none}
+/* sag ustteki bilgi paneli -- kart/kablo hover'inin aciklamasi burada
+   gorunur (komsu karti kapatan yuzen tooltip yerine). GERCEK bir flex
+   sutunu (position:absolute DEGIL) -- boylece dar ekranda/pencerede asla
+   sutun 3'un uzerine binmez, sadece .yt-tree-stage'in yatay kaydirmasina
+   katilir. .xt-pop'un tipografisini (xp-bas/xp-sat/vb) aynen kullaniyor,
+   sadece konumu fixed'ten normal akisa ceviriyor. */
+.yt-info-panel{position:relative; z-index:1; flex:none; width:270px; min-height:110px;
+  max-height:none; box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.yt-info-placeholder{color:var(--muted); font-style:italic}
 /* sutun 2/3'u sutun 1'in (3 kart) COKMUS haliyle gorsel olarak ortalayan
    sabit bosluk -- bilincli olarak DINAMIK degil (align-items:center
    KULLANILMIYOR): boylece bir sutunda mod listesi acilip o sutun
@@ -1317,6 +1335,7 @@ body.xt-full-lock{overflow:hidden}
 .yt-card.tn-locked .yt-card-icon{background:radial-gradient(circle at 35% 30%, #c9b98f, #8a7550)}
 .yt-card.tn-locked .yt-card-title, .yt-card.tn-locked .yt-card-sub{color:#6b5a3a}
 .yt-card.sel{border-color:#b8264a; box-shadow:0 0 8px rgba(184,38,74,.75)}
+.yt-card:hover{filter:brightness(1.05)}
 @keyframes ytCardPulse{0%,100%{box-shadow:0 3px 3px rgba(40,25,5,.35)}
   50%{box-shadow:0 3px 3px rgba(40,25,5,.35), 0 0 10px rgba(184,134,11,.65)}}
 
@@ -1326,6 +1345,7 @@ body.xt-full-lock{overflow:hidden}
   stroke-dasharray:7 5; opacity:.95; animation:ytflow .8s linear infinite; pointer-events:stroke; cursor:help}
 .yt-cables .te-off.te-req, .yt-cables .te-on.te-req{stroke-width:3.6; stroke-dasharray:7 5; opacity:1;
   animation:ytRgbFlow 3s linear infinite, ytflow .8s linear infinite}
+.yt-cables path:hover{opacity:1; filter:brightness(1.25)}
 @keyframes ytRgbFlow{
   0%   {stroke:#ff3d5a} 14%{stroke:#ff9d3d} 28%{stroke:#f5e93d} 42%{stroke:#4dff6e}
   57%  {stroke:#3dd9ff} 71%{stroke:#5a6bff} 85%{stroke:#c93dff} 100%{stroke:#ff3d5a}
