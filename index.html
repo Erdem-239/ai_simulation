@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609201324"></script>
-<link rel="stylesheet" href="css/style.css?v=202609201324">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609210855"></script>
+<link rel="stylesheet" href="css/style.css?v=202609210855">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-20 13:24 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 08:55 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -3946,6 +3946,26 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
   </div>
   </div>
 
+<div id="ktTreeWrap" class="xt-wrap acc open">
+  <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — bu dört kuralın önkoşul haritası<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+  <div class="acc-body">
+  <p class="xt-sub">Bu dört kural aşağıda <b>tek tek</b> geliyor ama hepsi birbirinin üstüne oturuyor — biri diğerini <b>gerektiriyor</b>. Bir kutuya gelince ne öğrettiği, bir oka gelince <b>neden gerekli olduğu</b> açılıyor. En altta ikisi <b>aynı yere</b> varıyor — tesadüf değil.</p>
+  <div class="kt-sutun">
+<div class="xf-box kt-n1" data-pop="kt_turev" tabindex="0" role="button">3) Türev<span class="xf-cap">anlık değişim hızı</span></div><div class="kt-ok"><span class="kt-cizgi"></span><span class="xf-chip" data-pop="kt_34" tabindex="0" role="button" aria-label="neden gerekli">gerektirir</span><span class="kt-cizgi"></span></div><div class="xf-box kt-n2" data-pop="kt_zincir" tabindex="0" role="button">4) Zincir Kuralı ⭐<span class="xf-cap">iç içe fonksiyonlar</span></div><div class="kt-ikili"><div class="kt-kol"><div class="kt-ok"><span class="kt-cizgi"></span><span class="xf-chip" data-pop="kt_45" tabindex="0" role="button" aria-label="neden gerekli">gerektirir</span><span class="kt-cizgi"></span></div><div class="xf-box kt-n3" data-pop="kt_ex" tabindex="0" role="button">5) eˣ’in Türevi<span class="xf-cap">e^(g(x))</span></div></div><div class="kt-kol"><div class="kt-ok"><span class="kt-cizgi"></span><span class="xf-chip" data-pop="kt_46" tabindex="0" role="button" aria-label="neden gerekli">gerektirir</span><span class="kt-cizgi"></span></div><div class="xf-box kt-n4" data-pop="kt_bolum" tabindex="0" role="button">6) Bölüm Kuralı<span class="xf-cap">u/v türevi</span></div></div></div><div class="kt-ok"><span class="kt-cizgi"></span><span class="xf-chip" data-pop="kt_bulusma" tabindex="0" role="button" aria-label="neden gerekli">iki yoldan da buraya varılır</span><span class="kt-cizgi"></span></div><div class="xf-box kt-n5" data-pop="kt_sigmoid" tabindex="0" role="button">Sigmoid’in Türevi<span class="xf-cap">σ’=σ(1−σ) — XOR, NN, RNN’de hep bu</span></div>
+  </div>
+  </div>
+</div>
+
+
+<div class="xt-src" id="xtsrc-kt_turev"><div class="xp-bas">3) Türev — bu haritanın kökü</div><div class="xp-sat">Bir eğrinin herhangi bir noktasındaki <b>anlık değişim hızı</b>. Kilometre saatinin <i>ortalama</i> değil <i>o anki</i> hızı göstermesi gibi.</div><div class="xp-sat">Üç gerçek sahne ile öğretiliyor: köprüden bırakılan top, kurabiye tezgahı, en ucuz köprü.</div><div class="xp-sat"><b>Neden kök?</b> Diğer üç kural (zincir, eˣ, bölüm) hepsi "türev nedir" bilgisinin üstüne inşa ediliyor — hiçbiri sıfırdan başlamıyor.</div></div>
+<div class="xt-src" id="xtsrc-kt_zincir"><div class="xp-bas">4) Zincir Kuralı — bu haritanın omurgası</div><div class="eq">\( \big(f(g(x))\big)'=f'(g(x))\cdot g'(x) \)</div><div class="xp-sat">İç içe fonksiyonlarda: <b>dıştakinin türevi × içtekinin türevi</b>. Pedal→dişli→tekerlek, TL→EUR→USD, ağırlık→z→aktivasyon→kayıp — hepsi aynı kalıp.</div><div class="xp-sat"><b>Neden aşağıdaki ikisi de buna dayanıyor?</b> Hem \(e^{g(x)}\) hem sigmoid, birer <b>bileşke fonksiyon</b> (fonksiyon içinde fonksiyon) — zincir kuralı olmadan ikisi de çözülemez.</div></div>
+<div class="xt-src" id="xtsrc-kt_ex"><div class="xp-bas">5) eˣ’in Türevi</div><div class="eq">\( (e^{x})'=e^{x} \) &nbsp;·&nbsp; \( \big(e^{g(x)}\big)'=g'(x)\,e^{g(x)} \)</div><div class="xp-sat">\(e^x\) kendi türevidir — her noktada değeri = eğimi. Zincir kuralıyla birleşince: "e üzeri bir şey"in türevi = <b>o şeyin türevi × kendisi</b>.</div></div>
+<div class="xt-src" id="xtsrc-kt_bolum"><div class="xp-bas">6) Bölüm Kuralı</div><div class="eq">\( \left(\dfrac{u}{v}\right)'=\dfrac{u'v-u\,v'}{v^{2}} \)</div><div class="xp-sat">Kesirli fonksiyonların türevi. Sigmoid \(\sigma(z)=\dfrac{1}{1+e^{-z}}\) tam bir bölüm — ama payı 1 olduğu için <b>zincir kuralıyla da</b> (üs −1 gibi) çözülebilir.</div></div>
+<div class="xt-src" id="xtsrc-kt_sigmoid"><div class="xp-bas">Sigmoid’in Türevi — haritanın hedefi</div><div class="eq">\( \sigma'(z)=\sigma(z)\big(1-\sigma(z)\big) \)</div><div class="xp-sat">Bu satır XOR’un, Neural Network’ün, RNN’in geri yayılımında <b>sürekli</b> çıkıyor — her sigmoid nöronun gradyanı bu formülden geçiyor.</div><div class="xp-sat">Elde ettiğin en kısa, en temiz türev sonuçlarından biri — z’ye hiç geri dönmeden, elindeki σ değeriyle hesaplanıyor.</div></div>
+<div class="xt-src" id="xtsrc-kt_34"><div class="xp-bas">Zincir kuralı neden türev gerektiriyor?</div><div class="xp-sat">Zincir kuralı \(f'(g(x))\cdot g'(x)\) diyor — yani <b>ikisinin de kendi türevini</b> önce bilmen lazım. Zincir kuralı türevi <i>değiştirmiyor</i>, birden fazla türevi <b>birbirine bağlıyor</b>.</div></div>
+<div class="xt-src" id="xtsrc-kt_45"><div class="xp-bas">eˣ neden zincir kuralı gerektiriyor?</div><div class="xp-sat">\(e^{g(x)}\) tek başına bir sayı değil, <b>bileşke bir fonksiyon</b>: önce \(g(x)\) hesaplanıyor, sonra \(e\) üzerine konuyor.</div><div class="xp-sat">Sadece \((e^x)'=e^x\) bilmek yetmez — içteki \(g(x)\) değiştikçe sonucun nasıl değiştiğini de (yani \(g'(x)\)) hesaba katman lazım. Bunu birleştiren zincir kuralı.</div></div>
+<div class="xt-src" id="xtsrc-kt_46"><div class="xp-bas">Bölüm kuralı neden zincire de bağlı?</div><div class="xp-sat">Sigmoid’i <b>iki farklı yoldan</b> çözebilirsin: bölüm kuralıyla (doğrudan) ya da zincir kuralıyla (payı 1 olduğu için \((1+e^{-z})^{-1}\) gibi üs alıp).</div><div class="xp-sat">Bölüm kuralı kendi başına bağımsız bir araç — ama sigmoid özelinde zincirle de aynı kapıya çıkıyor, bu yüzden ok buraya da çiziliyor.</div></div>
+<div class="xt-src" id="xtsrc-kt_bulusma"><div class="xp-bas">İki yoldan aynı yere — tesadüf mü?</div><div class="xp-sat"><b>eˣ + zincir</b> yoluyla da, <b>bölüm kuralı</b> yoluyla da aynı sonuca varıyorsun: \(\sigma'=\sigma(1-\sigma)\).</div><div class="xp-sat">Tesadüf değil — ikisi de aynı fonksiyonun türevini alıyor, sadece <b>farklı araçla</b>. Matematikte bu "çapraz kontrol" gibi çalışır: iki bağımsız yol aynı yere varıyorsa, sonuca güvenebilirsin.</div></div>
   <div class="acc acc-category" style="--cat-color:#d4a94a; --card-i:1">
   <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 📐 Türev Kuralları</div><div class="cat-desc">Değişim hızını ölçmek: kuvvet, çarpım, bölüm ve zincir kuralı — elle türev almanın araç kutusu.</div></div>
   <div class="acc-body">
@@ -5511,15 +5531,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609201324"></script>
-<script src="js/lesson-turev.js?v=202609201324"></script>
-<script src="js/lesson-xor.js?v=202609201324"></script>
-<script src="js/lesson-xor-arch.js?v=202609201324"></script>
-<script src="js/lesson-xor-epoch.js?v=202609201324"></script>
-<script src="js/lesson-nn.js?v=202609201324"></script>
-<script src="js/lesson-trig.js?v=202609201324"></script>
+<script src="js/lesson-linreg.js?v=202609210855"></script>
+<script src="js/lesson-turev.js?v=202609210855"></script>
+<script src="js/lesson-xor.js?v=202609210855"></script>
+<script src="js/lesson-xor-arch.js?v=202609210855"></script>
+<script src="js/lesson-xor-epoch.js?v=202609210855"></script>
+<script src="js/lesson-nn.js?v=202609210855"></script>
+<script src="js/lesson-trig.js?v=202609210855"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609201324"></script>
-<script src="js/app.js?v=202609201324"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609210855"></script>
+<script src="js/app.js?v=202609210855"></script>
 </body>
 </html>
