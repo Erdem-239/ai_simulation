@@ -2167,6 +2167,65 @@
   ];
   const edgeByPop = {}; EDGES.forEach(e => edgeByPop[e.pop] = e);
 
+  // kategori -> modul listesi (en temel ders seviyesine kadar) — bir
+  // kategori dugumune tiklaninca #ytModList bunu gosterir, satira
+  // tiklaninca asagidaki gercek modul acordion'una scroll+ac.
+  const CAT_LABEL = {
+    t_sayi:'Sayı Sistemleri', t_turev:'Türev Kuralları', t_akt:'Aktivasyon Fonksiyonlarının Türevleri',
+    t_ileri:'İleri Konular', t_ist:'İstatistik', t_trig:'Trigonometri',
+  };
+  const CAT_MODULES = {
+    t_sayi: [
+      {n:1, id:'ytmod-1', label:'Üstel Fonksiyon ve e Sayısı'},
+      {n:2, id:'ytmod-2', label:'Logaritma ve ln'},
+    ],
+    t_turev: [
+      {n:3, id:'ytmod-3', label:'Türev — anlık değişim hızı'},
+      {n:4, id:'ytmod-4', label:'Zincir Kuralı ⭐'},
+      {n:5, id:'ytmod-5', label:"eˣ'in Türevi"},
+      {n:6, id:'ytmod-6', label:"Bölüm Kuralı → Sigmoid'in Türevi"},
+    ],
+    t_akt: [
+      {n:7, id:'ytmod-7', label:'tanh ve Türevi'},
+      {n:8, id:'ytmod-8', label:'ReLU ve Leaky ReLU'},
+    ],
+    t_ileri: [
+      {n:9, id:'ytmod-9', label:'Kısmi Türev, Gradyan, Softmax'},
+    ],
+    t_ist: [
+      {n:10, id:'ytmod-10', label:'Ortalama, Varyans, Standart Sapma'},
+      {n:11, id:'ytmod-11', label:'Normal (Gauss) Dağılımı'},
+      {n:12, id:'ytmod-12', label:'Olasılık ve Çapraz Entropi'},
+    ],
+    t_trig: [
+      {n:13, id:'ytmod-13', label:'Sin, Cos ve Birim Çember'},
+      {n:14, id:'ytmod-14', label:'Pozisyonel Kodlamaya Köprü'},
+    ],
+  };
+
+  function openModule(modId){
+    const mod = document.getElementById(modId); if(!mod) return;
+    const cat = mod.closest('.acc-category');
+    if(cat) cat.classList.add('open');
+    mod.classList.add('open');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      mod.scrollIntoView({behavior:'smooth', block:'start'});
+    }));
+  }
+
+  const modListEl = document.getElementById('ytModList');
+  function renderModList(){
+    if(!modListEl) return;
+    const mods = sel && CAT_MODULES[sel];
+    if(!mods){ modListEl.classList.remove('show'); modListEl.innerHTML = ''; return; }
+    modListEl.innerHTML = '<div class="yt-ml-title">📂 ' + (CAT_LABEL[sel] || sel) + ' içindekiler</div>'
+      + mods.map(m => '<div class="yt-ml-row" data-mod-id="' + m.id + '"><span class="yt-ml-n">' + m.n + '.</span><span>' + m.label + '</span></div>').join('');
+    modListEl.classList.add('show');
+    modListEl.querySelectorAll('.yt-ml-row').forEach(row => {
+      row.addEventListener('click', () => openModule(row.dataset.modId));
+    });
+  }
+
   const YK = 'attn_yt_done_v1';
   let done;
   try{ done = new Set(JSON.parse(localStorage.getItem(YK) || '[]')); }catch(e){ done = new Set(); }
@@ -2213,6 +2272,7 @@
       btn.classList.toggle('done', isDone);
       btn.textContent = isDone ? '✓ Tamamladın' : '✓ Bu kategoriyi tamamladım';
     });
+    renderModList();
   }
 
   svg.querySelectorAll('.ytn').forEach(g => {
