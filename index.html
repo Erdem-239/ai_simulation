@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609210855"></script>
-<link rel="stylesheet" href="css/style.css?v=202609210855">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609210905"></script>
+<link rel="stylesheet" href="css/style.css?v=202609210905">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 08:55 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 09:05 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -3946,6 +3946,10 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
   </div>
   </div>
 
+
+  <div class="acc acc-category" style="--cat-color:#d4a94a; --card-i:1">
+  <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 📐 Türev Kuralları</div><div class="cat-desc">Değişim hızını ölçmek: kuvvet, çarpım, bölüm ve zincir kuralı — elle türev almanın araç kutusu.</div></div>
+  <div class="acc-body">
 <div id="ktTreeWrap" class="xt-wrap acc open">
   <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — bu dört kuralın önkoşul haritası<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
   <div class="acc-body">
@@ -3966,9 +3970,6 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 <div class="xt-src" id="xtsrc-kt_45"><div class="xp-bas">eˣ neden zincir kuralı gerektiriyor?</div><div class="xp-sat">\(e^{g(x)}\) tek başına bir sayı değil, <b>bileşke bir fonksiyon</b>: önce \(g(x)\) hesaplanıyor, sonra \(e\) üzerine konuyor.</div><div class="xp-sat">Sadece \((e^x)'=e^x\) bilmek yetmez — içteki \(g(x)\) değiştikçe sonucun nasıl değiştiğini de (yani \(g'(x)\)) hesaba katman lazım. Bunu birleştiren zincir kuralı.</div></div>
 <div class="xt-src" id="xtsrc-kt_46"><div class="xp-bas">Bölüm kuralı neden zincire de bağlı?</div><div class="xp-sat">Sigmoid’i <b>iki farklı yoldan</b> çözebilirsin: bölüm kuralıyla (doğrudan) ya da zincir kuralıyla (payı 1 olduğu için \((1+e^{-z})^{-1}\) gibi üs alıp).</div><div class="xp-sat">Bölüm kuralı kendi başına bağımsız bir araç — ama sigmoid özelinde zincirle de aynı kapıya çıkıyor, bu yüzden ok buraya da çiziliyor.</div></div>
 <div class="xt-src" id="xtsrc-kt_bulusma"><div class="xp-bas">İki yoldan aynı yere — tesadüf mü?</div><div class="xp-sat"><b>eˣ + zincir</b> yoluyla da, <b>bölüm kuralı</b> yoluyla da aynı sonuca varıyorsun: \(\sigma'=\sigma(1-\sigma)\).</div><div class="xp-sat">Tesadüf değil — ikisi de aynı fonksiyonun türevini alıyor, sadece <b>farklı araçla</b>. Matematikte bu "çapraz kontrol" gibi çalışır: iki bağımsız yol aynı yere varıyorsa, sonuca güvenebilirsin.</div></div>
-  <div class="acc acc-category" style="--cat-color:#d4a94a; --card-i:1">
-  <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 📐 Türev Kuralları</div><div class="cat-desc">Değişim hızını ölçmek: kuvvet, çarpım, bölüm ve zincir kuralı — elle türev almanın araç kutusu.</div></div>
-  <div class="acc-body">
 
   <div class="acc acc-module">
   <div class="acc-head"><span class="ac">▸</span> 3) Türev — anlık değişim hızı</div>
@@ -5531,15 +5532,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609210855"></script>
-<script src="js/lesson-turev.js?v=202609210855"></script>
-<script src="js/lesson-xor.js?v=202609210855"></script>
-<script src="js/lesson-xor-arch.js?v=202609210855"></script>
-<script src="js/lesson-xor-epoch.js?v=202609210855"></script>
-<script src="js/lesson-nn.js?v=202609210855"></script>
-<script src="js/lesson-trig.js?v=202609210855"></script>
+<script src="js/lesson-linreg.js?v=202609210905"></script>
+<script src="js/lesson-turev.js?v=202609210905"></script>
+<script src="js/lesson-xor.js?v=202609210905"></script>
+<script src="js/lesson-xor-arch.js?v=202609210905"></script>
+<script src="js/lesson-xor-epoch.js?v=202609210905"></script>
+<script src="js/lesson-nn.js?v=202609210905"></script>
+<script src="js/lesson-trig.js?v=202609210905"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609210855"></script>
-<script src="js/app.js?v=202609210855"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609210905"></script>
+<script src="js/app.js?v=202609210905"></script>
 </body>
 </html>
