@@ -466,105 +466,40 @@
   })();
 
   /* ==========================================================================
-     ZİNCİR KURALI — SİM 1: Bisiklet vitesi (pedal → dişli → tekerlek)
+     ZİNCİR KURALI — SİM 1: Canlı f(g(x)) — y=(2x+1)³, teğet + iç/dış kur
      ========================================================================== */
-  (function gears(){
-    const cv = document.getElementById('tzGearCanvas');
+  (function chainLive(){
+    const cv = document.getElementById('tzChainCanvas');
     if(!cv) return;
-    const k1In = document.getElementById('tzGearK1');
-    const k2In = document.getElementById('tzGearK2');
-    const k3In = document.getElementById('tzGearK3');
-    const k1V = document.getElementById('tzGearK1v');
-    const k2V = document.getElementById('tzGearK2v');
-    const k3V = document.getElementById('tzGearK3v');
-    const read = document.getElementById('tzGearRead');
+    const xIn = document.getElementById('tzChainX');
+    const xVal = document.getElementById('tzChainXv');
+    const read = document.getElementById('tzChainRead');
     const ctx = cv.getContext('2d');
-
-    function drawGear(cx, cy, r, color, teeth, angle, label, ratio){
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(angle);
-      // teeth
-      ctx.fillStyle = color;
-      const outerR = r, innerR = r*0.85;
-      for(let i=0;i<teeth;i++){
-        const a = i * 2*Math.PI/teeth;
-        const w = Math.PI/teeth * 0.5;
-        ctx.beginPath();
-        ctx.moveTo(Math.cos(a-w)*innerR, Math.sin(a-w)*innerR);
-        ctx.lineTo(Math.cos(a-w*0.7)*outerR, Math.sin(a-w*0.7)*outerR);
-        ctx.lineTo(Math.cos(a+w*0.7)*outerR, Math.sin(a+w*0.7)*outerR);
-        ctx.lineTo(Math.cos(a+w)*innerR, Math.sin(a+w)*innerR);
-        ctx.closePath();
-        ctx.fill();
-      }
-      ctx.beginPath(); ctx.arc(0,0,innerR,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#12141a';
-      ctx.beginPath(); ctx.arc(0,0,innerR*0.35,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-      // label
-      ctx.fillStyle = '#e7e9ec'; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
-      ctx.fillText(label, cx, cy+r+16);
-      ctx.fillStyle = color; ctx.font='11px Segoe UI';
-      ctx.fillText('×'+F(ratio,1), cx, cy+r+30);
-    }
-
-    let angle = 0;
-    let anim = null;
+    const g = x => 2*x + 1;      // ic halka
+    const gp = () => 2;          // g'(x) sabit
+    const f = u => u*u*u;        // dis halka
+    const fp = u => 3*u*u;       // f'(u)
+    const y = x => f(g(x));
 
     function render(){
       const W=cv.width, H=cv.height;
-      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
-      const k1=parseFloat(k1In.value), k2=parseFloat(k2In.value), k3=parseFloat(k3In.value);
-      const total = k1*k2*k3;
-      // 4 elements: Pedal (input), Gear1, Gear2, Gear3, Wheel (output)
-      const cy = 110;
-      const positions = [
-        {x:80,  r:26, color:'#5aa0e0', teeth:10, label:'Pedal',    ratio:1,   speed:1},
-        {x:210, r:34, color:'#3a7afe', teeth:14, label:'Ön (k₁)',  ratio:k1,  speed:k1},
-        {x:360, r:28, color:'#3a7afe', teeth:12, label:'Orta (k₂)', ratio:k2, speed:k1*k2},
-        {x:510, r:32, color:'#3a7afe', teeth:13, label:'Arka (k₃)', ratio:k3, speed:total},
-        {x:640, r:40, color:'#f0a032', teeth:16, label:'Tekerlek', ratio:total, speed:total}
-      ];
-      // connection lines
-      ctx.strokeStyle='#3a4048'; ctx.lineWidth=3; ctx.setLineDash([6,4]);
-      for(let i=0;i<positions.length-1;i++){
-        ctx.beginPath(); ctx.moveTo(positions[i].x+positions[i].r, cy); ctx.lineTo(positions[i+1].x-positions[i+1].r, cy); ctx.stroke();
-      }
-      ctx.setLineDash([]);
-      // draw gears
-      positions.forEach((p,i)=>{
-        // alternate rotation direction based on gear ratio sign; here just spinning
-        const dir = (i%2===0) ? 1 : -1;
-        drawGear(p.x, cy, p.r, p.color, p.teeth, angle*p.speed*dir*0.5, p.label, p.ratio);
-      });
-      // top label: chain
-      ctx.fillStyle='#c0c5cc'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
-      ctx.fillText('pedal hızı × k₁ × k₂ × k₃ = tekerlek hızı', W/2, 26);
-      ctx.fillStyle='#f0a032'; ctx.font='bold 14px Segoe UI';
-      ctx.fillText('1 × '+F(k1,1)+' × '+F(k2,1)+' × '+F(k3,1)+' = '+F(total,2)+'×', W/2, 46);
+      const ax = drawAxes(ctx, W, H, -1.5, 1, -10, 30, {xLabel:'x', yLabel:'y=(2x+1)³', xTicks:5, yTicks:4});
+      drawCurve(ctx, ax.X, ax.Y, y, -1.5, 1, '#3a7afe', 2.2);
+      const x = parseFloat(xIn.value);
+      const gx = g(x), y0 = y(x);
+      const slope = fp(gx) * gp();
+      const tanFn = xx => y0 + slope*(xx-x);
+      drawCurve(ctx, ax.X, ax.Y, tanFn, Math.max(-1.5,x-0.35), Math.min(1,x+0.35), '#ffd24a', 2.2);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ax.X(x), ax.Y(y0), 5, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#ffd24a'; ctx.lineWidth=1.5; ctx.stroke();
 
-      let msg;
-      if(total > 4) msg = '🚀 Çok hızlı — pedal ufak dönerse tekerlek fırlar (patlayan gradyan)';
-      else if(total < 0.5) msg = '🐢 Çok yavaş — pedali çok çevirsen bile tekerlek zar zor döner (sönen gradyan)';
-      else msg = '👍 Dengeli — orta bir toplam oran';
       read.innerHTML =
-        '<b>Yerel kurlar (her halkanın yerel türevi):</b> k₁='+F(k1,2)+', k₂='+F(k2,2)+', k₃='+F(k3,2)+
-        '<br><b>Toplam kur (zincir kuralı):</b> k₁·k₂·k₃ = <b style="color:#f0a032">'+F(total,3)+'</b> × (pedal 1 birim hızlansa tekerlek '+F(total,2)+' birim hızlanır)'+
-        '<br><span style="color:var(--muted); font-size:12px">↳ '+msg+'</span>';
+        '<b>İç halka:</b> g(x) = 2x+1 = 2·'+F(x,2)+'+1 = <b style="color:#d4a94a">'+F(gx,2)+'</b> &nbsp; g′(x) = <b style="color:#d4a94a">2</b> (sabit)'+
+        '<br><b>Dış halka:</b> f(u) = u³ → f(g(x)) = ('+F(gx,2)+')³ = <b style="color:#3a7afe">'+F(y0,2)+'</b> &nbsp; f′(u)=3u² → f′(g(x)) = 3·('+F(gx,2)+')² = <b style="color:#3a7afe">'+F(fp(gx),2)+'</b>'+
+        '<br><b>Zincir (çarpım):</b> dy/dx = f′(g(x))·g′(x) = '+F(fp(gx),2)+' × 2 = <b style="color:#f0a032">'+F(slope,2)+'</b> ← sarı teğetin eğimi';
     }
-
-    function tick(){
-      angle += 0.04;
-      render();
-      anim = requestAnimationFrame(tick);
-    }
-    [k1In,k2In,k3In].forEach(el => el.addEventListener('input', ()=>{
-      k1V.textContent = F(parseFloat(k1In.value),1)+'×';
-      k2V.textContent = F(parseFloat(k2In.value),1)+'×';
-      k3V.textContent = F(parseFloat(k3In.value),1)+'×';
-    }));
-    tick();
+    xIn.addEventListener('input', ()=>{ xVal.textContent = F(parseFloat(xIn.value),2); render(); });
+    render();
   })();
 
   /* ==========================================================================
