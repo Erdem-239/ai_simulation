@@ -178,6 +178,63 @@ güncellendi:
      `font-size:75% !important` eklendi (`.xe-cards .eq mjx-container`
      ile aynı scoped-font-size deseni, satır ~758).
 
+## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
+
+Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
+kafa karıştırıcı buldu ("iç halka / orta halka / dış halka", düz metin
+zincir durakları, bisiklet vitesi benzetmesi) ve örnek olarak bir başka
+asistanın ürettiği biçimi gösterdi. **İstenen ritim**: numaralı kalın
+başlık → düz cümlelerle açıklama → ortalanmış MathJax formülü. Bu biçim
+`.afx` bileşeni olarak oturdu ve **bundan sonra türev/ispat anlatımı
+gerektiren her yerde referans** alınmalı.
+
+**Yapı**: her aktivasyon fonksiyonu için YAN YANA iki açılır kutu —
+1. **📐 Türev kurallarıyla — adım adım** (altın, `.afx-rule`) — hızlı yol
+2. **🔬 Limit tanımıyla kanıt — hiçbir kural bilmeden** (mavi, `.afx-lim`)
+
+Dört fonksiyon da kapsandı: sigmoid, tanh, ReLU, Leaky ReLU.
+
+**İki kutunun pedagojik gerekçesi** (silinmemeli): iki yol aynı sonuca
+varır, AMA **ReLU/Leaky'de limit kutusu kuralların göremediği şeyi
+gösterir** — \(z=0\)'da sağdan limit 1, soldan 0; eşit olmadıkları için
+türev **tanımsız** (köşe). Türev kuralları bu soruya hiç giremez. Leaky'de
+aynı analiz "ölü nöron çözüldü ama köşe duruyor" sonucunu verir.
+
+**TEK KAYNAK + klon mimarisi**: anlatım yalnızca bir yerde yazılıdır —
+`#model-aktivasyon` içindeki `.afx-src` blokları. Yapı Taşları'ndaki
+`ytmod-6` (sigmoid), `ytmod-7` (tanh), `ytmod-8` (ReLU + Leaky)
+modüllerinde sadece boş `.afx-mount` yuvaları durur; `js/app.js`'teki
+`mountAfx` IIFE'si içeriği oraya **klonlar**. Aynı anlatım iki yerde ayrı
+ayrı yazılmaz, zamanla birbirinden kopmaz. Klonlama kuralları:
+- `.afx-src` içinde **ASLA `id` kullanma** (klonda çift id oluşur).
+- Klonda `.afx-src` sınıfı sökülür ki fonksiyon seçicinin göster/gizle
+  mantığı (`#model-aktivasyon .afx-src`) sadece asıl blokları hedeflesin.
+- Toggle **olay delegasyonuyla** bağlanır (`js/lesson-linreg.js`) — klonlar
+  sonradan DOM'a girdiği için doğrudan bağlanan listener onları görmez.
+- MathJax: klon typeset'ten ÖNCE alınırsa ham `\[..\]` taşır, SONRA
+  alınırsa işlenmiş SVG'yi taşır (global MJX cache'e id ile bağlanır,
+  çalışır). İlk ihtimale karşı `mountAfx` açıkça `typesetPromise` çağırır.
+
+**Simülasyon da bu anlatıma göre şekillendi**: `actWork` canlı okuması
+artık düz metin değil MathJax ("sembol = yerine konmuş sayılar = sonuç",
+rAF ile debounce'lanmış typeset). **ReLU/Leaky'de z tam 0 olunca** kutu
+"TAM KÖŞEDESİN" deyip türevin neden tanımsız olduğunu yazar — anlatımla
+simülasyon aynı noktada buluşur, bu bağ korunmalı.
+
+**Kaldırılanlar**: bisiklet vitesi + "durak 1/2/3" zincir bloğu ve onu
+süren IIFE (PR #274'te Zincir Kuralı modülünden kaldırılan bisiklet
+sahnesiyle aynı gerekçe — tekrar eden benzetme), Zincir Kuralı
+sahnesindeki "İç/Orta/Dış halka" etiketleri sade dile çevrildi.
+
+**Mobil dersi (PR #276'nın devamı)**: uzun tek satırlık türetmeler 375px'te
+konteyneri aşıyordu. Font küçültmek tek başına yetmedi (en uzunu 396px,
+konteyner 261px). Asıl çözüm **çok satırlı `\begin{aligned}`** — hem dar
+ekrana sığdırır hem adım adım daha okunur; ayrıca tanh ispatına
+\(t=\tanh z\), \(T=\tanh h\) kısaltması eklenerek formüller daraltıldı.
+Sonuç: dört fonksiyonun 155 formülünün tamamı 375px'te taşmıyor. Yeni
+uzun formül eklerken: önce `aligned` ile kır, font küçültmeyi son çare
+olarak kullan.
+
 ## Yapı Taşları — ilerleme ağaçları (mini-yol-haritaları)
 
 Yapı Taşları (`#model-matematik`) kendi `.acc-category`/`.acc-module`
