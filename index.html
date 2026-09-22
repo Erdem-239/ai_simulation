@@ -10,8 +10,8 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609211353"></script>
-<link rel="stylesheet" href="css/style.css?v=202609211353">
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609222004"></script>
+<link rel="stylesheet" href="css/style.css?v=202609222004">
 </head>
 <body>
 <div class="applayout">
@@ -20,7 +20,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-21 13:53 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-22 20:04 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1756,7 +1756,7 @@
         <input type="range" id="actZ" min="-6" max="6" step="0.1" value="1" style="flex:1">
         <b id="actZv" style="color:var(--accent); min-width:54px; text-align:right">1.0</b>
       </div>
-      <div class="work" id="actWork" style="white-space:pre-wrap; line-height:1.95; font-size:13px"></div>
+      <div class="work afx-live" id="actWork"></div>
     </div>
   </div>
 
@@ -1766,24 +1766,289 @@
   </div>
 
   <!-- karşılaştırma -->
-  <!-- ZİNCİR KURALI canlı -->
-  <div class="sechead">Zincir kuralı canlı — z'yi oynat, her ara değişken domino gibi değişsin</div>
+  <!-- TÜREV + LİMİT ANLATIMI — secilen fonksiyona gore degisir -->
+  <div class="sechead">Türevi nereden geliyor? — iki ayrı yoldan, adım adım</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
-    <div class="callout" style="line-height:1.75">📖 <b>Önce bir hikâye — bisikletin vitesleri.</b><br>
-      Sabah bisikletle işe gidiyorsun. Pedalı çeviriyorsun ama bacağın <b>doğrudan</b> tekerleğe bağlı değil; arada bir <b>dişli zinciri</b> var: ayak → ön dişli → zincir → arka dişli → tekerlek. Soru şu: <i>"pedalı azıcık daha hızlı çevirsem tekerlek ne kadar hızlanır?"</i> Bunu tek bir dişliye bakarak söyleyemezsin — <b>her halkanın bir çevirme oranı</b> var. Diyelim ön dişli pedalın hızını <b>×2</b> yapıyor, arka dişli de onu <b>×1.5</b> yapıyor. O zaman pedaldaki minik bir hızlanma tekerleğe <b>2 × 1.5 = 3 kat</b> yansır. <b>Toplam oran = ara oranların çarpımı.</b> Zincir kuralının tamamı işte bu kadar basit.</div>
-    <div style="font-size:14px; color:#ccd5e8; line-height:1.7; margin-top:10px">Sigmoid de tam böyle bir dişli zinciri — sadece "hız" yerine <b>"değişim"</b>, "dişli oranı" yerine <b>"yerel türev"</b> (kısaca <b>kur</b>) diyoruz. <b>z = pedal</b>, <b>σ = tekerlek</b>; aradaki <b>u</b> ve <b>s</b> ise dişliler. "z'yi azıcık oynatırsam σ ne kadar oynar?" sorusunun cevabı = <b>yol üstündeki kurları çarp</b>.</div>
-    <div style="font-size:13px; color:#ccd5e8; margin-top:10px; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px">↪ <b>Tek incelik — ters dönen dişli:</b> bir halkada z artınca u <b>azalıyorsa</b>, o "kur" <b>negatiftir</b> (ters takılı dişli gibi). Aşağıda <b>du/dz</b> negatif çıkacak; ama <b>dσ/ds</b> de negatif olduğundan <b>iki negatif çarpılınca yön düzelir</b> (sonuç artı). Tıpkı iki ters dişlinin en sonunda tekerleği yine ileri döndürmesi gibi.</div>
-    <div style="font-size:12px; color:var(--muted); margin-top:8px">(Aynı fikir döviz kurunda da var: "1 lira kaç dolar?" = lira→euro × euro→dolar. Kurabiye→mutluluk örneğindeki mantığın aynısı — sadece bu kez <b>üç duraklı ve canlı</b>.)</div>
-    <div style="font-size:13px; color:var(--muted); margin-top:8px">Sigmoid'in zinciri: &nbsp;z &nbsp;→&nbsp; u = e<sup>−z</sup> &nbsp;→&nbsp; s = 1 + u &nbsp;→&nbsp; σ = 1/s.</div>
-    <div style="display:flex; align-items:center; gap:10px; margin:14px 0">
-      <span>z =</span>
-      <input type="range" id="chainZ" min="-6" max="6" step="0.1" value="1.2" style="flex:1; max-width:360px">
-      <b id="chainZv" style="color:var(--accent); min-width:54px; text-align:right">1.2</b>
+    <div style="font-size:14px; color:#ccd5e8; line-height:1.75">Yukarıda seçtiğin fonksiyonun türevini <b>iki bağımsız yoldan</b> çıkarıyoruz. Soldaki kutu <b>türev kurallarıyla</b> (hızlı yol), sağdaki kutu <b>sadece limit tanımıyla</b> (kuralların kendisinin nereden geldiği) gidiyor. İkisi de aynı sonuca varıyor — ve ReLU'da limit kutusu, kuralların hiç göremediği bir şeyi gösteriyor.</div>
+    <div style="font-size:12.5px; color:var(--muted); margin-top:7px">👆 Kutu başlıklarına tıklayarak aç/kapat. Fonksiyonu yukarıdaki düğmelerden değiştirdiğinde bu anlatım da değişir.</div>
+<div class="afx afx-src" data-fn="sigmoid">
+  <div class="afx-box afx-rule">
+    <div class="afx-head closed"><span>📐 Türev kurallarıyla — adım adım</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Formülü "dış ve iç" olarak yazalım</div>
+      <p>Sigmoid bir kesir: \(\sigma(z)=\dfrac{1}{1+e^{-z}}\). Kesire kuvvet kuralı doğrudan uygulanamaz. Ama <b>bir şeyin tersi = o şeyin −1. kuvveti</b> olduğu için paydayı negatif üsle yukarı taşıyabiliriz:</p>
+      \[ \sigma(z)=(1+e^{-z})^{-1} \]
+      <p>Artık elimizde <b>dışta bir üs</b>, <b>içte bir parantez</b> var — zincir kuralının tam istediği şekil.</p>
     </div>
-    <div class="work" id="chainWork" style="white-space:pre-wrap; line-height:1.95; font-size:13px"></div>
-    <div class="callout" id="chainCheck" style="margin-top:12px; white-space:pre-wrap; line-height:1.8"></div>
-    <div style="font-size:12px; color:var(--muted); margin-top:8px">Aynı "kurları çarp" mantığı tanh, ReLU ve tüm sinir ağı katmanlarında geçerli — geri yayılım (BPTT dahil) baştan sona budur: yol üstündeki yerel türevleri çarpa çarpa geriye taşımak.</div>
+    <div class="afx-step">
+      <div class="afx-st">2. Dışın türevi</div>
+      <p>Dıştaki \(-1\) üssü başa düşer ve üs bir azalır (\(-2\) olur). İçeriye şimdilik dokunmuyoruz:</p>
+      \[ -1\cdot(1+e^{-z})^{-2}=-\frac{1}{(1+e^{-z})^{2}} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. İçinin türevi</div>
+      <p>Parantezin içi \(1+e^{-z}\). Sabit olan <b>1</b>'in değişime hiçbir katkısı yok, türevi <b>0</b>. \(e^{-z}\)'nin türevinde ise üsteki \(-z\)'nin türevi (\(-1\)) başa düşer:</p>
+      \[ (1+e^{-z})'=0+(-e^{-z})=-e^{-z} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. İkisini çarp — eksiler birbirini yok eder</div>
+      <p>Zincir kuralı "dışın türevi × içinin türevi" diyor:</p>
+      \[ \begin{aligned} \sigma'(z)&=\left(-\frac{1}{(1+e^{-z})^{2}}\right)\times(-e^{-z})\\[4pt] &=\frac{e^{-z}}{(1+e^{-z})^{2}} \end{aligned} \]
+      <p>Bu sonuç <b>tamamen doğru</b> — ama içinde hâlâ \(e^{-z}\) var, yani model her türev için bir üstel hesap yapmak zorunda kalır.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">5. Sadeleştirme — "aha!" anı</div>
+      <p>Paydadaki kareyi iki parçaya ayıralım:</p>
+      \[ \begin{aligned} \frac{e^{-z}}{(1+e^{-z})^{2}} &=\frac{1}{1+e^{-z}}\;\times\;\frac{e^{-z}}{1+e^{-z}} \end{aligned} \]
+      <p>Birinci parantez tam olarak \(\sigma\)'nın kendisi. İkinciyi de \(\sigma\)'ya benzetmek için paya hiçbir dengeyi bozmadan <b>1 ekleyip 1 çıkaralım</b>:</p>
+      \[ \begin{aligned} \frac{e^{-z}}{1+e^{-z}} &=\frac{(1+e^{-z})-1}{1+e^{-z}}\\[4pt] &=\underbrace{\frac{1+e^{-z}}{1+e^{-z}}}_{=\,1}-\underbrace{\frac{1}{1+e^{-z}}}_{=\,\sigma}\\[4pt] &=1-\sigma \end{aligned} \]
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      \[ \sigma'(z)=\sigma(z)\,\bigl(1-\sigma(z)\bigr) \]
+      <p>Model artık türev için tek bir üstel hesap bile yapmaz — <b>ileri geçişte zaten hesapladığı \(\sigma\) değerini</b> alır, \(1\)'den çıkarır, çarpar. Geri yayılımın bu kadar ucuz olmasının sebebi bu.</p>
+      <div class="afx-note">📉 \(\sigma'\) en büyük değerini \(z=0\)'da alır: \(0.5\times0.5=0.25\). Derin bir ağda bu \(0.25\)'ler üst üste çarpılır (\(0.25^{20}\approx10^{-12}\)) ve gradyan söner — <b>vanishing gradient</b> tam buradan doğar.</div>
+    </div>
+    </div>
   </div>
+  <div class="afx-box afx-lim">
+    <div class="afx-head closed"><span>🔬 Limit tanımıyla kanıt — hiçbir kural bilmeden</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Türevin limit tanımını masaya koy</div>
+      <p>Hiçbir kural bilmeseydik bile türevi bulmanın <b>tek</b> yolu şu: girdiyi çok küçük bir \(h\) kadar oynat, çıktının ne kadar oynadığına bak, orana bak ve \(h\)'yi sıfıra yaklaştır.</p>
+      \[ \sigma'(z)=\lim_{h\to0}\frac{\sigma(z+h)-\sigma(z)}{h} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. Sigmoid'i yerine koy ve paydaları eşitle</div>
+      \[ \lim_{h\to0}\frac{1}{h}\left(\frac{1}{1+e^{-(z+h)}}-\frac{1}{1+e^{-z}}\right) \]
+      <p>İki kesri çıkarmak için paydaları eşitliyoruz (çapraz çarpım):</p>
+      \[ \begin{aligned} =\lim_{h\to0}\frac{1}{h}\cdot\frac{(1+e^{-z})-(1+e^{-(z+h)})}{(1+e^{-(z+h)})(1+e^{-z})} \end{aligned} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. Payda büyük sadeleşme</div>
+      <p>Üstteki parantezleri açalım — \(+1\) ve \(-1\) birbirini götürür:</p>
+      \[ \begin{aligned} &(1+e^{-z})-(1+e^{-z-h})\\[4pt] &\quad=e^{-z}-e^{-z}e^{-h}\\[4pt] &\quad=e^{-z}\bigl(1-e^{-h}\bigr) \end{aligned} \]
+      <p>(\(e^{-z-h}=e^{-z}\cdot e^{-h}\) üslü sayı kuralından; sonra \(e^{-z}\) ortak paranteze alındı.)</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. Limiti ikiye ayır</div>
+      <p>Şimdi çarpımı, \(h\) <b>içerenler</b> ve <b>içermeyenler</b> diye iki ayrı limite bölelim — gözümüzün önünde netleşsin:</p>
+      \[ \begin{aligned} &\left(\lim_{h\to0}\frac{1-e^{-h}}{h}\right)\\[4pt] &\qquad\times\left(\lim_{h\to0}\frac{e^{-z}}{(1+e^{-(z+h)})(1+e^{-z})}\right) \end{aligned} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">5. İki limiti de çöz</div>
+      <p><b>Sağdaki:</b> \(h\to0\) olunca \(e^{-(z+h)}\) doğrudan \(e^{-z}\) olur, payda tek bir kareye iner:</p>
+      \[ \frac{e^{-z}}{(1+e^{-z})^{2}} \]
+      <p><b>Soldaki:</b> bu, \(e\) sayısının <b>tanımı</b>. \(e\), \(\lim_{h\to0}\frac{e^{h}-1}{h}=1\) eşitliğini sağlayan biricik tabandır; \(h\to-h\) yazınca elimizdeki ifade de aynı şeye eşit olur:</p>
+      \[ \lim_{h\to0}\frac{1-e^{-h}}{h}=1 \]
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      <p>İkisini çarpınca:</p>
+      \[ \begin{aligned} 1\times\frac{e^{-z}}{(1+e^{-z})^{2}} &=\frac{e^{-z}}{(1+e^{-z})^{2}}\\[4pt] &=\sigma(z)\bigl(1-\sigma(z)\bigr) \end{aligned} \]
+      <p>Soldaki kutuda kurallarla bulduğumuzun <b>birebir aynısı</b>. Aynı "+1 −1" hilesiyle toparlanınca yine \(\sigma(1-\sigma)\) çıkıyor.</p>
+      <div class="afx-note">💡 <b>Ne öğrendik:</b> türev kuralları bir <b>kısayol</b>; limit ise o kısayolun <b>nereden geldiği</b>. Hiçbir kuralı ezbere bilmeseydik bile, sadece "değişim ÷ değişim" oranını küçülterek aynı sonuca elimizle ulaştık.</div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="afx afx-src" data-fn="tanh">
+  <div class="afx-box afx-rule">
+    <div class="afx-head closed"><span>📐 Türev kurallarıyla — adım adım</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Payı ve paydayı ayrı ayrı adlandır</div>
+      <p>tanh bir bölüm, o yüzden <b>bölüm kuralı</b> kullanacağız. Önce iki parçaya isim verelim:</p>
+      \[ \begin{aligned} \tanh(z) &=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}=\frac{p}{q}\\[4pt] p &=e^{z}-e^{-z},\qquad q=e^{z}+e^{-z} \end{aligned} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. İkisinin de türevini al — şaşırtıcı bir simetri</div>
+      <p>\(e^{z}\)'nin türevi kendisidir; \(e^{-z}\)'nin türevinde ise üsteki eksi başa düşer ve \(-e^{-z}\) olur. Buna dikkat ederek:</p>
+      \[ p'=e^{z}-(-e^{-z})=e^{z}+e^{-z}=q \]
+      \[ q'=e^{z}+(-e^{-z})=e^{z}-e^{-z}=p \]
+      <p>Yani <b>birinin türevi diğeri</b>: \(p'=q\) ve \(q'=p\). Bütün hesabı bu simetri temizleyecek.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. Bölüm kuralını uygula</div>
+      \[ \left(\frac{p}{q}\right)'=\frac{p'q-p\,q'}{q^{2}} \]
+      <p>\(p'\) yerine \(q\), \(q'\) yerine \(p\) koyalım:</p>
+      \[ \begin{aligned} =\frac{q\cdot q-p\cdot p}{q^{2}}=\frac{q^{2}-p^{2}}{q^{2}} \end{aligned} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. Kesri ikiye böl</div>
+      <p>\(\frac{a-b}{c}=\frac{a}{c}-\frac{b}{c}\) kuralıyla ayıralım:</p>
+      \[ \begin{aligned} \frac{q^{2}-p^{2}}{q^{2}} &=\frac{q^{2}}{q^{2}}-\frac{p^{2}}{q^{2}}\\[4pt] &=1-\left(\frac{p}{q}\right)^{2} \end{aligned} \]
+      <p>Ve \(\frac{p}{q}\) zaten \(\tanh(z)\)'nin kendisiydi.</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      \[ \tanh'(z)=1-\tanh^{2}(z) \]
+      <p>Sigmoid'deki gibi: türev, <b>fonksiyonun kendi değerinden</b> hesaplanıyor — hiç üstel hesaba gerek yok.</p>
+      <div class="afx-note">🔎 Küçük bir ekstra: \(q^{2}-p^{2}\) açılınca her zaman <b>tam 4</b> çıkar \(\bigl((e^{z}+e^{-z})^{2}-(e^{z}-e^{-z})^{2}=4\bigr)\). Yani \(\tanh'(z)=\frac{4}{(e^{z}+e^{-z})^{2}}\) de aynı şeydir — ve \(z=0\)'da \(\frac{4}{2^{2}}=1\) verir: tanh'ın türevi <b>en fazla 1</b>. Sigmoid'in 0.25'ine karşı tanh'ı güçlü kılan şey budur.</div>
+    </div>
+    </div>
+  </div>
+  <div class="afx-box afx-lim">
+    <div class="afx-head closed"><span>🔬 Limit tanımıyla kanıt — hiçbir kural bilmeden</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Limit tanımı</div>
+      \[ \begin{aligned} \tanh'(z)=\lim_{h\to0}\frac{\tanh(z+h)-\tanh(z)}{h} \end{aligned} \]
+      <p>Buradaki \(\tanh(z+h)\)'yi açmak için tanh'ın <b>toplam formülü</b>ne ihtiyacımız var. Formüller okunaklı kalsın diye kısaltalım: \(t=\tanh z\) ve \(T=\tanh h\).</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. Toplam formülünü yerine koy</div>
+      \[ \tanh(z+h)=\frac{t+T}{1+tT} \]
+      <p>Farkı tek bir kesir haline getirelim (payda eşitleyerek):</p>
+      \[ \tanh(z+h)-\tanh(z)=\frac{t+T}{1+tT}-t \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. Payda sadeleşme</div>
+      <p>Payda eşitleyip payı açalım: \(t+T-t(1+tT)=t+T-t-t^{2}T\). İlk ve üçüncü terim birbirini götürür; kalan \(T-t^{2}T\)'de \(T\)'yi ortak paranteze alalım:</p>
+      \[ =\frac{T\,\bigl(1-t^{2}\bigr)}{1+tT} \]
+      <p>Aradığımız \(1-t^{2}=1-\tanh^{2}z\) <b>şimdiden ortaya çıktı</b> — geriye onu yalnız bırakmak kaldı.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. \(h\)'ye böl ve limiti al</div>
+      \[ \tanh'(z)=\lim_{h\to0}\frac{T}{h}\cdot\frac{1-t^{2}}{1+tT} \]
+      <p><b>Sağdaki:</b> \(h\to0\) iken \(T=\tanh h\to0\), yani payda \(1\)'e gider; geriye sadece \(1-t^{2}\) kalır.</p>
+      <p><b>Soldaki:</b> \(\lim_{h\to0}\frac{T}{h}=1\). Bunu üstel tanımdan görebiliriz: \(\frac{e^{h}-e^{-h}}{h}\to1+1=2\) (sigmoid kanıtındaki aynı \(e\) limiti), payda \(e^{h}+e^{-h}\to2\); oran \(\frac{2}{2}=1\).</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      \[ \begin{aligned} \tanh'(z) &=1\cdot\bigl(1-t^{2}\bigr)\\[4pt] &=1-\tanh^{2}(z) \end{aligned} \]
+      <p>Bölüm kuralıyla bulduğumuzun aynısı — bu kez hiçbir türev kuralı kullanmadan, sadece limitle.</p>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="afx afx-src" data-fn="relu">
+  <div class="afx-box afx-rule">
+    <div class="afx-head closed"><span>📐 Türev kurallarıyla — adım adım</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. ReLU tek bir formül değil — iki parça</div>
+      <p>Önce şunu görmek gerek: ReLU aslında <b>iki ayrı fonksiyonun birleşimi</b>:</p>
+      \[ \begin{aligned} \mathrm{ReLU}(z)=\max(0,z)=\begin{cases} z, & z>0\\[2pt] 0, & z\le 0\end{cases} \end{aligned} \]
+      <p>Parçalı bir fonksiyonda türev de <b>parça parça</b> alınır: her bölgede, o bölgede geçerli olan formülün türevi.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. Pozitif bölge (\(z>0\))</div>
+      <p>Orada fonksiyon sadece \(z\)'nin kendisi. Kuvvet kuralı: \(z=z^{1}\), üs başa düşer, bir azalır \(\Rightarrow 1\cdot z^{0}=1\).</p>
+      \[ z>0\;\Rightarrow\;\mathrm{ReLU}'(z)=1 \]
+      <p>Eğim <b>tam 1</b>: girdi 1 birim artarsa çıktı da tam 1 birim artar. Geri yayılımda gradyan <b>hiç küçülmeden</b> geçer.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. Negatif bölge (\(z<0\))</div>
+      <p>Orada fonksiyon sabit \(0\). Sabitin türevi \(0\)'dır — değişmeyen bir şeyin değişim hızı yoktur.</p>
+      \[ z<0\;\Rightarrow\;\mathrm{ReLU}'(z)=0 \]
+      <p>Eğim <b>0</b>: girdiyi ne kadar oynatırsan oynat çıktı kıpırdamaz. O nörona hiç gradyan akmaz — "<b>ölü ReLU</b>" sorunu tam olarak budur.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. \(z=0\) — kurallar tam burada susuyor</div>
+      <p>Sol parçanın kuralı "0", sağ parçanınki "1" diyor. Peki tam köşede hangisi geçerli?</p>
+      <p>Türev kuralları bu soruya <b>cevap veremez</b> — çünkü kurallar bir formülün <i>içinde</i> çalışır, iki formülün <i>birleştiği yerde</i> değil. Cevabı yandaki <b>limit</b> kutusu veriyor.</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      \[ \mathrm{ReLU}'(z)=\begin{cases} 1, & z>0\\[2pt] 0, & z<0\\[2pt] \text{tanımsız}, & z=0\end{cases} \]
+      <div class="afx-note">⚙️ Pratikte kütüphaneler \(z=0\)'da türevi <b>0</b> kabul eder (alt-türev). Tam sıfır girdi neredeyse hiç gelmediği için bu seçimin eğitime etkisi yok denecek kadar azdır.</div>
+    </div>
+    </div>
+  </div>
+  <div class="afx-box afx-lim">
+    <div class="afx-head closed"><span>🔬 Limit tanımıyla kanıt — hiçbir kural bilmeden</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Limit tanımı</div>
+      \[ \begin{aligned} &\mathrm{ReLU}'(z)\\[4pt] &\quad=\lim_{h\to0}\frac{\mathrm{ReLU}(z+h)-\mathrm{ReLU}(z)}{h} \end{aligned} \]
+      <p>Burada güzel olan şu: limit tanımı parçalı fonksiyonu <b>umursamaz</b> — her noktada aynı soruyu sorar.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. \(z>0\) için</div>
+      <p>\(h\) yeterince küçükse \(z+h\) de pozitif kalır; ikisi de "\(z\)" parçasındadır:</p>
+      \[ \lim_{h\to0}\frac{(z+h)-z}{h}=\lim_{h\to0}\frac{h}{h}=1 \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. \(z<0\) için</div>
+      <p>\(h\) küçükken \(z+h\) de negatif kalır; ikisinin de çıktısı \(0\):</p>
+      \[ \lim_{h\to0}\frac{0-0}{h}=\lim_{h\to0}\frac{0}{h}=0 \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">4. \(z=0\) — limit iki yandan FARKLI geliyor</div>
+      <p>\(\mathrm{ReLU}(0)=0\). Şimdi \(h\)'yi sıfıra <b>iki ayrı yönden</b> yaklaştıralım.</p>
+      <p><b>Sağdan</b> (\(h>0\), yani \(\mathrm{ReLU}(h)=h\)):</p>
+      \[ \lim_{h\to0^{+}}\frac{h-0}{h}=1 \]
+      <p><b>Soldan</b> (\(h<0\), yani \(\mathrm{ReLU}(h)=0\)):</p>
+      \[ \lim_{h\to0^{-}}\frac{0-0}{h}=0 \]
+      <p>Bir limitin <b>var olması</b> için iki taraftan gelen değerlerin <b>eşit</b> olması şarttır. Burada \(1\neq0\) — yani limit <b>yok</b>, türev <b>tanımsız</b>.</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      <p>Limit tanımı hem cevabı verdi hem de <b>nedenini</b> gösterdi.</p>
+      <div class="afx-note">💡 <b>Ne öğrendik:</b> türev kuralları "\(z=0\)'da ne olur?" sorusuna hiç giremiyordu. Limit girdi ve sebebi gösterdi: fonksiyonda bir <b>köşe</b> var, köşede ise tek bir eğim yoktur — elini o noktaya koysan hangi yöne eğileceğini bilemezsin. Sigmoid'de bunu hiç yaşamadık, çünkü sigmoid her yerde pürüzsüz.</div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="afx afx-src" data-fn="leaky">
+  <div class="afx-box afx-rule">
+    <div class="afx-head closed"><span>📐 Türev kurallarıyla — adım adım</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. Yine iki parça — ama negatif taraf artık düz sıfır değil</div>
+      \[ \begin{aligned} \mathrm{Leaky}(z) &=\begin{cases} z, & z>0\\[2pt] \alpha z, & z\le 0\end{cases}\\[4pt] \alpha &=0.01 \end{aligned} \]
+      <p>Tek fark: ReLU'nun negatif tarafta <b>sabit 0</b> olan parçası, burada çok hafif eğimli bir <b>doğru</b>.</p>
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. Pozitif bölge (\(z>0\))</div>
+      <p>ReLU ile birebir aynı: fonksiyon \(z\), türevi \(1\).</p>
+      \[ z>0\;\Rightarrow\;\mathrm{Leaky}'(z)=1 \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">3. Negatif bölge (\(z<0\))</div>
+      <p>Orada fonksiyon \(\alpha z\) — sabit katsayılı bir doğru. Sabit katsayı türevde olduğu gibi öne çıkar, \(z\)'nin türevi \(1\) olduğu için geriye katsayı kalır:</p>
+      \[ (\alpha z)'=\alpha\cdot 1=\alpha=0.01 \]
+      <p>Eğim artık <b>0 değil</b>. Küçücük ama sıfırdan farklı.</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      \[ \mathrm{Leaky}'(z)=\begin{cases} 1, & z>0\\[2pt] 0.01, & z<0\end{cases} \]
+      <div class="afx-note">🔑 <b>Neden 0.01?</b> Türev \(0\) olursa o nörona geri yayılımda hiç gradyan akmaz ve nöron bir daha <b>asla</b> öğrenemez. \(0.01\)'lik minik eğim, kapıyı tamamen kapatmak yerine <b>aralık</b> bırakır: nöron yavaş da olsa kendini toparlayabilir.</div>
+    </div>
+    </div>
+  </div>
+  <div class="afx-box afx-lim">
+    <div class="afx-head closed"><span>🔬 Limit tanımıyla kanıt — hiçbir kural bilmeden</span><span class="chev">▸</span></div>
+    <div class="afx-body closed">
+    <div class="afx-step">
+      <div class="afx-st">1. \(z>0\) ve \(z<0\) için</div>
+      <p>ReLU'daki hesabın aynısı; tek fark negatif tarafta çıktının \(0\) değil \(\alpha z\) olması:</p>
+      \[ \lim_{h\to0}\frac{(z+h)-z}{h}=1 \quad (z>0) \]
+      \[ \begin{aligned} &\lim_{h\to0}\frac{\alpha(z+h)-\alpha z}{h}\\[4pt] &\quad=\lim_{h\to0}\frac{\alpha h}{h}=\alpha=0.01 \end{aligned} \]
+    </div>
+    <div class="afx-step">
+      <div class="afx-st">2. \(z=0\) — köşe hâlâ orada</div>
+      <p>\(\mathrm{Leaky}(0)=0\). Yine iki yönden yaklaşalım:</p>
+      \[ \lim_{h\to0^{+}}\frac{h-0}{h}=1 \qquad\text{(sağdan)} \]
+      \[ \lim_{h\to0^{-}}\frac{\alpha h-0}{h}=\alpha=0.01 \qquad\text{(soldan)} \]
+      <p>\(1\neq0.01\) — iki taraf hâlâ uyuşmuyor.</p>
+    </div>
+    <div class="afx-step afx-fin">
+      <div class="afx-st">✅ Sonuç</div>
+      <p>\(z=0\)'da türev <b>hâlâ tanımsız</b>.</p>
+      <div class="afx-note">💡 <b>Asıl ders burada:</b> Leaky ReLU, ReLU'nun <b>ölü nöron</b> sorununu çözer (negatif tarafta artık gradyan akar) ama <b>köşeyi çözmez</b>. Köşe, iki farklı doğruyu birleştirdiğin her yerde kalır. Aradaki uçurum \(1\) ile \(0\) yerine \(1\) ile \(0.01\) oldu — daha dar, ama hâlâ bir uçurum.</div>
+    </div>
+    </div>
+  </div>
+</div>
+  </div>
+
   <div class="sechead">Dört fonksiyon — karşılaştırma</div>
   <table class="calc">
     <tr><th>Fonksiyon</th><th>Formül</th><th>Türev</th><th>Aralık</th><th>Türev max</th><th>Tipik sorun</th></tr>
@@ -4214,9 +4479,9 @@ d/dx (7)       = 0</div>
       <div style="flex:1 1 420px; max-width:600px"><canvas id="tzSigCanvas" width="700" height="240" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
       <div class="work" style="flex:1 1 260px; min-width:240px; line-height:2; font-size:13px">
         <div style="font-weight:700; color:#d4a94a; margin-bottom:4px">🧮 Adım adım, açık formüllerle</div>
-        <div>1) İç halka: \( u=e^{-z} \) &nbsp;→&nbsp; \( \dfrac{du}{dz}=-e^{-z} \)</div>
-        <div style="margin-top:6px">2) Orta halka: \( s=1+u \) &nbsp;→&nbsp; \( \dfrac{ds}{du}=1 \)</div>
-        <div style="margin-top:6px">3) Dış halka: \( \sigma=\dfrac{1}{s} \) &nbsp;→&nbsp; \( \dfrac{d\sigma}{ds}=-\dfrac{1}{s^{2}} \)</div>
+        <div>1) En içteki adım: \( u=e^{-z} \) &nbsp;→&nbsp; \( \dfrac{du}{dz}=-e^{-z} \)</div>
+        <div style="margin-top:6px">2) Ortadaki adım: \( s=1+u \) &nbsp;→&nbsp; \( \dfrac{ds}{du}=1 \)</div>
+        <div style="margin-top:6px">3) En dıştaki adım: \( \sigma=\dfrac{1}{s} \) &nbsp;→&nbsp; \( \dfrac{d\sigma}{ds}=-\dfrac{1}{s^{2}} \)</div>
         <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--line)">Zincir kuralı — üçünü çarp:</div>
         \[ \frac{d\sigma}{dz}=\frac{du}{dz}\cdot\frac{ds}{du}\cdot\frac{d\sigma}{ds} \]
         <div id="tzSigLive" style="color:#f0a032; margin-top:2px"></div>
@@ -4330,6 +4595,8 @@ d/dz e^(-z)  = e^(-z) · (-z)'      = e^(-z) · (-1) = -e^(-z)</div>
 Zincir:  σ'(z) = -(1+e^(-z))^(-2) · (-e^(-z))  =  e^(-z) / (1+e^(-z))²
 Pay numarası:  e^(-z) = (1+e^(-z)) − 1
 ⇒ σ'(z) = 1/(1+e^(-z)) − 1/(1+e^(-z))²  =  σ − σ²  =  <b>σ(1−σ)</b></div>
+    <h4 style="color:var(--accent); margin:16px 0 4px">🔍 Türevi nereden geliyor? — iki ayrı yoldan, adım adım</h4>
+    <div class="afx-mount" data-fn="sigmoid"></div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\dfrac{d}{dx}\dfrac{1}{1+x}=?\)</div>
@@ -4379,6 +4646,8 @@ Pay numarası:  e^(-z) = (1+e^(-z)) − 1
     <div class="work" style="white-space:pre-wrap; line-height:1.9">tanh(0)  = (1−1)/(1+1) = 0
 tanh'(0) = 1 − 0² = 1        (en dik nokta)
 z → +∞  :  tanh(z) → 1,  tanh'(z) → 1 − 1 = 0   (doyma)</div>
+    <h4 style="color:var(--accent); margin:16px 0 4px">🔍 Türevi nereden geliyor? — iki ayrı yoldan, adım adım</h4>
+    <div class="afx-mount" data-fn="tanh"></div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\tanh'(z)\) en büyük değerini nerede alır, kaçtır?</div>
@@ -4419,6 +4688,10 @@ z → +∞  :  tanh(z) → 1,  tanh'(z) → 1 − 1 = 0   (doyma)</div>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">ReLU(3)  = 3      ReLU(−2)  = 0
 ReLU'(3) = 1      ReLU'(−2) = 0
 Leaky'(−5) = 0.01</div>
+    <h4 style="color:var(--accent); margin:16px 0 4px">🔍 ReLU — türevi nereden geliyor?</h4>
+    <div class="afx-mount" data-fn="relu"></div>
+    <h4 style="color:var(--accent); margin:16px 0 4px">🔍 Leaky ReLU — türevi nereden geliyor?</h4>
+    <div class="afx-mount" data-fn="leaky"></div>
     <h4 style="color:var(--accent); margin:14px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="2" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/2 çözüldü</span></h4>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> Soru 1: \(\mathrm{ReLU}(-0.3)=?\)</div>
@@ -5586,15 +5859,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609211353"></script>
-<script src="js/lesson-turev.js?v=202609211353"></script>
-<script src="js/lesson-xor.js?v=202609211353"></script>
-<script src="js/lesson-xor-arch.js?v=202609211353"></script>
-<script src="js/lesson-xor-epoch.js?v=202609211353"></script>
-<script src="js/lesson-nn.js?v=202609211353"></script>
-<script src="js/lesson-trig.js?v=202609211353"></script>
+<script src="js/lesson-linreg.js?v=202609222004"></script>
+<script src="js/lesson-turev.js?v=202609222004"></script>
+<script src="js/lesson-xor.js?v=202609222004"></script>
+<script src="js/lesson-xor-arch.js?v=202609222004"></script>
+<script src="js/lesson-xor-epoch.js?v=202609222004"></script>
+<script src="js/lesson-nn.js?v=202609222004"></script>
+<script src="js/lesson-trig.js?v=202609222004"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609211353"></script>
-<script src="js/app.js?v=202609211353"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609222004"></script>
+<script src="js/app.js?v=202609222004"></script>
 </body>
 </html>

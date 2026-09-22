@@ -1354,6 +1354,8 @@
   const ctx=cv.getContext('2d');
   const zEl=document.getElementById('actZ');
   const F=(v,d=4)=>(isFinite(v)?v:0).toFixed(d);
+  // canlı okuma: "başlık + sembolik formül + yerine konmuş sayılar" (MathJax)
+  const LV=(label,sym,num)=>'<div class="afx-lv-h">'+label+'</div>\\[ '+sym+' \\]\\[ '+num+' \\]';
 
   const fns={
     sigmoid:{
@@ -1362,7 +1364,11 @@
       df:z=>{const s=1/(1+Math.exp(-z)); return s*(1-s);},
       info:`<b>σ(z) = 1 / (1 + e<sup>−z</sup>)</b> &nbsp;·&nbsp; Türev: <b>σ′ = σ(1−σ)</b><br>
             Aralık (0, 1) — olasılık gibi okunur. Türevi <b>en fazla 0.25</b> (z=0'da). Derin bir ağda bu 0.25'ler üst üste çarpılınca gradyan hızla söner → <b>vanishing gradient</b>. Ayrıca çıktısı 0-merkezli değil (hep pozitif). Bugün çoğunlukla yalnızca <b>çıkış katmanında</b> (ikili olasılık) kullanılır.`,
-      work:z=>{const s=1/(1+Math.exp(-z)); return 'σ(z)  = 1 / (1 + e^(−z))\n      = 1 / (1 + e^('+F(-z,2)+'))\n      = 1 / (1 + '+F(Math.exp(-z))+')\n      = '+F(s)+'\n\nσ′(z) = σ(z) · (1 − σ(z))\n      = '+F(s)+' · (1 − '+F(s)+')\n      = '+F(s*(1-s));}
+      work:z=>{const s=1/(1+Math.exp(-z)), zz=F(z,2);
+        return LV('değer','\\sigma(z)=\\frac{1}{1+e^{-z}}',
+                  '\\sigma('+zz+')=\\frac{1}{1+'+F(Math.exp(-z))+'}='+F(s))
+             + LV('türev — bu noktadaki eğim','\\sigma\'(z)=\\sigma\\,(1-\\sigma)',
+                  '\\sigma\'('+zz+')='+F(s)+'\\times'+F(1-s)+'='+F(s*(1-s)));}
     },
     tanh:{
       name:'Tanh', color:'#46c46a',
@@ -1370,7 +1376,12 @@
       df:z=>1-Math.tanh(z)*Math.tanh(z),
       info:`<b>tanh(z) = (e<sup>z</sup>−e<sup>−z</sup>) / (e<sup>z</sup>+e<sup>−z</sup>)</b> &nbsp;·&nbsp; Türev: <b>1 − tanh²(z)</b><br>
             Aralık (−1, 1) ve <b>0-merkezli</b> (sigmoid'e göre avantaj). Türevi <b>en fazla 1</b> (z=0'da). RNN'de gizli durumun standart aktivasyonu — ama uçlarda (|z| büyük) türev yine 0'a yaklaşır, o yüzden uzun dizilerde vanishing devam eder. BPTT'deki <b>(1 − h²)</b> tam olarak budur.`,
-      work:z=>{const t=Math.tanh(z); return 'tanh(z)  = (e^z − e^(−z)) / (e^z + e^(−z))\n         = tanh('+F(z,2)+')\n         = '+F(t)+'\n\ntanh′(z) = 1 − tanh²(z)\n         = 1 − ('+F(t)+')²\n         = 1 − '+F(t*t)+'\n         = '+F(1-t*t);}
+      work:z=>{const t=Math.tanh(z), zz=F(z,2);
+        return LV('değer','\\tanh(z)=\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}',
+                  '\\tanh('+zz+')=\\frac{'+F(Math.exp(z))+'-'+F(Math.exp(-z))+'}{'
+                  +F(Math.exp(z))+'+'+F(Math.exp(-z))+'}='+F(t))
+             + LV('türev — bu noktadaki eğim','\\tanh\'(z)=1-\\tanh^{2}(z)',
+                  '\\tanh\'('+zz+')=1-'+F(t*t)+'='+F(1-t*t));}
     },
     relu:{
       name:'ReLU', color:'#f0a032',
@@ -1378,7 +1389,16 @@
       df:z=>z>0?1:0,
       info:`<b>ReLU(z) = max(0, z)</b> &nbsp;·&nbsp; Türev: <b>z &gt; 0 ise 1, değilse 0</b><br>
             Basit ve hesaplaması ucuz. Pozitif bölgede türev <b>tam 1</b> → gradyan sönmez; derin ağların favorisi. Riski: bir nöronun girdisi hep negatif kalırsa türev sürekli 0 olur ve nöron <b>"ölür"</b> (artık öğrenmez). Bunu Leaky ReLU hafifletir.`,
-      work:z=>{const r=Math.max(0,z); return 'ReLU(z)  = max(0, z)\n         = max(0, '+F(z,2)+')\n         = '+F(r)+'\n\nReLU′(z) = (z > 0) ? 1 : 0\n         = ('+F(z,2)+' > 0) ? 1 : 0\n         = '+(z>0?'1':'0');}
+      work:z=>{const r=Math.max(0,z), zz=F(z,2), k=(z===0);
+        return LV('değer','\\mathrm{ReLU}(z)=\\max(0,\\,z)',
+                  '\\mathrm{ReLU}('+zz+')=\\max(0,\\,'+zz+')='+F(r))
+             + LV(k?'türev — TAM KÖŞEDESİN':'türev — bu noktadaki eğim',
+                  '\\mathrm{ReLU}\'(z)=\\begin{cases}1,&z>0\\\\0,&z<0\\end{cases}',
+                  k ? '\\mathrm{ReLU}\'(0)=\\text{tanımsız}\\;\\;(\\text{soldan }0,\\;\\text{sağdan }1)'
+                    : '\\mathrm{ReLU}\'('+zz+')='+(z>0?'1':'0'))
+             + (k?'<div class="afx-note">🔎 Sol taraftan gelen eğim 0, sağdan gelen 1 — '
+                  +'eşit olmadıkları için \\(z=0\\)\'da türev <b>yok</b>. Limit kutusundaki '
+                  +'köşe tartışması tam olarak bu nokta.</div>':'');}
     },
     leaky:{
       name:'Leaky ReLU', color:'#e06a6a',
@@ -1386,7 +1406,15 @@
       df:z=>z>0?1:0.01,
       info:`<b>Leaky ReLU(z) = (z &gt; 0) ? z : 0.01·z</b> &nbsp;·&nbsp; Türev: <b>(z &gt; 0) ? 1 : 0.01</b><br>
             ReLU'nun "ölü nöron" sorununu çözmek için negatif tarafa <b>küçük bir eğim</b> (0.01) verir. Böylece z &lt; 0'da bile minik de olsa gradyan akmaya devam eder, nöron tamamen susmaz.`,
-      work:z=>{const r=z>0?z:0.01*z; return 'Leaky(z)  = (z>0) ? z : 0.01·z\n          = '+(z>0?F(z,2):('0.01·('+F(z,2)+')'))+'\n          = '+F(r)+'\n\nLeaky′(z) = (z>0) ? 1 : 0.01\n          = '+(z>0?'1':'0.01');}
+      work:z=>{const r=z>0?z:0.01*z, zz=F(z,2), k=(z===0);
+        return LV('değer','\\mathrm{Leaky}(z)=\\begin{cases}z,&z>0\\\\0.01\\,z,&z\\le 0\\end{cases}',
+                  '\\mathrm{Leaky}('+zz+')='+(z>0?zz:('0.01\\times'+zz))+'='+F(r))
+             + LV(k?'türev — TAM KÖŞEDESİN':'türev — bu noktadaki eğim',
+                  '\\mathrm{Leaky}\'(z)=\\begin{cases}1,&z>0\\\\0.01,&z<0\\end{cases}',
+                  k ? '\\mathrm{Leaky}\'(0)=\\text{tanımsız}\\;\\;(\\text{soldan }0.01,\\;\\text{sağdan }1)'
+                    : '\\mathrm{Leaky}\'('+zz+')='+(z>0?'1':'0.01'))
+             + (k?'<div class="afx-note">🔎 Negatif taraf artık 0 değil 0.01 — ama sağdaki 1 ile '
+                  +'hâlâ eşit değil. Leaky ReLU <b>ölü nöronu</b> çözer, <b>köşeyi</b> çözmez.</div>':'');}
     }
   };
   let cur='sigmoid';
@@ -1431,12 +1459,31 @@
     ctx.fillStyle='#95a2c2'; ctx.fillText('g′(z) türev', gx1-92, gy0+28);
     ctx.fillStyle='#ffd24a'; ctx.fillText('tanjant: eğim = g′(z0) = '+F(sl,3), gx0+6, gy1-8);
   }
+  // canlı okuma MathJax ile basiliyor; slider suruklenirken her "input"ta
+  // typeset cagirmamak icin rAF ile birlestiriyoruz (bkz. #tzSigLive deseni).
+  let tsQ=null;
+  function typesetLive(el){
+    if(tsQ) return;
+    tsQ=requestAnimationFrame(()=>{
+      tsQ=null;
+      if(window.MathJax && MathJax.typesetPromise){
+        try{ MathJax.typesetClear && MathJax.typesetClear([el]); }catch(e){}
+        MathJax.typesetPromise([el]).catch(()=>{});
+      }
+    });
+  }
   function update(){
     const fn=fns[cur];
+    const work=document.getElementById('actWork');
     document.getElementById('actZv').textContent=F(parseFloat(zEl.value),1);
     document.getElementById('actName').textContent=fn.name;
     document.getElementById('actInfo').innerHTML=fn.info;
-    document.getElementById('actWork').innerHTML=fn.work(parseFloat(zEl.value));
+    work.innerHTML=fn.work(parseFloat(zEl.value));
+    typesetLive(work);
+    // secilen fonksiyonun turev+limit anlatimini goster, digerlerini gizle
+    document.querySelectorAll('#model-aktivasyon .afx-src').forEach(el=>{
+      el.style.display = (el.dataset.fn===cur) ? '' : 'none';
+    });
     draw();
   }
   document.querySelectorAll('.act-sel').forEach(b=>{
@@ -1451,40 +1498,42 @@
   update();
 })();
 
-/* ---- zincir kuralı: sigmoid pipeline ---- */
+/* ---- aktivasyon açıklama kutularını (.afx) yuvalarına klonla ----
+   Türev + limit anlatımı TEK yerde yazılı: #model-aktivasyon içindeki
+   .afx-src blokları. Yapı Taşları'ndaki (ytmod-6/7/8) .afx-mount yuvaları
+   bunların birer kopyasını alır — içerik iki yerde ayrı ayrı yazılmaz,
+   tek kaynaktan çoğalır. Klonlarda id yok (çift id riski yok) ve
+   .afx-src sınıfı sökülür ki fonksiyon seçicinin göster/gizle mantığı
+   sadece asıl blokları hedeflesin. */
 (function(){
-  const zEl=document.getElementById('chainZ'); if(!zEl) return;
-  const F=(v,d=4)=>(isFinite(v)?v:0).toFixed(d);
-  function render(){
-    const z=parseFloat(zEl.value);
-    const u=Math.exp(-z), s=1+u, sig=1/s;
-    const du=-u, ds=1, dsg=-1/(s*s);
-    const chain=dsg*ds*du, check=sig*(1-sig);
-    document.getElementById('chainZv').textContent=F(z,1);
-    document.getElementById('chainWork').innerHTML=
-      'z = '+F(z,2)+'\n'+
-      '  │\n'+
-      '  │  durak 1:  u = e^(−z)        ⇒  u = e^(−'+F(z,2)+') = <b>'+F(u)+'</b>\n'+
-      '  │            kur  du/dz = −e^(−z) = <b>'+F(du)+'</b>   (negatif: z↑ ⇒ u↓)\n'+
-      '  ▼\n'+
-      '  │  durak 2:  s = 1 + u         ⇒  s = 1 + '+F(u)+' = <b>'+F(s)+'</b>\n'+
-      '  │            kur  ds/du = <b>1</b>\n'+
-      '  ▼\n'+
-      '  │  durak 3:  σ = 1 / s         ⇒  σ = 1 / '+F(s)+' = <b>'+F(sig)+'</b>\n'+
-      '  │            kur  dσ/ds = −1/s² = <b>'+F(dsg)+'</b>\n'+
-      '  ▼\n'+
-      'σ = <b style="color:#3a7afe">'+F(sig)+'</b>';
-    document.getElementById('chainCheck').innerHTML=
-      '<b>Zincir kuralı = kurları çarp (sondan başa):</b>\n'+
-      'dσ/dz = (dσ/ds) · (ds/du) · (du/dz)\n'+
-      '      = ('+F(dsg)+') · (1) · ('+F(du)+')\n'+
-      '      = <b style="color:var(--accent)">'+F(chain)+'</b>\n\n'+
-      '<b>Kontrol</b> — kısa formül σ(1−σ): '+F(sig)+' · (1 − '+F(sig)+') = <b style="color:var(--accent)">'+F(check)+'</b>   ✓ birebir aynı!\n'+
-      'Yukarıdaki grafikte z='+F(z,2)+' noktasındaki sarı tanjantın eğimi de tam bu sayıdır.';
+  function mount(){
+    const targets=[];
+    document.querySelectorAll('.afx-mount').forEach(m=>{
+      if(m.dataset.mounted) return;
+      const src=document.querySelector('.afx-src[data-fn="'+m.dataset.fn+'"]');
+      if(!src) return;
+      const c=src.cloneNode(true);
+      c.classList.remove('afx-src');
+      c.style.display='';
+      m.appendChild(c);
+      m.dataset.mounted='1';
+      targets.push(m);
+    });
+    // Klon MathJax'ten ONCE alindiysa ham \[..\] tasir; sonra alindiysa
+    // zaten islenmis SVG'yi tasir (global MJX cache'e id ile baglanir, calisir).
+    // Ilk ihtimale karsi acikca typeset ediyoruz — ikincisinde zararsiz.
+    if(targets.length && window.MathJax && MathJax.typesetPromise){
+      MathJax.typesetPromise(targets).catch(()=>{});
+    }
   }
-  zEl.addEventListener('input',render);
-  render();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+  // MathJax gec yuklenirse (async) bir kez daha dene
+  if(window.MathJax && MathJax.startup && MathJax.startup.promise){
+    MathJax.startup.promise.then(mount).catch(()=>{});
+  }
 })();
+
 /* ---- sol panelden model seçimi ---- */
 (function(){
   document.querySelectorAll('.navbtn').forEach(b=>{
