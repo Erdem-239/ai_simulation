@@ -235,6 +235,21 @@ Sonuç: dört fonksiyonun 155 formülünün tamamı 375px'te taşmıyor. Yeni
 uzun formül eklerken: önce `aligned` ile kır, font küçültmeyi son çare
 olarak kullan.
 
+**Kapsam dersi (PR #280) — "her yerde" gerçekten her yer demek**:
+kullanıcı `.afx`'i "her yerdeki aktivasyon fonksiyonu için" istediğinde,
+Aktivasyon sayfası + Yapı Taşları'ndaki ytmod-6/7/8 modülleri (PR #278)
+yeterli SANILDI ama **Zincir Kuralı modülünün kendi Sigmoid sahnesi**
+(`yts-4-4`, "Sahne 3 — Sigmoid zinciri") gözden kaçtı — orada PR #276'dan
+kalma eski statik "İç halka/Orta halka/Dış halka" paneli hâlâ duruyordu,
+çünkü o sahne `.afx` sisteminin parçası değil, bağımsız bir canvas+panel
+kombinasyonuydu. Kullanıcı ekran görüntüsüyle işaret edip düzelttirdi. PR
+#280'de o statik panel kaldırılıp yerine sigmoid'in `.afx-mount` klonu
+kondu (canvas + canlı okuma korundu, okuma da MathJax'e çevrildi). **Ders**:
+bir bileşen "her yerde" tutarlı olsun denildiğinde, o kavramı gösteren
+TÜM sayfaları tara — sadece bariz/ana sayfaları değil, ilgili konuyu
+farklı bir bağlamda (burada: Zincir Kuralı'nın canlı örneği olarak)
+tekrar eden yerleri de.
+
 ## Yapı Taşları — ilerleme ağaçları (mini-yol-haritaları)
 
 Yapı Taşları (`#model-matematik`) kendi `.acc-category`/`.acc-module`
