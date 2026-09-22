@@ -457,6 +457,37 @@
   .tpl-body{padding:16px}
   .tpl-body.closed{display:none}
   .tpl-empty{font-size:13px; color:var(--muted); font-style:italic; line-height:1.75}
+
+  /* ---- Aktivasyon fonksiyonu açıklama kutuları (.afx) ----------------------
+     Her aktivasyon fonksiyonu için YAN YANA iki açılır kutu: solda türev
+     kurallarıyla (altın), sağda limit tanımıyla (mavi) adım adım anlatım.
+     İçerik "numaralı başlık + düz cümleyle açıklama + ortalanmış MathJax
+     formülü" ritmini izler — kullanıcı bu anlatım biçimini örnek gösterdi.
+     Tek kaynak: .afx-src blokları #model-aktivasyon içinde durur, Yapı
+     Taşları'ndaki .afx-mount yuvalarına js/app.js klonlar (bkz. mountAfx). */
+  .afx{display:flex; gap:14px; flex-wrap:wrap; margin:14px 0; align-items:flex-start}
+  .afx-box{flex:1 1 400px; min-width:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel2)}
+  .afx-box.afx-rule{border-color:rgba(240,160,50,.45)}
+  .afx-box.afx-lim{border-color:rgba(47,155,255,.45)}
+  .afx-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 15px; cursor:pointer; user-select:none; font-size:13.5px; font-weight:700; color:var(--text)}
+  .afx-rule .afx-head{background:rgba(240,160,50,.13)}
+  .afx-lim .afx-head{background:rgba(47,155,255,.13)}
+  .afx-head .chev{transition:.2s; flex:0 0 auto; font-size:14px; color:var(--muted)}
+  .afx-head:not(.closed) .chev{transform:rotate(90deg)}
+  .afx-body{padding:14px 16px}
+  .afx-body.closed{display:none}
+  .afx-step{margin:0 0 15px}
+  .afx-step:last-child{margin-bottom:0}
+  .afx-st{font-weight:700; font-size:13.5px; margin-bottom:5px; color:var(--accent)}
+  .afx-lim .afx-st{color:var(--dot)}
+  .afx-step p{margin:0 0 5px; font-size:13.5px; color:#ccd5e8; line-height:1.75}
+  .afx-fin{border-top:1px dashed var(--line); margin-top:14px; padding-top:11px}
+  .afx-fin .afx-st{color:var(--green)}
+  .afx-note{background:#242742; border-left:3px solid rgb(47,182,168); border-radius:4px; padding:8px 12px; margin-top:10px; font-size:12.5px; color:#ccd5e8; line-height:1.7}
+  /* canlı (z kaydırınca güncellenen) MathJax okuması */
+  .afx-live{line-height:1.6; font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .afx-live .afx-lv-h{font-size:12px; color:var(--muted); margin-bottom:-4px; letter-spacing:.3px}
+
   /* ---- Stanford-tarzı bölüm alt-navigasyonu ---- */
   /* alt-navigasyon aktif butonun ARDINA giriyor → güç hattının devamı gibi hizalandı (rail-x=15px) */
   .subnav{display:none; margin:-2px 0 10px 14px; border-left:2px solid var(--line)}
@@ -569,6 +600,11 @@
     .tabpane{padding:14px 12px}
     .work{font-size:12px}
     #tzSigLive mjx-container{font-size:75% !important}
+    .afx-box{flex-basis:100%}
+    .afx-body{padding:12px 13px}
+    .afx-step p{font-size:13px}
+    .afx-body mjx-container{font-size:82% !important}
+    .afx-live mjx-container{font-size:78% !important}
     table.calc{display:block; overflow-x:auto; max-width:100%}
     .plotbox{flex-basis:100%}
     .controls{gap:8px}

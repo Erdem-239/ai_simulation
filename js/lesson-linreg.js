@@ -261,6 +261,18 @@
   document.querySelectorAll('.acc-head').forEach(h=>{
     h.addEventListener('click', e=>{ e.stopPropagation(); h.closest('.acc').classList.toggle('open'); });
   });
+  // ---- aktivasyon açıklama kutuları (.afx) aç/kapa ----
+  // Delegasyon şart: Yapı Taşları'ndaki .afx-mount yuvalarına bu kutular
+  // js/app.js tarafından SONRADAN klonlanıyor; doğrudan bağlanan bir
+  // listener klonları hiç görmezdi.
+  document.addEventListener('click', e=>{
+    const h = e.target.closest && e.target.closest('.afx-head');
+    if(!h) return;
+    e.stopPropagation();
+    h.classList.toggle('closed');
+    const body = h.nextElementSibling;
+    if(body && body.classList.contains('afx-body')) body.classList.toggle('closed');
+  });
 
   // ---- sekmeler ----
   document.querySelectorAll('.tab').forEach(t=>{
