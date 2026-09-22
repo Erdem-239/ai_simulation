@@ -599,7 +599,6 @@
     const zI = document.getElementById('tzSigZ');
     const zV = document.getElementById('tzSigZv');
     const read = document.getElementById('tzSigRead');
-    const live = document.getElementById('tzSigLive');
     const ctx = cv.getContext('2d');
 
     // MathJax'i kaydirma surukleme sirasinda her input'ta degil, en fazla
@@ -610,8 +609,8 @@
       typesetQueued = requestAnimationFrame(() => {
         typesetQueued = null;
         if(window.MathJax && MathJax.typesetPromise){
-          try{ MathJax.typesetClear && MathJax.typesetClear([live]); }catch(e){}
-          MathJax.typesetPromise([live]).catch(()=>{});
+          try{ MathJax.typesetClear && MathJax.typesetClear([read]); }catch(e){}
+          MathJax.typesetPromise([read]).catch(()=>{});
         }
       });
     }
@@ -673,19 +672,16 @@
       ctx.fillStyle='#f0a032'; ctx.font='bold 12px Segoe UI';
       ctx.fillText('dσ/dz = '+F(du_dz,4)+' × '+F(ds_du,2)+' × '+F(dsigma_ds,4)+' = '+F(total,4), W/2, H-14);
 
+      // dar ekranlarda (mjx-container{overflow-x:auto}) tek satirda tasip
+      // gizli bir yatay kaydirma gerektirmesin diye ayri denklemler
       read.innerHTML =
-        '<b>Zincir çarpımı:</b> dσ/dz = (du/dz) × (ds/du) × (dσ/ds) = ('+F(du_dz,4)+') × ('+F(ds_du,2)+') × ('+F(dsigma_ds,4)+') = <b style="color:#f0a032">'+F(total,5)+'</b>'+
-        '<br><b>Analitik kontrol:</b> σ·(1−σ) = '+F(sigma,4)+'·'+F(1-sigma,4)+' = <b style="color:#46c46a">'+F(analytic,5)+'</b> &nbsp;<span style="color:var(--muted)">← ikisi aynı ✓</span>'+
-        '<br><span style="color:var(--muted); font-size:12px">↳ z=0 iken σ\' = 0.25 (maksimum). z uçlara giderse σ\' → 0 (doyma = vanishing gradient).</span>';
-
-      if(live){
-        // dar ekranlarda (mjx-container{overflow-x:auto}) tek satirda tasip
-        // gizli bir yatay kaydirma gerektirmesin diye iki ayri denklem
-        live.innerHTML =
-          '\\[ \\frac{d\\sigma}{dz} = ('+F(du_dz,3)+')\\times('+F(ds_du,2)+')\\times('+F(dsigma_ds,3)+') \\]'+
-          '\\[ = '+F(total,4)+' \\]';
-        typesetLive();
-      }
+        '<div class="afx-lv-h">Zincir çarpımı — üç kuru çarp</div>'+
+        '\\[ \\frac{d\\sigma}{dz}=\\left('+F(du_dz,3)+'\\right)\\times\\left('+F(ds_du,2)+'\\right)\\times\\left('+F(dsigma_ds,3)+'\\right) \\]'+
+        '\\[ = '+F(total,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">Analitik kontrol — σ(1−σ) ile karşılaştır</div>'+
+        '\\[ \\sigma(1-\\sigma)='+F(sigma,3)+'\\times'+F(1-sigma,3)+'='+F(analytic,4)+' \\]'+
+        '<div style="color:var(--muted); font-size:12px; margin-top:4px">← ikisi aynı ✓ &nbsp; (z=0 iken σ\'=0.25, en büyük değeri. z uçlara giderse σ\'→0.)</div>';
+      typesetLive();
     }
     zI.addEventListener('input', ()=>{ zV.textContent=F(parseFloat(zI.value),2); render(); });
     render();
