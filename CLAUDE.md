@@ -399,3 +399,84 @@ Kullanıcı bunu istediğinde konuşulacak.
   denendi, kullanıcı geri istedi — kalıcı olarak DENENMESİN (bkz. git
   geçmişi, "her çağın bağlantı kablosu kendi çağ renginde olsun" → sonra
   "eskisi gibi renksiz olsun" geri alımı).
+
+### Civ VII tarzı yeni kart dili — kademeli geçiş (PR #282, başladı)
+
+Kullanıcı Civ VII'nin tech tree ekran görüntüsünü örnek gösterip "bizimkini
+iyi özelliklerini kaybetmeden böyle bir tasarıma geçse" dedi. Süreç:
+önce statik bir mockup'ta (madalyon ikon, üstte başlık+durum rozeti,
+altında "neyi açtığı" ikon şeridi, ayrı bir "mastery" alt-satırı, altın
+parıltılı kenarlık, mühür köşeler, Cinzel başlık fontu) iki tur geri
+bildirimle ("fena değil ama daha estetik olsun") tasarım netleşti, SONRA
+kullanıcı iki net karar verdi: (1) Cinzel için Google Fonts kullanılsın
+(sitenin İLK dış font bağımlılığı — `font-display:swap` ile güvenli), (2)
+tüm ağaç yerine ÖNCE sadece Temeller Çağı canlıya alınsın, kullanıcı
+sitede gezip onaylarsa kalan 4 çağ genelleştirilecek. **Şu an sadece
+Temeller Çağı (mat/lin/akt) yeni dilde, kalanı eski Civ6 parşömen/kart
+dilinde — bu KASITLI bir ara durum, hata değil.**
+
+**Kademeli geçiş anahtarı**: `ERAS[i].newStyle=true`. `isNewStyle(n)`
+bir düğümün tier'ine bakıp hangi çağa düştüğünü bulur, o çağ newStyle
+işaretliyse yeni kart kullanılır. Sıradaki çağı geçirmek için tek
+yapılması gereken o çağın objesine `newStyle:true` eklemek — kod başka
+hiçbir şeye dokunmadan otomatik uyum sağlıyor (bkz. NW/NH/era-band
+kodu, hepsi `isNewStyle()`'a bakıyor).
+
+**Mimari — `<foreignObject>` ile gerçek HTML/CSS'i SVG'ye gömmek**:
+`#techSvg` saf SVG kalmaya devam ediyor (Yapı Taşları'ndaki `#ytSvg`
+gibi HTML-kart+SVG-kablo hibrit YAPILMADI — o mimari kartların DOM
+akışında reflow ile açılıp komşuyu itmesi için gerekliydi, burada öyle
+bir ihtiyaç yok). Onun yerine yeni-stil düğümler `newCardSvg()` ile
+`<foreignObject>` içine gerçek `<div class="ttc-card">` gömüyor —
+foreignObject içeriği SVG'nin viewBox ölçeklemesine (transform'a) tabi
+olduğu için masaüstünde/mobilde/yeniden-boyutlandırmada AYRI bir CSS
+gerekmeden otomatik büyüyüp küçülüyor (aynı `<text font-size="11">`
+gibi vektörel SVG elemanlarının davrandığı gibi).
+
+**Seçim "yılan" kenarlığı ve `justUnlocked` patlaması NASIL yeniden
+kullanıldı**: bu iki efekt paylaşılan `#techSvg .tn.sel rect.tn-card` /
+`.tn.justUnlocked rect.tn-card` kurallarına (pathLength=100 + dasharray
+tekniği, üstteki nottaki AYNI "yılan") bağlı ve SADECE bir `rect`
+elemanını hedefliyor. Yeni kartlarda görünen gövdeyi foreignObject
+çiziyor ama YANINA (aynı boyutta, `gi=0` inset'siz) görünmez bir
+"hayalet" `<rect class="tn-card">` daha ekleniyor — boşta hiçbir şey
+görünmez (foreignObject üstünü tam kaplar, z-order'da SONRA gelir),
+ama `.sel`/`.justUnlocked` durumunda SVG stroke path üzerinde
+ORTALANDIĞI için yarısı foreignObject'in DIŞINA taşar ve görünür olur.
+Bu sayede efektler için TEK SATIR CSS bile yazılmadı. **Önce `gi=2`
+(içeri çekilmiş) denendi ama stroke tamamen foreignObject'in altında
+kaldığı için görünmedi — `gi=0`'a düşürülünce düzeldi.**
+
+**Genişlik uyumsuzluğu ve dinamik tier X-konumlandırma**: yeni kartlar
+(300 birim) eski kartlardan (184-208 birim) çok daha geniş. Masaüstü
+`layout()`'un eski `X=n=>125+n.tier*205` formülü SABİT bir tier
+aralığı varsayıyordu — 300 birimlik kartlarla bu komşu çağı ezip
+üst üste bindirdi (ilk denemede canlı ekran görüntüsünde net görüldü).
+Düzeltme: tier X'leri artık o tier'deki EN GENİŞ kartın gerçek
+genişliğine göre KÜMÜLATİF hesaplanıyor (`tierW[]`/`tierX[]`, GAP=60
+birim ara boşluk). `tierW` dizisi `layout()` dışına (üst kapsam
+değişkeni) taşındı ki era-band çizim kodu da (`X({tier:e.t0})-100`
+gibi sabit kenar boşlukları yerine) gerçek kart genişliğine göre kenar
+boşluğu hesaplayabilsin. **`W` artık sabit 2320 değil** — `#techSvg`'nin
+`min-width`'i de CSS'te sabit bir sayı (eskiden 2410px) yerine
+`render()` içinde JS'ten (`svg.style.minWidth=W+'px'`) uygulanıyor,
+1 SVG birimi ≈ 1 CSS px varsayımıyla (masaüstünde zaten öyleydi).
+
+**Mobil/dikey (VERT) modda kompakt varyant**: yeni kartlar VERT'te daha
+dar (300→210 birim) ve daha kısa (150→104 birim) — hem canvas dışına
+taşıp kırpılmasınlar diye (VERT'in slot matematiği eski 184-birimlik
+kartlara göre ayarlı `mX` marjını kullanıyor, `mX` 100'den 108'e
+çıkarıldı) hem de dar ekranda okunaklı kalsınlar diye. Kompakt modda
+gerçek-hayat ikon şeridi (`.ttc-chips`) TAMAMEN GİZLENİYOR (JS'te
+`if(!compact)` ile hiç DOM'a eklenmiyor bile), sadece başlık+rozet+
+mastery noktaları kalıyor. **Bilinen küçük kusur (henüz çözülmedi)**:
+çok dar kartta uzun başlıklar (`Lineer Regresyon` → `Lineer Regre...`)
+ellipsis ile kırpılıyor — taşma/örtüşme yaratmıyor, sadece estetik bir
+eksiklik; kullanıcı isterse kompakt kart genişliği/iç düzeni ayrıca
+iyileştirilebilir.
+
+**Cinzel fontu (Google Fonts) — sitenin İLK dış font bağımlılığı**:
+`index.html`'e `<link>` ile eklendi, `font-display:swap` sayesinde
+yavaş/başarısız yüklenmede sistem fontuna (Segoe UI) zarafetle düşüyor
+— AIpedia'nın serif fontu için alınan "asla dış font indirme" kararının
+(bkz. yukarıdaki not) İSTİSNASI, kullanıcının açık onayıyla.
