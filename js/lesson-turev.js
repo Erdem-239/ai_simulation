@@ -632,15 +632,18 @@
       zV.textContent = F(z,2);
 
       read.innerHTML =
-        '<div class="afx-lv-h">2) Dışın türevi — üs başa düşer</div>'+
+        '<div class="afx-lv-h">🧮 Önce σ(z) — ileri geçişte zaten hesaplanan değer</div>'+
+        '\\[ \\sigma(z)=\\frac{1}{1+e^{-z}}=\\frac{1}{'+F(inner,3)+'}='+F(sigma,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">2) Dışın türevi — üs başa düşer</div>'+
         '\\[ -1\\cdot(1+e^{-z})^{-2} = -1\\cdot('+F(inner,3)+')^{-2} \\]'+
         '\\[ = '+F(dOut,4)+' \\]'+
         '<div class="afx-lv-h" style="margin-top:8px">3) İçinin türevi</div>'+
         '\\[ (1+e^{-z})\'=-e^{-z} = '+F(dIn,4)+' \\]'+
         '<div class="afx-lv-h" style="margin-top:8px">4) Çarp — zincir kuralı</div>'+
         '\\[ \\sigma\'(z)=('+F(dOut,3)+')\\times('+F(dIn,3)+') = '+F(total,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">✅ Kontrol — sadeleştirilmiş σ(1−σ) ile karşılaştır</div>'+
-        '\\[ \\sigma(1-\\sigma) = '+F(sigma,3)+'\\times'+F(1-sigma,3)+' = '+F(analytic,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">✅ Kontrol — yukarıdaki σ(z) ile sadeleştirilmiş σ(1−σ) formülünü karşılaştır</div>'+
+        '\\[ \\sigma(1-\\sigma) = '+F(sigma,3)+'\\times(1-'+F(sigma,3)+') \\]'+
+        '\\[ = '+F(sigma,3)+'\\times'+F(1-sigma,3)+' = '+F(analytic,4)+' \\]'+
         '<div style="color:var(--muted); font-size:12px; margin-top:4px">← ikisi aynı ✓ &nbsp; (z=0 iken σ\'=0.25, en büyük değeri. z uçlara giderse σ\'→0.)</div>';
       typesetLive();
     }
