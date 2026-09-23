@@ -849,6 +849,68 @@
   #techSvg .era-ribbon{fill:#5a3d14}
   #techSvg .era-lbl{fill:#f5e7c0; font-size:13px; letter-spacing:3px; font-weight:800}
   #techSvg .tchips{font-size:12px; pointer-events:none}
+
+  /* ---- Yol Haritası — Civ VII tarzı yeni kart dili (kademeli geçiş) ----
+     Sadece newStyle:true işaretli çağlar (şu an TEMELLER ÇAĞI) bu dili
+     kullanıyor; js/app.js render()'da .tn-newstyle olarak işaretleniyor,
+     içeriği <foreignObject> ile gerçek HTML/CSS kartı SVG koordinat
+     sistemine gömüyor (viewBox ölçeklemesiyle otomatik büyüyüp küçülüyor —
+     ayrı bir mobil/masaüstü CSS'i gerekmiyor, bkz. js/app.js newCardSvg).
+     Seçili kenarlık (yılan) ve "justUnlocked" patlaması PAYLAŞILAN
+     #techSvg .tn.sel/.justUnlocked rect.tn-card kurallarını (yukarıda,
+     satır ~530/954) AYNEN kullanıyor — ayrı bir CSS gerekmiyor. */
+  #techSvg .era-band.era-band-new{fill:#0e1728; stroke:rgba(224,184,102,.4); stroke-width:2}
+  #techSvg .era-ribbon.era-ribbon-new{fill:#7a5420}
+  #techSvg .era-lbl.era-lbl-new{font-family:"Cinzel",serif; letter-spacing:4px}
+
+  .ttc-card{width:100%; height:100%; box-sizing:border-box; font-family:"Segoe UI",Arial,sans-serif;
+    border-radius:10px; position:relative; overflow:hidden;
+    background:#1c2a48; border:1.5px solid #3a4d78;
+    box-shadow:0 5px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
+  .ttc-card::before{content:''; position:absolute; top:-1px; left:-1px; width:14px; height:14px;
+    border-top:2px solid #8a6a2e; border-left:2px solid #8a6a2e; border-radius:10px 0 0 0; opacity:.85}
+  .ttc-card::after{content:''; position:absolute; bottom:-1px; right:-1px; width:14px; height:14px;
+    border-bottom:2px solid #8a6a2e; border-right:2px solid #8a6a2e; border-radius:0 0 10px 0; opacity:.85}
+  .ttc-card.ttc-done{border-color:#4a9151}
+  .ttc-card.ttc-done::before,.ttc-card.ttc-done::after{border-color:#4a9151}
+  .ttc-card.ttc-avail{border-color:#e0b866; box-shadow:0 0 0 1px rgba(224,184,102,.25), 0 0 18px rgba(224,184,102,.3), 0 5px 14px rgba(0,0,0,.4)}
+  .ttc-card.ttc-avail::before,.ttc-card.ttc-avail::after{border-color:#f4d998}
+  .ttc-card.ttc-locked{border-color:#3d4868; opacity:.66}
+
+  .ttc-head{position:relative; display:flex; align-items:center; gap:9px; padding:8px 10px 8px 8px;
+    border-bottom:1px solid rgba(255,255,255,.07); background:linear-gradient(180deg, rgba(255,255,255,.05), transparent)}
+  .ttc-icon-wrap{position:relative; flex:0 0 auto}
+  .ttc-icon{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px;
+    background:radial-gradient(circle at 32% 28%, #ffe9a8, #c9962f 70%, #8a6a2e 100%); border:2px solid #6b4a1a;
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.5), inset 0 -2px 4px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.4)}
+  .ttc-done .ttc-icon{background:radial-gradient(circle at 32% 28%, #b9e6ac, #4a9151 70%, #2c5c30 100%); border-color:#2c5c30}
+  .ttc-locked .ttc-icon{background:radial-gradient(circle at 32% 28%, #97a1bc, #55618a 70%, #333a58 100%); border-color:#333a58; filter:saturate(.6)}
+  .ttc-check{position:absolute; bottom:-3px; right:-4px; width:14px; height:14px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #b9e6ac, #3f7d3f); border:1.5px solid #17301a;
+    display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:900; color:#0e2510}
+  .ttc-title{flex:1 1 auto; min-width:0; font-size:12.5px; font-weight:700; color:#eef1fa; letter-spacing:.2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .ttc-locked .ttc-title{color:#8a97b8}
+  .ttc-badge{flex:0 0 auto; font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; white-space:nowrap; letter-spacing:.2px}
+  .ttc-done .ttc-badge{background:rgba(74,145,81,.22); color:#a5e099; border:1px solid rgba(74,145,81,.4)}
+  .ttc-avail .ttc-badge{background:rgba(224,184,102,.18); color:#f4d998; border:1px solid rgba(224,184,102,.4)}
+  .ttc-locked .ttc-badge{background:rgba(138,151,184,.12); color:#8a97b8; border:1px solid rgba(138,151,184,.2)}
+
+  .ttc-chips{display:flex; align-items:center; gap:6px; padding:9px 10px; flex-wrap:wrap}
+  .ttc-avail .ttc-chips{background:linear-gradient(180deg, #3a2a12, #241a0c)}
+  .ttc-done .ttc-chips{background:linear-gradient(180deg, rgba(74,145,81,.14), transparent)}
+  .ttc-chip{width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.15)); border:1px solid rgba(255,255,255,.16)}
+  .ttc-locked .ttc-chip{opacity:.4; filter:grayscale(.5)}
+
+  .ttc-mastery{display:flex; align-items:center; gap:7px; padding:6px 10px 8px; border-top:1px solid rgba(255,255,255,.06); background:rgba(0,0,0,.22)}
+  .ttc-mnum{flex:0 0 auto; width:15px; height:15px; border-radius:4px; background:rgba(224,184,102,.14); border:1px solid rgba(224,184,102,.3);
+    display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:800; color:#f4d998}
+  .ttc-mdots{display:flex; gap:3px; flex:1 1 auto; flex-wrap:wrap}
+  .ttc-mdot{width:13px; height:13px; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:7.5px; font-weight:800;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.14); color:#8a97b8}
+  .ttc-mdot.on{background:rgba(74,145,81,.32); border-color:#4a9151; color:#c8f0c0}
+
   @media(max-width:720px){ #techSvg{min-width:1660px} }
   /* Dikey (mobil) mod: js/app.js düğümleri yukarıdan aşağı diziyor, artık yatay
      kaydırmaya gerek yok — genişliği kendi konteynerine sığdırsın. #techSvg.techSvg-vert
