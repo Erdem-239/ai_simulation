@@ -113,6 +113,25 @@
   .acc-body{display:none; padding:8px 14px 12px; font-size:13px; color:#ccd5e8; border-top:1px solid var(--line)}
   .acc.open > .acc-body{display:block}
 
+  /* ---- "Soru N:" alıştırma kutuları (.acc-soru) — site geneli ----
+     Kullanıcı bir sorudan diğerine geçerken sınırın belli olmadığını
+     söyledi (base .acc'nin ince, düşük-kontrast var(--line) kenarlığı
+     bunu sağlamıyordu). .acc'yi (site genelinde onlarca farklı bağlamda
+     kullanılan paylaşılan sınıf) DEĞİŞTİRMEDEN, sadece "Soru N:" ile
+     başlayan alıştırma accordion'larını (34 örnek, hepsi index.html'de
+     script dışı bir Python geçişiyle işaretlendi) hedefleyen bir modifier
+     sınıfı eklendi — renkli çerçeve + hafif degrade zemin + öncü ❓ ikonu
+     (::before ile, HTML metnine dokunmadan) ile her soru kendi kartı gibi
+     ayrışıyor, aç/kapa mekanizması (.acc-head click delegasyonu,
+     js/lesson-linreg.js) hiç değişmedi. */
+  .acc.acc-soru{border:1.5px solid rgba(90,160,224,.4); border-radius:9px; margin:14px 0;
+    background:linear-gradient(180deg, rgba(90,160,224,.07), transparent 60%);
+    box-shadow:0 3px 10px rgba(0,0,0,.22)}
+  .acc.acc-soru > .acc-head{background:rgba(90,160,224,.12); border-radius:7px 7px 0 0; padding:9px 13px}
+  .acc.acc-soru > .acc-head::before{content:'❓'; font-size:12px; flex:0 0 auto}
+  .acc.acc-soru.open > .acc-head{border-bottom:1px solid rgba(90,160,224,.3)}
+  .acc.acc-soru > .acc-body{border-top:none; padding:10px 14px 13px}
+
   /* konu (category) ve modül seviyesi accordion varyantları — Yapı Taşları için */
   /* kategoriler: cafcaflı RGB kenarlıklı kartlar, 3'erli ızgara.
      .acc-category display:contents olduğu için başlık (kart) ve gövde (açılan içerik)
