@@ -594,12 +594,10 @@
      Her halka: değer, formül, YEREL TÜREV (kur) — sonda hepsini çarp = σ'
      ========================================================================== */
   (function sig(){
-    const cv = document.getElementById('tzSigCanvas');
-    if(!cv) return;
     const zI = document.getElementById('tzSigZ');
+    if(!zI) return;
     const zV = document.getElementById('tzSigZv');
     const read = document.getElementById('tzSigRead');
-    const ctx = cv.getContext('2d');
 
     // MathJax'i kaydirma surukleme sirasinda her input'ta degil, en fazla
     // frame basina bir kez yeniden typeset et (performans icin debounce).
@@ -615,75 +613,38 @@
       });
     }
 
+    // Bilerek aşağıdaki .afx-mount (data-fn="sigmoid") kanıt kutusuyla
+    // BİREBİR aynı iki adımı (dışın türevi / içinin türevi) kullanıyor —
+    // eskiden burada ayrı bir z→u→s→σ "dört halkalı" canvas çizimi vardı,
+    // kullanıcı "elle kağıtta çözdüm ama burada kafam karıştı, altındaki
+    // kanıt notlarıyla aynı anlatının canlı hâli olsun, u/s gibi ekstra
+    // sembol kullanma" dedi — o yüzden hiç ara değişken adlandırılmıyor,
+    // doğrudan z cinsinden yazılıyor (kanıt kutusundaki formüllerle aynı).
     function render(){
-      const W=cv.width, H=cv.height;
-      ctx.fillStyle='#12141a'; ctx.fillRect(0,0,W,H);
       const z = parseFloat(zI.value);
-      const u = Math.exp(-z);
-      const s = 1 + u;
-      const sigma = 1/s;
-      // yerel türevler
-      const du_dz = -Math.exp(-z);   // d/dz e^(-z) = -e^(-z)
-      const ds_du = 1;               // d/du (1+u) = 1
-      const dsigma_ds = -1/(s*s);    // d/ds (1/s) = -1/s²
-      const total = du_dz * ds_du * dsigma_ds;
+      const inner = 1 + Math.exp(-z);          // (1+e^-z)
+      const dIn = -Math.exp(-z);               // içinin türevi
+      const dOut = -1 * Math.pow(inner, -2);   // dışın türevi
+      const total = dOut * dIn;
+      const sigma = 1/inner;
       const analytic = sigma*(1-sigma);
 
-      // 4 nodes: z, u, s, σ  with values
-      const nodes = [
-        {x:60,  label:'z',           val:F(z,3),      color:'#5aa0e0'},
-        {x:230, label:'u = e⁻ᶻ',     val:F(u,4),      color:'#f0a032'},
-        {x:410, label:'s = 1 + u',   val:F(s,4),      color:'#f0a032'},
-        {x:600, label:'σ = 1/s',     val:F(sigma,4),  color:'#46c46a'}
-      ];
-      const kurlar = [
-        {lbl:'du/dz = −e⁻ᶻ',        val:F(du_dz,4)},
-        {lbl:'ds/du = 1',             val:F(ds_du,4)},
-        {lbl:'dσ/ds = −1/s²',        val:F(dsigma_ds,4)}
-      ];
-      const cy = 90;
-      // arrows + kur labels
-      ctx.strokeStyle='#5a6068'; ctx.lineWidth=2;
-      for(let i=0;i<nodes.length-1;i++){
-        const x1=nodes[i].x+55, x2=nodes[i+1].x-55;
-        ctx.beginPath(); ctx.moveTo(x1, cy); ctx.lineTo(x2, cy); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x2, cy); ctx.lineTo(x2-7, cy-4); ctx.lineTo(x2-7, cy+4); ctx.closePath();
-        ctx.fillStyle='#5a6068'; ctx.fill();
-        ctx.fillStyle='#d4a94a'; ctx.font='11px Segoe UI'; ctx.textAlign='center';
-        ctx.fillText(kurlar[i].lbl, (x1+x2)/2, cy-16);
-        ctx.fillStyle='#f0a032'; ctx.font='bold 12px Segoe UI';
-        ctx.fillText('= '+kurlar[i].val, (x1+x2)/2, cy-3);
-      }
-      // draw nodes
-      nodes.forEach(n=>{
-        ctx.fillStyle='#1a1e26';
-        ctx.strokeStyle=n.color; ctx.lineWidth=2;
-        const w=110, h=52, x=n.x-w/2, y=cy-h/2;
-        ctx.beginPath();
-        if(ctx.roundRect) ctx.roundRect(x,y,w,h,8); else ctx.rect(x,y,w,h);
-        ctx.fill(); ctx.stroke();
-        ctx.fillStyle=n.color; ctx.font='bold 12px Segoe UI'; ctx.textAlign='center';
-        ctx.fillText(n.label, n.x, cy-6);
-        ctx.fillStyle='#e7e9ec'; ctx.font='13px Segoe UI';
-        ctx.fillText(n.val, n.x, cy+12);
-      });
-      ctx.fillStyle='#c0c5cc'; ctx.font='12px Segoe UI'; ctx.textAlign='center';
-      ctx.fillText('z değişince, 3 halkanın kuru çarpılıyor → toplam dσ/dz', W/2, 20);
-      ctx.fillStyle='#f0a032'; ctx.font='bold 12px Segoe UI';
-      ctx.fillText('dσ/dz = '+F(du_dz,4)+' × '+F(ds_du,2)+' × '+F(dsigma_ds,4)+' = '+F(total,4), W/2, H-14);
+      zV.textContent = F(z,2);
 
-      // dar ekranlarda (mjx-container{overflow-x:auto}) tek satirda tasip
-      // gizli bir yatay kaydirma gerektirmesin diye ayri denklemler
       read.innerHTML =
-        '<div class="afx-lv-h">Zincir çarpımı — üç kuru çarp</div>'+
-        '\\[ \\frac{d\\sigma}{dz}=\\left('+F(du_dz,3)+'\\right)\\times\\left('+F(ds_du,2)+'\\right)\\times\\left('+F(dsigma_ds,3)+'\\right) \\]'+
-        '\\[ = '+F(total,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">Analitik kontrol — σ(1−σ) ile karşılaştır</div>'+
-        '\\[ \\sigma(1-\\sigma)='+F(sigma,3)+'\\times'+F(1-sigma,3)+'='+F(analytic,4)+' \\]'+
+        '<div class="afx-lv-h">2) Dışın türevi — üs başa düşer</div>'+
+        '\\[ -1\\cdot(1+e^{-z})^{-2} = -1\\cdot('+F(inner,3)+')^{-2} \\]'+
+        '\\[ = '+F(dOut,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">3) İçinin türevi</div>'+
+        '\\[ (1+e^{-z})\'=-e^{-z} = '+F(dIn,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">4) Çarp — zincir kuralı</div>'+
+        '\\[ \\sigma\'(z)=('+F(dOut,3)+')\\times('+F(dIn,3)+') = '+F(total,4)+' \\]'+
+        '<div class="afx-lv-h" style="margin-top:8px">✅ Kontrol — sadeleştirilmiş σ(1−σ) ile karşılaştır</div>'+
+        '\\[ \\sigma(1-\\sigma) = '+F(sigma,3)+'\\times'+F(1-sigma,3)+' = '+F(analytic,4)+' \\]'+
         '<div style="color:var(--muted); font-size:12px; margin-top:4px">← ikisi aynı ✓ &nbsp; (z=0 iken σ\'=0.25, en büyük değeri. z uçlara giderse σ\'→0.)</div>';
       typesetLive();
     }
-    zI.addEventListener('input', ()=>{ zV.textContent=F(parseFloat(zI.value),2); render(); });
+    zI.addEventListener('input', render);
     render();
   })();
 
