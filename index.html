@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609231431"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609231454"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202609231431">
+<link rel="stylesheet" href="css/style.css?v=202609231454">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-23 14:31 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-23 14:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4478,7 +4478,7 @@ d/dx (7)       = 0</div>
       <input type="range" id="tzSigZ" min="-5" max="5" step="0.05" value="1" style="flex:1; min-width:180px; max-width:400px">
       <b id="tzSigZv" style="color:var(--accent); min-width:44px">1.00</b>
     </div>
-    <div class="work afx-live" id="tzSigRead" style="margin-top:10px; line-height:1.7; font-size:13.5px"></div>
+    <div id="tzSigRead" style="margin-top:10px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">📉 <b>Vanishing gradient tam burada doğuyor:</b> z kaydırıcısını uçlara doğru çek — σ' değeri z=0'da tepe yapıp en fazla <b>0.25</b>'e çıkıyor, uçlara gidince neredeyse 0'a düşüyor. Sinir ağında her sigmoid katmanı geri yayılım zincirine "×en fazla 0.25 küçültücü" bir halka ekler. 20 katmanlı bir ağda gradyan 0.25²⁰ ≈ 10⁻¹² gibi bir sayıyla çarpılır → pratikte yok olur. ReLU'da pozitif bölgede kur = 1 → hiç sönmez — LSTM/ReLU'nun neden tercih edildiğinin cevabı bu tek satırda.</div>
     <h4 style="color:var(--accent); margin:16px 0 4px">🔍 σ'=σ(1−σ) buradan nasıl çıkıyor? — iki ayrı yoldan, adım adım</h4>
     <div class="afx-mount" data-fn="sigmoid"></div>
@@ -5852,15 +5852,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609231431"></script>
-<script src="js/lesson-turev.js?v=202609231431"></script>
-<script src="js/lesson-xor.js?v=202609231431"></script>
-<script src="js/lesson-xor-arch.js?v=202609231431"></script>
-<script src="js/lesson-xor-epoch.js?v=202609231431"></script>
-<script src="js/lesson-nn.js?v=202609231431"></script>
-<script src="js/lesson-trig.js?v=202609231431"></script>
+<script src="js/lesson-linreg.js?v=202609231454"></script>
+<script src="js/lesson-turev.js?v=202609231454"></script>
+<script src="js/lesson-xor.js?v=202609231454"></script>
+<script src="js/lesson-xor-arch.js?v=202609231454"></script>
+<script src="js/lesson-xor-epoch.js?v=202609231454"></script>
+<script src="js/lesson-nn.js?v=202609231454"></script>
+<script src="js/lesson-trig.js?v=202609231454"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609231431"></script>
-<script src="js/app.js?v=202609231431"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609231454"></script>
+<script src="js/app.js?v=202609231454"></script>
 </body>
 </html>
