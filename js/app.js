@@ -1981,8 +1981,14 @@
     const badge = st==='done' ? 'Bitti' : st==='avail' ? (k+' / '+N) : 'Kilitli';
     const checkBadge = st==='done' ? '<div class="ttc-check">✓</div>' : '';
     const compact = VERT;
+    // İkon çevresindeki ilerleme halkası — alt-konu tamamlanma yüzdesi
+    // (k/N). Kilitli düğümlerde alt-konu işaretlenemediği için k hep 0
+    // (bkz. show(), checkbox'lar locked'ta disabled), halka doğal olarak
+    // boş kalır; done'da recompute()/manuel "hepsini tamamladım" k=N
+    // yaptığı için halka hep tam dolu çıkar.
+    const pct = N ? Math.round(k/N*100) : 0;
     let body = '<div class="ttc-head">'
-        +'<div class="ttc-icon-wrap"><div class="ttc-icon">'+icon+'</div>'+checkBadge+'</div>'
+        +'<div class="ttc-icon-wrap" style="--pct:'+pct+'"><div class="ttc-ring"></div><div class="ttc-icon">'+icon+'</div>'+checkBadge+'</div>'
         +'<div class="ttc-title">'+esc(label)+'</div>'
         +'<div class="ttc-badge">'+esc(badge)+'</div>'
       +'</div>';
