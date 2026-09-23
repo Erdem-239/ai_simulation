@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609231454"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202609232208"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202609231454">
+<link rel="stylesheet" href="css/style.css?v=202609232208">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-23 14:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-23 22:08 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4284,7 +4284,8 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 
   <!-- 🌉 SİM 1: KÖPRÜDEN TOP ATMA -->
   <div class="pts" style="border-left:3px solid var(--blue); margin-top:14px" id="yts-3-2">
-    <h3 style="color:var(--blue); margin-top:0">🌉 Sahne 1 — Köprüden bırakılan top</h3>
+    <h3 class="sahne-head closed" style="color:var(--blue); margin-top:0"><span>🌉 Sahne 1 — Köprüden bırakılan top</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">45 m yükseklikte bir köprüden bir top bıraktın. Yerçekimi (g ≈ 10 m/s²) topu aşağı çeker; yüksekliği zamanla şu formülle azalır: \( h(t) = 45 - \tfrac{1}{2}\,g\,t^{2} = 45 - 5t^{2} \). Peki topun <b>şu anki hızı</b> nedir? Elde tek elimizde h(t) formülü var — hız direkt yok. İşte tam bu sorunun cevabı <b>türev</b>tir.</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">zaman t =</span>
@@ -4295,11 +4296,13 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
     <div style="max-width:720px"><canvas id="tvBridgeCanvas" width="700" height="340" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
     <div class="work" id="tvBridgeRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Dikkat et:</b> t=0'da hız <b>0</b> (topu bıraktığın an durgun). Zaman ilerledikçe hız — yani türev — <b>büyüyor</b>. h(t) eğrisinin dikleşmesi tam olarak bunu gösteriyor: eğri ne kadar dikse, türev o kadar büyük. <b>Sarı tanjantın eğimi = o anki hız = h'(t) = −10·t</b>. Yani türev bize <i>başka</i> bir fonksiyon veriyor (hız fonksiyonu). Türevin türevi (−10) = <b>ivme</b> = yerçekiminin kendisi. Fizik ile matematik tam burada aynı dilde konuşuyor.</div>
+    </div>
   </div>
 
   <!-- 🍪 KURABİYE HİKAYESİ -->
   <div class="pts" style="border-left:3px solid #d4a94a; margin-top:14px" id="yts-3-3">
-    <h3 style="color:#d4a94a; margin-top:0">🍪 Sahne 2 — Kurabiye tezgahı</h3>
+    <h3 class="sahne-head closed" style="color:#d4a94a; margin-top:0"><span>🍪 Sahne 2 — Kurabiye tezgahı</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Kurabiye satıyorsun. Günde x kurabiye üretince toplam kârın: \( K(x) = 4x - 0.05x^{2} \) (her kurabiye biraz kâr ekliyor, ama çok üretince satamayıp indirim yapıyorsun — kâr eğrisi tepe yapıyor). Soru: <b>bir kurabiye daha üretsem kârım ne kadar artar?</b> Bu, sana <b>o an</b>'ki durumu söyleyen bir sayı — <b>marjinal kâr</b> = <b>türev</b>.</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">bugün üretim x =</span>
@@ -4316,6 +4319,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
         \[ \frac{dy}{dx}=\frac{dy}{du}\cdot\frac{du}{dx}=(2u)(2)=4u=8x \]
         <div class="tip">İşte <b>zincir kuralı</b> — Modül 4'te ayrıntısı var. Aktivasyon fonksiyonlarındaki <b>σ'=σ(1−σ)</b>, RNN'deki <b>(1−h²)</b> hep bu kural üstünde durur. Kurabiye örneğini şimdi tuttuğunda derin öğrenmenin tüm matematiği sonra kendiliğinden açılır.</div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -4339,7 +4343,8 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
 
   <!-- 🌉 SİM 4: EN UCUZ KÖPRÜ -->
   <div class="pts" style="border-left:3px solid #e06a6a; margin-top:14px" id="yts-3-5">
-    <h3 style="color:#e06a6a; margin-top:0">🏗️ Sahne 3 — En ucuz köprü: türev = 0 nerede?</h3>
+    <h3 class="sahne-head closed" style="color:#e06a6a; margin-top:0"><span>🏗️ Sahne 3 — En ucuz köprü: türev = 0 nerede?</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir nehri geçmek için köprü kuruyorsun. Köprü uzunluğu L (metre) olsun. İki tür maliyet var: <b>malzeme</b> L'nin karesi kadar artar (uzun köprü daha çok çelik gerektirir, gerilme kuadratik büyür): \( M(L)=0.5\,L^{2} \). <b>Sabit inşaat maliyeti</b> ise L uzadıkça ters oranla düşer (kısa köprüde şantiye kurma başına maliyet yüksek): \( S(L)=200/L \). Toplam: \( C(L)=0.5L^{2}+200/L \). <b>Peki hangi L en ucuz?</b></p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">uzunluk L =</span>
@@ -4350,6 +4355,7 @@ ln(1/x) = -ln(x)               (resiprok → işaret değişir)</div>
     <div style="max-width:720px"><canvas id="tvOptCanvas" width="700" height="340" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
     <div class="work" id="tvOptRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:#e06a6a">💡 <b>Optimizasyonun kalbi:</b> C(L) eğrisinin <b>en alt noktasında</b> tanjant <b>yataydır</b> — yani türev tam olarak <b>0</b>'dır. Bu her optimizasyon probleminde geçerli: en iyi yerin adresi = "türevin sıfırlandığı yer". Analitik olarak: \( C'(L)=L - 200/L^{2}=0 \Rightarrow L^{3}=200 \Rightarrow L\approx 5.85\) m. "🎯 En iyisini bul" butonu, gradyan alçalma ile bu noktayı adım adım bulur — RNN eğitirken bilgisayarın yaptığının minik hali.</div>
+    </div>
   </div>
 
   <!-- KURALLAR (kısa özet) -->
@@ -4427,7 +4433,8 @@ d/dx (7)       = 0</div>
 
   <!-- 🔗 SİM 1: CANLI f(g(x)) — y=(2x+1)³ -->
   <div class="pts" style="border-left:3px solid var(--blue); margin-top:14px" id="yts-4-2">
-    <h3 style="color:var(--blue); margin-top:0">🔗 Sahne 1 — Canlı örnek: \(y=(2x+1)^{3}\)'ün teğeti</h3>
+    <h3 class="sahne-head closed" style="color:var(--blue); margin-top:0"><span>🔗 Sahne 1 — Canlı örnek: \(y=(2x+1)^{3}\)'ün teğeti</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Az önce zincir kuralının <b>formülünü</b> gördün — şimdi onu somut bir fonksiyon üzerinde, gerçek bir eğri ve teğetle izle. \(y=(2x+1)^{3}\) bileşke bir fonksiyon: <b>iç halka</b> \(g(x)=2x+1\), <b>dış halka</b> \(f(u)=u^{3}\). x'i kaydır — iki halkanın kendi türevini ayrı ayrı hesapladığını, sonra çarpılıp sarı teğetin eğimini verdiğini gör.</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">x =</span>
@@ -4447,11 +4454,13 @@ d/dx (7)       = 0</div>
       <div class="work" id="tzChainHRead" style="line-height:1.9; font-size:13.5px"></div>
     </div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>Bu, modül 3'teki köprü/kurabiye teğetleriyle AYNI mantık</b> — tek fark, eğrinin kendisi bileşke bir fonksiyon olduğu için eğimi bulmak için önce içini, sonra dışını türetip çarpman gerekiyor. Aşağıdaki "Yazıya dökmek" kutusundaki \(d/dx\,(2x+1)^{3}\) örneği de tam bu — burada canlı, eğriye teğet olarak görüyorsun.</div>
+    </div>
   </div>
 
   <!-- 💱 SİM 2: DÖVİZ ZİNCİRİ -->
   <div class="pts" style="border-left:3px solid #46c46a; margin-top:14px" id="yts-4-3">
-    <h3 style="color:#46c46a; margin-top:0">💱 Sahne 2 — Döviz zinciri: TL → EUR → USD → Altın</h3>
+    <h3 class="sahne-head closed" style="color:#46c46a; margin-top:0"><span>💱 Sahne 2 — Döviz zinciri: TL → EUR → USD → Altın</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Türkiye'de bir tüccar altın alacak. Elinde TL var. Doğrudan TL/altın kuru yok; önce EUR'ya, sonra USD'ye, oradan altına geçmesi gerekiyor. Peki <b>1 TL kaç gram altın eder?</b> Her ara kur bilinirse tek şey yeter: <b>kurları çarp</b>. Bu, zincir kuralının parasal ifadesi — para geçtiği her halkada bir kurdan geçiyor, matematiksel olarak da aynı iş oluyor.</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">TL → EUR:</span>
@@ -4467,21 +4476,24 @@ d/dx (7)       = 0</div>
     <div style="max-width:720px"><canvas id="tzFxCanvas" width="700" height="220" style="width:100%; height:auto; background:#0c1224; border:1px solid var(--line); border-radius:8px"></canvas></div>
     <div class="work" id="tzFxRead" style="margin-top:10px; line-height:1.9; font-size:13.5px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">💡 <b>"Sadeleşme" numarası:</b> \( \dfrac{\text{EUR}}{\text{TL}}\times\dfrac{\text{USD}}{\text{EUR}}\times\dfrac{\text{altın}}{\text{USD}}=\dfrac{\text{altın}}{\text{TL}} \). Aradaki birimler birbirini götürüyor — tam olarak \( \tfrac{dy}{du}\cdot\tfrac{du}{dx}=\tfrac{dy}{dx} \) formülündeki "du"ların sadeleşmesi gibi. Leibniz gösteriminin (\(dy/dx\)) neden bu kadar sevildiğini burada görüyorsun: birim analizi <i>gözle</i> yapılıyor.</div>
+    </div>
   </div>
 
   <!-- 🌡️ SİM 3: SİGMOİD ZİNCİRİ -->
   <div class="pts" style="border-left:3px solid #d4a94a; margin-top:14px" id="yts-4-4">
-    <h3 style="color:#d4a94a; margin-top:0">🌡️ Sahne 3 — Sigmoid'in türevi: dışın türevi × içinin türevi (canlı)</h3>
+    <h3 class="sahne-head closed" style="color:#d4a94a; margin-top:0"><span>🌡️ Sahne 3 — Sigmoid'in türevi: dışın türevi × içinin türevi (canlı)</span><span class="chev">▸</span></h3>
+    <div class="sahne-body closed">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">σ(z)=1/(1+e⁻ᶻ)'i \( (1+e^{-z})^{-1} \) olarak yazınca zincir kuralı devreye giriyor: <b>dışın türevi × içinin türevi</b> — aşağıdaki 🔍 kanıt notlarındaki (📐 Türev kurallarıyla) <b>aynı iki adım</b>, sadece z'yi kaydırdıkça canlı sayılarla güncelleniyor. Kağıtta çözdüğün adımların ta kendisi, ekstra bir sembol (u, s vb.) yok.</p>
     <div style="display:flex; align-items:center; gap:10px; margin:12px 0 8px; flex-wrap:wrap">
       <span style="font-size:13px">giriş z =</span>
       <input type="range" id="tzSigZ" min="-5" max="5" step="0.05" value="1" style="flex:1; min-width:180px; max-width:400px">
       <b id="tzSigZv" style="color:var(--accent); min-width:44px">1.00</b>
     </div>
-    <div id="tzSigRead" style="margin-top:10px"></div>
+    <div class="work afx-live" id="tzSigRead" style="margin-top:10px; line-height:1.7; font-size:13.5px"></div>
     <div class="callout" style="margin-top:10px; border-left-color:var(--accent)">📉 <b>Vanishing gradient tam burada doğuyor:</b> z kaydırıcısını uçlara doğru çek — σ' değeri z=0'da tepe yapıp en fazla <b>0.25</b>'e çıkıyor, uçlara gidince neredeyse 0'a düşüyor. Sinir ağında her sigmoid katmanı geri yayılım zincirine "×en fazla 0.25 küçültücü" bir halka ekler. 20 katmanlı bir ağda gradyan 0.25²⁰ ≈ 10⁻¹² gibi bir sayıyla çarpılır → pratikte yok olur. ReLU'da pozitif bölgede kur = 1 → hiç sönmez — LSTM/ReLU'nun neden tercih edildiğinin cevabı bu tek satırda.</div>
     <h4 style="color:var(--accent); margin:16px 0 4px">🔍 σ'=σ(1−σ) buradan nasıl çıkıyor? — iki ayrı yoldan, adım adım</h4>
     <div class="afx-mount" data-fn="sigmoid"></div>
+    </div>
   </div>
 
   <!-- KURAL VE ALIŞTIRMALAR -->
@@ -5852,15 +5864,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609231454"></script>
-<script src="js/lesson-turev.js?v=202609231454"></script>
-<script src="js/lesson-xor.js?v=202609231454"></script>
-<script src="js/lesson-xor-arch.js?v=202609231454"></script>
-<script src="js/lesson-xor-epoch.js?v=202609231454"></script>
-<script src="js/lesson-nn.js?v=202609231454"></script>
-<script src="js/lesson-trig.js?v=202609231454"></script>
+<script src="js/lesson-linreg.js?v=202609232208"></script>
+<script src="js/lesson-turev.js?v=202609232208"></script>
+<script src="js/lesson-xor.js?v=202609232208"></script>
+<script src="js/lesson-xor-arch.js?v=202609232208"></script>
+<script src="js/lesson-xor-epoch.js?v=202609232208"></script>
+<script src="js/lesson-nn.js?v=202609232208"></script>
+<script src="js/lesson-trig.js?v=202609232208"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609231454"></script>
-<script src="js/app.js?v=202609231454"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202609232208"></script>
+<script src="js/app.js?v=202609232208"></script>
 </body>
 </html>

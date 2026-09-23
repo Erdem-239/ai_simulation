@@ -477,6 +477,13 @@
   .tpl-body.closed{display:none}
   .tpl-empty{font-size:13px; color:var(--muted); font-style:italic; line-height:1.75}
 
+  /* "Sahne N" sahne blokları (Türev/Zincir Kuralı .pts) — aç/kapa, varsayılan kapalı */
+  .sahne-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; cursor:pointer; user-select:none}
+  .sahne-head .chev{transition:.2s; flex:0 0 auto; font-size:15px; color:var(--muted); margin-top:2px}
+  .sahne-head:not(.closed) .chev{transform:rotate(90deg)}
+  .sahne-body{margin-top:10px}
+  .sahne-body.closed{display:none}
+
   /* ---- Aktivasyon fonksiyonu açıklama kutuları (.afx) ----------------------
      Her aktivasyon fonksiyonu için YAN YANA iki açılır kutu: solda türev
      kurallarıyla (altın), sağda limit tanımıyla (mavi) adım adım anlatım.

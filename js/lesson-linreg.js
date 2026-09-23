@@ -257,6 +257,16 @@
       if(body && body.classList.contains('tpl-body')) body.classList.toggle('closed');
     });
   });
+  // ---- "Sahne N" sahne blokları (Türev/Zincir Kuralı) aç/kapa ----
+  // Varsayılan KAPALI (HTML'de her .sahne-head/.sahne-body zaten "closed"
+  // sınıfıyla geliyor) — .tpl-head ile birebir aynı mantık.
+  document.querySelectorAll('.sahne-head').forEach(h=>{
+    h.addEventListener('click', ()=>{
+      h.classList.toggle('closed');
+      const body=h.nextElementSibling;
+      if(body && body.classList.contains('sahne-body')) body.classList.toggle('closed');
+    });
+  });
   // ---- ispat panelleri (accordion) aç/kapa ----
   document.querySelectorAll('.acc-head').forEach(h=>{
     h.addEventListener('click', e=>{ e.stopPropagation(); h.closest('.acc').classList.toggle('open'); });
