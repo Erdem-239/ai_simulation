@@ -602,16 +602,41 @@
     // MathJax'i kaydirma surukleme sirasinda her input'ta degil, en fazla
     // frame basina bir kez yeniden typeset et (performans icin debounce).
     let typesetQueued = null;
-    function typesetLive(){
+    function typesetLive(targets){
       if(typesetQueued) return;
       typesetQueued = requestAnimationFrame(() => {
         typesetQueued = null;
         if(window.MathJax && MathJax.typesetPromise){
-          try{ MathJax.typesetClear && MathJax.typesetClear([read]); }catch(e){}
-          MathJax.typesetPromise([read]).catch(()=>{});
+          try{ MathJax.typesetClear && MathJax.typesetClear(targets); }catch(e){}
+          MathJax.typesetPromise(targets).catch(()=>{});
         }
       });
     }
+
+    // Adımlar her z değişiminde AÇILIP KAPANAN .afx-head/.afx-body kutuları
+    // — kullanıcı "bu sorularda kapanır açılır olsun, hepsi başlangıçta
+    // kapalı gelsin" dedi. Toggle mekanizması PAYLAŞILAN, olay-delegasyonlu
+    // .afx-head dinleyicisini (js/lesson-linreg.js) aynen kullanıyor, ekstra
+    // JS yazılmadı. Kritik nokta: bu iskelet SADECE BİR KEZ kuruluyor —
+    // her z değişiminde #tzSigRead'in TÜMÜNÜ yeniden yazmak (eski davranış)
+    // kullanıcının açtığı/kapattığı kutuların "closed" sınıfını her seferinde
+    // sıfırlardı (HTML string hep "closed" ile gelirdi). Onun yerine dıştaki
+    // .afx-head/.afx-body kutuları hiç dokunulmadan duruyor, sadece
+    // İÇLERİNDEKİ sayı taşıyan <div id="tzSig-sN"> parçaları güncelleniyor.
+    const STEPS = [
+      {id:'tzSig-s0', lbl:'🧮 Önce σ(z) — ileri geçişte zaten hesaplanan değer'},
+      {id:'tzSig-s1', lbl:'2) Dışın türevi — üs başa düşer'},
+      {id:'tzSig-s2', lbl:'3) İçinin türevi'},
+      {id:'tzSig-s3', lbl:'4) Çarp — zincir kuralı'},
+      {id:'tzSig-s4', lbl:'✅ Kontrol — yukarıdaki σ(z) ile sadeleştirilmiş σ(1−σ) formülünü karşılaştır'},
+    ];
+    read.innerHTML = STEPS.map(s=>
+      '<div class="afx-rule" style="margin-bottom:8px; border-radius:8px; overflow:hidden">'
+      +'<div class="afx-head closed" style="padding:8px 12px; font-size:12.5px"><span>'+s.lbl+'</span><span class="chev">▸</span></div>'
+      +'<div class="afx-body closed" style="padding:11px 13px; line-height:1.7; font-size:13.5px" id="'+s.id+'"></div>'
+      +'</div>'
+    ).join('');
+    const stepEls = STEPS.map(s=>document.getElementById(s.id));
 
     // Bilerek aşağıdaki .afx-mount (data-fn="sigmoid") kanıt kutusuyla
     // BİREBİR aynı iki adımı (dışın türevi / içinin türevi) kullanıyor —
@@ -631,21 +656,15 @@
 
       zV.textContent = F(z,2);
 
-      read.innerHTML =
-        '<div class="afx-lv-h">🧮 Önce σ(z) — ileri geçişte zaten hesaplanan değer</div>'+
-        '\\[ \\sigma(z)=\\frac{1}{1+e^{-z}}=\\frac{1}{'+F(inner,3)+'}='+F(sigma,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">2) Dışın türevi — üs başa düşer</div>'+
-        '\\[ -1\\cdot(1+e^{-z})^{-2} = -1\\cdot('+F(inner,3)+')^{-2} \\]'+
-        '\\[ = '+F(dOut,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">3) İçinin türevi</div>'+
-        '\\[ (1+e^{-z})\'=-e^{-z} = '+F(dIn,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">4) Çarp — zincir kuralı</div>'+
-        '\\[ \\sigma\'(z)=('+F(dOut,3)+')\\times('+F(dIn,3)+') = '+F(total,4)+' \\]'+
-        '<div class="afx-lv-h" style="margin-top:8px">✅ Kontrol — yukarıdaki σ(z) ile sadeleştirilmiş σ(1−σ) formülünü karşılaştır</div>'+
+      stepEls[0].innerHTML = '\\[ \\sigma(z)=\\frac{1}{1+e^{-z}}=\\frac{1}{'+F(inner,3)+'}='+F(sigma,4)+' \\]';
+      stepEls[1].innerHTML = '\\[ -1\\cdot(1+e^{-z})^{-2} = -1\\cdot('+F(inner,3)+')^{-2} \\]'+'\\[ = '+F(dOut,4)+' \\]';
+      stepEls[2].innerHTML = '\\[ (1+e^{-z})\'=-e^{-z} = '+F(dIn,4)+' \\]';
+      stepEls[3].innerHTML = '\\[ \\sigma\'(z)=('+F(dOut,3)+')\\times('+F(dIn,3)+') = '+F(total,4)+' \\]';
+      stepEls[4].innerHTML =
         '\\[ \\sigma(1-\\sigma) = '+F(sigma,3)+'\\times(1-'+F(sigma,3)+') \\]'+
         '\\[ = '+F(sigma,3)+'\\times'+F(1-sigma,3)+' = '+F(analytic,4)+' \\]'+
         '<div style="color:var(--muted); font-size:12px; margin-top:4px">← ikisi aynı ✓ &nbsp; (z=0 iken σ\'=0.25, en büyük değeri. z uçlara giderse σ\'→0.)</div>';
-      typesetLive();
+      typesetLive(stepEls);
     }
     zI.addEventListener('input', render);
     render();
