@@ -239,7 +239,69 @@ güncellendi:
    "veri" (her güncellemede değişen sayılar) ayrı tutulmalı — iskelet
    bir kez kurulup veri güncellemeleri sadece en İÇTEKİ yaprak
    elemanlara yazılmalı, aksi halde her güncelleme kullanıcının
-   etkileşim durumunu (açık/kapalı) sıfırlar.
+   etkileşim durumunu (açık/kapalı) sıfırlar. **Not: bu madde PR #298'de
+   GERİ ALINDI** — bkz. madde 7, kapsam yanlış anlaşılmıştı. Yukarıdaki
+   teknik (iskelet-bir-kez/yaprak-güncelleme) genel bir desen olarak
+   doğru/geçerli kalıyor, sadece BU panelde artık kullanılmıyor.
+7. **Madde 6 yanlış hedefe uygulanmıştı — asıl istenen "Sahne N" sahne
+   bloklarının kendisiydi (PR #298)**: kullanıcı madde 6 canlıya alınca
+   ekran görüntüsüyle düzeltti: "burayı açılır kapanır değil sahne1,
+   sahne2 sahne 3'ü falan onları kapanır açılır yapacaktın" — yani "bu
+   sorularda kapanır açılır olsun" derken Sigmoid panelinin 5 mini-adımını
+   değil, Türev ve Zincir Kuralı modüllerindeki **"Sahne N —" başlıklı
+   `.pts` bloklarının kendisini** kastediyordu. `AskUserQuestion` ile
+   kapsam netleştirildi: (1) TÜM "Sahne N" blokları site genelinde
+   (sadece Zincir Kuralı değil), (2) madde 6'nın 5 mini-adım
+   accordion'ı kaldırılıp panel PR #292'deki gibi tek akan MathJax
+   metnine geri döndürülsün.
+   - Site genelinde tam olarak **6 örnek** bulundu (hepsi bu iki
+     modülde): Türev modülünde (`ytmod-3`) Sahne 1 (köprü), Sahne 2
+     (kurabiye), Sahne 3 (en ucuz köprü); Zincir Kuralı modülünde
+     (`ytmod-4`) Sahne 1 (teğet), Sahne 2 (döviz), Sahne 3 (sigmoid).
+     Aynı modüllerdeki "Sahne" ETİKETİ TAŞIMAYAN `.pts` blokları (sezgi
+     açılışı, "h→0 tanımı", pratik kurallar özeti) kasıtlı olarak
+     DOKUNULMADI — sadece başlığı "Sahne N —" ile başlayanlar.
+   - Yeni bileşen `.sahne-head`/`.sahne-body` (`css/style.css`,
+     `.tpl-head`/`.tpl-body` ile birebir aynı toggle mekaniği ve
+     varsayılan-kapalı deseni, ayrı sınıf adıyla). `<h3>` başlığı
+     `<span>metin</span><span class="chev">▸</span>` yapısına çevrilip
+     `sahne-head closed` sınıfı aldı; başlıktan sonraki TÜM içerik
+     (paragraf, kaydırıcı, canvas, panel, callout — nested `.pts`/`.acc`
+     alt-bloklar dahil) `<div class="sahne-body closed">` içine alındı.
+     Toggle listener `js/lesson-linreg.js`'e `.tpl-head` ile aynı
+     doğrudan-`querySelectorAll` desenle eklendi (bu bloklar statik HTML,
+     sonradan klonlanmıyor — `.afx-head`'in delegasyon gerekçesi burada
+     geçerli değil).
+   - Sigmoid panelinin (`#tzSigRead`) 5 `.afx-head`/`.afx-body` mini-
+     kutusu kaldırıldı, `js/lesson-turev.js`'teki `sig()` PR #292'deki
+     tek-akan-metin haline geri döndürüldü — dış Sahne bloğu artık
+     kendi açılıp kapandığı için panelin İÇİNDE ayrı bir toggle
+     katmanına gerek kalmadı (iki seviyeli iç içe accordion, kullanıcının
+     "koru, iç içe iki seviye olsun" DEĞİL "kaldır" seçeneğini seçmesiyle
+     netleşti).
+   - **Regresyon (geri dönüşte fark edilip düzeltildi)**: `#tzSigRead`
+     PR #296'da `.afx-body` içine taşındığı için mobilde site-geneli
+     `.afx-body mjx-container{font-size:82%}` kuralından faydalanıyordu;
+     düz metne dönüşte bu sınıf da kayboldu, 375px'te iki formül (310px/
+     265px, konteyner 243px) taşmaya başladı. Kök neden: panelin ASIL
+     mobil-küçültme kuralı `.afx-body` değil, PR #292'den beri var olan
+     `.afx-live mjx-container{font-size:78%}` (`css/style.css` ~satır
+     632) idi — bu sınıf Phase 10'da (`#tzSigRead`'i adım-accordion'a
+     çevirirken) `id="tzSigRead" style="..."` olarak sadeleştirilip
+     unutulmuştu. `class="work afx-live"` geri eklenince taşma düzeldi.
+     **Ders**: bir elementin class listesini "sadeleştirirken" (görünürde
+     kullanılmayan bir sınıfı kaldırırken) o sınıfın media-query içinde
+     SESSİZCE bir mobil davranış taşıyıp taşımadığı kontrol edilmeli —
+     masaüstünde hiçbir fark yaratmayan bir sınıf kaybı, sadece dar
+     ekranda ortaya çıkan bir regresyona yol açabilir.
+   - `js/app.js`: `openScene()` (mini-ağaçtan bir sahneye tıklayınca
+     scroll+aç) artık scroll'dan ÖNCE hedef `.sahne-body`/`.sahne-head`
+     kapalıysa açıyor — aksi halde artık varsayılan kapalı gelen bir
+     Sahne'ye mini-ağaçtan tıklamak, kullanıcıyı görünmeyen/gizli bir
+     kutuya scroll ederdi. Aynı düzeltmenin yanında `MOD_SCENES`'teki
+     `ytmod-4` Sahne 3 etiketi de PR #290'dan kalma eski (u/s dilinde)
+     başlıktan güncel metne çevrildi (fark edilen ayrı bir küçük
+     tutarsızlık, aynı PR'da düzeltildi).
 
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
