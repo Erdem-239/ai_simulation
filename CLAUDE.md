@@ -199,6 +199,20 @@ güncellendi:
    kullanıcı için "iki farklı ders" gibi görünüp kafa karıştırıyor;
    yeni bir referans eklerken ESKİ içeriğin onunla tutarlı olup
    olmadığı da ayrıca kontrol edilmeli.
+5. **σ(z) adımı eksikti (PR #292)**: PR #290'ın yeni panelinde
+   "✅ Kontrol — σ(1−σ)" satırı σ ve 1−σ sayılarını gösteriyordu ama
+   bu sayıların NEREDEN geldiği (σ(z)'nin kendisi) panelde hiçbir yerde
+   AYRI bir adım olarak hesaplanmıyordu — dışın/içinin türevi adımları
+   sadece `(1+e⁻ᶻ)` üzerinden gidiyordu, σ hiç görünmüyordu. Kullanıcı
+   ekran görüntüsüyle "bu sayılar nereden geliyor?" diye sorunca fark
+   edildi. Düzeltme: panelin başına `🧮 Önce σ(z) — ileri geçişte
+   zaten hesaplanan değer` adımı eklendi, Kontrol satırı da
+   `σ(1−σ)=σ×(1−σ)` açılımıyla o adıma açıkça bağlandı. **Ders**: canlı
+   (z'ye göre güncellenen) bir panelde SONRAKİ bir adımda kullanılan
+   HER sayının, panelin kendi İÇİNDE daha ÖNCE bir yerde AÇIKÇA
+   hesaplanmış/gösterilmiş olması gerekir — "bu değer zaten ortada"
+   varsayımı (ör. σ'nin ileri geçişte hesaplandığı bilgisi) izleyici
+   için GEÇERSİZ, ekranda görünmeyen hiçbir sayı "biliniyor" sayılamaz.
 
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
