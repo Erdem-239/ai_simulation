@@ -213,6 +213,33 @@ güncellendi:
    hesaplanmış/gösterilmiş olması gerekir — "bu değer zaten ortada"
    varsayımı (ör. σ'nin ileri geçişte hesaplandığı bilgisi) izleyici
    için GEÇERSİZ, ekranda görünmeyen hiçbir sayı "biliniyor" sayılamaz.
+6. **Panelin 5 adımı kapanır/açılır yapıldı, hepsi başlangıçta kapalı
+   (PR #296)**: kullanıcı "bu sorularda kapanır açılır olsun, hepsi
+   başlangıçta kapalı gelsin" dedi (bu panelin ekran görüntüsüyle —
+   önce "Kendini Test Et"teki `.acc-soru` kutularına dair sanıldı,
+   zaten 34/34 kapalı/collapsible olduğu doğrulanıp kullanıcıya
+   bildirildi; kullanıcının ikinci, daha spesifik ekran görüntüsü asıl
+   hedefin BU panel olduğunu netleştirdi). Panel z kaydırıcısıyla canlı
+   güncellendiği (madde 5) için doğrudan `read.innerHTML` = madde 5'in
+   ürettiği HTML dizesini her `input` olayında YENİDEN yazmak, dizenin
+   içinde hep hardcoded `closed` sınıfı olduğundan kullanıcının az önce
+   açtığı bir kutuyu her sürüklemede otomatik geri kapatırdı. Çözüm:
+   `js/lesson-turev.js`'teki `sig()` IIFE'sinde 5 `.afx-head closed`/
+   `.afx-body closed` kutusu (id'leri `tzSig-s0`..`tzSig-s4`) SADECE BİR
+   KEZ, IIFE kurulurken inşa edilip `stepEls` dizisinde önbelleğe
+   alınıyor; `render()` artık dıştaki `.afx-head`/`.afx-body`'ye hiç
+   dokunmadan sadece bu 5 yaprak div'in `innerHTML`'ini güncelleyip
+   `typesetLive(stepEls)` çağırıyor. Toggle için yeni JS yazılmadı —
+   `.afx-head`/`.afx-body` zaten `js/lesson-linreg.js`'te olay-
+   delegasyonlu (global, DOM'a sonradan eklenen elemanları da kapsayan)
+   bir dinleyiciyle yönetiliyordu (PR #278'den beri, `.afx-mount`
+   klonları için kurulmuştu), o dinleyici bu yeni kutuları da otomatik
+   kapsadı. **Ders**: canlı/periyodik güncellenen bir panele collapsible
+   davranış eklerken, "iskelet" (toggle durumu taşıyan dış yapı) ile
+   "veri" (her güncellemede değişen sayılar) ayrı tutulmalı — iskelet
+   bir kez kurulup veri güncellemeleri sadece en İÇTEKİ yaprak
+   elemanlara yazılmalı, aksi halde her güncelleme kullanıcının
+   etkileşim durumunu (açık/kapalı) sıfırlar.
 
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
