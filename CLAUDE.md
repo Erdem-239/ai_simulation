@@ -570,3 +570,32 @@ Civ VII ekran görüntüleriyle iki şey daha işaret etti.
    alt-konuları işaretliyor) halka otomatik tam doluyor — `st==='done'`
    için ayrı bir "halkayı tam göster" kuralı YAZILMADI, doğal sonuç
    zaten böyle çıkıyor.
+
+**Kart çerçevesi — "işlenmiş madalyon" estetiği (PR #288)**: kullanıcı
+"kutular biraz daha kenarlıklı olsun, aynısını kopyalamayalım, estetik
+bir şeyler düşün" dedi — Civ VII'nin sade tek-çizgi kenarlığının
+birebir kopyası DEĞİL, üç katmanlı özgün bir çerçeve tasarlandı:
+
+1. Dış kenarlık 1.5px→2px.
+2. **`outline` + negatif `outline-offset` (`-5px`) ile ikinci, soluk
+   bir "iç çerçeve" çizgisi** — klasik pasepartu/tablo çerçevesi
+   ikiliği. `outline` `box-sizing`/layout'u ETKİLEMEDİĞİ için ekstra
+   bir DOM elemanı ya da üçüncü bir pseudo-element gerekmedi (bir
+   elemanın zaten sadece `::before`/`::after` diye 2 pseudo-elementi
+   olabiliyor, ikisi köşe perçinlerine ayrılmıştı — `outline` bu
+   sınırlamayı bedavaya aştı).
+3. **Dört köşede "perçin" noktaları** — tek bir `background` özelliğine
+   eklenen 4 ayrı `radial-gradient` katmanı (`background:
+   radial-gradient(...), radial-gradient(...), ..., #1c2a48` — SON
+   katman düz renk, öncekiler küçük noktalar). Eski L-şeklindeki iki
+   köşe parantezinin (`::before`=sol-üst, `::after`=sağ-alt, SADECE
+   iki köşe) yerini aldı; dört köşe de simetrik. **Ders**: bir elemanın
+   4 köşesine de bir şey koymak gerektiğinde ve sadece 2 pseudo-element
+   hakkın varsa, `background`'a çoklu `radial-gradient` katmanı eklemek
+   (her biri farklı `background-position`'da küçük bir nokta/şekil)
+   pseudo-element sınırını aşan, tek elemanlı bir teknik.
+
+Renkler (`--corner-c` custom property + `outline-color`) done/avail/
+locked durum sınıflarıyla değişiyor — `--corner-c` `radial-gradient`
+içinde `var()` ile kullanılıyor, durum sınıfı değişince perçin rengi de
+otomatik güncelleniyor (ekstra JS gerekmedi, saf CSS cascade).
