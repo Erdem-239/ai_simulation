@@ -400,7 +400,7 @@ Kullanıcı bunu istediğinde konuşulacak.
   geçmişi, "her çağın bağlantı kablosu kendi çağ renginde olsun" → sonra
   "eskisi gibi renksiz olsun" geri alımı).
 
-### Civ VII tarzı yeni kart dili — kademeli geçiş (PR #282, başladı)
+### Civ VII tarzı yeni kart dili (PR #282 → #284, TÜM ağaca genelleşti)
 
 Kullanıcı Civ VII'nin tech tree ekran görüntüsünü örnek gösterip "bizimkini
 iyi özelliklerini kaybetmeden böyle bir tasarıma geçse" dedi. Süreç:
@@ -480,3 +480,59 @@ iyileştirilebilir.
 yavaş/başarısız yüklenmede sistem fontuna (Segoe UI) zarafetle düşüyor
 — AIpedia'nın serif fontu için alınan "asla dış font indirme" kararının
 (bkz. yukarıdaki not) İSTİSNASI, kullanıcının açık onayıyla.
+
+**Tüm ağaca genelleştirme (PR #284)**: kullanıcı Temeller Çağı'nı
+onaylayınca "iyi olmuş hepsini böyle yap" dedi — `ERAS` dizisindeki 5
+çağın hepsine `newStyle:true` eklendi, kod başka HİÇBİR yere
+dokunmadan uyum sağladı (kademeli mimarinin tam olarak amaçladığı şey).
+Genelleştirme sırasında ölçeklenmeyen iki varsayım ortaya çıktı:
+
+1. **Aynı tier içi dikey çakışma**: `Y=n=>100+(H-190)*n.v/100` formülü
+   `n.v`'yi (0-100 elle verilmiş bir yüzde) SABİT `H=680` içinde ham
+   bir konum olarak kullanıyordu — bu, eski 78-birimlik kartlar için
+   yeterli boşluk bırakacak şekilde elle ayarlanmıştı. Yeni kartlar
+   150 birim olunca aynı tier'deki iki düğüm (örn. Vektör & Nokta
+   Çarpım / RNN+BPTT, ikisi de tier3) birbirine bindi. **Düzeltme**:
+   `v` artık SADECE aynı tier içindeki sıralama için kullanılıyor
+   (`arr.sort((a,b)=>a.v-b.v)`); gerçek Y, o tier'deki düğümlerin
+   TOPLAM gerçek yüksekliğine (`NH(n)` toplamı + `VGAP=26` boşluklar)
+   göre hesaplanıp tier'in dikey ortasına (`H/2`) göre ortalanıyor —
+   VERT modda zaten kullanılan "sırala + eşit aralıklı diz" tekniğinin
+   neredeyse aynısı, sadece eksen ve dayanak (H/2) farklı. **Ders**: bir
+   düğüm/kart boyutunu değiştiren her genelleştirmede, o boyutu
+   varsayarak elle ayarlanmış TÜM sabit sayıları (yüzdelik konum,
+   satır/sütun aralığı, kenar boşluğu) yeniden gözden geçir — sadece
+   ilk fark edilen ekseni (X) değil, diğer ekseni (Y) da.
+2. **Arka plan dikişi**: `#techSvg`'nin KENDİ arka planı (era-band'ların
+   ARKASINDAKİ taban) hâlâ eski Civ6 parşömen degradeydi — tek bir çağ
+   newStyle iken bu bilinçliydi (geri kalanı hâlâ parşömen temaydı),
+   ama TÜM çağlar koyu laciverte geçince kenarlarda/boşluklarda çirkin
+   bir tan "dikiş" kaldı. `ERAS.every(e=>e.newStyle)` doğruysa
+   `svg`'ye `techSvg-all-new` sınıfı eklenip taban da koyu laciverte
+   çevrildi — eski parşömen kuralı SİLİNMEDİ (bir çağ ileride geri
+   alınırsa yine devreye girsin diye), sadece daha spesifik bir kural
+   üstüne eklendi.
+
+**Hover tooltip (PR #284)**: kullanıcı "üzerlerine gelince Yapı
+Taşları'ndaki gibi yazılar çıksın" dedi. Paylaşılan `[data-pop]`
+motoruyla (`js/lesson-linreg.js`) DEĞİL, ayrı ve sadece hover'da çalışan
+küçük bir kopyasıyla yapıldı — gerekçe: o motor click'te "pinle"ye
+geçiyor, `.tn`'nin kendi click'i zaten seç+alt paneli açıyor, ikisi
+AYNI elemanda olsaydı bir tıklama hem seçer hem pop-up'ı pinlerdi
+(`#ytInfoPanel`'in `data-pop` yerine `data-info` kullanmasıyla BİREBİR
+aynı gerekçe). Görsel dili (`.xt-pop`/`.xp-bas`/`.xp-sat`) paylaşılan
+CSS'ten aynen alındı, motoru (`svg.addEventListener('mouseover'/
+'mouseout', ...)`, `.tn[data-id]` üzerinde `closest()`) tamamen
+bağımsız ve içerik HER hover'da canlı hesaplanıyor (statik bir
+`.xt-src` kaynağı YOK — `stateOf(n)`/`subCount(n)` doğrudan çağrılıyor,
+ilerleme değiştikçe otomatik güncel kalır).
+
+**Özel scrollbar (PR #284)**: `#techSvg`'yi saran `<div
+style="overflow-x:auto">`'a `id="ttScroll"` verildi, `.sb-inner`'daki
+(satır ~309) AYNI ince-scrollbar deseni (`::-webkit-scrollbar` + Firefox
+için `scrollbar-width:thin`/`scrollbar-color`) uygulandı. **Test notu**:
+headless Chromium (Playwright) bu ortamda scrollbar'ı hiç render
+etmiyor (overlay-scrollbar modu, `clientHeight===offsetHeight` ile
+doğrulandı) — ekran görüntüsüyle doğrulanamadı, ama `.sb-inner`'da
+ZATEN çalışan aynı teknik olduğu için gerçek tarayıcıda çalışacağına
+güvenildi.
