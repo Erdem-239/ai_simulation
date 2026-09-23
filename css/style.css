@@ -839,16 +839,32 @@
   .eq.eq-hl-f{background:rgba(255,210,74,0.10); box-shadow:inset 3px 0 0 #ffd24a; border-radius:4px; padding-left:8px; margin-left:-8px}
   .eq.eq-hl-b{background:rgba(240,160,50,0.10); box-shadow:inset 3px 0 0 #f0a032; border-radius:4px; padding-left:8px; margin-left:-8px}
   .callout.eq-hl-b{box-shadow:inset 3px 0 0 #f0a032, 0 0 0 1px rgba(240,160,50,0.3)}
-  /* ---- Civ6 tech tree v4: parşömen + çağlar ---- */
+  /* ---- Civ6 tech tree v4: parşömen + çağlar ----
+     Bu parşömen degrade sadece newStyle:false (eski) çağların GÖRÜNMEDIĞİ
+     boşluklarda kalan tabana ait — şu an bütün çağlar newStyle olduğu için
+     dış kenar (bkz. #techSvg-newera) koyu temaya çevrildi ki era-band'lar
+     ARASINDAKI ince boşluklar/son marj eski tonla çakışıp dikiş gibi
+     görünmesin. Bir çağ ileride newStyle:false'a döndürülürse bu parşömen
+     degrade YİNE onun arka planı olarak kalsın diye silinmedi, üstüne
+     ikinci (daha spesifik) bir kural eklendi. */
   #techSvg{min-width:2410px; background:
     radial-gradient(ellipse at 25% 15%, rgba(255,248,222,.55), transparent 55%),
     radial-gradient(ellipse at 80% 85%, rgba(120,85,35,.25), transparent 60%),
     linear-gradient(180deg,#dcc79a 0%,#cbb283 45%,#b89968 100%)}
+  #techSvg.techSvg-all-new{background:
+    radial-gradient(ellipse at 50% 0%, #16223e 0%, #0a1120 60%)}
   #techSvg .era-band{fill:rgba(255,248,222,.28); stroke:rgba(90,61,20,.35); stroke-width:1.5}
   #techSvg .era-band.alt{fill:rgba(120,85,35,.14); stroke:rgba(90,61,20,.35); stroke-width:1.5}
   #techSvg .era-ribbon{fill:#5a3d14}
   #techSvg .era-lbl{fill:#f5e7c0; font-size:13px; letter-spacing:3px; font-weight:800}
   #techSvg .tchips{font-size:12px; pointer-events:none}
+  /* Yatay kaydırma çubuğu — OS varsayılanı yerine tema ile uyumlu ince bir
+     çubuk (aynı sadeleştirme .sb-inner'da da var, bkz. satır ~309). */
+  #ttScroll{scrollbar-width:thin; scrollbar-color:#c9962f #0e1728; border-radius:10px}
+  #ttScroll::-webkit-scrollbar{height:11px}
+  #ttScroll::-webkit-scrollbar-track{background:#0e1728; border-radius:8px}
+  #ttScroll::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#8a6a2e,#d4a94a); border-radius:8px; border:2px solid #0e1728}
+  #ttScroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,#a5822f,#e6c26e)}
 
   /* ---- Yol Haritası — Civ VII tarzı yeni kart dili (kademeli geçiş) ----
      Sadece newStyle:true işaretli çağlar (şu an TEMELLER ÇAĞI) bu dili

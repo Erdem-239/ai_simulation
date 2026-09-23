@@ -1849,10 +1849,10 @@
   const byId={}; NODES.forEach(n=>byId[n.id]=n);
   const ERAS=[
     {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI', newStyle:true},
-    {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ'},
-    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI'},
-    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI'},
-    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ'}
+    {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ', newStyle:true},
+    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI', newStyle:true},
+    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI', newStyle:true},
+    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ', newStyle:true}
   ];
   // Civ VII tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -1938,7 +1938,24 @@
       }
       H=680;
       X=n=>tierX[n.tier];
-      Y=n=>100+(H-190)*n.v/100;
+      // Y ARTIK n.v'nin ham yüzdesi değil — v sadece aynı tier içindeki
+      // SIRALAMA için (hangi düğüm üstte/altta görünsün) kullanılıyor.
+      // Gerçek Y, o tier'deki düğümlerin GERÇEK yüksekliğine (NH) göre üst
+      // üste binmeyecek şekilde eşit aralıklarla, tier'in dikey ortasına
+      // (H/2) göre ortalanarak hesaplanıyor — sabit yüzde eski (78 birim)
+      // kartlara göre ayarlıydı, yeni (150 birim) kartlarda aynı tier
+      // içinde iki düğüm birbirine binerdi (örn. Vektör&Nokta / RNN).
+      const byTierY={};
+      NODES.forEach(n=>{ (byTierY[n.tier]=byTierY[n.tier]||[]).push(n); });
+      const yPos=new Map();
+      const VGAP=26;
+      Object.values(byTierY).forEach(arr=>{
+        arr.sort((a,b)=>a.v-b.v);
+        const totalH=arr.reduce((s,n)=>s+NH(n),0)+VGAP*(arr.length-1);
+        let cy=H/2-totalH/2;
+        arr.forEach(n=>{ yPos.set(n.id, cy+NH(n)/2); cy+=NH(n)+VGAP; });
+      });
+      Y=n=>yPos.get(n.id);
       W=tierX[maxTier]+tierW[maxTier]/2+MARGIN+100;
     }
   }
@@ -1996,6 +2013,7 @@
     layout();
     const svgWrap=svg.parentElement;
     svg.classList.toggle('techSvg-vert', VERT);
+    svg.classList.toggle('techSvg-all-new', ERAS.every(e=>e.newStyle));
     // W artık sabit değil (newStyle kartların gerçek genişliğine göre kümülatif
     // hesaplanıyor, bkz. layout()) — CSS'teki sabit min-width yerine gerçek
     // içerik genişliğini JS'ten uyguluyoruz (1 SVG birimi ≈ 1 CSS px).
@@ -2173,6 +2191,57 @@
     }));
     if(window.__ttAfterShow) window.__ttAfterShow(n, st, info);
   }
+
+  // ---- Civ VII tarzı hover tooltip'i ---------------------------------
+  // Paylaşılan [data-pop] pop-up motoruyla (js/lesson-linreg.js) İSTEMEDEN
+  // çakışmasın diye AYRI ve sadece HOVER'da çalışan küçük bir kopyası —
+  // o motor click'te "pinle" davranışına geçiyor, bizim .tn click'i zaten
+  // seç + alt paneli aç işine bakıyor; ikisi aynı elemanda olsaydı bir
+  // tıklama hem seçerdi hem pop-up'ı pinlerdi (bkz. #ytInfoPanel'de aynı
+  // gerekçeyle data-pop yerine data-info kullanılması, CLAUDE.md). Görsel
+  // dili (.xt-pop/.xp-bas/.xp-sat) paylaşılan CSS'ten AYNEN alıyor, motoru
+  // bağımsız.
+  (function(){
+    const tip=document.createElement('div');
+    tip.className='xt-pop'; tip.id='ttHoverTip'; tip.hidden=true;
+    document.body.appendChild(tip);
+    let hideT=null;
+    function place(el){
+      const r=el.getBoundingClientRect(), g=8;
+      const pw=tip.offsetWidth, ph=tip.offsetHeight;
+      let x=r.left+r.width/2-pw/2;
+      x=Math.max(g, Math.min(x, window.innerWidth-pw-g));
+      let y=r.bottom+8;
+      if(y+ph>window.innerHeight-g) y=r.top-ph-8;
+      y=Math.max(g, Math.min(y, window.innerHeight-ph-g));
+      tip.style.left=Math.round(x)+'px';
+      tip.style.top=Math.round(y)+'px';
+    }
+    function content(id){
+      const n=byId[id]; if(!n) return '';
+      const st=stateOf(n);
+      const lockLine = st==='done' ? '✅ Araştırıldı'
+        : st==='avail' ? '🔓 Araştırılabilir · Alt başlık '+subCount(n)+'/'+n.sub.length
+        : '🔒 Kilitli — önce gerekli: '+n.pre.map(p=>byId[p].nm).join(', ');
+      return '<div class="xp-bas">'+esc(n.nm)+'</div>'
+        +'<div class="xp-sat">'+n.d+'</div>'
+        +'<div class="xp-sat" style="color:var(--muted); font-size:11.5px">'+esc(lockLine)+'</div>';
+    }
+    svg.addEventListener('mouseover', e=>{
+      const g=e.target.closest && e.target.closest('.tn[data-id]');
+      if(!g) return;
+      clearTimeout(hideT);
+      tip.innerHTML=content(g.dataset.id);
+      tip.style.left='-9999px'; tip.hidden=false;
+      place(g);
+    });
+    svg.addEventListener('mouseout', e=>{
+      const g=e.target.closest && e.target.closest('.tn[data-id]');
+      if(!g) return;
+      clearTimeout(hideT);
+      hideT=setTimeout(()=>{ tip.hidden=true; }, 60);
+    });
+  })();
 
   render();
   // pencere yatay/dikey eşiği aşınca (döndürme, tarayıcı yeniden boyutlandırma) ağacı yeniden diz
