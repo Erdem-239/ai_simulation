@@ -286,6 +286,40 @@ TÜM sayfaları tara — sadece bariz/ana sayfaları değil, ilgili konuyu
 farklı bir bağlamda (burada: Zincir Kuralı'nın canlı örneği olarak)
 tekrar eden yerleri de.
 
+## "Soru N:" alıştırma kutuları — `.acc-soru` (PR #294)
+
+Kullanıcı `.afx-box`'ların (📐/🔬) ekran görüntüsünü gösterip "sorular
+daha kenarlıklı olsun, bir sorudan diğerine geçerken sorular arası
+geçiş belli olsun" dedi — soru accordion'larının ince, düşük-kontrast
+`var(--line)` kenarlığı bunu sağlamıyordu.
+
+**Kapsam netleştirme**: "sorular" ifadesi belirsizdi (tek sayfa mı,
+site geneli mi?) — `AskUserQuestion` ile sorulup **site genelinde
+TÜM "Soru N:" accordion'ları** olarak netleşti. Site genelinde bu
+formatta 34 örnek var (Yapı Taşları'nın 8 modülünde: tanh, ReLU/Leaky,
+üstel/log, zincir/bölüm kuralı, kısmi türev, istatistik, trigonometri).
+Lineer Regresyon gibi FARKLI soru formatı kullanan modüller ("1)
+h(x)=..." tarzı, `Soru N:` DEĞİL) kasıtlı olarak kapsam dışı — kullanıcı
+özellikle bu deseni belirtti, "her soru" demedi.
+
+**Uygulama şekli**: `.acc` (site genelinde onlarca farklı bağlamda —
+kategori/modül accordion'ları, AIpedia panelleri, vb. — kullanılan
+paylaşılan sınıf) HİÇ değiştirilmedi. Onun yerine, `<div class="acc-head">
+<span class="ac">▸</span> Soru ` deseniyle başlayan `.acc-head`'lerin
+SARMALAYICI `<div class="acc">`'sini `<div class="acc acc-soru">`'ye
+çeviren tek seferlik bir Python regex geçişi (`index.html` üzerinde,
+34/34 eşleşme doğrulandı) ile 34 örnek işaretlendi. `.acc-soru`: mavi
+tonlu çerçeve + hafif degrade zemin + öncü ❓ ikonu (`::before` ile,
+HTML metnine hiç dokunmadan — ikon metne gömülü DEĞİL, salt CSS).
+Aç/kapa mekanizması (`.acc-head` click delegasyonu, `js/lesson-linreg.js`)
+tamamen değişmeden kaldı çünkü hâlâ aynı `.acc`/`.acc-head`/`.acc-body`
+yapısı kullanılıyor, sadece ikinci bir modifier sınıf eklendi. **Ders**:
+paylaşılan bir sınıfı DEĞİŞTİRMEDEN, o sınıfın belirli bir ALT KÜMESİNE
+(burada: başlık metni "Soru N:" ile başlayanlar) özel stil vermek
+gerektiğinde, HTML'i regex ile tarayıp ikinci bir modifier sınıf eklemek
+— hem `.acc`'nin diğer onlarca kullanımını korur hem de yeni HTML
+elle yazılmaz (34 örneği elle düzenlemek riskli/yorucu olurdu).
+
 ## Yapı Taşları — ilerleme ağaçları (mini-yol-haritaları)
 
 Yapı Taşları (`#model-matematik`) kendi `.acc-category`/`.acc-module`
