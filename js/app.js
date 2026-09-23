@@ -1848,12 +1848,20 @@
   ];
   const byId={}; NODES.forEach(n=>byId[n.id]=n);
   const ERAS=[
-    {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI'},
+    {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI', newStyle:true},
     {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ'},
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI'},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI'},
     {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ'}
   ];
+  // Civ VII tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
+  // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
+  // TEMELLER ÇAĞI canlıya alınıyor; kullanıcı onaylayınca sıradaki çağ
+  // buraya (era.newStyle=true) eklenerek genelleştirilecek.
+  function isNewStyle(n){
+    const idx = ERAS.findIndex(e=>n.tier>=e.t0 && n.tier<=e.t1);
+    return idx>=0 && !!ERAS[idx].newStyle;
+  }
 
   const KD='attn_tt_done_v2', KS='attn_tt_sub_v1';
   let done, subs;
@@ -1876,13 +1884,20 @@
      genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
   const BP_VERT=720;
   let VERT=window.innerWidth<=BP_VERT;
-  const NW=n=>n.crown?208:184, NH=78;
+  // Yeni-stil (Civ VII) kartlar eskisinden daha zengin içerik taşıdığı için
+  // daha geniş/uzun — masaüstünde tam boy, dikey/mobil modda VERT slot
+  // matematiği (mX=100 marjı, bkz. layout()) eski 184-birimlik kartlara göre
+  // ayarlandığından kompakt bir boyuta küçülüyor (aksi halde kart canvas
+  // dışına taşıp kırpılırdı).
+  const NW=n=> isNewStyle(n) ? (VERT?210:300) : (n.crown?208:184);
+  const NH=n=> isNewStyle(n) ? (VERT?104:150) : 78;
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
   let W,H,X,Y;
+  let tierW=[]; // her tier'deki en geniş kartın genişliği (era-band kenar boşluğu için de kullanılıyor)
   function layout(){
     if(VERT){
-      const mX=100, Wv=680, rowSp=172, topM=150, botM=90;
+      const mX=108, Wv=680, rowSp=172, topM=150, botM=90;
       const maxTier=Math.max(...NODES.map(n=>n.tier));
       // Yatay moddaki v-yüzdesini AYNEN kullanırsak dar mobil genişlikte 3 düğümlü
       // bir satırda kartlar üst üste biner (v'ler hesap edilirken 456px'lik dar bir
@@ -1902,9 +1917,29 @@
       X=n=>mX+(Wv-2*mX)*slot.get(n.id);
       Y=n=>topM+n.tier*rowSp;
     } else {
-      W=2320; H=680;
-      X=n=>125+n.tier*205;
+      // Tier X'leri artık SABİT 205 birim değil, o tier'deki EN GENİŞ kartın
+      // gerçek genişliğine göre KÜMÜLATİF hesaplanıyor — newStyle kartlar
+      // (300 birim) eski kartlardan (184-208) çok daha geniş olduğu için
+      // sabit aralık iki komşu tier'i üst üste bindirirdi.
+      const maxTier=Math.max(...NODES.map(n=>n.tier));
+      const GAP=60; // tier'ler arası minimum boşluk (kablo dirseği + nefes payı)
+      const MARGIN=40; // sol/sağ kenar boşluğu
+      const tierX=[];
+      tierW=[];
+      for(let t=0;t<=maxTier;t++){
+        const ns=NODES.filter(n=>n.tier===t);
+        tierW[t]=ns.length?Math.max(...ns.map(NW)):184;
+      }
+      for(let t=0;t<=maxTier;t++){
+        // İlk tier'in X'i kendi yarı-genişliği + kenar boşluğu kadar sağdan
+        // başlar — sabit bir sayı (eski kod: 125) 300 birimlik yeni kartlarda
+        // canvas'ın SOLUNA taşıp kırpılmaya yol açardı.
+        tierX[t]= t===0 ? (tierW[0]/2+MARGIN) : tierX[t-1]+tierW[t-1]/2+GAP+tierW[t]/2;
+      }
+      H=680;
+      X=n=>tierX[n.tier];
       Y=n=>100+(H-190)*n.v/100;
+      W=tierX[maxTier]+tierW[maxTier]/2+MARGIN+100;
     }
   }
 
@@ -1917,11 +1952,54 @@
     +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
     +'</defs>';
 
+  // Civ VII tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
+  // koordinat sistemine gömer (viewBox ölçeklemesiyle otomatik büyür/küçülür,
+  // ayrı bir mobil/masaüstü CSS'i gerekmez). Seçim "yılan" kenarlığı ve
+  // justUnlocked patlaması PAYLAŞILAN #techSvg .tn.sel/.justUnlocked
+  // rect.tn-card kurallarını aynen kullanabilsin diye foreignObject'in
+  // ALTINA (birkaç birim içeri çekilmiş) "hayalet" bir <rect class="tn-card">
+  // ekleniyor — boşta hiçbir şey görünmez (foreignObject üstünü kaplar),
+  // sadece bu iki durumun kenarlık/parıltı efekti dışarı taşıp görünür.
+  function newCardSvg(n, st, k, N, icon, label, x, y, w, h){
+    const badge = st==='done' ? 'Bitti' : st==='avail' ? (k+' / '+N) : 'Kilitli';
+    const checkBadge = st==='done' ? '<div class="ttc-check">✓</div>' : '';
+    const compact = VERT;
+    let body = '<div class="ttc-head">'
+        +'<div class="ttc-icon-wrap"><div class="ttc-icon">'+icon+'</div>'+checkBadge+'</div>'
+        +'<div class="ttc-title">'+esc(label)+'</div>'
+        +'<div class="ttc-badge">'+esc(badge)+'</div>'
+      +'</div>';
+    if(!compact){
+      const chipsHtml = n.real.map(r=>'<div class="ttc-chip">'+r[0]+'</div>').join('');
+      body += '<div class="ttc-chips">'+chipsHtml+'</div>';
+    }
+    const dotsHtml = n.sub.map((_,i)=>{
+      const on = subs.has(n.id+':'+i);
+      return '<div class="ttc-mdot'+(on?' on':'')+'">'+(on?'✓':'·')+'</div>';
+    }).join('');
+    body += '<div class="ttc-mastery"><div class="ttc-mnum">'+N+'</div><div class="ttc-mdots">'+dotsHtml+'</div></div>';
+    // gi=0: hayalet rect foreignObject ile TAM aynı sınırları paylaşıyor —
+    // SVG stroke'u path üzerinde ORTALANDIĞI için yarısı dışarı taşar, bu
+    // yüzden .sel/.justUnlocked'ın kenarlık efekti foreignObject'in altında
+    // kaybolmadan, kart kenarının hemen dışında görünür kalır.
+    const gi=0;
+    return '<g class="tn tn-'+st+(sel===n.id?' sel':'')+' tn-newstyle" data-id="'+n.id+'">'
+      +'<rect class="tn-card" x="'+(x+gi)+'" y="'+(y+gi)+'" width="'+(w-2*gi)+'" height="'+(h-2*gi)+'" rx="11" pathLength="100"/>'
+      +'<foreignObject x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'">'
+        +'<div xmlns="http://www.w3.org/1999/xhtml" class="ttc-card ttc-'+st+'">'+body+'</div>'
+      +'</foreignObject>'
+    +'</g>';
+  }
+
   function render(){
     VERT=window.innerWidth<=BP_VERT;
     layout();
     const svgWrap=svg.parentElement;
     svg.classList.toggle('techSvg-vert', VERT);
+    // W artık sabit değil (newStyle kartların gerçek genişliğine göre kümülatif
+    // hesaplanıyor, bkz. layout()) — CSS'teki sabit min-width yerine gerçek
+    // içerik genişliğini JS'ten uyguluyoruz (1 SVG birimi ≈ 1 CSS px).
+    svg.style.minWidth = VERT ? '' : (W+'px');
     if(svgWrap) svgWrap.style.overflowX = VERT ? 'visible' : 'auto';
     const hint=document.getElementById('ttHint');
     if(hint) hint.textContent = VERT ? '⬇️ aşağı kaydırarak çağlarda ilerle' : '➡️ sağa kaydırarak çağlarda ilerle';
@@ -1931,21 +2009,24 @@
     let s=DEFS;
     // çağ bantları + ayraç çizgileri + kurdele etiket
     ERAS.forEach((e,i)=>{
+      const bandCls='era-band'+(i%2?' alt':'')+(e.newStyle?' era-band-new':'');
+      const ribCls='era-ribbon'+(e.newStyle?' era-ribbon-new':'');
+      const lblCls='era-lbl'+(e.newStyle?' era-lbl-new':'');
       if(VERT){
         // üst boşluk 96px: normal düğümler için fazlasıyla yeterli, AMA asıl amacı
         // "kraliyet" (crown) kartının (★ BİLİM ZAFERİ ★ etiketi) çağın ilk satırında
         // olduğunda ribbon/etiketle çakışmasını önlemek — o yüzden alttan büyük
         const y0=Y({tier:e.t0})-96, y1=Y({tier:e.t1})+58;
-        s+='<rect class="era-band'+(i%2?' alt':'')+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
+        s+='<rect class="'+bandCls+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
         const lw=Math.max(150, e.nm.length*7.2);
-        s+='<rect class="era-ribbon" x="'+(W/2-lw/2)+'" y="'+(y0+8)+'" width="'+lw+'" height="22" rx="11"/>';
-        s+='<text class="era-lbl" x="'+(W/2)+'" y="'+(y0+23)+'" text-anchor="middle" style="font-size:10.5px; letter-spacing:1.5px">'+e.nm+'</text>';
+        s+='<rect class="'+ribCls+'" x="'+(W/2-lw/2)+'" y="'+(y0+8)+'" width="'+lw+'" height="22" rx="11"/>';
+        s+='<text class="'+lblCls+'" x="'+(W/2)+'" y="'+(y0+23)+'" text-anchor="middle" style="font-size:10.5px; letter-spacing:1.5px">'+e.nm+'</text>';
       } else {
-        const x0=X({tier:e.t0})-100, x1=X({tier:e.t1})+100;
-        s+='<rect class="era-band'+(i%2?' alt':'')+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
+        const x0=X({tier:e.t0})-(tierW[e.t0]||184)/2-30, x1=X({tier:e.t1})+(tierW[e.t1]||184)/2+30;
+        s+='<rect class="'+bandCls+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
         const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
-        s+='<rect class="era-ribbon" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
-        s+='<text class="era-lbl" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
+        s+='<rect class="'+ribCls+'" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
+        s+='<text class="'+lblCls+'" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
       }
     });
     // "req" kümesi: seçili düğümü açmak için gereken TÜM zincir — sadece
@@ -1972,7 +2053,7 @@
         const a=byId[p];
         let path;
         if(VERT){
-          const x1=X(a), y1=Y(a)+NH/2, x2=X(n), y2=Y(n)-NH/2, my=(y1+y2)/2;
+          const x1=X(a), y1=Y(a)+NH(a)/2, x2=X(n), y2=Y(n)-NH(n)/2, my=(y1+y2)/2;
           path='M'+x1+' '+y1+' V'+my+' H'+x2+' V'+y2;
         } else {
           const x1=X(a)+NW(a)/2, y1=Y(a), x2=X(n)-NW(n)/2, y2=Y(n), mx=(x1+x2)/2;
@@ -1989,24 +2070,29 @@
       });
     });
     // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
+    // (newStyle çağlarda yerini foreignObject'li Civ VII kartına bırakıyor, bkz. newCardSvg)
     NODES.forEach(n=>{
       const st=stateOf(n);
       const k=subCount(n), N=n.sub.length;
-      const w=NW(n), x=X(n)-w/2, y=Y(n)-NH/2;
+      const w=NW(n), h=NH(n), x=X(n)-w/2, y=Y(n)-h/2;
+      const sp=n.nm.indexOf(' ');
+      const icon=sp>0?n.nm.slice(0,sp):n.nm, label=sp>0?n.nm.slice(sp+1):n.nm;
+      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ BİLİM ZAFERİ ★</text>';
+      if(isNewStyle(n)){
+        s+=newCardSvg(n, st, k, N, icon, label, x, y, w, h);
+        return;
+      }
       let sub;
       if(st==='done') sub='✓ Tamamlandı';
       else if(st==='avail') sub='Araştırılabilir · '+k+'/'+N;
       else sub='Kilitli'+(k?' · '+k+'/'+N:'');
       const chips=n.real.map(r=>r[0]).join(' ');
-      const sp=n.nm.indexOf(' ');
-      const icon=sp>0?n.nm.slice(0,sp):n.nm, label=sp>0?n.nm.slice(sp+1):n.nm;
       const icx=x+ICR+9, icy=Y(n), tx=icx+ICR+11;
-      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ BİLİM ZAFERİ ★</text>';
       s+='<g class="tn tn-'+st+(sel===n.id?' sel':'')+'" data-id="'+n.id+'">'
-        +'<rect class="tn-card" x="'+x+'" y="'+y+'" width="'+w+'" height="'+NH+'" rx="12" pathLength="100"/>'
+        +'<rect class="tn-card" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="12" pathLength="100"/>'
         +'<circle class="tn-icon-bg" cx="'+icx+'" cy="'+icy+'" r="'+ICR+'"/>'
         +'<text class="tn-emoji" x="'+icx+'" y="'+(icy+6.5)+'" text-anchor="middle" font-size="19">'+icon+'</text>'
-        +'<line class="tn-div" x1="'+(tx-6)+'" y1="'+(y+9)+'" x2="'+(tx-6)+'" y2="'+(y+NH-9)+'"/>'
+        +'<line class="tn-div" x1="'+(tx-6)+'" y1="'+(y+9)+'" x2="'+(tx-6)+'" y2="'+(y+h-9)+'"/>'
         +'<text x="'+tx+'" y="'+(Y(n)-11)+'" font-size="'+(n.crown?12:11)+'" font-weight="700">'+esc(label)+'</text>'
         +'<text class="tsub" x="'+tx+'" y="'+(Y(n)+7)+'">'+esc(sub)+'</text>'
         +'<text class="tchips" x="'+tx+'" y="'+(Y(n)+25)+'">'+chips+'</text>'
