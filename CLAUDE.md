@@ -536,3 +536,37 @@ etmiyor (overlay-scrollbar modu, `clientHeight===offsetHeight` ile
 doğrulandı) — ekran görüntüsüyle doğrulanamadı, ama `.sb-inner`'da
 ZATEN çalışan aynı teknik olduğu için gerçek tarayıcıda çalışacağına
 güvenildi.
+
+**Kilitli kart tonu + ikon ilerleme halkası (PR #286)**: kullanıcı canlı
+Civ VII ekran görüntüleriyle iki şey daha işaret etti.
+
+1. **Kilitli/açık kartlar arasındaki ton farkı çok sertti** — "açık
+   modül ile kapalı modül arasında ton olarak çok fark var... neredeyse
+   okunmayacak kadar solgun". Kök neden: `.ttc-card.ttc-locked{
+   opacity:.66}` TÜM kartı (kenarlık + arkaplan + metin + ikon) birlikte
+   soluklaştırıyordu. Civ VII referansında kilitli kartlar TAM OPAK,
+   sadece daha az canlı renkli. **Düzeltme**: blanket `opacity` tamamen
+   kaldırıldı; durum farkı artık SADECE kenarlık rengi (gri-mavi/altın/
+   yeşil) + ikon doygunluğu (`saturate(.6)`→`saturate(.75)`) + başlık/
+   rozet/chip tonuyla taşınıyor (chip `opacity:.4`→`.7`,
+   `grayscale(.5)`→`.3`). **Ders**: "durumu ayırt edilebilir kıl" isteği
+   otomatik olarak "agresif opacity/grayscale" ile çözülmemeli — önce
+   TEK bir görsel özelliğin (burada: kenarlık rengi) yeterli ayrımı
+   sağlayıp sağlamadığına bakılmalı, kalanı (ikon/metin) okunabilirlik
+   lehine daha yumuşak tutulmalı.
+2. **İkon çevresinde ilerleme halkası** — Civ VII'de teknoloji ikonunun
+   çevresinde o teknolojideki ilerlemeyi (araştırma yüzdesi) gösteren
+   dolan bir halka var. `.ttc-ring` olarak eklendi: `conic-gradient`
+   (dolgu) + `radial-gradient` `mask` (ortayı oyup "donut" şekli
+   vermek için) tekniği — SVG değil, saf CSS. Dolum oranı `--pct`
+   (0-100) CSS custom property'siyle inline veriliyor
+   (`style="--pct:NN"`), `js/app.js`'te `Math.round(k/N*100)` olarak
+   hesaplanıp her `render()`'da güncelleniyor (`k`=`subCount(n)`,
+   `N`=`n.sub.length` — zaten `.ttc-mastery` satırında kullanılan AYNI
+   sayılar, yeni bir hesap gerekmedi). Kilitli düğümlerde alt-konu
+   işaretlenemediği için (`show()`'da checkbox'lar `disabled`) halka
+   otomatik boş kalıyor; tamamlanan düğümlerde `k` her zaman `N`'ye eşit
+   olduğu için (recompute()/manuel "hepsini tamamladım" ikisi de tüm
+   alt-konuları işaretliyor) halka otomatik tam doluyor — `st==='done'`
+   için ayrı bir "halkayı tam göster" kuralı YAZILMADI, doğal sonuç
+   zaten böyle çıkıyor.
