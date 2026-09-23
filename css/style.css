@@ -879,25 +879,38 @@
   #techSvg .era-ribbon.era-ribbon-new{fill:#7a5420}
   #techSvg .era-lbl.era-lbl-new{font-family:"Cinzel",serif; letter-spacing:4px}
 
+  /* Kart çerçevesi — Civ VII'nin sade tek-çizgi kenarlığının birebir
+     kopyası DEĞİL: "işlenmiş madalyon" hissi için üç katman bir arada —
+     (1) dış çizgi belirginleşsin diye 1.5px→2px kalın kenarlık,
+     (2) outline+negatif outline-offset ile kenarlığın birkaç piksel
+     İÇİNDE ikinci, soluk bir "iç çerçeve" çizgisi (klasik pase-partu/
+     tablo çerçevesi ikiliği — outline layout'u etkilemediği için ekstra
+     DOM/pseudo-element gerekmedi), (3) dört köşede küçük "perçin"
+     noktaları (background'a eklenen 4 radial-gradient katmanı — L
+     şeklindeki eski köşe parantezleri yerine geçti, daha zarif/az
+     "oyun HUD'u" gibi duruyor). Renkler --corner-c/outline-color
+     durum sınıflarıyla (done/avail/locked) değişiyor. */
   .ttc-card{width:100%; height:100%; box-sizing:border-box; font-family:"Segoe UI",Arial,sans-serif;
     border-radius:10px; position:relative; overflow:hidden;
-    background:#1c2a48; border:1.5px solid #3a4d78;
+    border:2px solid #3a4d78; outline:1px solid rgba(255,255,255,.08); outline-offset:-5px;
+    --corner-c:#8a6a2e;
+    background:
+      radial-gradient(circle at 11px 11px, var(--corner-c) 0 1.6px, transparent 2.2px),
+      radial-gradient(circle at calc(100% - 11px) 11px, var(--corner-c) 0 1.6px, transparent 2.2px),
+      radial-gradient(circle at 11px calc(100% - 11px), var(--corner-c) 0 1.6px, transparent 2.2px),
+      radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), var(--corner-c) 0 1.6px, transparent 2.2px),
+      #1c2a48;
     box-shadow:0 5px 14px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05)}
-  .ttc-card::before{content:''; position:absolute; top:-1px; left:-1px; width:14px; height:14px;
-    border-top:2px solid #8a6a2e; border-left:2px solid #8a6a2e; border-radius:10px 0 0 0; opacity:.85}
-  .ttc-card::after{content:''; position:absolute; bottom:-1px; right:-1px; width:14px; height:14px;
-    border-bottom:2px solid #8a6a2e; border-right:2px solid #8a6a2e; border-radius:0 0 10px 0; opacity:.85}
-  .ttc-card.ttc-done{border-color:#4a9151}
-  .ttc-card.ttc-done::before,.ttc-card.ttc-done::after{border-color:#4a9151}
-  .ttc-card.ttc-avail{border-color:#e0b866; box-shadow:0 0 0 1px rgba(224,184,102,.25), 0 0 18px rgba(224,184,102,.3), 0 5px 14px rgba(0,0,0,.4)}
-  .ttc-card.ttc-avail::before,.ttc-card.ttc-avail::after{border-color:#f4d998}
+  .ttc-card.ttc-done{border-color:#4a9151; --corner-c:#7fd178; outline-color:rgba(74,145,81,.3)}
+  .ttc-card.ttc-avail{border-color:#e0b866; --corner-c:#f4d998; outline-color:rgba(224,184,102,.4);
+    box-shadow:0 0 0 1px rgba(224,184,102,.25), 0 0 18px rgba(224,184,102,.3), 0 5px 14px rgba(0,0,0,.4)}
   /* Kilitli kart eskiden tüm-kart opacity:.66 ile soluklaştırılıyordu —
      kullanıcı "açık/kapalı arasında ton farkı çok fazla, neredeyse
      okunmuyor" dedi (Civ VII referansında kilitli kartlar TAM OPAK, sadece
      daha az canlı renkli). Blanket opacity KALDIRILDI; ayrım artık sadece
      kenarlık rengi (gri-mavi/altın/yeşil) + ikon doygunluğu + rozet/başlık
      tonuyla taşınıyor — okunabilirlik korunuyor, durum farkı hâlâ net. */
-  .ttc-card.ttc-locked{border-color:#3d4868}
+  .ttc-card.ttc-locked{border-color:#3d4868; --corner-c:#5c6690; outline-color:rgba(255,255,255,.05)}
 
   .ttc-head{position:relative; display:flex; align-items:center; gap:9px; padding:8px 10px 8px 8px;
     border-bottom:1px solid rgba(255,255,255,.07); background:linear-gradient(180deg, rgba(255,255,255,.05), transparent)}
