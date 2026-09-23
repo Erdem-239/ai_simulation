@@ -177,6 +177,28 @@ güncellendi:
      mjx-container` için `@media(max-width:720px)` içine (satır ~570)
      `font-size:75% !important` eklendi (`.xe-cards .eq mjx-container`
      ile aynı scoped-font-size deseni, satır ~758).
+4. **Sahne 3 — canvas'ı sil, kanıt notlarıyla AYNI dış/iç anlatısına
+   geç (PR #280 → PR #290)**: PR #276'nın MathJax paneli (madde 3)
+   z→u=e⁻ᶻ→s=1+u→σ=1/s dört-halkalı bir zincir kullanıyordu — ama
+   `.afx` sistemi (bkz. aşağıki not) kurulunca sigmoid'in kanıt
+   notları σ(z)=(1+e⁻ᶻ)⁻¹ yazıp **sadece dışın türevi × içinin türevi**
+   (iki parça, u/s YOK) diyordu. PR #280'de canvas'ın YANINA `.afx-mount
+   data-fn="sigmoid"` eklendi ama canvas'ın KENDİSİ (hâlâ u/s dilinde)
+   dokunulmadan kaldı — iki farklı anlatı aynı sahnede yan yana durmaya
+   devam etti. Kullanıcı "elle kağıtta çözdüm ama buraya bakınca hiçbir
+   şey anlamıyorum" deyince kök neden netleşti: **canvas'ın KENDİSİ**
+   sorunluydu, sadece yanına doğru anlatıyı eklemek yetmemişti. PR
+   #290'da canvas TAMAMEN kaldırıldı (kutu/ok çizimi zaten hiçbir eğri/
+   grafik çizmiyordu — salt metin içeriyordu, MathJax'e taşınınca
+   kayıp olmadı) — yerine `.afx-rule` kutusunun 2-3-4. adımlarıyla
+   (dışın türevi / içinin türevi / çarp) BİREBİR aynı formülleri
+   canlı sayılarla gösteren bir MathJax paneli geldi, hiç u/s
+   kullanmadan. **Ders**: bir sahnenin YANINA doğru referans içerik
+   eklemek (afx-mount), sahnenin KENDİ ana gövdesindeki eski/çelişen
+   anlatıyı otomatik düzeltmiyor — ikisi aynı sayfada yan yana kalırsa
+   kullanıcı için "iki farklı ders" gibi görünüp kafa karıştırıyor;
+   yeni bir referans eklerken ESKİ içeriğin onunla tutarlı olup
+   olmadığı da ayrıca kontrol edilmeli.
 
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
