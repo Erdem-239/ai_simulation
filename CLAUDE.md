@@ -510,6 +510,20 @@ istedi ("bundan sonra sorma birleştir").
   (`#bsCellSvg{max-width:480px}`) unutulunca ekranı doldurdu — yeni bir
   `.bp-live` örneğine her zaman kendi `max-width` kuralını ver.
 
+**Tek Hücre "Geri Adım 5" yeniden yazıldı (PR sonrası)**: kullanıcı "whh
+gradyanı −0.0271 bulundu, ee sonra ne oluyor, bu adım akıllıca anlatılmıyor"
+dedi — kart "Zaman boyunca topla" idi ama TEK zaman adımında toplanacak bir
+şey yok, vanishing örneği de varsayımsaldı; asıl "gradyan bulundu, sonra?"
+sorusu (ağırlık güncelleme) kapalı bir accordion'da gömülüydü. Kart artık
+**"Ağırlıkları güncelle"**: W := W − α·∂L/∂W formülü + beş ağırlığın canlı
+güncellenmiş değeri (`#rcS5Rows`) + güncelleme öncesi/sonrası ŷ ve L
+(`#rcS5Loss`, `render()` içinde). Eski toplama/vanishing içeriği SİLİNMEDİ,
+kartın içinde kapalı bir "Zincire geçince ne olur?" accordion'una taşındı.
+**Ders**: bir adımın başlığı o adımda GERÇEKTEN olan şeyi söylemeli;
+kullanıcı "bu adımdan sonra ne oluyor" diye soruyorsa eksik halka genelde
+bir sonraki mantıksal adımdır (burada güncelleme), mevcut metni uzatmak
+değil.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
