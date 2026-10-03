@@ -1511,11 +1511,21 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         }
         const lr=$('mo6Learn');
         if(lr){
-          const ratioX=Math.abs(dWxh1)>1e-12?Math.abs(dWxh3/dWxh1):Infinity;
-          lr.innerHTML='💡 <b>Ne öğrendik (senin sayılarınla):</b> t=3\'e ulaşan sinyal <b>'+F(rdz3)+'</b>, t=1\'e ulaşan <b>'+F(rdz1)+'</b> — yani t=1 yalnızca <b>'+pct(rdz1,rdz3)+'</b> kadarını alıyor. '
-            +'Bu yüzden x₁\'in W<sub>xh</sub> gradyanı '+F(dWxh1)+', x₃\'ün ki '+F(dWxh3)+' ('+(isFinite(ratioX)?'≈ '+F(ratioX,1)+' kat fark':'t=1 neredeyse 0')+'). '
-            +'Ağ, <b>ilk girdinin sonucu nasıl etkilediğini</b> neredeyse hiç görmeden öğreniyor. Dizi 10 adım olsaydı t=1\'e '+F(proj[9],4)+'% ulaşırdı. '
-            +'(Not: t=1\'deki dW<sub>hh</sub>=0 başka bir sebepten — h₀=0 olduğu için, unutma değil.) W<sub>hh</sub> kaydırıcısını büyütmeyi dene: çarpan 1\'i geçince sinyal küçülmek yerine <b>patlar</b>.';
+          const rat=Math.abs(rdz3)>1e-12?Math.abs(rdz1/rdz3):0;      // t=1'e ulaşan sinyal / t=3'e ulaşan
+          const head='💡 <b>Ne öğrendik (senin sayılarınla):</b> t=3\'e ulaşan sinyal <b>'+F(rdz3)+'</b>, t=1\'e ulaşan <b>'+F(rdz1)+'</b> — t=1, t=3\'ün <b>'+pct(rdz1,rdz3)+'</b>\'ini alıyor. ';
+          const grads='x₁\'in W<sub>xh</sub> gradyanı '+F(dWxh1)+', x₃\'ün ki '+F(dWxh3)+'. ';
+          const tail10=' Dizi 10 adım olsaydı (aynı çarpanla) t=1\'e '+F(proj[9],4)+'% ulaşırdı.';
+          const hh0='(Not: t=1\'deki dW<sub>hh</sub>=0 başka bir sebepten — h₀=0 olduğu için, unutma değil.)';
+          let body;
+          if(rat<0.3){
+            body='<b style="color:#e06a6a">Vanishing:</b> sinyal geriye giderken eridi. '+grads+'Ağ, <b>ilk girdinin sonucu nasıl etkilediğini</b> neredeyse hiç görmeden öğreniyor.'+tail10+' '+hh0+' W<sub>hh</sub> kaydırıcısını büyütmeyi dene: çarpan 1\'e yaklaşınca sinyal erimekten kurtulur.';
+          } else if(rat>3){
+            body='<b style="color:#e06a6a">Exploding:</b> sinyal geriye giderken <b>büyüdü</b> ('+F(rat,1)+' kat). '+grads+'Eski adımların gradyanı yeni adımlarınkinden çok büyük — güncellemeler sıçrar, öğrenme kararsızlaşır.'+tail10+' '+hh0+' W<sub>hh</sub>\'ı küçültmeyi dene.';
+          } else {
+            body='<b style="color:#46c46a">Dengeli (r ≈ 1):</b> sinyal ne eriyor ne patlıyor. '+grads+'Yani <b>ilk girdi, son girdi kadar öğrenmeye katkı yapıyor</b> — ağ uzak geçmişten de ders çıkarabiliyor.'+tail10+' '+hh0+' Bu denge nadir ve kırılgan: W<sub>hh</sub> küçülürse vanishing, büyürse exploding\'e kayar; LSTM/GRU bu dengeyi kapılarla garanti etmeye çalışır.';
+          }
+          const tiny=Math.abs(rdz3)<0.005?' <span style="color:var(--muted)">⚠ Ama sinyalin kendisi zaten çok küçük (|δ₃|='+F(rdz3)+'): ağ hedefi neredeyse tutturmuş ya da tanh doymuş olabilir — bu vanishing değil, öğrenecek bir şey kalmamış demek.</span>':'';
+          lr.innerHTML=head+body+tiny;
         }
       }
 
