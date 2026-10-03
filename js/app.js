@@ -1006,6 +1006,17 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
        üretildi + (🔗) bu halkanın yerel türevi × bir önceki halkadaki gradyan = bu halkanın gradyanı
        (yaprakta: adımların toplamı). cfg: {T,inp[],out[],single,K(name,t)->data-zincir anahtarı|null}
        st: {X,Y,H,Z,ZY,DY,LL,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY} (1-indeksli diziler, H[0]=başlangıç hafıza) */
+    /* Pop-up AÇIKKEN kaydırıcı sürüklenirse render() her input'ta çalışır; açık pop-up klonunu her seferinde yeniden
+       yazıp typeset etmek MathJax kuyruğunu şişirir ve ham LaTeX görünür. Çözüm: klon, kullanıcı ~150ms durunca TEK SEFER
+       güncellenir (o ana kadar eski, düzgün render edilmiş içerik görünür kalır). */
+    const popPending=new Map(); let popTimer=null;
+    function popQueue(el,html){
+      popPending.set(el,html); clearTimeout(popTimer);
+      popTimer=setTimeout(()=>{
+        const els=[]; popPending.forEach((h,e)=>{ if(e.isConnected){ e.innerHTML=h; els.push(e); } }); popPending.clear();
+        if(els.length && window.MathJax && MathJax.typesetPromise){ try{ MathJax.typesetClear&&MathJax.typesetClear(els); }catch(_){} MathJax.typesetPromise(els).catch(()=>{}); }
+      },150);
+    }
     function rnnState(cfg){
       const T=cfg.T, inp=cfg.inp, out=cfg.out;
       const X=[],Y=[],H=[cfg.H0||0],Z=[],ZY=[],DY=[],LL=[];
@@ -1057,9 +1068,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const box=(path,localRows,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b>'+eqn(path.map(row)):'')
         +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b>'+localRows;
       const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
-        e.innerHTML=html;
-        /* pop-up AÇIKKEN (ör. kaydırıcıyı oynatırken) içindeki klon da güncellenir — yeni ham LaTeX'i yeniden typeset et */
-        if(e.closest('#xtPop') && window.MathJax && MathJax.typesetPromise){ try{ MathJax.typesetClear&&MathJax.typesetClear([e]); }catch(_){} MathJax.typesetPromise([e]).catch(()=>{}); }
+        if(e.closest('#xtPop')) popQueue(e,html); else e.innerHTML=html;
       }); };
       function sumBlock(ad,a,filter,cur){
         const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);

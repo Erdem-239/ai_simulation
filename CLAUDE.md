@@ -583,6 +583,15 @@ sonra `typesetClear+typesetPromise` çağırır. **Ders**: canlı güncellenen
 içerik bir pop-up/klon olarak çoğaltılıyorsa, güncelleme seçicisi klonları
 da yakalar — LaTeX içeren her canlı yazımda "klon açıkken" durumunu test et.
 
+**Açık pop-up + kaydırıcı sürükleme: güncellemeyi debounce'la (`popQueue`)**:
+önceki düzeltme (klonu her render'da typeset et) sürüklerken (art arda onlarca
+`input`) MathJax kuyruğunu şişirdi, kullanıcı W_hh'ı sürüklerken yine ham
+`\\( \\begin{aligned}` gördü. `rnnBridges.put()` artık `#xtPop` içindeki klonu
+doğrudan yazmaz: `popQueue(el,html)` en son HTML'i saklar, kullanıcı ~150ms
+durunca tek seferde yazıp `typesetPromise` çağırır (arada eski, düzgün render
+edilmiş içerik kalır). **Ders**: canlı değişen + her değişimde yeniden
+typeset edilen içerik, sürekli `input` olaylarında debounce'lanmalı.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
