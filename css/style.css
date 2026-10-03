@@ -865,6 +865,9 @@
   .eq.eq-hl-f{background:rgba(255,210,74,0.10); box-shadow:inset 3px 0 0 #ffd24a; border-radius:4px; padding-left:8px; margin-left:-8px}
   .eq.eq-hl-b{background:rgba(240,160,50,0.10); box-shadow:inset 3px 0 0 #f0a032; border-radius:4px; padding-left:8px; margin-left:-8px}
   .callout.eq-hl-b{box-shadow:inset 3px 0 0 #f0a032, 0 0 0 1px rgba(240,160,50,0.3)}
+  /* ---- aynı vurgu, "5️⃣ Bütün Resim" ağacının/akışının xf-box/xt-box kutuları için ---- */
+  .xf-box.eq-hl-f, .xt-box.eq-hl-f{border-color:#ffd24a !important; box-shadow:0 0 0 2px rgba(255,210,74,.5), 0 0 10px rgba(255,210,74,.35)}
+  .xf-box.eq-hl-b, .xt-box.eq-hl-b{border-color:#f0a032 !important; box-shadow:0 0 0 2px rgba(240,160,50,.5), 0 0 10px rgba(240,160,50,.35)}
   /* ---- Civ6 tech tree v4: parşömen + çağlar ----
      Bu parşömen degrade sadece newStyle:false (eski) çağların GÖRÜNMEDIĞİ
      boşluklarda kalan tabana ait — şu an bütün çağlar newStyle olduğu için

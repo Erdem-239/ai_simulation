@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202609232208"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031502"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202609232208">
+<link rel="stylesheet" href="css/style.css?v=202610031502">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-09-23 22:08 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:02 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -722,7 +722,191 @@
   </div>
 
   <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed" id="rnnBigPictureHead"><span>5️⃣ Bütün Resim — ileri ve geri yol (many-to-one)</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed" id="rnnBigPictureBody">
+    <div id="rnnBigPictureM2o" style="display:none">
+
+    <div class="pts" style="border-left:3px solid var(--accent); margin:0">
+      <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-one)</h3>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Aşağıdaki <b>6️⃣ Simülasyon</b>'da geri yayılımı beş karta bölüp adım adım işleyeceğiz. Ama önce <b>bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Girdiler (x₁,x₂,x₃,y) ve ağırlıklar yukarıdaki <b>🎛️ Ağırlıklar</b> kaydırıcılarıyla aynı — değiştirince burası da canlı güncellenir.</p>
+      <div id="rnnTreeWrap" class="xt-wrap acc open">
+      <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+      <div class="acc-body">
+      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(h zincirlenerek, canlı yolculuk)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="rfx1">—</span></div><div class="xf-box gi">h₀<span class="xf-val" id="rfh0">0.00</span></div><div class="xf-kolad">girdi (t=1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{xh}x_1{+}W_{hh}h_0{+}b_h \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfzh1">z<sub>h</sub><sup>(1)</sup><span class="xf-val" id="rfzh1v">—</span></div><div class="xf-kolad">ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh1">h₁<span class="xf-val" id="rfh1v">—</span></div><div class="xf-kolad">hafıza t=1</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_2{+}W_{hh}h_1 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₂<span class="xf-val" id="rfx2">—</span></div><div class="xf-box gh" id="rfzh2">z<sub>h</sub><sup>(2)</sup><span class="xf-val" id="rfzh2v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh2">h₂<span class="xf-val" id="rfh2v">—</span></div><div class="xf-kolad">hafıza t=2</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_3{+}W_{hh}h_2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₃<span class="xf-val" id="rfx3">—</span></div><div class="xf-box gh" id="rfzh3">z<sub>h</sub><sup>(3)</sup><span class="xf-val" id="rfzh3v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh3">h₃<span class="xf-val" id="rfh3v">—</span></div><div class="xf-kolad">hafıza t=3</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{hy}h_3{+}b_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfzy">z<sub>y</sub><span class="xf-val" id="rfzyv">—</span></div><div class="xf-kolad">çıktı toplamı <span style="opacity:.7">(sadece t=3)</span></div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_yhat" tabindex="0" role="button" aria-label="bu adimi anlat">\( \hat y{=}z_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfyhat">ŷ<span class="xf-val" id="rfyhatv">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tfrac12(\hat y{-}y)^2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl" id="rfL">L<span class="xf-val" id="rfLv">—</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım tam da bu noktadan — <b>L</b>'den — başlayıp aynı yolu <b>tersten</b> yürüyor; ama z<sub>h</sub>'ye vardığında dallanıp bir de <b>zamanda geriye</b> (t=3→2→1) akıyor. Aşağıdaki ağacın kökü, yukarıdaki zincirin son halkası:</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan dokuz katkıya (zaman içinde geri yayılım)</div>
+      <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, ŷ üzerinden z<sub>y</sub>'ye iner. z<sub>y</sub>'de <b>dallanır</b>: iki dal doğrudan çıktı ağırlıklarına (W<sub>hy</sub>, b<sub>y</sub>) iner, bir dal h₃'e girip <b>zamanda geriye</b> akmaya başlar. Her zaman adımında aynı şey tekrarlanır: bir dal o anın gizli ağırlıklarına (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) çıkar, bir dal (BPTT) bir önceki zaman adımına devam eder. <b>Her ok bir türev</b> — okun üstündeki formül o halkanın kendisi. Bir yaprağın gradyanı, köke kadar olan bütün okların <b>çarpımıdır</b>; aynı ağırlık 3 farklı zaman adımında yaprak verdiği için gerçek gradyan bu üç yaprağın <b>toplamıdır</b>.</p>
+      <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
+      <div class="xt-ipucu">↔ Ağaç geniş ve zamanla derinleşiyor — dalları görmek için <b>kaydır</b>.</div>
+      <div class="xt-scroll"><div class="xt-tree"><div class="xt-node">
+            <div class="xt-box g1 kok">\( L \)<span class="xt-cap">kayıp</span><span class="xt-val" id="rtLv">—</span></div>
+            <div class="xt-kids">
+              <div class="xt-kid">
+                <span class="xt-edge g1" data-pop="r_Lyhat" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial L}{\partial \hat y}=\hat y-y \)</span><span class="xt-ar">→</span>
+                <div class="xt-node">
+                  <div class="xt-box g1" id="rfyhat_t" data-pop="r_Lyhat" tabindex="0" role="button">\( \hat y \)<span class="xt-cap">tahmin</span><span class="xt-val" id="rtyhatv">—</span></div>
+                  <div class="xt-kids">
+                    <div class="xt-kid">
+                      <span class="xt-edge g1" data-pop="r_yhatzy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial \hat y}{\partial z_y}=1 \)</span><span class="xt-ar">→</span>
+                      <div class="xt-node">
+                        <div class="xt-box g1" id="rtzy" data-pop="r_yhatzy" tabindex="0" role="button">\( z_y \)<span class="xt-cap">dz<sub>y</sub>=ŷ−y</span><span class="xt-val" id="rtzyv">—</span></div>
+                        <div class="xt-kids">
+                          <div class="xt-kid">
+                            <span class="xt-edge g2" data-pop="r_zyWhy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial W_{hy}}=h_3 \)</span><span class="xt-ar">→</span>
+                            <div class="xt-box g2 yaprak" id="rtWhy">dW<sub>hy</sub><span class="xt-val" id="rtWhyv">—</span></div>
+                          </div>
+                          <div class="xt-kid">
+                            <span class="xt-edge g2" data-pop="r_zyby" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial b_y}=1 \)</span><span class="xt-ar">→</span>
+                            <div class="xt-box g2 yaprak" id="rtby">db<sub>y</sub><span class="xt-val" id="rtbyv">—</span></div>
+                          </div>
+                          <div class="xt-kid">
+                            <span class="xt-edge g3" data-pop="r_zyh3" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial h_3}=W_{hy} \)</span><span class="xt-ar">→</span>
+                            <div class="xt-node">
+                              <div class="xt-box g3" id="rth3" data-pop="r_zh3h2_from" tabindex="0" role="button">\( h_3 \)<span class="xt-cap">hafıza t=3</span><span class="xt-val" id="rth3v">—</span></div>
+                              <div class="xt-kids">
+                                <div class="xt-kid">
+                                  <span class="xt-edge g3" data-pop="r_h3zh3" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial h_3}{\partial z_h^{(3)}}=1-h_3^2 \)</span><span class="xt-ar">→</span>
+                                  <div class="xt-node">
+                                    <div class="xt-box g3" id="rtzh3" data-pop="r_h3zh3" tabindex="0" role="button">\( z_h^{(3)} \)<span class="xt-cap">ham toplam t=3</span><span class="xt-val" id="rtzh3v">—</span></div>
+                                    <div class="xt-kids">
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh3Wxh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}=x_3 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWxh3">dW<sub>xh</sub>|<sub>t=3</sub><span class="xt-val" id="rtWxh3v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh3Whh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(3)}}{\partial W_{hh}}=h_2 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWhh3">dW<sub>hh</sub>|<sub>t=3</sub><span class="xt-val" id="rtWhh3v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh3bh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(3)}}{\partial b_h}=1 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtbh3">db<sub>h</sub>|<sub>t=3</sub><span class="xt-val" id="rtbh3v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g3" data-pop="r_zh3h2" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(3)}}{\partial h_2}=W_{hh} \) <span style="opacity:.7">← BPTT</span></span><span class="xt-ar">→</span>
+                                        <div class="xt-node">
+                              <div class="xt-box g3" id="rth2" data-pop="r_zh2h1_from" tabindex="0" role="button">\( h_2 \)<span class="xt-cap">hafıza t=2</span><span class="xt-val" id="rth2v">—</span></div>
+                              <div class="xt-kids">
+                                <div class="xt-kid">
+                                  <span class="xt-edge g3" data-pop="r_h2zh2" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial h_2}{\partial z_h^{(2)}}=1-h_2^2 \)</span><span class="xt-ar">→</span>
+                                  <div class="xt-node">
+                                    <div class="xt-box g3" id="rtzh2" data-pop="r_h2zh2" tabindex="0" role="button">\( z_h^{(2)} \)<span class="xt-cap">ham toplam t=2</span><span class="xt-val" id="rtzh2v">—</span></div>
+                                    <div class="xt-kids">
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh2Wxh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(2)}}{\partial W_{xh}}=x_2 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWxh2">dW<sub>xh</sub>|<sub>t=2</sub><span class="xt-val" id="rtWxh2v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh2Whh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(2)}}{\partial W_{hh}}=h_1 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWhh2">dW<sub>hh</sub>|<sub>t=2</sub><span class="xt-val" id="rtWhh2v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh2bh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(2)}}{\partial b_h}=1 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtbh2">db<sub>h</sub>|<sub>t=2</sub><span class="xt-val" id="rtbh2v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g3" data-pop="r_zh2h1" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(2)}}{\partial h_1}=W_{hh} \) <span style="opacity:.7">← BPTT</span></span><span class="xt-ar">→</span>
+                                        <div class="xt-node">
+                              <div class="xt-box g3" id="rth1" data-pop="r_zh1h0_from" tabindex="0" role="button">\( h_1 \)<span class="xt-cap">hafıza t=1</span><span class="xt-val" id="rth1v">—</span></div>
+                              <div class="xt-kids">
+                                <div class="xt-kid">
+                                  <span class="xt-edge g3" data-pop="r_h1zh1" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial h_1}{\partial z_h^{(1)}}=1-h_1^2 \)</span><span class="xt-ar">→</span>
+                                  <div class="xt-node">
+                                    <div class="xt-box g3" id="rtzh1" data-pop="r_h1zh1" tabindex="0" role="button">\( z_h^{(1)} \)<span class="xt-cap">ham toplam t=1</span><span class="xt-val" id="rtzh1v">—</span></div>
+                                    <div class="xt-kids">
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh1Wxh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(1)}}{\partial W_{xh}}=x_1 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWxh1">dW<sub>xh</sub>|<sub>t=1</sub><span class="xt-val" id="rtWxh1v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh1Whh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(1)}}{\partial W_{hh}}=h_0 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtWhh1">dW<sub>hh</sub>|<sub>t=1</sub><span class="xt-val" id="rtWhh1v">—</span></div>
+                                      </div>
+                                      <div class="xt-kid">
+                                        <span class="xt-edge g4" data-pop="r_zh1bh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h^{(1)}}{\partial b_h}=1 \)</span><span class="xt-ar">→</span>
+                                        <div class="xt-box g4 yaprak" id="rtbh1">db<sub>h</sub>|<sub>t=1</sub><span class="xt-val" id="rtbh1v">—</span></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div></div></div>
+      <div class="xt-leg">
+        <span class="xt-lg g1">Gövde — L → ŷ → z<sub>y</sub></span>
+        <span class="xt-lg g2">Çıktı ağırlıkları — W<sub>hy</sub>, b<sub>y</sub></span>
+        <span class="xt-lg g3">Zamanda geri — h<sub>t</sub> → z<sub>h</sub><sup>(t)</sup> (BPTT)</span>
+        <span class="xt-lg g4">Gizli ağırlıklar — her zaman adımının W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>'si</span>
+      </div>
+      <div class="callout" style="margin:8px 0 0; font-size:11.5px; line-height:1.6">🍃 <b>Dokuz yaprak = dokuz katkı, üç gerçek gradyan.</b> W<sub>xh</sub>/W<sub>hh</sub>/b<sub>h</sub> HER zaman adımında yeniden kullanıldığı için 3'er kez yaprak veriyor (toplam 9) — ama gerçek gradyan, aynı ağırlığın 3 yaprağının <b>toplamı</b>. W<sub>hy</sub>/b<sub>y</sub> ise sadece t=3'te var, tek yaprak yeterli.</div>
+      <div class="callout" id="rtTotal" style="margin:8px 0 0"></div>
+      <div class="callout" style="margin:8px 0 0; border-left-color:#e06a6a">
+        <b>📉 Vanishing / Exploding Gradient — gerçek sayılarla:</b>
+        <div style="font-size:13px; margin-top:6px">Geri giden sinyal, bir adım geriye her gidişinde şu formülle çarpılır:</div>
+        <div class="eq" style="margin:6px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
+        <div style="font-size:13px">Senin gerçek 3 adımının ölçtüğü küçülme/büyüme oranı (r = bir sonraki z<sub>h</sub> sinyaline bölüm):</div>
+        <div style="font-size:13px; margin-top:4px">r (t=3→t=2) = <span class="v" id="rtR32">0.0000</span> &nbsp;·&nbsp; r (t=2→t=1) = <span class="v" id="rtR21">0.0000</span></div>
+        <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding).</div>
+      </div>
+
+      <div class="xt-src" id="xtsrc-r_zh1"><div class="xp-bas">z<sub>h</sub><sup>(1)</sup> — ilk zaman adımının ham toplamı</div><div class="eq">\( z_h^{(1)}=W_{xh}x_1+W_{hh}h_0+b_h \)</div><div class="xp-sat">Aynı W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> ağırlıkları HER zaman adımında yeniden kullanılıyor — RNN'i RNN yapan "ağırlık paylaşımı" burada başlıyor.</div><div class="xp-sat">h₀=0 olduğu için W<sub>hh</sub>·h₀ terimi de 0 — dizinin en başında geçmişten gelen bir katkı yok.</div></div>
+      <div class="xt-src" id="xtsrc-r_tanh1"><div class="xp-bas">h₁ — ilk hafıza</div><div class="eq">\( h_1=\tanh(z_h^{(1)}) \)</div><div class="xp-sat">tanh, z<sub>h</sub>'yi (−1,1) aralığına sıkıştırır — 0-merkezli olduğu için sigmoid'e göre RNN'de daha sık tercih edilir.</div><div class="xp-sat">h₁ bir sonraki adıma (t=2) W<sub>hh</sub> üzerinden taşınacak — "hafıza" dediğimiz tam olarak bu.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh2"><div class="xp-bas">z<sub>h</sub><sup>(2)</sup> — ikinci zaman adımı</div><div class="eq">\( z_h^{(2)}=W_{xh}x_2+W_{hh}h_1+b_h \)</div><div class="xp-sat">Formül birebir aynı, sadece girdi x₂ ve bir önceki hafıza artık gerçek bir sayı: h₁ (h₀ değil).</div></div>
+      <div class="xt-src" id="xtsrc-r_tanh2"><div class="xp-bas">h₂ — ikinci hafıza</div><div class="eq">\( h_2=\tanh(z_h^{(2)}) \)</div><div class="xp-sat">Aynı tanh, t=1'deki ile birebir aynı işlem — t=3'e taşınacak.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh3"><div class="xp-bas">z<sub>h</sub><sup>(3)</sup> — üçüncü (son) zaman adımı</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Son adım. h₃ artık dizinin TAMAMININ (x₁,x₂,x₃) özetlenmiş hâli olacak.</div></div>
+      <div class="xt-src" id="xtsrc-r_tanh3"><div class="xp-bas">h₃ — dizinin özeti</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">many-to-one'da SADECE bu son hafıza çıktı katmanına gidiyor — t=1,2'nin hafızası sadece buraya ULAŞMAK için var, kendi çıktıları yok.</div></div>
+      <div class="xt-src" id="xtsrc-r_zy"><div class="xp-bas">z<sub>y</sub> — çıktı katmanı</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Dikkat: bu satırda x YOK, t=1,2'nin ham değerleri de YOK — çıktı nöronu sadece h₃'ü (dizinin özetini) görüyor.</div></div>
+      <div class="xt-src" id="xtsrc-r_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon problemi olduğu için çıktı aktivasyonu <b>özdeşlik</b> (g₂(z)=z) — sınıflandırmadaki sigmoid/softmax burada yok.</div></div>
+      <div class="xt-src" id="xtsrc-r_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek değer arasındaki farkın karesinin yarısı (MSE'nin tek örneklik hâli). <b>Geri yayılım tam buradan başlıyor.</b></div></div>
+
+      <div class="xt-src" id="xtsrc-r_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet) ile: dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div></div>
+      <div class="xt-src" id="xtsrc-r_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) olduğu için türev direkt <b>1</b> — <span class="xp-k">K3</span>'ün en basit hâli (katsayı 1 olan değişken).</div><div class="xp-sat">Zincir kuralıyla: \( \tfrac{\partial L}{\partial z_y}=\tfrac{\partial L}{\partial \hat y}\cdot 1=\hat y-y \). Bu sinyal artık z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div></div>
+      <div class="xt-src" id="xtsrc-r_zyWhy"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial W_{hy}} \) — çıktı ağırlığına göre</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat"><span class="xp-k">K3</span> (sabit×değişken): h₃ burada SABİT (ileri geçişte zaten hesaplandı) → türev h₃.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial W_{hy}}=h_3 \) → gradyan = \( \tfrac{\partial L}{\partial z_y}\cdot h_3 \).</div></div>
+      <div class="xt-src" id="xtsrc-r_zyby"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial b_y}=1 \) — bias'ın türevi neden 1?</div><div class="xp-sat">b<sub>y</sub>'nin "girdisi" hep sabit 1'dir — ağırlıkların h ile çarpıldığı yerde bias 1 ile çarpılır (<span class="xp-k">K3</span>, katsayı 1). Bu yüzden gradyanı doğrudan geri-sinyalin kendisi.</div></div>
+      <div class="xt-src" id="xtsrc-r_zyh3"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial h_3} \) — hata buradan h₃'e akar</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Şimdi h₃'e göre türev alıyoruz — bu sefer <b>W<sub>hy</sub> sabit</b>, h₃ değişken (<span class="xp-k">K3</span>'ün rolleri yer değiştirmiş hâli).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial h_3}=W_{hy} \) → sinyal h₃'e, oradan zamanda geriye devam edecek.</div></div>
+
+      <div class="xt-src" id="xtsrc-r_h3zh3"><div class="xp-bas">\( \tfrac{\partial h_3}{\partial z_h^{(3)}} \) — tanh'ın türevi</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">tanh'ın türevi: \( \tanh'(z)=1-\tanh^2(z)=1-h^2 \) (limit tanımından çıkan hazır kural, sigmoid'in σ(1−σ)'una denk).</div><div class="xp-son">Sonuç: \( \tfrac{\partial h_3}{\partial z_h^{(3)}}=1-h_3^2 \) — bu çarpan en fazla 1 (h=0'da), h ±1'e yapıştıysa ≈0 olur.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh3Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat"><span class="xp-k">K1</span>+<span class="xp-k">K3</span>: W<sub>xh</sub>'a göre, x₃ sabit katsayı → türev x₃; diğer terimlerde W<sub>xh</sub> yok → 0.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}=x_3 \) — bu SADECE t=3'ün katkısı, t=1,2'nin kendi katkıları ayrı yapraklarda.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh3Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{hh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Aynı kalıp, bu sefer W<sub>hh</sub>'ye göre: h₂ burada SABİT (ileri geçişte zaten hesaplanmış bir sayı) → türev h₂.</div><div class="xp-sat">⚠️ Bu, W<sub>hh</sub>'nin SADECE t=3'teki katkısı — aynı ağırlık t=1,2'de de kullanıldığı için oralarda da ayrı birer yaprağı var, gerçek gradyan üçünün toplamı.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh3bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial b_h}=1 \)</div><div class="xp-sat">Yine bias'ın sabit-1-girdisi kuralı (<span class="xp-k">K3</span>) — bu da sadece t=3'ün katkısı.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh3h2"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial h_2} \) — BPTT'nin kalbi</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">h₂'ye göre türev: W<sub>hh</sub> sabit katsayı → türev W<sub>hh</sub> (<span class="xp-k">K3</span>, roller yine yer değiştirdi).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial h_2}=W_{hh} \) — sinyal tam burada bir adım GERİYE, t=2'ye sıçrıyor. "Backpropagation Through TIME" adının geldiği yer: aynı zincir kuralı, ama zaman ekseninde.</div></div>
+      <div class="xt-src" id="xtsrc-r_h2zh2"><div class="xp-bas">\( \tfrac{\partial h_2}{\partial z_h^{(2)}}=1-h_2^2 \)</div><div class="xp-sat">t=3'teki ile BİREBİR aynı kural — tanh'ın türevi, sadece zaman indeksi değişti.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh2Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{xh}}\Big|_{t=2}=x_2 \)</div><div class="xp-sat">t=3'teki ile aynı kalıp (<span class="xp-k">K3</span>), bu kez x₂ ile — W<sub>xh</sub>'nin t=2'deki katkısı.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh2Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{hh}}\Big|_{t=2}=h_1 \)</div><div class="xp-sat">Aynı kalıp, bu kez h₁ ile (ileri geçişte zaten hesaplanmış) — W<sub>hh</sub>'nin t=2'deki katkısı.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh2bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial b_h}\Big|_{t=2}=1 \)</div><div class="xp-sat">b<sub>h</sub>'nin t=2'deki katkısı — yine sabit-1-girdisi kuralı.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh2h1"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial h_1}=W_{hh} \) — bir adım daha geri</div><div class="xp-sat">Aynı BPTT sıçraması, bu kez t=2'den t=1'e. Sinyal her sıçrayışta bir W<sub>hh</sub> ve bir (1−h²) ile çarpılıyor — vanishing/exploding gradient tam bu tekrar eden çarpımdan doğuyor (aşağıdaki kırmızı kutuya bak).</div></div>
+      <div class="xt-src" id="xtsrc-r_h1zh1"><div class="xp-bas">\( \tfrac{\partial h_1}{\partial z_h^{(1)}}=1-h_1^2 \)</div><div class="xp-sat">Zincirin son tanh türevi — aynı kural, t=1.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh1Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{xh}}\Big|_{t=1}=x_1 \)</div><div class="xp-sat">W<sub>xh</sub>'nin t=1'deki katkısı — üç yapraktan sonuncusu. Gerçek \( \partial L/\partial W_{xh} \) = t=1,2,3'ün üçü toplanarak bulunur.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh1Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{hh}}\Big|_{t=1}=h_0 \)</div><div class="xp-sat">Burada h₀=0 olduğu için bu yaprak her zaman <b>0</b> çıkar — dizinin başlangıcından ÖNCESİ olmadığı için W<sub>hh</sub>'nin t=1'deki katkısı otomatik sıfırlanıyor.</div></div>
+      <div class="xt-src" id="xtsrc-r_zh1bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial b_h}\Big|_{t=1}=1 \)</div><div class="xp-sat">Zincirin son bias yaprağı — b<sub>h</sub>'nin t=1'deki katkısı. Bu dalda daha geri gidecek bir h yok (h₀ eğitilebilir bir parametre değil), zincir burada bitiyor.</div></div>
+
+      </div>
+      </div>
+    </div>
+    </div>
+    <div class="callout" id="rnnBigPictureNote">Bu özet şu an sadece <b>many-to-one</b> mimarisi için hazır — <b>Tek Hücre</b> ve <b>many-to-many</b> için henüz eklenmedi. Aşağıdaki <b>6️⃣ Simülasyon</b>'daki adım adım kartlara bakabilirsin.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>6️⃣ Simülasyon</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
     <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı ileri + geri yayılım <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody2">
@@ -1091,90 +1275,7 @@
     </div>
     </div><!-- /gAdimSection -->
     </div><!-- /rnnTypeTek -->
-    <div class="rnn-fwd-cols" id="rnnFwdCols" style="display:none">
-    <div class="rnn-fc-left" id="rnnFcLeft">
-    <div class="pts" style="border-left:3px solid var(--accent); margin:16px 0 0">
-      <h3 style="color:var(--accent); font-size:13.5px">🔗 Gerçek 3 adımlı İleri + Geri Yayılım — h zincirlensin, kendi sayılarınla</h3>
-      <div style="font-size:12px; color:var(--muted); margin-bottom:10px">Girdiler (x₁, x₂, x₃, y) aşağıdaki <b>Geri Adım 5</b> kartında — orada değiştirince burası da canlı güncellenir. Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) yukarıdaki <b>🎛️ Ağırlıklar</b> kaydırıcılarıyla aynı. h₀ = 0 (dizinin başlangıcı, bir önceki adımın sonucu değil).</div>
-
-      <div class="ru-acc-row">
-        <div class="acc open" id="ruFwdAcc" style="margin:0">
-          <div class="acc-head"><span class="ac">▸</span> 📘 İleri Yayılım — h₁→h₂→h₃→ŷ, 3 adım</div>
-          <div class="acc-body">
-            <div style="font-size:11.5px; color:var(--muted); margin-bottom:8px">💡 Yukarıdaki hücre diyagramında <b style="color:#ffd24a">İleri ▶ adım</b>'a bastıkça, o adımın anlatımı diyagramın yanındaki kutuda görünür ve buradaki ilgili satır otomatik yanar.</div>
-            <div id="ruFwd" class="rc-card">
-              <div class="eq" id="ruFeq1">\( z_h^{(1)}=W_{xh}\,x_1+W_{hh}\,h_0+b_h \) = <span style="color:var(--muted)" id="ruZ1sub"></span> = <span class="v" id="ruZ1val"></span></div>
-              <div class="eq" id="ruFeq2">\( h_1=\tanh(z_h^{(1)}) \) = <span style="color:var(--muted)" id="ruF1sub"></span> = <span class="v" id="ruF1val"></span></div>
-              <div class="eq" id="ruFeq3" style="margin-top:8px">\( z_h^{(2)}=W_{xh}\,x_2+W_{hh}\,h_1+b_h \) = <span style="color:var(--muted)" id="ruZ2sub"></span> = <span class="v" id="ruZ2val"></span></div>
-              <div class="eq" id="ruFeq4">\( h_2=\tanh(z_h^{(2)}) \) = <span style="color:var(--muted)" id="ruF2sub"></span> = <span class="v" id="ruF2val"></span></div>
-              <div class="eq" id="ruFeq5" style="margin-top:8px">\( z_h^{(3)}=W_{xh}\,x_3+W_{hh}\,h_2+b_h \) = <span style="color:var(--muted)" id="ruZ3sub"></span> = <span class="v" id="ruZ3val"></span></div>
-              <div class="eq" id="ruFeq6">\( h_3=\tanh(z_h^{(3)}) \) = <span style="color:var(--muted)" id="ruF3sub"></span> = <span class="v" id="ruF3val"></span></div>
-              <div class="eq" id="ruFeq7" style="margin-top:8px">\( z_y=W_{hy}\,h_3+b_y \) = <span style="color:var(--muted)" id="ruZysub"></span> = <span class="v" id="ruZyval"></span> <span style="color:var(--muted); font-size:11.5px">&nbsp;(z<sub>y</sub> sadece t=3'te var — many-to-one'da çıktı yalnız son adımda)</span></div>
-              <div class="eq" id="ruFeq8">\( \hat y=z_y \) = <span class="v" id="ruFyval"></span></div>
-              <div class="eq" id="ruFeq9">\( L=\tfrac12(\hat y-y)^2 \) = <span style="color:var(--muted)" id="ruFLsub"></span> = <span class="v" id="ruFLval"></span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="acc" id="ruBwdAcc" style="margin:0">
-          <div class="acc-head"><span class="ac">▸</span> 📘 Geri Yayılım — BPTT, t=3'ten t=1'e, 3 adım</div>
-          <div class="acc-body">
-            <div style="font-size:11.5px; color:var(--muted); margin-bottom:8px">💡 Yukarıdaki hücre diyagramında <b style="color:#f0a032">◀ BPTT adım</b>'a bastıkça, o adımın anlatımı diyagramın yanındaki kutuda görünür ve buradaki ilgili satır otomatik yanar.</div>
-            <div class="deriv-why" style="color:#f0a032; margin-bottom:6px"><b>Her adımın kendi katkısı (gerçek zincir, yaklaşık değil):</b></div>
-            <div style="font-size:11.5px; color:var(--muted); margin-bottom:6px">🌳 = o değerin <b>tam türev ağacı</b> — L'ye kadar hangi zincirlerden geçtiğini görmek için tıkla.</div>
-            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 10px">
-              <div class="rnn-w-tabs" style="display:flex; flex-wrap:wrap; gap:6px">
-                <button class="rnn-w-btn active" data-w="all">🔗 Tümü</button>
-                <button class="rnn-w-btn" data-w="wxh">W<sub>xh</sub></button>
-                <button class="rnn-w-btn" data-w="whh">W<sub>hh</sub></button>
-              </div>
-              <button class="rnn-watch-btn" id="ruWatchBtn" style="margin-left:auto">▶ İzle</button>
-            </div>
-            <div id="ruBwd" class="rc-card wshow-all" style="margin-bottom:10px">
-              <div class="ru-tstep" data-t="3">
-                <div class="eq" id="ruBeq1"><b style="color:var(--accent)">t=3</b> — \( \dfrac{\partial L}{\partial z_h^{(3)}}=\big[(\hat y-y)\,W_{hy}\big](1-h_3^2) \) = <span style="color:var(--muted)" id="ruB3sub"></span> = <span class="v" id="ruB3val"></span> <button class="dt-btn" data-dt="dLdzh3">🌳</button></div>
-                <div class="dt-tree"></div>
-                <div class="eq" id="ruBeq2" data-w="wxh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot x_3 \) = <span style="color:var(--muted)" id="ruB3xsub"></span> = <span class="v" id="ruB3xval"></span> <button class="dt-btn" data-dt="dLdWxh3">🌳</button></div>
-                <div class="dt-tree" data-w="wxh"></div>
-                <div class="eq" id="ruBeq3" data-w="whh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=3}=\dfrac{\partial L}{\partial z_h^{(3)}}\cdot h_2 \) = <span style="color:var(--muted)" id="ruB3hsub"></span> = <span class="v" id="ruB3hval"></span> <button class="dt-btn" data-dt="dLdWhh3">🌳</button></div>
-                <div class="dt-tree" data-w="whh"></div>
-              </div>
-              <div class="ru-tstep" data-t="2">
-                <div class="eq" id="ruBeq4" style="margin-top:8px"><b style="color:var(--accent)">t=2</b> — \( \dfrac{\partial L}{\partial z_h^{(2)}}=\dfrac{\partial L}{\partial z_h^{(3)}}\times W_{hh}\times(1-h_2^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB2sub"></span> = <span class="v" id="ruB2val"></span> <button class="dt-btn" data-dt="dLdzh2">🌳</button></div>
-                <div class="dt-tree"></div>
-                <div class="eq" id="ruBeq5" data-w="wxh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot x_2 \) = <span style="color:var(--muted)" id="ruB2xsub"></span> = <span class="v" id="ruB2xval"></span> <button class="dt-btn" data-dt="dLdWxh2">🌳</button></div>
-                <div class="dt-tree" data-w="wxh"></div>
-                <div class="eq" id="ruBeq6" data-w="whh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=2}=\dfrac{\partial L}{\partial z_h^{(2)}}\cdot h_1 \) = <span style="color:var(--muted)" id="ruB2hsub"></span> = <span class="v" id="ruB2hval"></span> <button class="dt-btn" data-dt="dLdWhh2">🌳</button></div>
-                <div class="dt-tree" data-w="whh"></div>
-              </div>
-              <div class="ru-tstep" data-t="1">
-                <div class="eq" id="ruBeq7" style="margin-top:8px"><b style="color:var(--accent)">t=1</b> — \( \dfrac{\partial L}{\partial z_h^{(1)}}=\dfrac{\partial L}{\partial z_h^{(2)}}\times W_{hh}\times(1-h_1^2) \) <span style="color:#f0a032">← BPTT</span> = <span style="color:var(--muted)" id="ruB1sub"></span> = <span class="v" id="ruB1val"></span> <button class="dt-btn" data-dt="dLdzh1">🌳</button></div>
-                <div class="dt-tree"></div>
-                <div class="eq" id="ruBeq8" data-w="wxh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{xh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot x_1 \) = <span style="color:var(--muted)" id="ruB1xsub"></span> = <span class="v" id="ruB1xval"></span> <button class="dt-btn" data-dt="dLdWxh1">🌳</button></div>
-                <div class="dt-tree" data-w="wxh"></div>
-                <div class="eq" id="ruBeq9" data-w="whh" style="padding-left:20px">→ \( \dfrac{\partial L}{\partial W_{hh}}\Big|_{t=1}=\dfrac{\partial L}{\partial z_h^{(1)}}\cdot h_0 \) = <span style="color:var(--muted)" id="ruB1hsub"></span> = <span class="v" id="ruB1hval"></span> <button class="dt-btn" data-dt="dLdWhh1">🌳</button></div>
-                <div class="dt-tree" data-w="whh"></div>
-              </div>
-            </div>
-            <div class="callout" id="ruTotal" style="margin:10px 0 0"></div>
-            <div class="callout" style="margin:8px 0 0; border-left-color:#e06a6a">
-              <b>📉 Vanishing / Exploding Gradient formülü — gerçek sayılarla:</b>
-              <div style="font-size:13px; margin-top:6px">Geri giden sinyal, bir adım geriye her gidişinde şu formülle çarpılır:</div>
-              <div class="eq" style="margin:6px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
-              <div style="font-size:13px">Senin gerçek 3 adımının ölçtüğü küçülme/büyüme oranı (r = bir sonraki z<sub>h</sub> sinyaline bölüm):</div>
-              <div style="font-size:13px; margin-top:4px">r (t=3→t=2) = <span class="v" id="ruR32">0.0000</span> &nbsp;·&nbsp; r (t=2→t=1) = <span class="v" id="ruR21">0.0000</span></div>
-              <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding). Aşağıda Geri Adım 5'te, bu oranı gerçek geçmiş adımlar olmadan tek bir r=W<sub>hh</sub>(1−h²) ile nasıl <b>yaklaşık</b> tahmin edebileceğimizi göreceksin.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    </div><!-- /rnn-fc-left -->
-
-    <div class="rnn-col-resizer" id="rnnColResizer" title="Sürükle: sol/sağ oranını ayarla"></div>
-
-
+    <div class="rnn-fwd-cols rfc-diagram-only" id="rnnFwdCols" style="display:none">
     <div class="rnn-fc-right">
     <div id="rcDiagramAnchor"></div>
     <div class="pts" id="rcDiagramPanel">
@@ -1247,7 +1348,6 @@
       <div class="callout" style="margin:0 0 14px">Aşağıdaki 5 adım gerçek zamanlı hesaplanıyor — girdileri (x₁,x₂,x₃,y) Geri Adım 5 kartında değiştirebilirsin. Çıktı (ŷ) SADECE t=3'te var — bu yüzden Adım 1 ve 2 tek seferlik; Adım 3 ve 4 ise BPTT zinciriyle t=3→2→1 geriye akıyor, Adım 5'te toplanıyor.</div>
       <div style="margin:0 0 12px; display:flex; flex-wrap:wrap; gap:8px">
         <button class="rnn-watch-btn" id="mo5WatchBtn">▶ İzle</button>
-        <button class="rnn-watch-btn" id="moOldViewToggle">🔍 Detaylı / filtrelenebilir görünüm</button>
       </div>
       <div class="steps">
         <div class="step" id="moAdim1">
@@ -1478,8 +1578,8 @@
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
     <div class="sechead">🧠 Kendini Test Et — BPTT</div>
     <div class="pts">
@@ -5864,15 +5964,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202609232208"></script>
-<script src="js/lesson-turev.js?v=202609232208"></script>
-<script src="js/lesson-xor.js?v=202609232208"></script>
-<script src="js/lesson-xor-arch.js?v=202609232208"></script>
-<script src="js/lesson-xor-epoch.js?v=202609232208"></script>
-<script src="js/lesson-nn.js?v=202609232208"></script>
-<script src="js/lesson-trig.js?v=202609232208"></script>
+<script src="js/lesson-linreg.js?v=202610031502"></script>
+<script src="js/lesson-turev.js?v=202610031502"></script>
+<script src="js/lesson-xor.js?v=202610031502"></script>
+<script src="js/lesson-xor-arch.js?v=202610031502"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031502"></script>
+<script src="js/lesson-nn.js?v=202610031502"></script>
+<script src="js/lesson-trig.js?v=202610031502"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202609232208"></script>
-<script src="js/app.js?v=202609232208"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031502"></script>
+<script src="js/app.js?v=202610031502"></script>
 </body>
 </html>
