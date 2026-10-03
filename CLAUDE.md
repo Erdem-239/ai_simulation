@@ -616,6 +616,16 @@ hâlâ yalnız Tek Hücre'de görünür. Bütün Resim giriş metni, many-to-one
 girdilerinin (x₁,x₂,x₃,y) Simülasyon→Geri Adım 5 kartında olduğunu açıkça
 söyler.
 
+**Geri Adım 6 "Ne öğrendik" metni artık duruma göre (3 rejim)**: kullanıcı
+kaydırıcılarla r≈1 (sinyal %99.5) bir ayar bulunca kart HÂLÂ "t=1 yalnızca
+%99.5'ini alıyor… ağ ilk girdiyi neredeyse hiç görmeden öğreniyor" diyordu —
+statik vanishing anlatısı. `mo6Learn` artık `rat=|δ₁/δ₃|`'e göre dallanıyor:
+<0.3 vanishing, >3 exploding, arası **dengeli (r≈1)**; ayrıca |δ₃|<0.005 ise
+"sinyal zaten küçük (hata ~0 / tanh doygun) — vanishing değil" notu ekler.
+**Ders**: canlı bir "Ne öğrendik" metni, kaydırıcıların ulaşabildiği HER
+rejimde doğru olmalı; tek bir durumu varsayan sabit cümle, kullanıcı başka
+bir rejime gidince yanlış bilgi verir.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
