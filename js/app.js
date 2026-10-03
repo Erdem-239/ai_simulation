@@ -943,6 +943,24 @@
       setTxt('rfzh3v', F(rz3)); setTxt('rfh3v', F(rh3));
       setTxt('rfzyv', F(ryhat)); setTxt('rfyhatv', F(ryhat)); setTxt('rfLv', F(rL));
 
+      /* pop-up'ların sonundaki canlı köprü — bkz. aşağıdaki geri yayılım
+         bloğundaki aynı yardımcıların tanımı/gerekçesi. İleri yol için
+         "📐 Şu anki sayılarla nasıl hesaplanıyor?" başlığıyla, z_h/h/z_y/
+         ŷ/L'nin HANGİ çarpımlardan oluştuğunu adım adım gösteriyor —
+         kullanıcının "zy'nin üstüne geldiğimde zy hangi çarpımlarla
+         oluştu yazsın" isteğiyle eklendi. */
+      const zinF = (ad, html) => document.querySelectorAll('[data-zincir="r_' + ad + '"]').forEach(e => { e.innerHTML = html; });
+      const araF = (bas, satir) => '<b>📐 ' + bas + '</b><div class="xp-hes">' + satir + '</div>';
+      zinF('zh1',  araF('Şu anki sayılarla nasıl hesaplanıyor?', 'z_h⁽¹⁾ = W_xh·x₁ + W_hh·h₀ + b_h\n      = (' + F(p.Wxh,2) + ')(' + F(rx1,2) + ') + (' + F(p.Whh,2) + ')(' + F(rh0,2) + ') + ' + F(p.b,2) + '\n      = ' + F(p.Wxh*rx1) + ' + ' + F(p.Whh*rh0) + ' + ' + F(p.b,2) + '\n      = ' + F(rz1)));
+      zinF('tanh1', araF('Şu anki sayılarla nasıl hesaplanıyor?', 'h₁ = tanh(z_h⁽¹⁾) = tanh(' + F(rz1) + ') = ' + F(rh1)));
+      zinF('zh2',  araF('Şu anki sayılarla nasıl hesaplanıyor?', 'z_h⁽²⁾ = W_xh·x₂ + W_hh·h₁ + b_h\n      = (' + F(p.Wxh,2) + ')(' + F(rx2,2) + ') + (' + F(p.Whh,2) + ')(' + F(rh1) + ') + ' + F(p.b,2) + '\n      = ' + F(p.Wxh*rx2) + ' + ' + F(p.Whh*rh1) + ' + ' + F(p.b,2) + '\n      = ' + F(rz2)));
+      zinF('tanh2', araF('Şu anki sayılarla nasıl hesaplanıyor?', 'h₂ = tanh(z_h⁽²⁾) = tanh(' + F(rz2) + ') = ' + F(rh2)));
+      zinF('zh3',  araF('Şu anki sayılarla nasıl hesaplanıyor?', 'z_h⁽³⁾ = W_xh·x₃ + W_hh·h₂ + b_h\n      = (' + F(p.Wxh,2) + ')(' + F(rx3,2) + ') + (' + F(p.Whh,2) + ')(' + F(rh2) + ') + ' + F(p.b,2) + '\n      = ' + F(p.Wxh*rx3) + ' + ' + F(p.Whh*rh2) + ' + ' + F(p.b,2) + '\n      = ' + F(rz3)));
+      zinF('tanh3', araF('Şu anki sayılarla nasıl hesaplanıyor?', 'h₃ = tanh(z_h⁽³⁾) = tanh(' + F(rz3) + ') = ' + F(rh3) + '\nBu, dizinin TAMAMININ (x₁,x₂,x₃) özetlenmiş hâli — many-to-one\'da tek çıktıya giden değer.'));
+      zinF('zy',   araF('Şu anki sayılarla nasıl hesaplanıyor?', 'z_y = W_hy·h₃ + b_y\n    = (' + F(p.Why,2) + ')(' + F(rh3) + ') + ' + F(p.by,2) + '\n    = ' + F(p.Why*rh3) + ' + ' + F(p.by,2) + '\n    = ' + F(ryhat) + '\nDikkat: x₁,x₂,x₃ burada DOĞRUDAN yok — çıktı sadece h₃ üzerinden, dolaylı olarak dizinin tamamını görüyor.'));
+      zinF('yhat', araF('Şu anki sayılarla nasıl hesaplanıyor?', 'ŷ = z_y = ' + F(ryhat) + '\nRegresyon olduğu için ekstra bir dönüşüm yok (özdeşlik) — z_y zaten son sayı.'));
+      zinF('L',    araF('Şu anki sayılarla nasıl hesaplanıyor?', 'L = ½(ŷ − y)²\n  = ½(' + F(ryhat) + ' − ' + F(ry,2) + ')²\n  = ½(' + F(ryhat-ry) + ')²\n  = ' + F(rL)));
+
       const rdyhat=ryhat-ry;
       const rdh3=rdyhat*p.Why, rdz3=rdh3*(1-rh3*rh3);
       const rdh2=rdz3*p.Whh,   rdz2=rdh2*(1-rh2*rh2);
