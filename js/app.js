@@ -1000,6 +1000,81 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     }
 
     /* ---- "5️⃣ Bütün Resim" — one-to-many ve many-to-many (Tx≠Ty): aynı genel hesap, adım başına girdi/çıktı var-yok ---- */
+
+    /* ================= XOR tarzı geri-yayılım köprüsü — TÜM RNN türleri için ortak =================
+       Her geri-yayılım pop-up'ının sonunda: (📍) L'den bu halkaya kadar adım adım hangi sayılar
+       üretildi + (🔗) bu halkanın yerel türevi × bir önceki halkadaki gradyan = bu halkanın gradyanı
+       (yaprakta: adımların toplamı). cfg: {T,inp[],out[],single,K(name,t)->data-zincir anahtarı|null}
+       st: {X,Y,H,Z,ZY,DY,LL,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY} (1-indeksli diziler, H[0]=başlangıç hafıza) */
+    function rnnState(cfg){
+      const T=cfg.T, inp=cfg.inp, out=cfg.out;
+      const X=[],Y=[],H=[cfg.H0||0],Z=[],ZY=[],DY=[],LL=[];
+      for(let t=1;t<=T;t++){
+        X[t]=inp[t-1]?cfg.X(t):0;
+        Z[t]=p.Wxh*X[t]+p.Whh*H[t-1]+p.b; H[t]=Math.tanh(Z[t]);
+        if(out[t-1]){ Y[t]=cfg.Y(t); ZY[t]=p.Why*H[t]+p.by; DY[t]=ZY[t]-Y[t]; LL[t]=0.5*DY[t]*DY[t]; }
+      }
+      const OWN=[],BP=[],HT=[],ZH=[],WXH=[],WHH=[],BH=[],WHY=[],BY=[];
+      for(let t=T;t>=1;t--){
+        OWN[t]=out[t-1]?DY[t]*p.Why:0; BP[t]=t<T?ZH[t+1]*p.Whh:0; HT[t]=OWN[t]+BP[t]; ZH[t]=HT[t]*(1-H[t]*H[t]);
+        WXH[t]=inp[t-1]?ZH[t]*X[t]:0; WHH[t]=ZH[t]*H[t-1]; BH[t]=ZH[t];
+        WHY[t]=out[t-1]?DY[t]*H[t]:0; BY[t]=out[t-1]?DY[t]:0;
+      }
+      return {X,Y,H,Z,ZY,DY,LL,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY};
+    }
+    function rnnBridges(cfg, st){
+      const T=cfg.T, inp=cfg.inp, out=cfg.out, SBS='₀₁₂₃₄₅', K=cfg.K, single=!!cfg.single;
+      const {X,Y,H,ZY,DY,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY}=st;
+      const f=(v,d)=>F(v,d===undefined?4:d);
+      const sb=t=>single?'':SBS[t];
+      const hn=t=>'h'+sb(t), zhn=t=>single?'z_h':'z_h⁽'+t+'⁾', zyn=t=>single?'z_y':'z_y⁽'+t+'⁾';
+      const hprev=t=>t===1?(single?'h₋₁':'h₀'):'h'+sb(t-1);
+      const lnL1=t=>'∂L/∂ŷ'+sb(t)+' = ŷ'+sb(t)+' − y'+sb(t)+' = '+f(ZY[t])+' − ('+f(Y[t],2)+') = '+f(DY[t]);
+      const lnL2=t=>'∂L/∂'+zyn(t)+' = ∂L/∂ŷ'+sb(t)+' × 1 = '+f(DY[t]);
+      const lnOwn=t=>'∂L/∂'+hn(t)+' (kendi çıktısından) = ∂L/∂'+zyn(t)+' × W_hy = '+f(DY[t])+' × '+f(p.Why,2)+' = '+f(OWN[t]);
+      const lnBp=t=>'∂L/∂'+hn(t)+' (BPTT, '+zhn(t+1)+'\'den) = δ'+sb(t+1)+' × W_hh = '+f(ZH[t+1])+' × '+f(p.Whh,2)+' = '+f(BP[t]);
+      const lnSum=t=>(out[t-1]&&t<T)?'∂L/∂'+hn(t)+' = kendi çıktısı + BPTT = '+f(OWN[t])+' + '+f(BP[t])+' = '+f(HT[t])
+                    :(out[t-1]?'∂L/∂'+hn(t)+' = sadece kendi çıktısından = '+f(HT[t])+(t===T&&!single?' (son adım, gelecek yok)':'')
+                    :'∂L/∂'+hn(t)+' = sadece BPTT = '+f(HT[t])+' (bu adımın kendi çıktısı yok)');
+      const lnDelta=t=>'δ'+sb(t)+' = ∂L/∂'+zhn(t)+' = ∂L/∂'+hn(t)+' × (1−'+hn(t)+'²) = '+f(HT[t])+' × (1−'+f(H[t]*H[t])+') = '+f(ZH[t]);
+      function pathH(t){
+        let r=[];
+        if(out[t-1]) r=r.concat([lnL1(t),lnL2(t),lnOwn(t)]);
+        if(t<T) r=r.concat(pathDelta(t+1),[lnBp(t)]);
+        r.push(lnSum(t)); return r;
+      }
+      function pathDelta(t){ return pathH(t).concat([lnDelta(t)]); }
+      const box=(path,local,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b><div class="xp-hes">'+path.map((l,i)=>(i+1)+') '+l).join('\n')+'</div>':'')
+        +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b><div class="xp-hes">'+local.join('\n')+'</div>';
+      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{ e.innerHTML=html; }); };
+      function sumLines(ad,a,filter,cur){
+        const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
+        if(ts.length<=1) return [ad+': bu ağırlık SADECE bir adımda kullanıldı → bu yaprak = gerçek gradyan = '+f(a[cur])];
+        return [ad+': aynı ağırlık '+ts.length+' adımda kullanıldığı için hepsi TOPLANIR:']
+          .concat(ts.map(t=>'    t='+t+': '+f(a[t])+(t===cur?'   ← bu adım':'')))
+          .concat(['    toplam: '+ts.map(t=>(a[t]>=0?'+':'')+f(a[t])).join(' ')+' = <b>'+f(ts.reduce((q,t)=>q+a[t],0))+'</b> = '+ad]);
+      }
+      const anyIn=t=>inp[t-1], anyOut=t=>out[t-1], all=t=>true;
+      for(let t=1;t<=T;t++){
+        const d=ZH[t];
+        if(out[t-1]){
+          put('Lyhat',t,box([],[lnL1(t),'(Geri yayılımın başlangıç noktası — önceki halka yok, bu sinyal buradan doğuyor.)']));
+          put('yhatzy',t,box([lnL1(t)],['∂ŷ/∂'+zyn(t)+' = 1','bir önceki halka ∂L/∂ŷ'+sb(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × 1 = <b>'+f(DY[t])+'</b> = ∂L/∂'+zyn(t)]));
+          put('zyWhy',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂W_hy = '+hn(t)+' = '+f(H[t]),'bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × '+f(H[t])+' = <b>'+f(WHY[t])+'</b> = dW_hy'+(single?'':'|t='+t)].concat(sumLines('dW_hy',WHY,anyOut,t))));
+          put('zyby',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂b_y = 1','bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × 1 = <b>'+f(BY[t])+'</b> = db_y'+(single?'':'|t='+t)].concat(sumLines('db_y',BY,anyOut,t))));
+          put('zyh',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂'+hn(t)+' = W_hy = '+f(p.Why,2),'bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × '+f(p.Why,2)+' = <b>'+f(OWN[t])+'</b> = ∂L/∂'+hn(t)+' (kendi çıktısından)'].concat(t<T?['Bu, '+hn(t)+'\'nin toplam sinyalinin sadece bir parçası — diğer parçası gelecekten (BPTT) gelir ve ana zincirdeki '+hn(t)+' kutusunda ikisi toplanır.']:[])));
+        }
+        { const pth=pathH(t); const last=pth.pop();
+          put('hsum',t,box(pth,[last,'Bu toplam, bu adımın tanh\'ına giren sinyal.'],'Bu kutuda sinyaller nasıl birleşiyor?')); }
+        put('hzh',t,box(pathH(t),['∂'+hn(t)+'/∂'+zhn(t)+' = 1−'+hn(t)+'² = 1−'+f(H[t]*H[t])+' = '+f(1-H[t]*H[t]),'bir önceki halka ∂L/∂'+hn(t)+' = '+f(HT[t])+' ile çarpılınca:','  '+f(HT[t])+' × '+f(1-H[t]*H[t])+' = <b>'+f(d)+'</b> = δ'+sb(t)+' = ∂L/∂'+zhn(t),'Artık bu adımın üç ağırlığına'+(t>1||single?' ve bir önceki hafızaya':'')+' inebiliriz.']));
+        const pd=pathDelta(t);
+        if(inp[t-1]) put('zhWxh',t,box(pd,['∂'+zhn(t)+'/∂W_xh = x'+sb(t)+' = '+f(X[t],2),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(X[t],2)+' = <b>'+f(WXH[t])+'</b> = dW_xh'+(single?'':'|t='+t)].concat(sumLines('dW_xh',WXH,anyIn,t))));
+        put('zhWhh',t,box(pd,['∂'+zhn(t)+'/∂W_hh = '+hprev(t)+' = '+f(H[t-1],2)+(t===1&&!H[0]?'  (başlangıç hafızası 0)':''),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(H[t-1],2)+' = <b>'+f(WHH[t])+'</b> = dW_hh'+(single?'':'|t='+t)].concat(sumLines('dW_hh',WHH,all,t))));
+        put('zhbh',t,box(pd,['∂'+zhn(t)+'/∂b_h = 1','bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × 1 = <b>'+f(BH[t])+'</b> = db_h'+(single?'':'|t='+t)].concat(sumLines('db_h',BH,all,t))));
+        if(t>1) put('zhh',t,box(pd,['∂'+zhn(t)+'/∂'+hn(t-1)+' = W_hh = '+f(p.Whh,2),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(p.Whh,2)+' = <b>'+f(BP[t-1])+'</b> = ∂L/∂'+hn(t-1)+' (BPTT bileşeni)','Sinyal bir adım GERİYE, t='+(t-1)+'\'e sıçradı'+(out[t-2]?' ve orada '+hn(t-1)+'\'in kendi çıktısından gelenle toplanacak.':' — orada ekleneceği başka kaynak yok.')],'Zamanda geri sıçrama — sayılarla'));
+        else if(single) put('zhh',1,box(pd,['∂'+zhn(1)+'/∂h₋₁ = W_hh = '+f(p.Whh,2),'bir önceki halka δ = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(p.Whh,2)+' = <b>'+f(d*p.Whh)+'</b> = ∂L/∂h₋₁','Tek hücrede burada biter; hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ adıma akar (BPTT).']));
+      }
+    }
     function seqFill(cfg){
       const pf=cfg.pf, T=cfg.T, inp=cfg.inp, out=cfg.out, SB='₀₁₂₃₄₅';
       if(!$(pf+'fzh1')) return;
@@ -1070,9 +1145,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         else zM('hsum'+t, araM(NB,'∂L/∂h'+sb+' = BPTT = ∂L/∂z_h⁽'+(t+1)+'⁾·W_hh = ('+F(ZH[t+1])+')('+F(p.Whh,2)+') = '+F(BP[t])+'\n(bu adımın kendi çıktısı yok → kendi katkısı 0)'));
       }
       zM('Ltot', araM(NF,'L = '+outs.map(t=>'L'+SB[t]).join(' + ')+' = '+outs.map(t=>F(LL[t])).join(' + ')+' = '+F(Ltot)));
+      rnnBridges({T:T,inp:inp,out:out,K:(n,t)=>pf+'_'+n+t}, {X,Y,H,ZY,DY,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY});
     }
     seqFill({pf:'o',T:3,inp:[1,0,0],out:[1,1,1]});
     seqFill({pf:'d',T:4,inp:[1,1,0,0],out:[0,0,1,1]});
+
     setTxt('rcS1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
     setTxt('rcS1val', F(dyhat));
     setTxt('rcS2sub1', '('+F(dyhat)+')('+F(h)+')');
@@ -1477,6 +1554,22 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         +row('W<sub>hy</sub>',p.Why,dWhy,nW.Why)+row('b<sub>y</sub>',p.by,dby,nW.by);
       const nz=nW.Wxh*p.x+nW.Whh*p.hp+nW.b, nh=Math.tanh(nz), nyh=nW.Why*nh+nW.by, nL=0.5*(nyh-p.y)*(nyh-p.y);
       $('rcS5Loss').innerHTML='Yeni ağırlıklarla aynı girdiyi tekrar çalıştırırsak: ŷ = '+F(yhat)+' → <b>'+F(nyh)+'</b> , kayıp L = '+F(L)+' → <b style="color:'+(nL<=L?'#46c46a':'#e06a6a')+'">'+F(nL)+'</b> '+(nL<=L?'✓ azaldı':'⚠ arttı (α çok büyük olabilir)');
+    }
+
+    /* Tek Hücre / many-to-one / many-to-many (Tx=Ty): aynı XOR-tarzı köprü */
+    if($('tfzh')){
+      const cfgT={T:1,inp:[1],out:[1],single:true,H0:p.hp,X:()=>p.x,Y:()=>p.y,K:(n,t)=>n==='hsum'?null:'t_'+(n==='zhh'?'zhhp':n)};
+      rnnBridges(cfgT, rnnState(cfgT));
+    }
+    if($('rfzh1')){
+      const cfgR={T:3,inp:[1,1,1],out:[0,0,1],H0:0,X:t=>parseFloat($('ru_x'+t).value)||0,Y:()=>parseFloat($('ru_y').value)||0,
+        K:(n,t)=>({Lyhat:'r_Lyhat',yhatzy:'r_yhatzy',zyWhy:'r_zyWhy',zyby:'r_zyby',zyh:'r_zyh3',
+          hzh:'r_h'+t+'zh'+t, zhWxh:'r_zh'+t+'Wxh', zhWhh:'r_zh'+t+'Whh', zhbh:'r_zh'+t+'bh', zhh:'r_zh'+t+'h'+(t-1), hsum:'r_zh'+t+'h'+(t-1)+'_from'})[n]};
+      rnnBridges(cfgR, rnnState(cfgR));
+    }
+    if($('mfzh1') && $('rcM2_x1')){
+      const cfgM={T:3,inp:[1,1,1],out:[1,1,1],H0:0,X:t=>parseFloat($('rcM2_x'+t).value)||0,Y:t=>parseFloat($('rcM2_y'+t).value)||0,K:(n,t)=>'m_'+n+t};
+      rnnBridges(cfgM, rnnState(cfgM));
     }
 
     return {L, dWxh, dWhh, db, dWhy, dby};
