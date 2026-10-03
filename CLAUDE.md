@@ -474,6 +474,42 @@ silinebilir. Devamında (bu PR) Bütün Resim canlı diyagramı ortalandı
 (`.bp-live-grid .cell-diagram` flex + m2o viewBox `-25 0 950 316`) ve
 sağ sütunun üstüne kapalı gelen `.bp-nota` Notasyon accordion'u eklendi.
 
+## RNN — 5 türün hepsi için Bütün Resim (PR #310, #311, #312)
+
+Kullanıcı Stanford'un RNN türleri tablosunu gösterip "bütün resim kısmını
+bütün RNN çeşitleri için yapalım" dedi; `AskUserQuestion` ile kapsam =
+**5 tür** (Tek Hücre/one-to-one, many-to-one, many-to-many Tx=Ty,
+one-to-many, many-to-many Tx≠Ty), kayıp = Σ L_t. Tür seçici
+(`data-rt="tek|m2o|m2mEq|o2m|dec"`) hem Simülasyon diyagramını hem
+`#rnnBigPicture{Tek,M2o,M2m,O2m,Dec}` bloğunu değiştirir (`js/app.js`
+switcher). Kullanıcı bundan sonra PR'ları **sormadan birleştirmemi**
+istedi ("bundan sonra sorma birleştir").
+
+- **Tek Hücre / many-to-many (Tx=Ty)**: HTML'i Python üreticileriyle
+  (scratchpad'de, repoda yok) şablonlayıp `index.html`'e koyduk; ids
+  `tf*/tt*` (tek), `mf*/mt*` (m2m); pop-up anahtarları `t_*`/`m_*`;
+  canlı diyagramlar `rnnCellInit` ve `scInit` fabrikalarının ek örnekleri
+  (`bs_`, `bq_` önekli). Tek Hücre IIFE'si `scInit(P)` fabrikasına çevrildi.
+- **one-to-many / Tx≠Ty**: genel `buildSeq(cfg)` (diyagram + adımlar) ve
+  `seqFill(cfg)` (canlı değer + köprüler), cfg = `{pf,T,inp[],out[]}`
+  (adım başına girdi/çıktı var-yok). o2m: T=3 inp=[1,0,0] out=[1,1,1];
+  dec: T=4 inp=[1,1,0,0] out=[0,0,1,1]; ids `o*`/`d*`. Ağırlıklar Tek
+  Hücre kaydırıcılarıyla ortak, her türün kendi x/y kutuları var
+  (`o_x1`, `d_y3`... `render` listener listesinde). Encoder-decoder aynı
+  W'yi 4 kez kullanıyor (gerçekte ayrı) — sayfada not var.
+- **Ağaç tasarımı**: çıktı adımlarının dalları kökten ayrılır, EN SON
+  çıktılı adım ana zincirdir (BPTT); diğer çıktı dalları `↪ h_t`
+  kutusuyla ana zincirdeki h_t'de toplanır (tek ağaç iki ebeveyn
+  taşıyamadığı için). Çıktısız adımların h_t'si "sadece BPTT" alır.
+- **Doğrulama dersi**: gradyanlar bağımsız bir sonlu-fark (finite
+  difference) betiğiyle sayfadaki değerlerle karşılaştırıldı (beş ağırlık,
+  iki tür, birebir) — yeni bir BPTT varyantı eklerken bunu yap.
+- **Hata dersleri**: (1) `setTxt` `const` olarak tanımlanmadan önce
+  kullanılan blok TDZ hatası verdi — canlı-değer bloğunu `setTxt`
+  tanımından SONRA koy; (2) tek-hücre diyagramı için genişlik sınırı
+  (`#bsCellSvg{max-width:480px}`) unutulunca ekranı doldurdu — yeni bir
+  `.bp-live` örneğine her zaman kendi `max-width` kuralını ver.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
