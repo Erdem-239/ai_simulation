@@ -399,6 +399,30 @@ güvenle no-op oluyordu ama kodu da temizlemek daha doğruydu).
 `rnnFwdCols`'a statik `rfc-diagram-only` sınıfı eklendi (zaten var olan
 CSS kuralı — tek sütun, ortalanmış diyagram).
 
+**Pop-up'lara eksik kalan "canlı köprü" eklendi (PR #302)**: ağaç
+canlıya alınınca kullanıcı XOR'un `∂L/∂p` pop-up'ını örnek gösterip
+"daha ayrıntılı, sen çok kısa anlatmışsın" dedi. Kök neden türetme
+METNİ değildi (RNN'in çoğu türevi zaten tek-adımlı K3 uygulaması,
+XOR'un `Lp` gibi çok-adımlı cebirsel örneklerinden doğal olarak daha
+kısa) — eksik olan, XOR'un HER arka-plan pop-up'ının sonunda olan ama
+RNN'e hiç taşınmamış **"🔗 Peki gradyan buradan nasıl çıkıyor?"**
+canlı sayı köprüsüydü (`js/lesson-xor-epoch.js`'teki `zin()`/`ara()`/
+`yaprak()` deseni, `[data-zincir]` hedefli, her `render()`'da
+`.xp-zin` elemanlarının `innerHTML`'ini günceller). RNN'in 19 arka-
+plan pop-up'ının hepsine `<div class="xp-zin" data-zincir="r_KEY">`
+eklendi, `js/app.js`'e aynı `zin()`/`ara()` + RNN'e özgü yeni bir
+`uclu()` yardımcısı kondu. **Fark**: XOR 4 örneğin (batch) ORTALAMASINI
+gösterirken, RNN'de tek örnek var ama aynı ağırlık (W<sub>xh</sub>/
+W<sub>hh</sub>/b<sub>h</sub>) 3 zaman adımında kullanıldığı için 3
+katkının TOPLAMINI gösteriyor (`t=1/2/3: değer` satırları, geçerli
+adım "← bu adım" ile işaretli, sonunda toplam satırı). **Ders**:
+"daha ayrıntılı olsun" geri bildirimi otomatik olarak "metni uzat"
+anlamına gelmiyor — önce XOR'un referans örneğindeki YAPISAL
+bileşenleri (burada: türetme + canlı-sayı-köprüsü, iki ayrı parça)
+tek tek karşılaştırıp HANGİ parçanın eksik olduğunu tespit etmek
+gerekiyor; RNN'in türetme metni zaten yeterliydi, eksik olan tamamen
+farklı bir bileşendi (canlı köprü).
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
