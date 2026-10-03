@@ -607,6 +607,15 @@ sonra pop-up aç) yeniden üret; bir önceki düzeltmeyi "geçti" saymadan önce
 düzeltmenin kaldırılmış hâline karşı testin gerçekten KIRMIZI olduğunu doğrula
 (`git stash` ile: raw:true → düzeltmeyle raw:false).
 
+**Ağırlık paneli Bütün Resim'in ÜSTÜNE taşındı**: kullanıcı "kaydırıcıyı şunun
+üstüne koy" dedi (Bütün Resim ağacında oynayıp sonuçları orada görmek istiyor;
+panel 6️⃣ Simülasyon aşamasının içinde, kapalı ve aşağıdaydı). `#rcSliderPanel`
+artık hiçbir `.tpl-cl` içinde DEĞİL — 5️⃣ Bütün Resim aşamasının hemen
+önünde, her zaman görünür, iki aşama için ortak. `#rcTekInputs` (x/h₋₁/y)
+hâlâ yalnız Tek Hücre'de görünür. Bütün Resim giriş metni, many-to-one
+girdilerinin (x₁,x₂,x₃,y) Simülasyon→Geri Adım 5 kartında olduğunu açıkça
+söyler.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
