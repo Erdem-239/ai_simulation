@@ -202,17 +202,17 @@ function rnnCellInit(P){
     for(let i=0;i<3;i++){
       const n=i+1, prev=(n===1?'h₀':'h'+SUB[i-1]);
       const base='h'+SUB[i]+' = tanh( ';
-      fSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:hist+base+'<b>W<sub>hh</sub>·'+prev+'</b>', i:ci['mul_aa_'+n]});
-      fSteps.push({hl:['mul_ax_'+n,'io-x_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + <b>W<sub>xh</sub>·x'+SUB[i]+'</b>', i:ci['mul_ax_'+n]});
-      fSteps.push({hl:['add_a_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + <b>b<sub>h</sub></b>', i:ci['add_a_'+n]});
+      fSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:hist+base+'<b>W<sub>hh</sub>·'+prev+'</b>', i:ci['mul_aa_'+n], eq:['mfzh'+n]});
+      fSteps.push({hl:['mul_ax_'+n,'io-x_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + <b>W<sub>xh</sub>·x'+SUB[i]+'</b>', i:ci['mul_ax_'+n], eq:['mfzh'+n]});
+      fSteps.push({hl:['add_a_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + <b>b<sub>h</sub></b>', i:ci['add_a_'+n], eq:['mfzh'+n]});
       const doneLineH=base+'W<sub>hh</sub>·'+prev+' + W<sub>xh</sub>·x'+SUB[i]+' + b<sub>h</sub> ) &nbsp;<b style="color:#3fb6b6">✓</b>';
-      fSteps.push({hl:['g1_'+n], f:hist+doneLineH, i:ci['g1_'+n]});
+      fSteps.push({hl:['g1_'+n], f:hist+doneLineH, i:ci['g1_'+n], eq:['mfh'+n]});
       const zyBase=`z<sub>y</sub><sup>(${n})</sup> = `;
-      fSteps.push({hl:['mul_ya_'+n], f:hist+doneLineH+'<br>'+zyBase+'<b>W<sub>hy</sub>·h'+SUB[i]+'</b>', i:ci['mul_ya_'+n]});
-      fSteps.push({hl:['add_y_'+n], f:hist+doneLineH+'<br>'+zyBase+'W<sub>hy</sub>·h'+SUB[i]+' + <b>b<sub>y</sub></b>', i:ci['add_y_'+n]});
+      fSteps.push({hl:['mul_ya_'+n], f:hist+doneLineH+'<br>'+zyBase+'<b>W<sub>hy</sub>·h'+SUB[i]+'</b>', i:ci['mul_ya_'+n], eq:['mfzy'+n]});
+      fSteps.push({hl:['add_y_'+n], f:hist+doneLineH+'<br>'+zyBase+'W<sub>hy</sub>·h'+SUB[i]+' + <b>b<sub>y</sub></b>', i:ci['add_y_'+n], eq:['mfzy'+n]});
       const tail = n===3 ? ` &nbsp;<b style="color:#e06a6a">✓ Tamamlandı! (T=3, her adımın kendi ŷ'si var)</b>` : ` &nbsp;<b style="color:#3fb6b6">✓</b>`;
       const doneLineY=zyBase+'W<sub>hy</sub>·h'+SUB[i]+` + b<sub>y</sub> &nbsp;→&nbsp; ŷ${SUB[i]} = z<sub>y</sub><sup>(${n})</sup>`+tail;
-      fSteps.push({hl:['io-y_'+n], f:hist+doneLineH+'<br>'+doneLineY, i:ci['io-y_'+n]});
+      fSteps.push({hl:['io-y_'+n], f:hist+doneLineH+'<br>'+doneLineY, i:ci['io-y_'+n], eq:['mfyhat'+n,'mfL'+n].concat(n===3?['mfL']:[])});
       hist+=doneLineH+'<br>'+doneLineY+'<br>';
     }
 
@@ -235,18 +235,18 @@ function rnnCellInit(P){
         `∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·${prev}`+(n>1?` &nbsp;→&nbsp; ∂L/∂h${SUB[i-1]} bileşeni (BPTT, sonraki geri adıma) = ∂L/∂${zh}·W<sub>hh</sub>`:` &nbsp;(h₀=0 olduğu için bu terim 0)`),
         `∂L/∂W<sub>xh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·x${SUB[i]}`
       ];
-      bSteps.push({hl:['io-y_'+n], f:bhist+bfJoin(lines,0), i:ci['io-y_'+n]+' Bu adımın kendi kaybından geri yayılım burada başlıyor.'});
-      bSteps.push({hl:['add_y_'+n], f:bhist+bfJoin(lines,1), i:`<b>+ geri:</b> gradyan kopyalanır → ∂L/∂b<sub>y</sub>|<sub>t=${n}</sub> = ∂L/∂${zy}.`});
-      bSteps.push({hl:['mul_ya_'+n], f:bhist+bfJoin(lines,2), i:`<b>× geri:</b> ∂L/∂W<sub>hy</sub>|<sub>t=${n}</sub> = ∂L/∂${zy}·${hn}; ayrıca kendi çıktısından ${hn}'ye katkı gider.`});
+      bSteps.push({hl:['io-y_'+n], f:bhist+bfJoin(lines,0), i:ci['io-y_'+n]+' Bu adımın kendi kaybından geri yayılım burada başlıyor.', eq:['mtyhat'+n,'mtzy'+n]});
+      bSteps.push({hl:['add_y_'+n], f:bhist+bfJoin(lines,1), i:`<b>+ geri:</b> gradyan kopyalanır → ∂L/∂b<sub>y</sub>|<sub>t=${n}</sub> = ∂L/∂${zy}.`, eq:['mtby'+n]});
+      bSteps.push({hl:['mul_ya_'+n], f:bhist+bfJoin(lines,2), i:`<b>× geri:</b> ∂L/∂W<sub>hy</sub>|<sub>t=${n}</sub> = ∂L/∂${zy}·${hn}; ayrıca kendi çıktısından ${hn}'ye katkı gider.`, eq:['mtWhy'+n].concat(n<3?['mtlink'+n]:[])});
       bSteps.push({hl:['g1_'+n], f:bhist+bfJoin(lines,3), i: n===3
           ? `<b>tanh geri (t=3):</b> ∂L/∂h₃ sadece kendi çıktısından geliyor (son adım, gelecek yok).`
-          : `<b>tanh geri (t=${n}):</b> ∂L/∂${hn} İKİ kaynaktan TOPLANIR — kendi çıktısı + t=${n+1}'den BPTT ile gelen. Many-to-many'nin many-to-one'dan asıl farkı budur.`});
-      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,4), i:`<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}.`});
-      bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,5), i:`<b>× geri:</b> ∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·${prev}`+(n>1?`; ayrıca ∂L/∂${prev} ÖNCEKİ zamana akar (BPTT).`:`; h₀=0 olduğu için bu katkı sıfır.`)});
-      bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,6), i:`<b>× geri:</b> ∂L/∂W<sub>xh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·x${SUB[i]}.`});
+          : `<b>tanh geri (t=${n}):</b> ∂L/∂${hn} İKİ kaynaktan TOPLANIR — kendi çıktısı + t=${n+1}'den BPTT ile gelen. Many-to-many'nin many-to-one'dan asıl farkı budur.`, eq:['mth'+n,'mtzh'+n]});
+      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,4), i:`<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}.`, eq:['mtbh'+n]});
+      bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,5), i:`<b>× geri:</b> ∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·${prev}`+(n>1?`; ayrıca ∂L/∂${prev} ÖNCEKİ zamana akar (BPTT).`:`; h₀=0 olduğu için bu katkı sıfır.`), eq:['mtWhh'+n]});
+      bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,6), i:`<b>× geri:</b> ∂L/∂W<sub>xh</sub>|<sub>t=${n}</sub> = ∂L/∂${zh}·x${SUB[i]}.`, eq:['mtWxh'+n]});
       bhist+=lines.join('<br>')+'<br>';
     }
-    bSteps.push({hl:['io-a0'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de.</b>`, i:`✓ Bitti! Many-to-many'de her h<sub>t</sub> hem KENDİ çıktısından hem GELECEKTEN (BPTT) gradyan alır ve bu ikisi toplanır — many-to-one'da sadece son adımın kendi çıktısı var, diğerleri sadece BPTT alır.`});
+    bSteps.push({hl:['io-a0'], eq:['mtTotal'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de.</b>`, i:`✓ Bitti! Many-to-many'de her h<sub>t</sub> hem KENDİ çıktısından hem GELECEKTEN (BPTT) gradyan alır ve bu ikisi toplanır — many-to-one'da sadece son adımın kendi çıktısı var, diğerleri sadece BPTT alır.`});
 
     return {ci, fSteps, bSteps};
   }
@@ -303,7 +303,7 @@ function rnnCellInit(P){
   document.getElementById(P.backAuto).addEventListener('click', ()=>auto(bStep));
   document.getElementById(P.rst).addEventListener('click', reset);
 
-  bindMode('m2o');
+  bindMode(P.mode||'m2o');
   return {setMode:bindMode};
 }
 {
@@ -311,6 +311,8 @@ function rnnCellInit(P){
   if(c1) window.__rnnCellSetMode=function(m){ c1.setMode(m); };
   /* "5️⃣ Bütün Resim" içindeki sıkıştırılmış canlı diyagram — hep many-to-one */
   rnnCellInit({svg:'bpCellSvg',fbox:'bpCellFormula',info:'bpCellInfo',step:'bpCellStep',back:'bpCellBack',auto:'bpCellAuto',backAuto:'bpCellBackAuto',rst:'bpCellRst',pre:'bp_'});
+  /* many-to-many Bütün Resim'indeki canlı diyagram */
+  rnnCellInit({svg:'bqCellSvg',fbox:'bqCellFormula',info:'bqCellInfo',step:'bqCellStep',back:'bqCellBack',auto:'bqCellAuto',backAuto:'bqCellBackAuto',rst:'bqCellRst',pre:'bq_',mode:'m2mEq'});
 }
 
 /* ---- Tek Hücre — bir RNN adımının içi (basit, tıklanabilir computational graph) ---- */
@@ -946,6 +948,70 @@ function rnnCellInit(P){
         + '∂L/∂b<sub>h</sub> = g₁ + g₂ + g₃ = '+F(gBh1)+' + '+F(gBh2)+' + '+F(gBh3)+' = <b style="color:var(--accent)">'+F(totBhM2)+'</b>';
 
       drawStep5M2m([gWhh1, gWhh2, gWhh3]);
+
+      /* ---- "5️⃣ Bütün Resim" — many-to-many (Tx=Ty): ileri yol + ağaç canlı değerleri + pop-up köprüleri ----
+         Aynı gx/gh/gz/g* değişkenleri (Geri Adım 5'in gerçek 3 adımı) yeniden kullanılıyor, yeni hesap yok;
+         sadece yaprakların (her ağırlığın 3 zaman adımındaki katkısı) açık listesi çıkarılıyor. */
+      {
+        const X=[gx1,gx2,gx3], Y=[gy1,gy2,gy3], H=[gh0,gh1,gh2,gh3], Z=[gz1,gz2,gz3], ZY=[gzy1,gzy2,gzy3], LL=[gL1,gL2,gL3];
+        const DY=[gdyhat1,gdyhat2,gdyhat3], OWN=[gOwn1,gOwn2,gOwn3], BP=[gBptt1,gBptt2,0], HT=[gH1,gH2,gOwn3], ZH=[gZh1,gZh2,gZh3];
+        const WXH=ZH.map((g,i)=>g*X[i]), WHH=ZH.map((g,i)=>g*H[i]), BH=ZH.slice(), WHY=DY.map((d,i)=>d*H[i+1]), BY=DY.slice();
+        const sm=a=>a.reduce((q,v)=>q+v,0);
+        for(let t=1;t<=3;t++){
+          const i=t-1;
+          if(t===1) setTxt('mfh0',F(gh0,2));
+          setTxt('mfx'+t,F(X[i],2)); setTxt('mfzh'+t+'v',F(Z[i])); setTxt('mfh'+t+'v',F(H[t]));
+          if(t>1) setTxt('mfhi'+t,F(H[t-1]));
+          setTxt('mfzy'+t+'v',F(ZY[i])); setTxt('mfyhat'+t+'v',F(ZY[i])); setTxt('mfL'+t+'v',F(LL[i])); setTxt('mfL'+t+'b',F(LL[i]));
+          setTxt('mtyhat'+t+'v',F(DY[i])); setTxt('mtzy'+t+'v',F(DY[i]));
+          setTxt('mtWhy'+t+'v',F(WHY[i])); setTxt('mtby'+t+'v',F(BY[i]));
+          setTxt('mth'+t+'v',F(HT[i])); setTxt('mtzh'+t+'v',F(ZH[i]));
+          setTxt('mtWxh'+t+'v',F(WXH[i])); setTxt('mtWhh'+t+'v',F(WHH[i])); setTxt('mtbh'+t+'v',F(BH[i]));
+          if(t<3) setTxt('mtlink'+t+'v',F(OWN[i]));
+        }
+        setTxt('mfLv',F(gLtot)); setTxt('mtLv',F(gLtot));
+        setTxt('mtR32',F(p.Whh*(1-gh2*gh2))); setTxt('mtR21',F(p.Whh*(1-gh1*gh1)));
+        const tEl=$('mtTotal');
+        if(tEl) tEl.innerHTML='✅ <b>Gerçek gradyanlar</b> (her ağırlığın üç adımdaki katkılarının toplamı):<br>'
+          +'∂L/∂W<sub>xh</sub> = '+F(WXH[0])+' + '+F(WXH[1])+' + '+F(WXH[2])+' = <b style="color:var(--accent)">'+F(sm(WXH))+'</b><br>'
+          +'∂L/∂W<sub>hh</sub> = '+F(WHH[0])+' + '+F(WHH[1])+' + '+F(WHH[2])+' = <b style="color:var(--accent)">'+F(sm(WHH))+'</b><br>'
+          +'∂L/∂b<sub>h</sub> = '+F(BH[0])+' + '+F(BH[1])+' + '+F(BH[2])+' = <b style="color:var(--accent)">'+F(sm(BH))+'</b><br>'
+          +'∂L/∂W<sub>hy</sub> = '+F(WHY[0])+' + '+F(WHY[1])+' + '+F(WHY[2])+' = <b style="color:var(--accent)">'+F(sm(WHY))+'</b><br>'
+          +'∂L/∂b<sub>y</sub> = '+F(BY[0])+' + '+F(BY[1])+' + '+F(BY[2])+' = <b style="color:var(--accent)">'+F(sm(BY))+'</b>';
+
+        const zM=(ad,html)=>document.querySelectorAll('[data-zincir="m_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+        const araM=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
+        const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
+        const SB=['₁','₂','₃'];
+        function uc(gradAd,vals,cur,total){
+          const rows=vals.map((v,k)=>'  t='+(k+1)+': '+F(v)+(k===cur?'  ← bu adım':'')).join('\n');
+          return '<b>'+NB+'</b> Bu, '+gradAd+'\'nin SADECE bu zaman adımındaki katkısı — aynı ağırlık 3 adımda kullanıldığı için üçünü TOPLAMAK gerekiyor:'
+            +'<div class="xp-hes">'+gradAd+' = Σₜ (bu adımın katkısı)\n'+rows+'\n  toplam: '+vals.map(v=>(v>=0?'+':'')+F(v)).join(' ')+' = <b>'+F(total)+'</b> = '+gradAd+'</div>';
+        }
+        for(let t=1;t<=3;t++){
+          const i=t-1, sb=SB[i], ph=t>1?'h'+SB[i-1]:'h₀';
+          zM('zh'+t, araM(NF,'z_h⁽'+t+'⁾ = W_xh·x'+sb+' + W_hh·'+ph+' + b_h\n      = ('+F(p.Wxh,2)+')('+F(X[i],2)+') + ('+F(p.Whh,2)+')('+F(H[i],2)+') + '+F(p.b,2)+'\n      = '+F(p.Wxh*X[i])+' + '+F(p.Whh*H[i])+' + '+F(p.b,2)+'\n      = '+F(Z[i])));
+          zM('tanh'+t, araM(NF,'h'+sb+' = tanh(z_h⁽'+t+'⁾) = tanh('+F(Z[i])+') = '+F(H[t])));
+          zM('zy'+t, araM(NF,'z_y⁽'+t+'⁾ = W_hy·h'+sb+' + b_y\n      = ('+F(p.Why,2)+')('+F(H[t])+') + '+F(p.by,2)+'\n      = '+F(p.Why*H[t])+' + '+F(p.by,2)+'\n      = '+F(ZY[i])));
+          zM('yhat'+t, araM(NF,'ŷ'+sb+' = z_y⁽'+t+'⁾ = '+F(ZY[i])));
+          zM('L'+t, araM(NF,'L'+sb+' = ½(ŷ'+sb+' − y'+sb+')²\n   = ½('+F(ZY[i])+' − '+F(Y[i],2)+')²\n   = ½('+F(ZY[i]-Y[i])+')²\n   = '+F(LL[i])));
+          zM('Lyhat'+t, araM(NB,'∂L/∂ŷ'+sb+' = ŷ'+sb+' − y'+sb+' = '+F(ZY[i])+' − '+F(Y[i],2)+' = '+F(DY[i])));
+          zM('yhatzy'+t, araM(NB,'∂L/∂z_y⁽'+t+'⁾ = ∂L/∂ŷ'+sb+' × 1 = '+F(DY[i])+'\nBu sinyal şimdi z_y\'den dallanacak.'));
+          zM('zyWhy'+t, uc('dW_hy',WHY,i,sm(WHY)).replace('Bu, dW_hy','Bu, ∂L/∂z_y⁽'+t+'⁾·h'+sb+' = ('+F(DY[i])+')('+F(H[t])+') = '+F(WHY[i])+' — dW_hy'));
+          zM('zyby'+t, uc('db_y',BY,i,sm(BY)));
+          if(t===3) zM('zyh3', araM(NB,'∂L/∂h₃ (kendi çıktısından) = ∂L/∂z_y⁽³⁾ × W_hy = '+F(DY[2])+' × '+F(p.Why,2)+' = '+F(OWN[2])+'\nt=3 son adım — gelecekten katkı yok, h₃\'ün toplam sinyali bu.'));
+          else zM('zyh'+t, araM(NB,'∂L/∂h'+sb+' (kendi çıktısından) = ∂L/∂z_y⁽'+t+'⁾ × W_hy = '+F(DY[i])+' × '+F(p.Why,2)+' = '+F(OWN[i])+'\nBu, h'+sb+'\'in TOPLAM sinyalinin yarısı — diğer yarısı gelecekten (BPTT) gelir, ana zincirdeki h'+sb+' kutusunda toplanır.'));
+          zM('hzh'+t, araM(NB,'∂L/∂z_h⁽'+t+'⁾ = ∂L/∂h'+sb+' × (1−h'+sb+'²) = '+F(HT[i])+' × (1−'+F(H[t]*H[t])+') = '+F(ZH[i])+'\nBu sinyal şimdi dallanıyor: bu adımın W_xh/W_hh/b_h katkıları'+(t>1?' + BPTT ile t='+(t-1)+'\'e.':'.')));
+          zM('zhWxh'+t, uc('dW_xh',WXH,i,sm(WXH)));
+          zM('zhWhh'+t, uc('dW_hh',WHH,i,sm(WHH))+(t===1?'<div style="color:var(--muted); font-size:10.5px; margin-top:4px">t=1\'in katkısı h₀=0 olduğu için her zaman 0.</div>':''));
+          zM('zhbh'+t, uc('db_h',BH,i,sm(BH)));
+          if(t>1) zM('zhh'+t, araM(NB,'BPTT katkısı = ∂L/∂z_h⁽'+t+'⁾ × W_hh = '+F(ZH[i])+' × '+F(p.Whh,2)+' = '+F(BP[i-1])+'\nBu, h'+SB[i-1]+'\'e gelecekten ulaşan sinyal — kendi çıktısından gelenle toplanacak.'));
+        }
+        zM('hsum3', araM(NB,'∂L/∂h₃ = kendi çıktısı = '+F(OWN[2])+'\n(t=3 son adım: BPTT katkısı = 0)'));
+        zM('hsum2', araM(NB,'∂L/∂h₂ = kendi çıktısı + BPTT\n       = ∂L/∂z_y⁽²⁾·W_hy + ∂L/∂z_h⁽³⁾·W_hh\n       = ('+F(DY[1])+')('+F(p.Why,2)+') + ('+F(ZH[2])+')('+F(p.Whh,2)+')\n       = '+F(OWN[1])+' + '+F(BP[1])+'\n       = '+F(HT[1])));
+        zM('hsum1', araM(NB,'∂L/∂h₁ = kendi çıktısı + BPTT\n       = ∂L/∂z_y⁽¹⁾·W_hy + ∂L/∂z_h⁽²⁾·W_hh\n       = ('+F(DY[0])+')('+F(p.Why,2)+') + ('+F(ZH[1])+')('+F(p.Whh,2)+')\n       = '+F(OWN[0])+' + '+F(BP[0])+'\n       = '+F(HT[0])));
+        zM('Ltot', araM(NF,'L = L₁ + L₂ + L₃ = '+F(LL[0])+' + '+F(LL[1])+' + '+F(LL[2])+' = '+F(gLtot)));
+      }
     }
 
     /* ---- ileri seviye: gerçek 3 zaman adımlı BPTT (unrolling) ---- */
@@ -1310,6 +1376,7 @@ function rnnCellInit(P){
   // çıkarılıp kendi aşamasına taşındı — sadece many-to-one'da içerik var,
   // diğer mimarilerde kısa bir not gösteriliyor (bkz. index.html).
   const bigPictureM2o=document.getElementById('rnnBigPictureM2o');
+  const bigPictureM2m=document.getElementById('rnnBigPictureM2m');
   const bigPictureNote=document.getElementById('rnnBigPictureNote');
   const typeNoteHtml={
     tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
@@ -1328,7 +1395,8 @@ function rnnCellInit(P){
       if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(gAdimSectionM2o) gAdimSectionM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
-      if(bigPictureNote) bigPictureNote.style.display = (rt==='m2o') ? 'none' : 'block';
+      if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
+      if(bigPictureNote) bigPictureNote.style.display = (rt==='m2o' || rt==='m2mEq') ? 'none' : 'block';
     });
   });
 })();
