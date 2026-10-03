@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610040045"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610040110"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610040045">
+<link rel="stylesheet" href="css/style.css?v=202610040110">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 00:45 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 01:10 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2879,6 +2879,18 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
 
       </div>
     </div>
+    <div class="pts xm-card" id="xmCard" style="border-left:3px solid var(--accent); margin:14px 0 4px">
+      <h3 style="color:var(--accent); margin-top:0">🔍 Gizli nöronlar ne öğrendi? — ağırlıklar bir "örüntü detektörü"</h3>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 8px">Ağın içinde "anlam" diye ayrı bir şey yok. Her nöron sadece <b>z = w₁·x₁ + w₂·x₂ + b</b> hesaplıyor: <b style="color:#46c46a">pozitif ağırlık</b> "bu girdi gelirse beni aç", <b style="color:#e06a6a">negatif ağırlık</b> "bu girdi gelirse beni kapat", <b style="color:#c9a0ff">bias</b> da "ne kadar kanıt toplarsam ateşleyeyim" eşiği. Aşağıda her nöronun girdi uzayında <b>nerede açıldığını</b> görüyorsun (parlak = açık, kesik çizgi = z=0 sınırı). Eğitimi başlat, haritaların nasıl değiştiğini izle: ağ VEYA / VE gibi işe yarar detektörleri <b>kendi bulur</b>, kimse ona söylemez.</p>
+      <div class="xm-grid">
+        <div class="xm-box"><div class="xm-title" style="color:#f0a032">Gizli nöron h₁</div><canvas id="xmH1" width="240" height="240"></canvas><div id="xmT1" class="xm-txt"></div></div>
+        <div class="xm-box"><div class="xm-title" style="color:#f0a032">Gizli nöron h₂</div><canvas id="xmH2" width="240" height="240"></canvas><div id="xmT2" class="xm-txt"></div></div>
+        <div class="xm-box"><div class="xm-title" style="color:#46c46a">Çıktı p (ikisini birleştirince)</div><canvas id="xmOut" width="240" height="240"></canvas><div id="xmTo" class="xm-txt"></div></div>
+        <div class="xm-box"><div class="xm-title" style="color:#c9a0ff">Gizli uzay: noktalar nereye taşındı? (h₁, h₂)</div><canvas id="xmHS" width="240" height="240"></canvas><div id="xmTs" class="xm-txt"></div></div>
+      </div>
+      <div class="callout" style="margin:10px 0 0">💡 <b>Anlamlandırma budur:</b> gizli katman ham girdiyi (x₁,x₂) <b>daha kullanışlı yeni özelliklere</b> (h₁,h₂) çeviriyor; sağdaki harita, noktaların bu yeni uzayda tek bir düz çizgiyle ayrılabilir hâle geldiğini gösteriyor. Çıkış nöronu sadece o çizgiyi çiziyor. Ağırlıklar "doğru bilgiyi taşıyor" çünkü bu ayarla kayıp küçülüyor — başka bir sebebi yok.</div>
+    </div>
+
     <div class="xs-extra">
         <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon (kim kim?)</div>
@@ -6246,15 +6258,16 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610040045"></script>
-<script src="js/lesson-turev.js?v=202610040045"></script>
-<script src="js/lesson-xor.js?v=202610040045"></script>
-<script src="js/lesson-xor-arch.js?v=202610040045"></script>
-<script src="js/lesson-xor-epoch.js?v=202610040045"></script>
-<script src="js/lesson-nn.js?v=202610040045"></script>
-<script src="js/lesson-trig.js?v=202610040045"></script>
+<script src="js/lesson-linreg.js?v=202610040110"></script>
+<script src="js/lesson-turev.js?v=202610040110"></script>
+<script src="js/lesson-xor.js?v=202610040110"></script>
+<script src="js/lesson-xor-arch.js?v=202610040110"></script>
+<script src="js/lesson-xor-maps.js?v=202610040110"></script>
+<script src="js/lesson-xor-epoch.js?v=202610040110"></script>
+<script src="js/lesson-nn.js?v=202610040110"></script>
+<script src="js/lesson-trig.js?v=202610040110"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610040045"></script>
-<script src="js/app.js?v=202610040045"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610040110"></script>
+<script src="js/app.js?v=202610040110"></script>
 </body>
 </html>

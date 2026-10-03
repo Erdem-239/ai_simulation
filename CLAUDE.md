@@ -1107,3 +1107,22 @@ gösteriyordu, vanishing mi exploding mi, yüzde kaç" diye geri istedi. Kart (`
 `#mo6Tbl1/#mo6Tbl2/#mo6Proj/#mo6Canvas/#mo6Learn`) many-to-one Bütün Resim bloğunun
 (`#rnnBigPictureM2o`) sonuna konuldu; `render()` kodu id'ler aynı olduğu için dokunulmadan
 yeniden çalıştı. Diğer türlerde (m2m/o2m/Tx≠Ty) bu kart yok.
+
+## XOR — "🔍 Gizli nöronlar ne öğrendi?" kartı (`js/lesson-xor-maps.js`)
+
+Kullanıcı XOR/NN/RNN'de "bilgiyi ağırlıklarla nasıl anlamlandırıyor, sezgisel olarak"
+diye sordu; cevap sezgiseldi (nöron = örüntü detektörü, pozitif/negatif ağırlık,
+bias = eşik, gizli katman = yeni özellik uzayı) ve "yap" dedi → 6️⃣ Simülasyon'daki
+`.xs-top` bloğunun hemen altına `#xmCard` eklendi: h₁, h₂ ve çıktı p için girdi
+uzayında (x₁,x₂) canlı aktivasyon ısı haritası + z=0 kesik çizgi + 4 nokta, her
+nöronun yanında canlı denklem ve "şu an ≈ VEYA/VE/… gibi" otomatik kapı etiketi
+(4 noktadaki 0/1 çıktıdan), ve gizli uzay (h₁,h₂) grafiği (noktalar nereye taşındı,
+çıkış doğrusu tek düz çizgiyle ayırıyor mu). Ağırlıkları `window.XORNET`'ten okur;
+`lesson-xor-epoch.js` `render()` sonunda `window.__xorMapsRender()` çağırır
+(betik epoch'tan ÖNCE yüklenir ki ilk render'da tanımlı olsun). **Test notu**:
+epoch'u headless'ta binlerce kez tıklamak çok yavaş (render ağır); eğitilmiş durumu
+`window.XORNET`'e elle yazılmış çözülmüş ağırlıklarla ([[6,6],[4,4]], [-3,-6],
+[10,-10], -5) görselleştirip doğrula. **Ders**: `pkill -f` komut zincirinin
+ortasında kabuğu öldürür — sonraki commit/push adımları SESSİZCE çalışmaz ama
+sonraki araç çağrısı (PR oluşturma) yine de başarılı olabilir; PR açmadan önce
+`git log`/`git status` ile commit'in gerçekten atıldığını doğrula.
