@@ -59,7 +59,7 @@ function rnnCellInit(P){
     s+=ar(oy,63,oy,43);
     s+='<rect class="op io-y" id="io-y" data-k="io-y" x="'+(oy-25)+'" y="15" width="50" height="26" rx="6"/><text class="io-lbl" x="'+oy+'" y="33" text-anchor="middle">ŷ</text>';
 
-    svg.setAttribute('viewBox','0 0 950 340');
+    svg.setAttribute('viewBox','-25 0 950 316');
     svg.innerHTML=s;
 
     const ci={'io-a0':'<b>h₀</b> — dizinin başlangıç hafızası (=0). Bir önceki adımın sonucu değil, dizinin en başı.'};

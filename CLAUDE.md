@@ -461,6 +461,19 @@ koymak için kodu kopyalamak yerine IIFE'yi parametreli fabrikaya çevirmek,
 id'leri önekleyip aramaları kapsamak — iki örnek birbirinin durumunu
 bozmadan tek kod yolunu paylaşıyor.
 
+**Hücre diyagramı sadeleştirildi — dik açılı çizim (PR #308)**: kullanıcı
+Stanford tarzı bir RNN hücre görseli gösterip "bizimki karmaşık, ilk başta
+öyleydi sonradan bozuldu" dedi. Çapraz `ar()` okları kalktı; yerine `pl()`
+(dik açılı `<path>` polyline) geldi: ana hat yatay, x aşağıdan ×Wxh ile
+dirsek yapıp +'ya, bh yukarıdan, ŷ dalı çıkıştan yukarı. Aynı dil üç yerde:
+Tek Hücre IIFE'si (`scSvg`) ve `rnnCellInit` içindeki `buildM2o`/
+`buildM2mEq` (`cellSvg` + `bp_` kopyası). Id'ler, `hl`/`eq` eşlemeleri
+değişmedi. **Ders**: satır aralığıyla toplu değiştirirken
+`svg.setAttribute('viewBox',...)` gibi komşu yan satırlar sessizce
+silinebilir. Devamında (bu PR) Bütün Resim canlı diyagramı ortalandı
+(`.bp-live-grid .cell-diagram` flex + m2o viewBox `-25 0 950 316`) ve
+sağ sütunun üstüne kapalı gelen `.bp-nota` Notasyon accordion'u eklendi.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı

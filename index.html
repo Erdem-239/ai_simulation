@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031612"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031642"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031612">
+<link rel="stylesheet" href="css/style.css?v=202610031642">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 16:12 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 16:42 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -743,6 +743,29 @@
       <div class="bp-live-grid">
         <div class="cell-diagram" style="overflow-x:auto"><svg id="bpCellSvg" role="img"></svg></div>
         <div class="cell-side">
+          <div class="acc bp-nota" style="margin:0 0 8px">
+        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
+        <div class="acc-body">
+          <div style="display:grid; grid-template-columns:1fr; gap:2px 14px; font-size:12px; color:#ccd5e8; line-height:1.6">
+            <div><b>x</b> — o adımın girdisi</div>
+            <div><b>h₋₁</b> — önceki hafıza</div>
+            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
+            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
+            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
+            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
+            <div><b>y</b> — gerçek cevap</div>
+            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
+            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
+            <div><b>W<sub>xh</sub></b> — x → h</div>
+            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+            <div><b>α</b> — öğrenme oranı</div>
+            <div><b>(1−h²)</b> — tanh türevi</div>
+          </div>
+        </div>
+      </div>
           <div id="bpCellFormula" class="work" style="min-height:48px; font-size:12.5px; line-height:1.7">İleri ▶ ile h₁→h₂→h₃→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
           <div id="bpCellInfo" class="callout" style="margin:8px 0 0; font-size:12px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
         </div>
@@ -5978,15 +6001,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031612"></script>
-<script src="js/lesson-turev.js?v=202610031612"></script>
-<script src="js/lesson-xor.js?v=202610031612"></script>
-<script src="js/lesson-xor-arch.js?v=202610031612"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031612"></script>
-<script src="js/lesson-nn.js?v=202610031612"></script>
-<script src="js/lesson-trig.js?v=202610031612"></script>
+<script src="js/lesson-linreg.js?v=202610031642"></script>
+<script src="js/lesson-turev.js?v=202610031642"></script>
+<script src="js/lesson-xor.js?v=202610031642"></script>
+<script src="js/lesson-xor-arch.js?v=202610031642"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031642"></script>
+<script src="js/lesson-nn.js?v=202610031642"></script>
+<script src="js/lesson-trig.js?v=202610031642"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031612"></script>
-<script src="js/app.js?v=202610031612"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031642"></script>
+<script src="js/app.js?v=202610031642"></script>
 </body>
 </html>
