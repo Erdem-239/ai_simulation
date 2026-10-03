@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031532"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031544"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031532">
+<link rel="stylesheet" href="css/style.css?v=202610031544">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:32 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:44 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -732,7 +732,21 @@
       <div id="rnnTreeWrap" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
-      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(h zincirlenerek, canlı yolculuk)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="rfx1">—</span></div><div class="xf-box gi">h₀<span class="xf-val" id="rfh0">0.00</span></div><div class="xf-kolad">girdi (t=1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{xh}x_1{+}W_{hh}h_0{+}b_h \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfzh1">z<sub>h</sub><sup>(1)</sup><span class="xf-val" id="rfzh1v">—</span></div><div class="xf-kolad">ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh1">h₁<span class="xf-val" id="rfh1v">—</span></div><div class="xf-kolad">hafıza t=1</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_2{+}W_{hh}h_1 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₂<span class="xf-val" id="rfx2">—</span></div><div class="xf-box gh" id="rfzh2">z<sub>h</sub><sup>(2)</sup><span class="xf-val" id="rfzh2v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh2">h₂<span class="xf-val" id="rfh2v">—</span></div><div class="xf-kolad">hafıza t=2</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_3{+}W_{hh}h_2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₃<span class="xf-val" id="rfx3">—</span></div><div class="xf-box gh" id="rfzh3">z<sub>h</sub><sup>(3)</sup><span class="xf-val" id="rfzh3v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh3">h₃<span class="xf-val" id="rfh3v">—</span></div><div class="xf-kolad">hafıza t=3</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{hy}h_3{+}b_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfzy">z<sub>y</sub><span class="xf-val" id="rfzyv">—</span></div><div class="xf-kolad">çıktı toplamı <span style="opacity:.7">(sadece t=3)</span></div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_yhat" tabindex="0" role="button" aria-label="bu adimi anlat">\( \hat y{=}z_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfyhat">ŷ<span class="xf-val" id="rfyhatv">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tfrac12(\hat y{-}y)^2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl" id="rfL">L<span class="xf-val" id="rfLv">—</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım tam da bu noktadan — <b>L</b>'den — başlayıp aynı yolu <b>tersten</b> yürüyor; ama z<sub>h</sub>'ye vardığında dallanıp bir de <b>zamanda geriye</b> (t=3→2→1) akıyor. Aşağıdaki ağacın kökü, yukarıdaki zincirin son halkası:</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan dokuz katkıya (zaman içinde geri yayılım)</div>
+      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(h zincirlenerek, canlı yolculuk)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="rfx1">—</span></div><div class="xf-box gi">h₀<span class="xf-val" id="rfh0">0.00</span></div><div class="xf-kolad">girdi (t=1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{xh}x_1{+}W_{hh}h_0{+}b_h \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfzh1">z<sub>h</sub><sup>(1)</sup><span class="xf-val" id="rfzh1v">—</span></div><div class="xf-kolad">ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh1" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh1">h₁<span class="xf-val" id="rfh1v">—</span></div><div class="xf-kolad">hafıza t=1</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_2{+}W_{hh}h_1 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₂<span class="xf-val" id="rfx2">—</span></div><div class="xf-box gh" id="rfzh2">z<sub>h</sub><sup>(2)</sup><span class="xf-val" id="rfzh2v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh2" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh2">h₂<span class="xf-val" id="rfh2v">—</span></div><div class="xf-kolad">hafıza t=2</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( {+}\,W_{xh}x_3{+}W_{hh}h_2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gi">x₃<span class="xf-val" id="rfx3">—</span></div><div class="xf-box gh" id="rfzh3">z<sub>h</sub><sup>(3)</sup><span class="xf-val" id="rfzh3v">—</span></div><div class="xf-kolad">girdi + ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_tanh3" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="rfh3">h₃<span class="xf-val" id="rfh3v">—</span></div><div class="xf-kolad">hafıza t=3</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{hy}h_3{+}b_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfzy">z<sub>y</sub><span class="xf-val" id="rfzyv">—</span></div><div class="xf-kolad">çıktı toplamı <span style="opacity:.7">(sadece t=3)</span></div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_yhat" tabindex="0" role="button" aria-label="bu adimi anlat">\( \hat y{=}z_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="rfyhat">ŷ<span class="xf-val" id="rfyhatv">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="r_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tfrac12(\hat y{-}y)^2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl" id="rfL">L<span class="xf-val" id="rfLv">—</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="bp-live"><div class="xf-baslik" style="margin-top:6px">🎮 CANLI ÇALIŞTIR <span>(devre diyagramı — İleri ▶ / ◀ BPTT'ye bas; yukarıdaki akış ve aşağıdaki ağaçta ilgili kutu aynı anda yanar)</span></div>
+      <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 6px">
+        <button class="addbtn" id="bpCellStep" style="background:var(--blue); color:#fff; padding:5px 10px; font-size:12px">İleri ▶ adım</button>
+        <button class="addbtn" id="bpCellAuto" style="background:var(--blue); color:#fff; opacity:.8; padding:5px 10px; font-size:12px">İleri ⏩</button>
+        <button class="addbtn" id="bpCellBack" style="background:var(--accent); color:#101830; padding:5px 10px; font-size:12px">◀ BPTT adım</button>
+        <button class="addbtn" id="bpCellBackAuto" style="background:var(--accent); color:#101830; opacity:.8; padding:5px 10px; font-size:12px">◀ BPTT ⏩</button>
+        <button class="addbtn" id="bpCellRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line); padding:5px 10px; font-size:12px">↺ Sıfırla</button>
+      </div>
+      <div class="bp-live-grid">
+        <div class="cell-diagram" style="overflow-x:auto"><svg id="bpCellSvg" role="img"></svg></div>
+        <div class="cell-side">
+          <div id="bpCellFormula" class="work" style="min-height:48px; font-size:12.5px; line-height:1.7">İleri ▶ ile h₁→h₂→h₃→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
+          <div id="bpCellInfo" class="callout" style="margin:8px 0 0; font-size:12px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
+        </div>
+      </div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım tam da bu noktadan — <b>L</b>'den — başlayıp aynı yolu <b>tersten</b> yürüyor; ama z<sub>h</sub>'ye vardığında dallanıp bir de <b>zamanda geriye</b> (t=3→2→1) akıyor. Aşağıdaki ağacın kökü, yukarıdaki zincirin son halkası:</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan dokuz katkıya (zaman içinde geri yayılım)</div>
       <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, ŷ üzerinden z<sub>y</sub>'ye iner. z<sub>y</sub>'de <b>dallanır</b>: iki dal doğrudan çıktı ağırlıklarına (W<sub>hy</sub>, b<sub>y</sub>) iner, bir dal h₃'e girip <b>zamanda geriye</b> akmaya başlar. Her zaman adımında aynı şey tekrarlanır: bir dal o anın gizli ağırlıklarına (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) çıkar, bir dal (BPTT) bir önceki zaman adımına devam eder. <b>Her ok bir türev</b> — okun üstündeki formül o halkanın kendisi. Bir yaprağın gradyanı, köke kadar olan bütün okların <b>çarpımıdır</b>; aynı ağırlık 3 farklı zaman adımında yaprak verdiği için gerçek gradyan bu üç yaprağın <b>toplamıdır</b>.</p>
       <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
       <div class="xt-ipucu">↔ Ağaç geniş ve zamanla derinleşiyor — dalları görmek için <b>kaydır</b>.</div>
@@ -5964,15 +5978,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031532"></script>
-<script src="js/lesson-turev.js?v=202610031532"></script>
-<script src="js/lesson-xor.js?v=202610031532"></script>
-<script src="js/lesson-xor-arch.js?v=202610031532"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031532"></script>
-<script src="js/lesson-nn.js?v=202610031532"></script>
-<script src="js/lesson-trig.js?v=202610031532"></script>
+<script src="js/lesson-linreg.js?v=202610031544"></script>
+<script src="js/lesson-turev.js?v=202610031544"></script>
+<script src="js/lesson-xor.js?v=202610031544"></script>
+<script src="js/lesson-xor-arch.js?v=202610031544"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031544"></script>
+<script src="js/lesson-nn.js?v=202610031544"></script>
+<script src="js/lesson-trig.js?v=202610031544"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031532"></script>
-<script src="js/app.js?v=202610031532"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031544"></script>
+<script src="js/app.js?v=202610031544"></script>
 </body>
 </html>

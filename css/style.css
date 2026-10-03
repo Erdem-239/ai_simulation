@@ -714,6 +714,11 @@
   .cell-side{min-width:0}
   #cellSvg, #scSvg{display:block; width:100%; max-width:950px; height:auto; min-width:0; margin:0 auto; background:#0e1830; border-radius:8px}
   #scSvg{max-width:100%}
+  /* "5️⃣ Bütün Resim" içindeki sıkıştırılmış canlı devre diyagramı */
+  .bp-live{margin:8px 0 6px; padding:8px 10px; border:1px solid #2a3350; border-radius:8px; background:#0b1222}
+  .bp-live-grid{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(220px,1fr); gap:10px; align-items:start}
+  #bpCellSvg{display:block; width:100%; max-width:760px; height:auto; min-width:0; margin:0 auto; background:#0e1830; border-radius:8px}
+  @media(max-width:900px){ .bp-live-grid{grid-template-columns:1fr} #bpCellSvg{min-width:380px} }
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }
 
   /* kaydırıcı paneli / hücre diyagramı scroll ile ekrandan çıkınca yüzer, sürüklenebilir */
