@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610032142"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610032207"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610032142">
+<link rel="stylesheet" href="css/style.css?v=202610032207">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 21:42 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 22:07 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -721,6 +721,31 @@
     </div>
   </div>
 
+  <div style="margin:0 0 12px">
+    <div id="rcSliderAnchor"></div>
+    <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin-bottom:12px">
+      <h3 style="color:var(--green)">🎛️ Ağırlıklar (5️⃣ Bütün Resim ve 6️⃣ Simülasyon'da, tüm RNN türlerinde ortak) — oyna, her şey canlı değişir</h3>
+      <div class="ptrow" id="rcTekInputs" style="margin-bottom:6px">
+        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
+        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px 22px; margin-top:8px">
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.0001" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.0001" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.0001" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.0001" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.0001" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
+        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. Üstteki x / h₋₁ / y kutuları sadece Tek Hücre'nin; diğer türlerin girdileri kendi bölümlerinde. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
+    </div>
+
+    <div id="rnnTypeTek">
+
+    <p style="font-size:14px; color:#ccd5e8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
+
+  </div>
   <div class="tpl-cl" data-stage="5">
     <div class="tpl-head closed" id="rnnBigPictureHead"><span>5️⃣ Bütün Resim — ileri ve geri yol</span><span class="chev">▸</span></div>
     <div class="tpl-body closed" id="rnnBigPictureBody">
@@ -1042,7 +1067,7 @@
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-one)</h3>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Aşağıdaki <b>6️⃣ Simülasyon</b>'da geri yayılımı beş karta bölüp adım adım işleyeceğiz. Ama önce <b>bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Girdiler (x₁,x₂,x₃,y) ve ağırlıklar yukarıdaki <b>🎛️ Ağırlıklar</b> kaydırıcılarıyla aynı — değiştirince burası da canlı güncellenir.</p>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Aşağıdaki <b>6️⃣ Simülasyon</b>'da geri yayılımı beş karta bölüp adım adım işleyeceğiz. Ama önce <b>bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Ağırlıklar bu bölümün hemen üstündeki <b>🎛️ Ağırlıklar</b> kaydırıcılarıyla aynı; girdiler (x₁,x₂,x₃,y) <b>6️⃣ Simülasyon → Geri Adım 5</b> kartında. Hangisini değiştirirsen burası da canlı güncellenir.</p>
       <div id="rnnTreeWrap" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
@@ -1395,29 +1420,6 @@
     <div class="callout" id="rnnTypeNote" style="margin:0 0 14px">
       <b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.
     </div>
-
-    <div id="rcSliderAnchor"></div>
-    <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin-bottom:12px">
-      <h3 style="color:var(--green)">🎛️ Ağırlıklar (tüm RNN türlerinde ortak) — oyna, aşağıdaki her şey canlı değişir</h3>
-      <div class="ptrow" id="rcTekInputs" style="margin-bottom:6px">
-        <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
-        <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
-        <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
-      </div>
-      <div style="display:flex; flex-wrap:wrap; gap:6px 22px; margin-top:8px">
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.0001" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.0001" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>h</sub></span><input type="range" id="rc_b" min="-2" max="2" step="0.0001" value="0.1" style="width:130px"><b id="rc_b_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hy</sub></span><input type="range" id="rc_Why" min="-2" max="2" step="0.0001" value="0.8" style="width:130px"><b id="rc_Why_v" style="color:var(--accent); min-width:48px; text-align:right">0.80</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.0001" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
-        <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. Üstteki x / h₋₁ / y kutuları sadece Tek Hücre'nin; diğer türlerin girdileri kendi bölümlerinde. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
-    </div>
-
-    <div id="rnnTypeTek">
-
-    <p style="font-size:14px; color:#ccd5e8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
 
     <div class="rc-float" id="rcFloatWrap" style="display:none">
       <div class="rc-float-head" id="rcFloatHead">
@@ -6479,15 +6481,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610032142"></script>
-<script src="js/lesson-turev.js?v=202610032142"></script>
-<script src="js/lesson-xor.js?v=202610032142"></script>
-<script src="js/lesson-xor-arch.js?v=202610032142"></script>
-<script src="js/lesson-xor-epoch.js?v=202610032142"></script>
-<script src="js/lesson-nn.js?v=202610032142"></script>
-<script src="js/lesson-trig.js?v=202610032142"></script>
+<script src="js/lesson-linreg.js?v=202610032207"></script>
+<script src="js/lesson-turev.js?v=202610032207"></script>
+<script src="js/lesson-xor.js?v=202610032207"></script>
+<script src="js/lesson-xor-arch.js?v=202610032207"></script>
+<script src="js/lesson-xor-epoch.js?v=202610032207"></script>
+<script src="js/lesson-nn.js?v=202610032207"></script>
+<script src="js/lesson-trig.js?v=202610032207"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610032142"></script>
-<script src="js/app.js?v=202610032142"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610032207"></script>
+<script src="js/app.js?v=202610032207"></script>
 </body>
 </html>
