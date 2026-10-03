@@ -1581,3 +1581,8 @@ body.xt-full-lock{overflow:hidden}
 .yt-ml-scenebox .yt-ml-row{font-size:10.5px; padding:4px 6px; width:auto}
 .yt-scwire{stroke:#5a6bff; stroke-width:1.6; fill:none; stroke-linejoin:round;
   stroke-dasharray:5 4; opacity:.8; animation:ytflow 1s linear infinite}
+
+.mo6-tbl{border-collapse:collapse; font-size:12.5px; width:100%; min-width:520px}
+.mo6-tbl th,.mo6-tbl td{border:1px solid var(--line); padding:5px 8px; text-align:left}
+.mo6-tbl th{background:#141c33; color:var(--muted); font-weight:600}
+.mo6-tbl tr.mo6-hot td{background:rgba(240,160,50,.10)}
