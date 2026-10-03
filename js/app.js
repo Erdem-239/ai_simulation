@@ -1,8 +1,11 @@
 /* ---- RNN hücre içi (computational graph) — many-to-one & many-to-many (Tx=Ty), 3 zaman adımı zincirlenmiş ---- */
-(function(){
-  const svg=document.getElementById('cellSvg'); if(!svg) return;
-  const fbox=document.getElementById('cellFormula');
-  const info=document.getElementById('cellInfo');
+/* Fabrika: aynı hücre diyagramı birden fazla yerde kurulabilir (Simülasyon'daki #cellSvg ve
+   "5️⃣ Bütün Resim"in içindeki sıkıştırılmış kopya). P.pre ≠ '' ise SVG içindeki id'ler
+   önek alır (çift id olmasın) ve vurgu aramaları o SVG'ye kapsanır. */
+function rnnCellInit(P){
+  const svg=document.getElementById(P.svg); if(!svg) return null;
+  const fbox=document.getElementById(P.fbox);
+  const info=document.getElementById(P.info);
   let timer=null;
 
   function op(id,cx,cy,r,sym,fs){ return '<circle class="op" id="'+id+'" data-k="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/><text class="op-lbl" x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="'+(fs||13)+'">'+sym+'</text>'; }
@@ -254,6 +257,10 @@
     const mode=BUILDERS[m]?m:'m2o';
     const built=BUILDERS[mode]();
     cellSteps=built.fSteps; cellBackSteps=built.bSteps; cinfo=built.ci; curMode=mode;
+    if(P.pre){
+      svg.querySelectorAll('[id]').forEach(el=>{ el.id=P.pre+el.id; });
+      svg.querySelectorAll('[marker-end]').forEach(el=>{ el.setAttribute('marker-end','url(#'+P.pre+'car)'); });
+    }
     svg.querySelectorAll('[data-k]').forEach(el=>{
       el.addEventListener('click',()=>{ reset(); info.innerHTML=cinfo[el.dataset.k]||''; el.classList.add('cell-hl'); });
     });
@@ -270,7 +277,7 @@
     info.innerHTML='Bir düğüme tıkla → ne yaptığı burada görünür.';
   }
   function apply(st,cls){
-    st.hl.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls); });
+    st.hl.forEach(id=>{ const el=svg.querySelector('[id="'+P.pre+id+'"]'); if(el) el.classList.add(cls); });
     fbox.innerHTML=st.f; info.innerHTML=st.i;
     const eqCls = cls==='cell-hl' ? 'eq-hl-f' : 'eq-hl-b';
     document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
@@ -289,15 +296,21 @@
   function bStep(){ ensure('bwd'); if(cstep>=cellBackSteps.length) return false; apply(cellBackSteps[cstep],'cell-hl-b'); cstep++; return true; }
   function auto(fn){ clr(); cstep=0; playMode=null; timer=setInterval(()=>{ if(!fn()){ clearInterval(timer); timer=null; } }, 800); }
 
-  document.getElementById('cellStep').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=cellSteps.length){ reset(); } else { fStep(); } });
-  document.getElementById('cellBack').addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=cellBackSteps.length){ reset(); } else { bStep(); } });
-  document.getElementById('cellAuto').addEventListener('click', ()=>auto(fStep));
-  document.getElementById('cellBackAuto').addEventListener('click', ()=>auto(bStep));
-  document.getElementById('cellRst').addEventListener('click', reset);
+  document.getElementById(P.step).addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=cellSteps.length){ reset(); } else { fStep(); } });
+  document.getElementById(P.back).addEventListener('click', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=cellBackSteps.length){ reset(); } else { bStep(); } });
+  document.getElementById(P.auto).addEventListener('click', ()=>auto(fStep));
+  document.getElementById(P.backAuto).addEventListener('click', ()=>auto(bStep));
+  document.getElementById(P.rst).addEventListener('click', reset);
 
   bindMode('m2o');
-  window.__rnnCellSetMode=function(m){ bindMode(m); };
-})();
+  return {setMode:bindMode};
+}
+{
+  const c1=rnnCellInit({svg:'cellSvg',fbox:'cellFormula',info:'cellInfo',step:'cellStep',back:'cellBack',auto:'cellAuto',backAuto:'cellBackAuto',rst:'cellRst',pre:''});
+  if(c1) window.__rnnCellSetMode=function(m){ c1.setMode(m); };
+  /* "5️⃣ Bütün Resim" içindeki sıkıştırılmış canlı diyagram — hep many-to-one */
+  rnnCellInit({svg:'bpCellSvg',fbox:'bpCellFormula',info:'bpCellInfo',step:'bpCellStep',back:'bpCellBack',auto:'bpCellAuto',backAuto:'bpCellBackAuto',rst:'bpCellRst',pre:'bp_'});
+}
 
 /* ---- Tek Hücre — bir RNN adımının içi (basit, tıklanabilir computational graph) ---- */
 (function(){
