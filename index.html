@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031730"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031858"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031730">
+<link rel="stylesheet" href="css/style.css?v=202610031858">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 17:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 18:58 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1689,8 +1689,20 @@
         </div>
       </div>
       <div class="step stepc" id="gAdim5">
-        <div class="stephead"><h2>Geri Adım 5) Zaman boyunca topla</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 5) Ağırlıkları güncelle — bulduğumuz gradyanlar ne işe yarıyor?</h2><span class="chev">▸</span></div>
         <div class="stepbody">
+          <div id="rcS5Upd" class="rc-card">
+            <div style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 8px">Geri Adım 1-4'te beş <b>gradyan</b> bulduk. Gradyan şunu söyler: <i>"bu ağırlığı biraz artırırsam kayıp ne kadar artar?"</i> Kaybı <b>azaltmak</b> istiyoruz, o yüzden her ağırlığı gradyanının <b>tersine</b> iteriz — adım uzunluğunu öğrenme oranı <b>α</b> belirler:</div>
+            <div class="eq">\( W := W-\alpha\,\dfrac{\partial L}{\partial W} \)</div>
+            <div id="rcS5Rows"></div>
+            <div id="rcS5Loss" style="margin-top:8px; font-size:13px"></div>
+          </div>
+          <div class="callout" style="margin:10px 0 0">💡 <b>Ne öğrendik:</b> gradyanı bulmak yolun yarısı — asıl iş onu <b>uygulamak</b>. Bu tek güncelleme bir <b>iterasyon</b>; yukarıdaki ▶ düğmesi bunu (Geri Adım 1→4 + güncelleme) tekrar tekrar yapar ve kayıp küçüldükçe tahmin doğruya yaklaşır. α çok büyükse adım fazla zıplar, çok küçükse yavaş ilerler.</div>
+          <div class="acc" style="margin:12px 0 0">
+            <div class="acc-head"><span class="ac">▸</span> ⏱ Zincire geçince ne olur? — aynı ağırlık her adımda kullanılırsa gradyanlar TOPLANIR</div>
+            <div class="acc-body">
+              <div class="deriv-why" style="color:#f0a032; margin:0 0 6px">Burada tek bir zaman adımı olduğu için her gradyan doğrudan ağırlığa aitti. Hücreyi zincirleyince (many-to-one / many-to-many sekmeleri) aynı ağırlık birden çok adımda kullanılır ve katkılar toplanır — aşağıdaki küçük örnek bunun neden önemli olduğunu gösteriyor.</div>
+              
           <div class="step-graph-row">
             <div class="step-graph-formula">
               <div id="rcS5Live" class="rc-card">
@@ -1714,6 +1726,9 @@
             <div class="deriv-why"><b>Neden geriye gittikçe küçülür/büyür:</b> h<sub>t−1</sub> bir önceki adımın hafızası, o da kendi z<sub>h</sub>'sine ve ondan önceki h<sub>t−2</sub>'ye bağlı — zincir kuralı geriye doğru tekrar tekrar uygulanır. Her adım geriye gidişte sinyal bir W<sub>hh</sub> ve bir (1−h²) çarpanı daha kazanır:</div>
             <div class="eq" style="margin:4px 0">\( \dfrac{\partial L}{\partial z_h^{(t-1)}} = \dfrac{\partial L}{\partial z_h^{(t)}}\times W_{hh}\times(1-h_{t-1}^2) \)</div>
             <div class="deriv-why">Bu yüzden T adım geriye gidersek çarpan yaklaşık \( r^{T} \) olur (r = W<sub>hh</sub>(1−h²)). |r|&lt;1 ise bu üstel olarak sıfıra gider (vanishing) — |r|&gt;1 ise üstel olarak büyür (exploding). RNN'lerin en bilinen zorluğu budur.</div>
+          </div>
+        
+            </div>
           </div>
         </div>
       </div>
@@ -6435,15 +6450,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031730"></script>
-<script src="js/lesson-turev.js?v=202610031730"></script>
-<script src="js/lesson-xor.js?v=202610031730"></script>
-<script src="js/lesson-xor-arch.js?v=202610031730"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031730"></script>
-<script src="js/lesson-nn.js?v=202610031730"></script>
-<script src="js/lesson-trig.js?v=202610031730"></script>
+<script src="js/lesson-linreg.js?v=202610031858"></script>
+<script src="js/lesson-turev.js?v=202610031858"></script>
+<script src="js/lesson-xor.js?v=202610031858"></script>
+<script src="js/lesson-xor-arch.js?v=202610031858"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031858"></script>
+<script src="js/lesson-nn.js?v=202610031858"></script>
+<script src="js/lesson-trig.js?v=202610031858"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031730"></script>
-<script src="js/app.js?v=202610031730"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031858"></script>
+<script src="js/app.js?v=202610031858"></script>
 </body>
 </html>

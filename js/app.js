@@ -1418,6 +1418,17 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       + EQ('W<sub>hy</sub> := W<sub>hy</sub> − α·∂L/∂W<sub>hy</sub>', F(p.Why,2)+' − ('+F(p.alpha,2)+')('+F(dWhy)+')', u(p.Why,dWhy))
       + EQ('b<sub>y</sub> := b<sub>y</sub> − α·∂L/∂b<sub>y</sub>', F(p.by,2)+' − ('+F(p.alpha,2)+')('+F(dby)+')', u(p.by,dby));
 
+    /* Geri Adım 5 — "gradyanı bulduk, sonra ne oluyor": her ağırlığın güncellenmiş değeri + güncelleme öncesi/sonrası kayıp */
+    if($('rcS5Rows')){
+      const nW={Wxh:p.Wxh-p.alpha*dWxh, Whh:p.Whh-p.alpha*dWhh, b:p.b-p.alpha*db, Why:p.Why-p.alpha*dWhy, by:p.by-p.alpha*dby};
+      const row=(sym,old,g,nw)=>'<div class="rc-eq">'+sym+' := '+F(old,4)+' − ('+F(p.alpha,2)+')('+F(g)+') = <span class="rv">'+F(nw,4)+'</span> <span style="color:var(--muted); font-size:11.5px">('+(Math.abs(nw-old)<1e-9?'değişmedi':(nw>old?'↑ arttı ':'↓ azaldı ')+F(Math.abs(nw-old),4))+')</span></div>';
+      $('rcS5Rows').innerHTML=
+        row('W<sub>xh</sub>',p.Wxh,dWxh,nW.Wxh)+row('W<sub>hh</sub>',p.Whh,dWhh,nW.Whh)+row('b<sub>h</sub>',p.b,db,nW.b)
+        +row('W<sub>hy</sub>',p.Why,dWhy,nW.Why)+row('b<sub>y</sub>',p.by,dby,nW.by);
+      const nz=nW.Wxh*p.x+nW.Whh*p.hp+nW.b, nh=Math.tanh(nz), nyh=nW.Why*nh+nW.by, nL=0.5*(nyh-p.y)*(nyh-p.y);
+      $('rcS5Loss').innerHTML='Yeni ağırlıklarla aynı girdiyi tekrar çalıştırırsak: ŷ = '+F(yhat)+' → <b>'+F(nyh)+'</b> , kayıp L = '+F(L)+' → <b style="color:'+(nL<=L?'#46c46a':'#e06a6a')+'">'+F(nL)+'</b> '+(nL<=L?'✓ azaldı':'⚠ arttı (α çok büyük olabilir)');
+    }
+
     return {L, dWxh, dWhh, db, dWhy, dby};
   }
 
