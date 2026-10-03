@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031941"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610032030"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031941">
+<link rel="stylesheet" href="css/style.css?v=202610032030">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 19:41 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 20:30 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1217,6 +1217,9 @@
         <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding).</div>
       </div>
 
+      <div class="xt-src" id="xtsrc-r_zh3h2_from"><div class="xp-bas">h₃ — bu hafızanın gradyan kaynağı</div><div class="xp-sat">Many-to-one'da çıktı sadece t=3'te olduğu için h₃'e sinyal <b>sadece kendi çıktısından</b> (ŷ → z_y → h₃) gelir.</div><div class="xp-zin" data-zincir="r_zh3h2_from"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2h1_from"><div class="xp-bas">h₂ — bu hafızanın gradyan kaynağı</div><div class="xp-sat">Bu adımın kendi çıktısı yok — h₂ sadece gelecekten (t=3) <b>BPTT</b> ile sinyal alır. Aşağıdaki adım adım yola bak.</div><div class="xp-zin" data-zincir="r_zh2h1_from"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh1h0_from"><div class="xp-bas">h₁ — bu hafızanın gradyan kaynağı</div><div class="xp-sat">Bu adımın kendi çıktısı yok — h₁ sadece gelecekten (t=2) <b>BPTT</b> ile sinyal alır. Aşağıdaki adım adım yola bak.</div><div class="xp-zin" data-zincir="r_zh1h0_from"></div></div>
       <div class="xt-src" id="xtsrc-r_zh1"><div class="xp-bas">z<sub>h</sub><sup>(1)</sup> — ilk zaman adımının ham toplamı</div><div class="eq">\( z_h^{(1)}=W_{xh}x_1+W_{hh}h_0+b_h \)</div><div class="xp-sat">Aynı W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> ağırlıkları HER zaman adımında yeniden kullanılıyor — RNN'i RNN yapan "ağırlık paylaşımı" burada başlıyor.</div><div class="xp-sat">h₀=0 olduğu için W<sub>hh</sub>·h₀ terimi de 0 — dizinin en başında geçmişten gelen bir katkı yok.</div><div class="xp-zin" data-zincir="r_zh1"></div></div>
       <div class="xt-src" id="xtsrc-r_tanh1"><div class="xp-bas">h₁ — ilk hafıza</div><div class="eq">\( h_1=\tanh(z_h^{(1)}) \)</div><div class="xp-sat">tanh, z<sub>h</sub>'yi (−1,1) aralığına sıkıştırır — 0-merkezli olduğu için sigmoid'e göre RNN'de daha sık tercih edilir.</div><div class="xp-sat">h₁ bir sonraki adıma (t=2) W<sub>hh</sub> üzerinden taşınacak — "hafıza" dediğimiz tam olarak bu.</div><div class="xp-zin" data-zincir="r_tanh1"></div></div>
       <div class="xt-src" id="xtsrc-r_zh2"><div class="xp-bas">z<sub>h</sub><sup>(2)</sup> — ikinci zaman adımı</div><div class="eq">\( z_h^{(2)}=W_{xh}x_2+W_{hh}h_1+b_h \)</div><div class="xp-sat">Formül birebir aynı, sadece girdi x₂ ve bir önceki hafıza artık gerçek bir sayı: h₁ (h₀ değil).</div><div class="xp-zin" data-zincir="r_zh2"></div></div>
@@ -6476,15 +6479,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031941"></script>
-<script src="js/lesson-turev.js?v=202610031941"></script>
-<script src="js/lesson-xor.js?v=202610031941"></script>
-<script src="js/lesson-xor-arch.js?v=202610031941"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031941"></script>
-<script src="js/lesson-nn.js?v=202610031941"></script>
-<script src="js/lesson-trig.js?v=202610031941"></script>
+<script src="js/lesson-linreg.js?v=202610032030"></script>
+<script src="js/lesson-turev.js?v=202610032030"></script>
+<script src="js/lesson-xor.js?v=202610032030"></script>
+<script src="js/lesson-xor-arch.js?v=202610032030"></script>
+<script src="js/lesson-xor-epoch.js?v=202610032030"></script>
+<script src="js/lesson-nn.js?v=202610032030"></script>
+<script src="js/lesson-trig.js?v=202610032030"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031941"></script>
-<script src="js/app.js?v=202610031941"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610032030"></script>
+<script src="js/app.js?v=202610032030"></script>
 </body>
 </html>

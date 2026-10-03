@@ -535,6 +535,27 @@ Hepsi `render()` içinde mevcut `rdz*/dWxh*` değişkenlerinden, yeni hesap yok.
 **Ders**: kavram anlatımında harf/sembol (g, r, δ) kullanmadan ÖNCE tanımla;
 kullanıcı "sözel anlatma, sayıyla göster" diyorsa tablo + canlı sayı ver.
 
+**RNN geri-yayılım pop-up'ları XOR-tarzı "yol + çarpım" köprüsüne geçti**:
+kullanıcı pop-up'taki "dW_hh|t=3 = 0.0147" gibi sayıların NEREDEN çıktığını
+anlamadı ("BPTT'nin kalbi diyorsun ama önceki adımdaki işlemler nasıl oldu
+anlaşılmıyor, XOR'un geri yayılımına bak, hepsine entegre et"). XOR'un
+pop-up'ı her halkada **yerel türev × bir önceki halkadaki gradyan = bu
+halkanın gradyanı** satırını gösteriyor; RNN köprüleri sadece "üç katkının
+toplamı"nı gösteriyordu. Şimdi ORTAK `rnnBridges(cfg, st)` + `rnnState(cfg)`
+(`js/app.js`, `render()` içinde, `seqFill`'in yanında) beş türün hepsinin
+(Tek Hücre `t_*`, many-to-one `r_*`, many-to-many `m_*`, one-to-many `o_*`,
+Tx≠Ty `d_*`) geri-yayılım pop-up'larını doldurur: **📍 L'den bu halkaya
+kadar adım adım** (ŷ→z_y→h→δ→BPTT→… hepsi canlı sayılarla, derin
+halkalarda önceki adımların da dökümü) + **🔗 bu halka**: yerel türev ×
+önceki gradyan = sonuç, yaprakta adımların toplamı. `cfg.K(name,t)` her
+türün `data-zincir` anahtar adlandırmasını eşler. Eski tür-özel `zin()/zM()`
+köprü kodları yerinde duruyor ama `rnnBridges` ÇAĞRISI render'ın EN SONUNDA
+(`return` öncesi) yapılıyor ki onları ezsin — sıra önemli (önce koyunca
+many-to-one/many-to-many'nin eski kodu geri yazıyordu). many-to-one'a eksik
+olan 3 `r_zh{t}h{t-1}_from` h-kutusu pop-up kaynağı da eklendi.
+**Ders**: kullanıcı "sayı nereden geldi" diyorsa köprü yalnızca SONUCU
+değil, o sonuca giden ZİNCİRİN her halkasını (kaynağıyla) göstermeli.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
