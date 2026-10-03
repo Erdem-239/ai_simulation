@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031522"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031532"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031522">
+<link rel="stylesheet" href="css/style.css?v=202610031532">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:22 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:32 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -866,15 +866,15 @@
         <div style="font-size:12px; color:var(--muted); margin-top:4px">|r|&lt;1 ise sinyal her adım geriye gidişte küçülüyor demektir — uzun dizide bu <b>üstel olarak sıfıra gider</b> (vanishing). |r|&gt;1 ise büyür (exploding).</div>
       </div>
 
-      <div class="xt-src" id="xtsrc-r_zh1"><div class="xp-bas">z<sub>h</sub><sup>(1)</sup> — ilk zaman adımının ham toplamı</div><div class="eq">\( z_h^{(1)}=W_{xh}x_1+W_{hh}h_0+b_h \)</div><div class="xp-sat">Aynı W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> ağırlıkları HER zaman adımında yeniden kullanılıyor — RNN'i RNN yapan "ağırlık paylaşımı" burada başlıyor.</div><div class="xp-sat">h₀=0 olduğu için W<sub>hh</sub>·h₀ terimi de 0 — dizinin en başında geçmişten gelen bir katkı yok.</div></div>
-      <div class="xt-src" id="xtsrc-r_tanh1"><div class="xp-bas">h₁ — ilk hafıza</div><div class="eq">\( h_1=\tanh(z_h^{(1)}) \)</div><div class="xp-sat">tanh, z<sub>h</sub>'yi (−1,1) aralığına sıkıştırır — 0-merkezli olduğu için sigmoid'e göre RNN'de daha sık tercih edilir.</div><div class="xp-sat">h₁ bir sonraki adıma (t=2) W<sub>hh</sub> üzerinden taşınacak — "hafıza" dediğimiz tam olarak bu.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh2"><div class="xp-bas">z<sub>h</sub><sup>(2)</sup> — ikinci zaman adımı</div><div class="eq">\( z_h^{(2)}=W_{xh}x_2+W_{hh}h_1+b_h \)</div><div class="xp-sat">Formül birebir aynı, sadece girdi x₂ ve bir önceki hafıza artık gerçek bir sayı: h₁ (h₀ değil).</div></div>
-      <div class="xt-src" id="xtsrc-r_tanh2"><div class="xp-bas">h₂ — ikinci hafıza</div><div class="eq">\( h_2=\tanh(z_h^{(2)}) \)</div><div class="xp-sat">Aynı tanh, t=1'deki ile birebir aynı işlem — t=3'e taşınacak.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh3"><div class="xp-bas">z<sub>h</sub><sup>(3)</sup> — üçüncü (son) zaman adımı</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Son adım. h₃ artık dizinin TAMAMININ (x₁,x₂,x₃) özetlenmiş hâli olacak.</div></div>
-      <div class="xt-src" id="xtsrc-r_tanh3"><div class="xp-bas">h₃ — dizinin özeti</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">many-to-one'da SADECE bu son hafıza çıktı katmanına gidiyor — t=1,2'nin hafızası sadece buraya ULAŞMAK için var, kendi çıktıları yok.</div></div>
-      <div class="xt-src" id="xtsrc-r_zy"><div class="xp-bas">z<sub>y</sub> — çıktı katmanı</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Dikkat: bu satırda x YOK, t=1,2'nin ham değerleri de YOK — çıktı nöronu sadece h₃'ü (dizinin özetini) görüyor.</div></div>
-      <div class="xt-src" id="xtsrc-r_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon problemi olduğu için çıktı aktivasyonu <b>özdeşlik</b> (g₂(z)=z) — sınıflandırmadaki sigmoid/softmax burada yok.</div></div>
-      <div class="xt-src" id="xtsrc-r_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek değer arasındaki farkın karesinin yarısı (MSE'nin tek örneklik hâli). <b>Geri yayılım tam buradan başlıyor.</b></div></div>
+      <div class="xt-src" id="xtsrc-r_zh1"><div class="xp-bas">z<sub>h</sub><sup>(1)</sup> — ilk zaman adımının ham toplamı</div><div class="eq">\( z_h^{(1)}=W_{xh}x_1+W_{hh}h_0+b_h \)</div><div class="xp-sat">Aynı W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub> ağırlıkları HER zaman adımında yeniden kullanılıyor — RNN'i RNN yapan "ağırlık paylaşımı" burada başlıyor.</div><div class="xp-sat">h₀=0 olduğu için W<sub>hh</sub>·h₀ terimi de 0 — dizinin en başında geçmişten gelen bir katkı yok.</div><div class="xp-zin" data-zincir="r_zh1"></div></div>
+      <div class="xt-src" id="xtsrc-r_tanh1"><div class="xp-bas">h₁ — ilk hafıza</div><div class="eq">\( h_1=\tanh(z_h^{(1)}) \)</div><div class="xp-sat">tanh, z<sub>h</sub>'yi (−1,1) aralığına sıkıştırır — 0-merkezli olduğu için sigmoid'e göre RNN'de daha sık tercih edilir.</div><div class="xp-sat">h₁ bir sonraki adıma (t=2) W<sub>hh</sub> üzerinden taşınacak — "hafıza" dediğimiz tam olarak bu.</div><div class="xp-zin" data-zincir="r_tanh1"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2"><div class="xp-bas">z<sub>h</sub><sup>(2)</sup> — ikinci zaman adımı</div><div class="eq">\( z_h^{(2)}=W_{xh}x_2+W_{hh}h_1+b_h \)</div><div class="xp-sat">Formül birebir aynı, sadece girdi x₂ ve bir önceki hafıza artık gerçek bir sayı: h₁ (h₀ değil).</div><div class="xp-zin" data-zincir="r_zh2"></div></div>
+      <div class="xt-src" id="xtsrc-r_tanh2"><div class="xp-bas">h₂ — ikinci hafıza</div><div class="eq">\( h_2=\tanh(z_h^{(2)}) \)</div><div class="xp-sat">Aynı tanh, t=1'deki ile birebir aynı işlem — t=3'e taşınacak.</div><div class="xp-zin" data-zincir="r_tanh2"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh3"><div class="xp-bas">z<sub>h</sub><sup>(3)</sup> — üçüncü (son) zaman adımı</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Son adım. h₃ artık dizinin TAMAMININ (x₁,x₂,x₃) özetlenmiş hâli olacak.</div><div class="xp-zin" data-zincir="r_zh3"></div></div>
+      <div class="xt-src" id="xtsrc-r_tanh3"><div class="xp-bas">h₃ — dizinin özeti</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">many-to-one'da SADECE bu son hafıza çıktı katmanına gidiyor — t=1,2'nin hafızası sadece buraya ULAŞMAK için var, kendi çıktıları yok.</div><div class="xp-zin" data-zincir="r_tanh3"></div></div>
+      <div class="xt-src" id="xtsrc-r_zy"><div class="xp-bas">z<sub>y</sub> — çıktı katmanı</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Dikkat: bu satırda x YOK, t=1,2'nin ham değerleri de YOK — çıktı nöronu sadece h₃'ü (dizinin özetini) görüyor.</div><div class="xp-zin" data-zincir="r_zy"></div></div>
+      <div class="xt-src" id="xtsrc-r_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon problemi olduğu için çıktı aktivasyonu <b>özdeşlik</b> (g₂(z)=z) — sınıflandırmadaki sigmoid/softmax burada yok.</div><div class="xp-zin" data-zincir="r_yhat"></div></div>
+      <div class="xt-src" id="xtsrc-r_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek değer arasındaki farkın karesinin yarısı (MSE'nin tek örneklik hâli). <b>Geri yayılım tam buradan başlıyor.</b></div><div class="xp-zin" data-zincir="r_L"></div></div>
 
       <div class="xt-src" id="xtsrc-r_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet) ile: dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div><div class="xp-zin" data-zincir="r_Lyhat"></div></div>
       <div class="xt-src" id="xtsrc-r_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) olduğu için türev direkt <b>1</b> — <span class="xp-k">K3</span>'ün en basit hâli (katsayı 1 olan değişken).</div><div class="xp-sat">Zincir kuralıyla: \( \tfrac{\partial L}{\partial z_y}=\tfrac{\partial L}{\partial \hat y}\cdot 1=\hat y-y \). Bu sinyal artık z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div><div class="xp-zin" data-zincir="r_yhatzy"></div></div>
@@ -5964,15 +5964,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031522"></script>
-<script src="js/lesson-turev.js?v=202610031522"></script>
-<script src="js/lesson-xor.js?v=202610031522"></script>
-<script src="js/lesson-xor-arch.js?v=202610031522"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031522"></script>
-<script src="js/lesson-nn.js?v=202610031522"></script>
-<script src="js/lesson-trig.js?v=202610031522"></script>
+<script src="js/lesson-linreg.js?v=202610031532"></script>
+<script src="js/lesson-turev.js?v=202610031532"></script>
+<script src="js/lesson-xor.js?v=202610031532"></script>
+<script src="js/lesson-xor-arch.js?v=202610031532"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031532"></script>
+<script src="js/lesson-nn.js?v=202610031532"></script>
+<script src="js/lesson-trig.js?v=202610031532"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031522"></script>
-<script src="js/app.js?v=202610031522"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031532"></script>
+<script src="js/app.js?v=202610031532"></script>
 </body>
 </html>
