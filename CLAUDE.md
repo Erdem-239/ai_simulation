@@ -303,6 +303,102 @@ güncellendi:
      başlıktan güncel metne çevrildi (fark edilen ayrı bir küçük
      tutarsızlık, aynı PR'da düzeltildi).
 
+## RNN modülü — "5️⃣ Bütün Resim" aşaması (PR #300)
+
+Kullanıcı "biz rnn için bizim genel uyguladığımız şablonu uygulamış
+mıydık uyguladıysak neden bütün resim kısmı yok rnn de" diye sordu —
+inceleyince XOR ve Neural Network modüllerinin ikisinin de artık
+**"5️⃣ Bütün Resim"** diye ayrı bir aşaması olduğu (1→2→3→4→Bütün
+Resim→Simülasyon→Ekstra→Test, 7 aşamalı) ama RNN'in hâlâ eski 6
+aşamalı yapıda kaldığı ortaya çıktı — XOR/NN'e bu aşamanın NE ZAMAN
+eklendiği (hangi PR) CLAUDE.md'de kayıtlı değildi, muhtemelen bu
+dosyanın kapsamadığı daha erken bir oturumda yapılmıştı.
+
+**Kapsam/içerik kararı (`AskUserQuestion` ile netleştirildi — iki tur)**:
+1. RNN'in Simülasyon'u içinde zaten var olan ama gizli/toggle'lı duran
+   `.ru-acc-row` (İleri+Geri Yayılım'ın "eski/filtrelenebilir görünüm"
+   diye adlandırılmış düz formül-listesi hâli — `moOldViewToggle`
+   butonuyla açılıyordu, many-to-one'da varsayılan KAPALI) kullanıcının
+   seçtiği "var olanı taşı" seçeneğiyle yeni aşamaya taşındı: içerik
+   Simülasyon'dan çıkarılıp "5️⃣ Bütün Resim"e kondu, artık kendi
+   aşamasında olduğu için gizlenmeye gerek kalmadı (toggle butonu ve
+   `moOldViewOpen` state'i tamamen kaldırıldı).
+2. **Düzeltme**: kullanıcı canlıya bakınca "hiç yaparken var olan bütün
+   resim sekmesindeki yapılanalra bakmadın mı benziyo mu hiç" dedi —
+   taşınan içerik (düz MathJax formül listesi, iki accordion) XOR'un
+   gerçek kutu+ok diyagramına (`#xeTreeWrap`) GÖRSEL olarak hiç
+   benzemiyordu, sadece kavramsal olarak örtüşüyordu. İkinci bir
+   `AskUserQuestion` ile "XOR tarzı diyagrama çevir" onayı alındı,
+   içerik XOR'un `.xf-*`/`.xt-*` bileşenleri yeniden kullanılarak
+   gerçek bir diyagrama dönüştürüldü. **Ders**: "var olanı taşı" dar
+   anlamda doğru olsa bile, kullanıcı aynı anda (önceki turda) "XOR'la
+   aynı üslup" emsalini göstermişse, taşınan içeriğin GÖRSEL olarak da
+   o emsale benzeyip benzemediği ayrıca kontrol edilmeli — kavramsal
+   eşdeğerlik görsel tutarlılığın yerine geçmiyor.
+
+**Mimari — RNN'in zaman-tekrarlı zincirine uyarlanan XOR dili**:
+- **İleri yol** (`.xf-akis`, aynı `.xf-box`/`.xf-chip`/`.xf-ok` sınıfları):
+  XOR'un tek-geçişli zincirinden farklı olarak RNN 3 zaman adımını ART
+  ARDA tekrarlıyor — x₁,h₀→z_h⁽¹⁾→h₁→(x₂ eklenir)→z_h⁽²⁾→h₂→(x₃)→
+  z_h⁽³⁾→h₃→z_y→ŷ→L. Her ok tıklanabilir chip (`data-pop`).
+- **Geri yol** (`.xt-tree`, aynı `.xt-node`/`.xt-kids`/`.xt-kid`/
+  `.xt-box`/`.xt-edge` sınıfları): XOR'un 2 seviyeli DAL YAPISI yerine
+  (gövde → iki bağımsız nöron dalı) RNN'de DOĞRUSAL ama DERİN bir
+  "tarak" şekli var — her zaman adımında aynı dallanma tekrarlanıyor
+  (bir dal o adımın gizli ağırlıklarına — W<sub>xh</sub>, W<sub>hh</sub>,
+  b<sub>h</sub> — üç yaprak verir, bir dal BPTT ile bir önceki zaman
+  adımına devam eder). Kök (L) ile en derin yaprak (t=1'in W<sub>xh</sub>
+  katkısı) arası 9 seviye iç içe `.xt-kids` — XOR'dan çok daha derin
+  ama daha dar bir ağaç; zincirin uzunluğu BPTT'nin "zaman içinde geri"
+  doğasını görsel olarak da taşıyor. t=1'de h₀ sabit (eğitilebilir
+  değil) olduğu için zincir orada doğal olarak sonlanıyor — W<sub>hh</sub>'nin
+  t=1 katkısı (h₀=0 çarpanı yüzünden) her zaman 0, bu pop-up notunda
+  açıkça belirtiliyor.
+- **Toplam 11 yaprak** (W<sub>hy</sub>, b<sub>y</sub> + 3 zaman adımı ×
+  {W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>} = 2+9) — XOR'un "dokuz
+  yaprak" kavramının doğrudan analoğu, callout'ta açıkça "W<sub>xh</sub>/
+  W<sub>hh</sub>/b<sub>h</sub> her zaman adımında yeniden kullanıldığı
+  için 9 kez yaprak veriyor ama gerçek gradyan üç yaprağın TOPLAMI"
+  diye vurgulanıyor.
+- **28 `data-pop`/`xtsrc-` türetme pop-up'ı** eklendi — paylaşılan
+  `[data-pop]` motoru ve `.xt-wrap`/`.xt-full-btn` tam ekran mekanizması
+  (`js/lesson-linreg.js`) SINIF/ÖZNİTELİK tabanlı olduğu için (bkz.
+  üstteki Civ VII notundaki emsal) **sıfır yeni JS** gerekmeden otomatik
+  çalıştı — sadece doğru `class`/`data-pop`/`id="xtsrc-KEY"` deseniyle
+  HTML yazmak yeterliydi.
+
+**JS — mevcut hesaplama kodu korunup sadece hedefleri değişti**:
+`js/app.js`'teki büyük `render()` fonksiyonunda (eskiden `ruFeq1`..
+`ruBeq9` id'lerini dolduran) hesaplama bloğu DOKUNULMADAN kaldı — sadece
+`setTxt()` çağrılarının hedef id'leri yeni ağacın `rf*`/`rt*` kutularına
+yönlendirildi (ör. `ruZ1val`→`rfzh1v`, `ruB3xval`→`rtWxh3v`). Guard da
+`if($('ruFwd'))`'den `if($('rfzh1'))`'a güncellendi — eski id DOM'dan
+kalktığı için guard hiç geçmiyordu, fark edilip düzeltildi.
+
+**Diyagram↔ağaç vurgu bağlantısı yeniden kuruldu, DAHA GRANÜLER**:
+Tek hücre diyagramında (`rnn-fc-right`, `#cellSvg`) bir düğüme tıklayınca
+(İleri▶/◀BPTT adım butonları) `apply()` fonksiyonu önceden `ruFeq*`/
+`ruBeq*` id'lerine `eq-hl-f`/`eq-hl-b` sınıfı ekleyip ilgili satırı
+vurguluyordu; `buildM2o()`'daki `fSteps`/`bSteps` dizilerinin `eq:`
+alanları yeni id'lere taşındı. Eski format bazı adımları (ör. hem z<sub>h</sub>
+hesaplama hem b<sub>h</sub> satırı) AYNI id'de birleştiriyordu — yeni
+ağaçta bunlar ayrı kutular olduğu için eşleme DAHA GRANÜLER hale geldi
+(z<sub>h</sub><sup>(n)</sup> düğümü ile b<sub>h</sub> yaprağı artık
+ayrı ayrı vurgulanıyor). `.xf-box`/`.xt-box` için `eq-hl-f`/`eq-hl-b`
+CSS kuralı da yeni eklendi (`css/style.css`) — eskisi sadece düz `.eq`
+satırları için tanımlıydı, kutu şeklindeki elemanlarda hiç çalışmazdı.
+`apply()`'daki `ruFwdAcc`/`ruBwdAcc`'i açan özel kod da kaldırıldı
+(o accordion'lar artık yok), yerine jenerik "Bütün Resim tpl-cl'sini
+aç" mantığı kondu (vurgu, dış aşama kapalıyken görünmez olmasın diye).
+
+**Yapısal temizlik**: Simülasyon'daki eski 2-sütunlu sürüklenebilir
+düzen (`rnn-fc-left` + `rnnColResizer`, içerik taşındığı için solda
+gösterecek bir şey kalmadı) HTML'den tamamen silindi, ona ait ayrı
+resizer JS IIFE'si de kaldırıldı (`getElementById` zaten `null` dönüp
+güvenle no-op oluyordu ama kodu da temizlemek daha doğruydu).
+`rnnFwdCols`'a statik `rfc-diagram-only` sınıfı eklendi (zaten var olan
+CSS kuralı — tek sütun, ortalanmış diyagram).
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
