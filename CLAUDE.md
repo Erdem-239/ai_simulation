@@ -423,6 +423,26 @@ tek tek karşılaştırıp HANGİ parçanın eksik olduğunu tespit etmek
 gerekiyor; RNN'in türetme metni zaten yeterliydi, eksik olan tamamen
 farklı bir bileşendi (canlı köprü).
 
+**İleri yola da aynı köprü eklendi (PR #304)**: kullanıcı PR #302
+canlıya alınınca "z_y'nin üstüne geldiğimde z_y hangi çarpımlarla
+oluştu yazsın, bu attığım örnek gibi ama daha ayrıntılısı" dedi —
+PR #302 SADECE geri yayılım (`.xt-*`) pop-up'larına canlı köprü
+eklemişti, ileri yol (`.xf-*`) pop-up'ları (z_h⁽¹⁾, tanh, z_y, ŷ, L
+— 9 tanesi) hâlâ sadece formül+açıklama seviyesindeydi, XOR'un KENDİ
+ileri yol pop-up'ları da zaten hiç canlı köprü taşımıyordu (incelenince
+`xtsrc-f_zh`/`f_zy` gibi `.xp-zin` div'lerinin HTML'de durduğu ama
+hiçbir JS'in onları doldurmadığı görüldü — XOR'un kendisinde de eksik/
+yarım kalmış bir yer, RNN için örnek alınmadı). İleri yolun 9
+pop-up'ına **"📐 Şu anki sayılarla nasıl hesaplanıyor?"** başlıklı
+(geri yayılımın 🔗 ikonundan kasıtlı olarak farklı, 📐 ikonuyla) bir
+köprü eklendi — her biri o değerin HANGİ çarpım/toplamlardan oluştuğunu
+gerçek sayılarla gösteriyor (ör. `z_y = W_hy·h₃ + b_y = (0.80)(0.588)
++ 0.20 = 0.670`). `js/app.js`'te `zinF()`/`araF()` adıyla (geri
+yayılımın `zin()`/`ara()`'sından ayrı, çünkü farklı bir kod bloğunda,
+ileri yol değerlerinin hesaplandığı yerde çalışıyor) zaten hesaplanmış
+değişkenler (`rz1`, `rh1`, ... `ryhat`, `rL`) yeniden kullanılarak
+yazıldı, yeni hesaplama eklenmedi.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
