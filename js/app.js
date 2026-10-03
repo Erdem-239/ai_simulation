@@ -10,6 +10,7 @@ function rnnCellInit(P){
 
   function op(id,cx,cy,r,sym,fs){ return '<circle class="op" id="'+id+'" data-k="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/><text class="op-lbl" x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="'+(fs||13)+'">'+sym+'</text>'; }
   function ar(x1,y1,x2,y2){ return '<line class="rnn-edge" x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" marker-end="url(#car)"/>'; }
+  function pl(pts){ return '<path class="rnn-edge" fill="none" d="M'+pts.map(q=>q.join(',')).join(' L')+'" marker-end="url(#car)"/>'; }
   function wl(x,y,t,anc){ return '<text class="w-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'">'+t+'</text>'; }
   function bfJoin(arr,idxBold){ return arr.map((t,i)=> i===idxBold?'<b style="color:#f0a032">'+t+'</b>':t).join('<br>'); }
 
@@ -24,33 +25,33 @@ function rnnCellInit(P){
 
     for(let i=0;i<3;i++){
       const off=OFF[i], n=i+1;
-      const whh=off+55, wxh=off+120, add=off+185, tanhx=off+240;
+      const whh=off+55, wxh=off+95, add=off+140, tanhx=off+215;
       s+='<rect x="'+(off-15)+'" y="55" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
       s+='<text x="'+(off+110)+'" y="45" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = '+n+'</text>';
       s+=op('mul_aa_'+n, whh,140,15,'×');
       s+=wl(whh,115,'Whh');
       s+=op('mul_ax_'+n, wxh,190,15,'×');
-      s+=wl(wxh-28,193,'Wxh','end');
+      s+=wl(wxh-20,194,'Wxh','end');
       s+='<rect class="op io-x" id="io-x_'+n+'" data-k="io-x_'+n+'" x="'+(wxh-25)+'" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="'+wxh+'" y="238" text-anchor="middle" font-size="12">x'+SUB[i]+'</text>';
-      s+=ar(wxh,220,wxh,206);
-      s+=op('add_a_'+n, add,165,15,'+');
-      s+=wl(add+23,197,'bh');
-      s+=ar(add+20,190,add+8,177);
-      s+=ar(whh+15,140,add-13,160);
-      s+=ar(wxh+15,182,add-9,172);
+      s+=pl([[wxh,220],[wxh,207]]);
+      s+=op('add_a_'+n, add,140,15,'+');
+      s+=wl(add,98,'bh');
+      s+=pl([[add,104],[add,123]]);
+      s+=pl([[whh+15,140],[add-15,140]]);
+      s+=pl([[wxh+15,190],[add,190],[add,157]]);
       s+=op('g1_'+n, tanhx,140,17,'tanh',12);
-      s+=ar(add+15,157,tanhx-14,146);
+      s+=pl([[add+15,140],[tanhx-17,140]]);
       if(i<2){
         const nextWhh=OFF[i+1]+55;
         s+=ar(tanhx+17,140,nextWhh-15,140);
         s+='<text x="'+((tanhx+17+nextWhh-15)/2)+'" y="128" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h'+SUB[i]+'</text>';
       }
     }
-    const t3=OFF[2]+240, oy=t3+60;
+    const t3=OFF[2]+215, oy=t3+60;
     s+='<text x="'+(t3+16)+'" y="120" fill="#7fe3a3" font-size="12" font-weight="700">h₃</text>';
     s+=ar(t3,123,t3,97);
     s+=op('mul_ya',t3,80,15,'×');
-    s+=wl(t3+18,84,'Why','start');
+    s+=wl(t3,58,'Why');
     s+=ar(t3+15,80,oy-15,80);
     s+=op('add_y',oy,80,15,'+');
     s+=wl(oy,118,'by');
@@ -146,22 +147,22 @@ function rnnCellInit(P){
 
     for(let i=0;i<3;i++){
       const off=OFF[i], n=i+1;
-      const whh=off+55, wxh=off+120, add=off+185, tanhx=off+240;
+      const whh=off+55, wxh=off+95, add=off+140, tanhx=off+215;
       s+='<rect x="'+(off-15)+'" y="140" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
       s+='<text x="'+(off+110)+'" y="130" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = '+n+'</text>';
       s+=op('mul_aa_'+n, whh,225,15,'×');
       s+=wl(whh,200,'Whh');
       s+=op('mul_ax_'+n, wxh,275,15,'×');
-      s+=wl(wxh-28,278,'Wxh','end');
+      s+=wl(wxh-20,279,'Wxh','end');
       s+='<rect class="op io-x" id="io-x_'+n+'" data-k="io-x_'+n+'" x="'+(wxh-25)+'" y="305" width="50" height="26" rx="6"/><text class="io-lbl" x="'+wxh+'" y="323" text-anchor="middle" font-size="12">x'+SUB[i]+'</text>';
-      s+=ar(wxh,305,wxh,291);
-      s+=op('add_a_'+n, add,250,15,'+');
-      s+=wl(add+23,282,'bh');
-      s+=ar(add+20,275,add+8,262);
-      s+=ar(whh+15,225,add-13,245);
-      s+=ar(wxh+15,267,add-9,257);
+      s+=pl([[wxh,305],[wxh,292]]);
+      s+=op('add_a_'+n, add,225,15,'+');
+      s+=wl(add,183,'bh');
+      s+=pl([[add,189],[add,208]]);
+      s+=pl([[whh+15,225],[add-15,225]]);
+      s+=pl([[wxh+15,275],[add,275],[add,242]]);
       s+=op('g1_'+n, tanhx,225,17,'tanh',12);
-      s+=ar(add+15,242,tanhx-14,231);
+      s+=pl([[add+15,225],[tanhx-17,225]]);
       if(i<2){
         const nextWhh=OFF[i+1]+55;
         s+=ar(tanhx+17,225,nextWhh-15,225);
@@ -324,39 +325,47 @@ function rnnCellInit(P){
   function wl(x,y,t,anc){ return '<text class="w-lbl" x="'+x+'" y="'+y+'" text-anchor="'+(anc||'middle')+'">'+t+'</text>'; }
 
   let s='<defs><marker id="scar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#7d8aab"/></marker></defs>';
-  s+='<rect x="10" y="55" width="290" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
+  function pl(pts,arrow,dash){ return '<path class="rnn-edge" fill="none" d="M'+pts.map(q=>q.join(',')).join(' L')+'"'+(arrow?' marker-end="url(#scar)"':'')+(dash?' stroke-dasharray="4,3"':'')+'/>'; }
+  s+='<rect x="90" y="50" width="320" height="220" rx="16" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
 
-  s+='<rect class="op io-a" id="sc_io_a0" data-k="sc_io_a0" x="0" y="124" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="145" text-anchor="middle" font-size="12">h₋₁</text>';
-  s+=ar(62,140,80,140);
-  s+=op('sc_maa',95,140,15,'×');
-  s+=wl(95,115,'Whh');
-  s+=op('sc_max',160,190,15,'×');
-  s+=wl(132,193,'Wxh','end');
-  s+='<rect class="op io-x" id="sc_io_x" data-k="sc_io_x" x="135" y="220" width="50" height="26" rx="6"/><text class="io-lbl" x="160" y="238" text-anchor="middle" font-size="12">x</text>';
-  s+=ar(160,220,160,206);
-  s+=op('sc_adda',225,165,15,'+');
-  s+=wl(248,197,'bh');
-  s+=ar(245,190,233,177);
-  s+=ar(110,140,212,160);
-  s+=ar(175,182,216,172);
-  s+=op('sc_g1',280,140,17,'tanh',12);
-  s+=ar(240,157,266,146);
+  /* ana hat (y=165): h₋₁ → ×Whh → + → tanh → h */
+  s+='<rect class="op io-a" id="sc_io_a0" data-k="sc_io_a0" x="0" y="149" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="170" text-anchor="middle" font-size="12">h₋₁</text>';
+  s+=pl([[62,165],[114,165]],true);
+  s+=op('sc_maa',130,165,15,'×');
+  s+=wl(130,140,'Whh');
+  s+=pl([[145,165],[224,165]],true);
+  s+=op('sc_adda',240,165,15,'+');
+  s+=pl([[255,165],[301,165]],true);
+  s+=op('sc_g1',320,165,17,'tanh',12);
 
-  s+='<text x="296" y="128" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h</text>';
-  s+=ar(297,140,345,140,true);
-  s+='<text x="360" y="128" fill="var(--muted)" font-size="10.5">sonraki adıma →</text>';
+  /* x aşağıdan: x → ×Wxh → dirsek → + */
+  s+='<rect class="op io-x" id="sc_io_x" data-k="sc_io_x" x="155" y="278" width="50" height="26" rx="6"/><text class="io-lbl" x="180" y="296" text-anchor="middle" font-size="12">x</text>';
+  s+=pl([[180,278],[180,242]],true);
+  s+=op('sc_max',180,227,15,'×');
+  s+=wl(158,231,'Wxh','end');
+  s+=pl([[195,227],[240,227],[240,182]],true);
 
-  s+=ar(280,123,280,97);
-  s+=op('sc_mya',280,80,15,'×');
-  s+=wl(280,55,'Why');
-  s+=ar(295,80,322,80);
-  s+=op('sc_addy',340,80,15,'+');
-  s+=wl(340,118,'by');
-  s+=ar(340,112,340,97);
-  s+=ar(340,63,340,43);
-  s+='<rect class="op io-y" id="sc_io_y" data-k="sc_io_y" x="315" y="15" width="50" height="26" rx="6"/><text class="io-lbl" x="340" y="33" text-anchor="middle">ŷ</text>';
+  /* bias yukarıdan + içine */
+  s+=wl(240,112,'bh');
+  s+=pl([[240,120],[240,148]],true);
 
-  svg.setAttribute('viewBox','0 0 460 260');
+  /* çıkış h: sağa (sonraki adıma) + dalı yukarı */
+  s+=pl([[337,165],[370,165]]);
+  s+='<circle cx="370" cy="165" r="3" fill="#7d8aab"/>';
+  s+='<text x="352" y="156" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h</text>';
+  s+=pl([[370,165],[500,165]],true,true);
+  s+='<text x="436" y="156" fill="var(--muted)" font-size="10.5" text-anchor="middle">sonraki adıma →</text>';
+
+  s+=pl([[370,162],[370,137]],true);
+  s+=op('sc_mya',370,122,15,'×');
+  s+=wl(348,126,'Why','end');
+  s+=pl([[370,107],[370,87]],true);
+  s+=op('sc_addy',370,72,15,'+');
+  s+=wl(432,76,'by');
+  s+=pl([[424,72],[385,72]],true);
+  s+=pl([[370,57],[370,32]],true);
+  s+='<rect class="op io-y" id="sc_io_y" data-k="sc_io_y" x="345" y="4" width="50" height="26" rx="6"/><text class="io-lbl" x="370" y="22" text-anchor="middle">ŷ</text>';
+  svg.setAttribute('viewBox','0 0 520 308');
   svg.innerHTML=s;
 
   const ci={
