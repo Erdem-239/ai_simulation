@@ -976,6 +976,42 @@
       setTxt('rtR32', F(r32));
       setTxt('rtR21', F(r21));
 
+      /* ---- pop-up'ların sonundaki CANLI "peki gradyan buradan nasıl
+         çıkıyor" köprüsü — XOR'daki zin()/ara()/yaprak() desenin RNN'e
+         uyarlanmışı (XOR 4 noktanın ORTALAMASINI alır, RNN'de tek örnek
+         var ama aynı ağırlık 3 zaman adımında kullanıldığı için 3
+         katkının TOPLAMINI gösteriyoruz). Kullanıcının XOR'un ∂L/∂p
+         pop-up'ını örnek gösterip "çok kısa anlatmışsın, böyle ayrıntılı
+         olsun" demesiyle eklendi — atlanmamalı. */
+      const zin = (ad, html) => document.querySelectorAll('[data-zincir="r_' + ad + '"]').forEach(e => { e.innerHTML = html; });
+      const ara = (bas, satir) => '<b>🔗 ' + bas + '</b><div class="xp-hes">' + satir + '</div>';
+      function uclu(gradAd, vals, cur, sonuc){
+        const rows = vals.map((v,i) => '  t=' + (i+1) + ': ' + F(v) + (i===cur ? '  ← bu adım' : '')).join('\n');
+        const sum = vals.map(v => (v>=0?'+':'') + F(v)).join(' ');
+        return '<b>🔗 Peki gradyan buradan nasıl çıkıyor?</b> Bu, ' + gradAd + '\'nin SADECE bu zaman adımındaki katkısı — aynı ağırlık 3 adımda kullanıldığı için üçünü TOPLAMAK gerekiyor:'
+          + '<div class="xp-hes">' + gradAd + ' = Σₜ (bu adımın katkısı)\n' + rows + '\n'
+          + '  toplam: ' + sum + ' = <b>' + F(sonuc) + '</b> = ' + gradAd + '</div>';
+      }
+      zin('Lyhat',  ara('Şu anki sayılarla', '∂L/∂ŷ = ŷ − y = ' + F(ryhat) + ' − ' + F(ry,2) + ' = ' + F(rdyhat)));
+      zin('yhatzy', ara('Şu anki sayılarla', '∂L/∂z_y = ∂L/∂ŷ × 1 = ' + F(rdyhat) + '\nBu sinyal şimdi z_y\'den dallanacak.'));
+      zin('zyWhy',  ara('Buradan gradyan', 'dW_hy = ∂L/∂z_y × h₃ = ' + F(rdyhat) + ' × ' + F(rh3) + ' = ' + F(ruDWhy) + '\nW_hy SADECE t=3\'te kullanıldığı için toplama gerek yok — tek yaprak = gerçek gradyan.'));
+      zin('zyby',   ara('Buradan gradyan', 'db_y = ∂L/∂z_y × 1 = ' + F(ruDby) + '\nW_hy gibi SADECE t=3\'te var, tek yaprak yeterli.'));
+      zin('zyh3',   ara('Şu anki sayılarla', '∂L/∂h₃ = ∂L/∂z_y × W_hy = ' + F(rdyhat) + ' × ' + F(p.Why,2) + ' = ' + F(rdh3)));
+      zin('h3zh3',  ara('Şu anki sayılarla', '∂L/∂z_h⁽³⁾ = ∂L/∂h₃ × (1−h₃²) = ' + F(rdh3) + ' × (1−' + F(rh3*rh3) + ') = ' + F(rdz3) + '\nBu sinyal şimdi üçe dallanıyor: t=3\'ün W_xh/W_hh/b_h katkıları + BPTT ile t=2\'ye.'));
+      zin('zh3Wxh', uclu('dW_xh', [dWxh1,dWxh2,dWxh3], 2, totWxh));
+      zin('zh3Whh', uclu('dW_hh', [dWhh1,dWhh2,dWhh3], 2, totWhh));
+      zin('zh3bh',  uclu('db_h',  [db1,db2,db3],       2, totBh));
+      zin('zh3h2',  ara('Şu anki sayılarla', '∂L/∂h₂ = ∂L/∂z_h⁽³⁾ × W_hh = ' + F(rdz3) + ' × ' + F(p.Whh,2) + ' = ' + F(rdh2) + '\nİşte BPTT: sinyal bir adım geriye, t=2\'ye sıçradı.'));
+      zin('h2zh2',  ara('Şu anki sayılarla', '∂L/∂z_h⁽²⁾ = ∂L/∂h₂ × (1−h₂²) = ' + F(rdh2) + ' × (1−' + F(rh2*rh2) + ') = ' + F(rdz2)));
+      zin('zh2Wxh', uclu('dW_xh', [dWxh1,dWxh2,dWxh3], 1, totWxh));
+      zin('zh2Whh', uclu('dW_hh', [dWhh1,dWhh2,dWhh3], 1, totWhh));
+      zin('zh2bh',  uclu('db_h',  [db1,db2,db3],       1, totBh));
+      zin('zh2h1',  ara('Şu anki sayılarla', '∂L/∂h₁ = ∂L/∂z_h⁽²⁾ × W_hh = ' + F(rdz2) + ' × ' + F(p.Whh,2) + ' = ' + F(rdh1)));
+      zin('h1zh1',  ara('Şu anki sayılarla', '∂L/∂z_h⁽¹⁾ = ∂L/∂h₁ × (1−h₁²) = ' + F(rdh1) + ' × (1−' + F(rh1*rh1) + ') = ' + F(rdz1)));
+      zin('zh1Wxh', uclu('dW_xh', [dWxh1,dWxh2,dWxh3], 0, totWxh));
+      zin('zh1Whh', uclu('dW_hh', [dWhh1,dWhh2,dWhh3], 0, totWhh) + '<div style="color:var(--muted); font-size:10.5px; margin-top:4px">t=1\'in katkısı h₀=0 olduğu için her zaman 0 — dizinin başlangıcından öncesi yok.</div>');
+      zin('zh1bh',  uclu('db_h',  [db1,db2,db3],       0, totBh));
+
       /* ---- Geri Adım 1-5 kartları (many-to-one standardı, Tek Hücre/many-to-many ile aynı kalıp) — yukarıdaki değerlerin aynısı, sadece yeniden gruplanmış ---- */
       setTxt('mo1sub', '('+F(ryhat)+' − '+F(ry,2)+')'); setTxt('mo1val', F(rdyhat));
       setTxt('mo2wsub', '('+F(rdyhat)+')('+F(rh3)+')'); setTxt('mo2wval', F(ruDWhy));
