@@ -1081,3 +1081,22 @@ Renkler (`--corner-c` custom property + `outline-color`) done/avail/
 locked durum sınıflarıyla değişiyor — `--corner-c` `radial-gradient`
 içinde `var()` ile kullanılıyor, durum sınıfı değişince perçin rengi de
 otomatik güncelleniyor (ekstra JS gerekmedi, saf CSS cascade).
+
+## RNN sayfası sadeleştirme — kartlar yalnız Tek Hücre'de, diğer türler = sadece Bütün Resim
+
+Kullanıcı "çöplük gibi oldu, çok şey ekledik" dedi: Tek Hücre dışındaki türlerde
+Geri Adım kartları (`gAdimSectionM2o/M2m`, `moAdim*`, `gAdimM2m*`) ve Simülasyon'daki
+ikinci hücre diyagramı (`rnnFwdCols`/`cellSvg`) tamamen **kaldırıldı**. Bütün Resim
+aşaması (5️⃣) artık yalnız Tek Hücre için; many-to-one / m2m (Tx=Ty) / one-to-many /
+Tx≠Ty için `rnnBigPictureM2o/M2m/O2m/Dec` blokları 6️⃣ Simülasyon'daki tür
+butonlarının altına (`#rnnTypeOther`) taşındı — butona basınca o türün Bütün Resmi
+(akış + canlı diyagram + ağaç + pop-up) açılır. Tek Hücre içeriği yeni `#rnnSimTek`
+sarmalayıcısında; switcher (`js/app.js`) `rnnSimTek`/`rnnTypeOther`'ı türe göre
+gösterir. Kaldırılan kartlarda duran girdi kutuları (`ru_x1..3/ru_y`,
+`rcM2_x1..3/y1..3`) ilgili Bütün Resim bloğunun başına taşındı (render() onları
+okuyor — silinen kartla beraber giderse `null.value` hatası verir).
+**Ders**: (1) bir bölümü silerken render()'ın okuduğu girdi id'lerini önce grep'le;
+(2) `#rnnTypeTek` sarmalayıcısı PR #321'de bozulmuştu (yalnız giriş paragrafını
+sarıyordu, Tek Simülasyon her türde görünüyordu, slider `<div>`'i de en sonda
+yanlış kapanıyordu) — "div sayısı eşit" kontrolü böyle kaymaları yakalamıyor,
+tarayıcıda `parentElement` zinciri/çocuk sayısıyla bak.
