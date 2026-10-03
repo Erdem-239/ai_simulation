@@ -1023,56 +1023,71 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       return {X,Y,H,Z,ZY,DY,LL,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY};
     }
     function rnnBridges(cfg, st){
-      const T=cfg.T, inp=cfg.inp, out=cfg.out, SBS='₀₁₂₃₄₅', K=cfg.K, single=!!cfg.single;
+      /* MathJax'li sürüm: her satır gerçek LaTeX (aligned), pop-up açılınca otomatik typeset edilir */
+      const T=cfg.T, inp=cfg.inp, out=cfg.out, K=cfg.K, single=!!cfg.single;
       const {X,Y,H,ZY,DY,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY}=st;
       const f=(v,d)=>F(v,d===undefined?4:d);
-      const sb=t=>single?'':SBS[t];
-      const hn=t=>'h'+sb(t), zhn=t=>single?'z_h':'z_h⁽'+t+'⁾', zyn=t=>single?'z_y':'z_y⁽'+t+'⁾';
-      const hprev=t=>t===1?(single?'h₋₁':'h₀'):'h'+sb(t-1);
-      const lnL1=t=>'∂L/∂ŷ'+sb(t)+' = ŷ'+sb(t)+' − y'+sb(t)+' = '+f(ZY[t])+' − ('+f(Y[t],2)+') = '+f(DY[t]);
-      const lnL2=t=>'∂L/∂'+zyn(t)+' = ∂L/∂ŷ'+sb(t)+' × 1 = '+f(DY[t]);
-      const lnOwn=t=>'∂L/∂'+hn(t)+' (kendi çıktısından) = ∂L/∂'+zyn(t)+' × W_hy = '+f(DY[t])+' × '+f(p.Why,2)+' = '+f(OWN[t]);
-      const lnBp=t=>'∂L/∂'+hn(t)+' (BPTT, '+zhn(t+1)+'\'den) = δ'+sb(t+1)+' × W_hh = '+f(ZH[t+1])+' × '+f(p.Whh,2)+' = '+f(BP[t]);
-      const lnSum=t=>(out[t-1]&&t<T)?'∂L/∂'+hn(t)+' = kendi çıktısı + BPTT = '+f(OWN[t])+' + '+f(BP[t])+' = '+f(HT[t])
-                    :(out[t-1]?'∂L/∂'+hn(t)+' = sadece kendi çıktısından = '+f(HT[t])+(t===T&&!single?' (son adım, gelecek yok)':'')
-                    :'∂L/∂'+hn(t)+' = sadece BPTT = '+f(HT[t])+' (bu adımın kendi çıktısı yok)');
-      const lnDelta=t=>'δ'+sb(t)+' = ∂L/∂'+zhn(t)+' = ∂L/∂'+hn(t)+' × (1−'+hn(t)+'²) = '+f(HT[t])+' × (1−'+f(H[t]*H[t])+') = '+f(ZH[t]);
+      const pn=(v,d)=>v<0?'('+f(v,d)+')':f(v,d);
+      const R=String.raw;
+      const sb=t=>single?'':'_{'+t+'}';          // alt indis
+      const sp=t=>single?'':'^{('+t+')}';        // üst indis
+      const H_=t=>R`h${sb(t)}`, ZH_=t=>R`z_h${sp(t)}`, ZY_=t=>R`z_y${sp(t)}`, YH_=t=>R`\hat y${sb(t)}`, Y_=t=>R`y${sb(t)}`;
+      const HP_=t=>t===1?(single?R`h_{-1}`:R`h_{0}`):R`h_{${t-1}}`;
+      const dl=t=>R`\delta${sb(t)}`;
+      const frac=(num,den)=>R`\tfrac{\partial ${num}}{\partial ${den}}`;
+      const dLd=x=>R`\tfrac{\partial L}{\partial ${x}}`;
+      /* yol satırları: [sol taraf, sembolik, sayılarla, sonuç] */
+      const rL1=t=>[dLd(YH_(t)), R`${YH_(t)}-${Y_(t)}`, R`${f(ZY[t])}-${pn(Y[t],2)}`, f(DY[t])];
+      const rL2=t=>[dLd(ZY_(t)), R`${dLd(YH_(t))}\cdot 1`, R`${pn(DY[t])}\cdot 1`, f(DY[t])];
+      const rOwn=t=>[R`${dLd(H_(t))}\Big|_{\text{kendi}}`, R`${dLd(ZY_(t))}\cdot W_{hy}`, R`${pn(DY[t])}\cdot ${pn(p.Why,2)}`, f(OWN[t])];
+      const rBp=t=>[R`${dLd(H_(t))}\Big|_{\text{BPTT}}`, R`${dl(t+1)}\cdot W_{hh}`, R`${pn(ZH[t+1])}\cdot ${pn(p.Whh,2)}`, f(BP[t])];
+      const rSum=t=>(out[t-1]&&t<T)?[dLd(H_(t)), R`\text{kendi}+\text{BPTT}`, R`${pn(OWN[t])}+${pn(BP[t])}`, f(HT[t])]
+                    :[dLd(H_(t)), out[t-1]?R`\text{sadece kendi çıktısı}`:R`\text{sadece BPTT (kendi çıktısı yok)}`, R`${f(HT[t])}`, f(HT[t])];
+      const rDelta=t=>[dl(t), R`${dLd(H_(t))}\,(1-${H_(t)}^2)`, R`${pn(HT[t])}\,(1-${f(H[t]*H[t])})`, f(ZH[t])];
+      const row=r=>R`${r[0]} &= ${r[1]} = ${r[2]} = \mathbf{${r[3]}}`;
+      const eqn=rows=>'<div class="eq rb-eq" style="text-align:left">\\( \\begin{aligned}'+rows.join(R` \\[4pt] `)+'\\end{aligned} \\)</div>';
       function pathH(t){
         let r=[];
-        if(out[t-1]) r=r.concat([lnL1(t),lnL2(t),lnOwn(t)]);
-        if(t<T) r=r.concat(pathDelta(t+1),[lnBp(t)]);
-        r.push(lnSum(t)); return r;
+        if(out[t-1]) r=r.concat([rL1(t),rL2(t),rOwn(t)]);
+        if(t<T) r=r.concat(pathDelta(t+1),[rBp(t)]);
+        if(out[t-1]&&t<T) r.push(rSum(t));
+        return r;
       }
-      function pathDelta(t){ return pathH(t).concat([lnDelta(t)]); }
-      const box=(path,local,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b><div class="xp-hes">'+path.map((l,i)=>(i+1)+') '+l).join('\n')+'</div>':'')
-        +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b><div class="xp-hes">'+local.join('\n')+'</div>';
+      function pathDelta(t){ return pathH(t).concat([rDelta(t)]); }
+      const box=(path,localRows,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b>'+eqn(path.map(row)):'')
+        +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b>'+localRows;
       const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{ e.innerHTML=html; }); };
-      function sumLines(ad,a,filter,cur){
+      function sumBlock(ad,a,filter,cur){
         const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
-        if(ts.length<=1) return [ad+': bu ağırlık SADECE bir adımda kullanıldı → bu yaprak = gerçek gradyan = '+f(a[cur])];
-        return [ad+': aynı ağırlık '+ts.length+' adımda kullanıldığı için hepsi TOPLANIR:']
-          .concat(ts.map(t=>'    t='+t+': '+f(a[t])+(t===cur?'   ← bu adım':'')))
-          .concat(['    toplam: '+ts.map(t=>(a[t]>=0?'+':'')+f(a[t])).join(' ')+' = <b>'+f(ts.reduce((q,t)=>q+a[t],0))+'</b> = '+ad]);
+        if(ts.length<=1) return '<div class="xp-sat">Bu ağırlık <b>sadece bir adımda</b> kullanıldı → bu yaprak doğrudan <b>gerçek gradyan</b> = '+f(a[cur])+'</div>';
+        const tot=ts.reduce((q,t)=>q+a[t],0);
+        return '<div class="xp-sat">Aynı ağırlık <b>'+ts.length+' adımda</b> kullanıldı → katkıların hepsi <b>TOPLANIR</b>:</div>'
+          +eqn([R`${ad} &= ${ts.map(t=>R`\underbrace{${pn(a[t])}}_{t=${t}${t===cur?R`\ \leftarrow\ \text{bu adım}`:''}}`).join('+')} \\ &= \mathbf{${f(tot)}}`]);
       }
       const anyIn=t=>inp[t-1], anyOut=t=>out[t-1], all=t=>true;
+      const loc3=(lhsTex,locTex,locNum,prevTex,prevVal,resVal,resTex)=>eqn([
+        R`${lhsTex} &= ${locTex} = ${f(locNum,locNum===1||locNum===0?0:4)}`,
+        R`\text{önceki halka: } ${prevTex} &= ${f(prevVal)}`,
+        R`\text{çarpım: } ${pn(prevVal)}\times ${pn(locNum,locNum===1||locNum===0?0:4)} &= \mathbf{${f(resVal)}} = ${resTex}`
+      ]);
       for(let t=1;t<=T;t++){
         const d=ZH[t];
         if(out[t-1]){
-          put('Lyhat',t,box([],[lnL1(t),'(Geri yayılımın başlangıç noktası — önceki halka yok, bu sinyal buradan doğuyor.)']));
-          put('yhatzy',t,box([lnL1(t)],['∂ŷ/∂'+zyn(t)+' = 1','bir önceki halka ∂L/∂ŷ'+sb(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × 1 = <b>'+f(DY[t])+'</b> = ∂L/∂'+zyn(t)]));
-          put('zyWhy',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂W_hy = '+hn(t)+' = '+f(H[t]),'bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × '+f(H[t])+' = <b>'+f(WHY[t])+'</b> = dW_hy'+(single?'':'|t='+t)].concat(sumLines('dW_hy',WHY,anyOut,t))));
-          put('zyby',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂b_y = 1','bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × 1 = <b>'+f(BY[t])+'</b> = db_y'+(single?'':'|t='+t)].concat(sumLines('db_y',BY,anyOut,t))));
-          put('zyh',t,box([lnL1(t),lnL2(t)],['∂'+zyn(t)+'/∂'+hn(t)+' = W_hy = '+f(p.Why,2),'bir önceki halka ∂L/∂'+zyn(t)+' = '+f(DY[t])+' ile çarpılınca:','  '+f(DY[t])+' × '+f(p.Why,2)+' = <b>'+f(OWN[t])+'</b> = ∂L/∂'+hn(t)+' (kendi çıktısından)'].concat(t<T?['Bu, '+hn(t)+'\'nin toplam sinyalinin sadece bir parçası — diğer parçası gelecekten (BPTT) gelir ve ana zincirdeki '+hn(t)+' kutusunda ikisi toplanır.']:[])));
+          put('Lyhat',t,box([],eqn([row(rL1(t))])+'<div class="xp-sat">Geri yayılımın <b>başlangıç noktası</b> — önceki halka yok, sinyal buradan doğuyor.</div>'));
+          put('yhatzy',t,box([rL1(t)],loc3(frac(YH_(t),ZY_(t)),R`1`,1,dLd(YH_(t)),DY[t],DY[t],dLd(ZY_(t)))));
+          put('zyWhy',t,box([rL1(t),rL2(t)],loc3(frac(ZY_(t),'W_{hy}'),H_(t),H[t],dLd(ZY_(t)),DY[t],WHY[t],R`dW_{hy}${single?'':R`\big|_{t=${t}}`}`)+sumBlock('dW_{hy}',WHY,anyOut,t)));
+          put('zyby',t,box([rL1(t),rL2(t)],loc3(frac(ZY_(t),'b_y'),R`1`,1,dLd(ZY_(t)),DY[t],BY[t],R`db_y${single?'':R`\big|_{t=${t}}`}`)+sumBlock('db_y',BY,anyOut,t)));
+          put('zyh',t,box([rL1(t),rL2(t)],loc3(frac(ZY_(t),H_(t)),'W_{hy}',p.Why,dLd(ZY_(t)),DY[t],OWN[t],R`${dLd(H_(t))}\Big|_{\text{kendi}}`)+(t<T?'<div class="xp-sat">Bu, '+'h'+(single?'':t)+'\'nin toplam sinyalinin sadece bir parçası — diğer parçası gelecekten (BPTT) gelir, ana zincirdeki h kutusunda ikisi toplanır.</div>':'')));
         }
-        { const pth=pathH(t); const last=pth.pop();
-          put('hsum',t,box(pth,[last,'Bu toplam, bu adımın tanh\'ına giren sinyal.'],'Bu kutuda sinyaller nasıl birleşiyor?')); }
-        put('hzh',t,box(pathH(t),['∂'+hn(t)+'/∂'+zhn(t)+' = 1−'+hn(t)+'² = 1−'+f(H[t]*H[t])+' = '+f(1-H[t]*H[t]),'bir önceki halka ∂L/∂'+hn(t)+' = '+f(HT[t])+' ile çarpılınca:','  '+f(HT[t])+' × '+f(1-H[t]*H[t])+' = <b>'+f(d)+'</b> = δ'+sb(t)+' = ∂L/∂'+zhn(t),'Artık bu adımın üç ağırlığına'+(t>1||single?' ve bir önceki hafızaya':'')+' inebiliriz.']));
+        { const two=out[t-1]&&t<T; const pth=pathH(t); const last=two?pth.pop():rSum(t);
+          put('hsum',t,box(pth,eqn([row(last)])+'<div class="xp-sat">Bu toplam, bu adımın tanh\'ına giren sinyal.</div>','Bu kutuda sinyaller nasıl birleşiyor?')); }
+        put('hzh',t,box(pathH(t),loc3(frac(H_(t),ZH_(t)),R`1-${H_(t)}^2`,1-H[t]*H[t],dLd(H_(t)),HT[t],d,dl(t))+'<div class="xp-sat">Artık bu adımın üç ağırlığına'+(t>1||single?' ve bir önceki hafızaya':'')+' inebiliriz.</div>'));
         const pd=pathDelta(t);
-        if(inp[t-1]) put('zhWxh',t,box(pd,['∂'+zhn(t)+'/∂W_xh = x'+sb(t)+' = '+f(X[t],2),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(X[t],2)+' = <b>'+f(WXH[t])+'</b> = dW_xh'+(single?'':'|t='+t)].concat(sumLines('dW_xh',WXH,anyIn,t))));
-        put('zhWhh',t,box(pd,['∂'+zhn(t)+'/∂W_hh = '+hprev(t)+' = '+f(H[t-1],2)+(t===1&&!H[0]?'  (başlangıç hafızası 0)':''),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(H[t-1],2)+' = <b>'+f(WHH[t])+'</b> = dW_hh'+(single?'':'|t='+t)].concat(sumLines('dW_hh',WHH,all,t))));
-        put('zhbh',t,box(pd,['∂'+zhn(t)+'/∂b_h = 1','bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × 1 = <b>'+f(BH[t])+'</b> = db_h'+(single?'':'|t='+t)].concat(sumLines('db_h',BH,all,t))));
-        if(t>1) put('zhh',t,box(pd,['∂'+zhn(t)+'/∂'+hn(t-1)+' = W_hh = '+f(p.Whh,2),'bir önceki halka δ'+sb(t)+' = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(p.Whh,2)+' = <b>'+f(BP[t-1])+'</b> = ∂L/∂'+hn(t-1)+' (BPTT bileşeni)','Sinyal bir adım GERİYE, t='+(t-1)+'\'e sıçradı'+(out[t-2]?' ve orada '+hn(t-1)+'\'in kendi çıktısından gelenle toplanacak.':' — orada ekleneceği başka kaynak yok.')],'Zamanda geri sıçrama — sayılarla'));
-        else if(single) put('zhh',1,box(pd,['∂'+zhn(1)+'/∂h₋₁ = W_hh = '+f(p.Whh,2),'bir önceki halka δ = '+f(d)+' ile çarpılınca:','  '+f(d)+' × '+f(p.Whh,2)+' = <b>'+f(d*p.Whh)+'</b> = ∂L/∂h₋₁','Tek hücrede burada biter; hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ adıma akar (BPTT).']));
+        if(inp[t-1]) put('zhWxh',t,box(pd,loc3(frac(ZH_(t),'W_{xh}'),R`x${sb(t)}`,X[t],dl(t),d,WXH[t],R`dW_{xh}${single?'':R`\big|_{t=${t}}`}`)+sumBlock('dW_{xh}',WXH,anyIn,t)));
+        put('zhWhh',t,box(pd,loc3(frac(ZH_(t),'W_{hh}'),HP_(t),H[t-1],dl(t),d,WHH[t],R`dW_{hh}${single?'':R`\big|_{t=${t}}`}`)+(t===1&&!H[0]?'<div class="xp-sat">Başlangıç hafızası 0 olduğu için bu katkı 0 (unutma değil, sadece "önceki hafıza yok").</div>':'')+sumBlock('dW_{hh}',WHH,all,t)));
+        put('zhbh',t,box(pd,loc3(frac(ZH_(t),'b_h'),R`1`,1,dl(t),d,BH[t],R`db_h${single?'':R`\big|_{t=${t}}`}`)+sumBlock('db_h',BH,all,t)));
+        if(t>1) put('zhh',t,box(pd,loc3(frac(ZH_(t),H_(t-1)),'W_{hh}',p.Whh,dl(t),d,BP[t-1],R`${dLd(H_(t-1))}\Big|_{\text{BPTT}}`)+'<div class="xp-sat">Sinyal bir adım <b>GERİYE</b>, t='+(t-1)+'\'e sıçradı'+(out[t-2]?' ve orada h'+(single?'':(t-1))+'\'in kendi çıktısından gelenle toplanacak.':' — orada ekleneceği başka kaynak yok.')+'</div>','Zamanda geri sıçrama — sayılarla'));
+        else if(single) put('zhh',1,box(pd,loc3(frac(ZH_(1),R`h_{-1}`),'W_{hh}',p.Whh,dl(1),d,d*p.Whh,dLd(R`h_{-1}`))+'<div class="xp-sat">Tek hücrede burada biter; hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ adıma akar (BPTT).</div>'));
       }
     }
     function seqFill(cfg){

@@ -1586,3 +1586,6 @@ body.xt-full-lock{overflow:hidden}
 .mo6-tbl th,.mo6-tbl td{border:1px solid var(--line); padding:5px 8px; text-align:left}
 .mo6-tbl th{background:#141c33; color:var(--muted); font-weight:600}
 .mo6-tbl tr.mo6-hot td{background:rgba(240,160,50,.10)}
+
+.xt-pop .rb-eq{margin:4px 0 8px; overflow-x:auto}
+.xt-pop .rb-eq mjx-container{font-size:90% !important; text-align:left !important}
