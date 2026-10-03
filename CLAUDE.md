@@ -1100,3 +1100,10 @@ okuyor — silinen kartla beraber giderse `null.value` hatası verir).
 sarıyordu, Tek Simülasyon her türde görünüyordu, slider `<div>`'i de en sonda
 yanlış kapanıyordu) — "div sayısı eşit" kontrolü böyle kaymaları yakalamıyor,
 tarayıcıda `parentElement` zinciri/çocuk sayısıyla bak.
+
+**Geri Adım 6 (vanishing/exploding, 10 adıma tahmin + yüzde) geri getirildi**: sadeleştirmede
+(#323) `#moAdim6` kartı many-to-one kartlarıyla birlikte silinmişti; kullanıcı "9 adımı
+gösteriyordu, vanishing mi exploding mi, yüzde kaç" diye geri istedi. Kart (`.step` +
+`#mo6Tbl1/#mo6Tbl2/#mo6Proj/#mo6Canvas/#mo6Learn`) many-to-one Bütün Resim bloğunun
+(`#rnnBigPictureM2o`) sonuna konuldu; `render()` kodu id'ler aynı olduğu için dokunulmadan
+yeniden çalıştı. Diğer türlerde (m2m/o2m/Tx≠Ty) bu kart yok.
