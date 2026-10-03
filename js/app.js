@@ -316,10 +316,10 @@ function rnnCellInit(P){
 }
 
 /* ---- Tek Hücre — bir RNN adımının içi (basit, tıklanabilir computational graph) ---- */
-(function(){
-  const svg=document.getElementById('scSvg'); if(!svg) return;
-  const fbox=document.getElementById('scFormula');
-  const info=document.getElementById('scInfo');
+function scInit(P){
+  const svg=document.getElementById(P.svg); if(!svg) return;
+  const fbox=document.getElementById(P.fbox);
+  const info=document.getElementById(P.info);
   let timer=null;
 
   function op(id,cx,cy,r,sym,fs){ return '<circle class="op" id="'+id+'" data-k="'+id+'" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/><text class="op-lbl" x="'+cx+'" y="'+(cy+5)+'" text-anchor="middle" font-size="'+(fs||13)+'">'+sym+'</text>'; }
@@ -369,6 +369,10 @@ function rnnCellInit(P){
   s+='<rect class="op io-y" id="sc_io_y" data-k="sc_io_y" x="345" y="4" width="50" height="26" rx="6"/><text class="io-lbl" x="370" y="22" text-anchor="middle">ŷ</text>';
   svg.setAttribute('viewBox','0 0 520 308');
   svg.innerHTML=s;
+  if(P.pre){
+    svg.querySelectorAll('[id]').forEach(el=>{ el.id=P.pre+el.id; });
+    svg.querySelectorAll('[marker-end]').forEach(el=>{ el.setAttribute('marker-end','url(#'+P.pre+'scar)'); });
+  }
 
   const ci={
     'sc_io_a0':'<b>h₋₁</b> — önceki hafıza (geçmiş adımdan gelir, veya dizinin başıysa h₀=0).',
@@ -415,13 +419,26 @@ function rnnCellInit(P){
   ];
 
   let cstep=0, playMode=null;
-  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); }
+  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b')); }
   function reset(){
     clr(); cstep=0; playMode=null;
     fbox.innerHTML=`<b style="color:#ffd24a">İleri ▶</b> ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; <b style="color:#f0a032">◀ BPTT</b> ile gradyanlar geriye akar.`;
     info.innerHTML='Bir düğüme tıkla → ne yaptığı burada görünür.';
   }
-  function apply(st,cls){ st.hl.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls); }); fbox.innerHTML=st.f; info.innerHTML=st.i; }
+  function apply(st,cls){
+    st.hl.forEach(id=>{ const el=svg.querySelector('[id="'+P.pre+id+'"]'); if(el) el.classList.add(cls); });
+    fbox.innerHTML=st.f; info.innerHTML=st.i;
+    document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
+    const eqs=(cls==='cell-hl'?FEQ:BEQ)[st.hl[0]];
+    if(eqs && document.getElementById('tfzh')){
+      eqs.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(cls==='cell-hl'?'eq-hl-f':'eq-hl-b'); });
+      const bh=document.getElementById('rnnBigPictureHead'), bb=document.getElementById('rnnBigPictureBody');
+      if(bh) bh.classList.remove('closed'); if(bb) bb.classList.remove('closed');
+    }
+  }
+  /* Bütün Resim (tek hücre) ağacı/akışı ile vurgu bağlantısı — adımın ilk düğümüne göre */
+  const FEQ={sc_maa:['tfzh'],sc_max:['tfzh'],sc_adda:['tfzh'],sc_g1:['tfh'],sc_mya:['tfzy'],sc_addy:['tfzy'],sc_io_y:['tfyhat','tfL']};
+  const BEQ={sc_io_y:['ttyhat','ttzy'],sc_addy:['ttby'],sc_mya:['ttWhy'],sc_g1:['tth','ttzh'],sc_adda:['ttbh'],sc_maa:['ttWhh','tthp'],sc_max:['ttWxh']};
   function ensure(m){ if(playMode!==m){ clr(); cstep=0; playMode=m; } }
   function fStep(){ ensure('fwd'); if(cstep>=fSteps.length) return false; apply(fSteps[cstep],'cell-hl'); cstep++; return true; }
   function bStep(){ ensure('bwd'); if(cstep>=bSteps.length) return false; apply(bSteps[cstep],'cell-hl-b'); cstep++; return true; }
@@ -432,14 +449,16 @@ function rnnCellInit(P){
      eğitim döngüsü tuşları yürütüyor). Bu yüzden hepsi opsiyonel bağlanıyor —
      olmayan bir tuş sayfayı çökertmesin. */
   const scOn=(id,fn)=>{ const el=document.getElementById(id); if(el) el.addEventListener('click', fn); };
-  scOn('scStep', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=fSteps.length){ reset(); } else { fStep(); } });
-  scOn('scBack', ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=bSteps.length){ reset(); } else { bStep(); } });
-  scOn('scAuto', ()=>auto(fStep));
-  scOn('scBackAuto', ()=>auto(bStep));
-  scOn('scRst', reset);
+  scOn(P.step, ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='fwd'&&cstep>=fSteps.length){ reset(); } else { fStep(); } });
+  scOn(P.back, ()=>{ if(timer){clearInterval(timer);timer=null;} if(playMode==='bwd'&&cstep>=bSteps.length){ reset(); } else { bStep(); } });
+  scOn(P.auto, ()=>auto(fStep));
+  scOn(P.backAuto, ()=>auto(bStep));
+  scOn(P.rst, reset);
 
   reset();
-})();
+}
+scInit({svg:'scSvg',fbox:'scFormula',info:'scInfo',step:'scStep',back:'scBack',auto:'scAuto',backAuto:'scBackAuto',rst:'scRst',pre:''});
+scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep',back:'bsCellBack',auto:'bsCellAuto',backAuto:'bsCellBackAuto',rst:'bsCellRst',pre:'bs_'});
 
 /* ---- Tek Hücre diyagramı sürükle-bırak ile boyutlandırılabilir ---- */
 (function(){
@@ -838,6 +857,37 @@ function rnnCellInit(P){
       + EQ('L = ½(ŷ − y)²', '½('+F(yhat)+' − '+F(p.y,2)+')²', F(L));
 
     const setTxt=(id,v)=>{ const el=$(id); if(el) el.textContent=v; };
+
+    /* ---- "5️⃣ Bütün Resim" — tek hücre: ileri yol + ağaç canlı değerleri + pop-up köprüleri ---- */
+    if($('tfzh')){
+      setTxt('tfx',F(p.x,2)); setTxt('tfhp',F(p.hp,2));
+      setTxt('tfzhv',F(z)); setTxt('tfhv',F(h)); setTxt('tfzyv',F(yhat)); setTxt('tfyhatv',F(yhat)); setTxt('tfLv',F(L));
+      setTxt('ttLv',F(L)); setTxt('ttyhatv',F(dyhat)); setTxt('ttzyv',F(dyhat));
+      setTxt('ttWhyv',F(dWhy)); setTxt('ttbyv',F(dby)); setTxt('tthv',F(dh)); setTxt('ttzhv',F(dz));
+      setTxt('ttWxhv',F(dWxh)); setTxt('ttWhhv',F(dWhh)); setTxt('ttbhv',F(db)); setTxt('tthpv',F(dz*p.Whh));
+      const tEl=$('ttTotal');
+      if(tEl) tEl.innerHTML='✅ <b>Gerçek gradyanlar</b> (tek zaman adımı — toplama yok):<br>'
+        +'∂L/∂W<sub>xh</sub> = <b style="color:var(--accent)">'+F(dWxh)+'</b> · ∂L/∂W<sub>hh</sub> = <b style="color:var(--accent)">'+F(dWhh)+'</b> · ∂L/∂b<sub>h</sub> = <b style="color:var(--accent)">'+F(db)+'</b><br>'
+        +'∂L/∂W<sub>hy</sub> = <b style="color:var(--accent)">'+F(dWhy)+'</b> · ∂L/∂b<sub>y</sub> = <b style="color:var(--accent)">'+F(dby)+'</b>';
+      const zT=(ad,html)=>document.querySelectorAll('[data-zincir="t_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+      const aT=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
+      const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
+      zT('zh', aT(NF,'z_h = W_xh·x + W_hh·h₋₁ + b_h\n    = ('+F(p.Wxh,2)+')('+F(p.x,2)+') + ('+F(p.Whh,2)+')('+F(p.hp,2)+') + '+F(p.b,2)+'\n    = '+F(p.Wxh*p.x)+' + '+F(p.Whh*p.hp)+' + '+F(p.b,2)+'\n    = '+F(z)));
+      zT('tanh', aT(NF,'h = tanh(z_h) = tanh('+F(z)+') = '+F(h)));
+      zT('zy', aT(NF,'z_y = W_hy·h + b_y\n    = ('+F(p.Why,2)+')('+F(h)+') + '+F(p.by,2)+'\n    = '+F(p.Why*h)+' + '+F(p.by,2)+'\n    = '+F(yhat)));
+      zT('yhat', aT(NF,'ŷ = z_y = '+F(yhat)));
+      zT('L', aT(NF,'L = ½(ŷ − y)²\n  = ½('+F(yhat)+' − '+F(p.y,2)+')²\n  = ½('+F(dyhat)+')²\n  = '+F(L)));
+      zT('Lyhat', aT(NB,'∂L/∂ŷ = ŷ − y = '+F(yhat)+' − '+F(p.y,2)+' = '+F(dyhat)));
+      zT('yhatzy', aT(NB,'∂L/∂z_y = ∂L/∂ŷ × 1 = '+F(dyhat)+'\nBu sinyal şimdi z_y\'den dallanacak.'));
+      zT('zyWhy', aT(NB,'dW_hy = ∂L/∂z_y × h = '+F(dyhat)+' × '+F(h)+' = '+F(dWhy)+'\nTek zaman adımı: bu yaprak doğrudan gerçek gradyan.'));
+      zT('zyby', aT(NB,'db_y = ∂L/∂z_y × 1 = '+F(dby)));
+      zT('zyh', aT(NB,'∂L/∂h = ∂L/∂z_y × W_hy = '+F(dyhat)+' × '+F(p.Why,2)+' = '+F(dh)));
+      zT('hzh', aT(NB,'∂L/∂z_h = ∂L/∂h × (1−h²) = '+F(dh)+' × (1−'+F(h*h)+') = '+F(dz)+'\nBu sinyal şimdi dallanıyor: üç gizli ağırlığa ve h₋₁\'e.'));
+      zT('zhWxh', aT(NB,'dW_xh = ∂L/∂z_h × x = '+F(dz)+' × '+F(p.x,2)+' = '+F(dWxh)));
+      zT('zhWhh', aT(NB,'dW_hh = ∂L/∂z_h × h₋₁ = '+F(dz)+' × '+F(p.hp,2)+' = '+F(dWhh)));
+      zT('zhbh', aT(NB,'db_h = ∂L/∂z_h × 1 = '+F(db)));
+      zT('zhhp', aT(NB,'∂L/∂h₋₁ = ∂L/∂z_h × W_hh = '+F(dz)+' × '+F(p.Whh,2)+' = '+F(dz*p.Whh)+'\nTek hücrede burada biter; zincirde bu sinyal önceki adıma akar (BPTT).'));
+    }
     setTxt('rcS1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
     setTxt('rcS1val', F(dyhat));
     setTxt('rcS2sub1', '('+F(dyhat)+')('+F(h)+')');
@@ -1377,7 +1427,7 @@ function rnnCellInit(P){
   // diğer mimarilerde kısa bir not gösteriliyor (bkz. index.html).
   const bigPictureM2o=document.getElementById('rnnBigPictureM2o');
   const bigPictureM2m=document.getElementById('rnnBigPictureM2m');
-  const bigPictureNote=document.getElementById('rnnBigPictureNote');
+  const bigPictureTek=document.getElementById('rnnBigPictureTek');
   const typeNoteHtml={
     tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
@@ -1396,7 +1446,7 @@ function rnnCellInit(P){
       if(gAdimSectionM2o) gAdimSectionM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
-      if(bigPictureNote) bigPictureNote.style.display = (rt==='m2o' || rt==='m2mEq') ? 'none' : 'block';
+      if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';
     });
   });
 })();
