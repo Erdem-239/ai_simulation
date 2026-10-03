@@ -718,6 +718,8 @@
   .bp-live{margin:8px 0 6px; padding:8px 10px; border:1px solid #2a3350; border-radius:8px; background:#0b1222}
   .bp-live-grid .cell-diagram{display:flex; justify-content:center; align-self:center}
   .bp-live-grid{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr); gap:10px; align-items:start}
+  #boCellSvg,#bqCellSvg{min-width:620px}
+  #bdCellSvg{min-width:760px}
   #bpCellSvg{display:block; width:100%; max-width:760px; height:auto; min-width:0; margin:0 auto; background:#0e1830; border-radius:8px}
   @media(max-width:900px){ .bp-live-grid{grid-template-columns:1fr} #bpCellSvg{min-width:380px} }
   @media(max-width:900px){ .rnn-fwd-cols{flex-direction:column; gap:0; max-width:none; align-items:stretch} .rnn-fc-right{flex:1 1 auto; padding-right:0} .rnn-fc-left{padding-left:0} .rnn-col-resizer{display:none} .cell-diagram{overflow-x:auto} #cellSvg{min-width:380px} }

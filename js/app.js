@@ -251,7 +251,115 @@ function rnnCellInit(P){
     return {ci, fSteps, bSteps};
   }
 
-  const BUILDERS={m2o:buildM2o, m2mEq:buildM2mEq};
+
+  /* ================= genel dizi mimarisi (one-to-many, many-to-many Tx≠Ty): adım başına girdi/çıktı var-yok ================= */
+  function buildSeq(cfg){
+    const pf=cfg.pf, T=cfg.T, inp=cfg.inp, out=cfg.out, SB='₀₁₂₃₄₅';
+    const OFFS=[]; for(let i=0;i<T;i++) OFFS.push(40+280*i);
+    let s='<defs><marker id="car" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#7d8aab"/></marker></defs>';
+    s+='<rect class="op io-a" id="io-a0" data-k="io-a0" x="0" y="209" width="62" height="32" rx="7"/><text class="io-lbl" x="31" y="230" text-anchor="middle" font-size="12">h₀=0</text>';
+    s+=ar(62,225,80,225);
+    for(let i=0;i<T;i++){
+      const off=OFFS[i], n=i+1;
+      const whh=off+55, wxh=off+95, add=off+140, tanhx=off+215;
+      s+='<rect x="'+(off-15)+'" y="140" width="260" height="195" rx="14" fill="rgba(58,122,254,0.07)" stroke="#2a4a7a" stroke-width="1.5"/>';
+      s+='<text x="'+(off+110)+'" y="130" fill="#3a7afe" font-size="13" text-anchor="middle" font-weight="700">t = '+n+'</text>';
+      s+=op('mul_aa_'+n, whh,225,15,'×'); s+=wl(whh,200,'Whh');
+      if(inp[i]){
+        s+=op('mul_ax_'+n, wxh,275,15,'×'); s+=wl(wxh-20,279,'Wxh','end');
+        s+='<rect class="op io-x" id="io-x_'+n+'" data-k="io-x_'+n+'" x="'+(wxh-25)+'" y="305" width="50" height="26" rx="6"/><text class="io-lbl" x="'+wxh+'" y="323" text-anchor="middle" font-size="12">x'+SB[n]+'</text>';
+        s+=pl([[wxh,305],[wxh,292]]);
+        s+=pl([[wxh+15,275],[add,275],[add,242]]);
+      } else {
+        s+='<text x="'+(off+95)+'" y="300" fill="var(--muted)" font-size="11" text-anchor="middle">bu adımda girdi yok</text>';
+      }
+      s+=op('add_a_'+n, add,225,15,'+'); s+=wl(add,183,'bh'); s+=pl([[add,189],[add,208]]);
+      s+=pl([[whh+15,225],[add-15,225]]);
+      s+=op('g1_'+n, tanhx,225,17,'tanh',12); s+=pl([[add+15,225],[tanhx-17,225]]);
+      if(i<T-1){
+        const nextWhh=OFFS[i+1]+55;
+        s+=ar(tanhx+17,225,nextWhh-15,225);
+        s+='<text x="'+((tanhx+17+nextWhh-15)/2)+'" y="213" fill="#7fe3a3" font-size="12" text-anchor="middle" font-weight="700">h'+SB[n]+'</text>';
+      }
+      if(out[i]){
+        s+=ar(tanhx,208,tanhx,155); s+=op('mul_ya_'+n, tanhx,140,15,'×'); s+=wl(tanhx-18,144,'Why','end');
+        s+=ar(tanhx,125,tanhx,95); s+=op('add_y_'+n, tanhx,80,15,'+'); s+=wl(tanhx-18,84,'by','end');
+        s+=ar(tanhx,65,tanhx,41);
+        s+='<rect class="op io-y" id="io-y_'+n+'" data-k="io-y_'+n+'" x="'+(tanhx-25)+'" y="15" width="50" height="26" rx="6"/><text class="io-lbl" x="'+tanhx+'" y="33" text-anchor="middle">ŷ'+SB[n]+'</text>';
+      }
+    }
+    svg.setAttribute('viewBox','0 0 '+(OFFS[T-1]+300)+' 340');
+    svg.innerHTML=s;
+
+    const ci={'io-a0':'<b>h₀</b> — dizinin başlangıç hafızası (=0).'};
+    const ZH=n=>'z<sub>h</sub><sup>('+n+')</sup>';
+    for(let i=0;i<T;i++){
+      const n=i+1, prev=(n===1?'h₀':'h'+SB[i]);
+      ci['mul_aa_'+n]='<b>× çarpma (t='+n+'):</b> W<sub>hh</sub> · '+prev+' — önceki hafızayı ağırlıkla çarp.';
+      if(inp[i]){ ci['mul_ax_'+n]='<b>× çarpma (t='+n+'):</b> W<sub>xh</sub> · x'+SB[n]+' — bu adımın girdisini ağırlıkla çarp.'; ci['io-x_'+n]='<b>x'+SB[n]+'</b> — t='+n+' adımının girdisi.'; }
+      ci['add_a_'+n]='<b>+ toplama (t='+n+'):</b> W<sub>hh</sub>·'+prev+(inp[i]?' + W<sub>xh</sub>·x'+SB[n]:'')+' + b<sub>h</sub> = '+ZH(n)+(inp[i]?'':' (bu adımda girdi yok)')+'.';
+      ci['g1_'+n]='<b>tanh (t='+n+'):</b> h'+SB[n]+' = tanh('+ZH(n)+')'+(n<T?', sağdaki hücreye (t='+(n+1)+') akar':'')+(out[i]?(n<T?' VE ':', ')+'kendi çıktısına (ŷ'+SB[n]+') gidiyor':' — bu adımın kendi çıktısı yok, sadece hafızayı taşır')+'.';
+      if(out[i]){
+        ci['mul_ya_'+n]='<b>× çarpma (t='+n+'):</b> W<sub>hy</sub> · h'+SB[n]+'.';
+        ci['add_y_'+n]='<b>+ toplama (t='+n+'):</b> W<sub>hy</sub>·h'+SB[n]+' + b<sub>y</sub> = z<sub>y</sub><sup>('+n+')</sup>.';
+        ci['io-y_'+n]='<b>ŷ'+SB[n]+'</b> — t='+n+' adımının tahmini. Kendi kaybı L'+SB[n]+' var; toplam kayıp çıktı adımlarının toplamı.';
+      }
+    }
+    const fSteps=[]; let hist='';
+    for(let i=0;i<T;i++){
+      const n=i+1, prev=(n===1?'h₀':'h'+SB[i]), base='h'+SB[n]+' = tanh( ';
+      const fz=pf+'fzh'+n, fh=pf+'fh'+n, fzy=pf+'fzy'+n;
+      fSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:hist+base+'<b>W<sub>hh</sub>·'+prev+'</b>', i:ci['mul_aa_'+n], eq:[fz]});
+      if(inp[i]) fSteps.push({hl:['mul_ax_'+n,'io-x_'+n], f:hist+base+'W<sub>hh</sub>·'+prev+' + <b>W<sub>xh</sub>·x'+SB[n]+'</b>', i:ci['mul_ax_'+n], eq:[fz]});
+      const inner='W<sub>hh</sub>·'+prev+(inp[i]?' + W<sub>xh</sub>·x'+SB[n]:'');
+      fSteps.push({hl:['add_a_'+n], f:hist+base+inner+' + <b>b<sub>h</sub></b>', i:ci['add_a_'+n], eq:[fz]});
+      const doneH=base+inner+' + b<sub>h</sub> ) &nbsp;<b style="color:#3fb6b6">✓</b>';
+      fSteps.push({hl:['g1_'+n], f:hist+doneH, i:ci['g1_'+n], eq:[fh]});
+      let line=doneH;
+      if(out[i]){
+        const zb='z<sub>y</sub><sup>('+n+')</sup> = ';
+        fSteps.push({hl:['mul_ya_'+n], f:hist+doneH+'<br>'+zb+'<b>W<sub>hy</sub>·h'+SB[n]+'</b>', i:ci['mul_ya_'+n], eq:[fzy]});
+        fSteps.push({hl:['add_y_'+n], f:hist+doneH+'<br>'+zb+'W<sub>hy</sub>·h'+SB[n]+' + <b>b<sub>y</sub></b>', i:ci['add_y_'+n], eq:[fzy]});
+        const tail=n===T?' &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>':' &nbsp;<b style="color:#3fb6b6">✓</b>';
+        const doneY=zb+'W<sub>hy</sub>·h'+SB[n]+' + b<sub>y</sub> &nbsp;→&nbsp; ŷ'+SB[n]+' = z<sub>y</sub><sup>('+n+')</sup>'+tail;
+        fSteps.push({hl:['io-y_'+n], f:hist+doneH+'<br>'+doneY, i:ci['io-y_'+n], eq:[pf+'fyhat'+n,pf+'fL'+n].concat(n===T?[pf+'fL']:[])});
+        line=doneH+'<br>'+doneY;
+      }
+      hist+=line+'<br>';
+    }
+    const bSteps=[]; let bhist='';
+    for(let i=T-1;i>=0;i--){
+      const n=i+1, prev=(n===1?'h₀':'h'+SB[i]), hn='h'+SB[n];
+      const zy='z<sub>y</sub><sup>('+n+')</sup>', zh=ZH(n);
+      const lines=[];
+      if(out[i]){
+        lines.push('∂L/∂'+zy+' = (ŷ'+SB[n]+' − y'+SB[n]+')');
+        lines.push('∂L/∂b<sub>y</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zy);
+        lines.push('∂L/∂W<sub>hy</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zy+'·'+hn+' &nbsp;→&nbsp; ∂L/∂'+hn+'(kendi) = ∂L/∂'+zy+'·W<sub>hy</sub>');
+      }
+      const src=out[i]?(n===T?'∂L/∂'+hn+' = kendi çıktısından':'∂L/∂'+hn+' = kendi çıktısı <span style="color:#f0a032">+</span> ∂L/∂z<sub>h</sub><sup>('+(n+1)+')</sup>·W<sub>hh</sub> <span style="color:#f0a032">(BPTT)</span>'):'∂L/∂'+hn+' = ∂L/∂z<sub>h</sub><sup>('+(n+1)+')</sup>·W<sub>hh</sub> <span style="color:#f0a032">(sadece BPTT — bu adımın çıktısı yok)</span>';
+      const i0=lines.length;
+      lines.push(src+' &nbsp;→&nbsp; ∂L/∂'+zh+' = ∂L/∂'+hn+' × (1−'+hn+'²)');
+      lines.push('∂L/∂b<sub>h</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh);
+      lines.push('∂L/∂W<sub>hh</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh+'·'+prev+(n>1?' &nbsp;→&nbsp; ∂L/∂h'+SB[n-1]+' bileşeni (BPTT) = ∂L/∂'+zh+'·W<sub>hh</sub>':' &nbsp;(h₀=0 → bu terim 0)'));
+      if(inp[i]) lines.push('∂L/∂W<sub>xh</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh+'·x'+SB[n]);
+      let li=0;
+      if(out[i]){
+        bSteps.push({hl:['io-y_'+n], f:bhist+bfJoin(lines,li), i:ci['io-y_'+n]+' Bu adımın kendi kaybından geri yayılım burada başlıyor.', eq:[pf+'tyhat'+n,pf+'tzy'+n]}); li++;
+        bSteps.push({hl:['add_y_'+n], f:bhist+bfJoin(lines,li), i:'<b>+ geri:</b> ∂L/∂b<sub>y</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zy+'.', eq:[pf+'tby'+n]}); li++;
+        bSteps.push({hl:['mul_ya_'+n], f:bhist+bfJoin(lines,li), i:'<b>× geri:</b> ∂L/∂W<sub>hy</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zy+'·'+hn+'; ayrıca kendi çıktısından '+hn+'\'ye katkı gider.', eq:[pf+'tWhy'+n].concat(n<T?[pf+'tlink'+n]:[])}); li++;
+      }
+      bSteps.push({hl:['g1_'+n], f:bhist+bfJoin(lines,li), i:out[i]?(n===T?'<b>tanh geri (t='+n+'):</b> '+hn+'\'e sadece kendi çıktısından sinyal gelir (son adım).':'<b>tanh geri (t='+n+'):</b> ∂L/∂'+hn+' İKİ kaynaktan TOPLANIR — kendi çıktısı + BPTT.'):'<b>tanh geri (t='+n+'):</b> bu adımın çıktısı yok — '+hn+' sadece gelecekten (BPTT) sinyal alır.', eq:[pf+'th'+n,pf+'tzh'+n]}); li++;
+      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,li), i:'<b>+ geri:</b> kopyala → ∂L/∂b<sub>h</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh+'.', eq:[pf+'tbh'+n]}); li++;
+      bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,li), i:'<b>× geri:</b> ∂L/∂W<sub>hh</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh+'·'+prev+(n>1?'; ayrıca ∂L/∂'+prev+' ÖNCEKİ zamana akar (BPTT).':'; h₀=0 olduğu için bu katkı sıfır.'), eq:[pf+'tWhh'+n]}); li++;
+      if(inp[i]){ bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,li), i:'<b>× geri:</b> ∂L/∂W<sub>xh</sub>|<sub>t='+n+'</sub> = ∂L/∂'+zh+'·x'+SB[n]+'.', eq:[pf+'tWxh'+n]}); li++; }
+      bhist+=lines.join('<br>')+'<br>';
+    }
+    bSteps.push({hl:['io-a0'], eq:[pf+'tTotal'], f:bhist+'<b style="color:#46c46a">✓ Tamamlandı — her ağırlığın adımlardaki katkılarını TOPLA → gerçek gradyan.</b>', i:'✓ Bitti! Aynı ağırlık birden çok adımda kullanıldığı için gerçek gradyan, adım katkılarının TOPLAMIdır.'});
+    return {ci,fSteps,bSteps};
+  }
+  const CFG_O2M={pf:'o',T:3,inp:[1,0,0],out:[1,1,1]}, CFG_DEC={pf:'d',T:4,inp:[1,1,0,0],out:[0,0,1,1]};
+  const BUILDERS={m2o:buildM2o, m2mEq:buildM2mEq, o2m:()=>buildSeq(CFG_O2M), dec:()=>buildSeq(CFG_DEC)};
   let cellSteps=[], cellBackSteps=[], cinfo={}, curMode='m2o';
 
   function bindMode(m){
@@ -313,6 +421,8 @@ function rnnCellInit(P){
   rnnCellInit({svg:'bpCellSvg',fbox:'bpCellFormula',info:'bpCellInfo',step:'bpCellStep',back:'bpCellBack',auto:'bpCellAuto',backAuto:'bpCellBackAuto',rst:'bpCellRst',pre:'bp_'});
   /* many-to-many Bütün Resim'indeki canlı diyagram */
   rnnCellInit({svg:'bqCellSvg',fbox:'bqCellFormula',info:'bqCellInfo',step:'bqCellStep',back:'bqCellBack',auto:'bqCellAuto',backAuto:'bqCellBackAuto',rst:'bqCellRst',pre:'bq_',mode:'m2mEq'});
+  rnnCellInit({svg:'boCellSvg',fbox:'boCellFormula',info:'boCellInfo',step:'boCellStep',back:'boCellBack',auto:'boCellAuto',backAuto:'boCellBackAuto',rst:'boCellRst',pre:'bo_',mode:'o2m'});
+  rnnCellInit({svg:'bdCellSvg',fbox:'bdCellFormula',info:'bdCellInfo',step:'bdCellStep',back:'bdCellBack',auto:'bdCellAuto',backAuto:'bdCellBackAuto',rst:'bdCellRst',pre:'bd_',mode:'dec'});
 }
 
 /* ---- Tek Hücre — bir RNN adımının içi (basit, tıklanabilir computational graph) ---- */
@@ -888,6 +998,81 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       zT('zhbh', aT(NB,'db_h = ∂L/∂z_h × 1 = '+F(db)));
       zT('zhhp', aT(NB,'∂L/∂h₋₁ = ∂L/∂z_h × W_hh = '+F(dz)+' × '+F(p.Whh,2)+' = '+F(dz*p.Whh)+'\nTek hücrede burada biter; zincirde bu sinyal önceki adıma akar (BPTT).'));
     }
+
+    /* ---- "5️⃣ Bütün Resim" — one-to-many ve many-to-many (Tx≠Ty): aynı genel hesap, adım başına girdi/çıktı var-yok ---- */
+    function seqFill(cfg){
+      const pf=cfg.pf, T=cfg.T, inp=cfg.inp, out=cfg.out, SB='₀₁₂₃₄₅';
+      if(!$(pf+'fzh1')) return;
+      const X=[],Y=[],H=[0],Z=[],ZY=[],LL=[],DY=[];
+      for(let t=1;t<=T;t++){
+        X[t]=inp[t-1]?parseFloat($(pf+'_x'+t).value)||0:0;
+        Z[t]=p.Wxh*X[t]+p.Whh*H[t-1]+p.b; H[t]=Math.tanh(Z[t]);
+        if(out[t-1]){ Y[t]=parseFloat($(pf+'_y'+t).value)||0; ZY[t]=p.Why*H[t]+p.by; DY[t]=ZY[t]-Y[t]; LL[t]=0.5*DY[t]*DY[t]; }
+      }
+      const outs=[]; for(let t=1;t<=T;t++) if(out[t-1]) outs.push(t);
+      const Ltot=outs.reduce((q,t)=>q+LL[t],0);
+      const OWN=[],BP=[],HT=[],ZH=[],WXH=[],WHH=[],BH=[],WHY=[],BY=[];
+      for(let t=T;t>=1;t--){
+        OWN[t]=out[t-1]?DY[t]*p.Why:0; BP[t]=t<T?ZH[t+1]*p.Whh:0; HT[t]=OWN[t]+BP[t]; ZH[t]=HT[t]*(1-H[t]*H[t]);
+        WXH[t]=inp[t-1]?ZH[t]*X[t]:0; WHH[t]=ZH[t]*H[t-1]; BH[t]=ZH[t];
+        WHY[t]=out[t-1]?DY[t]*H[t]:0; BY[t]=out[t-1]?DY[t]:0;
+      }
+      const sum=a=>{let q=0;for(let t=1;t<=T;t++)q+=(a[t]||0);return q;};
+      for(let t=1;t<=T;t++){
+        setTxt(pf+'fh'+t+'v',F(H[t])); setTxt(pf+'fzh'+t+'v',F(Z[t])); if(t>1) setTxt(pf+'fhi'+t,F(H[t-1])); else setTxt(pf+'fh0',F(0,2));
+        if(inp[t-1]) setTxt(pf+'fx'+t,F(X[t],2));
+        setTxt(pf+'th'+t+'v',F(HT[t])); setTxt(pf+'tzh'+t+'v',F(ZH[t]));
+        if(inp[t-1]) setTxt(pf+'tWxh'+t+'v',F(WXH[t]));
+        setTxt(pf+'tWhh'+t+'v',F(WHH[t])); setTxt(pf+'tbh'+t+'v',F(BH[t]));
+        if(out[t-1]){
+          setTxt(pf+'fzy'+t+'v',F(ZY[t])); setTxt(pf+'fyhat'+t+'v',F(ZY[t])); setTxt(pf+'fL'+t+'v',F(LL[t])); setTxt(pf+'fL'+t+'b',F(LL[t]));
+          setTxt(pf+'tyhat'+t+'v',F(DY[t])); setTxt(pf+'tzy'+t+'v',F(DY[t])); setTxt(pf+'tWhy'+t+'v',F(WHY[t])); setTxt(pf+'tby'+t+'v',F(BY[t]));
+          if(t<T) setTxt(pf+'tlink'+t+'v',F(OWN[t]));
+        }
+        if(t<T) setTxt(pf+'tR'+(t+1)+t,F(p.Whh*(1-H[t]*H[t])));
+      }
+      setTxt(pf+'fLv',F(Ltot)); setTxt(pf+'tLv',F(Ltot));
+      const tEl=$(pf+'tTotal');
+      const line=(ad,a,filter)=>{ const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(F(a[t])); return '∂L/∂'+ad+' = '+ts.join(' + ')+' = <b style="color:var(--accent)">'+F(sum(a))+'</b>'; };
+      if(tEl) tEl.innerHTML='✅ <b>Gerçek gradyanlar</b> (her ağırlığın adımlardaki katkılarının toplamı):<br>'
+        +line('W<sub>xh</sub>',WXH,t=>inp[t-1])+'<br>'+line('W<sub>hh</sub>',WHH,t=>true)+'<br>'+line('b<sub>h</sub>',BH,t=>true)+'<br>'+line('W<sub>hy</sub>',WHY,t=>out[t-1])+'<br>'+line('b<sub>y</sub>',BY,t=>out[t-1]);
+      const zM=(ad,html)=>document.querySelectorAll('[data-zincir="'+pf+'_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+      const araM=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
+      const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
+      function uc(gradAd,a,t0,filter){
+        const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
+        const rows=ts.map(t=>'  t='+t+': '+F(a[t])+(t===t0?'  ← bu adım':'')).join('\n');
+        return '<b>'+NB+'</b> Bu, '+gradAd+'\'nin SADECE bu zaman adımındaki katkısı'+(ts.length>1?' — aynı ağırlık '+ts.length+' adımda kullanıldığı için hepsini TOPLAMAK gerekiyor:':' — bu ağırlık sadece bir adımda kullanıldığı için tek yaprak = gerçek gradyan:')
+          +'<div class="xp-hes">'+gradAd+' = Σₜ (bu adımın katkısı)\n'+rows+'\n  toplam: '+ts.map(t=>(a[t]>=0?'+':'')+F(a[t])).join(' ')+' = <b>'+F(sum(a))+'</b> = '+gradAd+'</div>';
+      }
+      const anyOut=t=>out[t-1], anyIn=t=>inp[t-1], all=t=>true;
+      for(let t=1;t<=T;t++){
+        const sb=SB[t], ph='h'+SB[t-1];
+        zM('zh'+t, araM(NF,'z_h⁽'+t+'⁾ = '+(inp[t-1]?'W_xh·x'+sb+' + ':'')+'W_hh·'+ph+' + b_h\n      = '+(inp[t-1]?'('+F(p.Wxh,2)+')('+F(X[t],2)+') + ':'')+'('+F(p.Whh,2)+')('+F(H[t-1],2)+') + '+F(p.b,2)+'\n      = '+(inp[t-1]?F(p.Wxh*X[t])+' + ':'')+F(p.Whh*H[t-1])+' + '+F(p.b,2)+'\n      = '+F(Z[t])+(inp[t-1]?'':'\n(bu adımda girdi yok)')));
+        zM('tanh'+t, araM(NF,'h'+sb+' = tanh(z_h⁽'+t+'⁾) = tanh('+F(Z[t])+') = '+F(H[t])));
+        zM('hzh'+t, araM(NB,'∂L/∂z_h⁽'+t+'⁾ = ∂L/∂h'+sb+' × (1−h'+sb+'²) = '+F(HT[t])+' × (1−'+F(H[t]*H[t])+') = '+F(ZH[t])+'\nBu sinyal şimdi dallanıyor: bu adımın gizli ağırlık katkıları'+(t>1?' + BPTT ile t='+(t-1)+'\'e.':'.')));
+        if(inp[t-1]) zM('zhWxh'+t, uc('dW_xh',WXH,t,anyIn));
+        zM('zhWhh'+t, uc('dW_hh',WHH,t,all)+(t===1?'<div style="color:var(--muted); font-size:10.5px; margin-top:4px">t=1\'in katkısı h₀=0 olduğu için her zaman 0.</div>':''));
+        zM('zhbh'+t, uc('db_h',BH,t,all));
+        if(t>1) zM('zhh'+t, araM(NB,'BPTT katkısı = ∂L/∂z_h⁽'+t+'⁾ × W_hh = '+F(ZH[t])+' × '+F(p.Whh,2)+' = '+F(BP[t-1])+'\nBu, h'+SB[t-1]+'\'e gelecekten ulaşan sinyal.'));
+        if(out[t-1]){
+          zM('zy'+t, araM(NF,'z_y⁽'+t+'⁾ = W_hy·h'+sb+' + b_y\n      = ('+F(p.Why,2)+')('+F(H[t])+') + '+F(p.by,2)+'\n      = '+F(p.Why*H[t])+' + '+F(p.by,2)+'\n      = '+F(ZY[t])));
+          zM('yhat'+t, araM(NF,'ŷ'+sb+' = z_y⁽'+t+'⁾ = '+F(ZY[t])));
+          zM('L'+t, araM(NF,'L'+sb+' = ½(ŷ'+sb+' − y'+sb+')²\n   = ½('+F(ZY[t])+' − '+F(Y[t],2)+')²\n   = ½('+F(DY[t])+')²\n   = '+F(LL[t])));
+          zM('Lyhat'+t, araM(NB,'∂L/∂ŷ'+sb+' = ŷ'+sb+' − y'+sb+' = '+F(ZY[t])+' − '+F(Y[t],2)+' = '+F(DY[t])));
+          zM('yhatzy'+t, araM(NB,'∂L/∂z_y⁽'+t+'⁾ = ∂L/∂ŷ'+sb+' × 1 = '+F(DY[t])+'\nBu sinyal şimdi z_y\'den dallanacak.'));
+          zM('zyWhy'+t, uc('dW_hy',WHY,t,anyOut));
+          zM('zyby'+t, uc('db_y',BY,t,anyOut));
+          zM('zyh'+t, araM(NB,'∂L/∂h'+sb+' (kendi çıktısından) = ∂L/∂z_y⁽'+t+'⁾ × W_hy = '+F(DY[t])+' × '+F(p.Why,2)+' = '+F(OWN[t])+(t===T?'\nSon adım — gelecekten katkı yok.':'\nBu, h'+sb+'\'in toplam sinyalinin yarısı; diğer yarısı BPTT ile gelir.')));
+        }
+        if(t===T) zM('hsum'+t, araM(NB,'∂L/∂h'+sb+' = kendi çıktısı = '+F(OWN[t])+'\n(son adım: BPTT katkısı = 0)'));
+        else if(out[t-1]) zM('hsum'+t, araM(NB,'∂L/∂h'+sb+' = kendi çıktısı + BPTT\n       = ('+F(DY[t])+')('+F(p.Why,2)+') + ('+F(ZH[t+1])+')('+F(p.Whh,2)+')\n       = '+F(OWN[t])+' + '+F(BP[t])+'\n       = '+F(HT[t])));
+        else zM('hsum'+t, araM(NB,'∂L/∂h'+sb+' = BPTT = ∂L/∂z_h⁽'+(t+1)+'⁾·W_hh = ('+F(ZH[t+1])+')('+F(p.Whh,2)+') = '+F(BP[t])+'\n(bu adımın kendi çıktısı yok → kendi katkısı 0)'));
+      }
+      zM('Ltot', araM(NF,'L = '+outs.map(t=>'L'+SB[t]).join(' + ')+' = '+outs.map(t=>F(LL[t])).join(' + ')+' = '+F(Ltot)));
+    }
+    seqFill({pf:'o',T:3,inp:[1,0,0],out:[1,1,1]});
+    seqFill({pf:'d',T:4,inp:[1,1,0,0],out:[0,0,1,1]});
     setTxt('rcS1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
     setTxt('rcS1val', F(dyhat));
     setTxt('rcS2sub1', '('+F(dyhat)+')('+F(h)+')');
@@ -1397,7 +1582,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   ['ru_x1','ru_x2','ru_x3','ru_y'].forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', rcSyncManual);
   });
-  ['rcM2_futz','rcM2_islast','rcM2_x1','rcM2_x2','rcM2_x3','rcM2_y1','rcM2_y2','rcM2_y3'].forEach(id=>{
+  ['rcM2_futz','rcM2_islast','rcM2_x1','rcM2_x2','rcM2_x3','rcM2_y1','rcM2_y2','rcM2_y3','o_x1','o_y1','o_y2','o_y3','d_x1','d_x2','d_y3','d_y4'].forEach(id=>{
     const el=$(id); if(el) el.addEventListener('input', render);
   });
   const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
@@ -1428,9 +1613,13 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   const bigPictureM2o=document.getElementById('rnnBigPictureM2o');
   const bigPictureM2m=document.getElementById('rnnBigPictureM2m');
   const bigPictureTek=document.getElementById('rnnBigPictureTek');
+  const bigPictureO2m=document.getElementById('rnnBigPictureO2m');
+  const bigPictureDec=document.getElementById('rnnBigPictureDec');
   const typeNoteHtml={
     tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
+    o2m:'<b>one-to-many</b> — TEK girdi → bir dizi çıktı. Girdi sadece t=1\'de verilir, sonraki adımlarda girdi yoktur; hücre hafızasından devam eder ve her adımda bir çıktı üretir. Örnek: müzik üretimi, görsel altyazı.',
+    dec:'<b>many-to-many (T<sub>x</sub>≠T<sub>y</sub>)</b> — önce girdi dizisini oku (çıktı yok), sonra çıktı dizisini üret (girdi yok): encoder-decoder. Örnek: makine çevirisi.',
     m2mEq:'<b>many-to-many (T<sub>x</sub>=T<sub>y</sub>)</b> — her girdiye karşılık, AYNI adımda kendi çıktısı var. Her h<sub>t</sub>, gradyanı hem kendi çıktısından hem gelecekten (BPTT) alır. Örnek: isim varlık tanıma / NER (cümledeki her kelimeyi etiketlemek).'
   };
   btns.forEach(b=>{
@@ -1447,6 +1636,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';
+      if(bigPictureO2m) bigPictureO2m.style.display = (rt==='o2m') ? 'block' : 'none';
+      if(bigPictureDec) bigPictureDec.style.display = (rt==='dec') ? 'block' : 'none';
     });
   });
 })();
