@@ -569,6 +569,20 @@ geçici div'e koyulup `typesetPromise` ile `mjx-merror` sayıldı (0).
 (MathJax, aligned, kalın sonuç) de kopyala — monospace metin "aynı bilgi"
 sayılmıyor.
 
+**Ağırlık kaydırıcıları tüm RNN türlerinde ortak + canlı pop-up hatası**:
+(1) kullanıcı W_hy'yi oynatmak için her seferinde Tek Hücre'ye dönmek zorunda
+kalıyordu ("bütün modellerin başında olsun") — `#rcSliderPanel` (kaydırıcılar
++ α) `#rnnTypeTek` dışına, tür seçici notunun hemen altına taşındı; x/h₋₁/y
+kutuları (`#rcTekInputs`) sadece Tek Hücre'ye ait olduğu için tür
+değişince gizlenir (switcher). (2) W_hy kaydırılınca AÇIK pop-up'ta ham
+`\\( \\begin{aligned}…` metni görünüyordu: pop-up kaynağın KLONUNU taşıdığı
+için `data-zincir` özniteliği klonda da duruyor ve `render()`'ın
+`querySelectorAll('[data-zincir=…]')` yazımı klonu da eziyor (typeset
+edilmeden). `rnnBridges.put()` artık `#xtPop` içindeki elemanı yazdıktan
+sonra `typesetClear+typesetPromise` çağırır. **Ders**: canlı güncellenen
+içerik bir pop-up/klon olarak çoğaltılıyorsa, güncelleme seçicisi klonları
+da yakalar — LaTeX içeren her canlı yazımda "klon açıkken" durumunu test et.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
