@@ -392,12 +392,7 @@ function rnnCellInit(P){
     document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
     if(st.eq && st.eq.length){
       st.eq.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(eqCls); });
-      // st.eq artık "5️⃣ Bütün Resim" ağacındaki (.xf-box/.xt-box) kutuları işaret
-      // ediyor — o dış tpl-cl kapalıysa vurgu görünmez, bu yüzden onu da aç.
-      const bpHead=document.getElementById('rnnBigPictureHead');
-      const bpBody=document.getElementById('rnnBigPictureBody');
-      if(bpHead) bpHead.classList.remove('closed');
-      if(bpBody) bpBody.classList.remove('closed');
+      // st.eq, diyagramın hemen altındaki (aynı blok içindeki) ağaç kutularını işaret ediyor — ayrıca bir şey açmaya gerek yok.
     }
   }
   function ensure(m){ if(playMode!==m){ clr(); cstep=0; playMode=m; } }
@@ -415,8 +410,6 @@ function rnnCellInit(P){
   return {setMode:bindMode};
 }
 {
-  const c1=rnnCellInit({svg:'cellSvg',fbox:'cellFormula',info:'cellInfo',step:'cellStep',back:'cellBack',auto:'cellAuto',backAuto:'cellBackAuto',rst:'cellRst',pre:''});
-  if(c1) window.__rnnCellSetMode=function(m){ c1.setMode(m); };
   /* "5️⃣ Bütün Resim" içindeki sıkıştırılmış canlı diyagram — hep many-to-one */
   rnnCellInit({svg:'bpCellSvg',fbox:'bpCellFormula',info:'bpCellInfo',step:'bpCellStep',back:'bpCellBack',auto:'bpCellAuto',backAuto:'bpCellBackAuto',rst:'bpCellRst',pre:'bp_'});
   /* many-to-many Bütün Resim'indeki canlı diyagram */
@@ -1799,6 +1792,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const gAdimSectionM2o=document.getElementById('gAdimSectionM2o');
   const typeNote=document.getElementById('rnnTypeNote');
+  const rnnTypeOther=document.getElementById('rnnTypeOther');
+  const rnnSimTek=document.getElementById('rnnSimTek');
   // "5️⃣ Bütün Resim" (eski adıyla rnn-fc-left/.ru-acc-row) artık Simülasyon'dan
   // çıkarılıp kendi aşamasına taşındı — sadece many-to-one'da içerik var,
   // diğer mimarilerde kısa bir not gösteriliyor (bkz. index.html).
@@ -1820,11 +1815,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       b.classList.add('active');
       const rt=b.dataset.rt;
       if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
-      if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'flex';
-      if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
+      if(rnnTypeOther) rnnTypeOther.style.display = (rt==='tek') ? 'none' : 'block';
+      if(rnnSimTek) rnnSimTek.style.display = (rt==='tek') ? 'block' : 'none';
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
-      if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
-      if(gAdimSectionM2o) gAdimSectionM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';
