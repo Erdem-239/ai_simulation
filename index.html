@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610040030"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610040045"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610040030">
+<link rel="stylesheet" href="css/style.css?v=202610040045">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 00:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 00:45 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1422,6 +1422,35 @@
 
       </div>
       </div>
+    </div>
+    
+    <div class="steps" style="margin-top:14px">
+<div class="step" id="moAdim6" style="grid-column:1/-1">
+          <div class="stephead"><h2>Geri Adım 6) Sinyal zamanda neden küçülüyor? — vanishing gradient, tamamen sayılarla</h2><span class="chev">▸</span></div>
+          <div class="stepbody">
+            <div class="deriv-why" style="margin:0 0 8px"><b>Fikir:</b> hata sadece t=3'te (ŷ'de) doğuyor. t=2 ve t=1'e ulaşabilmesi için <b>geriye doğru adım adım taşınması</b> gerekiyor. Her adımda iki şeyle çarpılıyor: <b>W<sub>hh</sub></b> ve <b>(1−h²)</b>. Aşağıda senin sayılarınla, çarpım çarpım:</div>
+            <div class="eq" style="margin:4px 0 8px">\( \delta_t=\dfrac{\partial L}{\partial z_h^{(t)}} \quad\Rightarrow\quad \delta_{t-1}=\delta_t\times W_{hh}\times(1-h_{t-1}^2) \)</div>
+            <div style="font-size:12px; color:var(--muted); margin:0 0 10px">(δ<sub>t</sub> = "t. adıma ulaşan hata sinyalinin gücü". Ağırlıkları değiştirmek için kullanılan gradyanların hepsi δ'dan türer.)</div>
+
+            <div class="deriv-why" style="color:#f0a032; margin:10px 0 4px"><b>① Sinyal t=3'ten t=1'e giderken ne kadar kalıyor?</b></div>
+            <div style="overflow-x:auto"><table class="mo6-tbl" id="mo6Tbl1"></table></div>
+
+            <div class="deriv-why" style="color:#f0a032; margin:14px 0 4px"><b>② Bu sinyal ağırlıkların gradyanını nasıl belirliyor?</b> <span style="color:var(--muted); font-weight:400">(gradyan = δ × o adımın girdisi)</span></div>
+            <div style="overflow-x:auto"><table class="mo6-tbl" id="mo6Tbl2"></table></div>
+
+            <div class="step-graph-row" style="margin-top:14px">
+              <div class="step-graph-formula">
+                <div class="deriv-why" style="color:#f0a032; margin:0 0 4px"><b>③ Dizi uzasaydı? (aynı çarpanla devam etseydi)</b></div>
+                <div id="mo6Proj" class="rc-card"></div>
+              </div>
+              <div class="step-graph-plot">
+                <canvas id="mo6Canvas" width="300" height="180"></canvas>
+                <div class="step-graph-cap">Çubuklar: kaç adım geriye gittiğimiz (0 = t=3) ve o noktaya ulaşan sinyal (%). İlk 3 çubuk GERÇEK, devamı aynı çarpanla tahmin</div>
+              </div>
+            </div>
+            <div class="callout" id="mo6Learn" style="margin:12px 0 0"></div>
+          </div>
+        </div>
     </div>
     </div>
 <div id="rnnBigPictureM2m" style="display:none">
@@ -6217,15 +6246,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610040030"></script>
-<script src="js/lesson-turev.js?v=202610040030"></script>
-<script src="js/lesson-xor.js?v=202610040030"></script>
-<script src="js/lesson-xor-arch.js?v=202610040030"></script>
-<script src="js/lesson-xor-epoch.js?v=202610040030"></script>
-<script src="js/lesson-nn.js?v=202610040030"></script>
-<script src="js/lesson-trig.js?v=202610040030"></script>
+<script src="js/lesson-linreg.js?v=202610040045"></script>
+<script src="js/lesson-turev.js?v=202610040045"></script>
+<script src="js/lesson-xor.js?v=202610040045"></script>
+<script src="js/lesson-xor-arch.js?v=202610040045"></script>
+<script src="js/lesson-xor-epoch.js?v=202610040045"></script>
+<script src="js/lesson-nn.js?v=202610040045"></script>
+<script src="js/lesson-trig.js?v=202610040045"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610040030"></script>
-<script src="js/app.js?v=202610040030"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610040045"></script>
+<script src="js/app.js?v=202610040045"></script>
 </body>
 </html>
