@@ -556,6 +556,19 @@ olan 3 `r_zh{t}h{t-1}_from` h-kutusu pop-up kaynağı da eklendi.
 **Ders**: kullanıcı "sayı nereden geldi" diyorsa köprü yalnızca SONUCU
 değil, o sonuca giden ZİNCİRİN her halkasını (kaynağıyla) göstermeli.
 
+**RNN köprüleri MathJax'e çevrildi (rnnBridges 2. tur)**: ilk sürüm köprüyü
+`.xp-hes` içinde düz monospace + unicode alt indislerle yazmıştı — kullanıcı
+"XOR'da MathJax var, burada hiç bir şey okunmuyor" dedi. Artık `rnnBridges`
+her satırı gerçek LaTeX (`\\begin{aligned}` + `String.raw` şablonları)
+olarak üretiyor (`.rb-eq`, pop-up açılınca `typesetMath` zaten çalışıyor);
+satır başına tek satır `sembol = yerine konmuş = sonuç` (kalın sonuç),
+tek-kaynaklı yinelenen toplam satırı yolda atlanıyor (yükseklik için),
+yaprakta `\\underbrace` ile adımların toplamı. 190 RNN pop-up kaynağı bir
+geçici div'e koyulup `typesetPromise` ile `mjx-merror` sayıldı (0).
+**Ders**: sayfadaki bir bileşen "XOR'daki gibi" isteniyorsa görsel dili
+(MathJax, aligned, kalın sonuç) de kopyala — monospace metin "aynı bilgi"
+sayılmıyor.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
