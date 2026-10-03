@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610031502"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610031522"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610031502">
+<link rel="stylesheet" href="css/style.css?v=202610031522">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:02 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-03 15:22 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -876,26 +876,26 @@
       <div class="xt-src" id="xtsrc-r_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon problemi olduğu için çıktı aktivasyonu <b>özdeşlik</b> (g₂(z)=z) — sınıflandırmadaki sigmoid/softmax burada yok.</div></div>
       <div class="xt-src" id="xtsrc-r_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek değer arasındaki farkın karesinin yarısı (MSE'nin tek örneklik hâli). <b>Geri yayılım tam buradan başlıyor.</b></div></div>
 
-      <div class="xt-src" id="xtsrc-r_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet) ile: dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div></div>
-      <div class="xt-src" id="xtsrc-r_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) olduğu için türev direkt <b>1</b> — <span class="xp-k">K3</span>'ün en basit hâli (katsayı 1 olan değişken).</div><div class="xp-sat">Zincir kuralıyla: \( \tfrac{\partial L}{\partial z_y}=\tfrac{\partial L}{\partial \hat y}\cdot 1=\hat y-y \). Bu sinyal artık z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div></div>
-      <div class="xt-src" id="xtsrc-r_zyWhy"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial W_{hy}} \) — çıktı ağırlığına göre</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat"><span class="xp-k">K3</span> (sabit×değişken): h₃ burada SABİT (ileri geçişte zaten hesaplandı) → türev h₃.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial W_{hy}}=h_3 \) → gradyan = \( \tfrac{\partial L}{\partial z_y}\cdot h_3 \).</div></div>
-      <div class="xt-src" id="xtsrc-r_zyby"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial b_y}=1 \) — bias'ın türevi neden 1?</div><div class="xp-sat">b<sub>y</sub>'nin "girdisi" hep sabit 1'dir — ağırlıkların h ile çarpıldığı yerde bias 1 ile çarpılır (<span class="xp-k">K3</span>, katsayı 1). Bu yüzden gradyanı doğrudan geri-sinyalin kendisi.</div></div>
-      <div class="xt-src" id="xtsrc-r_zyh3"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial h_3} \) — hata buradan h₃'e akar</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Şimdi h₃'e göre türev alıyoruz — bu sefer <b>W<sub>hy</sub> sabit</b>, h₃ değişken (<span class="xp-k">K3</span>'ün rolleri yer değiştirmiş hâli).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial h_3}=W_{hy} \) → sinyal h₃'e, oradan zamanda geriye devam edecek.</div></div>
+      <div class="xt-src" id="xtsrc-r_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet) ile: dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div><div class="xp-zin" data-zincir="r_Lyhat"></div></div>
+      <div class="xt-src" id="xtsrc-r_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) olduğu için türev direkt <b>1</b> — <span class="xp-k">K3</span>'ün en basit hâli (katsayı 1 olan değişken).</div><div class="xp-sat">Zincir kuralıyla: \( \tfrac{\partial L}{\partial z_y}=\tfrac{\partial L}{\partial \hat y}\cdot 1=\hat y-y \). Bu sinyal artık z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div><div class="xp-zin" data-zincir="r_yhatzy"></div></div>
+      <div class="xt-src" id="xtsrc-r_zyWhy"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial W_{hy}} \) — çıktı ağırlığına göre</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat"><span class="xp-k">K3</span> (sabit×değişken): h₃ burada SABİT (ileri geçişte zaten hesaplandı) → türev h₃.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial W_{hy}}=h_3 \) → gradyan = \( \tfrac{\partial L}{\partial z_y}\cdot h_3 \).</div><div class="xp-zin" data-zincir="r_zyWhy"></div></div>
+      <div class="xt-src" id="xtsrc-r_zyby"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial b_y}=1 \) — bias'ın türevi neden 1?</div><div class="xp-sat">b<sub>y</sub>'nin "girdisi" hep sabit 1'dir — ağırlıkların h ile çarpıldığı yerde bias 1 ile çarpılır (<span class="xp-k">K3</span>, katsayı 1). Bu yüzden gradyanı doğrudan geri-sinyalin kendisi.</div><div class="xp-zin" data-zincir="r_zyby"></div></div>
+      <div class="xt-src" id="xtsrc-r_zyh3"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial h_3} \) — hata buradan h₃'e akar</div><div class="eq">\( z_y=W_{hy}h_3+b_y \)</div><div class="xp-sat">Şimdi h₃'e göre türev alıyoruz — bu sefer <b>W<sub>hy</sub> sabit</b>, h₃ değişken (<span class="xp-k">K3</span>'ün rolleri yer değiştirmiş hâli).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_y}{\partial h_3}=W_{hy} \) → sinyal h₃'e, oradan zamanda geriye devam edecek.</div><div class="xp-zin" data-zincir="r_zyh3"></div></div>
 
-      <div class="xt-src" id="xtsrc-r_h3zh3"><div class="xp-bas">\( \tfrac{\partial h_3}{\partial z_h^{(3)}} \) — tanh'ın türevi</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">tanh'ın türevi: \( \tanh'(z)=1-\tanh^2(z)=1-h^2 \) (limit tanımından çıkan hazır kural, sigmoid'in σ(1−σ)'una denk).</div><div class="xp-son">Sonuç: \( \tfrac{\partial h_3}{\partial z_h^{(3)}}=1-h_3^2 \) — bu çarpan en fazla 1 (h=0'da), h ±1'e yapıştıysa ≈0 olur.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh3Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat"><span class="xp-k">K1</span>+<span class="xp-k">K3</span>: W<sub>xh</sub>'a göre, x₃ sabit katsayı → türev x₃; diğer terimlerde W<sub>xh</sub> yok → 0.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}=x_3 \) — bu SADECE t=3'ün katkısı, t=1,2'nin kendi katkıları ayrı yapraklarda.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh3Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{hh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Aynı kalıp, bu sefer W<sub>hh</sub>'ye göre: h₂ burada SABİT (ileri geçişte zaten hesaplanmış bir sayı) → türev h₂.</div><div class="xp-sat">⚠️ Bu, W<sub>hh</sub>'nin SADECE t=3'teki katkısı — aynı ağırlık t=1,2'de de kullanıldığı için oralarda da ayrı birer yaprağı var, gerçek gradyan üçünün toplamı.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh3bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial b_h}=1 \)</div><div class="xp-sat">Yine bias'ın sabit-1-girdisi kuralı (<span class="xp-k">K3</span>) — bu da sadece t=3'ün katkısı.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh3h2"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial h_2} \) — BPTT'nin kalbi</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">h₂'ye göre türev: W<sub>hh</sub> sabit katsayı → türev W<sub>hh</sub> (<span class="xp-k">K3</span>, roller yine yer değiştirdi).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial h_2}=W_{hh} \) — sinyal tam burada bir adım GERİYE, t=2'ye sıçrıyor. "Backpropagation Through TIME" adının geldiği yer: aynı zincir kuralı, ama zaman ekseninde.</div></div>
-      <div class="xt-src" id="xtsrc-r_h2zh2"><div class="xp-bas">\( \tfrac{\partial h_2}{\partial z_h^{(2)}}=1-h_2^2 \)</div><div class="xp-sat">t=3'teki ile BİREBİR aynı kural — tanh'ın türevi, sadece zaman indeksi değişti.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh2Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{xh}}\Big|_{t=2}=x_2 \)</div><div class="xp-sat">t=3'teki ile aynı kalıp (<span class="xp-k">K3</span>), bu kez x₂ ile — W<sub>xh</sub>'nin t=2'deki katkısı.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh2Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{hh}}\Big|_{t=2}=h_1 \)</div><div class="xp-sat">Aynı kalıp, bu kez h₁ ile (ileri geçişte zaten hesaplanmış) — W<sub>hh</sub>'nin t=2'deki katkısı.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh2bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial b_h}\Big|_{t=2}=1 \)</div><div class="xp-sat">b<sub>h</sub>'nin t=2'deki katkısı — yine sabit-1-girdisi kuralı.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh2h1"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial h_1}=W_{hh} \) — bir adım daha geri</div><div class="xp-sat">Aynı BPTT sıçraması, bu kez t=2'den t=1'e. Sinyal her sıçrayışta bir W<sub>hh</sub> ve bir (1−h²) ile çarpılıyor — vanishing/exploding gradient tam bu tekrar eden çarpımdan doğuyor (aşağıdaki kırmızı kutuya bak).</div></div>
-      <div class="xt-src" id="xtsrc-r_h1zh1"><div class="xp-bas">\( \tfrac{\partial h_1}{\partial z_h^{(1)}}=1-h_1^2 \)</div><div class="xp-sat">Zincirin son tanh türevi — aynı kural, t=1.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh1Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{xh}}\Big|_{t=1}=x_1 \)</div><div class="xp-sat">W<sub>xh</sub>'nin t=1'deki katkısı — üç yapraktan sonuncusu. Gerçek \( \partial L/\partial W_{xh} \) = t=1,2,3'ün üçü toplanarak bulunur.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh1Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{hh}}\Big|_{t=1}=h_0 \)</div><div class="xp-sat">Burada h₀=0 olduğu için bu yaprak her zaman <b>0</b> çıkar — dizinin başlangıcından ÖNCESİ olmadığı için W<sub>hh</sub>'nin t=1'deki katkısı otomatik sıfırlanıyor.</div></div>
-      <div class="xt-src" id="xtsrc-r_zh1bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial b_h}\Big|_{t=1}=1 \)</div><div class="xp-sat">Zincirin son bias yaprağı — b<sub>h</sub>'nin t=1'deki katkısı. Bu dalda daha geri gidecek bir h yok (h₀ eğitilebilir bir parametre değil), zincir burada bitiyor.</div></div>
+      <div class="xt-src" id="xtsrc-r_h3zh3"><div class="xp-bas">\( \tfrac{\partial h_3}{\partial z_h^{(3)}} \) — tanh'ın türevi</div><div class="eq">\( h_3=\tanh(z_h^{(3)}) \)</div><div class="xp-sat">tanh'ın türevi: \( \tanh'(z)=1-\tanh^2(z)=1-h^2 \) (limit tanımından çıkan hazır kural, sigmoid'in σ(1−σ)'una denk).</div><div class="xp-son">Sonuç: \( \tfrac{\partial h_3}{\partial z_h^{(3)}}=1-h_3^2 \) — bu çarpan en fazla 1 (h=0'da), h ±1'e yapıştıysa ≈0 olur.</div><div class="xp-zin" data-zincir="r_h3zh3"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh3Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat"><span class="xp-k">K1</span>+<span class="xp-k">K3</span>: W<sub>xh</sub>'a göre, x₃ sabit katsayı → türev x₃; diğer terimlerde W<sub>xh</sub> yok → 0.</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial W_{xh}}=x_3 \) — bu SADECE t=3'ün katkısı, t=1,2'nin kendi katkıları ayrı yapraklarda.</div><div class="xp-zin" data-zincir="r_zh3Wxh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh3Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial W_{hh}}\Big|_{t=3} \)</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">Aynı kalıp, bu sefer W<sub>hh</sub>'ye göre: h₂ burada SABİT (ileri geçişte zaten hesaplanmış bir sayı) → türev h₂.</div><div class="xp-sat">⚠️ Bu, W<sub>hh</sub>'nin SADECE t=3'teki katkısı — aynı ağırlık t=1,2'de de kullanıldığı için oralarda da ayrı birer yaprağı var, gerçek gradyan üçünün toplamı.</div><div class="xp-zin" data-zincir="r_zh3Whh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh3bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial b_h}=1 \)</div><div class="xp-sat">Yine bias'ın sabit-1-girdisi kuralı (<span class="xp-k">K3</span>) — bu da sadece t=3'ün katkısı.</div><div class="xp-zin" data-zincir="r_zh3bh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh3h2"><div class="xp-bas">\( \tfrac{\partial z_h^{(3)}}{\partial h_2} \) — BPTT'nin kalbi</div><div class="eq">\( z_h^{(3)}=W_{xh}x_3+W_{hh}h_2+b_h \)</div><div class="xp-sat">h₂'ye göre türev: W<sub>hh</sub> sabit katsayı → türev W<sub>hh</sub> (<span class="xp-k">K3</span>, roller yine yer değiştirdi).</div><div class="xp-son">Sonuç: \( \tfrac{\partial z_h^{(3)}}{\partial h_2}=W_{hh} \) — sinyal tam burada bir adım GERİYE, t=2'ye sıçrıyor. "Backpropagation Through TIME" adının geldiği yer: aynı zincir kuralı, ama zaman ekseninde.</div><div class="xp-zin" data-zincir="r_zh3h2"></div></div>
+      <div class="xt-src" id="xtsrc-r_h2zh2"><div class="xp-bas">\( \tfrac{\partial h_2}{\partial z_h^{(2)}}=1-h_2^2 \)</div><div class="xp-sat">t=3'teki ile BİREBİR aynı kural — tanh'ın türevi, sadece zaman indeksi değişti.</div><div class="xp-zin" data-zincir="r_h2zh2"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{xh}}\Big|_{t=2}=x_2 \)</div><div class="xp-sat">t=3'teki ile aynı kalıp (<span class="xp-k">K3</span>), bu kez x₂ ile — W<sub>xh</sub>'nin t=2'deki katkısı.</div><div class="xp-zin" data-zincir="r_zh2Wxh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial W_{hh}}\Big|_{t=2}=h_1 \)</div><div class="xp-sat">Aynı kalıp, bu kez h₁ ile (ileri geçişte zaten hesaplanmış) — W<sub>hh</sub>'nin t=2'deki katkısı.</div><div class="xp-zin" data-zincir="r_zh2Whh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial b_h}\Big|_{t=2}=1 \)</div><div class="xp-sat">b<sub>h</sub>'nin t=2'deki katkısı — yine sabit-1-girdisi kuralı.</div><div class="xp-zin" data-zincir="r_zh2bh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh2h1"><div class="xp-bas">\( \tfrac{\partial z_h^{(2)}}{\partial h_1}=W_{hh} \) — bir adım daha geri</div><div class="xp-sat">Aynı BPTT sıçraması, bu kez t=2'den t=1'e. Sinyal her sıçrayışta bir W<sub>hh</sub> ve bir (1−h²) ile çarpılıyor — vanishing/exploding gradient tam bu tekrar eden çarpımdan doğuyor (aşağıdaki kırmızı kutuya bak).</div><div class="xp-zin" data-zincir="r_zh2h1"></div></div>
+      <div class="xt-src" id="xtsrc-r_h1zh1"><div class="xp-bas">\( \tfrac{\partial h_1}{\partial z_h^{(1)}}=1-h_1^2 \)</div><div class="xp-sat">Zincirin son tanh türevi — aynı kural, t=1.</div><div class="xp-zin" data-zincir="r_h1zh1"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh1Wxh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{xh}}\Big|_{t=1}=x_1 \)</div><div class="xp-sat">W<sub>xh</sub>'nin t=1'deki katkısı — üç yapraktan sonuncusu. Gerçek \( \partial L/\partial W_{xh} \) = t=1,2,3'ün üçü toplanarak bulunur.</div><div class="xp-zin" data-zincir="r_zh1Wxh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh1Whh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial W_{hh}}\Big|_{t=1}=h_0 \)</div><div class="xp-sat">Burada h₀=0 olduğu için bu yaprak her zaman <b>0</b> çıkar — dizinin başlangıcından ÖNCESİ olmadığı için W<sub>hh</sub>'nin t=1'deki katkısı otomatik sıfırlanıyor.</div><div class="xp-zin" data-zincir="r_zh1Whh"></div></div>
+      <div class="xt-src" id="xtsrc-r_zh1bh"><div class="xp-bas">\( \tfrac{\partial z_h^{(1)}}{\partial b_h}\Big|_{t=1}=1 \)</div><div class="xp-sat">Zincirin son bias yaprağı — b<sub>h</sub>'nin t=1'deki katkısı. Bu dalda daha geri gidecek bir h yok (h₀ eğitilebilir bir parametre değil), zincir burada bitiyor.</div><div class="xp-zin" data-zincir="r_zh1bh"></div></div>
 
       </div>
       </div>
@@ -5964,15 +5964,15 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610031502"></script>
-<script src="js/lesson-turev.js?v=202610031502"></script>
-<script src="js/lesson-xor.js?v=202610031502"></script>
-<script src="js/lesson-xor-arch.js?v=202610031502"></script>
-<script src="js/lesson-xor-epoch.js?v=202610031502"></script>
-<script src="js/lesson-nn.js?v=202610031502"></script>
-<script src="js/lesson-trig.js?v=202610031502"></script>
+<script src="js/lesson-linreg.js?v=202610031522"></script>
+<script src="js/lesson-turev.js?v=202610031522"></script>
+<script src="js/lesson-xor.js?v=202610031522"></script>
+<script src="js/lesson-xor-arch.js?v=202610031522"></script>
+<script src="js/lesson-xor-epoch.js?v=202610031522"></script>
+<script src="js/lesson-nn.js?v=202610031522"></script>
+<script src="js/lesson-trig.js?v=202610031522"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610031502"></script>
-<script src="js/app.js?v=202610031502"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610031522"></script>
+<script src="js/app.js?v=202610031522"></script>
 </body>
 </html>
