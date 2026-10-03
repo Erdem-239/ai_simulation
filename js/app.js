@@ -1056,7 +1056,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       function pathDelta(t){ return pathH(t).concat([rDelta(t)]); }
       const box=(path,localRows,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b>'+eqn(path.map(row)):'')
         +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b>'+localRows;
-      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{ e.innerHTML=html; }); };
+      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
+        e.innerHTML=html;
+        /* pop-up AÇIKKEN (ör. kaydırıcıyı oynatırken) içindeki klon da güncellenir — yeni ham LaTeX'i yeniden typeset et */
+        if(e.closest('#xtPop') && window.MathJax && MathJax.typesetPromise){ try{ MathJax.typesetClear&&MathJax.typesetClear([e]); }catch(_){} MathJax.typesetPromise([e]).catch(()=>{}); }
+      }); };
       function sumBlock(ad,a,filter,cur){
         const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
         if(ts.length<=1) return '<div class="xp-sat">Bu ağırlık <b>sadece bir adımda</b> kullanıldı → bu yaprak doğrudan <b>gerçek gradyan</b> = '+f(a[cur])+'</div>';
@@ -1805,6 +1809,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';
+      { const ti=document.getElementById('rcTekInputs'); if(ti) ti.style.display=(rt==='tek')?'':'none'; }
       if(bigPictureO2m) bigPictureO2m.style.display = (rt==='o2m') ? 'block' : 'none';
       if(bigPictureDec) bigPictureDec.style.display = (rt==='dec') ? 'block' : 'none';
     });
