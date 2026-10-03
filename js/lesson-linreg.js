@@ -349,6 +349,12 @@
       pop.hidden = false;
       aktif = el; el.classList.add('acik');
       yerlestir(el);
+      /* Kaynak, canlı köprüler (render() her kaydırıcı hareketinde .xp-zin içine HAM LaTeX yazar) yüzünden
+         typeset edilmemiş olabilir — açılırken içinde ham \( ... \) kaldıysa şimdi diz, sonra yeniden konumla. */
+      if(window.MathJax && MathJax.typesetPromise && pop.textContent.indexOf('\\(') !== -1){
+        try{ MathJax.typesetClear && MathJax.typesetClear([pop]); }catch(_){}
+        MathJax.typesetPromise([pop]).then(() => { if(aktif === el) yerlestir(el); }).catch(() => {});
+      }
     }
 
     document.addEventListener('mouseover', e => {
