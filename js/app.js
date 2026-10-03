@@ -77,7 +77,7 @@
     for(let i=0;i<3;i++){
       const n=i+1, prev=(n===1?'h₀':'h'+SUB[i-1]);
       const base='h'+SUB[i]+' = tanh( ';
-      const zEq='ruFeq'+(2*i+1), hEq='ruFeq'+(2*i+2);
+      const zEq='rfzh'+n, hEq='rfh'+n;
       const narrAA = n===1
         ? `Birinci zaman adımındayız. Gizli katmanın ham toplamını (z<sub>h</sub>) kurmaya başlıyoruz — önceki hafızamız h₀'ı W<sub>hh</sub> ile çarpıyoruz. h₀ sıfır olduğu için bu çarpım da sıfır; dizinin en başında geçmişten gelen bir katkı yok.`
         : n===2
@@ -93,9 +93,9 @@
       fSteps.push({hl:['g1_'+n], f:hist+doneLine, i:narrG1, eq:[hEq]});
       hist+=doneLine+'<br>';
     }
-    fSteps.push({hl:['mul_ya'], f:hist+`z<sub>y</sub> = <b>W<sub>hy</sub>·h₃</b> <span style="color:var(--muted); font-size:11.5px">(sadece t=3'te)</span>`, i:`Şimdi hafızadan çıktıya geçiyoruz. h₃'ü W<sub>hy</sub> ile çarpıyoruz.`, eq:['ruFeq7']});
-    fSteps.push({hl:['add_y'],  f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + <b>b<sub>y</sub></b>', i:`b<sub>y</sub>'yi ekliyoruz — z<sub>y</sub> tamam. Dikkat: bu satır SADECE t=3'te var, many-to-one'da ara adımların kendi çıktısı yok.`, eq:['ruFeq7']});
-    fSteps.push({hl:['io-y'],   f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + b<sub>y</sub> &nbsp;→&nbsp; ŷ = z<sub>y</sub> &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>', i:`Regresyon olduğu için ŷ = z<sub>y</sub>, ekstra dönüşüm yok. ŷ ile gerçek y arasındaki farkın karesinin yarısını alırsak kaybımız L'yi buluruz. İleri yayılım bitti — sıra bu kaybı ağırlıklara geri yaymakta.`, eq:['ruFeq8','ruFeq9']});
+    fSteps.push({hl:['mul_ya'], f:hist+`z<sub>y</sub> = <b>W<sub>hy</sub>·h₃</b> <span style="color:var(--muted); font-size:11.5px">(sadece t=3'te)</span>`, i:`Şimdi hafızadan çıktıya geçiyoruz. h₃'ü W<sub>hy</sub> ile çarpıyoruz.`, eq:['rfzy']});
+    fSteps.push({hl:['add_y'],  f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + <b>b<sub>y</sub></b>', i:`b<sub>y</sub>'yi ekliyoruz — z<sub>y</sub> tamam. Dikkat: bu satır SADECE t=3'te var, many-to-one'da ara adımların kendi çıktısı yok.`, eq:['rfzy']});
+    fSteps.push({hl:['io-y'],   f:hist+'z<sub>y</sub> = W<sub>hy</sub>·h₃ + b<sub>y</sub> &nbsp;→&nbsp; ŷ = z<sub>y</sub> &nbsp;<b style="color:#e06a6a">✓ Tamamlandı!</b>', i:`Regresyon olduğu için ŷ = z<sub>y</sub>, ekstra dönüşüm yok. ŷ ile gerçek y arasındaki farkın karesinin yarısını alırsak kaybımız L'yi buluruz. İleri yayılım bitti — sıra bu kaybı ağırlıklara geri yaymakta.`, eq:['rfyhat','rfL']});
 
     /* ---- Geri yayılım (BPTT) adımları: çıktıdan başla, 3 hücre boyunca geriye ---- */
     const glOut=[
@@ -104,14 +104,14 @@
       '∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃ &nbsp;→&nbsp; ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub>'
     ];
     const bSteps=[
-      {hl:['io-y'],    f:bfJoin(glOut,0), i:`Geri yayılıma başlıyoruz. Kaybın çıktı katmanına, z<sub>y</sub>'ye olan türevine bakıyoruz: ∂L/∂z<sub>y</sub> = (ŷ−y) — tahminle gerçek değer arasındaki fark.`, eq:['ruBeq1']},
-      {hl:['add_y'],   f:bfJoin(glOut,1), i:`Bu sinyal + işleminden geriye kopyalanır: ∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>.`, eq:['ruBeq1']},
-      {hl:['mul_ya'],  f:bfJoin(glOut,2), i:`× işleminden geri: ∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃; aynı sinyal h₃'e de akar: ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub>.`, eq:['ruBeq1']}
+      {hl:['io-y'],    f:bfJoin(glOut,0), i:`Geri yayılıma başlıyoruz. Kaybın çıktı katmanına, z<sub>y</sub>'ye olan türevine bakıyoruz: ∂L/∂z<sub>y</sub> = (ŷ−y) — tahminle gerçek değer arasındaki fark.`, eq:['rtzy']},
+      {hl:['add_y'],   f:bfJoin(glOut,1), i:`Bu sinyal + işleminden geriye kopyalanır: ∂L/∂b<sub>y</sub> = ∂L/∂z<sub>y</sub>.`, eq:['rtby']},
+      {hl:['mul_ya'],  f:bfJoin(glOut,2), i:`× işleminden geri: ∂L/∂W<sub>hy</sub> = ∂L/∂z<sub>y</sub>·h₃; aynı sinyal h₃'e de akar: ∂L/∂h₃ = ∂L/∂z<sub>y</sub>·W<sub>hy</sub>.`, eq:['rtWhy','rth3']}
     ];
     let bhist=glOut.join('<br>')+'<br>';
     for(let i=2;i>=0;i--){
       const n=i+1, prev=(n===1?'h₀':'h'+SUB[i-1]);
-      const base=(2-i)*3, zhEq='ruBeq'+(base+1), wxhEq='ruBeq'+(base+2), whhEq='ruBeq'+(base+3);
+      const zhEq='rtzh'+n, wxhEq='rtWxh'+n, whhEq='rtWhh'+n, bhEq='rtbh'+n;
       const dh = n===3 ? '∂L/∂h₃' : ('∂L/∂h'+SUB[i]+' (BPTT ile bir önceki geri adımdan geldi)');
       const lines=[
         'tanh geri (t='+n+'): ∂L/∂z<sub>h</sub><sup>('+n+')</sup> = '+dh+' × (1−h'+SUB[i]+'²)',
@@ -123,14 +123,14 @@
         ? `tanh'tan geri dönerken (1−h₃²) ile çarpıyoruz — işte z<sub>h</sub><sup>(3)</sup>'e ulaşan asıl sinyal.`
         : `Bir adım daha geriye, t=${n}'e geçtik. z<sub>h</sub><sup>(${n+1})</sup>'ten gelen sinyali W<sub>hh</sub> ile çarpıp (1−h${SUB[i]}²) ile tanh'ın türevinden geçiriyoruz. Dikkat: bu artık kendi çıktısından değil, GELECEKTEN (t=${n+1}'ten) gelen bir sinyal — many-to-one'da ara adımların tek kaynağı bu; BPTT'nin kalbi tam burada.`;
       bSteps.push({hl:['g1_'+n],    f:bhist+bfJoin(lines,0), i:narrTanh, eq:[zhEq]});
-      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,1), i:`+ işleminden kopyalanır: ∂L/∂b<sub>h</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>.`, eq:[zhEq]});
+      bSteps.push({hl:['add_a_'+n], f:bhist+bfJoin(lines,1), i:`+ işleminden kopyalanır: ∂L/∂b<sub>h</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>.`, eq:[bhEq]});
       bSteps.push({hl:['mul_aa_'+n].concat(n===1?['io-a0']:[]), f:bhist+bfJoin(lines,2), i:n>1
           ? `× işleminden geri: ∂L/∂W<sub>hh</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>·${prev}; aynı sinyal ${prev}'e de akıp t=${n-1}'e taşınacak — BPTT'nin kalbi.`
-          : `× işleminden geri: ∂L/∂W<sub>hh</sub>|<sub>t=1</sub> = ∂L/∂z<sub>h</sub><sup>(1)</sup>·h₀; h₀ sıfır olduğu için bu katkı otomatik sıfır — dizinin başlangıcından öncesi yok.`, eq:[whhEq]});
+          : `× işleminden geri: ∂L/∂W<sub>hh</sub>|<sub>t=1</sub> = ∂L/∂z<sub>h</sub><sup>(1)</sup>·h₀; h₀ sıfır olduğu için bu katkı otomatik sıfır — dizinin başlangıcından öncesi yok.`, eq:n>1?[whhEq,'rth'+(n-1)]:[whhEq]});
       bSteps.push({hl:['mul_ax_'+n], f:bhist+bfJoin(lines,3), i:`× işleminden geri: ∂L/∂W<sub>xh</sub>|<sub>t=${n}</sub> = ∂L/∂z<sub>h</sub><sup>(${n})</sup>·x${SUB[i]}.`, eq:[wxhEq]});
       bhist+=lines.join('<br>')+'<br>';
     }
-    bSteps.push({hl:['io-a0'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — şimdi t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de (Geri Adım 5).</b>`, i:`Bitti! Şimdi elimizde t=1,2,3'ün AYRI katkıları var. Ama aynı ağırlık her adımda kullanıldığı için gerçek gradyan bunların TOPLAMI — vanishing/exploding gradient tam burada, W<sub>hh</sub>·tanh′ tekrar tekrar çarpıldığı için ortaya çıkıyor.`, eq:['ruTotal']});
+    bSteps.push({hl:['io-a0'], f:bhist+`<b style="color:#46c46a">✓ Tamamlandı — şimdi t=1,2,3'ün W<sub>hh</sub> katkılarını TOPLA → gerçek ∂L/∂W<sub>hh</sub>. Aynısı W<sub>xh</sub>, b<sub>h</sub> için de (Geri Adım 5).</b>`, i:`Bitti! Şimdi elimizde t=1,2,3'ün AYRI katkıları var. Ama aynı ağırlık her adımda kullanıldığı için gerçek gradyan bunların TOPLAMI — vanishing/exploding gradient tam burada, W<sub>hh</sub>·tanh′ tekrar tekrar çarpıldığı için ortaya çıkıyor.`, eq:['rtTotal']});
 
     return {ci, fSteps, bSteps};
   }
@@ -276,9 +276,12 @@
     document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
     if(st.eq && st.eq.length){
       st.eq.forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add(eqCls); });
-      const accId = eqCls==='eq-hl-f' ? 'ruFwdAcc' : 'ruBwdAcc';
-      const acc=document.getElementById(accId);
-      if(acc && !acc.classList.contains('open')) acc.classList.add('open');
+      // st.eq artık "5️⃣ Bütün Resim" ağacındaki (.xf-box/.xt-box) kutuları işaret
+      // ediyor — o dış tpl-cl kapalıysa vurgu görünmez, bu yüzden onu da aç.
+      const bpHead=document.getElementById('rnnBigPictureHead');
+      const bpBody=document.getElementById('rnnBigPictureBody');
+      if(bpHead) bpHead.classList.remove('closed');
+      if(bpBody) bpBody.classList.remove('closed');
     }
   }
   function ensure(m){ if(playMode!==m){ clr(); cstep=0; playMode=m; } }
@@ -924,7 +927,7 @@
     }
 
     /* ---- ileri seviye: gerçek 3 zaman adımlı BPTT (unrolling) ---- */
-    if($('ruFwd')){
+    if($('rfzh1')){
       const rx1=parseFloat($('ru_x1').value), rx2=parseFloat($('ru_x2').value), rx3=parseFloat($('ru_x3').value), ry=parseFloat($('ru_y').value);
       const rh0=0;
       const rz1=p.Wxh*rx1 + p.Whh*rh0 + p.b; const rh1=Math.tanh(rz1);
@@ -933,15 +936,12 @@
       const ryhat=p.Why*rh3 + p.by;
       const rL=0.5*(ryhat-ry)*(ryhat-ry);
 
-      setTxt('ruZ1sub', '('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)); setTxt('ruZ1val', F(rz1));
-      setTxt('ruF1sub', 'tanh('+F(rz1)+')'); setTxt('ruF1val', F(rh1));
-      setTxt('ruZ2sub', '('+F(p.Wxh,2)+')('+F(rx2,2)+') + ('+F(p.Whh,2)+')('+F(rh1)+') + '+F(p.b,2)); setTxt('ruZ2val', F(rz2));
-      setTxt('ruF2sub', 'tanh('+F(rz2)+')'); setTxt('ruF2val', F(rh2));
-      setTxt('ruZ3sub', '('+F(p.Wxh,2)+')('+F(rx3,2)+') + ('+F(p.Whh,2)+')('+F(rh2)+') + '+F(p.b,2)); setTxt('ruZ3val', F(rz3));
-      setTxt('ruF3sub', 'tanh('+F(rz3)+')'); setTxt('ruF3val', F(rh3));
-      setTxt('ruZysub', '('+F(p.Why,2)+')('+F(rh3)+') + '+F(p.by,2)); setTxt('ruZyval', F(ryhat));
-      setTxt('ruFyval', F(ryhat));
-      setTxt('ruFLsub', '½('+F(ryhat)+' − '+F(ry,2)+')²'); setTxt('ruFLval', F(rL));
+      /* "5️⃣ Bütün Resim" — ileri yol (.xf-*) akışının canlı değerleri */
+      setTxt('rfx1', F(rx1,2)); setTxt('rfx2', F(rx2,2)); setTxt('rfx3', F(rx3,2));
+      setTxt('rfzh1v', F(rz1)); setTxt('rfh1v', F(rh1));
+      setTxt('rfzh2v', F(rz2)); setTxt('rfh2v', F(rh2));
+      setTxt('rfzh3v', F(rz3)); setTxt('rfh3v', F(rh3));
+      setTxt('rfzyv', F(ryhat)); setTxt('rfyhatv', F(ryhat)); setTxt('rfLv', F(rL));
 
       const rdyhat=ryhat-ry;
       const rdh3=rdyhat*p.Why, rdz3=rdh3*(1-rh3*rh3);
@@ -951,30 +951,32 @@
       const dWxh3=rdz3*rx3, dWhh3=rdz3*rh2, db3=rdz3;
       const dWxh2=rdz2*rx2, dWhh2=rdz2*rh1, db2=rdz2;
       const dWxh1=rdz1*rx1, dWhh1=rdz1*rh0, db1=rdz1;
+      const ruDWhy=rdyhat*rh3, ruDby=rdyhat;
 
-      setTxt('ruB3sub', '[('+F(rdyhat)+')('+F(p.Why,2)+')](1 − '+F(rh3*rh3)+')'); setTxt('ruB3val', F(rdz3));
-      setTxt('ruB3xsub', '('+F(rdz3)+')('+F(rx3,2)+')'); setTxt('ruB3xval', F(dWxh3));
-      setTxt('ruB3hsub', '('+F(rdz3)+')('+F(rh2)+')'); setTxt('ruB3hval', F(dWhh3));
-      setTxt('ruB2sub', '('+F(rdz3)+')('+F(p.Whh,2)+')(1 − '+F(rh2*rh2)+')'); setTxt('ruB2val', F(rdz2));
-      setTxt('ruB2xsub', '('+F(rdz2)+')('+F(rx2,2)+')'); setTxt('ruB2xval', F(dWxh2));
-      setTxt('ruB2hsub', '('+F(rdz2)+')('+F(rh1)+')'); setTxt('ruB2hval', F(dWhh2));
-      setTxt('ruB1sub', '('+F(rdz2)+')('+F(p.Whh,2)+')(1 − '+F(rh1*rh1)+')'); setTxt('ruB1val', F(rdz1));
-      setTxt('ruB1xsub', '('+F(rdz1)+')('+F(rx1,2)+')'); setTxt('ruB1xval', F(dWxh1));
-      setTxt('ruB1hsub', '('+F(rdz1)+')('+F(rh0,2)+')'); setTxt('ruB1hval', F(dWhh1));
+      /* "5️⃣ Bütün Resim" — geri yayılım ağacının (.xt-*) canlı değerleri */
+      setTxt('rtLv', F(rL)); setTxt('rtyhatv', F(ryhat)); setTxt('rtzyv', F(rdyhat));
+      setTxt('rtWhyv', F(ruDWhy)); setTxt('rtbyv', F(ruDby));
+      setTxt('rth3v', F(rh3)); setTxt('rtzh3v', F(rdz3));
+      setTxt('rtWxh3v', F(dWxh3)); setTxt('rtWhh3v', F(dWhh3)); setTxt('rtbh3v', F(db3));
+      setTxt('rth2v', F(rh2)); setTxt('rtzh2v', F(rdz2));
+      setTxt('rtWxh2v', F(dWxh2)); setTxt('rtWhh2v', F(dWhh2)); setTxt('rtbh2v', F(db2));
+      setTxt('rth1v', F(rh1)); setTxt('rtzh1v', F(rdz1));
+      setTxt('rtWxh1v', F(dWxh1)); setTxt('rtWhh1v', F(dWhh1)); setTxt('rtbh1v', F(db1));
 
       const totWxh=dWxh1+dWxh2+dWxh3, totWhh=dWhh1+dWhh2+dWhh3, totBh=db1+db2+db3;
-      $('ruTotal').innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):'
-        + '<div style="margin-top:4px">∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b> <button class="dt-btn" data-dt="dLdWxhTot">🌳</button></div><div class="dt-tree"></div>'
-        + '<div>∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b> <button class="dt-btn" data-dt="dLdWhhTot">🌳</button></div><div class="dt-tree"></div>'
-        + '<div>∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b> <button class="dt-btn" data-dt="dLdbhTot">🌳</button></div><div class="dt-tree"></div>';
+      const rtTotalEl=$('rtTotal');
+      if(rtTotalEl) rtTotalEl.innerHTML = '✅ <b>Gerçek toplam</b> (3 adımın gerçek katkılarının toplamı — yaklaşık değil):'
+        + '<div style="margin-top:4px">∂L/∂W<sub>xh</sub> = '+F(dWxh1)+' + '+F(dWxh2)+' + '+F(dWxh3)+' = <b style="color:var(--accent)">'+F(totWxh)+'</b></div>'
+        + '<div>∂L/∂W<sub>hh</sub> = '+F(dWhh1)+' + '+F(dWhh2)+' + '+F(dWhh3)+' = <b style="color:var(--accent)">'+F(totWhh)+'</b></div>'
+        + '<div>∂L/∂b<sub>h</sub> = '+F(db1)+' + '+F(db2)+' + '+F(db3)+' = <b style="color:var(--accent)">'+F(totBh)+'</b></div>'
+        + '<div style="margin-top:6px">∂L/∂W<sub>hy</sub> = <b style="color:var(--accent)">'+F(ruDWhy)+'</b> &nbsp;·&nbsp; ∂L/∂b<sub>y</sub> = <b style="color:var(--accent)">'+F(ruDby)+'</b> <span style="color:var(--muted); font-size:11.5px">(bunlar sadece t=3\'te oluştuğu için toplama girmiyor)</span></div>';
 
       const r32=rdz3!==0 ? rdz2/rdz3 : 0;
       const r21=rdz2!==0 ? rdz1/rdz2 : 0;
-      setTxt('ruR32', F(r32));
-      setTxt('ruR21', F(r21));
+      setTxt('rtR32', F(r32));
+      setTxt('rtR21', F(r21));
 
       /* ---- Geri Adım 1-5 kartları (many-to-one standardı, Tek Hücre/many-to-many ile aynı kalıp) — yukarıdaki değerlerin aynısı, sadece yeniden gruplanmış ---- */
-      const ruDWhy=rdyhat*rh3, ruDby=rdyhat;
       setTxt('mo1sub', '('+F(ryhat)+' − '+F(ry,2)+')'); setTxt('mo1val', F(rdyhat));
       setTxt('mo2wsub', '('+F(rdyhat)+')('+F(rh3)+')'); setTxt('mo2wval', F(ruDWhy));
       setTxt('mo2bval', F(ruDby));
@@ -1225,27 +1227,14 @@
   if(!btns.length) return;
   const rnnTypeTek=document.getElementById('rnnTypeTek');
   const rnnFwdCols=document.getElementById('rnnFwdCols');
-  const rnnFcLeft=document.getElementById('rnnFcLeft');
-  const rnnColResizer=document.getElementById('rnnColResizer');
   const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
   const gAdimSectionM2o=document.getElementById('gAdimSectionM2o');
   const typeNote=document.getElementById('rnnTypeNote');
-  let curRt='tek';
-  let moOldViewOpen=false;
-  function updateFcLeftVisibility(){
-    const showOld = curRt==='m2o' && moOldViewOpen;
-    if(rnnFcLeft) rnnFcLeft.style.display = showOld ? 'flex' : 'none';
-    if(rnnColResizer) rnnColResizer.style.display = showOld ? 'block' : 'none';
-    if(rnnFwdCols) rnnFwdCols.classList.toggle('rfc-diagram-only', curRt!=='tek' && !showOld);
-  }
-  window.__rnnToggleMoOldView = function(btn){
-    moOldViewOpen = !moOldViewOpen;
-    updateFcLeftVisibility();
-    if(btn){
-      btn.classList.toggle('on', moOldViewOpen);
-      btn.textContent = moOldViewOpen ? '✕ Detaylı görünümü kapat' : '🔍 Detaylı / filtrelenebilir görünüm';
-    }
-  };
+  // "5️⃣ Bütün Resim" (eski adıyla rnn-fc-left/.ru-acc-row) artık Simülasyon'dan
+  // çıkarılıp kendi aşamasına taşındı — sadece many-to-one'da içerik var,
+  // diğer mimarilerde kısa bir not gösteriliyor (bkz. index.html).
+  const bigPictureM2o=document.getElementById('rnnBigPictureM2o');
+  const bigPictureNote=document.getElementById('rnnBigPictureNote');
   const typeNoteHtml={
     tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
@@ -1256,15 +1245,14 @@
       btns.forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       const rt=b.dataset.rt;
-      curRt=rt;
       if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
       if(rnnFwdCols) rnnFwdCols.style.display = (rt==='tek') ? 'none' : 'flex';
       if(rt!=='tek' && window.__rnnCellSetMode) window.__rnnCellSetMode(rt);
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
       if(gAdimSectionM2m) gAdimSectionM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(gAdimSectionM2o) gAdimSectionM2o.style.display = (rt==='m2o') ? 'block' : 'none';
-      // her mimarinin kendi "Geri Adım 1-5" kart standardı var; eski filtrelenebilir İleri+Geri Yayılım hesap defteri many-to-one'da kaldırılmadı, moOldViewToggle ile açılabilir
-      updateFcLeftVisibility();
+      if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
+      if(bigPictureNote) bigPictureNote.style.display = (rt==='m2o') ? 'none' : 'block';
     });
   });
 })();
@@ -1299,15 +1287,6 @@
     i=(i+1)%(steps.length+1);
     if(i===steps.length) i=-1;
     highlight();
-  });
-})();
-
-/* ---- many-to-one: eski filtrelenebilir İleri+Geri Yayılım hesap defteri artık kapalı başlıyor, bu butonla açılıp kapanıyor (silinmedi) ---- */
-(function(){
-  const btn=document.getElementById('moOldViewToggle');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    if(window.__rnnToggleMoOldView) window.__rnnToggleMoOldView(btn);
   });
 })();
 
@@ -2840,25 +2819,6 @@
   rs.addEventListener('pointerdown',e=>{ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
   rs.addEventListener('pointermove',e=>{ if(!drag) return; w=Math.max(150, Math.min(420, sw+(e.clientX-sx))); root.style.setProperty('--sbw', w+'px'); });
   rs.addEventListener('pointerup',()=>{ drag=false; rs.classList.remove('on'); try{ localStorage.setItem('attn_sbw', String(w)); }catch(e){} });
-})();
-
-/* ---- RNN 1. bölüm: sim/kartlar sütun genişliği sürüklenebilir ---- */
-(function(){
-  const rs=document.getElementById('rnnColResizer'); const cols=document.getElementById('rnnFwdCols'); if(!rs||!cols) return;
-  const root=document.documentElement;
-  let w=540;
-  try{ const s=parseInt(localStorage.getItem('attn_rnn_simw')||'',10); if(s>=300&&s<=950) w=s; }catch(e){}
-  root.style.setProperty('--rnn-simw', w+'px');
-  let drag=false, sx=0, sw=0;
-  rs.addEventListener('pointerdown',e=>{ drag=true; sx=e.clientX; sw=w; rs.classList.add('on'); rs.setPointerCapture(e.pointerId); e.preventDefault(); });
-  rs.addEventListener('pointermove',e=>{
-    if(!drag) return;
-    const total=cols.getBoundingClientRect().width;
-    const maxW=Math.max(320, total-260);
-    w=Math.max(300, Math.min(maxW, sw+(e.clientX-sx)));
-    root.style.setProperty('--rnn-simw', w+'px');
-  });
-  rs.addEventListener('pointerup',()=>{ drag=false; rs.classList.remove('on'); try{ localStorage.setItem('attn_rnn_simw', String(Math.round(w))); }catch(e){} });
 })();
 
 /* ---- panel scroll ile ekrandan çıkınca yüzer (açılıp kapanabilir + tamamen kapatılabilir) ---- */
