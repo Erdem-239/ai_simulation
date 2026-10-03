@@ -202,6 +202,7 @@
     // yukarıdaki canlı mimari şeması aynı ağırlıkları okusun
     window.XORNET = {W1: W1.map(r=>r.slice()), B1: B1.slice(), W2: W2.slice(), B2, epoch, L: s.L};
     if(window.__xorArchRender) window.__xorArchRender();
+    if(window.__xorMapsRender) window.__xorMapsRender();
 
     $('xeState').innerHTML =
       `epoch <b>${epoch}</b>  ·  kayıp L = <b>${N(s.L,6)}</b>  ·  TAHMİNLER:  ` +
