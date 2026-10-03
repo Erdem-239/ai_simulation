@@ -443,6 +443,24 @@ ileri yol değerlerinin hesaplandığı yerde çalışıyor) zaten hesaplanmış
 değişkenler (`rz1`, `rh1`, ... `ryhat`, `rL`) yeniden kullanılarak
 yazıldı, yeni hesaplama eklenmedi.
 
+**Bütün Resim'e sıkıştırılmış canlı devre diyagramı (PR #306)**: kullanıcı
+ağacın boş alanına mimariyi sıkıştırıp oradan görsel olarak da
+çalıştırabilmeyi istedi. `AskUserQuestion` ile netleşti: kapsam = SADECE
+devre diyagramı + İleri▶/◀BPTT (eğitim döngüsü ▶⏩■↺ + iterasyon/maliyet
+kapsam dışı — Bütün Resim tek örneği gösteriyor, çok-epoch eğitim oraya
+uymuyor); yerleşim = ileri yol satırının altı, geri yol başlığının üstü
+(`.bp-live`). **Mimari**: Simülasyon'daki `#cellSvg` IIFE'si
+`rnnCellInit(P)` fabrikasına çevrildi (`js/app.js`), iki örnekle kuruluyor
+— ikinci örnek (`bpCell*` id'leri, `pre:'bp_'`) SVG içindeki id'leri ve
+`marker-end` referanslarını önekliyor (çift id olmasın) ve vurgu
+aramalarını `svg.querySelector('[id="'+pre+id+'"]')` ile kendi SVG'sine
+kapsıyor; ağaç/akış vurgusu (`eq:` haritası) iki örnek için ortak.
+`window.__rnnCellSetMode` sadece Simülasyon örneğine bağlı (Bütün Resim
+hep many-to-one). **Ders**: aynı stateful SVG+JS widget'ı ikinci bir yere
+koymak için kodu kopyalamak yerine IIFE'yi parametreli fabrikaya çevirmek,
+id'leri önekleyip aramaları kapsamak — iki örnek birbirinin durumunu
+bozmadan tek kod yolunu paylaşıyor.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
