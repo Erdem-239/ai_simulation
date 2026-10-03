@@ -592,6 +592,21 @@ durunca tek seferde yazıp `typesetPromise` çağırır (arada eski, düzgün re
 edilmiş içerik kalır). **Ders**: canlı değişen + her değişimde yeniden
 typeset edilen içerik, sürekli `input` olaylarında debounce'lanmalı.
 
+**GERÇEK kök neden: pop-up motoru kaynağı typeset etmeden kopyalıyor
+(`js/lesson-linreg.js` `ac()`)** — iki önceki "klonu typeset et/debounce"
+düzeltmesi (klon-güncelleme yolu) asıl sorunu kaçırdı. `ac(el)`
+`pop.innerHTML = kaynak.innerHTML` yapar ve KAYNAK (`.xt-src` içindeki
+`.xp-zin`) `render()` tarafından her kaydırıcı hareketinde HAM LaTeX ile
+yeniden yazılır; kaynağı kimse typeset etmediği için pop-up AÇILIRKEN ham
+`\\( \\begin{aligned}…` görünür. Kullanıcı "kaydırıcıyı oynadım, SONRA pop-up
+açınca bozuk" diye anlattı (pop-up kapalıyken oynama). Düzeltme: `ac()` sonunda
+içerikte `\\(` kaldıysa `typesetClear+typesetPromise([pop])` + bitince
+`yerlestir(el)` (yükseklik değişti). `popQueue` (açıkken sürükleme) kalıyor.
+**Ders**: hata raporunu kullanıcının GERÇEK adım sırasıyla (önce kaydırıcı,
+sonra pop-up aç) yeniden üret; bir önceki düzeltmeyi "geçti" saymadan önce
+düzeltmenin kaldırılmış hâline karşı testin gerçekten KIRMIZI olduğunu doğrula
+(`git stash` ile: raw:true → düzeltmeyle raw:false).
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı
