@@ -524,6 +524,17 @@ kullanıcı "bu adımdan sonra ne oluyor" diye soruyorsa eksik halka genelde
 bir sonraki mantıksal adımdır (burada güncelleme), mevcut metni uzatmak
 değil.
 
+**many-to-one "Geri Adım 6 — vanishing gradient, sayılarla" (`#moAdim6`)**:
+kullanıcı sözel anlatımı reddedip "sayılarla görmek istiyorum, tek hücredeki
+geri yayılım kartları kadar detaylı olsun" dedi (r/g harfleri
+tanımlanmadan kullanıldığı için de karışıklık vardı). Kart: ① δ_t zinciri
+tablosu (önceki sinyal × W_hh × (1−h²) = δ, t=3'ün %'si), ② δ'dan ağırlık
+gradyanlarına tablo (dW_xh=δ·x, dW_hh=δ·h_{t−1}, db_h=δ), ③ aynı çarpanla
+10 adıma tahmin + çubuk grafik (`#mo6Canvas`), 💡 canlı "Ne öğrendik".
+Hepsi `render()` içinde mevcut `rdz*/dWxh*` değişkenlerinden, yeni hesap yok.
+**Ders**: kavram anlatımında harf/sembol (g, r, δ) kullanmadan ÖNCE tanımla;
+kullanıcı "sözel anlatma, sayıyla göster" diyorsa tablo + canlı sayı ver.
+
 ## Aktivasyon fonksiyonu anlatım kutuları — `.afx` (PR #278)
 
 Kullanıcı aktivasyon fonksiyonlarının anlatıldığı HER yerdeki anlatımı

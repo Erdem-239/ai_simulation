@@ -1364,6 +1364,56 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       setTxt('mo4t2xval', F(dWxh2)); setTxt('mo4t2hval', F(dWhh2));
       setTxt('mo4t1xval', F(dWxh1)); setTxt('mo4t1hval', F(dWhh1));
 
+      /* Geri Adım 6 — vanishing gradient'in sayılarla dökümü: her adımda δ_{t-1}=δ_t·W_hh·(1−h²), ardından ağırlık gradyanlarına etkisi */
+      if($('mo6Tbl1')){
+        const pct=(v,ref)=>ref!==0?F(Math.abs(v)/Math.abs(ref)*100,1)+'%':'—';
+        const f3=1-rh3*rh3, f2=1-rh2*rh2, f1=1-rh1*rh1;
+        const r2=p.Whh*f2, r1=p.Whh*f1;
+        const bar=(v,ref)=>'<span style="display:inline-block; height:8px; width:'+Math.max(1,Math.round(Math.min(1,Math.abs(ref)?Math.abs(v)/Math.abs(ref):0)*90))+'px; background:#f0a032; border-radius:2px; vertical-align:middle"></span>';
+        $('mo6Tbl1').innerHTML=
+          '<tr><th>adım</th><th>önceki sinyal</th><th>× W<sub>hh</sub></th><th>× (1−h²)</th><th>= δ</th><th>t=3\'ün yüzde kaçı?</th></tr>'
+          +'<tr><td><b>t=3</b></td><td>∂L/∂h₃ = '+F(rdh3)+'</td><td>—</td><td>(1−'+F(rh3*rh3)+') = '+F(f3)+'</td><td><b>'+F(rdz3)+'</b></td><td>100% '+bar(rdz3,rdz3)+'</td></tr>'
+          +'<tr><td><b>t=2</b></td><td>δ₃ = '+F(rdz3)+'</td><td>'+F(p.Whh,2)+'</td><td>(1−'+F(rh2*rh2)+') = '+F(f2)+'</td><td><b>'+F(rdz2)+'</b></td><td>'+pct(rdz2,rdz3)+' '+bar(rdz2,rdz3)+'</td></tr>'
+          +'<tr class="mo6-hot"><td><b>t=1</b></td><td>δ₂ = '+F(rdz2)+'</td><td>'+F(p.Whh,2)+'</td><td>(1−'+F(rh1*rh1)+') = '+F(f1)+'</td><td><b>'+F(rdz1)+'</b></td><td>'+pct(rdz1,rdz3)+' '+bar(rdz1,rdz3)+'</td></tr>';
+        $('mo6Tbl2').innerHTML=
+          '<tr><th>adım</th><th>δ</th><th>dW<sub>xh</sub> = δ·x</th><th>dW<sub>hh</sub> = δ·h<sub>t−1</sub></th><th>db<sub>h</sub> = δ</th><th>|dW<sub>xh</sub>| t=3\'ün %\'si</th></tr>'
+          +'<tr><td><b>t=3</b></td><td>'+F(rdz3)+'</td><td>('+F(rdz3)+')('+F(rx3,2)+') = <b>'+F(dWxh3)+'</b></td><td>('+F(rdz3)+')('+F(rh2)+') = <b>'+F(dWhh3)+'</b></td><td><b>'+F(db3)+'</b></td><td>100%</td></tr>'
+          +'<tr><td><b>t=2</b></td><td>'+F(rdz2)+'</td><td>('+F(rdz2)+')('+F(rx2,2)+') = <b>'+F(dWxh2)+'</b></td><td>('+F(rdz2)+')('+F(rh1)+') = <b>'+F(dWhh2)+'</b></td><td><b>'+F(db2)+'</b></td><td>'+pct(dWxh2,dWxh3)+'</td></tr>'
+          +'<tr class="mo6-hot"><td><b>t=1</b></td><td>'+F(rdz1)+'</td><td>('+F(rdz1)+')('+F(rx1,2)+') = <b>'+F(dWxh1)+'</b></td><td>('+F(rdz1)+')('+F(rh0,2)+') = <b>'+F(dWhh1)+'</b> <span style="color:var(--muted)">(h₀=0)</span></td><td><b>'+F(db1)+'</b></td><td>'+pct(dWxh1,dWxh3)+'</td></tr>';
+        const rbar=Math.sqrt(Math.abs(r2*r1));
+        const rows=[]; let cur=1; const ser=[100*1, 0, 0];
+        const real=[100, Math.abs(rdz3)>0?Math.abs(rdz2/rdz3)*100:0, Math.abs(rdz3)>0?Math.abs(rdz1/rdz3)*100:0];
+        const proj=[]; for(let k=0;k<10;k++) proj.push(k<3?real[k]:real[2]*Math.pow(rbar,k-2));
+        let lines='ortalama çarpan  r̄ = √(|'+F(r2)+'|·|'+F(r1)+'|) = '+F(rbar)+'\n(her adımda sinyal bu kadar katına iniyor)\n\n';
+        for(let k=0;k<10;k++) lines+=(k<3?'GERÇEK ':'tahmin ')+'— '+k+' adım geride'+(k<3?' (t='+(3-k)+')':'')+': sinyal = '+F(proj[k],4)+'%\n';
+        $('mo6Proj').innerHTML='<div class="xp-hes" style="white-space:pre-wrap; font-family:Consolas,monospace; font-size:12px; line-height:1.6">'+lines+'</div>';
+        /* grafik: 10 çubuk, ilk 3 gerçek */
+        const cv=$('mo6Canvas');
+        if(cv){
+          const ctx=cv.getContext('2d'), W=cv.width, H=cv.height, gx0=26, gx1=W-8, gy0=10, gy1=H-26;
+          ctx.clearRect(0,0,W,H);
+          const bw=(gx1-gx0)/10;
+          ctx.strokeStyle='#556182'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(gx0,gy1); ctx.lineTo(gx1,gy1); ctx.stroke();
+          ctx.font='9px Segoe UI'; ctx.textAlign='center';
+          for(let k=0;k<10;k++){
+            const v=Math.min(100,proj[k]), h=Math.max(1,(gy1-gy0)*v/100), x=gx0+k*bw+bw*0.15, w=bw*0.7;
+            ctx.fillStyle=k<3?'#f0a032':'rgba(58,122,254,.45)';
+            ctx.fillRect(x,gy1-h,w,h);
+            ctx.fillStyle='#95a2c2'; ctx.fillText(String(k),x+w/2,gy1+11);
+          }
+          ctx.fillStyle='#95a2c2'; ctx.textAlign='left'; ctx.fillText('100%',0,gy0+8); ctx.fillText('0',10,gy1);
+          ctx.textAlign='left';
+        }
+        const lr=$('mo6Learn');
+        if(lr){
+          const ratioX=Math.abs(dWxh1)>1e-12?Math.abs(dWxh3/dWxh1):Infinity;
+          lr.innerHTML='💡 <b>Ne öğrendik (senin sayılarınla):</b> t=3\'e ulaşan sinyal <b>'+F(rdz3)+'</b>, t=1\'e ulaşan <b>'+F(rdz1)+'</b> — yani t=1 yalnızca <b>'+pct(rdz1,rdz3)+'</b> kadarını alıyor. '
+            +'Bu yüzden x₁\'in W<sub>xh</sub> gradyanı '+F(dWxh1)+', x₃\'ün ki '+F(dWxh3)+' ('+(isFinite(ratioX)?'≈ '+F(ratioX,1)+' kat fark':'t=1 neredeyse 0')+'). '
+            +'Ağ, <b>ilk girdinin sonucu nasıl etkilediğini</b> neredeyse hiç görmeden öğreniyor. Dizi 10 adım olsaydı t=1\'e '+F(proj[9],4)+'% ulaşırdı. '
+            +'(Not: t=1\'deki dW<sub>hh</sub>=0 başka bir sebepten — h₀=0 olduğu için, unutma değil.) W<sub>hh</sub> kaydırıcısını büyütmeyi dene: çarpan 1\'i geçince sinyal küçülmek yerine <b>patlar</b>.';
+        }
+      }
+
       /* Geri Adım 5 kartı — many-to-many'nin Adım 5'i gibi kendi ileri geçiş özeti + geri zincir + grafik içeriyor */
       setTxt('mo5fZ1sub', '('+F(p.Wxh,2)+')('+F(rx1,2)+') + ('+F(p.Whh,2)+')('+F(rh0,2)+') + '+F(p.b,2)); setTxt('mo5fZ1val', F(rz1));
       setTxt('mo5fH1sub', 'tanh('+F(rz1)+')'); setTxt('mo5fH1val', F(rh1));
