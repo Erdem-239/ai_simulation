@@ -1142,3 +1142,18 @@ normalizasyon, kaç gizli nöron) hikâyede kısa tutuldu; Aktivasyon modülüne
 (henüz yapılmadı, istenirse ayrı PR). **Not**: oturumda bir "iki aktivasyon, tek z"
 cevabımı düzelttim — aynı z'nin FARKLI eşikli iki aktivasyonu + çıkış katmanı XOR'u
 çözer (iki ayrı birim sayılır); artan σ/tanh çifti çözmez.
+
+## RNN pop-up'larına sözel "💬 Ne anlama geliyor?" açıklaması (`js/lesson-rnn-soz.js`)
+
+Kullanıcı Bütün Resim'deki her kutu/okun pop-up kartının altına "ne anlama geldiğinin
+sözel açıklaması"nı istedi (formüller/sayılar var ama sezgi eksikti). 186 RNN
+`.xt-src` kaynağının (5 tür: `t_/r_/m_/o_/d_*`) hepsine, `js/lesson-rnn-soz.js` sayfa
+yüklenirken sonuna bir `.xp-soz` div'i ekler — HTML'e 186 yerde elle yazılmadı: anahtar
+(`m_zhh2`, `r_zh3Whh`, `d_hsum1`…) `parse()` ile normalize edilir (zh, tanh, zy, yhat, L,
+Ltot, Lyhat, yhatzy, zyWhy, zyby, zyh, hzh, zhWxh, zhWhh, zhbh, zhhp, bptt, hsum, from),
+metin türe/adıma duyarlıdır (çıktısız/girdisiz adım, son adım, t=1'de h₀=0 notları).
+Pop-up motoru kaynağın innerHTML'ini kopyaladığı için kaynağa bir kez eklemek yeter.
+`window.__rnnSozCount` {done, miss} ile doğrulanır (186/186, miss=[]). Pop-up
+`max-height` 72vh→84vh (içerik uzadı). **Ders**: `id.slice(7)` ile `xtsrc-` önekini
+(6 karakter) kesince tüm anahtarlar bozuldu ve sessizce `HASOUT[type]` hatası verdi —
+önek uzunluğunu varsayma, `slice('xtsrc-'.length)` kullan / sayıyı doğrula.
