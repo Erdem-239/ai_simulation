@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610041724"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610041754"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610041724">
+<link rel="stylesheet" href="css/style.css?v=202610041754">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:24 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:54 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -3609,7 +3609,7 @@ for epoch in range(400):
     <div class="acc-head"><span class="ac">▸</span> 🧮 Bütün resim — katman katman matris zinciri<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
     <div class="acc-body">
       <p class="xt-sub">Her katman aynı iki adımı yapar: <b>ağırlıklı toplam</b> (<code>z=Wx+b</code>, matris-vektör çarpımı) ve <b>aktivasyon</b> (σ, her bileşene ayrı ayrı). Girdi katmandan katmana geçerken boyutu değişir (2 → 2 → 1) ama işlem hep aynı. <b>Bir oka gelince</b> o matris çarpımının açılımı hemen orada görünür.</p>
-<div class="xf-baslik">▶ x'ten ŷ'ye — bir noktanın ((1,0)) canlı yolculuğu</div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="mfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="mfx2">—</span></div><div class="xf-kolad">girdi vektörü x</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(1)}x+b^{(1)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="mfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="mfz2">—</span></div><div class="xf-kolad">z⁽¹⁾ vektörü</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="mfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="mfh2">—</span></div><div class="xf-kolad">h vektörü (gizli katman)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(2)}h+b^{(2)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="mfzy">—</span></div><div class="xf-kolad">z⁽²⁾ (1×1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">ŷ<span class="xf-val" id="mfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div></div></div><div class="xf-donus">🧩 <b>Bütün ağ, iki satırlık bir döngü:</b> her katmanda <code>z = Wx + b</code>, sonra <code>σ</code> — bu ağda 2 katman, GPT'de yüzlerce, ama satır aynı. Aşağıdaki <b>6️⃣ Simülasyon</b>'da bu dokuz sayı (W⁽¹⁾, b⁽¹⁾, W⁽²⁾, b⁽²⁾) önce elle, sonra <b>rastgele başlayıp kendi kendine</b> öğreniyor.</div>
+<div class="xf-baslik">▶ x'ten ŷ'ye — bir noktanın ((1,0)) canlı yolculuğu</div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="nnfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="nnfx2">—</span></div><div class="xf-kolad">girdi vektörü x</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(1)}x+b^{(1)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="mfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="mfz2">—</span></div><div class="xf-kolad">z⁽¹⁾ vektörü</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="nnfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="nnfh2">—</span></div><div class="xf-kolad">h vektörü (gizli katman)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(2)}h+b^{(2)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="mfzy">—</span></div><div class="xf-kolad">z⁽²⁾ (1×1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">ŷ<span class="xf-val" id="mfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div></div></div><div class="xf-donus">🧩 <b>Bütün ağ, iki satırlık bir döngü:</b> her katmanda <code>z = Wx + b</code>, sonra <code>σ</code> — bu ağda 2 katman, GPT'de yüzlerce, ama satır aynı. Aşağıdaki <b>6️⃣ Simülasyon</b>'da bu dokuz sayı (W⁽¹⁾, b⁽¹⁾, W⁽²⁾, b⁽²⁾) önce elle, sonra <b>rastgele başlayıp kendi kendine</b> öğreniyor.</div>
     </div>
   </div>
 
@@ -6248,17 +6248,17 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610041724"></script>
-<script src="js/lesson-turev.js?v=202610041724"></script>
-<script src="js/lesson-xor.js?v=202610041724"></script>
-<script src="js/lesson-xor-arch.js?v=202610041724"></script>
-<script src="js/lesson-xor-maps.js?v=202610041724"></script>
-<script src="js/lesson-xor-epoch.js?v=202610041724"></script>
-<script src="js/lesson-nn.js?v=202610041724"></script>
-<script src="js/lesson-trig.js?v=202610041724"></script>
+<script src="js/lesson-linreg.js?v=202610041754"></script>
+<script src="js/lesson-turev.js?v=202610041754"></script>
+<script src="js/lesson-xor.js?v=202610041754"></script>
+<script src="js/lesson-xor-arch.js?v=202610041754"></script>
+<script src="js/lesson-xor-maps.js?v=202610041754"></script>
+<script src="js/lesson-xor-epoch.js?v=202610041754"></script>
+<script src="js/lesson-nn.js?v=202610041754"></script>
+<script src="js/lesson-trig.js?v=202610041754"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610041724"></script>
-<script src="js/lesson-rnn-soz.js?v=202610041724"></script>
-<script src="js/app.js?v=202610041724"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610041754"></script>
+<script src="js/lesson-rnn-soz.js?v=202610041754"></script>
+<script src="js/app.js?v=202610041754"></script>
 </body>
 </html>
