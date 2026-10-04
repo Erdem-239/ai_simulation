@@ -1165,3 +1165,18 @@ bağlantısı (`index.html`) ve ayrı sayfa `rnn-test.html` silindi; `js/app.js`
 `applyTreeOrder()` içindeki "RNN Test'i RNN dersinin ardına yerleştir" özel durumu
 kaldırıldı (data-model'i olmayan düğmeler artık sona eklenir). RNN modülünün kendi
 7️⃣ "Kendini Test Et" aşaması DURUYOR (o ayrı bir şey).
+
+## RNN pop-up köprülerine canlı sözel cümle (`🗣️ Sözle:`) — rnnBridges içinde
+
+Kullanıcı "işlem sonucunu nasıl sözel anlatırız" diye sordu (örnek: `[(ŷ−y)W_hy](1−h²)·h₋₁ =
+(−0,0543)(0,50) = −0,0271`; sonra "0,50 nereden", "tanh eğimi neyle çarpılıyor") ve "hepsine ekle"
+dedi. Statik "💬 Ne anlama geliyor?" (js/lesson-rnn-soz.js) sayısızdır; buna EK olarak `rnnBridges()`
+(js/app.js; 5 türün hepsinde ortak) artık her halkanın altına o anki SAYILARLA bir cümle yazar:
+`vs(name,t)` geri yol (Lyhat, yhatzy, zyWhy, zyby, zyh, hsum, hzh, zhWxh, zhWhh, zhbh, zhh —
+"z_h'ye gelen sinyal −0,0543 × girdi 0,50 = −0,0271; gradyan eksi → ağırlık büyür" gibi, işaret
+yorumu + paylaşılan ağırlıkta "bu yalnızca t=N katkısı" notu, tanh'ta "sinyalin %39'u geçiyor"),
+`vf(name,t)` ileri yol (zh, tanh, zy, yhat, L, Ltot). Geri yol `put()` içinde html'e eklenir (pop-up
+klonu `popQueue` ile aynı html'i alır); ileri yol 📐 köprüleri başka kodda `innerHTML` ile yazıldığı için
+`appF()` ile SONRADAN eklenir (`.xp-vs` varsa önce silinir → idempotent). Her cfg'ye ileri anahtar
+eşlemesi `KF(name,t)` eklendi (Tek `t_*`, m2o `r_zh1/r_zy…`, m2m `m_*`, seq `o_*/d_*`). Doğrulama:
+5 türde 186/186 kaynakta `.xp-vs` var, NaN/undefined/%t yok. Stil: sarı `.xp-vs`.
