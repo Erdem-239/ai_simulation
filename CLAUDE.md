@@ -1193,3 +1193,21 @@ hatırlanır (`#xtPop` üzerinde MutationObserver). Açınca pop-up yüksekliği
 `lesson-rnn-soz.js` artık `app.js`'ten ÖNCE yüklenir (yuvalar, ilk `render()` çalışmadan DOM'da olsun
 diye — sonra yüklenseydi ilk dolum kaçardı). `hzh` cümlesi tanh eğrisi bağlantısını da anlatır:
 "z_h = 0,6745 noktasındasın, oradaki tanjant eğimi 0,6543 (Aktivasyon sayfasındaki grafikte aynı)".
+
+## RNN sayfası yeniden düzenlendi: Simülasyon → Bütün Resim, Simülasyon yalnız Tek Hücre
+
+Kullanıcı sayfayı hâlâ karışık buldu (ağırlık paneli + giriş paragrafı hiçbir sekmede değil, tür
+seçici Simülasyon'da ama tür seçince Bütün Resim boşalıyordu) ve şu düzeni istedi: **Simülasyon,
+Bütün Resim'den ÖNCE; Simülasyon'da yalnız Tek Hücre; diğer RNN türleri Bütün Resim'de seçilebilir;
+dışarıda kalan fazlalık bir sekmenin içine.** Yeni sıra: 1 Giriş, 2 Hikâye, 3 Gerçek Hayat, 4 Nedir,
+**🎛️ Ağırlıklar & girdiler** (yeni `data-stage="w"` sekmesi, yeşil; `#rcSliderPanel` buraya taşındı;
+iki aşama da bu ağırlıkları kullandığı için istisnai olarak AÇIK gelir — kapalı gelirse Simülasyon
+"ölü" görünürdü), **5️⃣ Simülasyon — Tek Hücre** (tür butonları/`#rnnTypeOther` yok; giriş paragrafı
+burada; `#rnnSimTek` her zaman görünür), **6️⃣ Bütün Resim — 5 RNN türü** (`.rnn-type-btn` seçici +
+`#rnnTypeNote` + Tek/M2o/M2m/O2m/Dec blokları bu sekmede; switcher yalnız blok `display`'ini ve notu
+değiştirir), Ekstra, 7️⃣ Test. Switcher'dan `rnnTypeTek/rnnSimTek/rnnTypeOther/rcTekInputs` gizleme
+kodu kaldırıldı (`rcTekInputs` — x/h₋₁/y — artık hep görünür, çünkü Tek Hücre Simülasyon'u sürekli
+orada). `data-stage` renkleri içeriğe bağlı kaldı (Simülasyon=6 → RNN için de camgöbeği override,
+Bütün Resim=5). Eski "2) Zincirleme" sechead'i "🔬 Tek Hücre — ileri yayılım ve geri yayılım (BPTT)"
+oldu. **Ders**: bir tür seçicinin hem içeriği hem BAŞKA bir aşamanın bloklarını yönetmesi, o aşama
+kapalı/boş görününce "bozuk sayfa" izlenimi veriyor — seçici, yönettiği içeriğin yanında dursun.
