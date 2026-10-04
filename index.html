@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610040110"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610041428"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610040110">
+<link rel="stylesheet" href="css/style.css?v=202610041428">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 01:10 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 14:28 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2601,11 +2601,22 @@ z → −∞ :  e^(−z) → ∞      ⇒  σ → 1 / (1+∞) = 0     (tam kapal
     <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
   <div class="pts lesson-story">
-    <div class="lesson-story-h">💡 HİKÂYE — Dört noktanın durdurduğu bilim dalı</div>
+    <div class="lesson-story-h">💡 HİKÂYE — Dört noktanın durdurduğu bilim dalı (ve sopaların hikâyesi)</div>
     <p>1958'de Cornell'de <b>Frank Rosenblatt</b>, "Perceptron" adını verdiği makineyi tanıttı: örneklere bakarak kendi ağırlıklarını ayarlayan, yani <i>öğrenen</i> ilk makine. Basın çıldırdı — <i>The New York Times</i>, Donanma'nın "yürüyebilen, konuşabilen, gören, yazan, kendini üretebilen ve kendi varlığının bilincinde olabilecek" bir makinenin tohumunu attığını yazdı. Rosenblatt'ın kendisi de iddialıydı; fonlar aktı, laboratuvarlar kuruldu.</p>
-    <p>1969'da MIT'den <b>Marvin Minsky</b> ve <b>Seymour Papert</b>, <i>Perceptrons</i> adlı bir kitap yayımladı. Kitap, tek katmanlı perceptron'un ne yapabileceğini matematiksel olarak sınırlıyordu — ve bunu gösterirken kullandıkları örnek utandıracak kadar basitti: <b>XOR</b>. Dört nokta: (0,0) ve (1,1) bir sınıf, (0,1) ve (1,0) öbür sınıf. Tek bir doğru bunları asla ayıramaz. "Öğrenen makine", ilkokul mantık sorusunu çözemiyordu.</p>
+    <p>1969'da MIT'den <b>Marvin Minsky</b> ve <b>Seymour Papert</b>, <i>Perceptrons</i> adlı bir kitap yayımladı. Kitap, tek katmanlı perceptron'un ne yapabileceğini matematiksel olarak sınırlıyordu — ve bunu gösterirken kullandıkları örnek utandıracak kadar basitti: <b>XOR</b>. Dört nokta: (0,0) ve (1,1) bir sınıf, (0,1) ve (1,0) öbür sınıf. Perceptron'un yaptığı şey, düzleme <b>tek bir düz çizgi — bir "sopa"</b> — koymaktı; XOR'da sopayı nereye koyarsan koy bir nokta yanlış tarafta kalıyor. "Öğrenen makine", ilkokul mantık sorusunu çözemiyordu.</p>
     <p>Sonuç yıkıcı oldu. Fonlar kesildi, araştırmacılar alandan ayrıldı — buna sonradan <b>"ilk yapay zekâ kışı"</b> dendi. Rosenblatt bu tartışmanın sonunu göremedi: 1971'de, 43 yaşındayken bir tekne kazasında hayatını kaybetti.</p>
-    <p>Oysa çözüm kitabın kendisinde bile ima ediliyordu: <b>katmanları üst üste koy</b>. Ama bir sorun vardı — gizli katmandaki bir nöronun "hatası" nasıl hesaplanır? Bu sorunun cevabı 17 yıl bekledi. 1986'da <b>Rumelhart, Hinton ve Williams</b>, zincir kuralını ağın içinde geriye doğru yayarak (<i>geri yayılım</i>) her ağırlığın payına düşen hatayı otomatik hesapladılar. Duvar yıkıldı — ve bugün kullandığın her model o çatlaktan geçti.</p>
+    <p>Oysa ilginç bir ayrıntı var: <b>XOR'un kendisi çözülemez bir problem değildi.</b> "Biri var ama ikisi birden değil" cümlesi üç mantık kapısıyla yazılır — <b>(x₁ VEYA x₂) VE DEĞİL (x₁ VE x₂)</b> — ve bilgisayarlar zaten bu kapılardan yapılıyor. Hatta 1943'te McCulloch ve Pitts, bir sinir hücresinin "girdileri ağırlıklarla topla, eşiği geçti mi bak" diyerek tam bu kapıları hesaplayabildiğini göstermişti. Mesele XOR'u çözmek değildi; mesele makinenin onu <b>kendi başına, örneklerden</b> öğrenebilmesiydi. Kapıları elle kurabildiğin sürece sorun yok — peki kuralı bilmediğin bir problemde?</p>
+    <p>Kendini o günün mühendisinin yerine koy. Bir sigorta şirketi masana <b>50.000 müşteri kaydı</b> bırakıyor: yaş ve poliçenin onaylanıp onaylanmadığı. Bakıyorsun: gençlerin çoğu reddedilmiş, 30-50 arası çoğu onaylanmış, 65 üstü yine reddedilmiş. Tek formül (z = w·yaş + b) denersen, yaş arttıkça z hep aynı yöne gider — "red → onay → red" şeklini yakalayamaz. Aynı duvar: <b>tek sopa</b>. Elle iki kesim koyabilirsin ("yaş &gt; 25 VE yaş &lt; 60") ve çalışır — ama 25 ile 60'ı grafiğe bakıp bulduk. Otuz özellik, altmış eşik ve aralarındaki karmaşık ilişkiler olsa? Gözle bulamazsın. XOR'daki duvar, gerçek veride <b>her yerde</b> karşına çıkıyor.</p>
+    <p>Çıkış yolu üç hamleydi ve hepsi XOR'un çözümünün büyütülmüş hâliydi. <b>Birincisi: sopayı çoğalt</b> — tek nöron yerine birden çok gizli nöron, her biri bir kesim (XOR'da "VEYA" ve "VE" gibi). Kitabın kendisi de bunu ima ediyordu: <b>katmanları üst üste koy.</b> <b>İkincisi: sopayı bük</b> — "büyük mü?" sorusunu sert bir basamak yerine yumuşak bir eğriyle (sigmoid) sor; çünkü basamağın eğimi her yerde sıfır, geriye hiçbir sinyal gitmez. <b>Üçüncüsü: sopaların yerini makine bulsun</b> — ağırlıklar rastgele başlasın, hata kadar adım adım kaydırılsın.</p>
+    <p>Üçüncü hamlenin önünde tek bir engel vardı: gizli katmandaki bir nöronun "hatası" nasıl hesaplanır? Bu sorunun cevabı 17 yıl bekledi. 1986'da <b>Rumelhart, Hinton ve Williams</b>, zincir kuralını ağın içinde geriye doğru yayarak (<i>geri yayılım</i>) her ağırlığın payına düşen hatayı otomatik hesapladılar. Sopalar artık kendi kendine veriye oturuyordu. Duvar yıkıldı — ve bugün kullandığın her model o çatlaktan geçti.</p>
+    <div class="callout" style="margin:10px 0 10px"><b>🪄 Sopa özeti</b><ul style="margin:6px 0 0; padding-left:18px">
+      <li><b>sopa</b> = bir nöronun kesim çizgisi (z = 0)</li>
+      <li><b>sopayı çoğalt</b> = gizli nöron sayısı</li>
+      <li><b>sopayı bük</b> = aktivasyon fonksiyonu (sigmoid)</li>
+      <li><b>sopanın yeri ve açısı</b> = ağırlıklar ve bias</li>
+      <li><b>sopalar veriye otursun</b> = geri yayılımla eğitim</li>
+      <li>Pratik not: girdileri aynı ölçeğe getir (30.000 ile 0,8 yan yana olmaz), kaç sopa gerektiğini deneyerek bul.</li>
+    </ul></div>
     <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-xor" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
   </div>
     </div>
@@ -6258,16 +6269,16 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610040110"></script>
-<script src="js/lesson-turev.js?v=202610040110"></script>
-<script src="js/lesson-xor.js?v=202610040110"></script>
-<script src="js/lesson-xor-arch.js?v=202610040110"></script>
-<script src="js/lesson-xor-maps.js?v=202610040110"></script>
-<script src="js/lesson-xor-epoch.js?v=202610040110"></script>
-<script src="js/lesson-nn.js?v=202610040110"></script>
-<script src="js/lesson-trig.js?v=202610040110"></script>
+<script src="js/lesson-linreg.js?v=202610041428"></script>
+<script src="js/lesson-turev.js?v=202610041428"></script>
+<script src="js/lesson-xor.js?v=202610041428"></script>
+<script src="js/lesson-xor-arch.js?v=202610041428"></script>
+<script src="js/lesson-xor-maps.js?v=202610041428"></script>
+<script src="js/lesson-xor-epoch.js?v=202610041428"></script>
+<script src="js/lesson-nn.js?v=202610041428"></script>
+<script src="js/lesson-trig.js?v=202610041428"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610040110"></script>
-<script src="js/app.js?v=202610040110"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610041428"></script>
+<script src="js/app.js?v=202610041428"></script>
 </body>
 </html>

@@ -1126,3 +1126,19 @@ epoch'u headless'ta binlerce kez tıklamak çok yavaş (render ağır); eğitilm
 ortasında kabuğu öldürür — sonraki commit/push adımları SESSİZCE çalışmaz ama
 sonraki araç çağrısı (PR oluşturma) yine de başarılı olabilir; PR açmadan önce
 `git log`/`git status` ile commit'in gerçekten atıldığını doğrula.
+
+## XOR 2️⃣ Hikâye — tarihî anlatım + "sopa" keşif yolculuğu birleştirildi
+
+Kullanıcı, XOR'u bir soru-cevap oturumunda kendi keşfi gibi yürüttü (sezgisel akış:
+çıktıyı 0-1'e sıkıştır → sigmoid; tek lineer z neden olmaz; aktivasyon = "büyük mü?"
+sorusu; XOR = (VEYA) VE DEĞİL (VE) mantık kapıları; gerçek veride (sigorta/yaş,
+red→onay→red) sınır eğri; sopa benzetmesi: sopayı çoğalt / bük / yerini makine bulsun)
+ve "hikâyede ikisini birleştir" dedi. Mevcut tarihî hikâye (Rosenblatt 1958 → Minsky &
+Papert 1969 → kış → geri yayılım 1986) korunup arasına mühendis anlatısı girdi:
+"XOR zaten mantık kapılarıyla çözülür (McCulloch-Pitts 1943) — mesele makinenin onu
+örneklerden öğrenmesi", sigorta örneği, üç hamle (çoğalt/bük/makine bulsun), "🪄 Sopa
+özeti" callout'u. Pedagojik detaylar (sigmoid doyması, sert basamağın sıfır türevi,
+normalizasyon, kaç gizli nöron) hikâyede kısa tutuldu; Aktivasyon modülüne taşınabilir
+(henüz yapılmadı, istenirse ayrı PR). **Not**: oturumda bir "iki aktivasyon, tek z"
+cevabımı düzelttim — aynı z'nin FARKLI eşikli iki aktivasyonu + çıkış katmanı XOR'u
+çözer (iki ayrı birim sayılır); artan σ/tanh çifti çözmez.
