@@ -1060,9 +1060,55 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       function pathDelta(t){ return pathH(t).concat([rDelta(t)]); }
       const box=(path,localRows,title)=>(path.length?'<b>📍 L\'den bu halkaya kadar, adım adım:</b>'+eqn(path.map(row)):'')
         +'<b>🔗 '+(title||'Peki bu halkada ne oluyor?')+'</b>'+localRows;
-      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
+      /* 🗣️ Canlı sözel anlatım: her halkanın "çarpım/toplam" sonucunu o anki sayılarla cümleye döker */
+      const hS=t=>single?'h':'h<sub>'+t+'</sub>', hP=t=>single?'h<sub>−1</sub>':'h<sub>'+(t-1)+'</sub>';
+      const Zt=t=>p.Wxh*X[t]+p.Whh*H[t-1]+p.b;
+      const sgn=(g,w)=>g<0?'Gradyan <b>eksi</b> → '+w+' biraz büyütülürse kayıp azalır; güncelleme '+w+'\'ı <b>büyütür</b>.'
+        :(g>0?'Gradyan <b>artı</b> → '+w+' büyütülürse kayıp artar; güncelleme '+w+'\'ı <b>küçültür</b>.':'Gradyan 0 → bu adım '+w+'\'ı hiç oynatmaz.');
+      const shared=(n)=>(!single&&n>1)?' <i>(Bu yalnızca t=%t adımının katkısı; aynı ağırlığın diğer adımlardaki katkılarıyla toplanır.)</i>':'';
+      const nIn=inp.filter(Boolean).length, nOut=out.filter(Boolean).length;
+      function vs(name,t){
+        const sl=1-H[t]*H[t];
+        switch(name){
+          case 'Lyhat': return 'Tahmin ('+f(ZY[t])+'), gerçek cevaptan ('+f(Y[t],2)+') '+(DY[t]>0?'büyük':'küçük')+'; fark ŷ−y = <b>'+f(DY[t])+'</b>. Geri yayılımın başlangıç sinyali bu: '+(DY[t]>0?'tahmini küçültmemiz':'tahmini büyütmemiz')+' gerekiyor.';
+          case 'yhatzy': return 'Çıktı aktivasyonu özdeşlik (ŷ = z<sub>y</sub>) olduğu için sinyal z<sub>y</sub>\'ye aynen geçiyor: '+pn(DY[t])+' × 1 = <b>'+f(DY[t])+'</b>. Bu halkada ne büyüdü ne küçüldü.';
+          case 'zyWhy': return 'z<sub>y</sub>\'ye gelen sinyal '+pn(DY[t])+'; W<sub>hy</sub>\'nin z<sub>y</sub>\'ye etkisi h = '+f(H[t])+' kadar. Çarpınca W<sub>hy</sub> gradyanı <b>'+f(WHY[t])+'</b>. '+sgn(WHY[t],'W<sub>hy</sub>')+shared(nOut).replace('%t',t);
+          case 'zyby': return 'b<sub>y</sub> çıktıya doğrudan eklenir (etkisi 1), gradyanı z<sub>y</sub>\'ye gelen sinyalin kendisi: <b>'+f(BY[t])+'</b>. '+sgn(BY[t],'b<sub>y</sub>')+shared(nOut).replace('%t',t);
+          case 'zyh': return 'z<sub>y</sub>\'ye gelen sinyal '+pn(DY[t])+'; '+hS(t)+'\'nin çıktıya etkisi W<sub>hy</sub> = '+f(p.Why,2)+'. Çarpım <b>'+f(OWN[t])+'</b> → hafızaya kendi çıktısından ulaşan hata.';
+          case 'hsum':
+            if(out[t-1]&&t<T) return hS(t)+' iki yoldan sinyal alıyor: kendi çıktısından <b>'+f(OWN[t])+'</b> ve gelecekten (BPTT) <b>'+f(BP[t])+'</b>. İkisi toplanır: <b>'+f(HT[t])+'</b>.';
+            if(out[t-1]) return 'Son adım: gelecek yok, sinyal yalnızca kendi çıktısından geliyor: <b>'+f(OWN[t])+'</b>.';
+            return 'Bu adımın kendi çıktısı yok; sinyal yalnızca gelecekten (BPTT) geliyor: <b>'+f(BP[t])+'</b>.';
+          case 'hzh': return hS(t)+'\'ye ulaşan sinyal '+pn(HT[t])+'; tanh\'ın eğimi 1−h² = 1−'+f(H[t]*H[t])+' = '+f(sl)+' ile çarpılıyor → <b>'+f(ZH[t])+'</b>. Yani sinyalin yaklaşık <b>%'+Math.round(sl*100)+'</b>\'i geçiyor, kalanı tanh\'ta kayboluyor.'+(sl<0.2?' (h doymuş: sinyal neredeyse ölüyor.)':'');
+          case 'zhWxh': return 'z<sub>h</sub>\'ye gelen sinyal '+pn(ZH[t])+'; W<sub>xh</sub> z<sub>h</sub>\'ye girdi x = '+f(X[t],2)+' kadar etki ediyor → gradyan '+pn(ZH[t])+' × '+pn(X[t],2)+' = <b>'+f(WXH[t])+'</b>. '+sgn(WXH[t],'W<sub>xh</sub>')+shared(nIn).replace('%t',t);
+          case 'zhWhh': return 'z<sub>h</sub>\'ye gelen sinyal '+pn(ZH[t])+'; W<sub>hh</sub> z<sub>h</sub>\'ye önceki hafıza '+hP(t)+' = '+f(H[t-1],2)+' kadar etki ediyor → gradyan '+pn(ZH[t])+' × '+pn(H[t-1],2)+' = <b>'+f(WHH[t])+'</b>. '+((t===1&&!H[0])?'Önceki hafıza boş (h<sub>0</sub>=0) olduğu için bu adımdan W<sub>hh</sub>\'ye gradyan gelmez.':sgn(WHH[t],'W<sub>hh</sub>'))+shared(T).replace('%t',t);
+          case 'zhbh': return 'b<sub>h</sub> z<sub>h</sub>\'ye doğrudan eklenir (etkisi 1), gradyanı gelen sinyalin kendisi: <b>'+f(BH[t])+'</b>. '+sgn(BH[t],'b<sub>h</sub>')+shared(T).replace('%t',t);
+          case 'zhh':
+            if(single) return 'Tek hücrede '+hP(1)+' dışarıdan verilen bir girdi: z<sub>h</sub> sinyali '+pn(ZH[1])+' × W<sub>hh</sub> '+f(p.Whh,2)+' = <b>'+f(ZH[1]*p.Whh)+'</b>. Zincirde bu sinyal bir önceki adıma akardı.';
+            return 'z<sub>h</sub>\'ye gelen sinyal '+pn(ZH[t])+', W<sub>hh</sub> = '+f(p.Whh,2)+' ile çarpılıp bir önceki adımın '+hP(t)+'\'ine geçiyor → <b>'+f(BP[t-1])+'</b>. W<sub>hh</sub>·(1−h²) 1\'den küçükse sinyal her sıçramada küçülür (vanishing), büyükse büyür (exploding).';
+        }
+        return '';
+      }
+      /* ileri yol (📐) sözel cümleleri */
+      function vf(name,t){
+        const z=Zt(t), ll=out[t-1]?0.5*DY[t]*DY[t]:0;
+        switch(name){
+          case 'zh': { const parts=[]; if(inp[t-1]) parts.push('girdi katkısı W<sub>xh</sub>·x = '+f(p.Wxh*X[t])); parts.push('hafıza katkısı W<sub>hh</sub>·'+hP(t)+' = '+f(p.Whh*H[t-1])); parts.push('sapma '+f(p.b,2));
+            return 'z<sub>h</sub> = '+parts.join(' + ')+' = <b>'+f(z)+'</b>. Hücre "şimdi ne görüyorum" ve "önceden ne hatırlıyorum" cevaplarını sapmayla topladı.'; }
+          case 'tanh': return 'z<sub>h</sub> = '+f(z)+' tanh\'ten geçip −1 ile 1 arasına sıkıştı: '+hS(t)+' = <b>'+f(H[t])+'</b>.'+(Math.abs(H[t])>0.9?' h ±1\'e yakın (doymuş) — tanh\'ın eğimi küçük, geri sinyal burada zayıflar.':'');
+          case 'zy': return 'Hafıza '+hS(t)+' = '+f(H[t])+', W<sub>hy</sub> = '+f(p.Why,2)+': çıktı katkısı '+f(p.Why*H[t])+' + b<sub>y</sub> ('+f(p.by,2)+') = <b>'+f(ZY[t])+'</b>.';
+          case 'yhat': return 'Modelin tahmini ŷ = <b>'+f(ZY[t])+'</b>; gerçek cevap y = '+f(Y[t],2)+' → fark '+f(DY[t])+'.';
+          case 'L': return 'Tahmin hatası ŷ−y = '+f(DY[t])+'; karesinin yarısı L = <b>'+f(ll)+'</b>. L ne kadar küçükse tahmin o kadar iyi.';
+          case 'Ltot': { const ls=[]; for(let u=1;u<=T;u++) if(out[u-1]) ls.push(0.5*DY[u]*DY[u]); return 'Çıktılı adımların kayıpları toplanıyor: '+ls.map(v=>f(v)).join(' + ')+' = <b>'+f(ls.reduce((a,b)=>a+b,0))+'</b>.'; }
+        }
+        return '';
+      }
+      const vsDiv=v=>v?'<div class="xp-vs">🗣️ <b>Sözle:</b> '+v+'</div>':'';
+      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; html+=vsDiv(vs(name,t)); document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
         if(e.closest('#xtPop')) popQueue(e,html); else e.innerHTML=html;
       }); };
+      const appF=(name,t)=>{ if(!cfg.KF) return; const k=cfg.KF(name,t); if(!k) return; const h=vsDiv(vf(name,t)); if(!h) return;
+        document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{ if(e.closest('#xtPop')) return; e.querySelectorAll('.xp-vs').forEach(x=>x.remove()); e.insertAdjacentHTML('beforeend',h); }); };
       function sumBlock(ad,a,filter,cur){
         const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
         if(ts.length<=1) return '<div class="xp-sat">Bu ağırlık <b>sadece bir adımda</b> kullanıldı → bu yaprak doğrudan <b>gerçek gradyan</b> = '+f(a[cur])+'</div>';
@@ -1095,6 +1141,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         if(t>1) put('zhh',t,box(pd,loc3(frac(ZH_(t),H_(t-1)),'W_{hh}',p.Whh,dl(t),d,BP[t-1],R`${dLd(H_(t-1))}\Big|_{\text{BPTT}}`)+'<div class="xp-sat">Sinyal bir adım <b>GERİYE</b>, t='+(t-1)+'\'e sıçradı'+(out[t-2]?' ve orada h'+(single?'':(t-1))+'\'in kendi çıktısından gelenle toplanacak.':' — orada ekleneceği başka kaynak yok.')+'</div>','Zamanda geri sıçrama — sayılarla'));
         else if(single) put('zhh',1,box(pd,loc3(frac(ZH_(1),R`h_{-1}`),'W_{hh}',p.Whh,dl(1),d,d*p.Whh,dLd(R`h_{-1}`))+'<div class="xp-sat">Tek hücrede burada biter; hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ adıma akar (BPTT).</div>'));
       }
+      /* ileri yol sözel cümleleri (📐 köprülerinin altına) */
+      for(let t=1;t<=T;t++){ appF('zh',t); appF('tanh',t); if(out[t-1]){ appF('zy',t); appF('yhat',t); appF('L',t); } }
+      if(nOut>1) appF('Ltot','');
     }
     function seqFill(cfg){
       const pf=cfg.pf, T=cfg.T, inp=cfg.inp, out=cfg.out, SB='₀₁₂₃₄₅';
@@ -1166,7 +1215,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         else zM('hsum'+t, araM(NB,'∂L/∂h'+sb+' = BPTT = ∂L/∂z_h⁽'+(t+1)+'⁾·W_hh = ('+F(ZH[t+1])+')('+F(p.Whh,2)+') = '+F(BP[t])+'\n(bu adımın kendi çıktısı yok → kendi katkısı 0)'));
       }
       zM('Ltot', araM(NF,'L = '+outs.map(t=>'L'+SB[t]).join(' + ')+' = '+outs.map(t=>F(LL[t])).join(' + ')+' = '+F(Ltot)));
-      rnnBridges({T:T,inp:inp,out:out,K:(n,t)=>pf+'_'+n+t}, {X,Y,H,ZY,DY,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY});
+      rnnBridges({T:T,inp:inp,out:out,K:(n,t)=>pf+'_'+n+t,KF:(n,t)=>pf+'_'+n+t}, {X,Y,H,ZY,DY,OWN,BP,HT,ZH,WXH,WHH,BH,WHY,BY});
     }
     seqFill({pf:'o',T:3,inp:[1,0,0],out:[1,1,1]});
     seqFill({pf:'d',T:4,inp:[1,1,0,0],out:[0,0,1,1]});
@@ -1589,17 +1638,18 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
 
     /* Tek Hücre / many-to-one / many-to-many (Tx=Ty): aynı XOR-tarzı köprü */
     if($('tfzh')){
-      const cfgT={T:1,inp:[1],out:[1],single:true,H0:p.hp,X:()=>p.x,Y:()=>p.y,K:(n,t)=>n==='hsum'?null:'t_'+(n==='zhh'?'zhhp':n)};
+      const cfgT={T:1,inp:[1],out:[1],single:true,H0:p.hp,X:()=>p.x,Y:()=>p.y,K:(n,t)=>n==='hsum'?null:'t_'+(n==='zhh'?'zhhp':n),KF:(n)=>'t_'+n};
       rnnBridges(cfgT, rnnState(cfgT));
     }
     if($('rfzh1')){
       const cfgR={T:3,inp:[1,1,1],out:[0,0,1],H0:0,X:t=>parseFloat($('ru_x'+t).value)||0,Y:()=>parseFloat($('ru_y').value)||0,
         K:(n,t)=>({Lyhat:'r_Lyhat',yhatzy:'r_yhatzy',zyWhy:'r_zyWhy',zyby:'r_zyby',zyh:'r_zyh3',
-          hzh:'r_h'+t+'zh'+t, zhWxh:'r_zh'+t+'Wxh', zhWhh:'r_zh'+t+'Whh', zhbh:'r_zh'+t+'bh', zhh:'r_zh'+t+'h'+(t-1), hsum:'r_zh'+t+'h'+(t-1)+'_from'})[n]};
+          hzh:'r_h'+t+'zh'+t, zhWxh:'r_zh'+t+'Wxh', zhWhh:'r_zh'+t+'Whh', zhbh:'r_zh'+t+'bh', zhh:'r_zh'+t+'h'+(t-1), hsum:'r_zh'+t+'h'+(t-1)+'_from'})[n],
+        KF:(n,t)=>(n==='zy'||n==='yhat'||n==='L')?'r_'+n:'r_'+n+t};
       rnnBridges(cfgR, rnnState(cfgR));
     }
     if($('mfzh1') && $('rcM2_x1')){
-      const cfgM={T:3,inp:[1,1,1],out:[1,1,1],H0:0,X:t=>parseFloat($('rcM2_x'+t).value)||0,Y:t=>parseFloat($('rcM2_y'+t).value)||0,K:(n,t)=>'m_'+n+t};
+      const cfgM={T:3,inp:[1,1,1],out:[1,1,1],H0:0,X:t=>parseFloat($('rcM2_x'+t).value)||0,Y:t=>parseFloat($('rcM2_y'+t).value)||0,K:(n,t)=>'m_'+n+t,KF:(n,t)=>'m_'+n+t};
       rnnBridges(cfgM, rnnState(cfgM));
     }
 

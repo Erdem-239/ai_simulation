@@ -1603,3 +1603,7 @@ body.xt-full-lock{overflow:hidden}
 /* RNN pop-up'larının altındaki sözel açıklama ("💬 Ne anlama geliyor?") */
 .xt-pop .xp-soz{margin-top:10px; padding:8px 10px; border-left:3px solid #46c46a; background:rgba(70,196,106,.09); border-radius:0 6px 6px 0; font-size:12.5px; line-height:1.6; color:#d9e4f4}
 .xt-pop .xp-soz b:first-child{display:block; margin-bottom:2px; color:#8fe0a8}
+
+/* RNN köprülerinin altındaki canlı sözel cümle (🗣️ Sözle:) */
+.xt-pop .xp-vs{margin-top:8px; padding:7px 10px; border-left:3px solid #ffd24a; background:rgba(255,210,74,.08); border-radius:0 6px 6px 0; font-size:12.5px; line-height:1.6; color:#e8e2c8}
+.xt-pop .xp-vs b:first-child{color:#ffd24a}
