@@ -3264,7 +3264,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   function applyTreeOrder(){
     const api=window.__ttAPI; if(!api) return;
     const HEAD={yol:-2, pedia:-1};              // ders değil, hep en üstte
-    const head=[], lessons=[], extra=[];        // extra = data-model'i olmayan (RNN Test)
+    const head=[], lessons=[], extra=[];        // extra = data-model'i olmayan düğmeler (şu an yok) → sona
     btns.forEach(b=>{
       const m=b.dataset.model;
       if(m in HEAD){ head.push([HEAD[m], b]); return; }
@@ -3274,9 +3274,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     head.sort((a,b)=>a[0]-b[0]);
     lessons.sort((a,b)=> a[0]-b[0] || a[1]-b[1]);
     const seq=[...head.map(x=>x[1]), ...lessons.map(x=>x[2])];
-    // RNN Test bir alıştırma sayfası → konusu olan RNN dersinin hemen ardına
-    const rnnBtn=btns.find(b=>b.dataset.model==='rnn');
-    extra.forEach(e=>{ const at=seq.indexOf(rnnBtn); seq.splice(at>=0?at+1:seq.length, 0, e); });
+    extra.forEach(e=>seq.push(e));
 
     const parent=btns[0].parentNode, note=sb.querySelector('.sb-note');
     seq.forEach(b=>{ if(note) parent.insertBefore(b, note); else parent.appendChild(b); });
@@ -3301,7 +3299,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     seq.forEach(b=>{
       const m=b.dataset.model;
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
-      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/AIpedia/RNN Test)
+      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/AIpedia)
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
       if(!e) return;
       b.style.setProperty('--era-c', e.c);

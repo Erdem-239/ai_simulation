@@ -1157,3 +1157,11 @@ Pop-up motoru kaynağın innerHTML'ini kopyaladığı için kaynağa bir kez ekl
 `max-height` 72vh→84vh (içerik uzadı). **Ders**: `id.slice(7)` ile `xtsrc-` önekini
 (6 karakter) kesince tüm anahtarlar bozuldu ve sessizce `HASOUT[type]` hatası verdi —
 önek uzunluğunu varsayma, `slice('xtsrc-'.length)` kullan / sayıyı doğrula.
+
+## "🧪 RNN Test" sayfası kaldırıldı
+
+Kullanıcı "rnn testi kaldıralım, artık o kısma gerek yok" dedi: sidebar'daki `🧪 RNN Test`
+bağlantısı (`index.html`) ve ayrı sayfa `rnn-test.html` silindi; `js/app.js`
+`applyTreeOrder()` içindeki "RNN Test'i RNN dersinin ardına yerleştir" özel durumu
+kaldırıldı (data-model'i olmayan düğmeler artık sona eklenir). RNN modülünün kendi
+7️⃣ "Kendini Test Et" aşaması DURUYOR (o ayrı bir şey).

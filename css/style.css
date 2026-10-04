@@ -336,7 +336,7 @@
        rail-done  = araştırıldı  → yeşil düğüm + hattan akan enerji
        rail-avail = sıradaki     → nabız atan altın düğüm
        rail-locked= kilitli      → sönük içi boş düğüm
-       rail-meta  = ders değil (Yol Haritası / AIpedia / RNN Test) → mavi elmas
+       rail-meta  = ders değil (Yol Haritası / AIpedia) → mavi elmas
      Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
      Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
   .sb-prog{background:linear-gradient(160deg,#26325a,#16203a); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
