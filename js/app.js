@@ -1862,6 +1862,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       b.classList.add('active');
       const rt=b.dataset.rt;
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
+      document.querySelectorAll('[data-rtin].rc-inblk').forEach(e=>{ e.style.display=(e.dataset.rtin===rt)?'':'none'; });
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';

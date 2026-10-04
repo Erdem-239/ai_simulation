@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610041704"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610041724"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610041704">
+<link rel="stylesheet" href="css/style.css?v=202610041724">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:04 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:24 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -726,11 +726,28 @@
     <div id="rcSliderAnchor"></div>
     <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin:0">
       <h3 style="color:var(--green)">🎛️ Oyna — her şey canlı değişir</h3>
+      <div class="rc-inlab" data-rtin="tek">Tek Hücre girdileri</div>
       <div class="ptrow" id="rcTekInputs" style="margin-bottom:6px">
         <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
         <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
         <div class="ptcell"><label>y (gerçek cevap)</label><input id="rc_y" type="number" step="0.1" value="1"></div>
       </div>
+      <div class="rc-inblk" data-rtin="m2o" style="display:none"><div class="rc-inlab">many-to-one girdileri</div><div class="ptrow" style="margin-bottom:6px">
+        <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
+        <div class="ptcell"><label>x₃</label><input id="ru_x3" type="number" step="0.1" value="1.5"></div>
+        <div class="ptcell"><label>y (gerçek cevap, t=3)</label><input id="ru_y" type="number" step="0.1" value="1"></div>
+      </div></div>
+      <div class="rc-inblk" data-rtin="m2mEq" style="display:none"><div class="rc-inlab">many-to-many (T<sub>x</sub>=T<sub>y</sub>) girdileri</div><div class="ptrow" style="margin-bottom:6px">
+        <div class="ptcell"><label>x₁</label><input id="rcM2_x1" type="number" step="0.1" value="2"></div>
+        <div class="ptcell"><label>x₂</label><input id="rcM2_x2" type="number" step="0.1" value="-1"></div>
+        <div class="ptcell"><label>x₃</label><input id="rcM2_x3" type="number" step="0.1" value="1.5"></div>
+        <div class="ptcell"><label>y₁ (gerçek, t=1)</label><input id="rcM2_y1" type="number" step="0.1" value="0.5"></div>
+        <div class="ptcell"><label>y₂ (gerçek, t=2)</label><input id="rcM2_y2" type="number" step="0.1" value="-0.3"></div>
+        <div class="ptcell"><label>y₃ (gerçek, t=3)</label><input id="rcM2_y3" type="number" step="0.1" value="1"></div>
+      </div></div>
+      <div class="rc-inblk" data-rtin="o2m" style="display:none"><div class="rc-inlab">one-to-many girdileri</div><div class="ptrow" style="margin-bottom:6px"><div class="ptcell"><label>x₁ (girdi)</label><input id="o_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>y₁ (hedef)</label><input id="o_y1" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₂ (hedef)</label><input id="o_y2" type="number" step="0.1" value="0.5"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="o_y3" type="number" step="0.1" value="-0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div></div>
+      <div class="rc-inblk" data-rtin="dec" style="display:none"><div class="rc-inlab">many-to-many (T<sub>x</sub>≠T<sub>y</sub>) girdileri</div><div class="ptrow" style="margin-bottom:6px"><div class="ptcell"><label>x₁ (girdi)</label><input id="d_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>x₂ (girdi)</label><input id="d_x2" type="number" step="0.1" value="-1"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="d_y3" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₄ (hedef)</label><input id="d_y4" type="number" step="0.1" value="0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div></div>
       <div style="display:flex; flex-wrap:wrap; gap:6px 22px; margin-top:8px">
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.0001" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.0001" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
@@ -739,7 +756,7 @@
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.0001" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
       </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. x / h₋₁ / y kutuları Tek Hücre'nin (Simülasyon ve Tek Hücre bütün resmi); diğer türlerin girdileri Bütün Resim'de o türü seçince görünür. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. Tüm girdiler (x, h₋₁, y…) bu sekmede: Tek Hücre'ninkiler hep görünür, diğer türlerin girdileri Bütün Resim'de o türü seçince burada belirir. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
     </div>
     </div>
   </div>
@@ -1187,13 +1204,8 @@
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-one)</h3>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Ağırlıklar yukarıdaki <b>🎛️ Ağırlıklar</b> sekmesindeki kaydırıcılarla aynı; girdiler (x₁,x₂,x₃,y) hemen aşağıdaki kutularda. Hangisini değiştirirsen burası da canlı güncellenir.</p>
-      <div class="ptrow" style="margin:0 0 10px; align-items:flex-end">
-        <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
-        <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
-        <div class="ptcell"><label>x₃</label><input id="ru_x3" type="number" step="0.1" value="1.5"></div>
-        <div class="ptcell"><label>y (gerçek cevap, t=3)</label><input id="ru_y" type="number" step="0.1" value="1"></div>
-      </div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Ağırlıklar yukarıdaki <b>🎛️ Ağırlıklar</b> sekmesindeki kaydırıcılarla aynı; girdiler (x₁,x₂,x₃,y) yukarıdaki <b>🎛️ Ağırlıklar &amp; girdiler</b> sekmesinde. Hangisini değiştirirsen burası da canlı güncellenir.</p>
+      
       <div id="rnnTreeWrap" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
@@ -1440,14 +1452,7 @@
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-many, T<sub>x</sub>=T<sub>y</sub>)</h3>
       <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">Many-to-one'dan tek fark: <b>her zaman adımının kendi çıktısı ŷ<sub>t</sub> ve kendi kaybı L<sub>t</sub> var</b>, toplam kayıp L=L₁+L₂+L₃. İleri yolda her adım h<sub>t</sub>'yi hesaplayıp <b>hemen</b> ŷ<sub>t</sub>'ye geçer; geri yolda ise her h<sub>t</sub> gradyanı <b>iki kaynaktan</b> alır — kendi çıktısından ve gelecekten (BPTT) — ve ikisini <b>toplar</b>. Her kutuya/oka gel: nasıl bulunduğunu, canlı sayılarla görürsün.</p>
-      <div class="ptrow" style="margin:0 0 10px; align-items:flex-end">
-        <div class="ptcell"><label>x₁</label><input id="rcM2_x1" type="number" step="0.1" value="2"></div>
-        <div class="ptcell"><label>x₂</label><input id="rcM2_x2" type="number" step="0.1" value="-1"></div>
-        <div class="ptcell"><label>x₃</label><input id="rcM2_x3" type="number" step="0.1" value="1.5"></div>
-        <div class="ptcell"><label>y₁ (gerçek, t=1)</label><input id="rcM2_y1" type="number" step="0.1" value="0.5"></div>
-        <div class="ptcell"><label>y₂ (gerçek, t=2)</label><input id="rcM2_y2" type="number" step="0.1" value="-0.3"></div>
-        <div class="ptcell"><label>y₃ (gerçek, t=3)</label><input id="rcM2_y3" type="number" step="0.1" value="1"></div>
-      </div>
+      
       <div id="rnnTreeWrapM2m" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
@@ -1567,7 +1572,7 @@
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (one-to-many)</h3>
       <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Tek girdi, çok çıktı.</b> Girdi x sadece <b>t=1'de</b> verilir (örn. bir müzik türü tohumu); sonraki adımlarda girdi yoktur, hücre kendi hafızasından <b>devam eder</b> ve <b>her adımda</b> bir çıktı ŷ<sub>t</sub> üretir (müzik üretimi gibi). Toplam kayıp L=L₁+L₂+L₃. W<sub>xh</sub> sadece t=1'de kullanılır, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub> her adımda.</p>
-      <div class="ptrow" style="margin:0 0 10px; align-items:flex-end"><div class="ptcell"><label>x₁ (girdi)</label><input id="o_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>y₁ (hedef)</label><input id="o_y1" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₂ (hedef)</label><input id="o_y2" type="number" step="0.1" value="0.5"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="o_y3" type="number" step="0.1" value="-0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div>
+      
       <div id="rnnTreeWrapO2m" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
@@ -1685,7 +1690,7 @@
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-many, T<sub>x</sub>≠T<sub>y</sub>)</h3>
       <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Önce oku, sonra üret</b> (encoder-decoder; çeviri gibi). İlk T<sub>x</sub>=2 adımda (t=1,2) girdiler x₁,x₂ okunur ama <b>çıktı üretilmez</b> — sadece hafıza h oluşur (encoder). Sonraki T<sub>y</sub>=2 adımda (t=3,4) <b>girdi yoktur</b>, hücre hafızadan çıktılar ŷ₃,ŷ₄ üretir (decoder). Toplam kayıp L=L₃+L₄; erken adımlar kayba <b>sadece hafıza zinciri üzerinden</b> ulaşır.</p>
-      <div class="ptrow" style="margin:0 0 10px; align-items:flex-end"><div class="ptcell"><label>x₁ (girdi)</label><input id="d_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>x₂ (girdi)</label><input id="d_x2" type="number" step="0.1" value="-1"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="d_y3" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₄ (hedef)</label><input id="d_y4" type="number" step="0.1" value="0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div><div class="callout" style="margin:0 0 10px; font-size:12px">ℹ️ Gerçek encoder-decoder'larda encoder ve decoder <b>ayrı ağırlıklar</b> kullanır; burada öğrenme amaçlı basitleştirip aynı hücreyi (aynı W) 4 kez tekrarlıyoruz — gradyan mantığı (BPTT, toplama) birebir aynı.</div>
+      <div class="callout" style="margin:0 0 10px; font-size:12px">ℹ️ Gerçek encoder-decoder'larda encoder ve decoder <b>ayrı ağırlıklar</b> kullanır; burada öğrenme amaçlı basitleştirip aynı hücreyi (aynı W) 4 kez tekrarlıyoruz — gradyan mantığı (BPTT, toplama) birebir aynı.</div>
       <div id="rnnTreeWrapDec" class="xt-wrap acc open">
       <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
       <div class="acc-body">
@@ -6243,17 +6248,17 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610041704"></script>
-<script src="js/lesson-turev.js?v=202610041704"></script>
-<script src="js/lesson-xor.js?v=202610041704"></script>
-<script src="js/lesson-xor-arch.js?v=202610041704"></script>
-<script src="js/lesson-xor-maps.js?v=202610041704"></script>
-<script src="js/lesson-xor-epoch.js?v=202610041704"></script>
-<script src="js/lesson-nn.js?v=202610041704"></script>
-<script src="js/lesson-trig.js?v=202610041704"></script>
+<script src="js/lesson-linreg.js?v=202610041724"></script>
+<script src="js/lesson-turev.js?v=202610041724"></script>
+<script src="js/lesson-xor.js?v=202610041724"></script>
+<script src="js/lesson-xor-arch.js?v=202610041724"></script>
+<script src="js/lesson-xor-maps.js?v=202610041724"></script>
+<script src="js/lesson-xor-epoch.js?v=202610041724"></script>
+<script src="js/lesson-nn.js?v=202610041724"></script>
+<script src="js/lesson-trig.js?v=202610041724"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610041704"></script>
-<script src="js/lesson-rnn-soz.js?v=202610041704"></script>
-<script src="js/app.js?v=202610041704"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610041724"></script>
+<script src="js/lesson-rnn-soz.js?v=202610041724"></script>
+<script src="js/app.js?v=202610041724"></script>
 </body>
 </html>
