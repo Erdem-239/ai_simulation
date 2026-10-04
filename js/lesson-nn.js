@@ -64,14 +64,14 @@
   /* ---------- 5. bolum: "Butun resim" matris zinciri ----------
      Temsilci nokta (1,0) — XOR'daki POINTS[2] ile ayni sira/index. */
   function renderMatrixChain(){
-    const el = $('mfx1'); if(!el) return;   // sayfa henuz yoksa cik
+    const el = $('nnfx1'); if(!el) return;   // sayfa henuz yoksa cik
     const W = readWeights();
     const pt = POINTS[2];                    // (1,0)
     const r = forward(pt.x1, pt.x2, W);
     const fv = (id, v, d) => { const e = $(id); if(e) e.textContent = F(v, d===undefined?4:d); };
-    fv('mfx1', pt.x1, 0);  fv('mfx2', pt.x2, 0);
+    fv('nnfx1', pt.x1, 0);  fv('nnfx2', pt.x2, 0);
     fv('mfz1', r.h1_raw);  fv('mfz2', r.h2_raw);
-    fv('mfh1', r.a1);      fv('mfh2', r.a2);
+    fv('nnfh1', r.a1);      fv('nnfh2', r.a2);
     fv('mfzy', r.y_raw);   fv('mfp',  r.p);
 
     const hes = (id, satirlar) => { const e = $(id); if(e) e.innerHTML = satirlar.join('\n'); };

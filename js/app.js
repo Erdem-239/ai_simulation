@@ -1,3 +1,25 @@
+/* RNN köprü elemanları (data-zincir / data-vs) için anahtar→eleman önbelleği.
+   Eskiden her güncelleme `document.querySelectorAll('[data-zincir="…"]')` ile 240 bin düğümlü sayfayı
+   tarıyordu (186 pop-up × 2 sorgu → slider hareketi başına ~1 sn). Statik kaynaklar bir kez indekslenir;
+   açık pop-up'taki klonlar (#xtPop, küçük) her seferinde ayrıca aranır. */
+const __rz={z:null,v:null};
+function rnnIndex(){
+  if(__rz.z) return;
+  __rz.z=new Map(); __rz.v=new Map();
+  const add=(map,e,k)=>{ let a=map.get(k); if(!a){ a=[]; map.set(k,a); } a.push(e); };
+  document.querySelectorAll('[data-zincir]').forEach(e=>{ if(!e.closest('#xtPop')) add(__rz.z,e,e.getAttribute('data-zincir')); });
+  document.querySelectorAll('[data-vs]').forEach(e=>{ if(!e.closest('#xtPop')) add(__rz.v,e,e.getAttribute('data-vs')); });
+}
+function rnnLookup(which,attr,k){
+  rnnIndex();
+  const out=(__rz[which].get(k)||[]).slice();
+  const pop=document.getElementById('xtPop');
+  if(pop && !pop.hidden) pop.querySelectorAll('['+attr+'="'+k+'"]').forEach(e=>out.push(e));
+  return out;
+}
+const rnnZ=k=>rnnLookup('z','data-zincir',k);
+const rnnV=k=>rnnLookup('v','data-vs',k);
+
 /* ---- RNN hücre içi (computational graph) — many-to-one & many-to-many (Tx=Ty), 3 zaman adımı zincirlenmiş ---- */
 /* Fabrika: aynı hücre diyagramı birden fazla yerde kurulabilir (Simülasyon'daki #cellSvg ve
    "5️⃣ Bütün Resim"in içindeki sıkıştırılmış kopya). P.pre ≠ '' ise SVG içindeki id'ler
@@ -972,7 +994,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       if(tEl) tEl.innerHTML='✅ <b>Gerçek gradyanlar</b> (tek zaman adımı — toplama yok):<br>'
         +'∂L/∂W<sub>xh</sub> = <b style="color:var(--accent)">'+F(dWxh)+'</b> · ∂L/∂W<sub>hh</sub> = <b style="color:var(--accent)">'+F(dWhh)+'</b> · ∂L/∂b<sub>h</sub> = <b style="color:var(--accent)">'+F(db)+'</b><br>'
         +'∂L/∂W<sub>hy</sub> = <b style="color:var(--accent)">'+F(dWhy)+'</b> · ∂L/∂b<sub>y</sub> = <b style="color:var(--accent)">'+F(dby)+'</b>';
-      const zT=(ad,html)=>document.querySelectorAll('[data-zincir="t_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+      const zT=(ad,html)=>rnnZ('t_'+ad).forEach(e=>{ e.innerHTML=html; });
       const aT=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
       const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
       zT('zh', aT(NF,'z_h = W_xh·x + W_hh·h₋₁ + b_h\n    = ('+F(p.Wxh,2)+')('+F(p.x,2)+') + ('+F(p.Whh,2)+')('+F(p.hp,2)+') + '+F(p.b,2)+'\n    = '+F(p.Wxh*p.x)+' + '+F(p.Whh*p.hp)+' + '+F(p.b,2)+'\n    = '+F(z)));
@@ -1107,8 +1129,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       /* sözel cümle, kaynağın "🗣️ Sözel anlatım" sekmesindeki canlı yuvaya yazılır (lesson-rnn-soz.js yuvayı kurar);
          sekme kapalı/açık durumu dış kabukta durduğu için canlı güncelleme onu sıfırlamaz */
       const vsSet=(k,v)=>{ if(!k||!v) return; const h='<div class="xp-vs"><b>Şu anki sayılarla:</b> '+v+'</div>';
-        document.querySelectorAll('[data-vs="'+k+'"]').forEach(e=>{ if(e.closest('#xtPop')) popQueue(e,h); else e.innerHTML=h; }); };
-      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; vsSet(k,vs(name,t)); document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
+        rnnV(k).forEach(e=>{ if(e.closest('#xtPop')) popQueue(e,h); else e.innerHTML=h; }); };
+      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; vsSet(k,vs(name,t)); rnnZ(k).forEach(e=>{
         if(e.closest('#xtPop')) popQueue(e,html); else e.innerHTML=html;
       }); };
       const appF=(name,t)=>{ if(!cfg.KF) return; vsSet(cfg.KF(name,t),vf(name,t)); };
@@ -1184,7 +1206,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const line=(ad,a,filter)=>{ const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(F(a[t])); return '∂L/∂'+ad+' = '+ts.join(' + ')+' = <b style="color:var(--accent)">'+F(sum(a))+'</b>'; };
       if(tEl) tEl.innerHTML='✅ <b>Gerçek gradyanlar</b> (her ağırlığın adımlardaki katkılarının toplamı):<br>'
         +line('W<sub>xh</sub>',WXH,t=>inp[t-1])+'<br>'+line('W<sub>hh</sub>',WHH,t=>true)+'<br>'+line('b<sub>h</sub>',BH,t=>true)+'<br>'+line('W<sub>hy</sub>',WHY,t=>out[t-1])+'<br>'+line('b<sub>y</sub>',BY,t=>out[t-1]);
-      const zM=(ad,html)=>document.querySelectorAll('[data-zincir="'+pf+'_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+      const zM=(ad,html)=>rnnZ(pf+'_'+ad).forEach(e=>{ e.innerHTML=html; });
       const araM=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
       const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
       function uc(gradAd,a,t0,filter){
@@ -1245,7 +1267,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     setTxt('rcS5sum', F(sum5));
 
     /* ---- many-to-many (Tx=Ty) Geri Adım 1-5: aynı x/h₋₁/y/ağırlıklar, ama Adım 3'te iki kaynak toplanıyor ---- */
-    if($('rcM2S1sub')){
+    if($('rcM2S1sub') || ($('mfzh1') && $('rcM2_x1'))){   // Geri Adım kartları kalktı (#323): guard artık Bütün Resim'in kendi elemanlarına da bakar
       setTxt('rcM2S1sub', '('+F(yhat)+' − '+F(p.y,2)+')');
       setTxt('rcM2S1val', F(dyhat));
       setTxt('rcM2S2sub1', '('+F(dyhat)+')('+F(h)+')');
@@ -1364,7 +1386,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
           +'∂L/∂W<sub>hy</sub> = '+F(WHY[0])+' + '+F(WHY[1])+' + '+F(WHY[2])+' = <b style="color:var(--accent)">'+F(sm(WHY))+'</b><br>'
           +'∂L/∂b<sub>y</sub> = '+F(BY[0])+' + '+F(BY[1])+' + '+F(BY[2])+' = <b style="color:var(--accent)">'+F(sm(BY))+'</b>';
 
-        const zM=(ad,html)=>document.querySelectorAll('[data-zincir="m_'+ad+'"]').forEach(e=>{ e.innerHTML=html; });
+        const zM=(ad,html)=>rnnZ('m_'+ad).forEach(e=>{ e.innerHTML=html; });
         const araM=(bas,satir)=>'<b>'+bas+'</b><div class="xp-hes">'+satir+'</div>';
         const NF='📐 Şu anki sayılarla nasıl hesaplanıyor?', NB='🔗 Peki gradyan buradan nasıl çıkıyor?';
         const SB=['₁','₂','₃'];
@@ -1422,7 +1444,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
          ŷ/L'nin HANGİ çarpımlardan oluştuğunu adım adım gösteriyor —
          kullanıcının "zy'nin üstüne geldiğimde zy hangi çarpımlarla
          oluştu yazsın" isteğiyle eklendi. */
-      const zinF = (ad, html) => document.querySelectorAll('[data-zincir="r_' + ad + '"]').forEach(e => { e.innerHTML = html; });
+      const zinF = (ad, html) => rnnZ('r_' + ad).forEach(e => { e.innerHTML = html; });
       const araF = (bas, satir) => '<b>📐 ' + bas + '</b><div class="xp-hes">' + satir + '</div>';
       zinF('zh1',  araF('Şu anki sayılarla nasıl hesaplanıyor?', 'z_h⁽¹⁾ = W_xh·x₁ + W_hh·h₀ + b_h\n      = (' + F(p.Wxh,2) + ')(' + F(rx1,2) + ') + (' + F(p.Whh,2) + ')(' + F(rh0,2) + ') + ' + F(p.b,2) + '\n      = ' + F(p.Wxh*rx1) + ' + ' + F(p.Whh*rh0) + ' + ' + F(p.b,2) + '\n      = ' + F(rz1)));
       zinF('tanh1', araF('Şu anki sayılarla nasıl hesaplanıyor?', 'h₁ = tanh(z_h⁽¹⁾) = tanh(' + F(rz1) + ') = ' + F(rh1)));
@@ -1474,7 +1496,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
          katkının TOPLAMINI gösteriyoruz). Kullanıcının XOR'un ∂L/∂p
          pop-up'ını örnek gösterip "çok kısa anlatmışsın, böyle ayrıntılı
          olsun" demesiyle eklendi — atlanmamalı. */
-      const zin = (ad, html) => document.querySelectorAll('[data-zincir="r_' + ad + '"]').forEach(e => { e.innerHTML = html; });
+      const zin = (ad, html) => rnnZ('r_' + ad).forEach(e => { e.innerHTML = html; });
       const ara = (bas, satir) => '<b>🔗 ' + bas + '</b><div class="xp-hes">' + satir + '</div>';
       function uclu(gradAd, vals, cur, sonuc){
         const rows = vals.map((v,i) => '  t=' + (i+1) + ': ' + F(v) + (i===cur ? '  ← bu adım' : '')).join('\n');

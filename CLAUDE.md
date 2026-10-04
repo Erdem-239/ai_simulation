@@ -1219,3 +1219,22 @@ one-to-many `o_x1/o_y1..3`, Tx≠Ty `d_x1,d_x2,d_y3,d_y4`) bu sekmeye taşındı
 görünür; diğer 4 tür `.rc-inblk[data-rtin]` bloğu olarak gizli gelir, Bütün Resim'de tür butonuna basınca
 switcher o türün bloğunu gösterir. RNN modülünde artık `#rcWeightsBody` dışında `<input>` (range hariç) yok —
 doğrulandı.
+
+## RNN sayfası denetimi — 3 düzeltme (hız + id çakışması + ölü many-to-many bloğu)
+
+Kullanıcı "genel RNN sayfasını incele, öneride bulun" dedi; ölçerek bulunanlar (sonra "sen belirlediğin
+şekilde başla" dedi):
+1. **Kaydırıcı hareket başına ~1,1 sn** (CDP profili: %89 `querySelectorAll`). `render()`'ın köprü yazan
+   `zT/zM/zinF/zin/put/vsSet` yardımcıları her anahtar için `document.querySelectorAll('[data-zincir="…"]')`
+   ile 240 bin düğümlü sayfayı tarıyordu (186 pop-up × 2). Artık `rnnZ(k)`/`rnnV(k)` (app.js'in en başı):
+   statik kaynaklar bir kez `Map`'e indekslenir; açık pop-up klonları (`#xtPop`) her seferinde ayrıca aranır.
+   Sonuç: ~1100 ms → ~25-40 ms/olay. **Ders**: sayfada yüzlerce gizli kaynak varken özellik seçicili
+   `document.querySelectorAll`'ı sık çağrılan (render/input) yolda KULLANMA; indeksle.
+2. **RNN ile Neural Network aynı id'leri kullanıyordu** (`mfx1/mfx2/mfh1/mfh2`): `lesson-nn.js` `getElementById`
+   ile RNN'inkini bulup yazıyor, Neural'ın kendi "canlı yolculuk" kutuları "—" kalıyordu. Neural'ınkiler
+   `nnfx1/nnfx2/nnfh1/nnfh2` oldu (HTML + `lesson-nn.js`). Dosyada çift id kalmadı (doğrulandı).
+3. **many-to-many (Tx=Ty) Bütün Resim PR #323'ten beri TAMAMEN boştu** (her değer "—", 16 ileri 📐 köprüsü
+   boş): `render()`'daki m2m hesap bloğu silinen kartın elemanına (`if($('rcM2S1sub'))`) bağlıydı. Guard artık
+   `$('rcM2S1sub') || ($('mfzh1') && $('rcM2_x1'))`. Tüm `if($('…'))` guard'ları DOM'daki id'lerle karşılaştırıldı:
+   başka ölü guard yok. **Ders**: bir bölümü silerken sadece onun id'lerini DEĞİL, `render()`'daki koşulların
+   (`if($('…'))`) o id'lere bağlı olup olmadığını da tara — ölü blok sessizce hiç çalışmaz.
