@@ -1211,3 +1211,11 @@ orada). `data-stage` renkleri içeriğe bağlı kaldı (Simülasyon=6 → RNN i�
 Bütün Resim=5). Eski "2) Zincirleme" sechead'i "🔬 Tek Hücre — ileri yayılım ve geri yayılım (BPTT)"
 oldu. **Ders**: bir tür seçicinin hem içeriği hem BAŞKA bir aşamanın bloklarını yönetmesi, o aşama
 kapalı/boş görününce "bozuk sayfa" izlenimi veriyor — seçici, yönettiği içeriğin yanında dursun.
+
+**Tüm RNN girdileri tek yerde (🎛️ Ağırlıklar & girdiler sekmesi)**: kullanıcı "heryerde girdi var, şunları bi
+yere topla" dedi. Bütün Resim'deki tür başına girdi satırları (many-to-one `ru_x1..3/ru_y`, m2m `rcM2_x1..3/y1..3`,
+one-to-many `o_x1/o_y1..3`, Tx≠Ty `d_x1,d_x2,d_y3,d_y4`) bu sekmeye taşındı (id'ler aynı kaldığı için
+`render()` dokunulmadan çalıştı; DOM düğümü taşındı, kopyalanmadı). Tek Hücre girdileri (`#rcTekInputs`) hep
+görünür; diğer 4 tür `.rc-inblk[data-rtin]` bloğu olarak gizli gelir, Bütün Resim'de tür butonuna basınca
+switcher o türün bloğunu gösterir. RNN modülünde artık `#rcWeightsBody` dışında `<input>` (range hariç) yok —
+doğrulandı.

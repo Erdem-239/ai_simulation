@@ -1619,3 +1619,7 @@ body.xt-full-lock{overflow:hidden}
 .xt-pop .xp-sozacc.open .xp-sozbody{display:block}
 .xt-pop .xp-sozbody .xp-vs{margin-top:8px}
 .xt-pop .xp-sozbody .xp-soz{margin-top:8px}
+
+/* RNN ağırlıklar sekmesindeki girdi satırları (tür başına) */
+.rc-inlab{font-size:12px; font-weight:700; color:#8fe0a8; margin:6px 0 4px}
+.rc-inblk{margin-top:4px; padding-top:2px; border-top:1px dashed rgba(143,224,168,.25)}
