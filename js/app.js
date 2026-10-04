@@ -1836,17 +1836,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   { const {L}=render(); rcCostHist.push(L); rcUpdateUI(L); }
 })();
 
-/* ---- RNN'nin farklı kullanım şekilleri: tip seçici — ikisi de artık gerçek canlı hücre, sadece Geri Adım kartları many-to-one'a özgü ---- */
+/* ---- 6️⃣ Bütün Resim: RNN türü seçici (Tek Hücre / many-to-one / many-to-many Tx=Ty / one-to-many / Tx≠Ty) — sadece o türün bütün resmi gösterilir; Simülasyon yalnız Tek Hücre ---- */
 (function(){
   const btns=document.querySelectorAll('.rnn-type-btn');
   if(!btns.length) return;
-  const rnnTypeTek=document.getElementById('rnnTypeTek');
-  const rnnFwdCols=document.getElementById('rnnFwdCols');
-  const gAdimSectionM2m=document.getElementById('gAdimSectionM2m');
-  const gAdimSectionM2o=document.getElementById('gAdimSectionM2o');
   const typeNote=document.getElementById('rnnTypeNote');
-  const rnnTypeOther=document.getElementById('rnnTypeOther');
-  const rnnSimTek=document.getElementById('rnnSimTek');
   // "5️⃣ Bütün Resim" (eski adıyla rnn-fc-left/.ru-acc-row) artık Simülasyon'dan
   // çıkarılıp kendi aşamasına taşındı — sadece many-to-one'da içerik var,
   // diğer mimarilerde kısa bir not gösteriliyor (bkz. index.html).
@@ -1856,7 +1850,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   const bigPictureO2m=document.getElementById('rnnBigPictureO2m');
   const bigPictureDec=document.getElementById('rnnBigPictureDec');
   const typeNoteHtml={
-    tek:'<b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.',
+    tek:'<b>Tek Hücre</b> — tek bir RNN hücresinin ileri yolu ve geri yolu. Hücrenin içini adım adım yukarıdaki Simülasyon\'da kuruyoruz; burada bütün resmi, pop-up\'larıyla birlikte görürsün.',
     m2o:'<b>many-to-one</b> — bir dizi girdi → tek çıktı. Çıktı (ŷ) sadece SON adımda var; öncekiler sadece hafızayı (h) sonraki adıma taşır. Örnek: duygu analizi (cümle sonunda tek bir sınıf).',
     o2m:'<b>one-to-many</b> — TEK girdi → bir dizi çıktı. Girdi sadece t=1\'de verilir, sonraki adımlarda girdi yoktur; hücre hafızasından devam eder ve her adımda bir çıktı üretir. Örnek: müzik üretimi, görsel altyazı.',
     dec:'<b>many-to-many (T<sub>x</sub>≠T<sub>y</sub>)</b> — önce girdi dizisini oku (çıktı yok), sonra çıktı dizisini üret (girdi yok): encoder-decoder. Örnek: makine çevirisi.',
@@ -1867,14 +1861,10 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       btns.forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       const rt=b.dataset.rt;
-      if(rnnTypeTek) rnnTypeTek.style.display = (rt==='tek') ? 'block' : 'none';
-      if(rnnTypeOther) rnnTypeOther.style.display = (rt==='tek') ? 'none' : 'block';
-      if(rnnSimTek) rnnSimTek.style.display = (rt==='tek') ? 'block' : 'none';
       if(typeNote) typeNote.innerHTML=typeNoteHtml[rt]||'';
       if(bigPictureM2o) bigPictureM2o.style.display = (rt==='m2o') ? 'block' : 'none';
       if(bigPictureM2m) bigPictureM2m.style.display = (rt==='m2mEq') ? 'block' : 'none';
       if(bigPictureTek) bigPictureTek.style.display = (rt==='tek') ? 'block' : 'none';
-      { const ti=document.getElementById('rcTekInputs'); if(ti) ti.style.display=(rt==='tek')?'':'none'; }
       if(bigPictureO2m) bigPictureO2m.style.display = (rt==='o2m') ? 'block' : 'none';
       if(bigPictureDec) bigPictureDec.style.display = (rt==='dec') ? 'block' : 'none';
     });

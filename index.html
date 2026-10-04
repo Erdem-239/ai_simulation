@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610041525"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610041704"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610041525">
+<link rel="stylesheet" href="css/style.css?v=202610041704">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 15:25 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:04 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -720,10 +720,12 @@
     </div>
   </div>
 
-  <div style="margin:0 0 12px">
+  <div class="tpl-cl" data-stage="w">
+    <div class="tpl-head" id="rcWeightsHead"><span>🎛️ Ağırlıklar &amp; girdiler — Simülasyon ve Bütün Resim'de ortak</span><span class="chev">▸</span></div>
+    <div class="tpl-body" id="rcWeightsBody">
     <div id="rcSliderAnchor"></div>
-    <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin-bottom:12px">
-      <h3 style="color:var(--green)">🎛️ Ağırlıklar (5️⃣ Bütün Resim ve 6️⃣ Simülasyon'da, tüm RNN türlerinde ortak) — oyna, her şey canlı değişir</h3>
+    <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin:0">
+      <h3 style="color:var(--green)">🎛️ Oyna — her şey canlı değişir</h3>
       <div class="ptrow" id="rcTekInputs" style="margin-bottom:6px">
         <div class="ptcell"><label>x (girdi)</label><input id="rc_x" type="number" step="0.1" value="2"></div>
         <div class="ptcell"><label>h₋₁ (önceki hafıza)</label><input id="rc_hp" type="number" step="0.1" value="0.5"></div>
@@ -737,138 +739,23 @@
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">b<sub>y</sub></span><input type="range" id="rc_by" min="-2" max="2" step="0.0001" value="0.2" style="width:130px"><b id="rc_by_v" style="color:var(--accent); min-width:48px; text-align:right">0.20</b></div>
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">α</span><input type="range" id="rc_alpha" min="0.01" max="1" step="0.01" value="0.1" style="width:130px"><b id="rc_alpha_v" style="color:var(--accent); min-width:48px; text-align:right">0.10</b></div>
       </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. Üstteki x / h₋₁ / y kutuları sadece Tek Hücre'nin; diğer türlerin girdileri kendi bölümlerinde. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:10px">Ağırlıklar tüm türlerde (Tek Hücre, many-to-one, many-to-many, one-to-many, Tx≠Ty) ortak. x / h₋₁ / y kutuları Tek Hücre'nin (Simülasyon ve Tek Hücre bütün resmi); diğer türlerin girdileri Bütün Resim'de o türü seçince görünür. Notasyon hücre diyagramıyla aynı: &nbsp;z<sub>h</sub> = W<sub>xh</sub>·x + W<sub>hh</sub>·h₋₁ + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(z<sub>h</sub>), &nbsp; z<sub>y</sub> = W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>, &nbsp; ŷ = z<sub>y</sub>.</div>
     </div>
-
-    <div id="rnnTypeTek">
-
-    <p style="font-size:14px; color:#ccd5e8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
-
-  </div>
-  </div><!-- /slider wrapper -->
-  <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed" id="rnnBigPictureHead"><span>5️⃣ Bütün Resim — ileri ve geri yol (Tek Hücre)</span><span class="chev">▸</span></div>
-    <div class="tpl-body closed" id="rnnBigPictureBody">
-    
-    
-    <div id="rnnBigPictureTek">
-
-    <div class="pts" style="border-left:3px solid var(--accent); margin:0">
-      <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + geri yayılım ağacı (tek hücre)</h3>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">En küçük hâl: <b>tek hücre, tek zaman adımı</b>. İleri yolda x ve h₋₁ → z<sub>h</sub> → h → z<sub>y</sub> → ŷ → L. Geri yolda kayıp L'den başlayıp aynı yolu tersten yürürüz; z<sub>h</sub>'de dallanıp üç ağırlığa (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) ve önceki hafızaya (h₋₁) ulaşırız. Burada zincir yok, o yüzden her yaprak doğrudan gerçek gradyandır — toplama gerekmez. Her kutuya/oka gel: nasıl bulunduğunu canlı sayılarla görürsün.</p>
-      <div id="rnnTreeWrapTek" class="xt-wrap acc open">
-      <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
-      <div class="acc-body">
-      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(tek hücre, tek zaman adımı)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x<span class="xf-val" id="tfx">—</span></div><div class="xf-box gh">h₋₁<span class="xf-val" id="tfhp">—</span></div><div class="xf-kolad">girdi + önceki hafıza</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{xh}x{+}W_{hh}h_{-1}{+}b_h \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="tfzh">z<sub>h</sub><span class="xf-val" id="tfzhv">—</span></div><div class="xf-kolad">ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_tanh" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="tfh">h<span class="xf-val" id="tfhv">—</span></div><div class="xf-kolad">yeni hafıza</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{hy}h{+}b_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="tfzy">z<sub>y</sub><span class="xf-val" id="tfzyv">—</span></div><div class="xf-kolad">çıktı toplamı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_yhat" tabindex="0" role="button" aria-label="bu adimi anlat">\( \hat y{=}z_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="tfyhat">ŷ<span class="xf-val" id="tfyhatv">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tfrac12(\hat y{-}y)^2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl" id="tfL">L<span class="xf-val" id="tfLv">—</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="bp-live"><div class="xf-baslik" style="margin-top:6px">🎮 CANLI ÇALIŞTIR <span>(devre diyagramı — İleri ▶ / ◀ BPTT'ye bas; yukarıdaki akış ve aşağıdaki ağaçta ilgili kutu aynı anda yanar)</span></div>
-      <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 6px">
-        <button class="addbtn" id="bsCellStep" style="background:var(--blue); color:#fff; padding:5px 10px; font-size:12px">İleri ▶ adım</button>
-        <button class="addbtn" id="bsCellAuto" style="background:var(--blue); color:#fff; opacity:.8; padding:5px 10px; font-size:12px">İleri ⏩</button>
-        <button class="addbtn" id="bsCellBack" style="background:var(--accent); color:#101830; padding:5px 10px; font-size:12px">◀ BPTT adım</button>
-        <button class="addbtn" id="bsCellBackAuto" style="background:var(--accent); color:#101830; opacity:.8; padding:5px 10px; font-size:12px">◀ BPTT ⏩</button>
-        <button class="addbtn" id="bsCellRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line); padding:5px 10px; font-size:12px">↺ Sıfırla</button>
-      </div>
-      <div class="bp-live-grid">
-        <div class="cell-diagram" style="overflow-x:auto"><svg id="bsCellSvg" role="img"></svg></div>
-        <div class="cell-side">
-          <div class="acc bp-nota" style="margin:0 0 8px">
-        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
-        <div class="acc-body">
-          <div style="display:grid; grid-template-columns:1fr; gap:2px 14px; font-size:12px; color:#ccd5e8; line-height:1.6">
-            <div><b>x</b> — o adımın girdisi</div>
-            <div><b>h₋₁</b> — önceki hafıza</div>
-            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
-            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
-            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
-            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
-            <div><b>y</b> — gerçek cevap</div>
-            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
-            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
-            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
-            <div><b>W<sub>xh</sub></b> — x → h</div>
-            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
-            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
-            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
-            <div><b>α</b> — öğrenme oranı</div>
-            <div><b>(1−h²)</b> — tanh türevi</div>
-          </div>
-        </div>
-      </div>
-          <div id="bsCellFormula" class="work" style="min-height:48px; font-size:12.5px; line-height:1.7">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
-          <div id="bsCellInfo" class="callout" style="margin:8px 0 0; font-size:12px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
-        </div>
-      </div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım <b>L</b>'den başlayıp aynı yolu <b>tersten</b> yürür.</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan beş yaprağa</div>
-      <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, ŷ üzerinden z<sub>y</sub>'ye iner. z<sub>y</sub>'de <b>dallanır</b>: iki dal çıktı ağırlıklarına (W<sub>hy</sub>, b<sub>y</sub>), bir dal h'ye girer. h'den tanh türeviyle z<sub>h</sub>'ye inilir; orada üç dal gizli ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>), bir dal h₋₁'e gider. <b>Her ok bir türev.</b></p>
-      <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
-      <div class="xt-scroll"><div class="xt-tree"><div class="xt-node"><div class="xt-box g1 kok">\( L \)<span class="xt-cap">kayıp</span><span class="xt-val" id="ttLv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g1" data-pop="t_Lyhat" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial L}{\partial \hat y}=\hat y-y \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g1" id="ttyhat" data-pop="t_Lyhat" tabindex="0" role="button">\( \hat y \)<span class="xt-cap">tahmin</span><span class="xt-val" id="ttyhatv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g1" data-pop="t_yhatzy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial \hat y}{\partial z_y}=1 \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g1" id="ttzy" data-pop="t_yhatzy" tabindex="0" role="button">\( z_y \)<span class="xt-cap">dz<sub>y</sub>=ŷ−y</span><span class="xt-val" id="ttzyv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g2" data-pop="t_zyWhy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial W_{hy}}=h \)</span><span class="xt-ar">→</span><div class="xt-box g2 yaprak" id="ttWhy">dW<sub>hy</sub><span class="xt-val" id="ttWhyv">—</span></div></div><div class="xt-kid"><span class="xt-edge g2" data-pop="t_zyby" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial b_y}=1 \)</span><span class="xt-ar">→</span><div class="xt-box g2 yaprak" id="ttby">db<sub>y</sub><span class="xt-val" id="ttbyv">—</span></div></div><div class="xt-kid"><span class="xt-edge g3" data-pop="t_zyh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial h}=W_{hy} \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g3" id="tth" data-pop="t_zyh" tabindex="0" role="button">\( h \)<span class="xt-cap">yeni hafıza</span><span class="xt-val" id="tthv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g3" data-pop="t_hzh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial h}{\partial z_h}=1-h^2 \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g3" id="ttzh" data-pop="t_hzh" tabindex="0" role="button">\( z_h \)<span class="xt-cap">ham toplam</span><span class="xt-val" id="ttzhv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhWxh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial W_{xh}}=x \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttWxh">dW<sub>xh</sub><span class="xt-val" id="ttWxhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhWhh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial W_{hh}}=h_{-1} \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttWhh">dW<sub>hh</sub><span class="xt-val" id="ttWhhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhbh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial b_h}=1 \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttbh">db<sub>h</sub><span class="xt-val" id="ttbhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g3" data-pop="t_zhhp" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial h_{-1}}=W_{hh} \)<span style="opacity:.7"> ← zincirin parçasıysa BPTT</span></span><span class="xt-ar">→</span><div class="xt-box g3" id="tthp" data-pop="t_zhhp" tabindex="0" role="button">\( h_{-1} \)<span class="xt-cap">önceki adıma akar</span><span class="xt-val" id="tthpv">—</span></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
-      <div class="xt-leg">
-        <span class="xt-lg g1">Gövde — L → ŷ → z<sub>y</sub></span>
-        <span class="xt-lg g2">Çıktı ağırlıkları — W<sub>hy</sub>, b<sub>y</sub></span>
-        <span class="xt-lg g3">Geri — h → z<sub>h</sub> → h₋₁</span>
-        <span class="xt-lg g4">Gizli ağırlıklar — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub></span>
-      </div>
-      <div class="callout" style="margin:8px 0 0; font-size:11.5px; line-height:1.6">🍃 <b>Beş yaprak = beş gerçek gradyan.</b> Tek zaman adımı olduğu için her yaprak toplanmadan doğrudan ağırlığın gradyanıdır. Zincire geçince (many-to-one / many-to-many) aynı ağırlık her adımda yeniden kullanılır ve katkılar toplanır.</div>
-      <div class="callout" id="ttTotal" style="margin:8px 0 0"></div>
-
-      <div class="xt-src" id="xtsrc-t_zh"><div class="xp-bas">z<sub>h</sub> — ham toplam</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat">Üç parça toplanır: girdi katkısı, önceki hafıza katkısı, sapma.</div><div class="xp-zin" data-zincir="t_zh"></div></div>
-      <div class="xt-src" id="xtsrc-t_tanh"><div class="xp-bas">h — yeni hafıza</div><div class="eq">\( h=\tanh(z_h) \)</div><div class="xp-sat">z_h'yi (−1,1) aralığına sıkıştırır. Bu h hem çıktıya gider hem (zincirin parçasıysa) bir sonraki adıma.</div><div class="xp-zin" data-zincir="t_tanh"></div></div>
-      <div class="xt-src" id="xtsrc-t_zy"><div class="xp-bas">z<sub>y</sub> — çıktı toplamı</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat">Çıktı katmanı: h'yi W<sub>hy</sub> ile çarpıp b<sub>y</sub> ekler.</div><div class="xp-zin" data-zincir="t_zy"></div></div>
-      <div class="xt-src" id="xtsrc-t_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon: çıktı aktivasyonu özdeşlik.</div><div class="xp-zin" data-zincir="t_yhat"></div></div>
-      <div class="xt-src" id="xtsrc-t_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek cevabın farkının karesinin yarısı. <b>Geri yayılım buradan başlar.</b></div><div class="xp-zin" data-zincir="t_L"></div></div>
-      <div class="xt-src" id="xtsrc-t_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet): dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div><div class="xp-zin" data-zincir="t_Lyhat"></div></div>
-      <div class="xt-src" id="xtsrc-t_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) → türev <b>1</b> (<span class="xp-k">K3</span>'ün en basit hâli). Sinyal z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div><div class="xp-zin" data-zincir="t_yhatzy"></div></div>
-      <div class="xt-src" id="xtsrc-t_zyWhy"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial W_{hy}} \)</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat"><span class="xp-k">K3</span>: h sabit → türev h.</div><div class="xp-son">Tek zaman adımı olduğu için bu yaprak doğrudan gerçek gradyan.</div><div class="xp-zin" data-zincir="t_zyWhy"></div></div>
-      <div class="xt-src" id="xtsrc-t_zyby"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial b_y}=1 \)</div><div class="xp-sat">Bias'ın sabit-1-girdisi (<span class="xp-k">K3</span>).</div><div class="xp-zin" data-zincir="t_zyby"></div></div>
-      <div class="xt-src" id="xtsrc-t_zyh"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial h} \) — hata buradan h'ye akar</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat">h'ye göre türev: W<sub>hy</sub> sabit katsayı → <span class="xp-k">K3</span>.</div><div class="xp-son">Sonuç: \( W_{hy} \).</div><div class="xp-zin" data-zincir="t_zyh"></div></div>
-      <div class="xt-src" id="xtsrc-t_hzh"><div class="xp-bas">\( \tfrac{\partial h}{\partial z_h} \) — tanh'ın türevi</div><div class="eq">\( h=\tanh(z_h) \)</div><div class="xp-sat">\( \tanh'(z)=1-h^2 \) — h ileri geçişte zaten hesaplandı.</div><div class="xp-son">Sonuç: \( 1-h^2 \).</div><div class="xp-zin" data-zincir="t_hzh"></div></div>
-      <div class="xt-src" id="xtsrc-t_zhWxh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial W_{xh}}=x \)</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat"><span class="xp-k">K3</span>: x katsayı → türev x.</div><div class="xp-zin" data-zincir="t_zhWxh"></div></div>
-      <div class="xt-src" id="xtsrc-t_zhWhh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial W_{hh}}=h_{-1} \)</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat"><span class="xp-k">K3</span>: önceki hafıza katsayı → türev h₋₁.</div><div class="xp-zin" data-zincir="t_zhWhh"></div></div>
-      <div class="xt-src" id="xtsrc-t_zhbh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial b_h}=1 \)</div><div class="xp-sat">Bias'ın sabit-1-girdisi (<span class="xp-k">K3</span>).</div><div class="xp-zin" data-zincir="t_zhbh"></div></div>
-      <div class="xt-src" id="xtsrc-t_zhhp"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial h_{-1}}=W_{hh} \) — zincirin kapısı</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat">h₋₁'e göre türev: W<sub>hh</sub>. <b>Tek hücrede</b> h₋₁ bir girdi olduğu için sinyal burada biter. Hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ zaman adımına akar — işte BPTT; many-to-one ve many-to-many sekmelerinde görürsün.</div><div class="xp-zin" data-zincir="t_zhhp"></div></div>
-
-      </div>
-      </div>
-    </div>
-    </div>
-    
-    
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>6️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — Tek Hücre</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-    <div class="sechead rnn-toggle" data-rnnsec="2">2) Zincirleme — gerçek 3 adımlı ileri + geri yayılım <span class="chev">▸</span></div>
+    <p style="font-size:14px; color:#ccd5e8; margin-top:0">En küçük parçadan başlayalım: <b>TEK bir RNN hücresi, TEK bir zaman adımı</b>. Lineer regresyondaki hücreyle neredeyse aynı — tek fark, girdiye ek olarak bir de <b>h₋₁</b> (önceki hafıza) giriyor. Aşağıdaki diyagramda bir düğüme tıkla, ya da <b style="color:#ffd24a">İleri ▶</b> / <b style="color:#f0a032">◀ BPTT</b> ile adım adım izle.</p>
+    <div class="sechead rnn-toggle" data-rnnsec="2">🔬 Tek Hücre — ileri yayılım ve geri yayılım (BPTT) <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody2">
-
-    <p style="font-size:14px; color:#ccd5e8; margin-top:0">Önce TEK bir RNN hücresinin içine bak, sonra aynı hücreyi zincirleyelim: aynı ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub>) zaman içinde <b>tekrar tekrar</b> kullanılıyor, h bir adımdan diğerine taşınıyor. Aşağıdaki canlı hücre, seçtiğin mimariye göre gerçekten değişiyor — bir mimariye tıkla, aynı hücrenin nasıl farklı bağlandığını gör:</p>
-
-    <div class="rnn-type-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px">
-      <button class="rnn-type-btn active" data-rt="tek">Tek Hücre</button>
-      <button class="rnn-type-btn" data-rt="m2o">many-to-one</button>
-      <button class="rnn-type-btn" data-rt="m2mEq">many-to-many (T<sub>x</sub>=T<sub>y</sub>)</button>
-      <button class="rnn-type-btn" data-rt="o2m">one-to-many</button>
-      <button class="rnn-type-btn" data-rt="dec">many-to-many (T<sub>x</sub>≠T<sub>y</sub>)</button>
-    </div>
-    <div class="callout" id="rnnTypeNote" style="margin:0 0 14px">
-      <b>Tek Hücre</b> — zincire başlamadan önce TEK bir RNN hücresinin içini gör: ileri yayılım, geri yayılım, eğitim döngüsü, kayıp yüzeyi. Zincirlemeden önceki ilk adım.
-    </div>
-
-    <div class="rc-float" id="rcFloatWrap" style="display:none">
-      <div class="rc-float-head" id="rcFloatHead">
-        <span>🎛️ Ağırlıklar</span>
-        <span class="rc-float-btns">
-          <span class="rc-float-toggle" id="rcFloatToggle">▾</span>
-          <span class="rc-float-close" id="rcFloatClose" title="Kapat">✕</span>
-        </span>
-      </div>
-      <div class="rc-float-body" id="rcFloatBody"></div>
-    </div>
 
     <div id="rnnSimTek">
     <div style="position:relative; margin-bottom:2px">
       <span class="dbg-badge">4</span>
       <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
-      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu). Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı ileri+geri yayılım, aşağıda 2) Zincirleme'de.)</span></p>
+      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu). Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı zincir ve diğer RNN türleri: 6️⃣ Bütün Resim'de.)</span></p>
     </div>
     <div class="sc-cols">
       <div class="sc-center">
@@ -1198,13 +1085,109 @@
       </div>
     </div>
     </div><!-- /gAdimSection -->
-    </div><!-- /rnnSimTek -->
-    <div id="rnnTypeOther" style="display:none">
-<div id="rnnBigPictureM2o" style="display:none">
+    </div>
+
+    </div><!-- /rnnBody2 -->
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed" id="rnnBigPictureHead"><span>6️⃣ Bütün Resim — ileri ve geri yol (5 RNN türü)</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed" id="rnnBigPictureBody">
+    <p style="font-size:13.5px; color:#ccd5e8; margin:0 0 4px">Aynı hücrenin farklı bağlanışlarını seç — her türün bütün resmi (ileri yol, canlı diyagram, geri yayılım ağacı, pop-up'lar) aşağıda açılır:</p>
+    <div class="rnn-type-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px">
+      <button class="rnn-type-btn active" data-rt="tek">Tek Hücre</button>
+      <button class="rnn-type-btn" data-rt="m2o">many-to-one</button>
+      <button class="rnn-type-btn" data-rt="m2mEq">many-to-many (T<sub>x</sub>=T<sub>y</sub>)</button>
+      <button class="rnn-type-btn" data-rt="o2m">one-to-many</button>
+      <button class="rnn-type-btn" data-rt="dec">many-to-many (T<sub>x</sub>≠T<sub>y</sub>)</button>
+    </div>
+    <div class="callout" id="rnnTypeNote" style="margin:0 0 14px">
+      <b>Tek Hücre</b> — tek bir RNN hücresinin ileri yolu ve geri yolu. Hücrenin içini adım adım yukarıdaki Simülasyon'da kuruyoruz; burada bütün resmi, pop-up'larıyla birlikte görürsün.
+    </div>
+    <div id="rnnBigPictureTek">
+
+    <div class="pts" style="border-left:3px solid var(--accent); margin:0">
+      <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + geri yayılım ağacı (tek hücre)</h3>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px">En küçük hâl: <b>tek hücre, tek zaman adımı</b>. İleri yolda x ve h₋₁ → z<sub>h</sub> → h → z<sub>y</sub> → ŷ → L. Geri yolda kayıp L'den başlayıp aynı yolu tersten yürürüz; z<sub>h</sub>'de dallanıp üç ağırlığa (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>) ve önceki hafızaya (h₋₁) ulaşırız. Burada zincir yok, o yüzden her yaprak doğrudan gerçek gradyandır — toplama gerekmez. Her kutuya/oka gel: nasıl bulunduğunu canlı sayılarla görürsün.</p>
+      <div id="rnnTreeWrapTek" class="xt-wrap acc open">
+      <div class="acc-head"><span class="ac">▸</span> 🗺️ Bütün resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kapatıp kartlara odaklanabilirsin</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+      <div class="acc-body">
+      <div class="xf-baslik">▶ İLERİ YOL — girdiden kayba <span>(tek hücre, tek zaman adımı)</span></div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x<span class="xf-val" id="tfx">—</span></div><div class="xf-box gh">h₋₁<span class="xf-val" id="tfhp">—</span></div><div class="xf-kolad">girdi + önceki hafıza</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{xh}x{+}W_{hh}h_{-1}{+}b_h \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="tfzh">z<sub>h</sub><span class="xf-val" id="tfzhv">—</span></div><div class="xf-kolad">ham toplam</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_tanh" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tanh \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh" id="tfh">h<span class="xf-val" id="tfhv">—</span></div><div class="xf-kolad">yeni hafıza</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W_{hy}h{+}b_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="tfzy">z<sub>y</sub><span class="xf-val" id="tfzyv">—</span></div><div class="xf-kolad">çıktı toplamı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_yhat" tabindex="0" role="button" aria-label="bu adimi anlat">\( \hat y{=}z_y \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy" id="tfyhat">ŷ<span class="xf-val" id="tfyhatv">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div><div class="xf-ok"><span class="xf-chip" data-pop="t_L" tabindex="0" role="button" aria-label="bu adimi anlat">\( \tfrac12(\hat y{-}y)^2 \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gl" id="tfL">L<span class="xf-val" id="tfLv">—</span></div><div class="xf-kolad">kayıp</div></div></div></div><div class="bp-live"><div class="xf-baslik" style="margin-top:6px">🎮 CANLI ÇALIŞTIR <span>(devre diyagramı — İleri ▶ / ◀ BPTT'ye bas; yukarıdaki akış ve aşağıdaki ağaçta ilgili kutu aynı anda yanar)</span></div>
+      <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 6px">
+        <button class="addbtn" id="bsCellStep" style="background:var(--blue); color:#fff; padding:5px 10px; font-size:12px">İleri ▶ adım</button>
+        <button class="addbtn" id="bsCellAuto" style="background:var(--blue); color:#fff; opacity:.8; padding:5px 10px; font-size:12px">İleri ⏩</button>
+        <button class="addbtn" id="bsCellBack" style="background:var(--accent); color:#101830; padding:5px 10px; font-size:12px">◀ BPTT adım</button>
+        <button class="addbtn" id="bsCellBackAuto" style="background:var(--accent); color:#101830; opacity:.8; padding:5px 10px; font-size:12px">◀ BPTT ⏩</button>
+        <button class="addbtn" id="bsCellRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line); padding:5px 10px; font-size:12px">↺ Sıfırla</button>
+      </div>
+      <div class="bp-live-grid">
+        <div class="cell-diagram" style="overflow-x:auto"><svg id="bsCellSvg" role="img"></svg></div>
+        <div class="cell-side">
+          <div class="acc bp-nota" style="margin:0 0 8px">
+        <div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim?</div>
+        <div class="acc-body">
+          <div style="display:grid; grid-template-columns:1fr; gap:2px 14px; font-size:12px; color:#ccd5e8; line-height:1.6">
+            <div><b>x</b> — o adımın girdisi</div>
+            <div><b>h₋₁</b> — önceki hafıza</div>
+            <div><b>z<sub>h</sub></b> — gizli katmanın ham toplamı: W<sub>xh</sub>x+W<sub>hh</sub>h₋₁+b<sub>h</sub></div>
+            <div><b>h</b> — yeni hafıza = tanh(z<sub>h</sub>)</div>
+            <div><b>z<sub>y</sub></b> — çıktı katmanının ham toplamı: W<sub>hy</sub>h+b<sub>y</sub></div>
+            <div><b>ŷ</b> — modelin tahmini = z<sub>y</sub></div>
+            <div><b>y</b> — gerçek cevap</div>
+            <div><b>L</b> — kayıp ½(ŷ−y)²</div>
+            <div><b>∂L/∂z<sub>y</sub></b> — z<sub>y</sub>'ye ulaşan geri-sinyal (çıktı katmanı)</div>
+            <div><b>∂L/∂z<sub>h</sub></b> — z<sub>h</sub>'ye ulaşan geri-sinyal (gizli katman)</div>
+            <div><b>W<sub>xh</sub></b> — x → h</div>
+            <div><b>W<sub>hh</sub></b> — h₋₁ → h (recurrent)</div>
+            <div><b>W<sub>hy</sub></b> — h → ŷ</div>
+            <div><b>b<sub>h</sub>, b<sub>y</sub></b> — sapmalar</div>
+            <div><b>α</b> — öğrenme oranı</div>
+            <div><b>(1−h²)</b> — tanh türevi</div>
+          </div>
+        </div>
+      </div>
+          <div id="bsCellFormula" class="work" style="min-height:48px; font-size:12.5px; line-height:1.7">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
+          <div id="bsCellInfo" class="callout" style="margin:8px 0 0; font-size:12px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
+        </div>
+      </div></div><div class="xf-donus">↩ <b>İleri yol burada bitti.</b> Geri yayılım <b>L</b>'den başlayıp aynı yolu <b>tersten</b> yürür.</div><div class="xf-baslik" style="margin-top:2px">◀ GERİ YOL — kayıptan beş yaprağa</div>
+      <p class="xt-sub">Gövde <b>kayıptan (L)</b> başlar, ŷ üzerinden z<sub>y</sub>'ye iner. z<sub>y</sub>'de <b>dallanır</b>: iki dal çıktı ağırlıklarına (W<sub>hy</sub>, b<sub>y</sub>), bir dal h'ye girer. h'den tanh türeviyle z<sub>h</sub>'ye inilir; orada üç dal gizli ağırlıklara (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>), bir dal h₋₁'e gider. <b>Her ok bir türev.</b></p>
+      <div class="xt-ara">🖱️ <b>Bir okun üstüne gel</b> — o türevin nasıl bulunduğu, adım adım, hemen orada açılır. <span style="opacity:.75">(sabitlemek için tıkla · kapatmak için Esc)</span></div>
+      <div class="xt-scroll"><div class="xt-tree"><div class="xt-node"><div class="xt-box g1 kok">\( L \)<span class="xt-cap">kayıp</span><span class="xt-val" id="ttLv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g1" data-pop="t_Lyhat" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial L}{\partial \hat y}=\hat y-y \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g1" id="ttyhat" data-pop="t_Lyhat" tabindex="0" role="button">\( \hat y \)<span class="xt-cap">tahmin</span><span class="xt-val" id="ttyhatv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g1" data-pop="t_yhatzy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial \hat y}{\partial z_y}=1 \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g1" id="ttzy" data-pop="t_yhatzy" tabindex="0" role="button">\( z_y \)<span class="xt-cap">dz<sub>y</sub>=ŷ−y</span><span class="xt-val" id="ttzyv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g2" data-pop="t_zyWhy" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial W_{hy}}=h \)</span><span class="xt-ar">→</span><div class="xt-box g2 yaprak" id="ttWhy">dW<sub>hy</sub><span class="xt-val" id="ttWhyv">—</span></div></div><div class="xt-kid"><span class="xt-edge g2" data-pop="t_zyby" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial b_y}=1 \)</span><span class="xt-ar">→</span><div class="xt-box g2 yaprak" id="ttby">db<sub>y</sub><span class="xt-val" id="ttbyv">—</span></div></div><div class="xt-kid"><span class="xt-edge g3" data-pop="t_zyh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_y}{\partial h}=W_{hy} \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g3" id="tth" data-pop="t_zyh" tabindex="0" role="button">\( h \)<span class="xt-cap">yeni hafıza</span><span class="xt-val" id="tthv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g3" data-pop="t_hzh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial h}{\partial z_h}=1-h^2 \)</span><span class="xt-ar">→</span><div class="xt-node"><div class="xt-box g3" id="ttzh" data-pop="t_hzh" tabindex="0" role="button">\( z_h \)<span class="xt-cap">ham toplam</span><span class="xt-val" id="ttzhv">—</span></div><div class="xt-kids"><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhWxh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial W_{xh}}=x \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttWxh">dW<sub>xh</sub><span class="xt-val" id="ttWxhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhWhh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial W_{hh}}=h_{-1} \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttWhh">dW<sub>hh</sub><span class="xt-val" id="ttWhhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g4" data-pop="t_zhbh" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial b_h}=1 \)</span><span class="xt-ar">→</span><div class="xt-box g4 yaprak" id="ttbh">db<sub>h</sub><span class="xt-val" id="ttbhv">—</span></div></div><div class="xt-kid"><span class="xt-edge g3" data-pop="t_zhhp" tabindex="0" role="button" aria-label="türetmeyi göster">\( \tfrac{\partial z_h}{\partial h_{-1}}=W_{hh} \)<span style="opacity:.7"> ← zincirin parçasıysa BPTT</span></span><span class="xt-ar">→</span><div class="xt-box g3" id="tthp" data-pop="t_zhhp" tabindex="0" role="button">\( h_{-1} \)<span class="xt-cap">önceki adıma akar</span><span class="xt-val" id="tthpv">—</span></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div></div>
+      <div class="xt-leg">
+        <span class="xt-lg g1">Gövde — L → ŷ → z<sub>y</sub></span>
+        <span class="xt-lg g2">Çıktı ağırlıkları — W<sub>hy</sub>, b<sub>y</sub></span>
+        <span class="xt-lg g3">Geri — h → z<sub>h</sub> → h₋₁</span>
+        <span class="xt-lg g4">Gizli ağırlıklar — W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub></span>
+      </div>
+      <div class="callout" style="margin:8px 0 0; font-size:11.5px; line-height:1.6">🍃 <b>Beş yaprak = beş gerçek gradyan.</b> Tek zaman adımı olduğu için her yaprak toplanmadan doğrudan ağırlığın gradyanıdır. Zincire geçince (many-to-one / many-to-many) aynı ağırlık her adımda yeniden kullanılır ve katkılar toplanır.</div>
+      <div class="callout" id="ttTotal" style="margin:8px 0 0"></div>
+
+      <div class="xt-src" id="xtsrc-t_zh"><div class="xp-bas">z<sub>h</sub> — ham toplam</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat">Üç parça toplanır: girdi katkısı, önceki hafıza katkısı, sapma.</div><div class="xp-zin" data-zincir="t_zh"></div></div>
+      <div class="xt-src" id="xtsrc-t_tanh"><div class="xp-bas">h — yeni hafıza</div><div class="eq">\( h=\tanh(z_h) \)</div><div class="xp-sat">z_h'yi (−1,1) aralığına sıkıştırır. Bu h hem çıktıya gider hem (zincirin parçasıysa) bir sonraki adıma.</div><div class="xp-zin" data-zincir="t_tanh"></div></div>
+      <div class="xt-src" id="xtsrc-t_zy"><div class="xp-bas">z<sub>y</sub> — çıktı toplamı</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat">Çıktı katmanı: h'yi W<sub>hy</sub> ile çarpıp b<sub>y</sub> ekler.</div><div class="xp-zin" data-zincir="t_zy"></div></div>
+      <div class="xt-src" id="xtsrc-t_yhat"><div class="xp-bas">ŷ — tahmin</div><div class="eq">\( \hat y=z_y \)</div><div class="xp-sat">Regresyon: çıktı aktivasyonu özdeşlik.</div><div class="xp-zin" data-zincir="t_yhat"></div></div>
+      <div class="xt-src" id="xtsrc-t_L"><div class="xp-bas">L — kayıp</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat">Tahminle gerçek cevabın farkının karesinin yarısı. <b>Geri yayılım buradan başlar.</b></div><div class="xp-zin" data-zincir="t_L"></div></div>
+      <div class="xt-src" id="xtsrc-t_Lyhat"><div class="xp-bas">\( \tfrac{\partial L}{\partial \hat y} \) — kayıp, tahmine göre</div><div class="eq">\( L=\tfrac12(\hat y-y)^2 \)</div><div class="xp-sat"><span class="xp-k">K4</span> (zincir kuralı, kuvvet): dış \(u^2/2\to u\), iç \((\hat y-y)\to 1\).</div><div class="xp-son">Sonuç: \( \tfrac{\partial L}{\partial \hat y}=\hat y-y \).</div><div class="xp-zin" data-zincir="t_Lyhat"></div></div>
+      <div class="xt-src" id="xtsrc-t_yhatzy"><div class="xp-bas">\( \tfrac{\partial \hat y}{\partial z_y} \) — özdeşliğin türevi</div><div class="xp-sat">\( \hat y=z_y \) → türev <b>1</b> (<span class="xp-k">K3</span>'ün en basit hâli). Sinyal z<sub>y</sub>'ye ulaştı, oradan dallanacak.</div><div class="xp-zin" data-zincir="t_yhatzy"></div></div>
+      <div class="xt-src" id="xtsrc-t_zyWhy"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial W_{hy}} \)</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat"><span class="xp-k">K3</span>: h sabit → türev h.</div><div class="xp-son">Tek zaman adımı olduğu için bu yaprak doğrudan gerçek gradyan.</div><div class="xp-zin" data-zincir="t_zyWhy"></div></div>
+      <div class="xt-src" id="xtsrc-t_zyby"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial b_y}=1 \)</div><div class="xp-sat">Bias'ın sabit-1-girdisi (<span class="xp-k">K3</span>).</div><div class="xp-zin" data-zincir="t_zyby"></div></div>
+      <div class="xt-src" id="xtsrc-t_zyh"><div class="xp-bas">\( \tfrac{\partial z_y}{\partial h} \) — hata buradan h'ye akar</div><div class="eq">\( z_y=W_{hy}h+b_y \)</div><div class="xp-sat">h'ye göre türev: W<sub>hy</sub> sabit katsayı → <span class="xp-k">K3</span>.</div><div class="xp-son">Sonuç: \( W_{hy} \).</div><div class="xp-zin" data-zincir="t_zyh"></div></div>
+      <div class="xt-src" id="xtsrc-t_hzh"><div class="xp-bas">\( \tfrac{\partial h}{\partial z_h} \) — tanh'ın türevi</div><div class="eq">\( h=\tanh(z_h) \)</div><div class="xp-sat">\( \tanh'(z)=1-h^2 \) — h ileri geçişte zaten hesaplandı.</div><div class="xp-son">Sonuç: \( 1-h^2 \).</div><div class="xp-zin" data-zincir="t_hzh"></div></div>
+      <div class="xt-src" id="xtsrc-t_zhWxh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial W_{xh}}=x \)</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat"><span class="xp-k">K3</span>: x katsayı → türev x.</div><div class="xp-zin" data-zincir="t_zhWxh"></div></div>
+      <div class="xt-src" id="xtsrc-t_zhWhh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial W_{hh}}=h_{-1} \)</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat"><span class="xp-k">K3</span>: önceki hafıza katsayı → türev h₋₁.</div><div class="xp-zin" data-zincir="t_zhWhh"></div></div>
+      <div class="xt-src" id="xtsrc-t_zhbh"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial b_h}=1 \)</div><div class="xp-sat">Bias'ın sabit-1-girdisi (<span class="xp-k">K3</span>).</div><div class="xp-zin" data-zincir="t_zhbh"></div></div>
+      <div class="xt-src" id="xtsrc-t_zhhp"><div class="xp-bas">\( \tfrac{\partial z_h}{\partial h_{-1}}=W_{hh} \) — zincirin kapısı</div><div class="eq">\( z_h=W_{xh}x+W_{hh}h_{-1}+b_h \)</div><div class="xp-sat">h₋₁'e göre türev: W<sub>hh</sub>. <b>Tek hücrede</b> h₋₁ bir girdi olduğu için sinyal burada biter. Hücre bir zincirin parçasıysa bu sinyal ÖNCEKİ zaman adımına akar — işte BPTT; many-to-one ve many-to-many sekmelerinde görürsün.</div><div class="xp-zin" data-zincir="t_zhhp"></div></div>
+
+      </div>
+      </div>
+    </div>
+    </div>
+    <div id="rnnBigPictureM2o" style="display:none">
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-one)</h3>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Ağırlıklar Bütün Resim aşamasının üstündeki <b>🎛️ Ağırlıklar</b> kaydırıcılarıyla aynı; girdiler (x₁,x₂,x₃,y) hemen aşağıdaki kutularda. Hangisini değiştirirsen burası da canlı güncellenir.</p>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:0 0 10px"><b>Bütünü</b> görelim — önce verinin girdiden (x₁,x₂,x₃) kayba nasıl aktığını (<b>ileri yol</b>, h zincirlenerek), sonra kaybın aynı yolu tersten yürüyüp <b>zaman içinde geriye</b> (BPTT) akarak dokuz katkıya nasıl dağıldığını (<b>geri yol</b>): hangi türev nereden çıkıyor, hangi dal nereye iniyor. Buradaki her ok ve her kutu <b>tıklanabilir</b> — üstüne geldiğinde o parçanın hesabı açılır. Ağırlıklar yukarıdaki <b>🎛️ Ağırlıklar</b> sekmesindeki kaydırıcılarla aynı; girdiler (x₁,x₂,x₃,y) hemen aşağıdaki kutularda. Hangisini değiştirirsen burası da canlı güncellenir.</p>
       <div class="ptrow" style="margin:0 0 10px; align-items:flex-end">
         <div class="ptcell"><label>x₁</label><input id="ru_x1" type="number" step="0.1" value="2"></div>
         <div class="ptcell"><label>x₂</label><input id="ru_x2" type="number" step="0.1" value="-1"></div>
@@ -1452,7 +1435,7 @@
         </div>
     </div>
     </div>
-<div id="rnnBigPictureM2m" style="display:none">
+    <div id="rnnBigPictureM2m" style="display:none">
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-many, T<sub>x</sub>=T<sub>y</sub>)</h3>
@@ -1579,7 +1562,7 @@
       </div>
     </div>
     </div>
-<div id="rnnBigPictureO2m" style="display:none">
+    <div id="rnnBigPictureO2m" style="display:none">
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (one-to-many)</h3>
@@ -1697,7 +1680,7 @@
       </div>
     </div>
     </div>
-<div id="rnnBigPictureDec" style="display:none">
+    <div id="rnnBigPictureDec" style="display:none">
 
     <div class="pts" style="border-left:3px solid var(--accent); margin:0">
       <h3 style="color:var(--accent); font-size:13.5px">🗺️ Bütün resim — ileri yol + zaman içinde geri yayılım ağacı (many-to-many, T<sub>x</sub>≠T<sub>y</sub>)</h3>
@@ -1815,14 +1798,6 @@
       </div>
     </div>
     </div>
-    </div><!-- /rnnTypeOther -->
-
-    <!-- /rnn-fwd-cols -->
-
-    
-
-    
-    </div><!-- /rnnBody2 -->
     </div>
   </div>
 
@@ -6268,17 +6243,17 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610041525"></script>
-<script src="js/lesson-turev.js?v=202610041525"></script>
-<script src="js/lesson-xor.js?v=202610041525"></script>
-<script src="js/lesson-xor-arch.js?v=202610041525"></script>
-<script src="js/lesson-xor-maps.js?v=202610041525"></script>
-<script src="js/lesson-xor-epoch.js?v=202610041525"></script>
-<script src="js/lesson-nn.js?v=202610041525"></script>
-<script src="js/lesson-trig.js?v=202610041525"></script>
+<script src="js/lesson-linreg.js?v=202610041704"></script>
+<script src="js/lesson-turev.js?v=202610041704"></script>
+<script src="js/lesson-xor.js?v=202610041704"></script>
+<script src="js/lesson-xor-arch.js?v=202610041704"></script>
+<script src="js/lesson-xor-maps.js?v=202610041704"></script>
+<script src="js/lesson-xor-epoch.js?v=202610041704"></script>
+<script src="js/lesson-nn.js?v=202610041704"></script>
+<script src="js/lesson-trig.js?v=202610041704"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610041525"></script>
-<script src="js/lesson-rnn-soz.js?v=202610041525"></script>
-<script src="js/app.js?v=202610041525"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610041704"></script>
+<script src="js/lesson-rnn-soz.js?v=202610041704"></script>
+<script src="js/app.js?v=202610041704"></script>
 </body>
 </html>
