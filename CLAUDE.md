@@ -1180,3 +1180,16 @@ klonu `popQueue` ile aynı html'i alır); ileri yol 📐 köprüleri başka kodd
 `appF()` ile SONRADAN eklenir (`.xp-vs` varsa önce silinir → idempotent). Her cfg'ye ileri anahtar
 eşlemesi `KF(name,t)` eklendi (Tek `t_*`, m2o `r_zh1/r_zy…`, m2m `m_*`, seq `o_*/d_*`). Doğrulama:
 5 türde 186/186 kaynakta `.xp-vs` var, NaN/undefined/%t yok. Stil: sarı `.xp-vs`.
+
+**Sözel anlatım artık açılıp kapanır "🗣️ Sözel anlatım" sekmesinde** (PR sonrası güncelleme): kullanıcı
+"sözel kısım için ayrı bir açılıp kapanır sekme olsun, anlatımı oraya taşı" dedi. Her RNN `.xt-src`
+kaynağının sonunda `.xp-sozacc` (başlık `.xp-sozhead` + gövde `.xp-sozbody`) var; gövdede
+**canlı yuva** `.xp-vslot[data-vs=KEY]` (rnnBridges `vsSet()` doldurur, "Şu anki sayılarla: …") +
+statik **"Genel olarak: …"**. Canlı güncelleme yalnız yuvanın iç HTML'ini yazar, dış kabuğun
+açık/kapalı durumu bozulmaz. Varsayılan kapalı; pop-up içinde tıklayınca açılır (pop-up motoru
+`#xtPop` içindeki tıklamayı kapatma saymaz), tercih `sessionStorage('rnnSozOpen')` ile oturum boyunca
+hatırlanır (`#xtPop` üzerinde MutationObserver). Açınca pop-up yüksekliği değiştiği için
+`document.dispatchEvent(new Event('scroll'))` ile motorun yeniden-konumlama dinleyicisi tetiklenir.
+`lesson-rnn-soz.js` artık `app.js`'ten ÖNCE yüklenir (yuvalar, ilk `render()` çalışmadan DOM'da olsun
+diye — sonra yüklenseydi ilk dolum kaçardı). `hzh` cümlesi tanh eğrisi bağlantısını da anlatır:
+"z_h = 0,6745 noktasındasın, oradaki tanjant eğimi 0,6543 (Aktivasyon sayfasındaki grafikte aynı)".

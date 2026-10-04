@@ -1079,7 +1079,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
             if(out[t-1]&&t<T) return hS(t)+' iki yoldan sinyal alıyor: kendi çıktısından <b>'+f(OWN[t])+'</b> ve gelecekten (BPTT) <b>'+f(BP[t])+'</b>. İkisi toplanır: <b>'+f(HT[t])+'</b>.';
             if(out[t-1]) return 'Son adım: gelecek yok, sinyal yalnızca kendi çıktısından geliyor: <b>'+f(OWN[t])+'</b>.';
             return 'Bu adımın kendi çıktısı yok; sinyal yalnızca gelecekten (BPTT) geliyor: <b>'+f(BP[t])+'</b>.';
-          case 'hzh': return hS(t)+'\'ye ulaşan sinyal '+pn(HT[t])+'; tanh\'ın eğimi 1−h² = 1−'+f(H[t]*H[t])+' = '+f(sl)+' ile çarpılıyor → <b>'+f(ZH[t])+'</b>. Yani sinyalin yaklaşık <b>%'+Math.round(sl*100)+'</b>\'i geçiyor, kalanı tanh\'ta kayboluyor.'+(sl<0.2?' (h doymuş: sinyal neredeyse ölüyor.)':'');
+          case 'hzh': return hS(t)+'\'ye ulaşan sinyal '+pn(HT[t])+'; tanh\'ın eğimi 1−h² = 1−'+f(H[t]*H[t])+' = '+f(sl)+' ile çarpılıyor → <b>'+f(ZH[t])+'</b>. Yani sinyalin yaklaşık <b>%'+Math.round(sl*100)+'</b>\'i geçiyor, kalanı tanh\'ta kayboluyor.'+(sl<0.2?' (h doymuş: sinyal neredeyse ölüyor.)':'')
+            +'<br><b>Bu eğim nereden?</b> tanh eğrisinde şu an z<sub>h</sub> = <b>'+f(Zt(t))+'</b> noktasındasın; oradaki tanjantın eğimi '+f(sl)+'. Aktivasyon Fonksiyonları sayfasında Tanh\'ı seçip z\'yi '+f(Zt(t),2)+' civarına getirirsen sarı tanjantın eğimi aynı çıkar. Anlamı: z<sub>h</sub> çok az değişirse h onun '+f(sl)+' katı kadar değişir — hata sinyali ters yönde aynı oranla ölçeklenir. z=0\'da eğim 1 (en dik), uçlarda 0 (düz).';
           case 'zhWxh': return 'z<sub>h</sub>\'ye gelen sinyal '+pn(ZH[t])+'; W<sub>xh</sub> z<sub>h</sub>\'ye girdi x = '+f(X[t],2)+' kadar etki ediyor → gradyan '+pn(ZH[t])+' × '+pn(X[t],2)+' = <b>'+f(WXH[t])+'</b>. '+sgn(WXH[t],'W<sub>xh</sub>')+shared(nIn).replace('%t',t);
           case 'zhWhh': return 'z<sub>h</sub>\'ye gelen sinyal '+pn(ZH[t])+'; W<sub>hh</sub> z<sub>h</sub>\'ye önceki hafıza '+hP(t)+' = '+f(H[t-1],2)+' kadar etki ediyor → gradyan '+pn(ZH[t])+' × '+pn(H[t-1],2)+' = <b>'+f(WHH[t])+'</b>. '+((t===1&&!H[0])?'Önceki hafıza boş (h<sub>0</sub>=0) olduğu için bu adımdan W<sub>hh</sub>\'ye gradyan gelmez.':sgn(WHH[t],'W<sub>hh</sub>'))+shared(T).replace('%t',t);
           case 'zhbh': return 'b<sub>h</sub> z<sub>h</sub>\'ye doğrudan eklenir (etkisi 1), gradyanı gelen sinyalin kendisi: <b>'+f(BH[t])+'</b>. '+sgn(BH[t],'b<sub>h</sub>')+shared(T).replace('%t',t);
@@ -1103,12 +1104,14 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         }
         return '';
       }
-      const vsDiv=v=>v?'<div class="xp-vs">🗣️ <b>Sözle:</b> '+v+'</div>':'';
-      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; html+=vsDiv(vs(name,t)); document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
+      /* sözel cümle, kaynağın "🗣️ Sözel anlatım" sekmesindeki canlı yuvaya yazılır (lesson-rnn-soz.js yuvayı kurar);
+         sekme kapalı/açık durumu dış kabukta durduğu için canlı güncelleme onu sıfırlamaz */
+      const vsSet=(k,v)=>{ if(!k||!v) return; const h='<div class="xp-vs"><b>Şu anki sayılarla:</b> '+v+'</div>';
+        document.querySelectorAll('[data-vs="'+k+'"]').forEach(e=>{ if(e.closest('#xtPop')) popQueue(e,h); else e.innerHTML=h; }); };
+      const put=(name,t,html)=>{ const k=K(name,t); if(!k) return; vsSet(k,vs(name,t)); document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{
         if(e.closest('#xtPop')) popQueue(e,html); else e.innerHTML=html;
       }); };
-      const appF=(name,t)=>{ if(!cfg.KF) return; const k=cfg.KF(name,t); if(!k) return; const h=vsDiv(vf(name,t)); if(!h) return;
-        document.querySelectorAll('[data-zincir="'+k+'"]').forEach(e=>{ if(e.closest('#xtPop')) return; e.querySelectorAll('.xp-vs').forEach(x=>x.remove()); e.insertAdjacentHTML('beforeend',h); }); };
+      const appF=(name,t)=>{ if(!cfg.KF) return; vsSet(cfg.KF(name,t),vf(name,t)); };
       function sumBlock(ad,a,filter,cur){
         const ts=[]; for(let t=1;t<=T;t++) if(filter(t)) ts.push(t);
         if(ts.length<=1) return '<div class="xp-sat">Bu ağırlık <b>sadece bir adımda</b> kullanıldı → bu yaprak doğrudan <b>gerçek gradyan</b> = '+f(a[cur])+'</div>';

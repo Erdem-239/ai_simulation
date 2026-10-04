@@ -1607,3 +1607,13 @@ body.xt-full-lock{overflow:hidden}
 /* RNN köprülerinin altındaki canlı sözel cümle (🗣️ Sözle:) */
 .xt-pop .xp-vs{margin-top:8px; padding:7px 10px; border-left:3px solid #ffd24a; background:rgba(255,210,74,.08); border-radius:0 6px 6px 0; font-size:12.5px; line-height:1.6; color:#e8e2c8}
 .xt-pop .xp-vs b:first-child{color:#ffd24a}
+
+/* RNN pop-up: açılıp kapanır "🗣️ Sözel anlatım" sekmesi (canlı cümle + genel anlam) */
+.xt-pop .xp-sozacc{margin-top:10px; border:1px solid #3b5a46; border-radius:8px; overflow:hidden}
+.xt-pop .xp-sozhead{display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:7px 10px; font-size:12.5px; font-weight:700; color:#8fe0a8; background:rgba(70,196,106,.10); user-select:none}
+.xt-pop .xp-sozhead .chev{transition:transform .2s}
+.xt-pop .xp-sozacc.open .xp-sozhead .chev{transform:rotate(90deg)}
+.xt-pop .xp-sozbody{display:none; padding:2px 8px 8px}
+.xt-pop .xp-sozacc.open .xp-sozbody{display:block}
+.xt-pop .xp-sozbody .xp-vs{margin-top:8px}
+.xt-pop .xp-sozbody .xp-soz{margin-top:8px}
