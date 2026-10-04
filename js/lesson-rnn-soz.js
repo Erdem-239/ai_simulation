@@ -67,12 +67,31 @@
 
   let done=0, miss=[];
   root.querySelectorAll('.xt-src[id^="xtsrc-"]').forEach(src=>{
-    const key=src.id.slice(6), p=parse(key);
+    const key=src.id.slice('xtsrc-'.length), p=parse(key);
     const t=p && text(p[0],p[1],p[2]);
     if(!t){ miss.push(key); return; }
-    const d=document.createElement('div'); d.className='xp-soz';
-    d.innerHTML='<b>💬 Ne anlama geliyor?</b> '+t;
-    src.appendChild(d); done++;
+    /* "🗣️ Sözel anlatım" açılıp kapanır sekme: canlı yuva (app.js rnnBridges doldurur) + genel anlam */
+    const acc=document.createElement('div'); acc.className='xp-sozacc';
+    acc.innerHTML='<div class="xp-sozhead">🗣️ Sözel anlatım <span class="chev">▸</span></div>'
+      +'<div class="xp-sozbody"><div class="xp-vslot" data-vs="'+key+'"></div>'
+      +'<div class="xp-soz"><b>Genel olarak:</b> '+t+'</div></div>';
+    src.appendChild(acc); done++;
   });
   window.__rnnSozCount={done:done, miss:miss};
+
+  /* sekmeyi aç/kapa (pop-up içinde de çalışır; tercih oturum boyunca hatırlanır) */
+  const PREF='rnnSozOpen';
+  const getPref=()=>{ try{ return sessionStorage.getItem(PREF)==='1'; }catch(_){ return false; } };
+  const setPref=v=>{ try{ sessionStorage.setItem(PREF,v?'1':'0'); }catch(_){} };
+  document.addEventListener('click',e=>{
+    const h=e.target.closest && e.target.closest('.xp-sozhead'); if(!h) return;
+    const acc=h.parentNode; acc.classList.toggle('open'); setPref(acc.classList.contains('open'));
+    // pop-up yüksekliği değişti → motorun scroll dinleyicisi yeniden konumlar
+    document.dispatchEvent(new Event('scroll'));
+  });
+  window.addEventListener('load',()=>{
+    const pop=document.getElementById('xtPop'); if(!pop) return;
+    new MutationObserver(()=>{ if(getPref()) pop.querySelectorAll('.xp-sozacc:not(.open)').forEach(a=>a.classList.add('open')); })
+      .observe(pop,{childList:true});
+  });
 })();
