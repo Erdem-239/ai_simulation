@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610041754"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610041820"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610041754">
+<link rel="stylesheet" href="css/style.css?v=202610041820">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 17:54 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-04 18:20 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -748,6 +748,11 @@
       </div></div>
       <div class="rc-inblk" data-rtin="o2m" style="display:none"><div class="rc-inlab">one-to-many girdileri</div><div class="ptrow" style="margin-bottom:6px"><div class="ptcell"><label>x₁ (girdi)</label><input id="o_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>y₁ (hedef)</label><input id="o_y1" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₂ (hedef)</label><input id="o_y2" type="number" step="0.1" value="0.5"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="o_y3" type="number" step="0.1" value="-0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div></div>
       <div class="rc-inblk" data-rtin="dec" style="display:none"><div class="rc-inlab">many-to-many (T<sub>x</sub>≠T<sub>y</sub>) girdileri</div><div class="ptrow" style="margin-bottom:6px"><div class="ptcell"><label>x₁ (girdi)</label><input id="d_x1" type="number" step="0.1" value="2"></div><div class="ptcell"><label>x₂ (girdi)</label><input id="d_x2" type="number" step="0.1" value="-1"></div><div class="ptcell"><label>y₃ (hedef)</label><input id="d_y3" type="number" step="0.1" value="1"></div><div class="ptcell"><label>y₄ (hedef)</label><input id="d_y4" type="number" step="0.1" value="0.5"></div><div style="font-size:11.5px; color:var(--muted); flex:1; min-width:180px">Ağırlıklar (W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub>, W<sub>hy</sub>, b<sub>y</sub>) Tek Hücre'deki kaydırıcılarla ortak; her şey canlı güncellenir.</div></div></div>
+      <div id="rcPresets" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:8px"><span style="font-size:12px; color:var(--muted)">Hazır ayarlar:</span>
+        <button class="rc-preset" data-p="0.4,0.3,0.1,0.8,0.2" title="Sinyal zincirde yaklaşık korunur">⚖️ Dengeli</button>
+        <button class="rc-preset" data-p="0.5,0.2,0,0.8,0.2" title="W_hh küçük → eski adımların sinyali sönümlenir">📉 Vanishing</button>
+        <button class="rc-preset" data-p="0.05,2,0,0.8,0.2" title="W_hh büyük, tanh doymamış → sinyal her adımda büyür">📈 Exploding</button>
+        <button class="rc-preset" data-p="0.4,0.3,0.1,0.8,0.2">↺ Varsayılan</button></div>
       <div style="display:flex; flex-wrap:wrap; gap:6px 22px; margin-top:8px">
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>xh</sub></span><input type="range" id="rc_Wxh" min="-2" max="2" step="0.0001" value="0.4" style="width:130px"><b id="rc_Wxh_v" style="color:var(--accent); min-width:48px; text-align:right">0.40</b></div>
         <div style="display:flex; align-items:center; gap:8px"><span style="min-width:34px">W<sub>hh</sub></span><input type="range" id="rc_Whh" min="-2" max="2" step="0.0001" value="0.3" style="width:130px"><b id="rc_Whh_v" style="color:var(--accent); min-width:48px; text-align:right">0.30</b></div>
@@ -6248,17 +6253,18 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610041754"></script>
-<script src="js/lesson-turev.js?v=202610041754"></script>
-<script src="js/lesson-xor.js?v=202610041754"></script>
-<script src="js/lesson-xor-arch.js?v=202610041754"></script>
-<script src="js/lesson-xor-maps.js?v=202610041754"></script>
-<script src="js/lesson-xor-epoch.js?v=202610041754"></script>
-<script src="js/lesson-nn.js?v=202610041754"></script>
-<script src="js/lesson-trig.js?v=202610041754"></script>
+<script src="js/lesson-linreg.js?v=202610041820"></script>
+<script src="js/lesson-turev.js?v=202610041820"></script>
+<script src="js/lesson-xor.js?v=202610041820"></script>
+<script src="js/lesson-xor-arch.js?v=202610041820"></script>
+<script src="js/lesson-xor-maps.js?v=202610041820"></script>
+<script src="js/lesson-xor-epoch.js?v=202610041820"></script>
+<script src="js/lesson-nn.js?v=202610041820"></script>
+<script src="js/lesson-trig.js?v=202610041820"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610041754"></script>
-<script src="js/lesson-rnn-soz.js?v=202610041754"></script>
-<script src="js/app.js?v=202610041754"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610041820"></script>
+<script src="js/lesson-rnn-soz.js?v=202610041820"></script>
+<script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
+<script src="js/app.js?v=202610041820"></script>
 </body>
 </html>

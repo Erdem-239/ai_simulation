@@ -1238,3 +1238,9 @@ Kullanıcı "genel RNN sayfasını incele, öneride bulun" dedi; ölçerek bulun
    `$('rcM2S1sub') || ($('mfzh1') && $('rcM2_x1'))`. Tüm `if($('…'))` guard'ları DOM'daki id'lerle karşılaştırıldı:
    başka ölü guard yok. **Ders**: bir bölümü silerken sadece onun id'lerini DEĞİL, `render()`'daki koşulların
    (`if($('…'))`) o id'lere bağlı olup olmadığını da tara — ölü blok sessizce hiç çalışmaz.
+
+## RNN ağırlık paneli — hazır ayar düğmeleri (`#rcPresets`)
+
+🎛️ Ağırlıklar & girdiler sekmesine `⚖️ Dengeli / 📉 Vanishing / 📈 Exploding / ↺ Varsayılan` düğmeleri
+eklendi (W_xh,W_hh,b_h,W_hy,b_y değerlerini yazıp `input` olayı tetikler; render() dokunulmadan çalışır).
+Exploding = (0.05, 2, 0) → girdi küçük, tanh doymaz, r≈W_hh=2. Küçük inline `<script>` index.html'de app.js'ten önce.

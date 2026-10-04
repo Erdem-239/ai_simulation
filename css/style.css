@@ -1623,3 +1623,6 @@ body.xt-full-lock{overflow:hidden}
 /* RNN ağırlıklar sekmesindeki girdi satırları (tür başına) */
 .rc-inlab{font-size:12px; font-weight:700; color:#8fe0a8; margin:6px 0 4px}
 .rc-inblk{margin-top:4px; padding-top:2px; border-top:1px dashed rgba(143,224,168,.25)}
+
+.rc-preset{background:#1c2a48;border:1px solid var(--line);color:#ccd5e8;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
+.rc-preset:hover{border-color:var(--green);color:#fff}
