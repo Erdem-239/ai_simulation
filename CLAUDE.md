@@ -1256,3 +1256,5 @@ istedi. Ekstra'dan sonra, Test'ten ÖNCE yeni `.tpl-cl` (`data-stage="3"`, yeşi
 (0,87; köpek 0,13; Whh=0,2 ile 0,53 = hafıza unutuluyor), (3) Örnek 2'nin bozuk ağında tek BPTT adımı elle (∂L/∂Whh=−0,531, Whh 0,2→0,466,
 p 0,53→0,64, δ₁=−0,0038 = vanishing). Her örnekte kapalı `.acc` içinde Python kodu; üç kod da çalıştırılıp sayfadaki sayılarla
 eşleştirildi, 3. örnek sonlu farkla doğrulandı. **Ders**: elle-hesap örneğinde HTML'e yazmadan önce sayıları Python'da üret/doğrula.
+
+**Örnek Çalışmalar MathJax'e çevrildi**: ilk sürüm düz metin/unicode idi, kullanıcı "mathjax ile yazaydın" dedi → tüm formüller `\( \)` / `\[ aligned \]`. 375px'te 3 blok taşıyordu: uzun satırlar kısaltıldı (çarpan `1·`, ara `tanh(…)` adımları atıldı, δ kuralı metinde bir kez yazıldı) + `#model-rnn .tpl-cl[data-stage="3"] .work mjx-container{font-size:68%}` mobil kuralı; `getBoundingClientRect` ile 0 taşma doğrulandı.

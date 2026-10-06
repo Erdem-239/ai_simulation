@@ -1626,3 +1626,4 @@ body.xt-full-lock{overflow:hidden}
 
 .rc-preset{background:#1c2a48;border:1px solid var(--line);color:#ccd5e8;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
 .rc-preset:hover{border-color:var(--green);color:#fff}
+@media(max-width:720px){#model-rnn .tpl-cl[data-stage="3"] .work mjx-container{font-size:68% !important}}
