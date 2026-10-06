@@ -1244,3 +1244,6 @@ Kullanıcı "genel RNN sayfasını incele, öneride bulun" dedi; ölçerek bulun
 🎛️ Ağırlıklar & girdiler sekmesine `⚖️ Dengeli / 📉 Vanishing / 📈 Exploding / ↺ Varsayılan` düğmeleri
 eklendi (W_xh,W_hh,b_h,W_hy,b_y değerlerini yazıp `input` olayı tetikler; render() dokunulmadan çalışır).
 Exploding = (0.05, 2, 0) → girdi küçük, tanh doymaz, r≈W_hh=2. Küçük inline `<script>` index.html'de app.js'ten önce.
+
+**XOR Hikâye'ye "🤔 Tek gizli nöron neden yetmez?" kutusu**: kullanıcı "tek gizli nöron + tek h + bias + aktivasyon yetmez mi" diye sordu;
+z(0,0)+z(1,1)=z(1,0)+z(0,1) (=w₁+w₂+2b) kanıtı, "Sopa özeti"nin hemen üstüne kısa callout olarak eklendi (yalnız index.html).
