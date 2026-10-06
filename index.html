@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 11:50 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 12:10 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1851,7 +1851,8 @@
     <p style="font-size:13.5px; color:#ccd5e8">Hepsi <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
 
     <div class="pts" style="border-left:3px solid #3a7afe">
-      <h3 style="color:#3a7afe">Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</h3>
+      <h3 class="sahne-head closed" style="color:#3a7afe; margin-top:0"><span>Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</span><span class="chev">▸</span></h3>
+      <div class="sahne-body closed">
       <p>Cümle üç adım: <b>"kötü → ama → harika"</b>. Kelimeleri sayıya çevirelim: kötü \(=-1\), ama \(=0\) (nötr), harika \(=+1\). Ağırlıklar: \(W_{xh}=1,\ W_{hh}=0{,}5\); çıktı \(p=\sigma(2\,h_3)\) = "olumlu olma olasılığı".</p>
       <div class="work" style="overflow-x:auto">\[
       \begin{aligned}
@@ -1879,10 +1880,12 @@ sigmoid = lambda z: 1/(1+math.exp(-z))   # sayıyı 0-1 arasına (olasılığa) 
 # kötü = -1, ama = 0, harika = +1  →  p = olumlu olma olasılığı
 print(sigmoid(2*rnn([-1, 0, +1])))   # 0.794 → olumlu (cümle "harika" ile bitti)
 print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206 → olumsuz (aynı kelimeler, ters sıra)</pre></div></div>
+      </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #f0a032">
-      <h3 style="color:#f0a032">Örnek 2 — Sıradaki kelimeyi tahmin: bağlamı taşımak</h3>
+      <h3 class="sahne-head closed" style="color:#f0a032; margin-top:0"><span>Örnek 2 — Sıradaki kelimeyi tahmin: bağlamı taşımak</span><span class="chev">▸</span></h3>
+      <div class="sahne-body closed">
       <p>Cümle: <b>"kedi … ve … ___"</b> (üçüncü kelime boş). Cevap "miyav" mı, "hav" mı? Tek ipucu <b>t=1'deki hayvan</b>; araya giren "ve" kelimeleri nötr. Kodlama: kedi \(=+1\), köpek \(=-1\), ve/boşluk \(=0\). Ağırlıklar: \(W_{xh}=2,\ W_{hh}=1,\ W_{hy}=3\); \(p=\sigma(3\,h_3)\) = "miyav olasılığı".</p>
       <div class="work" style="overflow-x:auto">\[
       \begin{aligned}
@@ -1910,10 +1913,12 @@ def tahmin(xs, Wxh=2.0, Whh=1.0, Why=3.0):
 print(tahmin([+1, 0, 0]))            # 0.87 → miyav (kedi bilgisi taşındı)
 print(tahmin([-1, 0, 0]))            # 0.13 → hav   (köpek bilgisi taşındı)
 print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53 → yazı-tura: hafıza zayıf, kedi unutuldu</pre></div></div>
+      </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #2ec46a">
-      <h3 style="color:#2ec46a">Örnek 3 — Hatadan öğrenmek: tek BPTT adımı elle</h3>
+      <h3 class="sahne-head closed" style="color:#2ec46a; margin-top:0"><span>Örnek 3 — Hatadan öğrenmek: tek BPTT adımı elle</span><span class="chev">▸</span></h3>
+      <div class="sahne-body closed">
       <p>Örnek 2'nin <b>bozuk ağını</b> alalım: \(W_{xh}=2,\ \mathbf{W_{hh}=0{,}2},\ W_{hy}=3\). "kedi ve ___" için doğru cevap \(y=1\) (miyav) ama ağ \(p=0{,}529\) diyor. Kayıp \(L=-\ln p=0{,}637\). \(W_{hh}\) nasıl düzelmeli? Sondan başa gidiyoruz (\(h_1=0{,}964,\ h_2=0{,}190,\ h_3=0{,}038\)). Zamanda geri adımlar (\(t=2,1\)) \(\delta_{t}=\delta_{t+1}\cdot W_{hh}\cdot(1-h_t^2)\) kuralıyla geliyor; satırlarda çarpanlar sayıyla yazıldı:</p>
       <div class="work" style="overflow-x:auto">\[
       \begin{aligned}
@@ -1964,10 +1969,12 @@ Whh -= 0.5 * grad                        # Whh = 0.2 - 0.5*(-0.531) = 0.466
 print(Whh, ileri(Whh)[1])                # 0.4657  0.641
 #  ↑ yeni Whh ↑ bu Whh ile ağı tekrar çalıştırınca yeni p:
 #    hafıza güçlendi, miyav olasılığı 0.53 → 0.64'e çıktı (doğru cevap 1'e yaklaştı)</pre></div></div>
+      </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #9c4dff">
-      <h3 style="color:#9c4dff">Örnek 4 — Aynısını makineye yaptır: otomatik türev (autograd)</h3>
+      <h3 class="sahne-head closed" style="color:#9c4dff; margin-top:0"><span>Örnek 4 — Aynısını makineye yaptır: otomatik türev (autograd)</span><span class="chev">▸</span></h3>
+      <div class="sahne-body closed">
       <p>Örnek 3'te δ₃, δ₂, δ₁'i <b>elle</b> yazdık. Gerçek projelerde bunu kimse yapmaz: PyTorch, JAX, TensorFlow gibi kütüphaneler <b>otomatik türev (autograd)</b> ile geri yayılımı kendileri yapar. Aynı problemi (kedi ve ___, \(W_{hh}=0{,}2\)) şimdi PyTorch'a bırakıyoruz.</p>
       <p><b>Nasıl çalışıyor?</b> İleri geçişte yaptığın her işlemi (<code>*</code>, <code>+</code>, <code>tanh</code>, <code>sigmoid</code>, <code>log</code>…) arka planda bir <b>hesap grafiği</b> olarak kaydediyor. <code>L.backward()</code> deyince bu grafiği sondan başa geziyor ve her işlemde şunu yapıyor:</p>
       <div class="work" style="overflow-x:auto">\[ \underbrace{\frac{\partial L}{\partial \text{girdi}}}_{\text{o girdinin gradyanı}}\;=\;\underbrace{\frac{\partial L}{\partial \text{çıktı}}}_{\text{sondan gelen}}\;\times\;\underbrace{\frac{\partial \text{çıktı}}{\partial \text{girdi}}}_{\text{yerel türev}} \]</div>
@@ -2046,6 +2053,7 @@ L = (h * 3.0).sigmoid().neglog()               # Why = 3, y = 1
 L.backward()
 print(Whh.g)</pre></div></div>
       <div class="callout"><b>💡 Sezgi:</b> Elle hesap, geri yayılımın <b>ne yaptığını</b> anlamak için; autograd ise <b>her seferinde yapmamak</b> için. Binlerce ağırlıklı ağlarda türevleri elle yazmak imkânsız, ama arkada dönen şey tam olarak senin Örnek 3'te yaptığın zincir.</div>
+      </div>
     </div>
 
     <div class="callout"><b>🎯 Dene:</b> Üstteki 🎛️ <b>Ağırlıklar &amp; girdiler</b> panelinde \(W_{xh}=2,\ W_{hh}=0{,}2\) yapıp Simülasyon'daki sayılarla kendi hesabını karşılaştırabilirsin. Kendi cümleni de dene: "kötü ama harika" yerine üç adımlı başka bir dizi seç, önce tahminini söyle, sonra hesapla.</div>
