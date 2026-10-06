@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 10:50 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 11:20 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1866,15 +1866,19 @@
       <div class="callout"><b>💡 Sezgi:</b> Kelimeler aynı, sonuç zıt. Kelime sayan (sırayı umursamayan) bir model ikisini aynı görürdü. RNN'de <b>en son gelen kelime hafızanın üstüne yazıyor</b> (\(W_{hh}=0{,}5\) eskiyi yarıya indiriyor), bu yüzden "…ama harika" olumlu bitiyor. Gerçek cümlelerde "ama"nın dönüşü böyle yakalanıyor.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
-def rnn(xs, Wxh=1.0, Whh=0.5):
-    h = 0.0
-    for x in xs:
-        h = math.tanh(Wxh*x + Whh*h)
-    return h
-sigmoid = lambda z: 1/(1+math.exp(-z))
 
-print(sigmoid(2*rnn([-1, 0, +1])))   # 0.794  kötü ama harika
-print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206  harika ama kötü</pre></div></div>
+# Tek sayılı RNN hücresi: her kelime geldikçe hafıza h güncellenir
+def rnn(xs, Wxh=1.0, Whh=0.5):
+    h = 0.0                              # başlangıç hafızası h0 = 0
+    for x in xs:                         # kelimeleri sırayla oku
+        h = math.tanh(Wxh*x + Whh*h)     # yeni hafıza = f(yeni kelime, eski hafıza)
+    return h                             # son hafıza = tüm cümlenin özeti
+
+sigmoid = lambda z: 1/(1+math.exp(-z))   # sayıyı 0-1 arasına (olasılığa) sıkıştırır
+
+# kötü = -1, ama = 0, harika = +1  →  p = olumlu olma olasılığı
+print(sigmoid(2*rnn([-1, 0, +1])))   # 0.794 → olumlu (cümle "harika" ile bitti)
+print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206 → olumsuz (aynı kelimeler, ters sıra)</pre></div></div>
     </div>
 
     <div class="pts" style="border-left:3px solid #f0a032">
@@ -1895,15 +1899,17 @@ print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206  harika ama kötü</pre></div></div
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 sigmoid = lambda z: 1/(1+math.exp(-z))
-def tahmin(xs, Wxh=2.0, Whh=1.0, Why=3.0):
-    h = 0.0
-    for x in xs:
-        h = math.tanh(Wxh*x + Whh*h)
-    return sigmoid(Why*h)            # P(miyav)
 
-print(tahmin([+1, 0, 0]))            # 0.87  kedi ve ___
-print(tahmin([-1, 0, 0]))            # 0.13  köpek ve ___
-print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53  hafıza zayıf → bilgi kayboldu</pre></div></div>
+def tahmin(xs, Wxh=2.0, Whh=1.0, Why=3.0):
+    h = 0.0                              # başlangıç hafızası
+    for x in xs:                         # kedi/köpek, ve, boşluk sırayla gelir
+        h = math.tanh(Wxh*x + Whh*h)     # Whh: eski hafızanın ne kadarı taşınır
+    return sigmoid(Why*h)                # son hafızadan "miyav olasılığı"
+
+# kedi = +1, köpek = -1, "ve" ve boşluk = 0 (nötr)
+print(tahmin([+1, 0, 0]))            # 0.87 → miyav (kedi bilgisi taşındı)
+print(tahmin([-1, 0, 0]))            # 0.13 → hav   (köpek bilgisi taşındı)
+print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53 → yazı-tura: hafıza zayıf, kedi unutuldu</pre></div></div>
     </div>
 
     <div class="pts" style="border-left:3px solid #2ec46a">
@@ -1928,28 +1934,36 @@ print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53  hafıza zayıf → bilgi kayboldu</
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (sonlu farkla doğrulamalı)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 sigmoid = lambda z: 1/(1+math.exp(-z))
-Wxh, Why, xs, y = 2.0, 3.0, [1, 0, 0], 1
+Wxh, Why = 2.0, 3.0                      # bunlar sabit, sadece Whh'ı öğreneceğiz
+xs, y = [1, 0, 0], 1                     # "kedi ve ___", doğru cevap 1 = miyav
 
-def ileri(Whh):
-    h = [0.0]
+def ileri(Whh):                          # ileri geçiş: hafızaları ve p'yi hesapla
+    h = [0.0]                            # h[0] = h0 = 0
     for x in xs:
-        h.append(math.tanh(Wxh*x + Whh*h[-1]))
-    return h, sigmoid(Why*h[-1])
+        h.append(math.tanh(Wxh*x + Whh*h[-1]))   # h[1], h[2], h[3]
+    return h, sigmoid(Why*h[-1])         # (tüm hafızalar, miyav olasılığı p)
 
-Whh = 0.2
-h, p = ileri(Whh)
-d3 = (p - y) * Why * (1 - h[3]**2)          # δ3
-d2 = d3 * Whh * (1 - h[2]**2)                # δ2
-d1 = d2 * Whh * (1 - h[1]**2)                # δ1
-grad = d3*h[2] + d2*h[1] + d1*h[0]           # üç adımın toplamı
-print(grad)                                   # -0.5314
+Whh = 0.2                                # bozuk ağ (hafıza zayıf)
+h, p = ileri(Whh)                        # p = 0.529 (yanlışa yakın)
 
-# kontrol: sayısal türev
-L = lambda w: -math.log(ileri(w)[1])
-print((L(Whh+1e-6) - L(Whh-1e-6)) / 2e-6)    # -0.5314
+# --- geri yayılım: sondan başa, her adımda "δ" (o adımdaki hata sinyali) ---
+d3 = (p - y) * Why * (1 - h[3]**2)       # δ3: çıkıştaki hata, h3'e ve tanh'a kadar geldi
+d2 = d3 * Whh * (1 - h[2]**2)            # δ2: bir adım geriye, Whh ile çarp (sönüyor)
+d1 = d2 * Whh * (1 - h[1]**2)            # δ1: bir adım daha geriye (çok küçük)
 
-Whh -= 0.5 * grad
-print(Whh, ileri(Whh)[1])                     # 0.4657  0.641</pre></div></div>
+# Whh üç adımda da kullanıldı → her adımın katkısı (δ × o adımın girdisi h[t-1]) toplanır
+grad = d3*h[2] + d2*h[1] + d1*h[0]       # d1*h[0] = 0 çünkü h0 = 0
+print(grad)                              # -0.5314 → eksi: "Whh'ı büyüt"
+
+# kontrol: gradyanı sayısal türevle de bul (Whh'ı çok az oynat, kaybın değişimine bak)
+L = lambda w: -math.log(ileri(w)[1])     # kayıp L = -ln(p)
+print((L(Whh+1e-6) - L(Whh-1e-6)) / 2e-6)   # -0.5314 → elle bulduğumuzla aynı, hesap doğru
+
+# öğrenme adımı: gradyanın tersine git (öğrenme hızı α = 0.5)
+Whh -= 0.5 * grad                        # Whh = 0.2 - 0.5*(-0.531) = 0.466
+print(Whh, ileri(Whh)[1])                # 0.4657  0.641
+#  ↑ yeni Whh ↑ bu Whh ile ağı tekrar çalıştırınca yeni p:
+#    hafıza güçlendi, miyav olasılığı 0.53 → 0.64'e çıktı (doğru cevap 1'e yaklaştı)</pre></div></div>
     </div>
 
     <div class="callout"><b>🎯 Dene:</b> Üstteki 🎛️ <b>Ağırlıklar &amp; girdiler</b> panelinde \(W_{xh}=2,\ W_{hh}=0{,}2\) yapıp Simülasyon'daki sayılarla kendi hesabını karşılaştırabilirsin. Kendi cümleni de dene: "kötü ama harika" yerine üç adımlı başka bir dizi seç, önce tahminini söyle, sonra hesapla.</div>

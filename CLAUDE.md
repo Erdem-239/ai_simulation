@@ -1258,3 +1258,5 @@ p 0,53→0,64, δ₁=−0,0038 = vanishing). Her örnekte kapalı `.acc` içinde
 eşleştirildi, 3. örnek sonlu farkla doğrulandı. **Ders**: elle-hesap örneğinde HTML'e yazmadan önce sayıları Python'da üret/doğrula.
 
 **Örnek Çalışmalar MathJax'e çevrildi**: ilk sürüm düz metin/unicode idi, kullanıcı "mathjax ile yazaydın" dedi → tüm formüller `\( \)` / `\[ aligned \]`. 375px'te 3 blok taşıyordu: uzun satırlar kısaltıldı (çarpan `1·`, ara `tanh(…)` adımları atıldı, δ kuralı metinde bir kez yazıldı) + `#model-rnn .tpl-cl[data-stage="3"] .work mjx-container{font-size:68%}` mobil kuralı; `getBoundingClientRect` ile 0 taşma doğrulandı.
+
+**Örnek Çalışmalar kod yorumları**: kullanıcı koddaki `# 0.4657  0.641` yorumunu anlamadı ("bunu yorum satırı olarak da ekle, sormasam anlamayacağım") — üç Python kutusunun HER satırı artık yorumlu (h/δ/grad/sayısal türev/öğrenme adımı ve çıktı sayılarının ne olduğu). **Ders**: kod örneğinde çıktı sayısını sadece yazma, hangi değişkenin ne olduğunu da yorumla.
