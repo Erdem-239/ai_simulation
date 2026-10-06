@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 09:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 10:10 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1844,8 +1844,107 @@
     </div>
   </div>
 
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — elle tekrarla</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="sechead">🧩 Örnek Çalışmalar — kalemle tekrarlanabilir üç mini RNN</div>
+    <p style="font-size:13.5px; color:#ccd5e8">Üçü de <b>tek sayılı (skaler) hücre</b> kullanıyor: <b>h<sub>t</sub> = tanh(W<sub>xh</sub>·x<sub>t</sub> + W<sub>hh</sub>·h<sub>t−1</sub>)</b>, h₀ = 0. Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
+
+    <div class="pts" style="border-left:3px solid #3a7afe">
+      <h3 style="color:#3a7afe">Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</h3>
+      <p>Cümle üç adım: <b>"kötü → ama → harika"</b>. Kelimeleri sayıya çevirelim: kötü = −1, ama = 0 (nötr), harika = +1. Ağırlıklar: W<sub>xh</sub> = 1, W<sub>hh</sub> = 0,5; çıktı p = σ(2·h₃) = "olumlu olma olasılığı".</p>
+      <table class="mini-tbl" style="font-size:13px; border-collapse:collapse">
+        <tr><th style="padding:3px 10px">t</th><th style="padding:3px 10px">x</th><th style="padding:3px 10px">z = 1·x + 0,5·h<sub>t−1</sub></th><th style="padding:3px 10px">h<sub>t</sub> = tanh(z)</th></tr>
+        <tr><td style="padding:3px 10px">1</td><td>−1</td><td>−1 + 0 = −1,000</td><td><b>−0,762</b></td></tr>
+        <tr><td style="padding:3px 10px">2</td><td>0</td><td>0 + 0,5·(−0,762) = −0,381</td><td><b>−0,363</b></td></tr>
+        <tr><td style="padding:3px 10px">3</td><td>+1</td><td>1 + 0,5·(−0,363) = 0,818</td><td><b>+0,674</b></td></tr>
+      </table>
+      <p>Çıktı: p = σ(2·0,674) = <b>0,79</b> → olumlu. Şimdi kelimeleri <b>ters sırayla</b> ver ("harika → ama → kötü", x = +1, 0, −1): h = +0,762, +0,363, <b>−0,674</b> → p = <b>0,21</b> → olumsuz.</p>
+      <div class="callout"><b>💡 Sezgi:</b> Kelimeler aynı, sonuç zıt. Kelime sayan (sırayı umursamayan) bir model ikisini aynı görürdü. RNN'de <b>en son gelen kelime hafızanın üstüne yazıyor</b> (W<sub>hh</sub> = 0,5 eskiyi yarıya indiriyor), bu yüzden "…ama harika" olumlu bitiyor. Gerçek cümlelerde "ama"nın dönüşü böyle yakalanıyor.</div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body">
+<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+def rnn(xs, Wxh=1.0, Whh=0.5):
+    h = 0.0
+    for x in xs:
+        h = math.tanh(Wxh*x + Whh*h)
+    return h
+sigmoid = lambda z: 1/(1+math.exp(-z))
+
+print(sigmoid(2*rnn([-1, 0, +1])))   # 0.794  kötü ama harika
+print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206  harika ama kötü</pre></div></div>
+    </div>
+
+    <div class="pts" style="border-left:3px solid #f0a032">
+      <h3 style="color:#f0a032">Örnek 2 — Sıradaki kelimeyi tahmin: bağlamı taşımak</h3>
+      <p>Cümle: <b>"kedi … ve … ___"</b> (üçüncü kelime boş). Cevap "miyav" mı, "hav" mı? Tek ipucu <b>t=1'deki hayvan</b>; araya giren "ve" kelimeleri nötr. Kodlama: kedi = +1, köpek = −1, ve/boşluk = 0. Ağırlıklar: W<sub>xh</sub> = 2, W<sub>hh</sub> = 1, W<sub>hy</sub> = 3; p = σ(3·h₃) = "miyav olasılığı".</p>
+      <table class="mini-tbl" style="font-size:13px; border-collapse:collapse">
+        <tr><th style="padding:3px 10px">t</th><th style="padding:3px 10px">x</th><th style="padding:3px 10px">h<sub>t</sub> = tanh(2·x + 1·h<sub>t−1</sub>)</th></tr>
+        <tr><td style="padding:3px 10px">1 (kedi)</td><td>+1</td><td>tanh(2) = <b>0,964</b></td></tr>
+        <tr><td style="padding:3px 10px">2 (ve)</td><td>0</td><td>tanh(0 + 0,964) = <b>0,746</b></td></tr>
+        <tr><td style="padding:3px 10px">3 (___)</td><td>0</td><td>tanh(0 + 0,746) = <b>0,633</b></td></tr>
+      </table>
+      <p>p = σ(3·0,633) = <b>0,87</b> → "miyav". Köpekle başlasaydık (x₁ = −1) h₃ = −0,633 ve p = <b>0,13</b> → "hav". Ağ cümlenin başındaki bilgiyi iki nötr adım boyunca <b>hafızada taşıdı</b>.</p>
+      <p><b>Şimdi hafızayı bozalım:</b> W<sub>hh</sub> = 0,2 yap. h = 0,964 → 0,190 → <b>0,038</b>; p = σ(3·0,038) = <b>0,53</b>. Ağ artık yazı-tura atıyor: ilk kelime iki adımda unutuldu. Bu, vanishing gradient'in ileri yönden görünen yüzü.</p>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body">
+<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+sigmoid = lambda z: 1/(1+math.exp(-z))
+def tahmin(xs, Wxh=2.0, Whh=1.0, Why=3.0):
+    h = 0.0
+    for x in xs:
+        h = math.tanh(Wxh*x + Whh*h)
+    return sigmoid(Why*h)            # P(miyav)
+
+print(tahmin([+1, 0, 0]))            # 0.87  kedi ve ___
+print(tahmin([-1, 0, 0]))            # 0.13  köpek ve ___
+print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53  hafıza zayıf → bilgi kayboldu</pre></div></div>
+    </div>
+
+    <div class="pts" style="border-left:3px solid #2ec46a">
+      <h3 style="color:#2ec46a">Örnek 3 — Hatadan öğrenmek: tek BPTT adımı elle</h3>
+      <p>Örnek 2'nin <b>bozuk ağını</b> (W<sub>xh</sub> = 2, <b>W<sub>hh</sub> = 0,2</b>, W<sub>hy</sub> = 3) alalım. "kedi ve ___" için doğru cevap <b>y = 1</b> (miyav) ama ağ p = 0,529 diyor. Kayıp L = −ln p = 0,637. W<sub>hh</sub> nasıl düzelmeli? Sondan başa gidiyoruz:</p>
+      <ol style="font-size:13.5px; line-height:1.9; color:#ccd5e8">
+        <li><b>Çıkış:</b> ∂L/∂z<sub>y</sub> = p − y = 0,529 − 1 = <b>−0,471</b></li>
+        <li><b>h₃'e:</b> × W<sub>hy</sub> → −0,471 × 3 = <b>−1,414</b></li>
+        <li><b>z₃'e (tanh eğimi 1−h₃² = 0,999):</b> δ₃ = −1,414 × 0,999 = <b>−1,412</b></li>
+        <li><b>W<sub>hh</sub>'ın t=3 katkısı:</b> δ₃ · h₂ = −1,412 × 0,190 = <b>−0,269</b></li>
+        <li><b>Bir adım geriye (t=2):</b> δ₂ = δ₃ · W<sub>hh</sub> · (1−h₂²) = −1,412 × 0,2 × 0,964 = <b>−0,272</b>; katkı δ₂ · h₁ = −0,272 × 0,964 = <b>−0,262</b></li>
+        <li><b>t=1:</b> δ₁ = −0,272 × 0,2 × (1−0,964²=0,0707) = −0,0038 ama h₀ = 0 olduğu için W<sub>hh</sub> katkısı <b>0</b></li>
+      </ol>
+      <p><b>Toplam:</b> ∂L/∂W<sub>hh</sub> = −0,269 − 0,262 + 0 = <b>−0,531</b> (aynı ağırlık üç adımda kullanıldığı için katkılar toplanıyor). Öğrenme hızı α = 0,5: W<sub>hh</sub> = 0,2 − 0,5·(−0,531) = <b>0,466</b>. Yeni ileri geçiş: p = <b>0,64</b> (0,53'ten yükseldi, L = 0,637 → 0,444).</p>
+      <div class="callout"><b>💡 Sezgi:</b> Gradyan eksi çıktı → "W<sub>hh</sub>'ı büyüt": ağ hafızasını güçlendirerek ilk kelimeyi daha iyi taşımayı <b>kendi kendine</b> buldu. Ayrıca δ₁ = −0,0038, δ₃ = −1,412'nin yaklaşık 370'te biri: hata sinyali iki adım geri giderken sönüyor — vanishing gradient'in sayıyla görüntüsü.</div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (sonlu farkla doğrulamalı)</div><div class="acc-body">
+<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+sigmoid = lambda z: 1/(1+math.exp(-z))
+Wxh, Why, xs, y = 2.0, 3.0, [1, 0, 0], 1
+
+def ileri(Whh):
+    h = [0.0]
+    for x in xs:
+        h.append(math.tanh(Wxh*x + Whh*h[-1]))
+    return h, sigmoid(Why*h[-1])
+
+Whh = 0.2
+h, p = ileri(Whh)
+d3 = (p - y) * Why * (1 - h[3]**2)          # δ3
+d2 = d3 * Whh * (1 - h[2]**2)                # δ2
+d1 = d2 * Whh * (1 - h[1]**2)                # δ1
+grad = d3*h[2] + d2*h[1] + d1*h[0]           # üç adımın toplamı
+print(grad)                                   # -0.5314
+
+# kontrol: sayısal türev
+L = lambda w: -math.log(ileri(w)[1])
+print((L(Whh+1e-6) - L(Whh-1e-6)) / 2e-6)    # -0.5314
+
+Whh -= 0.5 * grad
+print(Whh, ileri(Whh)[1])                     # 0.4657  0.641</pre></div></div>
+    </div>
+
+    <div class="callout"><b>🎯 Dene:</b> Üstteki 🎛️ <b>Ağırlıklar &amp; girdiler</b> panelinde W<sub>xh</sub> = 2, W<sub>hh</sub> = 0,2 yapıp Simülasyon'daki sayılarla kendi hesabını karşılaştırabilirsin. Kendi cümleni de dene: "kötü ama harika" yerine üç adımlı başka bir dizi seç, önce tahminini söyle, sonra hesapla.</div>
+    </div>
+  </div>
+
   <div class="tpl-cl" data-stage="7">
-    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
     <div class="sechead">🧠 Kendini Test Et — BPTT</div>
     <div class="pts">
