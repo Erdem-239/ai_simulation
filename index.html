@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 11:20 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-06 11:50 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1847,8 +1847,8 @@
   <div class="tpl-cl" data-stage="3">
     <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — elle tekrarla</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-    <div class="sechead">🧩 Örnek Çalışmalar — kalemle tekrarlanabilir üç mini RNN</div>
-    <p style="font-size:13.5px; color:#ccd5e8">Üçü de <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
+    <div class="sechead">🧩 Örnek Çalışmalar — kalemle tekrarlanabilir mini RNN örnekleri</div>
+    <p style="font-size:13.5px; color:#ccd5e8">Hepsi <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
 
     <div class="pts" style="border-left:3px solid #3a7afe">
       <h3 style="color:#3a7afe">Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</h3>
@@ -1964,6 +1964,88 @@ Whh -= 0.5 * grad                        # Whh = 0.2 - 0.5*(-0.531) = 0.466
 print(Whh, ileri(Whh)[1])                # 0.4657  0.641
 #  ↑ yeni Whh ↑ bu Whh ile ağı tekrar çalıştırınca yeni p:
 #    hafıza güçlendi, miyav olasılığı 0.53 → 0.64'e çıktı (doğru cevap 1'e yaklaştı)</pre></div></div>
+    </div>
+
+    <div class="pts" style="border-left:3px solid #9c4dff">
+      <h3 style="color:#9c4dff">Örnek 4 — Aynısını makineye yaptır: otomatik türev (autograd)</h3>
+      <p>Örnek 3'te δ₃, δ₂, δ₁'i <b>elle</b> yazdık. Gerçek projelerde bunu kimse yapmaz: PyTorch, JAX, TensorFlow gibi kütüphaneler <b>otomatik türev (autograd)</b> ile geri yayılımı kendileri yapar. Aynı problemi (kedi ve ___, \(W_{hh}=0{,}2\)) şimdi PyTorch'a bırakıyoruz.</p>
+      <p><b>Nasıl çalışıyor?</b> İleri geçişte yaptığın her işlemi (<code>*</code>, <code>+</code>, <code>tanh</code>, <code>sigmoid</code>, <code>log</code>…) arka planda bir <b>hesap grafiği</b> olarak kaydediyor. <code>L.backward()</code> deyince bu grafiği sondan başa geziyor ve her işlemde şunu yapıyor:</p>
+      <div class="work" style="overflow-x:auto">\[ \underbrace{\frac{\partial L}{\partial \text{girdi}}}_{\text{o girdinin gradyanı}}\;=\;\underbrace{\frac{\partial L}{\partial \text{çıktı}}}_{\text{sondan gelen}}\;\times\;\underbrace{\frac{\partial \text{çıktı}}{\partial \text{girdi}}}_{\text{yerel türev}} \]</div>
+      <p>Yani elle yaptığımız zincirin <b>aynısı</b>; yerel türevleri (tanh için \(1-h^2\), sigmoid için \(\sigma(1-\sigma)\)) kütüphane zaten biliyor. Bir ağırlık birden fazla yerde kullanılıyorsa (\(W_{hh}\) üç adımda) katkıları da kendisi topluyor.</p>
+      <div style="overflow-x:auto"><table style="font-size:13px; border-collapse:collapse; margin:6px 0">
+        <tr><th style="padding:4px 12px; text-align:left">Elle (Örnek 3)</th><th style="padding:4px 12px; text-align:left">PyTorch</th></tr>
+        <tr><td style="padding:4px 12px">ileri geçişte h₁, h₂, h₃'ü hesapla</td><td style="padding:4px 12px">aynı döngü; işlemler otomatik kaydedilir</td></tr>
+        <tr><td style="padding:4px 12px">δ₃, δ₂, δ₁'i zincirle</td><td style="padding:4px 12px"><code>L.backward()</code></td></tr>
+        <tr><td style="padding:4px 12px">üç adımın katkısını topla → −0,531</td><td style="padding:4px 12px"><code>Whh.grad</code> (toplama dahil)</td></tr>
+        <tr><td style="padding:4px 12px">W<sub>hh</sub> ← W<sub>hh</sub> − α·grad</td><td style="padding:4px 12px"><code>Whh -= 0.5 * Whh.grad</code> (ya da <code>optimizer.step()</code>)</td></tr>
+      </table></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 PyTorch ile (aynı problem, satır satır yorumlu)</div><div class="acc-body">
+<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import torch
+
+Wxh = torch.tensor(2.0)                       # sabit, gradyanı istemiyoruz
+Why = torch.tensor(3.0)                       # sabit
+Whh = torch.tensor(0.2, requires_grad=True)   # "bunun gradyanını bul" işareti (öğreneceğimiz ağırlık)
+
+h = torch.tensor(0.0)                         # h0 = 0
+for x in [1.0, 0.0, 0.0]:                     # kedi, ve, ___
+    h = torch.tanh(Wxh*x + Whh*h)             # ileri geçiş: PyTorch her işlemi arka planda kaydeder
+
+p = torch.sigmoid(Why*h)                      # miyav olasılığı = 0.529
+L = -torch.log(p)                             # y = 1 olduğu için kayıp L = -ln(p) = 0.637
+
+L.backward()                                  # TÜM geri yayılım: kayıtlı işlemleri sondan başa gezer
+print(Whh.grad)                               # tensor(-0.5314) → elle bulduğumuzla aynı
+
+with torch.no_grad():                         # güncelleme işlemi grafiğe kaydedilmesin
+    Whh -= 0.5 * Whh.grad                     # öğrenme adımı (α = 0.5): 0.2 → 0.4657
+print(Whh)                                    # tensor(0.4657, requires_grad=True)</pre></div></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🔬 İçini açalım: 30 satırlık mini autograd (kütüphane yok)</div><div class="acc-body">
+      <p style="font-size:13px; color:#ccd5e8; margin:6px 0">"Sihir" değil: her sayı kendi gradyanını ve kendisini üreten girdileri taşıyor, <code>backward()</code> grafiği sondan başa gezip <b>gelen × yerel türev</b>'i ekliyor. Bu kod hiçbir kütüphane kullanmadan Örnek 3'teki <b>−0,5314</b>'ü bulur:</p>
+<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+class Deger:                                   # içinde hem sayı hem "gradyan" taşıyan kutu
+    def __init__(self, v, ebeveynler=(), yerel=()):
+        self.v = v                             # sayının kendisi
+        self.g = 0.0                           # ∂L/∂(bu sayı): geri geçişte dolacak
+        self.eb = ebeveynler                   # bu sayıyı üreten girdiler
+        self.yerel = yerel                     # her girdiye göre yerel türev
+
+    def __add__(a, b):
+        b = b if isinstance(b, Deger) else Deger(b)
+        return Deger(a.v + b.v, (a, b), (1.0, 1.0))
+    def __mul__(a, b):
+        b = b if isinstance(b, Deger) else Deger(b)
+        return Deger(a.v * b.v, (a, b), (b.v, a.v))      # d(ab)/da = b, d(ab)/db = a
+    def tanh(a):
+        t = math.tanh(a.v)
+        return Deger(t, (a,), (1 - t*t,))                # tanh' = 1 - tanh²
+    def sigmoid(a):
+        s = 1/(1 + math.exp(-a.v))
+        return Deger(s, (a,), (s*(1 - s),))              # σ' = σ(1-σ)
+    def neglog(a):
+        return Deger(-math.log(a.v), (a,), (-1/a.v,))    # (-ln p)' = -1/p
+
+    def backward(self):
+        sira, gorulen = [], set()
+        def sirala(d):                         # grafiği girdiden çıktıya sırala
+            if id(d) not in gorulen:
+                gorulen.add(id(d))
+                for e in d.eb: sirala(e)
+                sira.append(d)
+        sirala(self)
+        self.g = 1.0                           # ∂L/∂L = 1
+        for d in reversed(sira):               # sondan başa yürü
+            for e, yerel in zip(d.eb, d.yerel):
+                e.g += d.g * yerel             # zincir kuralı: gelen × yerel türev (toplanır!)
+
+Whh = Deger(0.2)
+h = Deger(0.0)
+for x in [1.0, 0.0, 0.0]:
+    h = (h * Whh + 2.0 * x).tanh()             # Wxh = 2
+L = (h * 3.0).sigmoid().neglog()               # Why = 3, y = 1
+L.backward()
+print(Whh.g)</pre></div></div>
+      <div class="callout"><b>💡 Sezgi:</b> Elle hesap, geri yayılımın <b>ne yaptığını</b> anlamak için; autograd ise <b>her seferinde yapmamak</b> için. Binlerce ağırlıklı ağlarda türevleri elle yazmak imkânsız, ama arkada dönen şey tam olarak senin Örnek 3'te yaptığın zincir.</div>
     </div>
 
     <div class="callout"><b>🎯 Dene:</b> Üstteki 🎛️ <b>Ağırlıklar &amp; girdiler</b> panelinde \(W_{xh}=2,\ W_{hh}=0{,}2\) yapıp Simülasyon'daki sayılarla kendi hesabını karşılaştırabilirsin. Kendi cümleni de dene: "kötü ama harika" yerine üç adımlı başka bir dizi seç, önce tahminini söyle, sonra hesapla.</div>
