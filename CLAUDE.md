@@ -1247,3 +1247,12 @@ Exploding = (0.05, 2, 0) → girdi küçük, tanh doymaz, r≈W_hh=2. Küçük i
 
 **XOR Hikâye'ye "🤔 Tek gizli nöron neden yetmez?" kutusu**: kullanıcı "tek gizli nöron + tek h + bias + aktivasyon yetmez mi" diye sordu;
 z(0,0)+z(1,1)=z(1,0)+z(0,1) (=w₁+w₂+2b) kanıtı, "Sopa özeti"nin hemen üstüne kısa callout olarak eklendi (yalnız index.html).
+
+## RNN — "7️⃣ Örnek Çalışmalar — elle tekrarla" aşaması
+
+Kullanıcı Test'in önüne/arkasına "elle tekrar edilebilecek kısa, sezgiyi kuran 2-3 örnek (son kelimeyi tahmin vb.), kodlu" bir bölüm
+istedi. Ekstra'dan sonra, Test'ten ÖNCE yeni `.tpl-cl` (`data-stage="3"`, yeşil) eklendi; Test 8️⃣ oldu. Üç skaler-hücre örneği
+(h=tanh(Wxh·x+Whh·h), h₀=0): (1) duygu "kötü→ama→harika" vs ters sıra (0,79 / 0,21 — sıra önemli), (2) "kedi ve ___" sıradaki kelime
+(0,87; köpek 0,13; Whh=0,2 ile 0,53 = hafıza unutuluyor), (3) Örnek 2'nin bozuk ağında tek BPTT adımı elle (∂L/∂Whh=−0,531, Whh 0,2→0,466,
+p 0,53→0,64, δ₁=−0,0038 = vanishing). Her örnekte kapalı `.acc` içinde Python kodu; üç kod da çalıştırılıp sayfadaki sayılarla
+eşleştirildi, 3. örnek sonlu farkla doğrulandı. **Ders**: elle-hesap örneğinde HTML'e yazmadan önce sayıları Python'da üret/doğrula.
