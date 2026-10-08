@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 15:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 15:30 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1814,10 +1814,10 @@
   <div class="tpl-cl" data-stage="x">
     <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Vanishing/Exploding &amp; Karşılaştırma</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-    <div class="sechead rnn-toggle" data-rnnsec="3">3) Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient) <span class="chev">▸</span></div>
+    <div class="sechead rnn-toggle" data-rnnsec="3">Neden RNN'i eğitmek zor? (Vanishing / Exploding Gradient) <span class="chev">▸</span></div>
     <div class="rnn-secbody" id="rnnBody3">
     <div class="pts">
-      <p style="font-size:14px; color:#ccd5e8">Yukarıda (unrolling widget'ında ve Geri Adım 5'te) gördüğün gibi, ∂L/∂z<sub>h</sub> bir adım geriye her gidişinde <b>r = W<sub>hh</sub>(1−h²)</b> ile çarpılıyor. Sorun şu: bu, T adımlık bir dizide <b>T kere üst üste</b> oluyor — tek seferlik değil:</p>
+      <p style="font-size:14px; color:#ccd5e8">Bütün Resim'deki δ zincirinde (many-to-one, Geri Adım 6) ve Örnek Çalışmalar'da (Örnek 3: δ₃ → δ₁ yaklaşık 370 kat sönüyor) gördüğün gibi, ∂L/∂z<sub>h</sub> bir adım geriye her gidişinde <b>r = W<sub>hh</sub>(1−h²)</b> ile çarpılıyor. Sorun şu: bu, T adımlık bir dizide <b>T kere üst üste</b> oluyor — tek seferlik değil:</p>
       \[ \dfrac{\partial L}{\partial z_h^{(1)}}\;\approx\;r^{\,T-1}\times\dfrac{\partial L}{\partial z_h^{(T)}}, \qquad r=W_{hh}(1-h^2) \]
       <div class="callout">
         <ul style="margin:0; padding-left:18px">
