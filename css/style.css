@@ -1627,3 +1627,13 @@ body.xt-full-lock{overflow:hidden}
 .rc-preset{background:#1c2a48;border:1px solid var(--line);color:#ccd5e8;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
 .rc-preset:hover{border-color:var(--green);color:#fff}
 @media(max-width:720px){#model-rnn .tpl-cl[data-stage="3"] .work mjx-container{font-size:68% !important}}
+
+.rex-grid{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:14px; align-items:start; margin:6px 0}
+@media(max-width:900px){.rex-grid{grid-template-columns:minmax(0,1fr)}}
+.rex-ctl{display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; font-size:12.5px; margin:6px 0}
+.rex-ctl label{display:flex; align-items:center; gap:5px}
+.rex-ctl select{background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 6px; font-size:12.5px}
+.rex-ctl input[type=range]{accent-color:var(--accent)}
+.rex-btn{background:#1c2a48; border:1px solid var(--line); color:#ccd5e8; border-radius:6px; padding:4px 9px; font-size:12px; cursor:pointer; margin-right:4px}
+.rex-btn:hover{border-color:var(--green); color:#fff}
+.rex-go{border-color:#2ec46a; background:#14301f}
