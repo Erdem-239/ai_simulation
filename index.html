@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610081200"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610081330"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610081200">
+<link rel="stylesheet" href="css/style.css?v=202610081330">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 12:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 13:30 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1851,7 +1851,8 @@
     <p style="font-size:13.5px; color:#ccd5e8">Hepsi <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
 
     <div class="pts" style="border-left:3px solid #3a7afe">
-      <h3 class="sahne-head closed" style="color:#3a7afe; margin-top:0"><span>Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</span><span class="chev">▸</span></h3>
+      <div id="rexSrc" style="display:none"></div>
+    <h3 class="sahne-head closed" style="color:#3a7afe; margin-top:0"><span>Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</span><span class="chev">▸</span></h3>
       <div class="sahne-body closed">
       <p style="margin:6px 0">🎯 <b>Problem:</b> Bir film yorumunun <b>olumlu mu olumsuz mu</b> olduğunu bulmak istiyoruz. Bilgisayar kelimeyi okuyamaz, sayıyla çalışır: her kelimeye bir sayı veriyoruz (kötü = −1, harika = +1, bağlaç = 0). Cümle ağa <b>sırayla</b> girer; ağ "şimdiye kadar okuduklarımın özeti"ni <b>h</b> hafızasında tutar, son kelimeden sonra h₃'e bakıp karar verir.</p>
       <div class="rex-grid" id="rex1">
@@ -1868,6 +1869,7 @@
           <p style="font-size:12px; color:var(--muted); margin:4px 0 0">Her adımda aynı hücre: kelime (W<sub>xh</sub>) + eski hafıza (W<sub>hh</sub>) → yeni hafıza h. Son h, W<sub>hy</sub> ile olasılığa dönüşür. ↔ Dar ekranda yana kaydır.</p>
         </div>
       </div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex1map"></div></div></div>
       <div class="callout"><b>💡 Sezgi:</b> Kelimeler aynı, sonuç zıt. Kelime sayan (sırayı umursamayan) bir model ikisini aynı görürdü. RNN'de <b>en son gelen kelime hafızanın üstüne yazıyor</b> (\(W_{hh}=0{,}5\) eskiyi yarıya indiriyor), bu yüzden "…ama harika" olumlu bitiyor. Gerçek cümlelerde "ama"nın dönüşü böyle yakalanıyor.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -1906,6 +1908,7 @@ print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206 → olumsuz (aynı kelimeler, ters 
           <p style="font-size:12px; color:var(--muted); margin:4px 0 0">W<sub>hh</sub>=1: eski hafıza tam taşınır. W<sub>hh</sub> küçüldükçe turuncu oklardan geçen bilgi sönümlenir. ↔ Dar ekranda yana kaydır.</p>
         </div>
       </div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex2map"></div></div></div>
       <div class="callout"><b>💡 Sezgi:</b> W<sub>hh</sub> küçülünce ilk kelime iki adımda unutulur ve ağ yazı-tura atar. Bu, <b>vanishing gradient'in ileri yönden görünen yüzü</b>: bilgi zaman içinde taşınırken sönüyor.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -1942,6 +1945,7 @@ print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53 → yazı-tura: hafıza zayıf, kedi
           <p style="font-size:12px; color:var(--muted); margin:4px 0 0">Kırmızı kutu: "doğru cevap 1 olmalıydı" → ağın <b>kaybı</b>. Adım atınca W<sub>hh</sub> büyür, hafıza güçlenir, p yükselir. ↔ Dar ekranda yana kaydır.</p>
         </div>
       </div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri &amp; geri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Önce <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı W<sub>hh</sub> üç adımda kullanıldığı için üç yaprak çıkar ve <b>gerçek gradyan yaprakların toplamıdır</b>. "🔧 Bir öğrenme adımı at"a basınca sayılar yeni W<sub>hh</sub> ile yenilenir.</p><div id="rex3map"></div></div></div>
       <div class="callout"><b>💡 Sezgi:</b> Gradyan eksi çıktı → "\(W_{hh}\)'ı büyüt": ağ hafızasını güçlendirerek ilk kelimeyi daha iyi taşımayı <b>kendi kendine</b> buldu. Ayrıca \(\delta_1=-0{,}0038\), \(\delta_3=-1{,}412\)'nin yaklaşık 370'te biri: hata sinyali iki adım geri giderken sönüyor — vanishing gradient'in sayıyla görüntüsü.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla, sonlu farkla doğrulamalı)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -6485,19 +6489,19 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610081200"></script>
-<script src="js/lesson-turev.js?v=202610081200"></script>
-<script src="js/lesson-xor.js?v=202610081200"></script>
-<script src="js/lesson-xor-arch.js?v=202610081200"></script>
-<script src="js/lesson-xor-maps.js?v=202610081200"></script>
-<script src="js/lesson-xor-epoch.js?v=202610081200"></script>
-<script src="js/lesson-nn.js?v=202610081200"></script>
-<script src="js/lesson-trig.js?v=202610081200"></script>
+<script src="js/lesson-linreg.js?v=202610081330"></script>
+<script src="js/lesson-turev.js?v=202610081330"></script>
+<script src="js/lesson-xor.js?v=202610081330"></script>
+<script src="js/lesson-xor-arch.js?v=202610081330"></script>
+<script src="js/lesson-xor-maps.js?v=202610081330"></script>
+<script src="js/lesson-xor-epoch.js?v=202610081330"></script>
+<script src="js/lesson-nn.js?v=202610081330"></script>
+<script src="js/lesson-trig.js?v=202610081330"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610081200"></script>
-<script src="js/lesson-rnn-soz.js?v=202610081200"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610081330"></script>
+<script src="js/lesson-rnn-soz.js?v=202610081330"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610081200"></script>
-<script src="js/app.js?v=202610081200"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610081330"></script>
+<script src="js/app.js?v=202610081330"></script>
 </body>
 </html>
