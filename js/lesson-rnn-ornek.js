@@ -25,6 +25,117 @@
     }));
   }
 
+
+  // ---- haritalar: ileri yol (xf-*) + geri yayılım ağacı (xt-*) + türetme pop-up'ları ----
+  const sup=['','₁','₂','₃'];
+  function srcEl(id){
+    let e=document.getElementById('xtsrc-'+id);
+    if(!e){e=document.createElement('div');e.className='xt-src';e.id='xtsrc-'+id;(document.getElementById('rexSrc')||document.body).appendChild(e);}
+    return e;
+  }
+  function src(id,title,eq,num,say){
+    srcEl(id).innerHTML='<div class="xp-bas">'+title+'</div><div class="eq">\\( '+eq+' \\)</div>'+
+      (num?'<div class="xp-hes">\\( '+num+' \\)</div>':'')+'<div class="xp-sat">'+say+'</div>';
+  }
+  const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const fbox=(cls,id,sym,cap)=>'<div class="xf-box '+cls+'" id="'+id+'">'+sym+'<span class="xf-val" id="'+id+'v">—</span>'+(cap?'<span class="xf-cap">'+cap+'</span>':'')+'</div>';
+  const fkol=(inner,ad)=>'<div class="xf-kol">'+inner+'<div class="xf-kolad">'+ad+'</div></div>';
+  const fok=(key,tex)=>'<div class="xf-ok"><span class="xf-chip" data-pop="'+key+'" tabindex="0" role="button" aria-label="bu adımı anlat">\\( '+tex+' \\)</span><span class="xf-ar">→</span></div>';
+
+  // İleri yol HTML'i. opt.loss → sonda L kutusu da var.
+  function fwdHtml(p,opt){
+    let o='<div class="xf-baslik">▶ İLERİ YOL — kelimelerden çıktıya <span>(3 zaman adımı, <b>aynı</b> ağırlıklar tekrar kullanılır)</span></div><div class="xf-scroll"><div class="xf-akis">';
+    o+=fkol(fbox('gi',p+'x1','x₁')+fbox('gh',p+'h0','h₀'),'ilk kelime + boş hafıza');
+    for(let i=1;i<=3;i++){
+      o+=fok(p+'_z'+i,'W_{xh}x_'+i+'{+}W_{hh}h_'+(i-1))+fkol(fbox('gh',p+'z'+i,'z'+sup[i]),'ham toplam');
+      o+=fok(p+'_th'+i,'\\tanh')+fkol(fbox('gh',p+'h'+i,'h'+sup[i])+(i<3?fbox('gi',p+'x'+(i+1),'x'+sup[i+1]):''),i<3?'yeni hafıza + sıradaki kelime':'son hafıza');
+    }
+    o+=fok(p+'_zy','W_{hy}h_3')+fkol(fbox('gy',p+'zy','z<sub>y</sub>'),'çıktı toplamı');
+    o+=fok(p+'_p','\\sigma')+fkol(fbox('gy',p+'p','p',opt.pcap),'olasılık');
+    if(opt.loss)o+=fok(p+'_L','-\\ln p')+fkol(fbox('gl',p+'L','L'),'kayıp');
+    return o+'</div></div>';
+  }
+  // İleri yol değerleri + pop-up kaynakları (canlı)
+  function fwdUpd(p,D,opt){
+    const {xs,h,z,zy,pr,wxh,whh,why}=D;
+    setT(p+'x1v',f(xs[0],1));setT(p+'h0v','0');
+    for(let i=1;i<=3;i++){setT(p+'z'+i+'v',f(z[i-1],3));setT(p+'h'+i+'v',f(h[i],3));if(i<3)setT(p+'x'+(i+1)+'v',f(xs[i],1));}
+    setT(p+'zyv',f(zy,3));setT(p+'pv',f(pr,3));if(opt.loss)setT(p+'Lv',f(D.L,3));
+    for(let i=1;i<=3;i++){
+      const hp=h[i-1];
+      src(p+'_z'+i,'z'+sup[i]+' — ham toplam','z_'+i+'=W_{xh}x_'+i+'+W_{hh}h_'+(i-1),
+        'z_'+i+'='+t(wxh,2)+'\\cdot'+tp(xs[i-1],1)+'+'+t(whh,2)+'\\cdot'+tp(hp,3)+'='+t(wxh*xs[i-1],3)+'+'+tp(whh*hp,3)+'=\\mathbf{'+t(z[i-1],3)+'}',
+        '💬 Kelimenin katkısı (<b>'+f(wxh*xs[i-1],3)+'</b>) ile eski hafızanın katkısı (<b>'+f(whh*hp,3)+'</b>) toplanıyor. '+(i==1?'İlk adımda hafıza boş (h₀=0), yalnız kelime var.':'W<sub>hh</sub> küçükse hafıza katkısı küçüktür: geçmiş "sönük" kalır.'));
+      src(p+'_th'+i,'h'+sup[i]+' — yeni hafıza','h_'+i+'=\\tanh(z_'+i+')',
+        'h_'+i+'=\\tanh('+tp(z[i-1],3)+')=\\mathbf{'+t(h[i],3)+'}',
+        '💬 tanh, z\'yi (−1, 1) aralığına sıkıştırır: <b>'+f(z[i-1],3)+' → '+f(h[i],3)+'</b>. Bu h hem sıradaki adıma hafıza olarak gider'+(i==3?' hem de çıktıya.':'.')+' Eğim 1−h² = <b>'+f(1-h[i]*h[i],3)+'</b> — geri yayılımda bu çarpan sinyali zayıflatır.');
+    }
+    src(p+'_zy','z<sub>y</sub> — çıktı toplamı','z_y=W_{hy}h_3','z_y='+t(why,2)+'\\cdot'+tp(h[3],3)+'=\\mathbf{'+t(zy,3)+'}',
+      '💬 Son hafıza h₃ karar katmanıyla (W<sub>hy</sub>) çarpılıp tek bir "ham puan"a dönüyor. Pozitifse çıktı 0,5\'in üstüne çıkacak.');
+    src(p+'_p','p — olasılık','p=\\sigma(z_y)=\\tfrac{1}{1+e^{-z_y}}','p=\\sigma('+tp(zy,3)+')=\\mathbf{'+t(pr,3)+'}',
+      '💬 Sigmoid ham puanı 0–1 arasına sıkıştırır: <b>'+f(pr,3)+'</b> = '+opt.psay+'.');
+    if(opt.loss)src(p+'_L','L — kayıp','L=-\\ln p\\quad(y=1)','L=-\\ln('+t(pr,3)+')=\\mathbf{'+t(D.L,3)+'}',
+      '💬 Doğru cevap 1 iken ağın verdiği olasılık küçükse kayıp büyür. <b>Geri yayılım buradan başlar.</b>');
+  }
+  // Geri yayılım ağacı HTML'i (yalnız Örnek 3)
+  function bwdHtml(){
+    const E=(cls,key,tex)=>'<span class="xt-edge '+cls+'" data-pop="'+key+'" tabindex="0" role="button" aria-label="türetmeyi göster">\\( '+tex+' \\)</span><span class="xt-ar">→</span>';
+    const B=(cls,id,sym,cap,key)=>'<div class="xt-box '+cls+'" id="'+id+'"'+(key?' data-pop="'+key+'" tabindex="0" role="button"':'')+'>\\( '+sym+' \\)<span class="xt-cap">'+cap+'</span><span class="xt-val" id="'+id+'v">—</span></div>';
+    const LF=(cls,id,sym)=>'<div class="xt-box '+cls+' yaprak" id="'+id+'">'+sym+'<span class="xt-val" id="'+id+'v">—</span></div>';
+    const kid=(e,child)=>'<div class="xt-kid">'+e+child+'</div>';
+    const node=(box,kids)=>'<div class="xt-node">'+box+(kids?'<div class="xt-kids">'+kids+'</div>':'')+'</div>';
+    const step=(t,g)=>{ // t=3,2,1 : z_t düğümü ve altı
+      const leafs=kid(E('g4','r3_z'+t+'Wxh','\\tfrac{\\partial z_'+t+'}{\\partial W_{xh}}=x_'+t),LF('g4','rx3tWxh'+t,'dW<sub>xh</sub>|t='+t))+
+                  kid(E('g4','r3_z'+t+'Whh','\\tfrac{\\partial z_'+t+'}{\\partial W_{hh}}=h_'+(t-1)),LF('g4','rx3tWhh'+t,'dW<sub>hh</sub>|t='+t));
+      let more='';
+      if(t>1) more=kid(E('g3','r3_z'+t+'h','\\tfrac{\\partial z_'+t+'}{\\partial h_'+(t-1)+'}=W_{hh}'),
+        node(B('g3','rx3th'+(t-1),'h_'+(t-1),'hafıza','r3_z'+t+'h'),
+          kid(E('g3','r3_hz'+(t-1),'\\tfrac{\\partial h_'+(t-1)+'}{\\partial z_'+(t-1)+'}=1-h_'+(t-1)+'^2'),step(t-1))));
+      return node(B('g3','rx3tz'+t,'z_'+t,'δ'+sup[t],'r3_hz'+t),leafs+more);
+    };
+    const tree=node(B('g1 kok','rx3tL','L','kayıp','r3_Lp'),
+      kid(E('g1','r3_Lp','\\tfrac{\\partial L}{\\partial p}=-\\tfrac1p'),
+        node(B('g1','rx3tp','p','olasılık','r3_pzy'),
+          kid(E('g1','r3_pzy','\\tfrac{\\partial p}{\\partial z_y}=p(1-p)'),
+            node(B('g1','rx3tzy','z_y','dz<sub>y</sub>=p−1','r3_zyWhy'),
+              kid(E('g2','r3_zyWhy','\\tfrac{\\partial z_y}{\\partial W_{hy}}=h_3'),LF('g2','rx3tWhy','dW<sub>hy</sub>'))+
+              kid(E('g3','r3_zyh','\\tfrac{\\partial z_y}{\\partial h_3}=W_{hy}'),
+                node(B('g3','rx3th3','h_3','son hafıza','r3_zyh'),
+                  kid(E('g3','r3_hz3','\\tfrac{\\partial h_3}{\\partial z_3}=1-h_3^2'),step(3)))))))));
+    return '<div class="xf-baslik" style="margin-top:8px">◀ GERİ YOL — kayıptan ağırlıklara <span>(her ok bir türev; üstüne gel → nasıl bulunduğu)</span></div><div class="xt-scroll"><div class="xt-tree">'+tree+'</div></div>'+
+      '<div class="callout" id="rx3tsum" style="margin-top:8px"></div>';
+  }
+  function bwdUpd(D){
+    const {whh,wxh,why,h,pr,L,dzy,dh3,d3,d2,d1,c3,c2,c1}=D;
+    const dh2=d3*whh,dh1=d2*whh,dWhy=dzy*h[3];
+    setT('rx3tLv',f(L,3));setT('rx3tpv',f(-1/pr,3));setT('rx3tzyv',f(dzy,3));setT('rx3th3v',f(dh3,3));
+    setT('rx3tz3v',f(d3,3));setT('rx3th2v',f(dh2,3));setT('rx3tz2v',f(d2,3));setT('rx3th1v',f(dh1,3));setT('rx3tz1v',f(d1,4));
+    setT('rx3tWhyv',f(dWhy,3));
+    setT('rx3tWxh3v','0');setT('rx3tWhh3v',f(c3,3));setT('rx3tWxh2v','0');setT('rx3tWhh2v',f(c2,3));setT('rx3tWxh1v',f(d1,4));setT('rx3tWhh1v','0');
+    const sum=document.getElementById('rx3tsum');
+    if(sum)sum.innerHTML='<b>Yaprakları topla:</b> W<sub>hh</sub> üç adımda kullanıldı → gerçek gradyan = '+f(c3,3)+' + '+f(c2,3)+' + 0 = <b>'+f(D.g,3)+'</b>. (W<sub>xh</sub> için de aynı: x₂=x₃=0 olduğundan yalnız t=1 katkı verir = '+f(d1,4)+'; bu örnekte yalnız W<sub>hh</sub> öğreniliyor.)';
+    const S=(k,ti,eq,num,say)=>src('r3_'+k,ti,eq,num,say);
+    S('Lp','∂L/∂p','\\tfrac{\\partial L}{\\partial p}=\\tfrac{d(-\\ln p)}{dp}=-\\tfrac1p','\\tfrac{\\partial L}{\\partial p}=-\\tfrac{1}{'+t(pr,3)+'}=\\mathbf{'+t(-1/pr,3)+'}','💬 p küçükse kayıp p\'ye çok duyarlıdır (−1/p büyük): ağı en çok "olasılığı artır" diye zorlayan sinyal.');
+    S('pzy','∂p/∂z_y','\\tfrac{\\partial p}{\\partial z_y}=p(1-p)','p(1-p)='+t(pr,3)+'\\cdot'+t(1-pr,3)+'=\\mathbf{'+t(pr*(1-pr),3)+'}\\ \\Rightarrow\\ \\tfrac{\\partial L}{\\partial z_y}=\\tfrac{-1}{p}\\cdot p(1-p)=p-1=\\mathbf{'+t(dzy,3)+'}','💬 Sigmoidin eğimi. Çarpınca sade bir sonuç çıkar: <b>dz<sub>y</sub> = p − y = '+f(dzy,3)+'</b> (eksi → "çıkışı büyüt").');
+    S('zyWhy','∂z_y/∂W_hy','\\tfrac{\\partial z_y}{\\partial W_{hy}}=h_3','dW_{hy}='+tp(dzy,3)+'\\cdot'+t(h[3],3)+'=\\mathbf{'+t(dWhy,3)+'}','💬 Karar ağırlığının gradyanı = gelen sinyal × girdisi (h₃). h₃ ≈ 0 ise bu ağırlık neredeyse hiç öğrenemez.');
+    S('zyh','∂z_y/∂h₃','\\tfrac{\\partial z_y}{\\partial h_3}=W_{hy}','\\tfrac{\\partial L}{\\partial h_3}='+tp(dzy,3)+'\\cdot'+t(why,2)+'=\\mathbf{'+t(dh3,3)+'}','💬 Sinyal çıkış ağırlığıyla çarpılıp hafızaya (h₃) taşınıyor.');
+    for(let k=3;k>=1;k--){
+      const hh=h[k],dd=[0,d1,d2,d3][k],ddn=[0,d1,d2,d3][k];
+      S('hz'+k,'∂h'+sup[k]+'/∂z'+sup[k],'\\tfrac{\\partial h_'+k+'}{\\partial z_'+k+'}=1-h_'+k+'^2',
+        '\\delta_'+k+'='+(k==3?tp(dh3,3):tp([0,d1,d2,d3][k+1]*whh,3))+'\\cdot'+t(1-hh*hh,3)+'=\\mathbf{'+t(dd,k==1?4:3)+'}',
+        '💬 tanh\'ın eğimi ('+f(1-hh*hh,3)+') sinyalle çarpılır'+(k<3?' (önceki sinyal × W<sub>hh</sub> zaten çarpılmış)':'')+'. Eğim 1\'den küçük olduğu için sinyal her adımda biraz daha küçülür.');
+      const hp=h[k-1];
+      S('z'+k+'Wxh','∂z'+sup[k]+'/∂W_xh','\\tfrac{\\partial z_'+k+'}{\\partial W_{xh}}=x_'+k,'\\delta_'+k+'\\cdot x_'+k+'='+tp(dd,k==1?4:3)+'\\cdot'+tp(D.xs[k-1],1)+'=\\mathbf{'+t(dd*D.xs[k-1],k==1?4:3)+'}',
+        '💬 Bu adımda W<sub>xh</sub>\'nin katkısı = δ × o adımdaki kelime sayısı. '+(D.xs[k-1]===0?'Kelime 0 olduğu için katkı yok.':'Kelime sayısı 1 → katkı δ\'nın kendisi.'));
+      S('z'+k+'Whh','∂z'+sup[k]+'/∂W_hh','\\tfrac{\\partial z_'+k+'}{\\partial W_{hh}}=h_'+(k-1),'\\delta_'+k+'\\cdot h_'+(k-1)+'='+tp(dd,k==1?4:3)+'\\cdot'+t(hp,3)+'=\\mathbf{'+t(dd*hp,3)+'}',
+        '💬 Bu adımda W<sub>hh</sub>\'nin katkısı = δ × <b>önceki hafıza</b>. '+(k==1?'h₀ = 0 olduğundan t=1\'de katkı hep 0.':'Aynı ağırlık üç adımda kullanıldığı için üç katkı sonunda toplanır.'));
+      if(k>1)S('z'+k+'h','∂z'+sup[k]+'/∂h'+sup[k-1],'\\tfrac{\\partial z_'+k+'}{\\partial h_'+(k-1)+'}=W_{hh}','\\tfrac{\\partial L}{\\partial h_'+(k-1)+'}='+tp(dd,3)+'\\cdot'+t(whh,3)+'=\\mathbf{'+t(dd*whh,3)+'}',
+        '💬 Sinyal bir adım <b>geriye</b> W<sub>hh</sub> ile çarpılarak taşınıyor — BPTT\'nin kalbi. W<sub>hh</sub>='+f(whh,2)+' olduğundan sinyal her adımda bu oranla çarpılır.');
+    }
+  }
+  // Açılıp kapanan harita kabuğu içeriği
+  function mapBody(id){ return '<div id="'+id+'"></div>'; }
+
   // ---- açılmış RNN şekli (3 adım) ----
   function svg(uid,c){
     const cx=[130,320,510],tc='#ccd5e8',mc='#8a96b8',o=[];
@@ -95,8 +206,10 @@
       });
       $('rex1calc').innerHTML='\\[\\begin{aligned}'+L.join('\\\\')+'\\end{aligned}\\]'+
         '\\[p=\\sigma\\big('+t(why,2)+'\\cdot '+tp(h,3)+'\\big)=\\mathbf{'+t(p,2)+'}\\quad\\Rightarrow\\quad\\text{'+(p>=0.5?'olumlu':'olumsuz')+'}\\]';
+      fwdUpd('rx1',{xs,h:[0].concat(hs),z:zs,zy:why*h,pr:p,wxh,whh,why},{pcap:'olumlu olma',psay:p>=0.5?'olumlu yorum':'olumsuz yorum'});
       tx($('rex1calc'));
     }
+    $('rex1map').innerHTML=fwdHtml('rx1',{pcap:'olumlu olma'});tx($('rex1map'));
     bind(ids.concat(rg),render);
     document.querySelectorAll('[data-rex1]').forEach(b=>b.addEventListener('click',()=>{
       const v=b.dataset.rex1.split(',').map(Number);
@@ -128,8 +241,10 @@
       const msg=conf>=0.7?'Ağ <b>'+(miyav?'"miyav"':'"hav"')+'</b> diyor (%'+Math.round(conf*100)+' emin) — ilk kelimenin bilgisi iki nötr adımdan sonra da duruyor.'
         :'Ağ <b>kararsız</b> (p ≈ '+f(p,2)+'): ilk kelimenin bilgisi iki adımda sönmüş. W<sub>hh</sub>\'yi büyütmeyi dene.';
       $('rex2msg').innerHTML=msg;
+      fwdUpd('rx2',{xs,h:[0].concat(hs),z:hs.map((_,i)=>wxh*xs[i]+whh*(i?hs[i-1]:0)),zy:why*h,pr:p,wxh,whh,why},{pcap:'miyav olas.',psay:'miyav olasılığı'});
       tx($('rex2calc'));
     }
+    $('rex2map').innerHTML=fwdHtml('rx2',{pcap:'miyav olas.'});tx($('rex2map'));
     bind(['rex2a'].concat(rg),render);
     document.querySelectorAll('[data-rex2]').forEach(b=>b.addEventListener('click',()=>{
       const v=b.dataset.rex2.split(',').map(Number);
@@ -176,11 +291,15 @@
         '\\end{aligned}\\]'+
         '\\[\\frac{\\partial L}{\\partial W_{hh}}='+tp(r.c3,3)+'+'+tp(r.c2,3)+'+0=\\mathbf{'+t(r.g,3)+'}\\]'+
         '\\[\\begin{aligned}W_{hh}&\\leftarrow '+t(whh,3)+'-\\underbrace{'+t(al,2)+'}_{\\alpha}\\cdot'+tp(r.g,3)+'=\\mathbf{'+t(nw,3)+'}\\\\ p&:\\ '+t(r.p,3)+'\\to\\mathbf{'+t(nr.p,3)+'}\\qquad L:\\ '+t(r.L,3)+'\\to '+t(nr.L,3)+'\\end{aligned}\\]';
+      const zz=[1,2,3].map(i=>Wxh*xs[i-1]+whh*h[i-1]);
+      const D3=Object.assign({},r,{xs,wxh:Wxh,whh,why:Why,z:zz,zy:Why*h[3],pr:r.p});
+      fwdUpd('rx3',D3,{loss:true,pcap:'miyav olas.',psay:'ağın "miyav" tahmini'});bwdUpd(D3);
       $('rex3steps').textContent=steps;
       $('rex3msg').innerHTML=r.g<0?'Gradyan <b>eksi</b> → W<sub>hh</sub>\'ı <b>büyüt</b> (hafızayı güçlendir). δ<sub>1</sub> ≈ '+f(r.d1,4)+', δ<sub>3</sub> ≈ '+f(r.d3,3)+': sinyal geri giderken '+(Math.abs(r.d3/(r.d1||1e-9))>20?'yaklaşık '+Math.round(Math.abs(r.d3/(r.d1||1e-9)))+' kat ':'')+'sönüyor.'
         :'Gradyan ≈ 0 ya da pozitif → bu ayarda W<sub>hh</sub>\'ı büyütmek p\'yi artırmıyor.';
       tx($('rex3calc'));
     }
+    $('rex3map').innerHTML=fwdHtml('rx3',{loss:true,pcap:'miyav olas.'})+bwdHtml();tx($('rex3map'));
     $('rex3whh').addEventListener('input',render);
     $('rex3al').addEventListener('input',render);
     $('rex3step').addEventListener('click',()=>{
