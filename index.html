@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610081500"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610081330"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610081500">
+<link rel="stylesheet" href="css/style.css?v=202610081330">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 15:30 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 16:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1857,8 +1857,8 @@
       <p style="margin:6px 0">🎯 <b>Problem:</b> Bir film yorumunun <b>olumlu mu olumsuz mu</b> olduğunu bulmak istiyoruz. Bilgisayar kelimeyi okuyamaz, sayıyla çalışır: her kelimeye bir sayı veriyoruz (kötü = −1, harika = +1, bağlaç = 0). Cümle ağa <b>sırayla</b> girer; ağ "şimdiye kadar okuduklarımın özeti"ni <b>h</b> hafızasında tutar, son kelimeden sonra h₃'e bakıp karar verir.</p>
       <div class="rex-grid" id="rex1">
         <div>
-          <div class="rex-ctl"><b>📥 Cümle:</b> <label>1. <select id="rex1a"><option value="-1" data-w="kötü" selected>kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>2. <select id="rex1b"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama" selected>ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>3. <select id="rex1c"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika" selected>harika (1)</option></select></label><label>Doğru etiket: <select id="rex1y"><option value="1" selected>olumlu (1)</option><option value="0">olumsuz (0)</option></select></label></div>
-          <div class="rex-ctl"><b>⚡</b> <button class="rex-btn" data-rex1="-1,0,1" data-rex1y="1">kötü ama harika</button><button class="rex-btn" data-rex1="1,0,-1" data-rex1y="0">harika ama kötü</button><button class="rex-btn" data-rex1="-1,0,1,1,0,2" data-rex1y="1" title="W_hh = 0: hafıza yok, sadece son kelime">hafızasız (W<sub>hh</sub>=0)</button><button class="rex-btn" data-rex1="-1,0,1,1,0.5,2" data-rex1y="1">↺ varsayılan</button></div>
+          <div class="rex-ctl"><b>📥 Cümle:</b> <label>1. <select id="rex1a"><option value="-1" data-w="kötü" selected>kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>2. <select id="rex1b"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama" selected>ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>3. <select id="rex1c"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika" selected>harika (1)</option></select></label></div>
+          <div class="rex-ctl"><b>⚡</b> <button class="rex-btn" data-rex1="-1,0,1">kötü ama harika</button><button class="rex-btn" data-rex1="1,0,-1">harika ama kötü</button><button class="rex-btn" data-rex1="-1,0,1,1,0,2" title="W_hh = 0: hafıza yok, sadece son kelime">hafızasız (W<sub>hh</sub>=0)</button><button class="rex-btn" data-rex1="-1,0,1,1,0.5,2">↺ varsayılan</button></div>
           <div class="rex-ctl"><b>🎛️</b> <label><span>W<sub>xh</sub></span> <input type="range" id="rex1wxh" min="-2" max="2" step="0.05" value="1" style="width:110px"><b id="rex1wxhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hh</sub></span> <input type="range" id="rex1whh" min="-1.5" max="1.5" step="0.05" value="0.5" style="width:110px"><b id="rex1whhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hy</sub></span> <input type="range" id="rex1why" min="-3" max="3" step="0.1" value="2" style="width:110px"><b id="rex1whyv" style="color:var(--accent); min-width:38px; text-align:right"></b></label></div>
           <p style="margin:8px 0 2px"><b>🧮 Hesap</b> <span style="font-size:11.5px; color:var(--muted)">(oynadıkça canlı güncellenir)</span></p>
           <div class="work" id="rex1calc" style="overflow-x:auto"></div>
@@ -1869,7 +1869,7 @@
           <p style="font-size:12px; color:var(--muted); margin:4px 0 0">Her adımda aynı hücre: kelime (W<sub>xh</sub>) + eski hafıza (W<sub>hh</sub>) → yeni hafıza h. Son h, W<sub>hy</sub> ile olasılığa dönüşür. ↔ Dar ekranda yana kaydır.</p>
         </div>
       </div>
-      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri &amp; geri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Önce <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı ağırlıklar üç adımda kullanıldığı için üç yaprak çıkar ve <b>gerçek gradyan yaprakların toplamıdır</b>. Kayıp için doğru cevaba (etiket y) ihtiyaç var: <b>buradaki "Doğru etiket" seçimi</b> (olumlu = 1, olumsuz = 0). Kaydırıcıları/kelimeleri oynadıkça sayılar canlı değişir.</p><div id="rex1map"></div></div></div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex1map"></div></div></div>
       <div class="callout"><b>💡 Sezgi:</b> Kelimeler aynı, sonuç zıt. Kelime sayan (sırayı umursamayan) bir model ikisini aynı görürdü. RNN'de <b>en son gelen kelime hafızanın üstüne yazıyor</b> (\(W_{hh}=0{,}5\) eskiyi yarıya indiriyor), bu yüzden "…ama harika" olumlu bitiyor. Gerçek cümlelerde "ama"nın dönüşü böyle yakalanıyor.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -1908,7 +1908,7 @@ print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206 → olumsuz (aynı kelimeler, ters 
           <p style="font-size:12px; color:var(--muted); margin:4px 0 0">W<sub>hh</sub>=1: eski hafıza tam taşınır. W<sub>hh</sub> küçüldükçe turuncu oklardan geçen bilgi sönümlenir. ↔ Dar ekranda yana kaydır.</p>
         </div>
       </div>
-      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri &amp; geri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Önce <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı ağırlıklar üç adımda kullanıldığı için üç yaprak çıkar ve <b>gerçek gradyan yaprakların toplamıdır</b>. Kayıp için doğru cevaba (etiket y) ihtiyaç var: doğru cevap ilk kelimeden gelir: <b>kedi → miyav (y = 1), köpek → hav (y = 0)</b>. Kaydırıcıları/kelimeleri oynadıkça sayılar canlı değişir.</p><div id="rex2map"></div></div></div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex2map"></div></div></div>
       <div class="callout"><b>💡 Sezgi:</b> W<sub>hh</sub> küçülünce ilk kelime iki adımda unutulur ve ağ yazı-tura atar. Bu, <b>vanishing gradient'in ileri yönden görünen yüzü</b>: bilgi zaman içinde taşınırken sönüyor.</div>
       <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -6489,19 +6489,19 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610081500"></script>
-<script src="js/lesson-turev.js?v=202610081500"></script>
-<script src="js/lesson-xor.js?v=202610081500"></script>
-<script src="js/lesson-xor-arch.js?v=202610081500"></script>
-<script src="js/lesson-xor-maps.js?v=202610081500"></script>
-<script src="js/lesson-xor-epoch.js?v=202610081500"></script>
-<script src="js/lesson-nn.js?v=202610081500"></script>
-<script src="js/lesson-trig.js?v=202610081500"></script>
+<script src="js/lesson-linreg.js?v=202610081330"></script>
+<script src="js/lesson-turev.js?v=202610081330"></script>
+<script src="js/lesson-xor.js?v=202610081330"></script>
+<script src="js/lesson-xor-arch.js?v=202610081330"></script>
+<script src="js/lesson-xor-maps.js?v=202610081330"></script>
+<script src="js/lesson-xor-epoch.js?v=202610081330"></script>
+<script src="js/lesson-nn.js?v=202610081330"></script>
+<script src="js/lesson-trig.js?v=202610081330"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610081500"></script>
-<script src="js/lesson-rnn-soz.js?v=202610081500"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610081330"></script>
+<script src="js/lesson-rnn-soz.js?v=202610081330"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610081500"></script>
-<script src="js/app.js?v=202610081500"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610081330"></script>
+<script src="js/app.js?v=202610081330"></script>
 </body>
 </html>
