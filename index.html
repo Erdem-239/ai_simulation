@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610112000"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610112100"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610112000">
+<link rel="stylesheet" href="css/style.css?v=202610112100">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 20:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 21:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4362,27 +4362,8 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     </div>
     </div>
 
-    <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed"><span>5️⃣ Bütün Resim — katman ve matris zinciri</span><span class="chev">▸</span></div>
-    <div class="tpl-body closed">
-  <div id="nnMatrixWrap" class="xt-wrap acc open">
-    <div class="acc-head"><span class="ac">▸</span> 🧮 Bütün resim — katman katman matris zinciri<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
-    <div class="acc-body">
-      <p class="xt-sub">Her katman aynı iki adımı yapar: <b>ağırlıklı toplam</b> (<code>z=Wx+b</code>, matris-vektör çarpımı) ve <b>aktivasyon</b> (σ, her bileşene ayrı ayrı). Girdi katmandan katmana geçerken boyutu değişir (2 → 2 → 1) ama işlem hep aynı. <b>Bir oka gelince</b> o matris çarpımının açılımı hemen orada görünür.</p>
-<div class="xf-baslik">▶ x'ten ŷ'ye — bir noktanın ((1,0)) canlı yolculuğu</div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="nnfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="nnfx2">—</span></div><div class="xf-kolad">girdi vektörü x</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(1)}x+b^{(1)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="mfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="mfz2">—</span></div><div class="xf-kolad">z⁽¹⁾ vektörü</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="nnfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="nnfh2">—</span></div><div class="xf-kolad">h vektörü (gizli katman)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(2)}h+b^{(2)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="mfzy">—</span></div><div class="xf-kolad">z⁽²⁾ (1×1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">ŷ<span class="xf-val" id="mfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div></div></div><div class="xf-donus">🧩 <b>Bütün ağ, iki satırlık bir döngü:</b> her katmanda <code>z = Wx + b</code>, sonra <code>σ</code> — bu ağda 2 katman, GPT'de yüzlerce, ama satır aynı. Aşağıdaki <b>6️⃣ Simülasyon</b>'da bu dokuz sayı (W⁽¹⁾, b⁽¹⁾, W⁽²⁾, b⁽²⁾) önce elle, sonra <b>rastgele başlayıp kendi kendine</b> öğreniyor.</div>
-    </div>
-  </div>
-
-  <div class="xt-src" id="xtsrc-m_zh"><div class="xp-bas">z⁽¹⁾ = W⁽¹⁾x + b⁽¹⁾ — matris-vektör çarpımı</div><div class="xp-sat">W⁽¹⁾ 2×2 bir matris, x ise 2×1 bir vektör. Matris çarpımının kuralı: sonucun <b>her satırı</b>, W'nin o satırıyla x'in <b>nokta çarpımı</b>:</div><div class="eq">\( \begin{bmatrix}z_{h1}\\z_{h2}\end{bmatrix}=\begin{bmatrix}w_{11}&w_{12}\\w_{21}&w_{22}\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}+\begin{bmatrix}b_1\\b_2\end{bmatrix} \)</div><div class="xp-sat">Açılımı: <b>1. satır</b> → \(z_{h1}=w_{11}x_1+w_{12}x_2+b_1\). <b>2. satır</b> → \(z_{h2}=w_{21}x_1+w_{22}x_2+b_2\).</div><div class="xp-sat"><b>W'nin i. satırı = i. nöronun kendi ağırlık vektörü.</b> Matris, aslında Vektör dersindeki "vektör rafı" fikrinin ta kendisi — iki nöronun ağırlıklarını tek bir nesnede üst üste dizdik.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzh_hes"></div></div>
-  <div class="xt-src" id="xtsrc-m_sig"><div class="xp-bas">σ vektöre elementwise uygulanıyor</div><div class="xp-sat">z⁽¹⁾ vektörünün <b>her bileşenine ayrı ayrı</b> uygulanır — boyut değişmez, sadece her sayı 0-1 arasına sıkışır:</div><div class="eq">\( h=\sigma(z^{(1)})=\begin{bmatrix}\sigma(z_{h1})\\\sigma(z_{h2})\end{bmatrix} \)</div><div class="xp-sat">Vektörler arasında matris çarpımı <b>doğrusal</b> — W(Wx)=W'x gibi tek bir matrise sıkışabilirdi. σ olmasaydı iki katman üst üste tek bir doğruya çökerdi ve XOR <b>asla</b> çözülemezdi.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfsig_hes"></div></div>
-  <div class="xt-src" id="xtsrc-m_zy"><div class="xp-bas">z⁽²⁾ = W⁽²⁾h + b⁽²⁾ — bu sefer tek satır</div><div class="xp-sat">W⁽²⁾ artık <b>1×2</b> — çıktı katmanında tek nöron var, yani tek satır:</div><div class="eq">\( z_y=\begin{bmatrix}w_{31}&w_{32}\end{bmatrix}\begin{bmatrix}h_1\\h_2\end{bmatrix}+b_3=w_{31}h_1+w_{32}h_2+b_3 \)</div><div class="xp-sat"><b>Neden 1×2?</b> Çıktı boyutu = W'nin satır sayısı. Bir katmanın çıktısında kaç nöron varsa, o katmanın W matrisinde o kadar satır olur.</div><div class="xp-sat">Dikkat: bu satırda <b>x yok</b> — çıktı nöronu ham veriyi değil, gizli katmanın kurduğu (h₁,h₂) temsilini görüyor.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzy_hes"></div></div>
-  <div class="xt-src" id="xtsrc-m_p"><div class="xp-bas">ŷ — modelin cevabı</div><div class="eq">\( \hat y=\sigma(z_y) \)</div><div class="xp-sat">ŷ, 0 ile 1 arasında bir sayı: <b>"bu nokta 1 sınıfına ait olma olasılığı"</b>.</div><div class="xp-sat">Karar eşiği <b>0.5</b>: ŷ ≥ 0.5 ise tahmin <b>1</b>, değilse <b>0</b>.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfp_hes"></div></div>
-
-    </div>
-    </div>
-
     <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>6️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <!-- ===== 2) İleri yayılım simülasyonu ===== -->
   <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
@@ -4485,19 +4466,114 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     </div>
     </div>
 
-    <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme</span><span class="chev">▸</span></div>
+    <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — katman ve matris zinciri</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-  <div class="pts tpl-empty" style="border-left:3px solid var(--muted)">
-    <span class="tpl-empty-tag">BOŞ — eklenebilir</span>
-    <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin-top:8px">Şimdilik bu modülde 6️⃣'yı uzatan ayrı bir tanjant yok. İleride eklenebilecek adaylar: PyTorch/NumPy karşılığı (<code>nn.Linear</code>, <code>@</code> operatörü ile matris çarpımı), ya da farklı katman genişlikleriyle (3-4-5 gizli nöron) deney.</p>
+  <div id="nnMatrixWrap" class="xt-wrap acc open">
+    <div class="acc-head"><span class="ac">▸</span> 🧮 Bütün resim — katman katman matris zinciri<button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div>
+    <div class="acc-body">
+      <p class="xt-sub">Her katman aynı iki adımı yapar: <b>ağırlıklı toplam</b> (<code>z=Wx+b</code>, matris-vektör çarpımı) ve <b>aktivasyon</b> (σ, her bileşene ayrı ayrı). Girdi katmandan katmana geçerken boyutu değişir (2 → 2 → 1) ama işlem hep aynı. <b>Bir oka gelince</b> o matris çarpımının açılımı hemen orada görünür.</p>
+<div class="xf-baslik">▶ x'ten ŷ'ye — bir noktanın ((1,0)) canlı yolculuğu</div><div class="xf-scroll"><div class="xf-akis"><div class="xf-kol"><div class="xf-box gi">x₁<span class="xf-val" id="nnfx1">—</span></div><div class="xf-box gi">x₂<span class="xf-val" id="nnfx2">—</span></div><div class="xf-kolad">girdi vektörü x</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zh" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(1)}x+b^{(1)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">z<sub>h1</sub><span class="xf-val" id="mfz1">—</span></div><div class="xf-box gh">z<sub>h2</sub><span class="xf-val" id="mfz2">—</span></div><div class="xf-kolad">z⁽¹⁾ vektörü</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_sig" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gh">h₁<span class="xf-val" id="nnfh1">—</span></div><div class="xf-box gh">h₂<span class="xf-val" id="nnfh2">—</span></div><div class="xf-kolad">h vektörü (gizli katman)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_zy" tabindex="0" role="button" aria-label="bu adimi anlat">\( W^{(2)}h+b^{(2)} \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">z<sub>y</sub><span class="xf-val" id="mfzy">—</span></div><div class="xf-kolad">z⁽²⁾ (1×1)</div></div><div class="xf-ok"><span class="xf-chip" data-pop="m_p" tabindex="0" role="button" aria-label="bu adimi anlat">\( \sigma \)</span><span class="xf-ar">→</span></div><div class="xf-kol"><div class="xf-box gy">ŷ<span class="xf-val" id="mfp">—</span><span class="xf-cap">tahmin</span></div><div class="xf-kolad">çıktı</div></div></div></div><div class="xf-donus">🧩 <b>Bütün ağ, iki satırlık bir döngü:</b> her katmanda <code>z = Wx + b</code>, sonra <code>σ</code> — bu ağda 2 katman, GPT'de yüzlerce, ama satır aynı. Aşağıdaki <b>5️⃣ Simülasyon</b>'da bu dokuz sayı (W⁽¹⁾, b⁽¹⁾, W⁽²⁾, b⁽²⁾) önce elle, sonra <b>rastgele başlayıp kendi kendine</b> öğreniyor.</div>
+    </div>
   </div>
 
+  <div class="xt-src" id="xtsrc-m_zh"><div class="xp-bas">z⁽¹⁾ = W⁽¹⁾x + b⁽¹⁾ — matris-vektör çarpımı</div><div class="xp-sat">W⁽¹⁾ 2×2 bir matris, x ise 2×1 bir vektör. Matris çarpımının kuralı: sonucun <b>her satırı</b>, W'nin o satırıyla x'in <b>nokta çarpımı</b>:</div><div class="eq">\( \begin{bmatrix}z_{h1}\\z_{h2}\end{bmatrix}=\begin{bmatrix}w_{11}&w_{12}\\w_{21}&w_{22}\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}+\begin{bmatrix}b_1\\b_2\end{bmatrix} \)</div><div class="xp-sat">Açılımı: <b>1. satır</b> → \(z_{h1}=w_{11}x_1+w_{12}x_2+b_1\). <b>2. satır</b> → \(z_{h2}=w_{21}x_1+w_{22}x_2+b_2\).</div><div class="xp-sat"><b>W'nin i. satırı = i. nöronun kendi ağırlık vektörü.</b> Matris, aslında Vektör dersindeki "vektör rafı" fikrinin ta kendisi — iki nöronun ağırlıklarını tek bir nesnede üst üste dizdik.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzh_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_sig"><div class="xp-bas">σ vektöre elementwise uygulanıyor</div><div class="xp-sat">z⁽¹⁾ vektörünün <b>her bileşenine ayrı ayrı</b> uygulanır — boyut değişmez, sadece her sayı 0-1 arasına sıkışır:</div><div class="eq">\( h=\sigma(z^{(1)})=\begin{bmatrix}\sigma(z_{h1})\\\sigma(z_{h2})\end{bmatrix} \)</div><div class="xp-sat">Vektörler arasında matris çarpımı <b>doğrusal</b> — W(Wx)=W'x gibi tek bir matrise sıkışabilirdi. σ olmasaydı iki katman üst üste tek bir doğruya çökerdi ve XOR <b>asla</b> çözülemezdi.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfsig_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_zy"><div class="xp-bas">z⁽²⁾ = W⁽²⁾h + b⁽²⁾ — bu sefer tek satır</div><div class="xp-sat">W⁽²⁾ artık <b>1×2</b> — çıktı katmanında tek nöron var, yani tek satır:</div><div class="eq">\( z_y=\begin{bmatrix}w_{31}&w_{32}\end{bmatrix}\begin{bmatrix}h_1\\h_2\end{bmatrix}+b_3=w_{31}h_1+w_{32}h_2+b_3 \)</div><div class="xp-sat"><b>Neden 1×2?</b> Çıktı boyutu = W'nin satır sayısı. Bir katmanın çıktısında kaç nöron varsa, o katmanın W matrisinde o kadar satır olur.</div><div class="xp-sat">Dikkat: bu satırda <b>x yok</b> — çıktı nöronu ham veriyi değil, gizli katmanın kurduğu (h₁,h₂) temsilini görüyor.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfzy_hes"></div></div>
+  <div class="xt-src" id="xtsrc-m_p"><div class="xp-bas">ŷ — modelin cevabı</div><div class="eq">\( \hat y=\sigma(z_y) \)</div><div class="xp-sat">ŷ, 0 ile 1 arasında bir sayı: <b>"bu nokta 1 sınıfına ait olma olasılığı"</b>.</div><div class="xp-sat">Karar eşiği <b>0.5</b>: ŷ ≥ 0.5 ise tahmin <b>1</b>, değilse <b>0</b>.</div><div class="xp-sat">Şu an (1,0) noktası için:</div><div class="xp-hes" id="mfp_hes"></div></div>
+
     </div>
     </div>
 
-    <div class="tpl-cl" data-stage="7">
-    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+      <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — NumPy karşılığı: matris çarpımıyla ileri yol</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu sayfadaki matris dili (z = Wx + b) gerçek kodda <b>tek satırlık</b> bir işleme dönüşür. Aşağıda Simülasyon'daki XOR ağı (aynı W, b değerleri) NumPy ile yazılmış; <code>@</code> operatörü matris çarpımı. Dikkat: dört noktanın hepsi <b>aynı anda</b> hesaplanıyor — GPU'ların neden bu kadar işe yaradığı tam burada: matris çarpımı paralel.</p>
+    <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 NumPy ile ileri yol (4 nokta, tek işlemde)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import numpy as np
+
+sigmoid = lambda z: 1 / (1 + np.exp(-z))
+
+X  = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])          # 4 örnek × 2 girdi (her satır bir örnek)
+W1 = np.array([[20., 20.], [20., 20.]])                  # girdi → gizli  (gizli × girdi)
+b1 = np.array([-10., -30.])
+W2 = np.array([[20., -20.]])                             # gizli → çıktı  (çıktı × gizli)
+b2 = np.array([-10.])
+
+Z1 = X @ W1.T + b1          # &#x27;@&#x27; = matris çarpımı: 4 noktanın hepsi TEK işlemde (her satır, W1&#x27;in her satırıyla nokta çarpımı)
+H  = sigmoid(Z1)            # 4×2
+Zy = H @ W2.T + b2          # 4×1
+P  = sigmoid(Zy)
+
+print(&quot;Z1 şekli:&quot;, Z1.shape, &quot; H şekli:&quot;, H.shape, &quot; P şekli:&quot;, P.shape)
+print(&quot;p =&quot;, np.round(P.ravel(), 4))
+print(&quot;parametre sayısı:&quot;, W1.size + b1.size + W2.size + b2.size)
+
+# ---- çıktı ----
+# Z1 şekli: (4, 2)  H şekli: (4, 2)  P şekli: (4, 1)
+# p = [0. 1. 1. 0.]
+# parametre sayısı: 9
+</pre></div></div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px">PyTorch'ta aynı katman <code>nn.Linear(2, 2)</code> olarak yazılır; içinde tam olarak bu W matrisini ve b vektörünü tutar. (PyTorch kodu bu ortamda çalıştırılamadığı için buraya yazılmadı; yukarıdaki NumPy kodu çalıştırıldı.)</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğrenen</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç örnek: birincide ağ farklı genişliklerde kendi kendine öğreniyor (ağırlıkları biz vermiyoruz), ikincisi boyut/parametre hesabını elle yaptırıyor, üçüncüsü bir noktanın matris zincirini adım adım gösteriyor. Altlarında aynı hesabın Python kodu var.</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Katman genişliği: kaç gizli nöron yeter, kaç gizli nöron rahat?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> XOR'u 2, 3, 4 ve 8 gizli nöronlu ağlar çözmeye çalışıyor; her birini 12 farklı rastgele başlangıçtan 4000 tur eğit. Kaçı çözüyor, kaçı takılıyor?</p><div id="nnEx1"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı deney Python'da (kütüphanesiz, geri yayılımla)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+# 2-k-1 ağ (k gizli nöron, sigmoid), XOR, tam-yığın gradyan inişi, geri yayılım elle
+sig=lambda z:1/(1+math.exp(-z))
+X=[(0,0),(0,1),(1,0),(1,1)];Y=[0,1,1,0]
+def lcg(seed):
+    s=seed
+    def u():
+        nonlocal s
+        s=(s*1664525+1013904223)%4294967296
+        return round(2*s/4294967296-1,1)
+    return u
+def egit(k,seed,lr=1.0,tur=4000):
+    u=lcg(seed+1)
+    W1=[[u(),u()] for _ in range(k)];b1=[u() for _ in range(k)];W2=[u() for _ in range(k)];b2=u()
+    for t in range(tur):
+        gW1=[[0,0] for _ in range(k)];gb1=[0]*k;gW2=[0]*k;gb2=0;L=0
+        for (a,c),y in zip(X,Y):
+            h=[sig(W1[j][0]*a+W1[j][1]*c+b1[j]) for j in range(k)]
+            p=sig(sum(W2[j]*h[j] for j in range(k))+b2);L+=-(math.log(p) if y else math.log(1-p))/4
+            dz=p-y
+            for j in range(k):
+                gW2[j]+=dz*h[j]/4;dh=dz*W2[j]*h[j]*(1-h[j])
+                gW1[j][0]+=dh*a/4;gW1[j][1]+=dh*c/4;gb1[j]+=dh/4
+            gb2+=dz/4
+        for j in range(k):
+            W1[j][0]-=lr*gW1[j][0];W1[j][1]-=lr*gW1[j][1];b1[j]-=lr*gb1[j];W2[j]-=lr*gW2[j]
+        b2-=lr*gb2
+    return L
+for k in (2, 3, 4, 8):
+    r = [egit(k, s) for s in range(12)]                     # 12 farklı başlangıç
+    print(f&quot;k={k}: 12 başlangıçtan {sum(1 for L in r if L &lt; 0.05)} tanesi XOR&#x27;u çözdü&quot;)
+
+# ---- çıktı ----
+# k=2: 12 başlangıçtan 10 tanesi XOR&#x27;u çözdü
+# k=3: 12 başlangıçtan 12 tanesi XOR&#x27;u çözdü
+# k=4: 12 başlangıçtan 12 tanesi XOR&#x27;u çözdü
+# k=8: 12 başlangıçtan 12 tanesi XOR&#x27;u çözdü
+</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Parametre sayacı: W matrisleri ve toplam parametre</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bir ağın kaç öğrenilebilir sayısı var? Katman boyutlarını yaz (ör. 2,2,1); her W matrisinin şeklini ve toplamı hesaplasın.</p><div id="nnEx2"></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Elle hesap: (1, 0) noktasının matris zinciri</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Simülasyon'daki çözülmüş XOR ağına (1, 0) girdisi verince, matris dilinde her adım ne üretiyor?</p><div class="work" style="line-height:1.9">
+\[ x=\begin{bmatrix}1\\0\end{bmatrix},\quad W^{(1)}=\begin{bmatrix}20&20\\20&20\end{bmatrix},\quad b^{(1)}=\begin{bmatrix}-10\\-30\end{bmatrix} \]
+\[ z^{(1)}=W^{(1)}x+b^{(1)}=\begin{bmatrix}20\cdot1+20\cdot0\\20\cdot1+20\cdot0\end{bmatrix}+\begin{bmatrix}-10\\-30\end{bmatrix}=\begin{bmatrix}\mathbf{10}\\\mathbf{-10}\end{bmatrix} \]
+\[ h=\sigma\!\left(z^{(1)}\right)=\begin{bmatrix}\sigma(10)\\\sigma(-10)\end{bmatrix}=\begin{bmatrix}\mathbf{0{,}99995}\\\mathbf{0{,}00005}\end{bmatrix}\quad(\text{h}_1\ \text{VEYA açık},\ \text{h}_2\ \text{VE kapalı}) \]
+\[ z^{(2)}=W^{(2)}h+b^{(2)}=\begin{bmatrix}20&-20\end{bmatrix}\begin{bmatrix}0{,}99995\\0{,}00005\end{bmatrix}-10=\mathbf{9{,}998},\qquad \hat y=\sigma(9{,}998)=\mathbf{0{,}99995}\approx1 \]
+</div></div></div>
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <div class="sechead">🧠 Kendini Test Et — Neural Network</div>
   <div class="pts">
@@ -7219,28 +7295,29 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610112000"></script>
-<script src="js/lesson-turev.js?v=202610112000"></script>
-<script src="js/lesson-xor.js?v=202610112000"></script>
-<script src="js/lesson-xor-arch.js?v=202610112000"></script>
-<script src="js/lesson-xor-maps.js?v=202610112000"></script>
-<script src="js/lesson-xor-epoch.js?v=202610112000"></script>
-<script src="js/lesson-nn.js?v=202610112000"></script>
-<script src="js/lesson-trig.js?v=202610112000"></script>
+<script src="js/lesson-linreg.js?v=202610112100"></script>
+<script src="js/lesson-turev.js?v=202610112100"></script>
+<script src="js/lesson-xor.js?v=202610112100"></script>
+<script src="js/lesson-xor-arch.js?v=202610112100"></script>
+<script src="js/lesson-xor-maps.js?v=202610112100"></script>
+<script src="js/lesson-xor-epoch.js?v=202610112100"></script>
+<script src="js/lesson-nn.js?v=202610112100"></script>
+<script src="js/lesson-trig.js?v=202610112100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610112000"></script>
-<script src="js/lesson-rnn-soz.js?v=202610112000"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610112100"></script>
+<script src="js/lesson-rnn-soz.js?v=202610112100"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610112000"></script>
-<script src="js/lesson-lstm-cell.js?v=202610112000"></script>
-<script src="js/app.js?v=202610112000"></script>
-<script src="js/lesson-lstm-big.js?v=202610112000"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610112000"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610112000"></script>
-<script src="js/lesson-linreg-big.js?v=202610112000"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610112000"></script>
-<script src="js/lesson-act-big.js?v=202610112000"></script>
-<script src="js/lesson-act-ornek.js?v=202610112000"></script>
-<script src="js/lesson-xor-ornek.js?v=202610112000"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610112100"></script>
+<script src="js/lesson-lstm-cell.js?v=202610112100"></script>
+<script src="js/app.js?v=202610112100"></script>
+<script src="js/lesson-lstm-big.js?v=202610112100"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610112100"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610112100"></script>
+<script src="js/lesson-linreg-big.js?v=202610112100"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610112100"></script>
+<script src="js/lesson-act-big.js?v=202610112100"></script>
+<script src="js/lesson-act-ornek.js?v=202610112100"></script>
+<script src="js/lesson-xor-ornek.js?v=202610112100"></script>
+<script src="js/lesson-nn-ornek.js?v=202610112100"></script>
 </body>
 </html>
