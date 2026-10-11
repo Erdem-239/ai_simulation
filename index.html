@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610081330"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610111000"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610081330">
+<link rel="stylesheet" href="css/style.css?v=202610111000">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-08 16:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 10:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1847,178 +1847,204 @@
   <div class="tpl-cl" data-stage="3">
     <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — elle tekrarla</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-    <div class="sechead">🧩 Örnek Çalışmalar — kalemle tekrarlanabilir mini RNN örnekleri</div>
-    <p style="font-size:13.5px; color:#ccd5e8">Hepsi <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). Hesap makinesiyle her satırı kendin doğrulayabilirsin. Her örneğin altında aynı hesabı yapan kısa bir Python kodu var — sonuçlar birebir aynı.</p>
+    <div class="sechead">🧩 Örnek Çalışmalar — ağ ağırlıklarını kendisi buluyor</div>
+    <p style="font-size:13.5px; color:#ccd5e8">Hepsi <b>tek sayılı (skaler) hücre</b> kullanıyor: \(h_t=\tanh\!\left(W_{xh}\,x_t+W_{hh}\,h_{t-1}\right)\), \(h_0=0\). <b>Ağırlıkları biz vermiyoruz</b> — kötü bir başlangıçla başlıyoruz ve <b>▶ eğit</b>'e basınca ağ kendi kendine şu döngüyü tekrarlıyor: <b>① ileri yayılım</b> (tahmin yap) → <b>② kayıp</b> (ne kadar yanıldı?) → <b>③ geri yayılım</b> (her ağırlığın hatadaki payı = gradyan) → <b>④ güncelle</b> (ağırlığı hatayı azaltan yöne kaydır). Her örneğin altında aynı eğitimi yapan kısa bir Python kodu var; sayfadaki sayılarla birebir aynı sonucu verir.</p>
+    <div id="rexSrc" style="display:none"></div>
 
     <div class="pts" style="border-left:3px solid #3a7afe">
-      <div id="rexSrc" style="display:none"></div>
-    <h3 class="sahne-head closed" style="color:#3a7afe; margin-top:0"><span>Örnek 1 — Duygu: aynı kelimeler, farklı sıra (many-to-one)</span><span class="chev">▸</span></h3>
+      <h3 class="sahne-head closed" style="color:#3a7afe; margin-top:0"><span>Örnek 1 — Duygu: ağ sıranın önemini kendisi buluyor (many-to-one)</span><span class="chev">▸</span></h3>
       <div class="sahne-body closed">
-      <p style="margin:6px 0">🎯 <b>Problem:</b> Bir film yorumunun <b>olumlu mu olumsuz mu</b> olduğunu bulmak istiyoruz. Bilgisayar kelimeyi okuyamaz, sayıyla çalışır: her kelimeye bir sayı veriyoruz (kötü = −1, harika = +1, bağlaç = 0). Cümle ağa <b>sırayla</b> girer; ağ "şimdiye kadar okuduklarımın özeti"ni <b>h</b> hafızasında tutar, son kelimeden sonra h₃'e bakıp karar verir.</p>
-      <div class="rex-grid" id="rex1">
-        <div>
-          <div class="rex-ctl"><b>📥 Cümle:</b> <label>1. <select id="rex1a"><option value="-1" data-w="kötü" selected>kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>2. <select id="rex1b"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama" selected>ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika">harika (1)</option></select></label><label>3. <select id="rex1c"><option value="-1" data-w="kötü">kötü (−1)</option><option value="-0.5" data-w="biraz kötü">biraz kötü (−0.5)</option><option value="0" data-w="ama">ama (0)</option><option value="0.5" data-w="biraz güzel">biraz güzel (0.5)</option><option value="1" data-w="harika" selected>harika (1)</option></select></label></div>
-          <div class="rex-ctl"><b>⚡</b> <button class="rex-btn" data-rex1="-1,0,1">kötü ama harika</button><button class="rex-btn" data-rex1="1,0,-1">harika ama kötü</button><button class="rex-btn" data-rex1="-1,0,1,1,0,2" title="W_hh = 0: hafıza yok, sadece son kelime">hafızasız (W<sub>hh</sub>=0)</button><button class="rex-btn" data-rex1="-1,0,1,1,0.5,2">↺ varsayılan</button></div>
-          <div class="rex-ctl"><b>🎛️</b> <label><span>W<sub>xh</sub></span> <input type="range" id="rex1wxh" min="-2" max="2" step="0.05" value="1" style="width:110px"><b id="rex1wxhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hh</sub></span> <input type="range" id="rex1whh" min="-1.5" max="1.5" step="0.05" value="0.5" style="width:110px"><b id="rex1whhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hy</sub></span> <input type="range" id="rex1why" min="-3" max="3" step="0.1" value="2" style="width:110px"><b id="rex1whyv" style="color:var(--accent); min-width:38px; text-align:right"></b></label></div>
-          <p style="margin:8px 0 2px"><b>🧮 Hesap</b> <span style="font-size:11.5px; color:var(--muted)">(oynadıkça canlı güncellenir)</span></p>
-          <div class="work" id="rex1calc" style="overflow-x:auto"></div>
-        </div>
-        <div>
-          <p style="margin:0 0 2px"><b>🏗️ Mimari</b> <span style="font-size:11.5px; color:var(--muted)">(alttan yukarı oku; <span style="color:#f0a032">turuncu</span> = hafıza)</span></p>
-          <div style="overflow-x:auto" id="rex1fig"></div>
-          <p style="font-size:12px; color:var(--muted); margin:4px 0 0">Her adımda aynı hücre: kelime (W<sub>xh</sub>) + eski hafıza (W<sub>hh</sub>) → yeni hafıza h. Son h, W<sub>hy</sub> ile olasılığa dönüşür. ↔ Dar ekranda yana kaydır.</p>
-        </div>
-      </div>
-      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex1map"></div></div></div>
-      <div class="callout"><b>💡 Sezgi:</b> Kelimeler aynı, sonuç zıt. Kelime sayan (sırayı umursamayan) bir model ikisini aynı görürdü. RNN'de <b>en son gelen kelime hafızanın üstüne yazıyor</b> (\(W_{hh}=0{,}5\) eskiyi yarıya indiriyor), bu yüzden "…ama harika" olumlu bitiyor. Gerçek cümlelerde "ama"nın dönüşü böyle yakalanıyor.</div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
-<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+      <p style="margin:6px 0">🎯 <b>Problem:</b> Dört film yorumu var ve her birinin etiketi biliniyor: <b>"kötü ama harika" → olumlu</b>, <b>"harika ama kötü" → olumsuz</b>, … Bilgisayar kelimeyi okuyamaz, sayıyla çalışır: kötü = −1, harika = +1, bağlaç = 0. Ağırlıklar elle verilmedi: ağ <b>ilk kelimeye aşırı takılan</b> bir başlangıçla (W<sub>hh</sub> = 1,2) başlıyor, bu yüzden "kötü ama harika"yı yanlış sanıyor. <b>▶ eğit</b>'e bas: doğru cevabı kendisi bulsun.</p>
+      <div id="rex1"></div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Büyük resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Seçili cümle için <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı ağırlıklar üç adımda kullanıldığı için üç yaprak çıkar ve gerçek gradyan <b>yaprakların toplamıdır</b>. Eğitim, bütün cümlelerin gradyanının <b>ortalamasını</b> kullanır (en alttaki tablo).</p><div id="rex1map"></div><div id="rex1sum" style="margin-top:8px; overflow-x:auto"></div></div></div>
+      <div class="callout"><b>💡 Sezgi:</b> Eğitim bitince W<sub>hh</sub> yaklaşık <b>1,2 → 0,4</b>'e düşer: ağ eski kelimeleri <b>unutup son kelimeye bakmayı</b> kendisi öğrendi (kayıp 0,62 → 0,05); "…ama harika" bu yüzden olumlu. Bu davranışı biz yazmadık — gradyanlar W<sub>hh</sub>'ı küçültmenin hatayı azalttığını buldu. Kelime sayan bir model "kötü ama harika" ile "harika ama kötü"yü ayıramazdı; RNN sıra bilgisini hafızasında taşıyor.</div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, satır satır yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+sigmoid = lambda z: 1/(1+math.exp(-z))
 
-# Tek sayılı RNN hücresi: her kelime geldikçe hafıza h güncellenir
-def rnn(xs, Wxh=1.0, Whh=0.5):
-    h = 0.0                              # başlangıç hafızası h0 = 0
-    for x in xs:                         # kelimeleri sırayla oku
-        h = math.tanh(Wxh*x + Whh*h)     # yeni hafıza = f(yeni kelime, eski hafıza)
-    return h                             # son hafıza = tüm cümlenin özeti
+# Eğitim verisi: 3 kelimelik cümleler (kötü=-1, ama=0, harika=+1) ve etiket (1=olumlu, 0=olumsuz)
+veri = [([-1, 0,  1], 1),    # kötü ama harika
+        ([ 1, 0, -1], 0),    # harika ama kötü
+        ([ 1, 0,  1], 1),    # harika ama harika
+        ([-1, 0, -1], 0)]    # kötü ama kötü
 
-sigmoid = lambda z: 1/(1+math.exp(-z))   # sayıyı 0-1 arasına (olasılığa) sıkıştırır
+Wxh, Whh, Why = 0.5, 1.2, 0.5   # ELLE AYARLI DEĞİL: kötü bir başlangıç (ağ ilk kelimeye çok takılıyor)
+lr = 0.5                        # öğrenme hızı α
 
-# kötü = -1, ama = 0, harika = +1  →  p = olumlu olma olasılığı
-print(sigmoid(2*rnn([-1, 0, +1])))   # 0.794 → olumlu (cümle "harika" ile bitti)
-print(sigmoid(2*rnn([+1, 0, -1])))   # 0.206 → olumsuz (aynı kelimeler, ters sıra)</pre></div></div>
+def ileri_geri(xs, y):
+    # --- ileri: kelimeleri sırayla oku, hafıza h'yi güncelle ---
+    h = [0.0]
+    for x in xs:
+        h.append(math.tanh(Wxh*x + Whh*h[-1]))
+    p = sigmoid(Why*h[3])                        # olumlu olma olasılığı
+    L = -math.log(p if y == 1 else 1 - p)        # kayıp: doğru etikete verdiği olasılık küçükse büyük
+    # --- geri (BPTT): hatayı sondan başa taşı ---
+    dzy = p - y                                  # ∂L/∂z_y
+    d3 = dzy*Why*(1 - h[3]**2)                   # δ3
+    d2 = d3*Whh*(1 - h[2]**2)                    # δ2 (bir adım geri: × Whh × tanh eğimi)
+    d1 = d2*Whh*(1 - h[1]**2)                    # δ1
+    gWhy = dzy*h[3]
+    gWhh = d3*h[2] + d2*h[1] + d1*h[0]           # Whh üç adımda kullanıldı → katkılar toplanır
+    gWxh = d3*xs[2] + d2*xs[1] + d1*xs[0]        # Wxh için de: δt × xt toplamı
+    return L, gWxh, gWhh, gWhy
+
+for epoch in range(301):
+    top = [0.0, 0.0, 0.0]; Lt = 0.0
+    for xs, y in veri:                           # tüm cümlelerin gradyanını topla
+        L, a, b, c = ileri_geri(xs, y)
+        Lt += L; top[0] += a; top[1] += b; top[2] += c
+    n = len(veri)
+    if epoch in (0, 10, 50, 100, 300):
+        print(epoch, round(Lt/n, 3), round(Wxh, 2), round(Whh, 2), round(Why, 2))
+    # güncelle: gradyanın TERSİNE git (ortalama gradyan)
+    Wxh -= lr*top[0]/n;  Whh -= lr*top[1]/n;  Why -= lr*top[2]/n
+
+# ---- çıktı (epoch, ortalama kayıp, Wxh, Whh, Why) ----
+# 0 0.616 0.5 1.2 0.5
+# 10 0.28 1.19 0.65 1.41
+# 50 0.046 1.92 0.39 3.19
+# 100 0.022 2.11 0.36 3.93
+# 300 0.007 2.35 0.32 5.07</pre></div></div>
       </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #f0a032">
-      <h3 class="sahne-head closed" style="color:#f0a032; margin-top:0"><span>Örnek 2 — Sıradaki kelimeyi tahmin: bağlamı taşımak</span><span class="chev">▸</span></h3>
+      <h3 class="sahne-head closed" style="color:#f0a032; margin-top:0"><span>Örnek 2 — Sıradaki kelime: ağ bilgiyi taşımayı kendisi öğreniyor</span><span class="chev">▸</span></h3>
       <div class="sahne-body closed">
-      <p style="margin:6px 0">🎯 <b>Problem:</b> Cümle: <b>"kedi … ve … ___"</b>. Boşluğa <b>"miyav" mı, "hav" mı</b> gelir? Tek ipucu en baştaki hayvan; aradaki "ve" ve boşluk bir şey söylemiyor (0). Yani ağ ilk kelimenin bilgisini <b>iki kelime boyunca hafızasında taşıyabilmeli</b> — taşıyamazsa tahmin yazı-tura olur.</p>
-      <div class="rex-grid" id="rex2">
-        <div>
-          <div class="rex-ctl"><b>📥 İlk kelime:</b> <label> <select id="rex2a"><option value="1" data-w="kedi" selected>kedi (1)</option><option value="-1" data-w="köpek">köpek (−1)</option></select></label><span style="color:var(--muted)">→ "ve" (0) → boşluk (0)</span></div>
-          <div class="rex-ctl"><b>⚡</b> <button class="rex-btn" data-rex2="2,1,3">güçlü hafıza (W<sub>hh</sub>=1)</button><button class="rex-btn" data-rex2="2,0.2,3">hafızayı boz (0,2)</button><button class="rex-btn" data-rex2="2,0,3">hafıza yok (0)</button></div>
-          <div class="rex-ctl"><b>🎛️</b> <label><span>W<sub>xh</sub></span> <input type="range" id="rex2wxh" min="-3" max="3" step="0.1" value="2" style="width:110px"><b id="rex2wxhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hh</sub></span> <input type="range" id="rex2whh" min="-1.5" max="1.5" step="0.05" value="1" style="width:110px"><b id="rex2whhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>W<sub>hy</sub></span> <input type="range" id="rex2why" min="-5" max="5" step="0.1" value="3" style="width:110px"><b id="rex2whyv" style="color:var(--accent); min-width:38px; text-align:right"></b></label></div>
-          <p style="margin:8px 0 2px"><b>🧮 Hesap</b></p>
-          <div class="work" id="rex2calc" style="overflow-x:auto"></div>
-          <div class="callout" id="rex2msg" style="margin-top:8px"></div>
-        </div>
-        <div>
-          <p style="margin:0 0 2px"><b>🏗️ Mimari</b> <span style="font-size:11.5px; color:var(--muted)">(<span style="color:#f0a032">turuncu</span> = hafıza)</span></p>
-          <div style="overflow-x:auto" id="rex2fig"></div>
-          <p style="font-size:12px; color:var(--muted); margin:4px 0 0">W<sub>hh</sub>=1: eski hafıza tam taşınır. W<sub>hh</sub> küçüldükçe turuncu oklardan geçen bilgi sönümlenir. ↔ Dar ekranda yana kaydır.</p>
-        </div>
-      </div>
-      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Üstteki kaydırıcıları oynadıkça kutulardaki sayılar canlı değişir. Her <b>ok</b> (üstündeki formül) bir işlem; <b>üstüne gelince</b> o adımın hesabı canlı sayılarla açılır. Bu örnekte eğitim hedefi (doğru cevap) yok, bu yüzden yalnız <b>ileri yol</b> var — geri yayılım haritası Örnek 3'te.</p><div id="rex2map"></div></div></div>
-      <div class="callout"><b>💡 Sezgi:</b> W<sub>hh</sub> küçülünce ilk kelime iki adımda unutulur ve ağ yazı-tura atar. Bu, <b>vanishing gradient'in ileri yönden görünen yüzü</b>: bilgi zaman içinde taşınırken sönüyor.</div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla)</div><div class="acc-body">
-<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+      <p style="margin:6px 0">🎯 <b>Problem:</b> Cümle <b>"kedi … ve … ___"</b>: boşluğa <b>"miyav" mı "hav" mı</b> gelir? Tek ipucu en baştaki hayvan; aradaki "ve" ve boşluk bir şey söylemiyor (0). Yani ağ ilk kelimenin bilgisini <b>iki kelime boyunca hafızasında taşımayı</b> öğrenmeli. Başlangıçta hafıza zayıf (W<sub>hh</sub> = 0,2): ağ yazı-tura atıyor. İki cümleyle (kedi → miyav, köpek → hav) eğitiyoruz — <b>▶ eğit</b>.</p>
+      <div id="rex2"></div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Büyük resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Seçili cümle için <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı ağırlıklar üç adımda kullanıldığı için üç yaprak çıkar ve gerçek gradyan <b>yaprakların toplamıdır</b>. Eğitim, bütün cümlelerin gradyanının <b>ortalamasını</b> kullanır (en alttaki tablo).</p><div id="rex2map"></div><div id="rex2sum" style="margin-top:8px; overflow-x:auto"></div></div></div>
+      <div class="callout"><b>💡 Sezgi:</b> İlk epoch'larda kayıp yavaş düşer (0,69 → 0,62: hâlâ yazı-tura) — W<sub>hh</sub> küçükken hata sinyali geriye giderken <b>sönüyor</b> (vanishing gradient), ağ öğrenmekte zorlanıyor. Biraz sonra W<sub>hh</sub> <b>0,2 → ≈2,3</b>'e büyür (hafıza güçlenir), W<sub>xh</sub> ve W<sub>hy</sub> de artar ve kayıp hızla düşer (50. epoch: 0,055). Ağ "bilgiyi iki adım taşımak" için gereken ağırlıkları kendisi buldu.</div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, satır satır yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 sigmoid = lambda z: 1/(1+math.exp(-z))
 
-def tahmin(xs, Wxh=2.0, Whh=1.0, Why=3.0):
-    h = 0.0                              # başlangıç hafızası
-    for x in xs:                         # kedi/köpek, ve, boşluk sırayla gelir
-        h = math.tanh(Wxh*x + Whh*h)     # Whh: eski hafızanın ne kadarı taşınır
-    return sigmoid(Why*h)                # son hafızadan "miyav olasılığı"
+# kedi=+1, köpek=-1, "ve" ve boşluk = 0   →   etiket: 1=miyav, 0=hav
+veri = [([ 1, 0, 0], 1),    # kedi ve ___   → miyav
+        ([-1, 0, 0], 0)]    # köpek ve ___  → hav
 
-# kedi = +1, köpek = -1, "ve" ve boşluk = 0 (nötr)
-print(tahmin([+1, 0, 0]))            # 0.87 → miyav (kedi bilgisi taşındı)
-print(tahmin([-1, 0, 0]))            # 0.13 → hav   (köpek bilgisi taşındı)
-print(tahmin([+1, 0, 0], Whh=0.2))   # 0.53 → yazı-tura: hafıza zayıf, kedi unutuldu</pre></div></div>
+Wxh, Whh, Why = 0.5, 0.2, 0.5   # ELLE AYARLI DEĞİL: zayıf hafıza (Whh küçük) ile başlıyoruz
+lr = 0.5
+
+def ileri_geri(xs, y):
+    h = [0.0]
+    for x in xs:
+        h.append(math.tanh(Wxh*x + Whh*h[-1]))
+    p = sigmoid(Why*h[3])
+    L = -math.log(p if y == 1 else 1 - p)
+    dzy = p - y
+    d3 = dzy*Why*(1 - h[3]**2)
+    d2 = d3*Whh*(1 - h[2]**2)
+    d1 = d2*Whh*(1 - h[1]**2)
+    return L, d3*xs[2] + d2*xs[1] + d1*xs[0], d3*h[2] + d2*h[1] + d1*h[0], dzy*h[3]
+
+for epoch in range(601):
+    top = [0.0, 0.0, 0.0]; Lt = 0.0
+    for xs, y in veri:
+        L, a, b, c = ileri_geri(xs, y)
+        Lt += L; top[0] += a; top[1] += b; top[2] += c
+    n = len(veri)
+    if epoch in (0, 10, 50, 100, 600):
+        print(epoch, round(Lt/n, 3), round(Wxh, 2), round(Whh, 2), round(Why, 2))
+    Wxh -= lr*top[0]/n;  Whh -= lr*top[1]/n;  Why -= lr*top[2]/n
+
+# ---- çıktı (epoch, ortalama kayıp, Wxh, Whh, Why) ----
+# 0 0.689 0.5 0.2 0.5
+# 10 0.62 0.63 0.66 0.67
+# 50 0.055 1.1 2.12 2.99
+# 100 0.024 1.13 2.31 3.83
+# 600 0.003 1.17 2.64 5.74</pre></div></div>
       </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #2ec46a">
-      <h3 class="sahne-head closed" style="color:#2ec46a; margin-top:0"><span>Örnek 3 — Hatadan öğrenmek: tek BPTT adımı elle</span><span class="chev">▸</span></h3>
+      <h3 class="sahne-head closed" style="color:#2ec46a; margin-top:0"><span>Örnek 3 — Tek bir öğrenme adımının içi (elle, üç ağırlık için)</span><span class="chev">▸</span></h3>
       <div class="sahne-body closed">
-      <p style="margin:6px 0">🎯 <b>Problem:</b> Örnek 2'deki ağın hafızası <b>bozuk</b> (W<sub>hh</sub>=0,2). "kedi ve ___" için doğru cevap <b>miyav</b> (y=1) ama ağ yazı-tura gibi diyor (p≈0,53). <b>W<sub>hh</sub> hangi yöne, ne kadar değişirse doğruya yaklaşırız?</b> Hatayı sondan başa, ağırlığa kadar taşıyoruz (geri yayılım) ve bir adım atıyoruz.</p>
-      <div class="rex-grid" id="rex3">
-        <div>
-          <div class="rex-ctl"><b>🎛️</b> <label><span>W<sub>hh</sub></span> <input type="range" id="rex3whh" min="-1" max="2" step="0.001" value="0.2" style="width:140px"><b id="rex3whhv" style="color:var(--accent); min-width:38px; text-align:right"></b></label><label><span>α</span> <input type="range" id="rex3al" min="0.05" max="1" step="0.05" value="0.5" style="width:110px"><b id="rex3alv" style="color:var(--accent); min-width:38px; text-align:right"></b></label></div>
-          <div class="rex-ctl"><button class="rex-btn rex-go" id="rex3step">🔧 Bir öğrenme adımı at</button><button class="rex-btn" id="rex3reset">↺ başa dön</button><span style="color:var(--muted)">atılan adım: <b id="rex3steps">0</b></span></div>
-          <div class="callout" id="rex3msg" style="margin:6px 0"></div>
-          <p style="margin:8px 0 2px"><b>🧮 Hesap (sondan başa)</b> <span style="font-size:11.5px; color:var(--muted)">δ<sub>t</sub> = δ<sub>t+1</sub>·W<sub>hh</sub>·(1−h<sub>t</sub>²)</span></p>
-          <div class="work" id="rex3calc" style="overflow-x:auto"></div>
-        </div>
-        <div>
-          <p style="margin:0 0 2px"><b>🏗️ Mimari</b> <span style="font-size:11.5px; color:var(--muted)">(sayılar canlı)</span></p>
-          <div style="overflow-x:auto" id="rex3fig"></div>
-          <p style="font-size:12px; color:var(--muted); margin:4px 0 0">Kırmızı kutu: "doğru cevap 1 olmalıydı" → ağın <b>kaybı</b>. Adım atınca W<sub>hh</sub> büyür, hafıza güçlenir, p yükselir. ↔ Dar ekranda yana kaydır.</p>
-        </div>
-      </div>
-      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ İleri &amp; geri yayılım haritası — iç mekanizma <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Önce <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı W<sub>hh</sub> üç adımda kullanıldığı için üç yaprak çıkar ve <b>gerçek gradyan yaprakların toplamıdır</b>. "🔧 Bir öğrenme adımı at"a basınca sayılar yeni W<sub>hh</sub> ile yenilenir.</p><div id="rex3map"></div></div></div>
-      <div class="callout"><b>💡 Sezgi:</b> Gradyan eksi çıktı → "\(W_{hh}\)'ı büyüt": ağ hafızasını güçlendirerek ilk kelimeyi daha iyi taşımayı <b>kendi kendine</b> buldu. Ayrıca \(\delta_1=-0{,}0038\), \(\delta_3=-1{,}412\)'nin yaklaşık 370'te biri: hata sinyali iki adım geri giderken sönüyor — vanishing gradient'in sayıyla görüntüsü.</div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (varsayılan ayarlarla, sonlu farkla doğrulamalı)</div><div class="acc-body">
-<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+      <p style="margin:6px 0">🎯 <b>Problem:</b> Eğitimin <b>tek bir adımına büyüteç</b> tutuyoruz. Tek cümle: <b>"kedi ve ___"</b>, doğru cevap <b>miyav</b>. Ağırlıklar yine elle ayarlı değil (W<sub>xh</sub> = 1, W<sub>hh</sub> = 0,5, W<sub>hy</sub> = 1). <b>🔧 1 adım</b>'a bas: aşağıda geri yayılımın <b>her satırını</b> (δ₃ → δ₂ → δ₁, üç adımın toplamı, üç ağırlığın güncellenmesi) canlı sayılarla görürsün. İstersen <b>▶ eğit</b> ile aynı adımı kendisi tekrarlasın.</p>
+      <div id="rex3"></div>
+      <div class="acc xt-wrap" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Büyük resim — ileri yol + geri yayılım ağacı <span class="xt-basalt">kutulara / oklara gel → nasıl bulunduğunu gör</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><p style="font-size:12.5px; color:#ccd5e8; margin:6px 0">Seçili cümle için <b>ileri yol</b> (kelimeler → kayıp), sonra <b>geri yol</b>: kayıptan başlayıp aynı yolu tersten yürürüz; her <b>ok bir türev</b> (üstüne gel → nasıl bulunduğu, canlı sayılarla). Aynı ağırlıklar üç adımda kullanıldığı için üç yaprak çıkar ve gerçek gradyan <b>yaprakların toplamıdır</b>. Eğitim, bütün cümlelerin gradyanının <b>ortalamasını</b> kullanır (en alttaki tablo).</p><div id="rex3map"></div><div id="rex3sum" style="margin-top:8px; overflow-x:auto"></div></div></div>
+      <div class="callout"><b>💡 Sezgi:</b> Başlangıçta δ₃ ≈ −0,44, δ₂ ≈ −0,19, δ₁ ≈ −0,04: hata sinyali zamanda <b>geriye gittikçe sönüyor</b> (vanishing gradient'in sayıyla görüntüsü). Üç gradyan da eksi → üç ağırlık da <b>büyüyor</b> ve bir adımda p 0,545 → 0,612'ye çıkıyor. Aynı ağırlık (W<sub>hh</sub>) üç adımda kullanıldığı için katkılar <b>toplanıyor</b>; h₀ = 0 olduğundan t=1'in W<sub>hh</sub> katkısı hep 0.</div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı adım Python'da (elle geri yayılım, satır satır yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 sigmoid = lambda z: 1/(1+math.exp(-z))
-Wxh, Why = 2.0, 3.0                      # bunlar sabit, sadece Whh'ı öğreneceğiz
-xs, y = [1, 0, 0], 1                     # "kedi ve ___", doğru cevap 1 = miyav
 
-def ileri(Whh):                          # ileri geçiş: hafızaları ve p'yi hesapla
-    h = [0.0]                            # h[0] = h0 = 0
-    for x in xs:
-        h.append(math.tanh(Wxh*x + Whh*h[-1]))   # h[1], h[2], h[3]
-    return h, sigmoid(Why*h[-1])         # (tüm hafızalar, miyav olasılığı p)
+xs, y = [1, 0, 0], 1                  # tek cümle: "kedi ve ___", doğru cevap = miyav (1)
+Wxh, Whh, Why = 1.0, 0.5, 1.0         # başlangıç ağırlıkları (elle ayarlı değil)
+lr = 1.0
 
-Whh = 0.2                                # bozuk ağ (hafıza zayıf)
-h, p = ileri(Whh)                        # p = 0.529 (yanlışa yakın)
+# --- ileri ---
+h = [0.0]
+for x in xs:
+    h.append(math.tanh(Wxh*x + Whh*h[-1]))        # h1, h2, h3
+p = sigmoid(Why*h[3])
+L = -math.log(p)
+print("önce :", "p =", round(p, 3), " L =", round(L, 3))
 
-# --- geri yayılım: sondan başa, her adımda "δ" (o adımdaki hata sinyali) ---
-d3 = (p - y) * Why * (1 - h[3]**2)       # δ3: çıkıştaki hata, h3'e ve tanh'a kadar geldi
-d2 = d3 * Whh * (1 - h[2]**2)            # δ2: bir adım geriye, Whh ile çarp (sönüyor)
-d1 = d2 * Whh * (1 - h[1]**2)            # δ1: bir adım daha geriye (çok küçük)
+# --- geri (elle, sondan başa) ---
+dzy = p - y                                       # 1) ∂L/∂z_y
+d3 = dzy*Why*(1 - h[3]**2)                        # 2-3) δ3
+d2 = d3*Whh*(1 - h[2]**2)                         # 5) δ2
+d1 = d2*Whh*(1 - h[1]**2)                         # 6) δ1
+gWhy = dzy*h[3]
+gWhh = d3*h[2] + d2*h[1] + d1*h[0]                # üç adımın toplamı (d1*h[0] = 0 çünkü h0 = 0)
+gWxh = d3*xs[2] + d2*xs[1] + d1*xs[0]             # = d1 (çünkü x2 = x3 = 0)
+print("gradyan:", round(gWxh, 4), round(gWhh, 4), round(gWhy, 4))
 
-# Whh üç adımda da kullanıldı → her adımın katkısı (δ × o adımın girdisi h[t-1]) toplanır
-grad = d3*h[2] + d2*h[1] + d1*h[0]       # d1*h[0] = 0 çünkü h0 = 0
-print(grad)                              # -0.5314 → eksi: "Whh'ı büyüt"
+# --- güncelle: gradyanın tersine bir adım ---
+Wxh -= lr*gWxh;  Whh -= lr*gWhh;  Why -= lr*gWhy
+print("ağırlık:", round(Wxh, 3), round(Whh, 3), round(Why, 3))
 
-# kontrol: gradyanı sayısal türevle de bul (Whh'ı çok az oynat, kaybın değişimine bak)
-L = lambda w: -math.log(ileri(w)[1])     # kayıp L = -ln(p)
-print((L(Whh+1e-6) - L(Whh-1e-6)) / 2e-6)   # -0.5314 → elle bulduğumuzla aynı, hesap doğru
+# --- aynı cümleyi yeni ağırlıklarla tekrar çalıştır ---
+h = [0.0]
+for x in xs:
+    h.append(math.tanh(Wxh*x + Whh*h[-1]))
+p2 = sigmoid(Why*h[3])
+print("sonra:", "p =", round(p2, 3), " L =", round(-math.log(p2), 3))
 
-# öğrenme adımı: gradyanın tersine git (öğrenme hızı α = 0.5)
-Whh -= 0.5 * grad                        # Whh = 0.2 - 0.5*(-0.531) = 0.466
-print(Whh, ileri(Whh)[1])                # 0.4657  0.641
-#  ↑ yeni Whh ↑ bu Whh ile ağı tekrar çalıştırınca yeni p:
-#    hafıza güçlendi, miyav olasılığı 0.53 → 0.64'e çıktı (doğru cevap 1'e yaklaştı)</pre></div></div>
+# ---- çıktı (önce / gradyan / güncellenmiş ağırlık / sonra) ----
+# önce : p = 0.545  L = 0.607
+# gradyan: -0.0401 -0.3057 -0.0818
+# ağırlık: 1.04 0.806 1.082
+# sonra: p = 0.612  L = 0.492</pre></div></div>
       </div>
     </div>
 
     <div class="pts" style="border-left:3px solid #9c4dff">
       <h3 class="sahne-head closed" style="color:#9c4dff; margin-top:0"><span>Örnek 4 — Aynısını makineye yaptır: otomatik türev (autograd)</span><span class="chev">▸</span></h3>
       <div class="sahne-body closed">
-      <p>Örnek 3'te δ₃, δ₂, δ₁'i <b>elle</b> yazdık. Gerçek projelerde bunu kimse yapmaz: PyTorch, JAX, TensorFlow gibi kütüphaneler <b>otomatik türev (autograd)</b> ile geri yayılımı kendileri yapar. Aynı problemi (kedi ve ___, \(W_{hh}=0{,}2\)) şimdi PyTorch'a bırakıyoruz.</p>
+      <p>Örnek 1-3'te ileri yayılımı, geri yayılımı (δ₃, δ₂, δ₁, toplamlar) ve güncellemeyi <b>kendimiz yazdık</b>. Gerçek projelerde geri kısmı kimse yazmaz: PyTorch, JAX, TensorFlow gibi kütüphaneler <b>otomatik türev (autograd)</b> ile geri yayılımı kendileri yapar. Aşağıda Örnek 2'nin eğitimini (kedi/köpek) aynı başlangıç ve aynı α ile makineye bırakıyoruz.</p>
       <p><b>Nasıl çalışıyor?</b> İleri geçişte yaptığın her işlemi (<code>*</code>, <code>+</code>, <code>tanh</code>, <code>sigmoid</code>, <code>log</code>…) arka planda bir <b>hesap grafiği</b> olarak kaydediyor. <code>L.backward()</code> deyince bu grafiği sondan başa geziyor ve her işlemde şunu yapıyor:</p>
       <div class="work" style="overflow-x:auto">\[ \underbrace{\frac{\partial L}{\partial \text{girdi}}}_{\text{o girdinin gradyanı}}\;=\;\underbrace{\frac{\partial L}{\partial \text{çıktı}}}_{\text{sondan gelen}}\;\times\;\underbrace{\frac{\partial \text{çıktı}}{\partial \text{girdi}}}_{\text{yerel türev}} \]</div>
-      <p>Yani elle yaptığımız zincirin <b>aynısı</b>; yerel türevleri (tanh için \(1-h^2\), sigmoid için \(\sigma(1-\sigma)\)) kütüphane zaten biliyor. Bir ağırlık birden fazla yerde kullanılıyorsa (\(W_{hh}\) üç adımda) katkıları da kendisi topluyor.</p>
+      <p>Yani elle yaptığımız zincirin <b>aynısı</b>; yerel türevleri (tanh için \(1-h^2\), sigmoid için \(\sigma(1-\sigma)\)) kütüphane zaten biliyor. Bir ağırlık birden fazla yerde kullanılıyorsa (\(W_{hh}\) üç adımda, iki cümlede) katkıları da kendisi topluyor.</p>
       <div style="overflow-x:auto"><table style="font-size:13px; border-collapse:collapse; margin:6px 0">
-        <tr><th style="padding:4px 12px; text-align:left">Elle (Örnek 3)</th><th style="padding:4px 12px; text-align:left">PyTorch</th></tr>
-        <tr><td style="padding:4px 12px">ileri geçişte h₁, h₂, h₃'ü hesapla</td><td style="padding:4px 12px">aynı döngü; işlemler otomatik kaydedilir</td></tr>
-        <tr><td style="padding:4px 12px">δ₃, δ₂, δ₁'i zincirle</td><td style="padding:4px 12px"><code>L.backward()</code></td></tr>
-        <tr><td style="padding:4px 12px">üç adımın katkısını topla → −0,531</td><td style="padding:4px 12px"><code>Whh.grad</code> (toplama dahil)</td></tr>
-        <tr><td style="padding:4px 12px">W<sub>hh</sub> ← W<sub>hh</sub> − α·grad</td><td style="padding:4px 12px"><code>Whh -= 0.5 * Whh.grad</code> (ya da <code>optimizer.step()</code>)</td></tr>
+        <tr><th style="padding:4px 12px; text-align:left">Elle (Örnek 1-3)</th><th style="padding:4px 12px; text-align:left">PyTorch</th></tr>
+        <tr><td style="padding:4px 12px">ileri döngü: h₁, h₂, h₃, p, L</td><td style="padding:4px 12px">aynı döngü; işlemler otomatik kaydedilir</td></tr>
+        <tr><td style="padding:4px 12px">δ₃, δ₂, δ₁ ve üç ağırlığın gradyanı</td><td style="padding:4px 12px"><code>L.backward()</code></td></tr>
+        <tr><td style="padding:4px 12px">cümlelerin ve adımların katkısını topla/ortala</td><td style="padding:4px 12px"><code>.grad</code> (toplama dahil; ortalama kayıpta zaten var)</td></tr>
+        <tr><td style="padding:4px 12px">W ← W − α·gradyan (üç ağırlık için ayrı ayrı)</td><td style="padding:4px 12px"><code>opt.step()</code></td></tr>
       </table></div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 PyTorch ile (aynı problem, satır satır yorumlu)</div><div class="acc-body">
-<pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import torch
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 PyTorch ile eğitim döngüsü (Örnek 2'nin aynısı, satır satır yorumlu)</div><div class="acc-body"><p style="font-size:12px; color:var(--muted); margin:6px 0">Not: PyTorch float32 kullandığı için son hanelerde çok küçük fark olabilir; kütüphane bu sayfada çalıştırılmadı, sayılar aşağıdaki kütüphanesiz sürümle ve Örnek 2 ile aynı kalıbı izler.</p><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import torch
 
-Wxh = torch.tensor(2.0)                       # sabit, gradyanı istemiyoruz
-Why = torch.tensor(3.0)                       # sabit
-Whh = torch.tensor(0.2, requires_grad=True)   # "bunun gradyanını bul" işareti (öğreneceğimiz ağırlık)
+veri = [([ 1., 0., 0.], 1),     # kedi ve ___   → miyav
+        ([-1., 0., 0.], 0)]     # köpek ve ___  → hav
 
-h = torch.tensor(0.0)                         # h0 = 0
-for x in [1.0, 0.0, 0.0]:                     # kedi, ve, ___
-    h = torch.tanh(Wxh*x + Whh*h)             # ileri geçiş: PyTorch her işlemi arka planda kaydeder
+Wxh = torch.tensor(0.5, requires_grad=True)     # requires_grad: "bunların gradyanını bul"
+Whh = torch.tensor(0.2, requires_grad=True)
+Why = torch.tensor(0.5, requires_grad=True)
+opt = torch.optim.SGD([Wxh, Whh, Why], lr=0.5)  # güncelleme kuralı: W -= lr * W.grad
 
-p = torch.sigmoid(Why*h)                      # miyav olasılığı = 0.529
-L = -torch.log(p)                             # y = 1 olduğu için kayıp L = -ln(p) = 0.637
-
-L.backward()                                  # TÜM geri yayılım: kayıtlı işlemleri sondan başa gezer
-print(Whh.grad)                               # tensor(-0.5314) → elle bulduğumuzla aynı
-
-with torch.no_grad():                         # güncelleme işlemi grafiğe kaydedilmesin
-    Whh -= 0.5 * Whh.grad                     # öğrenme adımı (α = 0.5): 0.2 → 0.4657
-print(Whh)                                    # tensor(0.4657, requires_grad=True)</pre></div></div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🔬 İçini açalım: 30 satırlık mini autograd (kütüphane yok)</div><div class="acc-body">
-      <p style="font-size:13px; color:#ccd5e8; margin:6px 0">"Sihir" değil: her sayı kendi gradyanını ve kendisini üreten girdileri taşıyor, <code>backward()</code> grafiği sondan başa gezip <b>gelen × yerel türev</b>'i ekliyor. Bu kod hiçbir kütüphane kullanmadan Örnek 3'teki <b>−0,5314</b>'ü bulur:</p>
+for epoch in range(101):
+    L = 0
+    for xs, y in veri:
+        h = torch.tensor(0.0)
+        for x in xs:
+            h = torch.tanh(Wxh*x + Whh*h)                # ileri geçiş (işlemler kaydedilir)
+        p = torch.sigmoid(Why*h)
+        L = L - (torch.log(p) if y == 1 else torch.log(1 - p)) / len(veri)   # ortalama kayıp
+    opt.zero_grad()      # eski gradyanları sıfırla (yoksa birikir)
+    L.backward()         # TÜM geri yayılım: üç ağırlığın gradyanı (toplamalar dahil)
+    if epoch in (0, 10, 50, 100):
+        print(epoch, round(L.item(), 3), round(Wxh.item(), 2), round(Whh.item(), 2), round(Why.item(), 2))
+    opt.step()           # üç ağırlığı birden güncelle</pre></div></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🔬 İçini açalım: 40 satırlık mini autograd + eğitim (kütüphane yok)</div><div class="acc-body">
+      <p style="font-size:13px; color:#ccd5e8; margin:6px 0">"Sihir" değil: her sayı kendi gradyanını ve kendisini üreten girdileri taşıyor, <code>backward()</code> grafiği sondan başa gezip <b>gelen × yerel türev</b>'i ekliyor. Aşağıdaki kod hiçbir kütüphane kullanmadan Örnek 2'nin eğitimini yapar ve sayfadaki değerlerle <b>birebir aynı</b> sonucu verir (epoch 10: kayıp 0,62 · epoch 100: 0,024).</p>
 <pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 
 class Deger:                                   # içinde hem sayı hem "gradyan" taşıyan kutu
@@ -2027,7 +2053,6 @@ class Deger:                                   # içinde hem sayı hem "gradyan"
         self.g = 0.0                           # ∂L/∂(bu sayı): geri geçişte dolacak
         self.eb = ebeveynler                   # bu sayıyı üreten girdiler
         self.yerel = yerel                     # her girdiye göre yerel türev
-
     def __add__(a, b):
         b = b if isinstance(b, Deger) else Deger(b)
         return Deger(a.v + b.v, (a, b), (1.0, 1.0))
@@ -2040,9 +2065,10 @@ class Deger:                                   # içinde hem sayı hem "gradyan"
     def sigmoid(a):
         s = 1/(1 + math.exp(-a.v))
         return Deger(s, (a,), (s*(1 - s),))              # σ' = σ(1-σ)
-    def neglog(a):
-        return Deger(-math.log(a.v), (a,), (-1/a.v,))    # (-ln p)' = -1/p
-
+    def neglog(a):                                       # -ln(p)      (etiket 1)
+        return Deger(-math.log(a.v), (a,), (-1/a.v,))
+    def neglog1m(a):                                     # -ln(1 - p)  (etiket 0)
+        return Deger(-math.log(1 - a.v), (a,), (1/(1 - a.v),))
     def backward(self):
         sira, gorulen = [], set()
         def sirala(d):                         # grafiği girdiden çıktıya sırala
@@ -2056,18 +2082,35 @@ class Deger:                                   # içinde hem sayı hem "gradyan"
             for e, yerel in zip(d.eb, d.yerel):
                 e.g += d.g * yerel             # zincir kuralı: gelen × yerel türev (toplanır!)
 
-Whh = Deger(0.2)
-h = Deger(0.0)
-for x in [1.0, 0.0, 0.0]:
-    h = (h * Whh + 2.0 * x).tanh()             # Wxh = 2
-L = (h * 3.0).sigmoid().neglog()               # Why = 3, y = 1
-L.backward()
-print(Whh.g)</pre></div></div>
-      <div class="callout"><b>💡 Sezgi:</b> Elle hesap, geri yayılımın <b>ne yaptığını</b> anlamak için; autograd ise <b>her seferinde yapmamak</b> için. Binlerce ağırlıklı ağlarda türevleri elle yazmak imkânsız, ama arkada dönen şey tam olarak senin Örnek 3'te yaptığın zincir.</div>
+veri = [([1.0, 0.0, 0.0], 1), ([-1.0, 0.0, 0.0], 0)]    # kedi ve ___ → miyav ; köpek ve ___ → hav
+Wxh, Whh, Why = Deger(0.5), Deger(0.2), Deger(0.5)      # öğrenilecek ağırlıklar
+lr = 0.5
+
+for epoch in range(101):
+    toplam = Deger(0.0)
+    for xs, y in veri:
+        h = Deger(0.0)
+        for x in xs:
+            h = (Wxh * x + Whh * h).tanh()                # ileri geçiş: grafik kendiliğinden kurulur
+        p = (Why * h).sigmoid()
+        kayip = p.neglog() if y == 1 else p.neglog1m()
+        toplam = toplam + kayip * (1 / len(veri))         # ortalama kayıp
+    for W in (Wxh, Whh, Why): W.g = 0.0                   # eski gradyanları sıfırla
+    toplam.backward()                                     # TÜM geri yayılım
+    if epoch in (0, 10, 50, 100):
+        print(epoch, round(toplam.v, 3), round(Wxh.v, 2), round(Whh.v, 2), round(Why.v, 2))
+    for W in (Wxh, Whh, Why): W.v -= lr * W.g             # güncelle
+
+# ---- çıktı (epoch, ortalama kayıp, Wxh, Whh, Why) ----
+# 0 0.689 0.5 0.2 0.5
+# 10 0.62 0.63 0.66 0.67
+# 50 0.055 1.1 2.12 2.99
+# 100 0.024 1.13 2.31 3.83</pre></div></div>
+      <div class="callout"><b>💡 Sezgi:</b> Elle hesap, geri yayılımın <b>ne yaptığını</b> anlamak için; autograd ise <b>her seferinde yapmamak</b> için. Binlerce ağırlıklı ağlarda türevleri elle yazmak imkânsız, ama arkada dönen şey tam olarak Örnek 3'te adım adım izlediğin zincir.</div>
       </div>
     </div>
 
-    <div class="callout"><b>🎯 Dene:</b> Üstteki 🎛️ <b>Ağırlıklar &amp; girdiler</b> panelinde \(W_{xh}=2,\ W_{hh}=0{,}2\) yapıp Simülasyon'daki sayılarla kendi hesabını karşılaştırabilirsin. Kendi cümleni de dene: "kötü ama harika" yerine üç adımlı başka bir dizi seç, önce tahminini söyle, sonra hesapla.</div>
+    <div class="callout"><b>🎯 Dene:</b> Her örnekte <b>▶ eğit</b>'e bas, sonra <b>↺ başa dön</b> ve <b>öğrenme hızı α</b>'yı değiştir: çok küçük (0,05) ağ çok yavaş öğrenir, çok büyük (2) kayıp zıplayabilir. Tablodaki bir cümleye tıkla — mimari ve hesap o cümleyi gösterir; <b>🗺️ Büyük resim</b>'i aç ve bir okun üstüne gel: o türevin nasıl bulunduğunu canlı sayılarla görürsün.</div>
     </div>
   </div>
 
@@ -6489,19 +6532,19 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610081330"></script>
-<script src="js/lesson-turev.js?v=202610081330"></script>
-<script src="js/lesson-xor.js?v=202610081330"></script>
-<script src="js/lesson-xor-arch.js?v=202610081330"></script>
-<script src="js/lesson-xor-maps.js?v=202610081330"></script>
-<script src="js/lesson-xor-epoch.js?v=202610081330"></script>
-<script src="js/lesson-nn.js?v=202610081330"></script>
-<script src="js/lesson-trig.js?v=202610081330"></script>
+<script src="js/lesson-linreg.js?v=202610111000"></script>
+<script src="js/lesson-turev.js?v=202610111000"></script>
+<script src="js/lesson-xor.js?v=202610111000"></script>
+<script src="js/lesson-xor-arch.js?v=202610111000"></script>
+<script src="js/lesson-xor-maps.js?v=202610111000"></script>
+<script src="js/lesson-xor-epoch.js?v=202610111000"></script>
+<script src="js/lesson-nn.js?v=202610111000"></script>
+<script src="js/lesson-trig.js?v=202610111000"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610081330"></script>
-<script src="js/lesson-rnn-soz.js?v=202610081330"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610111000"></script>
+<script src="js/lesson-rnn-soz.js?v=202610111000"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610081330"></script>
-<script src="js/app.js?v=202610081330"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610111000"></script>
+<script src="js/app.js?v=202610111000"></script>
 </body>
 </html>
