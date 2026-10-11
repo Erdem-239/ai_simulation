@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610111700"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610111800"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111700">
+<link rel="stylesheet" href="css/style.css?v=202610111800">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 17:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 18:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -52,34 +52,74 @@
   <div class="tpl-cl" data-stage="1">
     <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 220" role="img" aria-label="Noktalar, bir doğru ve noktalarla doğru arasındaki dikey hata çizgileri">
+      <text x="380" y="22" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">en iyi doğru = tüm noktalara toplamda en az "hata" ile oturan doğru</text>
+      <line x1="80" y1="190" x2="680" y2="190" stroke="#334063"/><line x1="80" y1="40" x2="80" y2="190" stroke="#334063"/>
+      <line x1="80" y1="165" x2="680" y2="62" stroke="#46c46a" stroke-width="3"/>
+      <g stroke="#e06a6a" stroke-width="1.6" stroke-dasharray="4 3">
+        <line x1="150" y1="153" x2="150" y2="150"/><line x1="230" y1="139" x2="230" y2="118"/><line x1="320" y1="124" x2="320" y2="140"/><line x1="410" y1="108" x2="410" y2="88"/><line x1="500" y1="93" x2="500" y2="104"/><line x1="590" y1="77" x2="590" y2="70"/>
+      </g>
+      <g fill="#3a7afe"><circle cx="150" cy="150" r="5"/><circle cx="230" cy="118" r="5"/><circle cx="320" cy="140" r="5"/><circle cx="410" cy="88" r="5"/><circle cx="500" cy="104" r="5"/><circle cx="590" cy="70" r="5"/></g>
+      <text x="236" y="112" font-size="11" fill="#e06a6a">hata</text>
+      <text x="600" y="58" font-size="12" fill="#46c46a" font-weight="700">h(x) = Θ₀ + Θ₁x</text>
+      <text x="380" y="212" text-anchor="middle" font-size="11" fill="#6b7794">hataların karelerinin ortalamasını küçült → doğruyu Θ₀ ve Θ₁ belirler</text>
+    </svg>
   <h1>Lineer Regresyon — Gradyan Alçalma (Canlı Simülasyon + Türev Notlarım)</h1>
-  <p class="sub">Noktaları aşağıdan düzenle, grafiğe tıklayarak ekle veya sürükleyerek taşı. Her <b>Adım</b> kutusuna tıklayınca ayrıntılı anlatımı açılır.</p>
-      <div class="tpl-empty">📌 Not: bu girişte henüz bir görsel/diyagram yok, sadece başlık ve tek cümlelik özet.</div>
+  <p class="sub">Elindeki noktalara en iyi oturan <b>düz çizgiyi</b> bulmak — yapay zekânın en eski ve en temel öğrenme problemi. Bu derste çizgiyi bilgisayar <b>kendisi buluyor</b>: yanlış bir tahminle başlıyor, hatasına bakıyor, çizgiyi azar azar düzeltiyor (gradyan alçalma). Simülasyonda noktaları sürükle, grafiğe tıklayıp yenisini ekle; her <b>Adım</b> kutusuna tıklayınca ayrıntılı anlatımı açılır.</p>
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="2">
-    <div class="tpl-head closed"><span>2️⃣ Hikâye <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-      <div class="tpl-empty">Bu modülde henüz bir hikâye bölümü yok — buraya gradyan alçalma / en küçük kareler yönteminin keşif hikâyesi (ör. Legendre &amp; Gauss'un 1805'te bağımsız birbirinden habersiz aynı yönteme ulaşması) eklenebilir.</div>
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Kaybolan gezegeni yakalayan yöntem</div>
+      <p>1 Ocak 1801'de İtalyan gökbilimci Giuseppe Piazzi gökyüzünde daha önce görülmemiş bir cisim buldu — cüce gezegen <b>Ceres</b>. Haftalarca izledi, sonra Ceres Güneş'in parıltısının ardına girip kayboldu. Elde yalnızca birkaç hafta boyunca, ölçüm hatalarıyla dolu birkaç düzine gözlem vardı. Avrupa'nın gökbilimcileri onu yeniden bulmak için yarışıyordu.</p>
+      <p>Yirmi dört yaşındaki <b>Carl Friedrich Gauss</b> gürültülü ölçümlere "en iyi oturan" yörüngeyi bulmak için bir yöntem kullandı: tahmin ile gözlem arasındaki farkın <b>karelerinin toplamını</b> en küçük yapan parametreleri seç. Aralık 1801'de gökbilimciler teleskopu Gauss'un gösterdiği yöne çevirdi — Ceres oradaydı. Gauss yöntemini 1809'da yayımladı; fakat Fransız <b>Adrien-Marie Legendre</b> aynı "en küçük kareler" yöntemini 1805'te kendisinden önce basmıştı. İkisi arasındaki "ilk kim?" tartışması yıllarca sürdü.</p>
+      <p>"Regresyon" kelimesi ise başka bir hikâyeden geliyor: 1880'lerde <b>Francis Galton</b>, uzun babaların oğullarının ortalama boya doğru "gerilediğini" (regress) fark etti. Bugün çizgi uydurmaya hâlâ regresyon deriz. Ve çizgiyi bulmanın <b>adım adım inerek</b> yolu — gradyan alçalma — fikrini ilk yazan kişi 1847'de <b>Augustin-Louis Cauchy</b>'ydi. Bir sinir ağındaki milyarlarca ağırlığı eğiten algoritma, aynı fikrin büyütülmüş hâlidir.</p>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-lin" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+    </div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="3">
-    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-      <div class="tpl-empty">Bu modülde henüz bir "gerçek hayatta nerede" bölümü yok — buraya ev fiyatı tahmini, satış/trend çizgisi, A/B test regresyonu gibi kısa örnek kartları eklenebilir.</div>
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🏠</span><b>Ev fiyatı tahmini</b> — metrekare, oda sayısı, semt → fiyat. Emlak siteleri "tahmini değer" rakamını bu mantıkla (çok değişkenli) hesaplar.</div>
+        <div class="ex-card"><span class="ex-ico">📈</span><b>Satış ve talep eğilimi</b> — son aylardaki satışlara bir çizgi çekip önümüzdeki ayı tahmin etmek: her işletmenin Excel'de yaptığı "trend çizgisi" budur.</div>
+        <div class="ex-card"><span class="ex-ico">💊</span><b>İlaç doz–yanıt</b> — doz arttıkça etki ne kadar artıyor? Klinik çalışmalar önce bu doğrusal ilişkiye bakar.</div>
+        <div class="ex-card"><span class="ex-ico">⚡</span><b>Enerji tüketimi</b> — dış sıcaklık ile elektrik/doğalgaz kullanımı arasındaki ilişki; şebeke planlaması buna dayanır.</div>
+        <div class="ex-card"><span class="ex-ico">🧠</span><b>Her sinir ağının içinde</b> — bir sinir ağının her katmanı, aslında bir lineer regresyondur (w·x + b) ve üstüne bir aktivasyon eklenir. ChatGPT'nin milyarlarca parametresi de bu birimlerin yığınıdır.</div>
+      </div>
+    </div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="4">
-    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-      <div class="tpl-empty">Bu sayfada ayrı, bağımsız bir "nedir &amp; nasıl çalışır" özeti yok — anlatım doğrudan aşağıdaki simülasyon adımlarının (Adım 0-4) içine gömülü. Buraya 2-3 cümlelik bağımsız bir özet eklenebilir.</div>
+    <div class="pts" style="border-left:3px solid var(--blue)">
+      <h3 style="color:var(--blue)">Regresyon nedir? (kısaca)</h3>
+      <div style="font-size:14px; color:#ccd5e8; line-height:1.75">Elinde (x, y) çiftleri var — ör. ev büyüklüğü ve fiyatı. İstediğin: <b>yeni bir x geldiğinde y'yi tahmin eden bir kural</b>. En basit kural bir düz çizgidir:
+      \[ h(x)=\Theta_0+\Theta_1\,x \]
+      <b>Θ₀</b> çizginin başlangıç yüksekliği, <b>Θ₁</b> eğimi. Bu iki sayıyı doğru bulursak çizgi noktalara oturur. Peki "doğru" nedir? Her nokta için <b>hata = tahmin − gerçek</b> hesaplanır, karesi alınıp ortalaması alınır:
+      \[ E(\Theta_0,\Theta_1)=\frac{1}{2m}\sum_{i=1}^{m}\big(h(x_i)-y_i\big)^2 \]
+      Maliyet <b>E</b> ne kadar küçükse çizgi o kadar iyi. Öğrenmek = E'yi küçülten Θ₀, Θ₁'i bulmak.</div>
+    </div>
+    <div class="pts" style="border-left:3px solid var(--accent)">
+      <h3 style="color:var(--accent)">Peki bulmak için nasıl yürünür? — sisli bir vadi</h3>
+      <div style="font-size:14px; color:#ccd5e8; line-height:1.75">Maliyeti bir arazi gibi düşün: (Θ₀, Θ₁) bir konum, E o konumun yüksekliği. Sis var, vadinin dibini görmüyorsun ama <b>ayağının altındaki eğimi</b> hissedebilirsin. Strateji: eğimin <b>ters yönünde küçük bir adım at</b>, tekrar eğime bak, tekrar adım at. Bu <b>gradyan alçalma</b>:
+      \[ \Theta:=\Theta-\alpha\,\frac{\partial E}{\partial\Theta} \]
+      α adımın büyüklüğü (öğrenme hızı); türev (∂E/∂Θ) eğimin kendisi. Eksi işaret "yokuş aşağı"dır. Çok büyük adım vadinin karşı yamacına sıçratır (maliyet patlar); çok küçük adım çok yavaştır.</div>
+    </div>
+    <div class="callout">🔗 <b>Neden bu kadar önemli?</b> Düz çizgi için Gauss'un kapalı bir formülü var (Örnek Çalışmalar'da). Ama bir sinir ağında böyle bir formül yok — elimizdeki tek yol bu "adım adım in" fikri. Yani bu sayfada öğrendiğin döngü, <b>bütün derin öğrenmenin kalbi</b>: tahmin et → hatayı ölç → türevi bul → ağırlığı güncelle.</div>
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="5">
+<div class="tpl-cl" data-stage="5">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
   <!-- ===== NOKTA EDİTÖRÜ ===== -->
@@ -416,7 +456,17 @@
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="linSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Simülasyon'daki noktalarla ve <b>canlı Θ₀, Θ₁</b> ile: önce <b>ileri yol</b> (x → tahmin → hata → maliyet), sonra <b>geri yol</b> (maliyetten başlayıp her noktanın Θ₀ ve Θ₁'e katkısını bulmak). Simülasyon'da ▶ ya da ⏭ ile ilerlet, burada her sayı değişir. Kutulara/oklara gel → türevin nasıl bulunduğu.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Gradyan alçalmanın bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="linBigMap"></div><div id="linBigSum" style="margin-top:8px; font-size:13px; color:#ccd5e8"></div></div></div>
+      <div class="callout">🔑 <b>Tek şeye bak:</b> Θ₀ her noktanın tahminini aynı oranda etkiler (türev 1), Θ₁ ise x kadar. İki yaprağın toplamı, Adım 3'teki iki türevle <b>aynı sayıdır</b> — aynı hesabın bu kez bir ağaç olarak görünmüş hâli.</div>
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="x">
     <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Notasyon &amp; Türev Notlarım</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
   <!-- ===== NOTASYON ===== -->
@@ -584,8 +634,84 @@
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine bulan doğru</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç örnek; üçünde de çizgiyi <b>biz vermiyoruz</b>, ağ kötü bir başlangıçtan (Θ₀=Θ₁=0) hatasına bakarak bulur. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Ev fiyatı: çizgiyi bilgisayar bulsun</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 8 evin büyüklüğü (x, ×10 m²) ve fiyatı (y, ×100 bin ₺) elinde. Başlangıçta çizgi düz yatay (Θ₀=Θ₁=0, maliyet 11,98). <b>▶ eğit</b>'e bas: her turda hata → türev → Θ güncelleme; yeşil çizgi noktalara oturur, sarı kesikli çizgi Gauss'un kapalı form cevabıdır.</p><div id="lrEx1"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+# ---------- veri: ev büyüklüğü (x, ×10 m²) -&gt; fiyat (y, ×100 bin TL) ----------
+veri = [(1, 1.9), (2, 2.6), (3, 3.1), (4, 4.4), (5, 4.9), (6, 5.8), (7, 6.2), (8, 7.5)]
+m = len(veri)
+
+def maliyet(t0, t1):
+    return sum((t0 + t1 * x - y) ** 2 for x, y in veri) / (2 * m)      # E = 1/(2m) Σ (h-y)²
+
+def gradyan(t0, t1):
+    d0 = sum((t0 + t1 * x - y) for x, y in veri) / m                     # ∂E/∂Θ0 = ortalama hata
+    d1 = sum((t0 + t1 * x - y) * x for x, y in veri) / m                 # ∂E/∂Θ1 = ortalama (hata·x)
+    return d0, d1
+
+def egit(alfa, tur):
+    t0 = t1 = 0.0                                                        # sıfırdan başla
+    gecmis = []
+    for _ in range(tur):
+        gecmis.append(maliyet(t0, t1))
+        d0, d1 = gradyan(t0, t1)
+        t0, t1 = t0 - alfa * d0, t1 - alfa * d1                          # Θ := Θ − α·türev
+    return t0, t1, gecmis
+
+# ---------- Gauss&#x27;un yolu: kapalı form (en küçük kareler) ----------
+xo = sum(x for x, _ in veri) / m; yo = sum(y for _, y in veri) / m
+k1 = sum((x - xo) * (y - yo) for x, y in veri) / sum((x - xo) ** 2 for x, _ in veri)
+k0 = yo - k1 * xo
+print(f&quot;kapalı form: Θ0={k0:.4f} Θ1={k1:.4f} E={maliyet(k0, k1):.4f}&quot;)
+
+# ---------- Örnek 1: ağ kendi kendine öğrensin (α=0.05, 600 tur) ----------
+t0, t1, g = egit(0.05, 600)
+print(f&quot;GD (600 tur): Θ0={t0:.4f} Θ1={t1:.4f} E={maliyet(t0, t1):.4f}   | başlangıç E={g[0]:.3f}&quot;)
+
+</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Öğrenme hızı α: ne kadar büyük adım?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Aynı veri, aynı başlangıç, dört farklı α. Hangisi hedefe en iyi gidiyor? Kaydırıcıyla tur sayısını artır, eğrilerin nasıl ayrıştığını izle.</p><div id="lrEx2"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı karşılaştırma Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+# ---------- veri: ev büyüklüğü (x, ×10 m²) -&gt; fiyat (y, ×100 bin TL) ----------
+veri = [(1, 1.9), (2, 2.6), (3, 3.1), (4, 4.4), (5, 4.9), (6, 5.8), (7, 6.2), (8, 7.5)]
+m = len(veri)
+
+def maliyet(t0, t1):
+    return sum((t0 + t1 * x - y) ** 2 for x, y in veri) / (2 * m)      # E = 1/(2m) Σ (h-y)²
+
+def gradyan(t0, t1):
+    d0 = sum((t0 + t1 * x - y) for x, y in veri) / m                     # ∂E/∂Θ0 = ortalama hata
+    d1 = sum((t0 + t1 * x - y) * x for x, y in veri) / m                 # ∂E/∂Θ1 = ortalama (hata·x)
+    return d0, d1
+
+def egit(alfa, tur):
+    t0 = t1 = 0.0                                                        # sıfırdan başla
+    gecmis = []
+    for _ in range(tur):
+        gecmis.append(maliyet(t0, t1))
+        d0, d1 = gradyan(t0, t1)
+        t0, t1 = t0 - alfa * d0, t1 - alfa * d1                          # Θ := Θ − α·türev
+    return t0, t1, gecmis
+
+# ---------- Gauss&#x27;un yolu: kapalı form (en küçük kareler) ----------
+xo = sum(x for x, _ in veri) / m; yo = sum(y for _, y in veri) / m
+k1 = sum((x - xo) * (y - yo) for x, y in veri) / sum((x - xo) ** 2 for x, _ in veri)
+k0 = yo - k1 * xo
+print(f&quot;kapalı form: Θ0={k0:.4f} Θ1={k1:.4f} E={maliyet(k0, k1):.4f}&quot;)
+
+# ---------- Örnek 2: öğrenme hızı (α) karşılaştırması: 300. turdaki maliyet ----------
+for alfa in (0.001, 0.02, 0.07, 0.08):
+    _, _, g = egit(alfa, 300)
+    e = g[-1]
+    print(f&quot;α={alfa:&lt;5}  300. turda E = {e:.4f}&quot; if e &lt; 1e6 else f&quot;α={alfa:&lt;5}  300. turda E = patladı (&gt;1e6)&quot;)
+
+</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Gauss'un yolu: iterasyonsuz, tek formül</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Ceres'i buldurtan yöntem: türev ve adım yok, ortalamalardan <b>doğrudan</b> Θ₀ ve Θ₁ çıkıyor. Aynı 8 nokta üzerinde elle hesaplanmış tablo; altta Örnek 1'deki canlı gradyan inişiyle karşılaştırma.</p><div id="lrEx3"></div></div></div>
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Gradyan Alçalma</div>
   <div class="pts">
@@ -6933,23 +7059,25 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610111700"></script>
-<script src="js/lesson-turev.js?v=202610111700"></script>
-<script src="js/lesson-xor.js?v=202610111700"></script>
-<script src="js/lesson-xor-arch.js?v=202610111700"></script>
-<script src="js/lesson-xor-maps.js?v=202610111700"></script>
-<script src="js/lesson-xor-epoch.js?v=202610111700"></script>
-<script src="js/lesson-nn.js?v=202610111700"></script>
-<script src="js/lesson-trig.js?v=202610111700"></script>
+<script src="js/lesson-linreg.js?v=202610111800"></script>
+<script src="js/lesson-turev.js?v=202610111800"></script>
+<script src="js/lesson-xor.js?v=202610111800"></script>
+<script src="js/lesson-xor-arch.js?v=202610111800"></script>
+<script src="js/lesson-xor-maps.js?v=202610111800"></script>
+<script src="js/lesson-xor-epoch.js?v=202610111800"></script>
+<script src="js/lesson-nn.js?v=202610111800"></script>
+<script src="js/lesson-trig.js?v=202610111800"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610111700"></script>
-<script src="js/lesson-rnn-soz.js?v=202610111700"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610111800"></script>
+<script src="js/lesson-rnn-soz.js?v=202610111800"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610111700"></script>
-<script src="js/lesson-lstm-cell.js?v=202610111700"></script>
-<script src="js/app.js?v=202610111700"></script>
-<script src="js/lesson-lstm-big.js?v=202610111700"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610111700"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610111700"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610111800"></script>
+<script src="js/lesson-lstm-cell.js?v=202610111800"></script>
+<script src="js/app.js?v=202610111800"></script>
+<script src="js/lesson-lstm-big.js?v=202610111800"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610111800"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610111800"></script>
+<script src="js/lesson-linreg-big.js?v=202610111800"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610111800"></script>
 </body>
 </html>
