@@ -87,7 +87,7 @@
     src(q+'_p','p — olasılık','p=\\sigma(z_y)=\\tfrac{1}{1+e^{-z_y}}','p=\\sigma('+tp(zy,3)+')=\\mathbf{'+t(p,3)+'}',
       '💬 Sigmoid ham puanı 0–1 arasına sıkıştırır: <b>'+f(p,3)+'</b> = '+psay+'.');
     src(q+'_L','L — kayıp','L=-y\\ln p-(1-y)\\ln(1-p)','L=-\\ln('+(y?t(p,3):'1-'+t(p,3))+')=\\mathbf{'+t(D.L,3)+'}\\quad(y='+y+')',
-      '💬 Doğru etiket y='+y+' iken ağın doğru sınıfa verdiği olasılık küçükse kayıp büyür. <b>Geri yayılım buradan başlar.</b>');
+      '💬 Doğru etiket y='+y+' iken ağın doğru sınıfa verdiği olasılık küçükse kayıp büyür. <b>Geri yayılım buradan başlar.</b> <span style="opacity:.8">(Formülün okunuşu: Yapı Taşları → İstatistik → <i>Değerlendirme Metrikleri</i>.)</span>');
   }
   // q = kutu id öneki, K = pop-up anahtar öneki
   function bwdHtml(q,K){
