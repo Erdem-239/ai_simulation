@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610111600"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610111700"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111600">
+<link rel="stylesheet" href="css/style.css?v=202610111700">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 16:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 17:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -6198,8 +6198,10 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   <!-- ===================== VEKTÖR MODELİ ===================== -->
   <div class="model" id="model-vektor">
 
-  <!-- ===== HERO: görsel + hikaye + gerçek hayat örnekleri ===== -->
-  <div class="lesson-hero">
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="lesson-hero">
     <svg class="lesson-hero-svg" viewBox="0 0 760 220" role="img" aria-label="İki vektör oku ve aralarındaki nokta çarpım (izdüşüm)">
       <defs>
         <marker id="vecA" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3a7afe"/></marker>
@@ -6236,7 +6238,17 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     <p class="lesson-hook">🎯 "Kral" ile "kraliçe" nasıl akrabadır — bilgisayar bunu nasıl anlar? Her kelimeyi 768 sayılık bir ok olarak yazar, sonra iki okun ne kadar <b>aynı yöne baktığına</b> bakar. Bu tek fikir Google Translate'ten ChatGPT'ye kadar her modern dil modelinin altında duruyor. Ve tek bir işlemin adı var: <b>nokta çarpım</b>.</p>
   </div>
 
-  <div class="pts lesson-story">
+  
+<div class="callout">🔗 <b>Neden şimdi?</b> Şu ana kadar her şey tek sayıyla (skaler) yürüdü. Ama kelimeler vektör (Embedding), attention skorları ise vektörlerin nokta çarpımı. Bu kapıdan geçmeden <b>softmax(QKᵀ/√d)·V</b> okunmaz — geçince kendiliğinden okunur.</div>
+
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="pts lesson-story">
     <div class="lesson-story-h">💡 HİKÂYE — Aynı fikri iki dilde konuşan matematikçi</div>
     <p>19. yüzyılın ortasında iki matematikçi, birbirlerinden habersiz, aynı devrimi hazırladı. Almanya'da <b>Hermann Grassmann</b> (1844) — bir lise öğretmeni — cebiri geometriden çıkarıp saf bir "büyüklük hesabı" olarak yazdı: yönlü sayılar, dış çarpımlar, tam bir vektör uzayı teorisi. Kimse anlamadı; kitap unutuldu. Aynı yıllarda İskoçya'da <b>William Rowan Hamilton</b>, 3B rotasyonları hesaplayabilmek için "kuaterniyon" adında dört boyutlu sayılar icat etti — bu, o zamana kadar hiç kimsenin görmediği bir şeydi.</p>
     <p>50 yıl sonra Amerika'da <b>Josiah Willard Gibbs</b> (1881, Yale), fizikçilere yakınmıştı: "Kuaterniyonun büyük kısmı gereksiz, işimize yarayanı çekip alalım." Grassmann'ın unutulmuş fikirlerini, Hamilton'ın kuaterniyonunu ve fiziğin ihtiyaçlarını birleştirdi — bugün kullandığımız <b>vektör analizi</b> doğdu. <b>Nokta çarpım</b> (a·b = aₓbₓ + a_y b_y) tam olarak bu sadeleştirmeden çıktı: "İki yönlü büyüklüğün ne kadar aynı yöne baktığını söyleyen tek sayı."</p>
@@ -6244,7 +6256,14 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
   </div>
 
-  <div class="lesson-examples">
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
     <div class="ex-grid">
       <div class="ex-card"><span class="ex-ico">🔍</span><b>Arama motorları</b> — Google 90'lardan beri sorgunu ve belgeleri vektöre çevirip cosine benzerliğine bakar. En yakın vektör = en alakalı belge.</div>
@@ -6255,16 +6274,41 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     </div>
   </div>
 
-  <div class="callout">🔗 <b>Neden şimdi?</b> Şu ana kadar her şey tek sayıyla (skaler) yürüdü. Ama kelimeler vektör (Embedding), attention skorları ise vektörlerin nokta çarpımı. Bu kapıdan geçmeden <b>softmax(QKᵀ/√d)·V</b> okunmaz — geçince kendiliğinden okunur.</div>
+  
+    </div>
+  </div>
 
-  <div class="sechead">1) Vektör nedir? Ok + sayı listesi, aynı şey</div>
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — ok, sayı listesi, nokta çarpım</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">1) Vektör nedir? Ok + sayı listesi, aynı şey</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Vektör iki dilde birden konuşur: <b>geometrik dilde</b> bir <b>ok</b>tur (yönü ve boyu vardır); <b>cebirsel dilde</b> bir <b>sayı listesi</b>dir (koordinatlar): \(\vec{a}=(3, 2)\) = "3 sağa, 2 yukarı giden ok". İki dil aynı nesneyi anlatır — ve bütün güç bu çift kimlikte: <b>oklarla düşünür, sayılarla hesaplarsın.</b></p>
     <div class="tip">Yapay zekâda vektörün boyu 2 değil 768 ya da 4096 olur — ama sezgi hep bu 2D okla kurulur. "kral" kelimesi 768 sayılık bir ok; "kraliçe" ona <b>yakın yöne bakan</b> başka bir ok.</div>
   </div>
 
-  <!-- İNTERAKTİF: nokta çarpım oyuncağı -->
-  <div class="sechead">2) 🎯 Oyuncak: okları döndür, benzerliği izle</div>
+  <div class="sechead">2) Nokta çarpımın iki yüzü — cebir ve geometri</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı sayıya iki yoldan ulaşılır:</p>
+    \[ \vec{a}\cdot\vec{b} \;=\; \underbrace{a_x b_x + a_y b_y}_{\text{cebir: çarp-topla}} \;=\; \underbrace{|\vec{a}|\,|\vec{b}|\,\cos\theta}_{\text{geometri: boylar × yön uyumu}} \]
+    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
+      <li><b>Aynı yöne bakıyorlar</b> (θ≈0°, cos≈1) → nokta çarpım <b>büyük pozitif</b>: "çok benzer!"</li>
+      <li><b>Dikler</b> (θ=90°, cos=0) → nokta çarpım <b>0</b>: "alakasız."</li>
+      <li><b>Zıt yönler</b> (θ≈180°, cos≈−1) → <b>negatif</b>: "karşıt."</li>
+    </ul>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bilgisayar cebirsel yüzü hesaplar (çarp-topla — GPU'ların en sevdiği işlem), biz geometrik yüzüyle <b>anlarız</b>: <b>benzerlik ölçer</b>.</p>
+    <div class="tip"><b>Cosine benzerliği</b> = nokta çarpımın boylardan arındırılmışı: \( \cos\theta=\dfrac{\vec a\cdot\vec b}{|\vec a||\vec b|} \). Uzun belge ile kısa cümleyi adil karşılaştırmak için boy etkisini atarsın — arama motorlarının ve embedding karşılaştırmalarının standardı.</div>
+  </div>
+
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — okları döndür, benzerliği izle</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<!-- İNTERAKTİF: nokta çarpım oyuncağı -->
+  <div class="sechead">1) 🎯 Oyuncak: okları döndür, benzerliği izle</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px"><b style="color:#3a7afe">Mavi (a)</b> ve <b style="color:#f0a032">turuncu (b)</b> okların <b>uçlarını sürükle</b>. Nokta çarpım, açı ve cosine anında değişir. Kesikli çizgi = a'nın b üzerine düşen <b>gölgesi</b> (izdüşüm) — nokta çarpımın geometrik ruhu.</div>
     <div class="plots">
@@ -6280,20 +6324,14 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     </div>
   </div>
 
-  <div class="sechead">3) Nokta çarpımın iki yüzü — cebir ve geometri</div>
-  <div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı sayıya iki yoldan ulaşılır:</p>
-    \[ \vec{a}\cdot\vec{b} \;=\; \underbrace{a_x b_x + a_y b_y}_{\text{cebir: çarp-topla}} \;=\; \underbrace{|\vec{a}|\,|\vec{b}|\,\cos\theta}_{\text{geometri: boylar × yön uyumu}} \]
-    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
-      <li><b>Aynı yöne bakıyorlar</b> (θ≈0°, cos≈1) → nokta çarpım <b>büyük pozitif</b>: "çok benzer!"</li>
-      <li><b>Dikler</b> (θ=90°, cos=0) → nokta çarpım <b>0</b>: "alakasız."</li>
-      <li><b>Zıt yönler</b> (θ≈180°, cos≈−1) → <b>negatif</b>: "karşıt."</li>
-    </ul>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bilgisayar cebirsel yüzü hesaplar (çarp-topla — GPU'ların en sevdiği işlem), biz geometrik yüzüyle <b>anlarız</b>: <b>benzerlik ölçer</b>.</p>
-    <div class="tip"><b>Cosine benzerliği</b> = nokta çarpımın boylardan arındırılmışı: \( \cos\theta=\dfrac{\vec a\cdot\vec b}{|\vec a||\vec b|} \). Uzun belge ile kısa cümleyi adil karşılaştırmak için boy etkisini atarsın — arama motorlarının ve embedding karşılaştırmalarının standardı.</div>
+  
+    </div>
   </div>
 
-  <div class="sechead">4) Matris = vektör rafı → QKᵀ sezgisi</div>
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — matris, transpoz, QKᵀ</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">1) Matris = vektör rafı → QKᵀ sezgisi</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Matris, üst üste dizilmiş vektörlerden ibarettir — bir <b>raf</b>. Matris çarpımı da gizemli değildir: <b>her rafla her rafın nokta çarpımı</b>, tablo halinde.</p>
 
@@ -6325,7 +6363,66 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     <p style="font-size:13px; color:var(--muted)">Bu tabloyu satır satır softmax'ten geçirip V ile ağırlıklı toplama — işte self-attention'ın tamamı. O kapıyı Softmax ve Embedding düğümlerinden sonra açacağız.</p>
   </div>
 
-  <div class="sechead">🧠 Kendini Test Et — Vektör</div>
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>6️⃣ Örnek Çalışmalar — elle tekrarla</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç küçük, <b>elle de hesaplayabileceğin</b> örnek. Her birinde sayıları sen değiştirirsin, nokta çarpım ve cosine anında yeniden hesaplanır; altında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Hangi kelime en yakın? (nokta çarpım ve cosine)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bilgisayar kelimeleri sayı listesi olarak tutar. Burada her kelimenin iki özelliği var: <b>kraliyet</b> ve <b>erkeklik</b>. Bir kelime seç; geri kalanı <b>benzerliğe</b> göre sıralansın.</p><div id="vkEx1"></div><div class="callout"><b>💡 Sezgi:</b> "kral" ve "kraliçe" nokta çarpımda <b>0</b> çıkıyor (dik!): kraliyette aynı, erkeklikte tam zıtlar, ikisi birbirini götürüyor. Gerçek embedding'ler yüzlerce özellik taşır; 2 özellikli oyuncakta "benzerlik" bu kadar kaba olur. Ama kral − erkek + kadın = kraliçe aritmetiği tam olarak vektör toplama/çıkarmadır.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+# ---------- Örnek 1: hangi kelime en yakın? (2 özellik: kraliyet, erkeklik) ----------
+kelime = {
+    &#x27;kral&#x27;:   (0.9,  0.9), &#x27;kraliçe&#x27;: (0.9, -0.9),
+    &#x27;prens&#x27;:  (0.5,  0.8), &#x27;prenses&#x27;: (0.5, -0.8),
+    &#x27;erkek&#x27;:  (0.05, 0.9), &#x27;kadın&#x27;:   (0.05, -0.9),
+    &#x27;kedi&#x27;:   (-0.6, 0.1), &#x27;elma&#x27;:    (-0.7, -0.2),
+}
+nokta  = lambda a, b: a[0]*b[0] + a[1]*b[1]            # çarp-topla
+boy    = lambda a: math.sqrt(nokta(a, a))              # |a|
+cosine = lambda a, b: nokta(a, b) / (boy(a) * boy(b))  # yön uyumu (-1…+1)
+
+sorgu = &#x27;kral&#x27;
+for ad, v in sorted(kelime.items(), key=lambda kv: -cosine(kelime[sorgu], kv[1])):
+    if ad != sorgu:
+        print(f&quot;{ad:8s} nokta={nokta(kelime[sorgu], v):6.3f}  cosine={cosine(kelime[sorgu], v):6.3f}&quot;)
+
+# kral - erkek + kadın = ?
+v = tuple(k - e + d for k, e, d in zip(kelime[&#x27;kral&#x27;], kelime[&#x27;erkek&#x27;], kelime[&#x27;kadın&#x27;]))
+en_yakin = max((a for a in kelime if a not in (&#x27;kral&#x27;, &#x27;erkek&#x27;, &#x27;kadın&#x27;)), key=lambda a: cosine(v, kelime[a]))
+print(&quot;kral - erkek + kadın =&quot;, tuple(round(x, 2) for x in v), &quot;-&gt; en yakın:&quot;, en_yakin)
+
+</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Arama motoru: uzunluk tuzağı</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Sorgu "kedi mama". Üç belge var; her belge, kelimelerin kaç kez geçtiğini gösteren bir vektör. Hangisi en alakalı? Nokta çarpım <b>uzun belgeyi kayırır</b> (sayılar büyük → çarpım büyük), cosine boyu atar.</p><div id="vkEx2"></div><div class="callout"><b>💡 Sezgi:</b> B belgesi çoğunlukla köpekten bahsediyor ama uzun olduğu için ham nokta çarpımda (8) birinci çıkar; cosine'de (0,676) A belgesi (kısa ama tam konuyla ilgili, 1,000) kazanır. Bu yüzden arama ve embedding karşılaştırmalarında cosine standarttır.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># ---------- Örnek 2: arama motoru — uzunluk tuzağı (kelime sayım vektörleri: kedi, köpek, mama) ----------
+sorgu2 = (1, 0, 1)                                      # &quot;kedi mama&quot;
+belge = {&#x27;A (kısa: kedi mama)&#x27;: (1, 0, 1), &#x27;B (uzun, çoğu köpek)&#x27;: (3, 6, 5), &#x27;C (köpek mama)&#x27;: (0, 1, 1)}
+dot3 = lambda a, b: sum(x*y for x, y in zip(a, b))
+n3 = lambda a: math.sqrt(dot3(a, a))
+for ad, d in belge.items():
+    print(f&quot;{ad:22s} nokta={dot3(sorgu2, d):2d}  cosine={dot3(sorgu2, d)/(n3(sorgu2)*n3(d)):.3f}&quot;)
+
+</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Attention skor tablosu: softmax(QKᵀ/√d)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> "kedi uyudu süt" cümlesinde her kelime, her kelimeye ne kadar bakmalı? Her kelimenin bir <b>sorgu</b> (q) ve bir <b>anahtar</b> (k) vektörü var; skor = q·k ÷ √d, sonra satır başına softmax. Bu, bu dersin <b>en büyük çıktısı</b>: attention'ın ham hâli.</p><div id="vkEx3"></div><div class="callout"><b>💡 Sezgi:</b> Her satır, o kelimenin dikkatini <b>%100'e bölüştürür</b> (toplam 1). Sorgu oku hangi anahtara yakın bakıyorsa, softmax onu öne çıkarır. Self-attention'ın tamamı: bu tablo × değer vektörleri V ile ağırlıklı toplama.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># ---------- Örnek 3: attention skor tablosu  softmax(Q Kᵀ / sqrt(d)) ----------
+fi = 90                                                 # &quot;uyudu&quot; sorgusunun açısı (derece)
+Q = [(1, 0), (2*math.cos(math.radians(fi)), 2*math.sin(math.radians(fi))), (1, 1)]
+K = [(1, 0), (0, 1), (1, 1)]
+def softmax(s):
+    m = max(s); e = [math.exp(x - m) for x in s]; t = sum(e); return [x / t for x in e]
+d = 2
+for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
+    skor = [nokta(q, k) / math.sqrt(d) for k in K]
+    print(f&quot;{ad:6s} skor={[round(x,3) for x in skor]}  softmax={[round(x,3) for x in softmax(skor)]}&quot;)
+
+</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">🧠 Kendini Test Et — Vektör</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -6346,7 +6443,12 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
     </div>
   </div>
 
+  
   <p class="footer">Vektör & nokta çarpım • ok + sayı listesi · benzerlik · cosine · QKᵀ sezgisi</p>
+  
+    </div>
+  </div>
+
   </div><!-- /model-vektor -->
 
 
@@ -6831,22 +6933,23 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610111600"></script>
-<script src="js/lesson-turev.js?v=202610111600"></script>
-<script src="js/lesson-xor.js?v=202610111600"></script>
-<script src="js/lesson-xor-arch.js?v=202610111600"></script>
-<script src="js/lesson-xor-maps.js?v=202610111600"></script>
-<script src="js/lesson-xor-epoch.js?v=202610111600"></script>
-<script src="js/lesson-nn.js?v=202610111600"></script>
-<script src="js/lesson-trig.js?v=202610111600"></script>
+<script src="js/lesson-linreg.js?v=202610111700"></script>
+<script src="js/lesson-turev.js?v=202610111700"></script>
+<script src="js/lesson-xor.js?v=202610111700"></script>
+<script src="js/lesson-xor-arch.js?v=202610111700"></script>
+<script src="js/lesson-xor-maps.js?v=202610111700"></script>
+<script src="js/lesson-xor-epoch.js?v=202610111700"></script>
+<script src="js/lesson-nn.js?v=202610111700"></script>
+<script src="js/lesson-trig.js?v=202610111700"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610111600"></script>
-<script src="js/lesson-rnn-soz.js?v=202610111600"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610111700"></script>
+<script src="js/lesson-rnn-soz.js?v=202610111700"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610111600"></script>
-<script src="js/lesson-lstm-cell.js?v=202610111600"></script>
-<script src="js/app.js?v=202610111600"></script>
-<script src="js/lesson-lstm-big.js?v=202610111600"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610111600"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610111700"></script>
+<script src="js/lesson-lstm-cell.js?v=202610111700"></script>
+<script src="js/app.js?v=202610111700"></script>
+<script src="js/lesson-lstm-big.js?v=202610111700"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610111700"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610111700"></script>
 </body>
 </html>
