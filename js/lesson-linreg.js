@@ -99,6 +99,7 @@
   function showH(){ data.forEach((p,i)=>{ const el=$('h'+i); if(el) el.textContent=fmt(tmp.h[i]); }); }
 
   // ---- mevcut Θ için tüm kutuları + ayrıntılı hesabı doldur ----
+  window.__linState=function(){ return {data:data,t0:t0,t1:t1,alpha:alpha}; };
   function recompute(){
     computeAll();
     data.forEach((p,i)=>{ const el=$('h'+i); if(el) el.textContent=fmt(tmp.h[i]); });
@@ -107,6 +108,7 @@
     $('n0').textContent=fmt(tmp.n0); $('n1').textContent=fmt(tmp.n1);
     { const e0=$('n0echo'), e1=$('n1echo'); if(e0) e0.textContent=fmt(tmp.n0,4); if(e1) e1.textContent=fmt(tmp.n1,4); }
     updateWork(); refreshStatic(); draw();
+    if(window.__linBigRender) window.__linBigRender();
   }
   // ---- ayrıntılı hesabın canlı dökümü (mevcut sayılarla) ----
   function updateWork(){
