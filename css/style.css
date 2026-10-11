@@ -1637,3 +1637,17 @@ body.xt-full-lock{overflow:hidden}
 .rex-btn{background:#1c2a48; border:1px solid var(--line); color:#ccd5e8; border-radius:6px; padding:4px 9px; font-size:12px; cursor:pointer; margin-right:4px}
 .rex-btn:hover{border-color:var(--green); color:#fff}
 .rex-go{border-color:#2ec46a; background:#14301f}
+/* Örnek Çalışmalar: kendi kendini eğiten mini RNN'ler */
+.rex-h{font-size:13px; margin:6px 0 4px}
+.rex-h span{font-size:11.5px; color:var(--muted); font-weight:400}
+.rex-tbl{border-collapse:collapse; font-size:12.5px; margin:4px 0}
+.rex-tbl th{text-align:left; padding:3px 10px; color:var(--muted); font-weight:600; border-bottom:1px solid var(--line)}
+.rex-tbl td{padding:4px 10px; border-bottom:1px solid rgba(51,65,95,.5)}
+.rex-tbl tr[data-i]{cursor:pointer}
+.rex-tbl tr[data-i]:hover td{background:rgba(74,163,255,.08)}
+.rex-tbl tr.sel td{background:rgba(74,163,255,.16)}
+.rex-xv{color:var(--muted); font-size:11px; margin-right:3px}
+.rex-stat{font-size:12.5px; margin:6px 0; color:#ccd5e8}
+.rex-wts{font-size:12.5px; margin:4px 0 6px; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:center}
+.rex-w{background:#14203a; border:1px solid var(--line); border-radius:6px; padding:2px 8px}
+@media(max-width:720px){#model-rnn .tpl-cl[data-stage="3"] .rex-tbl{font-size:11.5px}}
