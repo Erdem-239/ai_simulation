@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610111100"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610111400"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111100">
+<link rel="stylesheet" href="css/style.css?v=202610111400">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 11:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 14:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2151,13 +2151,34 @@ for epoch in range(101):
 
   <!-- ===================== LSTM MODELİ ===================== -->
   <div class="model" id="model-lstm">
-
-  <h1>LSTM / GRU — Hafıza Otoyolu ve Kapılar</h1>
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Fikir tek cümle</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<h1>LSTM / GRU — Hafıza Otoyolu ve Kapılar</h1>
   <p class="sub">RNN'in vanishing duvarını aşan tasarım. Fikir tek cümle: gradyanın <b>çarpıla çarpıla ölmediği</b>, korumalı bir hafıza hattı kur — ve o hatta ne girip ne çıkacağına <b>öğrenilebilir kapılar</b> karar versin.</p>
 
   <div class="callout">🔗 <b>Kaldığımız yer:</b> RNN'de gradyan geriye akarken her adımda <b>W<sub>hh</sub>·(1−h²)</b> ile çarpılıyordu → 20 adımda 0.5²⁰ ≈ sıfır. Sorun <b>çarpmanın kendisiydi</b>. LSTM'in cevabı: hafızayı çarparak değil, <b>toplayarak</b> taşı.</div>
+    </div>
+  </div>
 
-  <div class="sechead">1) Fikir: Cell State — bagaj bandı</div>
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div class="tpl-empty">Bu modülde henüz bir hikâye bölümü yok — buraya LSTM'in keşif hikâyesi eklenebilir: Hochreiter'in 1991 diploma tezinde vanishing gradient'i teşhis etmesi → 1997'de Hochreiter &amp; Schmidhuber'in "sabit hata karuseli" fikriyle LSTM'i önermesi → 2000'de Gers'in unutma kapısını eklemesi → 2014'te Cho ve ekibinin GRU'su. (RNN modülündeki hikâye düzeniyle aynı akış.)</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div class="tpl-empty">Bu modülde henüz gerçek-hayat kartları yok — buraya LSTM/GRU'nun kullanıldığı yerler eklenebilir (konuşma tanıma, makine çevirisi, el yazısı tanıma, zaman serisi/talep tahmini, müzik üretimi); her kartta RNN modülündeki gibi küçük bir örnek hesap.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — hafıza hattı ve kapılar</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">1) Fikir: Cell State — bagaj bandı</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Havalimanı bagaj bandı düşün: bant <b>kendi başına düz akar</b>, kimse bandı her metrede yeniden inşa etmez. Görevliler sadece <b>bavul ekler</b> ya da <b>bavul alır</b>. LSTM'in <b>cell state</b>'i (c) tam olarak bu bant:</p>
     \[ c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t \]
@@ -2177,8 +2198,13 @@ for epoch in range(101):
     </table>
     <p style="font-size:13px; color:var(--muted)">Yeni aday içerik ise tanh ile üretilir (−1…1 aralığında "içerik"): \( \tilde{c}_t=\tanh(W_c x_t + U_c h_{t-1} + b_c) \). Kural: <b>kapılar sigmoid</b> (oran), <b>içerik tanh</b> (değer).</p>
   </div>
+    </div>
+  </div>
 
-  <!-- İNTERAKTİF 1: VANA PANELİ -->
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — vana paneli, tam hücre, gradyan</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<!-- İNTERAKTİF 1: VANA PANELİ -->
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent)">🎛️ Vana paneli — kapıları elinle aç/kapa, hafızanın akışını izle</h3>
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Boruların <b>kalınlığı akan miktarı</b> gösterir. f'yi kıs → eski hafıza incelir; i'yi aç → yeni bilgi gürleşir; o'yu kıs → hücre bilse de söylemez.</div>
@@ -2221,8 +2247,20 @@ for epoch in range(101):
     </table>
     <div class="tip">Yukarıdaki tam hücre oyuncağında x ve h₋₁'i kaydırınca f'nin ve <b>f²⁰'nin canlı</b> değiştiğini gördün — vanishing'in kapıyla nasıl dizginlendiği tam olarak bu.</div>
   </div>
+    </div>
+  </div>
 
-  <div class="sechead">5) GRU — sadeleştirilmiş kuzen</div>
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — ileri yol + geri yayılım ağacı <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div class="tpl-empty">Bu modülde henüz "Bütün Resim" aşaması yok — buraya RNN/XOR modüllerindeki gibi LSTM hücresinin ileri yolu (f, i, c̃, c, o, h kutuları) ve geri yayılım ağacı (özellikle cell state yolunda ∂c<sub>t</sub>/∂c<sub>t−1</sub> = f<sub>t</sub> oku) türetme pop-up'larıyla eklenebilir.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — GRU</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">5) GRU — sadeleştirilmiş kuzen</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>GRU</b> (Cho ve ekibi, 2014) aynı fikrin 2 kapılı hâli: <b>update kapısı z</b> (unutma+giriş tek vanada: \(h_t=(1-z)\,h_{t-1}+z\,\tilde{h}_t\)) ve <b>reset kapısı r</b> (geçmişi ne kadar dinleyeyim?). Ayrı bir cell state yok; hafıza ile çıktı aynı damar.</p>
     <table class="calc">
@@ -2234,8 +2272,20 @@ for epoch in range(101):
     </table>
     <p style="font-size:13px; color:var(--muted)">Pratik gerçek: çoğu problemde ikisi başa baş; GRU ucuz olduğu için sık tercih edildi. İkisinin de tahtını 2017'de attention devraldı — sıradaki durağın.</p>
   </div>
+    </div>
+  </div>
 
-  <div class="sechead">🧠 Kendini Test Et — LSTM</div>
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendini eğiten <span class="tpl-empty-tag">BOŞ — eklenebilir</span></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div class="tpl-empty">Bu modülde henüz örnek çalışma yok — buraya RNN modülündeki "ağırlıkları kendisi bulan" örneklerin LSTM karşılığı eklenebilir: aynı "kedi … ___" uzak-bağlam görevi bu kez uzun bir aradan sonra; RNN öğrenemezken (vanishing) LSTM'in f kapısını açmayı kendisinin bulması.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">🧠 Kendini Test Et — LSTM</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -2261,6 +2311,9 @@ for epoch in range(101):
   </div>
 
   <p class="footer">LSTM/GRU • cell-state otoyolu · kapılar · f²⁰ hayatta kalma · GRU</p>
+    </div>
+  </div>
+
   </div><!-- /model-lstm -->
 
 
@@ -6641,19 +6694,19 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610111100"></script>
-<script src="js/lesson-turev.js?v=202610111100"></script>
-<script src="js/lesson-xor.js?v=202610111100"></script>
-<script src="js/lesson-xor-arch.js?v=202610111100"></script>
-<script src="js/lesson-xor-maps.js?v=202610111100"></script>
-<script src="js/lesson-xor-epoch.js?v=202610111100"></script>
-<script src="js/lesson-nn.js?v=202610111100"></script>
-<script src="js/lesson-trig.js?v=202610111100"></script>
+<script src="js/lesson-linreg.js?v=202610111400"></script>
+<script src="js/lesson-turev.js?v=202610111400"></script>
+<script src="js/lesson-xor.js?v=202610111400"></script>
+<script src="js/lesson-xor-arch.js?v=202610111400"></script>
+<script src="js/lesson-xor-maps.js?v=202610111400"></script>
+<script src="js/lesson-xor-epoch.js?v=202610111400"></script>
+<script src="js/lesson-nn.js?v=202610111400"></script>
+<script src="js/lesson-trig.js?v=202610111400"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610111100"></script>
-<script src="js/lesson-rnn-soz.js?v=202610111100"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610111400"></script>
+<script src="js/lesson-rnn-soz.js?v=202610111400"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610111100"></script>
-<script src="js/app.js?v=202610111100"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610111400"></script>
+<script src="js/app.js?v=202610111400"></script>
 </body>
 </html>
