@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610112100"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610112200"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610112100">
+<link rel="stylesheet" href="css/style.css?v=202610112200">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 21:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 22:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4300,6 +4300,12 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <h1>Neural Network — nörondan ağa, ağırlıkların kendi kendine öğrenmesi</h1>
     <p class="lesson-hook">🧠 Aktivasyon dersinde XOR'u <b>elle</b> çözdük — h1, h2, y ağırlıklarını biz seçtik. Ama gerçek bir ağ bunları <b>kendi bulur</b>: rastgele başlar, tahmininin ne kadar yanlış olduğunu ölçer (kayıp), sonra bu hatayı geriye doğru katman katman yayarak <b>her ağırlığı</b> "biraz daha az yanlış" olacak yöne kaydırır. Bu derste tam olarak bunu izleyeceksin — <b>rastgele ağırlıklarla başlayan bir ağ, gözünün önünde XOR'u kendi kendine öğrenecek.</b></p>
   </div>
+  <div class="pts" style="border-left:3px solid var(--green); margin-top:10px">
+    <h3 style="color:var(--green)">🕸️ Ağın kendisi — XOR'u çözen 2-2-1 ağ</h3>
+    <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7; margin:0 0 6px">Her daire bir <b>nöron</b>, her çizgi bir <b>ağırlık</b> (mavi = pozitif, kırmızı = negatif; kalın = güçlü). Sinyal soldan sağa akar: girdi katmanı (x₁, x₂) → gizli katman (h₁, h₂) → çıktı (ŷ). Çizgilerin üstündeki sayılar ağırlık, nöronların üstündeki <b>b</b> bias.</p>
+    <div style="overflow-x:auto"><svg id="nnHeroNet" role="img" aria-label="2-2-1 sinir ağı" style="min-width:480px; width:100%; max-width:640px; display:block; margin:0 auto"></svg></div>
+  </div>
+  <div class="lesson-hero-end" style="display:none"></div>
 
   
     </div>
@@ -4341,7 +4347,31 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <div class="tpl-cl" data-stage="4">
     <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
+<div class="sechead">🔬 Mimari — nörondan ağa, resimle</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <h3 style="color:var(--accent)">1) Tek nöron yakından</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir nöronun yaptığı iş dört adım: girdilerini <b>ağırlıklarla çarpar</b>, hepsini <b>toplar</b>, <b>bias ekler</b> (z) ve sonucu bir <b>aktivasyon</b>dan geçirir (a). Aşağıdaki sayılar Simülasyon'daki XOR ağının h₁ nöronundan (girdi x=(1,0)):</p>
+    <div style="overflow-x:auto"><svg id="nnNeuronAnat" role="img" aria-label="Tek nöron: çarp, topla, bias, aktivasyon" style="min-width:560px; width:100%; max-width:720px; display:block; margin:0 auto"></svg></div>
+  </div>
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <h3 style="color:var(--blue)">2) Nöronlar katman olur, katmanlar ağ olur</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı girdiye paralel bakan nöronlar bir <b>katman</b>; bir katmanın çıktısı sonrakinin girdisi. <b>Girdi katmanı</b> sadece veridir (öğrenilmez), <b>gizli katman(lar)</b> yeni özellikler üretir (XOR'da h₁="VEYA", h₂="VE"), <b>çıktı katmanı</b> kararı verir. Katmanlar arası her çizgi bir ağırlık; hepsi bir <b>W matrisi</b>nde toplanır (şekli: sonraki katman × önceki katman).</p>
+    <div style="overflow-x:auto"><svg id="nnArchSvg" role="img" aria-label="2-2-1 mimari" style="min-width:480px; width:100%; max-width:640px; display:block; margin:0 auto"></svg></div>
+    <div class="tip">Burada W⁽¹⁾ boyutu <b>2×2</b> (2 gizli nöron × 2 girdi), W⁽²⁾ boyutu <b>1×2</b>; bias'lar 2+1 → toplam <b>9</b> öğrenilebilir sayı. Tek nöron "tek bir doğru" çizerdi; yan yana iki nöron iki doğru, ardından üçüncü nöron o iki doğrunun birleşimini seçer — XOR'u mümkün kılan bu.</div>
+  </div>
+  <div class="pts" style="border-left:3px solid var(--green)">
+    <h3 style="color:var(--green)">3) 🧰 Kendi ağını kur</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Katman ve nöron sayılarını değiştir; çizim, W matris şekilleri ve parametre sayısı canlı güncellenir. Gizli katmanı sıfıra indirirsen ne olduğuna da bak.</p>
+    <div id="nnBuild"></div>
+  </div>
+  <div class="pts" style="border-left:3px solid var(--purple,#c77dff)">
+    <h3 style="color:#c77dff">4) 🌍 Gerçek ölçek: el yazısı rakam tanıyan bir ağ</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">28×28 pikselli bir rakam resmi <b>784 sayıdır</b>. Basit bir ağ: 784 → 128 → 64 → 10 (her çıktı bir rakamın olasılığı). Çizimde her katmandan yalnız birkaç nöron gösterildi (⋮); gerçekte katmanlar arası <b>784·128 + 128·64 + 64·10 = 109.184</b> ağırlık ve <b>128+64+10 = 202</b> bias, toplam <b>109.386</b> parametre var. Aynı fikir; sadece daha çok daire ve çizgi.</p>
+    <div style="overflow-x:auto"><svg id="nnReal" role="img" aria-label="784-128-64-10 ağ" style="min-width:520px; width:100%; max-width:720px; display:block; margin:0 auto"></svg></div>
+    <div class="callout">🔗 <b>Genişlik ve derinlik:</b> katman başına nöron sayısı <b>genişlik</b>, katman sayısı <b>derinlik</b>. Daha geniş katman = aynı seviyede daha çok özellik yakalar (Örnek Çalışmalar'da XOR'un daha geniş ağlarla daha güvenilir öğrenildiğini göreceksin); daha derin ağ = özellikleri üst üste kurar (kenar → şekil → nesne). GPT gibi modellerde bu sayılar yüzlerce katman ve milyarlarca parametreye çıkar.</div>
+  </div>
+
+  <!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
   <div class="sechead">1) 1 nörondan ağa — katman kavramı ve W matrisi</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aktivasyon dersindeki tek nöron: <code>çıktı = g(w·x+b)</code> — girdileri ağırlıkla çarp, topla, aktivasyondan geçir. Bir <b>ağ</b>, bunun yan yana ve üst üste dizilmiş hâlidir:</p>
@@ -4365,7 +4395,18 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<!-- ===== 2) İleri yayılım simülasyonu ===== -->
+<div class="sechead">🕸️ Ağın canlı resmi — ağırlıkları değiştirdikçe çizim değişir</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki "2) İleri yayılım" kutularındaki <b>dokuz ağırlığı değiştir</b> — çizim ve karar haritası anında güncellenir. x₁, x₂'yi seçerek bir girdiyi ağdan geçir; her nöronun rengi o girdideki etkinliğidir.</p>
+    <div id="nnLive"></div>
+  </div>
+  <div class="sechead">🎞️ Eğitimi adım adım izle — ağ kendi ağırlıklarını bulurken</div>
+  <div class="pts" style="border-left:3px solid var(--green)">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Rastgele küçük ağırlıklarla başla, ▶ eğit'e bas: her turda ileri yayılım → kayıp → geri yayılım → güncelleme. <b>Çizgilerin kalınlaşıp renk değiştirmesini</b> ve sağdaki haritanın XOR desenine bükülmesini izle. Başlangıçlar Python'daki 12 rastgele tohumla aynı (#8 ve #9 takılan başlangıçlardır).</p>
+    <div id="nnTrain"></div>
+  </div>
+
+  <!-- ===== 2) İleri yayılım simülasyonu ===== -->
   <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki 9 sayı (W⁽¹⁾'in 4 ağırlığı + 2 bias'ı, W⁽²⁾'nin 2 ağırlığı + 1 bias'ı) <b>tüm</b> ağın parametreleri. Varsayılan değerler, Aktivasyon dersindeki <code>step(x1+x2−0.5)</code> eşiklerinin <b>keskinleştirilmiş sigmoid</b> hâli (×20 büyütülmüş) — dene, XOR'u hâlâ 4/4 çözüyor. Sayıları değiştirip ağın nasıl bozulduğunu/düzeldiğini gör.</p>
@@ -7295,29 +7336,30 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610112100"></script>
-<script src="js/lesson-turev.js?v=202610112100"></script>
-<script src="js/lesson-xor.js?v=202610112100"></script>
-<script src="js/lesson-xor-arch.js?v=202610112100"></script>
-<script src="js/lesson-xor-maps.js?v=202610112100"></script>
-<script src="js/lesson-xor-epoch.js?v=202610112100"></script>
-<script src="js/lesson-nn.js?v=202610112100"></script>
-<script src="js/lesson-trig.js?v=202610112100"></script>
+<script src="js/lesson-linreg.js?v=202610112200"></script>
+<script src="js/lesson-turev.js?v=202610112200"></script>
+<script src="js/lesson-xor.js?v=202610112200"></script>
+<script src="js/lesson-xor-arch.js?v=202610112200"></script>
+<script src="js/lesson-xor-maps.js?v=202610112200"></script>
+<script src="js/lesson-xor-epoch.js?v=202610112200"></script>
+<script src="js/lesson-nn.js?v=202610112200"></script>
+<script src="js/lesson-trig.js?v=202610112200"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610112100"></script>
-<script src="js/lesson-rnn-soz.js?v=202610112100"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610112200"></script>
+<script src="js/lesson-rnn-soz.js?v=202610112200"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610112100"></script>
-<script src="js/lesson-lstm-cell.js?v=202610112100"></script>
-<script src="js/app.js?v=202610112100"></script>
-<script src="js/lesson-lstm-big.js?v=202610112100"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610112100"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610112100"></script>
-<script src="js/lesson-linreg-big.js?v=202610112100"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610112100"></script>
-<script src="js/lesson-act-big.js?v=202610112100"></script>
-<script src="js/lesson-act-ornek.js?v=202610112100"></script>
-<script src="js/lesson-xor-ornek.js?v=202610112100"></script>
-<script src="js/lesson-nn-ornek.js?v=202610112100"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610112200"></script>
+<script src="js/lesson-lstm-cell.js?v=202610112200"></script>
+<script src="js/app.js?v=202610112200"></script>
+<script src="js/lesson-lstm-big.js?v=202610112200"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610112200"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610112200"></script>
+<script src="js/lesson-linreg-big.js?v=202610112200"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610112200"></script>
+<script src="js/lesson-act-big.js?v=202610112200"></script>
+<script src="js/lesson-act-ornek.js?v=202610112200"></script>
+<script src="js/lesson-xor-ornek.js?v=202610112200"></script>
+<script src="js/lesson-nn-ornek.js?v=202610112200"></script>
+<script src="js/lesson-nn-net.js?v=202610112200"></script>
 </body>
 </html>

@@ -1651,3 +1651,8 @@ body.xt-full-lock{overflow:hidden}
 .rex-wts{font-size:12.5px; margin:4px 0 6px; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:center}
 .rex-w{background:#14203a; border:1px solid var(--line); border-radius:6px; padding:2px 8px}
 @media(max-width:720px){#model-rnn .tpl-cl[data-stage="3"] .rex-tbl{font-size:11.5px}}
+
+/* Neural Network diyagramı: akan çizgiler */
+.nn-edge-flow{stroke-dasharray:7 6; animation:nnflow 1.4s linear infinite}
+@keyframes nnflow{to{stroke-dashoffset:-26}}
+@media (prefers-reduced-motion:reduce){.nn-edge-flow{animation:none}}
