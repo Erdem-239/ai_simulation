@@ -3623,31 +3623,9 @@ function setupFloatingPanel(ids){
     const cp=parseFloat($('lv_cp').value), ct=parseFloat($('lv_ct').value);
     ['f','i','o','cp','ct'].forEach(k=>{ $('lv_'+k+'_v').textContent=F(parseFloat($('lv_'+k).value),2); });
     const c=f*cp+i*ct, h=o*Math.tanh(c);
-    let s='';
-    const Y=88, Yb=190;
-    s+=lbl(56,Y-16,'c₋₁ = '+F(cp,2),'#46c46a',12);
-    s+=seg(20,Y,140,Y,wpx(cp),'#46c46a');
-    s+=valve(163,Y,f,'f','#f0a032');
-    s+=seg(186,Y,320,Y,wpx(f*cp),'#46c46a');
-    s+=lbl(255,Y-12,'f·c₋₁ = '+F(f*cp,2),'#95a2c2');
-    s+=lbl(120,Yb+18,'c̃ = '+F(ct,2),'#3a7afe',12);
-    s+=seg(70,Yb,215,Yb,wpx(ct),'#3a7afe');
-    s+=valve(238,Yb,i,'i','#f0a032');
-    s+=seg(261,Yb,340,Yb,wpx(i*ct),'#3a7afe');
-    s+=seg(340,Yb,340,Y+14,wpx(i*ct),'#3a7afe');
-    s+=lbl(310,Yb-12,'i·c̃ = '+F(i*ct,2),'#95a2c2');
-    s+='<circle cx="340" cy="'+Y+'" r="15" fill="#16324f" stroke="#5aa0e0" stroke-width="2"/>'+lbl(340,Y+5,'+','#fff',16);
-    s+=seg(355,Y,520,Y,wpx(c),'#46c46a');
-    s+=lbl(437,Y-14,'c = '+F(c,3),'#46c46a',12.5);
-    s+='<rect x="520" y="'+(Y-16)+'" width="52" height="32" rx="8" fill="#16324f" stroke="#5aa0e0" stroke-width="2"/>'+lbl(546,Y+4,'tanh','#fff');
-    s+=seg(572,Y,606,Y,wpx(Math.tanh(c)),'#e06a6a');
-    s+=valve(629,Y,o,'o','#f0a032');
-    s+=seg(652,Y,740,Y,wpx(h),'#e06a6a');
-    s+=lbl(700,Y-14,'h = '+F(h,3),'#e06a6a',12.5);
-    s+=seg(437,Y,437,30,Math.max(1.5,wpx(c)*0.6),'#46c46a');
-    s+=lbl(437,20,'c → sonraki adıma','#46c46a');
-    pipe.setAttribute('viewBox','0 0 780 240');
-    pipe.innerHTML=s;
+    pipe.setAttribute('viewBox','0 0 760 390');
+    pipe.style.minWidth='620px'; pipe.style.width='100%';
+    pipe.innerHTML=window.lstmCellSvg('lp_',{f:f,i:i,o:o,cp:cp,ct:ct,fc:f*cp,ic:i*ct,c:c,tc:Math.tanh(c),h:h});
     $('lv_work').innerHTML=
       'c = f·c₋₁ + i·c̃ = ('+F(f,2)+')('+F(cp,2)+') + ('+F(i,2)+')('+F(ct,2)+')   = <b>'+F(c)+'</b>\n'+
       'h = o·tanh(c)  = ('+F(o,2)+')·tanh('+F(c)+') = ('+F(o,2)+')('+F(Math.tanh(c))+')   = <b>'+F(h)+'</b>';
