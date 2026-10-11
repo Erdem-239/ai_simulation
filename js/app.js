@@ -3030,6 +3030,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {n:10, id:'ytmod-10', label:'Ortalama, Varyans, Standart Sapma'},
       {n:11, id:'ytmod-11', label:'Normal (Gauss) Dağılımı'},
       {n:12, id:'ytmod-12', label:'Olasılık ve Çapraz Entropi'},
+      {n:15, id:'ytmod-15', label:'Değerlendirme Metrikleri'},
     ],
     t_trig: [
       {n:13, id:'ytmod-13', label:'Sin, Cos ve Birim Çember'},
@@ -3054,6 +3055,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     "ytmod-10": [{n:1, id:"yts-10-1", label:"🎯 En çarpıcı örnek: neden fark kareleniyor, mutlak değer değil?"}],
     "ytmod-11": [{n:1, id:"yts-11-1", label:"📐 En çarpıcı örnek: 68-95-99.7 kuralı"}],
     "ytmod-12": [{n:1, id:"yts-12-1", label:"🔁 En çarpıcı örnek: bu formülü zaten görmüştün"}],
+    "ytmod-15": [{n:1, id:"yts-15-1", label:"🎯 En çarpıcı örnek: %99 doğrulukla sıfır hasta yakalamak"}, {n:2, id:"yts-15-2", label:"📖 Log-loss (çapraz entropi) formülü nasıl okunur?"}],
     "ytmod-13": [{n:1, id:"yts-13-1", label:"⚡ En çarpıcı örnek: 45° neden RMS'in sırrı"}, {n:2, id:"yts-13-2", label:"🔬 Birim çember + dalga — açıyı kendin döndür"}],
   };
 

@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610111000"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610111100"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111000">
+<link rel="stylesheet" href="css/style.css?v=202610111100">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 10:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 11:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5720,6 +5720,115 @@ diğer iki olasılık formülden düşüyor (çünkü y=0 onları sıfırlıyor)
   </div>
   </div>
 
+  <div class="acc acc-module" id="ytmod-15">
+  <div class="acc-head"><span class="ac">▸</span> 15) Değerlendirme Metrikleri — modelin karnesi</div>
+  <div class="acc-body">
+
+  <div class="pts lesson-story">
+    <div class="lesson-story-h">💡 HİKÂYE — "%99 doğruluk" ama hiç hasta yakalanmadı</div>
+    <p>Bir hastanede bin kişi taranıyor ve içlerinden <b>sadece 10'u</b> gerçekten hasta. Bir mühendis "herkese sağlam de" diyen bir model yazıyor: 990 kişiyi doğru bildi, 10'unu kaçırdı → <b>%99 doğruluk</b>. Rapor harika görünüyor, ama model <b>tek bir hastayı bile yakalamadı</b>. Doğruluk (accuracy) burada yalan söylemedi, sadece <b>yanlış soruyu</b> cevapladı.</p>
+    <p>Bu yüzden "iyi model" tek bir sayıyla ölçülmez: <b>neyin pahalı olduğuna</b> göre metrik seçilir. Hastalık taramasında kaçırmak (FN) felakettir, spam filtresinde ise önemli bir maili çöpe atmak (FP) daha kötüdür. Bu modül, modeline bakarken kullanacağın <b>karne notlarını</b> ve her birinin ne zaman yanıltabileceğini anlatıyor — ve eğitim sırasında gördüğün <b>log-loss</b>'un (çapraz entropi) nasıl okunduğunu da.</p>
+  </div>
+
+  <div class="lesson-examples">
+    <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
+    <div class="ex-grid">
+      <div class="ex-card has-example"><span class="ex-ico">🩺</span><b>Hastalık taraması</b> — nadir hastalığı kaçırmamak için <b>recall</b> (duyarlılık) izlenir; "sağlam" diyen model %99 doğrulukla da işe yaramaz.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">1000 kişide 10 hasta var. Model B: 8 hastayı yakaladı (TP=8), 2'sini kaçırdı (FN=2), 40 sağlam kişiyi yanlışlıkla hasta dedi (FP=40). Recall ve precision?</div><div class="work">recall    = TP/(TP+FN) = 8/(8+2)  = 0.80   (hastaların %80'ini yakaladı)
+precision = TP/(TP+FP) = 8/(8+40) = 0.167  ("hasta" dediklerinin %17'si gerçekten hasta)
+F1        = 2·P·R/(P+R) = 2·0.167·0.80/(0.167+0.80) = 0.276
+
+Yorum: kaçıranları azalttık ama yanlış alarm çok — tarama için kabul edilebilir, tedavi kararı için değil.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">📧</span><b>Spam filtresi</b> — önemli bir maili spam sanmak (FP) pahalıdır → <b>precision</b> ön plandadır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">100 e-postada 20 spam var. Filtre 25 mail işaretledi, 15'i gerçekten spam. Precision, recall?</div><div class="work">precision = 15/25 = 0.60  (işaretlenenlerin %60'ı gerçek spam)
+recall    = 15/20 = 0.75  (spamların %75'i yakalandı)
+accuracy  = (15+70)/100 = 0.85
+
+Aynı filtre için üç farklı not — hangisine bakacağın "ne pahalı?" sorusuna bağlı.</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">🏠</span><b>Ev fiyatı tahmini</b> — regresyon metrikleri: <b>MAE</b> "ortalama kaç TL şaştık", <b>RMSE</b> büyük hataları daha sert cezalandırır.<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Gerçek fiyatlar (bin TL): 200, 300, 250, 400, 350. Tahminler: 210, 280, 260, 350, 360. MAE, MSE, RMSE, R²?</div><div class="work">hatalar: −10, +20, −10, +50, −10
+MAE  = (10+20+10+50+10)/5 = 20
+MSE  = (100+400+100+2500+100)/5 = 640
+RMSE = √640 ≈ 25.3   (50'lik tek hata RMSE'yi MAE'nin üstüne itti)
+R²   = 1 − SSE/SST = 1 − 3200/25000 = 0.872</div></div></div>
+      <div class="ex-card has-example"><span class="ex-ico">💬</span><b>Dil modelleri (GPT, Claude)</b> — kalite <b>perplexity</b> ile ölçülür: "model her adımda kaç seçenek arasında kaldı?".<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir cümlenin 4 kelimesine model sırayla 0.5, 0.25, 0.1, 0.05 olasılık verdi. Perplexity?</div><div class="work">ortalama kayıp = (−ln0.5 −ln0.25 −ln0.1 −ln0.05)/4
+               = (0.693+1.386+2.303+2.996)/4 = 1.844
+perplexity = e^1.844 ≈ 6.3
+
+Yani model her kelimede kabaca 6 eşit olası seçenek arasında kalmış gibi.</div></div></div>
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--accent)" id="yts-15-1">
+    <h3 style="color:var(--accent); margin-top:0">🎯 En çarpıcı örnek: %99 doğrulukla sıfır hasta yakalamak</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı 1000 kişilik taramada (10 hasta) iki model var. <b>Model A</b> herkese "sağlam" diyor; <b>Model B</b> gerçekten hastaları arıyor. <b>Karışıklık matrisi (confusion matrix)</b> dört kutuyla tüm hikâyeyi anlatır:</p>
+<div style="overflow-x:auto"><table style="border-collapse:collapse; font-size:13px; margin:8px 0"><tr><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">Model A: "herkes sağlam"</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">model "hasta" dedi</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">model "sağlam" dedi</th></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>Gerçekten hasta</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">TP = 0</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">FN = 10</td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>Gerçekten sağlam</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">FP = 0</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">TN = 990</td></tr></table></div><div style="overflow-x:auto"><table style="border-collapse:collapse; font-size:13px; margin:8px 0"><tr><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">Model B: gerçekten arıyor</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">model "hasta" dedi</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">model "sağlam" dedi</th></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>Gerçekten hasta</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">TP = 8</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">FN = 2</td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>Gerçekten sağlam</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">FP = 40</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">TN = 950</td></tr></table></div><div style="overflow-x:auto"><table style="border-collapse:collapse; font-size:13px; margin:8px 0"><tr><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">metrik</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">Model A</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">Model B</th></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">accuracy</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">%99,0</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">%95,8</td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">recall (hastaların yakalanan oranı)</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b style="color:#e06a6a">0</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b style="color:#2ec46a">0,80</b></td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">precision ("hasta" denenlerin gerçek oranı)</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">tanımsız (hiç "hasta" demedi)</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">0,167</td></tr></table></div>    <div class="callout">💡 <b>Ders:</b> Veri dengesizse (hasta çok az) <b>accuracy</b> en yüksek sayıyı en işe yaramaz modele verebilir. Önce karışıklık matrisine bak: <b>FN</b> mı yoksa <b>FP</b> mi daha pahalı? Metriği ona göre seç.</div>
+  </div>
+
+  <div class="pts">
+    <h4 style="color:var(--accent); margin:6px 0">1) Sınıflandırma metrikleri — dört kutudan türetilir</h4>
+    <div style="font-size:14px; color:#ccd5e8; line-height:1.9">
+      Dört kutu: <b>TP</b> (hasta dedik, hastaydı), <b>FP</b> (hasta dedik, sağlamdı — yanlış alarm), <b>FN</b> (sağlam dedik, hastaydı — kaçırdık), <b>TN</b> (sağlam dedik, sağlamdı).
+      \[ \text{accuracy}=\frac{TP+TN}{TP+FP+FN+TN},\qquad \text{precision}=\frac{TP}{TP+FP},\qquad \text{recall}=\frac{TP}{TP+FN} \]
+      \[ F_1=\frac{2\cdot \text{precision}\cdot \text{recall}}{\text{precision}+\text{recall}} \]
+      <b>Nasıl okunur?</b> <b>precision</b>: "alarm verdiklerimin kaçı gerçek?" · <b>recall</b>: "gerçekleri kaçını yakaladım?" · <b>F1</b>: ikisinin dengeli (harmonik) ortalaması — biri çok düşükse F1 de düşer. Eşiği düşürürsen (daha kolay "hasta" dersen) recall artar, precision düşer: ikisi arasında takas vardır.
+    </div>
+    <h4 style="color:var(--accent); margin:14px 0 6px">2) Regresyon metrikleri — "ne kadar şaştık?"</h4>
+    <div style="font-size:14px; color:#ccd5e8; line-height:1.9">
+      Hata \(e_i=y_i-\hat y_i\) olmak üzere:
+      \[ \text{MAE}=\frac1n\sum|e_i|,\qquad \text{MSE}=\frac1n\sum e_i^2,\qquad \text{RMSE}=\sqrt{\text{MSE}},\qquad R^2=1-\frac{\sum e_i^2}{\sum (y_i-\bar y)^2} \]
+      <b>MAE</b> hatanın kendi biriminde "ortalama sapma" (kolay yorumlanır). <b>MSE/RMSE</b> kareyi aldığı için <b>büyük hataları sert cezalandırır</b> (50'lik tek hata, 10'luk beş hatadan çok daha ağır basar). <b>R²</b> "ortalamayı tahmin etmekten ne kadar iyiyiz?": 1'e yakın iyi, 0 = ortalamadan farksız, negatif = ortalamadan bile kötü.
+    </div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid #f0a032" id="yts-15-2">
+    <h3 style="color:#f0a032; margin-top:0">📖 Log-loss (çapraz entropi) formülü nasıl okunur?</h3>
+    <div style="font-size:14px; color:#ccd5e8; line-height:1.9">
+      İkili sınıflandırmada eğitim kaybı: \[ L=-\,y\ln p\;-\;(1-y)\ln(1-p) \]
+      <b>p</b> = modelin "etiket 1" olasılığı, <b>y</b> = gerçek etiket (0 ya da 1). Formül iki terimden oluşur ama <b>y yalnızca biri 0 ya da 1</b> olduğu için bunlardan <b>biri her zaman sıfırlanır</b>:
+    </div>
+<div style="overflow-x:auto"><table style="border-collapse:collapse; font-size:13px; margin:8px 0"><tr><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">gerçek etiket</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">kayıp ne olur</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">neden</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">ne zaman büyük?</th></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>y = 1</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln p</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">(1−y)=0 → ikinci terim sıfırlandı</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">p küçükse ceza büyür (doğru cevap 1'di ama model 1'e az olasılık verdi)</td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)"><b>y = 0</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln(1−p)</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">y=0 → birinci terim sıfırlandı</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">p büyükse ceza büyür (doğru cevap 0'dı ama model 1'e çok olasılık verdi)</td></tr></table></div>    <div style="font-size:14px; color:#ccd5e8; line-height:1.9">Yani formül tek cümlede: <b>"doğru sınıfa verdiğin olasılığın −ln'i"</b>. Sayılarla:</div>
+<div style="overflow-x:auto"><table style="border-collapse:collapse; font-size:13px; margin:8px 0"><tr><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">p (model "1" olasılığı)</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">y = 1 iken kayıp</th><th style="padding:4px 12px; text-align:center; border:1px solid var(--line); color:var(--muted)">y = 0 iken kayıp</th></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">0,9</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,9 = <b>0,105</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,1 = <b>2,303</b></td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">0,5</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,5 = <b>0,693</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,5 = <b>0,693</b></td></tr><tr><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">0,1</td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,1 = <b>2,303</b></td><td style="padding:4px 12px; text-align:center; border:1px solid var(--line)">−ln 0,9 = <b>0,105</b></td></tr></table></div>    <div class="callout">💡 <b>Okuma anahtarı:</b> 0,693 = ln 2 = "hiçbir fikrim yok" (yazı-tura). Kayıp bunun altındaysa model şansı yeniyor, üstündeyse <b>kendinden emin ama yanlış</b>. Tek bir "emin ama yanlış" tahmin (p=0,01 → 4,6) yüz tane iyi tahminin kazancını silebilir — accuracy bunu görmez, log-loss görür.</div>
+    <div style="font-size:14px; color:#ccd5e8; line-height:1.9; margin-top:8px"><b>Perplexity</b> (dil modelleri): ortalama log-loss'un üssü: \( \text{PP}=e^{\bar L} \). Ortalama kayıp \(\ln 10\) ise PP=10 → "model her adımda 10 eşit olası seçenek arasında kalmış gibi". Küçük = iyi.</div>
+  </div>
+
+  <div class="pts">
+    <h4 style="color:var(--accent); margin:6px 0 6px">✏️ Alıştırmalar <span class="mprog" data-total="4" style="margin-left:8px; font-size:11px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:2px 8px; color:var(--muted); vertical-align:middle">0/4 çözüldü</span></h4>
+    <div class="acc acc-soru">
+      <div class="acc-head"><span class="ac">▸</span> Soru 1: 100 e-postada 20 spam var. Filtre 25 mail işaretledi, 15'i gerçekten spam. Precision ve recall kaç?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px"><button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button><button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button></div>
+        <div class="hint-body" style="display:none; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">precision = TP/(TP+FP), recall = TP/(TP+FN). TP=15, FP=10, FN=5.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> precision = 15/25 = <b>0,60</b>, recall = 15/20 = <b>0,75</b> (accuracy ise (15+70)/100 = 0,85).</div>
+      </div>
+    </div>
+    <div class="acc acc-soru">
+      <div class="acc-head"><span class="ac">▸</span> Soru 2: Etiketi y=0 olan bir örnekte model "1 olasılığı" p=0,8 veriyor. Kayıp kaç?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px"><button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button><button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button></div>
+        <div class="hint-body" style="display:none; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">y=0 iken yalnız −(1−y)ln(1−p) terimi kalır.</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> L = −ln(1−0,8) = −ln 0,2 ≈ <b>1,609</b>. (Aynı örnekte p=0,2 verseydi kayıp 0,223 olurdu.)</div>
+      </div>
+    </div>
+    <div class="acc acc-soru">
+      <div class="acc-head"><span class="ac">▸</span> Soru 3: Dört tahminin hataları 1, 1, 1 ve 9. MAE ve RMSE kaç? Hangisi büyük, neden?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px"><button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button><button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button></div>
+        <div class="hint-body" style="display:none; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">MAE=ort(|e|), RMSE=√ort(e²).</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> MAE = 12/4 = <b>3</b>, RMSE = √((1+1+1+81)/4) = √21 ≈ <b>4,58</b>. RMSE büyük, çünkü kare alma 9'luk tek hatayı öne çıkarır — büyük hataları sert cezalandırır.</div>
+      </div>
+    </div>
+    <div class="acc acc-soru">
+      <div class="acc-head"><span class="ac">▸</span> Soru 4: Bir dil modelinin ortalama log-loss'u ln 10 ≈ 2,303. Perplexity kaç, ne anlama gelir?</div>
+      <div class="acc-body">
+        <div style="display:flex; gap:8px; margin:4px 0 8px"><button class="addbtn hintbtn" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">💡 İpucu</button><button class="addbtn solbtn" style="background:var(--green); color:#0b2a12; font-size:12px; padding:4px 10px">✅ Çözümü göster</button></div>
+        <div class="hint-body" style="display:none; background:#242742; border-left:3px solid var(--accent); padding:8px 12px; border-radius:4px; margin-bottom:8px">PP = e^(ortalama kayıp).</div>
+        <div class="sol-body" style="display:none"><b>Cevap:</b> PP = e^(ln 10) = <b>10</b> → model her adımda kabaca 10 eşit olası seçenek arasında kalmış gibi davranıyor.</div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+
   </div>
   </div>
 
@@ -6532,19 +6641,19 @@ Okunuşu: q₁ (özne sorusu) iki etikete de 1 benzerlik veriyor;
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610111000"></script>
-<script src="js/lesson-turev.js?v=202610111000"></script>
-<script src="js/lesson-xor.js?v=202610111000"></script>
-<script src="js/lesson-xor-arch.js?v=202610111000"></script>
-<script src="js/lesson-xor-maps.js?v=202610111000"></script>
-<script src="js/lesson-xor-epoch.js?v=202610111000"></script>
-<script src="js/lesson-nn.js?v=202610111000"></script>
-<script src="js/lesson-trig.js?v=202610111000"></script>
+<script src="js/lesson-linreg.js?v=202610111100"></script>
+<script src="js/lesson-turev.js?v=202610111100"></script>
+<script src="js/lesson-xor.js?v=202610111100"></script>
+<script src="js/lesson-xor-arch.js?v=202610111100"></script>
+<script src="js/lesson-xor-maps.js?v=202610111100"></script>
+<script src="js/lesson-xor-epoch.js?v=202610111100"></script>
+<script src="js/lesson-nn.js?v=202610111100"></script>
+<script src="js/lesson-trig.js?v=202610111100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610111000"></script>
-<script src="js/lesson-rnn-soz.js?v=202610111000"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610111100"></script>
+<script src="js/lesson-rnn-soz.js?v=202610111100"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610111000"></script>
-<script src="js/app.js?v=202610111000"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610111100"></script>
+<script src="js/app.js?v=202610111100"></script>
 </body>
 </html>
