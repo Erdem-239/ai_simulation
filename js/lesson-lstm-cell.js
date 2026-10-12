@@ -4,7 +4,7 @@
 (function(){
   const F=(x,d=2)=>(isFinite(x)?x:0).toFixed(d);
   const wpx=x=>Math.max(1.5,2+8*Math.min(2,Math.abs(x)));
-  window.lstmCellSvg=function(pre,v){
+  window.lstmCellSvg=function(pre,v,hl){
     const live=!!v;
     const GC='#f0a032', CC='#46c46a', BC='#3a7afe', HC='#e06a6a', N='#95a2c2';
     const w=k=>live?wpx(v[k]):2.5;
@@ -70,6 +70,12 @@
       s+=T(578,232,'hₜ = oₜ⊙tanh(cₜ)','#f0a0a0',11,'start');
     }
     s+=T(80,325,'x ve hₜ₋₁ aynı otobana biner',N,10.5,'start');
+    // vurgu (adım adım anlatım için): hl = ['x','h0','c0','fbox','ibox','gbox','obox','mulf','mului','plus','mulo','tanhe','ct','ht']
+    const HL={x:['c',150,360,24],h0:['c',40,290,22],c0:['c',40,100,22],fbox:['r',230,240,56,38],ibox:['r',320,240,56,38],gbox:['r',410,240,68,38],obox:['r',500,240,56,38],mulf:['c',230,100,21],mului:['c',410,150,21],plus:['c',410,100,21],mulo:['c',560,195,21],tanhe:['e',560,140,38,20],ct:['c',736,100,22],ht:['c',736,290,22]};
+    (hl||[]).forEach(k=>{const g=HL[k];if(!g)return;const st='fill="none" stroke="#ffd84a" stroke-width="3.5" stroke-dasharray="6 4"';
+      if(g[0]==='c')s+='<circle cx="'+g[1]+'" cy="'+g[2]+'" r="'+g[3]+'" '+st+'/>';
+      else if(g[0]==='r')s+='<rect x="'+(g[1]-g[3]/2)+'" y="'+(g[2]-g[4]/2)+'" width="'+g[3]+'" height="'+g[4]+'" rx="9" '+st+'/>';
+      else s+='<ellipse cx="'+g[1]+'" cy="'+g[2]+'" rx="'+g[3]+'" ry="'+g[4]+'" '+st+'/>';});
     return s;
   };
 })();
