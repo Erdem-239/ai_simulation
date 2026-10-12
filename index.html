@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610112200"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610121200"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610112200">
+<link rel="stylesheet" href="css/style.css?v=202610121200">
 </head>
 <body>
 <div class="applayout">
@@ -2324,6 +2324,12 @@ for epoch in range(101):
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üstteki yeşil hat <b>cell state</b> (uzun süreli hafıza, cₜ), alttaki hat <b>hₜ</b> (kısa süreli durum/çıktı). Yeni girdi <b>xₜ</b> ile önceki hₜ₋₁ birlikte dört kutuya girer: üç <b>σ</b> (kapı: 0–1 vana) ve bir <b>tanh</b> (aday içerik). ⊗ elemanlı çarpma, ⊕ toplama.</p>
     <div style="overflow-x:auto"><svg id="lstmArch" role="img" aria-label="LSTM hücre mimarisi" style="min-width:620px; width:100%; max-width:820px; display:block; margin:0 auto"></svg></div>
     <div style="font-size:12px; color:var(--muted); margin-top:6px">Okuma sırası: ① <b>fₜ</b> eski hafızayı ölçekler (unutma) → ② <b>iₜ·c̃ₜ</b> yeni içeriği ekler → ③ toplam <b>cₜ</b> olur → ④ tanh'tan geçip <b>oₜ</b> ile süzülür → <b>hₜ</b>. Aşağıdaki Simülasyon'da aynı şemayı canlı sayılarla göreceksin.</div>
+  </div>
+
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <h3 style="color:var(--blue)">🔎 Neyle ne çarpılıyor? — bir kapının içi RNN hücresiyle aynı</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">RNN'de tek bir hesap vardı: <b>z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + b<sub>h</sub></b>, sonra tanh. LSTM'de <b>aynı çarp-topla-bias</b> işi <b>dört kez</b> yapılır (f, i, c̃, o kutuları), her birinin <b>kendi ağırlık seti</b> vardır. x kendi W'siyle, h<sub>t−1</sub> kendi U'suyla çarpılır (<i>birbirleriyle değil</i>), toplanır, bias eklenir. Aşağıda bir kapıyı RNN şemasının diliyle kur (<b>İleri ▶</b>), kapıyı değiştirerek diğer üçüne bak.</p>
+    <div id="lstmGate"></div>
   </div>
 
   <div class="sechead">1) Fikir: Cell State — bagaj bandı</div>
@@ -7336,30 +7342,31 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610112200"></script>
-<script src="js/lesson-turev.js?v=202610112200"></script>
-<script src="js/lesson-xor.js?v=202610112200"></script>
-<script src="js/lesson-xor-arch.js?v=202610112200"></script>
-<script src="js/lesson-xor-maps.js?v=202610112200"></script>
-<script src="js/lesson-xor-epoch.js?v=202610112200"></script>
-<script src="js/lesson-nn.js?v=202610112200"></script>
-<script src="js/lesson-trig.js?v=202610112200"></script>
+<script src="js/lesson-linreg.js?v=202610121200"></script>
+<script src="js/lesson-turev.js?v=202610121200"></script>
+<script src="js/lesson-xor.js?v=202610121200"></script>
+<script src="js/lesson-xor-arch.js?v=202610121200"></script>
+<script src="js/lesson-xor-maps.js?v=202610121200"></script>
+<script src="js/lesson-xor-epoch.js?v=202610121200"></script>
+<script src="js/lesson-nn.js?v=202610121200"></script>
+<script src="js/lesson-trig.js?v=202610121200"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610112200"></script>
-<script src="js/lesson-rnn-soz.js?v=202610112200"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610121200"></script>
+<script src="js/lesson-rnn-soz.js?v=202610121200"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610112200"></script>
-<script src="js/lesson-lstm-cell.js?v=202610112200"></script>
-<script src="js/app.js?v=202610112200"></script>
-<script src="js/lesson-lstm-big.js?v=202610112200"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610112200"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610112200"></script>
-<script src="js/lesson-linreg-big.js?v=202610112200"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610112200"></script>
-<script src="js/lesson-act-big.js?v=202610112200"></script>
-<script src="js/lesson-act-ornek.js?v=202610112200"></script>
-<script src="js/lesson-xor-ornek.js?v=202610112200"></script>
-<script src="js/lesson-nn-ornek.js?v=202610112200"></script>
-<script src="js/lesson-nn-net.js?v=202610112200"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610121200"></script>
+<script src="js/lesson-lstm-cell.js?v=202610121200"></script>
+<script src="js/app.js?v=202610121200"></script>
+<script src="js/lesson-lstm-big.js?v=202610121200"></script>
+<script src="js/lesson-lstm-gate.js?v=202610121200"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610121200"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610121200"></script>
+<script src="js/lesson-linreg-big.js?v=202610121200"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610121200"></script>
+<script src="js/lesson-act-big.js?v=202610121200"></script>
+<script src="js/lesson-act-ornek.js?v=202610121200"></script>
+<script src="js/lesson-xor-ornek.js?v=202610121200"></script>
+<script src="js/lesson-nn-ornek.js?v=202610121200"></script>
+<script src="js/lesson-nn-net.js?v=202610121200"></script>
 </body>
 </html>

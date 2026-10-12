@@ -52,6 +52,8 @@
     s+=op(230,100,'×')+op(410,100,'+')+op(410,150,'×')+op(560,195,'×');
     s+='<ellipse cx="560" cy="140" rx="28" ry="14" fill="#14283a" stroke="#5aa0e0" stroke-width="2"/>'+T(560,145,'tanh','#fff',12,'middle',true);
     s+=box(230,240,{w:44,s:'σ'},'#3a2f14',GC)+box(320,240,{w:44,s:'σ'},'#3a2f14',GC)+box(410,240,{w:56,s:'tanh'},'#14283a','#5aa0e0')+box(500,240,{w:44,s:'σ'},'#3a2f14',GC);
+    // kutu girişleri: her kutu W·x + U·h + b hesaplar
+    [[230,'f'],[320,'i'],[410,'c'],[500,'o']].forEach(([x,k])=>{s+=T(x+4,272,'W'+k+'x+U'+k+'h+b'+k,N,9,'start');});
     // etiketler
     const val=(k,d)=>live?' = '+F(v[k],d||2):'';
     s+=T(222,175,'fₜ'+val('f'),GC,12,'end',true);
