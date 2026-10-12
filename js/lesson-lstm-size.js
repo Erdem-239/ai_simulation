@@ -10,7 +10,8 @@
       '<label>genişlik <input type="range" min="360" max="1400" step="10" value="'+W0+'" style="width:140px"> <span class="sw">'+W0+'</span>px</label>'+
       '<label>yükseklik <input type="range" min="200" max="800" step="10" value="'+H0+'" style="width:140px"> <span class="sh">'+H0+'</span>px</label>'+
       '<button type="button" class="rex-btn" style="padding:2px 10px">↺ varsayılan</button>';
-    wrap.parentElement.insertBefore(bar,wrap);
+    const anc=wrap.parentElement.classList.contains('lv-grid')?wrap.parentElement:wrap;
+    anc.parentElement.insertBefore(bar,anc);
     const [rw,rh]=bar.querySelectorAll('input'), sw=bar.querySelector('.sw'), sh=bar.querySelector('.sh');
     function ap(){
       svg.dataset.sized='1';
