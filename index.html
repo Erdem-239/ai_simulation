@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610121800"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610121830"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610121800">
+<link rel="stylesheet" href="css/style.css?v=202610121830">
 </head>
 <body>
 <div class="applayout">
@@ -2381,7 +2381,7 @@ for epoch in range(101):
         <tr><td><b>tanh</b> (elips)</td><td>c'yi −1…+1'e sıkıştırır</td><td>çıktıya çıkmadan önce</td></tr>
         <tr><td><b>o</b> (çıkış kapısı)</td><td>0–1 arası <b>oran</b></td><td><b>o × tanh(c)</b> → hafızanın ne kadarı söylensin</td></tr>
         <tr><td><b>h</b> (kırmızı)</td><td>hücrenin <b>çıktısı</b> (kısa hafıza)</td><td>üst katmana ve sonraki adıma gider</td></tr>
-        <tr><td><b>σ</b> kutuları, <b>tanh</b> kutusu</td><td>kapıları üreten hesap: aktivasyon</td><td>altlarındaki <code>Wfx+Ufh+bf</code> = <b>W·x + U·h₋₁ + b</b></td></tr>
+        <tr><td><b>σ</b> kutuları, <b>tanh</b> kutusu</td><td>kapıları üreten hesap: aktivasyon</td><td>altlarındaki <code>W·x+U·h₋₁+b</code>: <b>W</b> = x'in ağırlığı, <b>U</b> = h₋₁'in ağırlığı (RNN'deki W_hh), <b>b</b> = bias; her kapının kendi W, U, b'si var</td></tr>
         <tr><td><b>x<sub>t</sub></b>, <b>h<sub>t−1</sub></b> (alttan)</td><td>yeni girdi ve önceki çıktı</td><td>dört kutuya girer; her kutu kendi W, U, b'sini kullanır</td></tr>
       </table>
       <div class="callout" style="margin-top:8px">⚠️ <b>Bu panelde</b> f, i, o, c̃ değerlerini <b>kaydırıcıyla elle veriyorsun</b> — vana mantığını görmek için. Gerçek hücrede bunlar x<sub>t</sub> ve h<sub>t−1</sub>'den <b>W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanır; o hesabı yukarıdaki <b>4️⃣ Nedir → "Neyle ne çarpılıyor?"</b> bölümünde adım adım gör. Ve aşağıdaki "tam hücre" bölümünde x, h₋₁, c₋₁'i verince kapılar kendisi hesaplanır.</div>
@@ -7362,32 +7362,32 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610121800"></script>
-<script src="js/lesson-turev.js?v=202610121800"></script>
-<script src="js/lesson-xor.js?v=202610121800"></script>
-<script src="js/lesson-xor-arch.js?v=202610121800"></script>
-<script src="js/lesson-xor-maps.js?v=202610121800"></script>
-<script src="js/lesson-xor-epoch.js?v=202610121800"></script>
-<script src="js/lesson-nn.js?v=202610121800"></script>
-<script src="js/lesson-trig.js?v=202610121800"></script>
+<script src="js/lesson-linreg.js?v=202610121830"></script>
+<script src="js/lesson-turev.js?v=202610121830"></script>
+<script src="js/lesson-xor.js?v=202610121830"></script>
+<script src="js/lesson-xor-arch.js?v=202610121830"></script>
+<script src="js/lesson-xor-maps.js?v=202610121830"></script>
+<script src="js/lesson-xor-epoch.js?v=202610121830"></script>
+<script src="js/lesson-nn.js?v=202610121830"></script>
+<script src="js/lesson-trig.js?v=202610121830"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610121800"></script>
-<script src="js/lesson-rnn-soz.js?v=202610121800"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610121830"></script>
+<script src="js/lesson-rnn-soz.js?v=202610121830"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610121800"></script>
-<script src="js/lesson-lstm-cell.js?v=202610121800"></script>
-<script src="js/app.js?v=202610121800"></script>
-<script src="js/lesson-lstm-big.js?v=202610121800"></script>
-<script src="js/lesson-lstm-step.js?v=202610121800"></script>
-<script src="js/lesson-lstm-gate.js?v=202610121800"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610121800"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610121800"></script>
-<script src="js/lesson-linreg-big.js?v=202610121800"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610121800"></script>
-<script src="js/lesson-act-big.js?v=202610121800"></script>
-<script src="js/lesson-act-ornek.js?v=202610121800"></script>
-<script src="js/lesson-xor-ornek.js?v=202610121800"></script>
-<script src="js/lesson-nn-ornek.js?v=202610121800"></script>
-<script src="js/lesson-nn-net.js?v=202610121800"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610121830"></script>
+<script src="js/lesson-lstm-cell.js?v=202610121830"></script>
+<script src="js/app.js?v=202610121830"></script>
+<script src="js/lesson-lstm-big.js?v=202610121830"></script>
+<script src="js/lesson-lstm-step.js?v=202610121830"></script>
+<script src="js/lesson-lstm-gate.js?v=202610121830"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610121830"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610121830"></script>
+<script src="js/lesson-linreg-big.js?v=202610121830"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610121830"></script>
+<script src="js/lesson-act-big.js?v=202610121830"></script>
+<script src="js/lesson-act-ornek.js?v=202610121830"></script>
+<script src="js/lesson-xor-ornek.js?v=202610121830"></script>
+<script src="js/lesson-nn-ornek.js?v=202610121830"></script>
+<script src="js/lesson-nn-net.js?v=202610121830"></script>
 </body>
 </html>
