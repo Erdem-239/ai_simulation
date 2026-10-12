@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610121400"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610121600"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610121400">
+<link rel="stylesheet" href="css/style.css?v=202610121600">
 </head>
 <body>
 <div class="applayout">
@@ -2386,7 +2386,10 @@ for epoch in range(101):
       </table>
       <div class="callout" style="margin-top:8px">⚠️ <b>Bu panelde</b> f, i, o, c̃ değerlerini <b>kaydırıcıyla elle veriyorsun</b> — vana mantığını görmek için. Gerçek hücrede bunlar x<sub>t</sub> ve h<sub>t−1</sub>'den <b>W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanır; o hesabı yukarıdaki <b>4️⃣ Nedir → "Neyle ne çarpılıyor?"</b> bölümünde adım adım gör. Ve aşağıdaki "tam hücre" bölümünde x, h₋₁, c₋₁'i verince kapılar kendisi hesaplanır.</div>
     </div></div>
+    <div style="display:flex;gap:8px;margin:2px 0 8px"><button class="rex-btn" id="lvStepGo">İleri ▶</button><button class="rex-btn" id="lvStepRst">↺ Sıfırla</button></div>
+    <div class="work" id="lvStepFormula" style="margin-bottom:6px"></div>
     <div style="overflow-x:auto"><svg id="lstmPipe" role="img"></svg></div>
+    <div class="callout" id="lvStepInfo" style="margin:8px 0"></div>
     <div class="work" id="lv_work" style="margin-top:10px; white-space:pre-wrap; line-height:1.9"></div>
   </div>
 
@@ -7359,31 +7362,32 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610121400"></script>
-<script src="js/lesson-turev.js?v=202610121400"></script>
-<script src="js/lesson-xor.js?v=202610121400"></script>
-<script src="js/lesson-xor-arch.js?v=202610121400"></script>
-<script src="js/lesson-xor-maps.js?v=202610121400"></script>
-<script src="js/lesson-xor-epoch.js?v=202610121400"></script>
-<script src="js/lesson-nn.js?v=202610121400"></script>
-<script src="js/lesson-trig.js?v=202610121400"></script>
+<script src="js/lesson-linreg.js?v=202610121600"></script>
+<script src="js/lesson-turev.js?v=202610121600"></script>
+<script src="js/lesson-xor.js?v=202610121600"></script>
+<script src="js/lesson-xor-arch.js?v=202610121600"></script>
+<script src="js/lesson-xor-maps.js?v=202610121600"></script>
+<script src="js/lesson-xor-epoch.js?v=202610121600"></script>
+<script src="js/lesson-nn.js?v=202610121600"></script>
+<script src="js/lesson-trig.js?v=202610121600"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610121400"></script>
-<script src="js/lesson-rnn-soz.js?v=202610121400"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610121600"></script>
+<script src="js/lesson-rnn-soz.js?v=202610121600"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610121400"></script>
-<script src="js/lesson-lstm-cell.js?v=202610121400"></script>
-<script src="js/app.js?v=202610121400"></script>
-<script src="js/lesson-lstm-big.js?v=202610121400"></script>
-<script src="js/lesson-lstm-gate.js?v=202610121400"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610121400"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610121400"></script>
-<script src="js/lesson-linreg-big.js?v=202610121400"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610121400"></script>
-<script src="js/lesson-act-big.js?v=202610121400"></script>
-<script src="js/lesson-act-ornek.js?v=202610121400"></script>
-<script src="js/lesson-xor-ornek.js?v=202610121400"></script>
-<script src="js/lesson-nn-ornek.js?v=202610121400"></script>
-<script src="js/lesson-nn-net.js?v=202610121400"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610121600"></script>
+<script src="js/lesson-lstm-cell.js?v=202610121600"></script>
+<script src="js/app.js?v=202610121600"></script>
+<script src="js/lesson-lstm-big.js?v=202610121600"></script>
+<script src="js/lesson-lstm-step.js?v=202610121600"></script>
+<script src="js/lesson-lstm-gate.js?v=202610121600"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610121600"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610121600"></script>
+<script src="js/lesson-linreg-big.js?v=202610121600"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610121600"></script>
+<script src="js/lesson-act-big.js?v=202610121600"></script>
+<script src="js/lesson-act-ornek.js?v=202610121600"></script>
+<script src="js/lesson-xor-ornek.js?v=202610121600"></script>
+<script src="js/lesson-nn-ornek.js?v=202610121600"></script>
+<script src="js/lesson-nn-net.js?v=202610121600"></script>
 </body>
 </html>
