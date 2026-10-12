@@ -55,8 +55,10 @@
     // kutu girişleri: her kutu W·x + U·h + b hesaplar
 [[230,'f'],[320,'i'],[410,'c'],[500,'o']].forEach(([x,k])=>{
       if(live&&v.Wt){const w=v.Wt[k],z=v.zz[k];
-        s+=T(x,268,'W='+F(w[0])+' U='+F(w[1]),'#ffd84a',9.5,'middle');
-        s+=T(x,279,'b='+F(w[2])+' z='+F(z),N,9.5,'middle');}
+        s+=T(x-4,266,'×W='+F(w[0]),'#7aa8ff',9,'end',true);
+        s+=T(x+4,266,'×U='+F(w[1]),'#ff9a9a',9,'start',true);
+        s+=T(x-4,281,'b='+F(w[2]),N,9,'end');
+        s+=T(x+4,281,'z='+F(z),N,9,'start');}
       else s+=T(x,272,'W·x+U·h₋₁+b',N,10,'middle');});
     // etiketler
     const val=(k,d)=>live?' = '+F(v[k],d||2):'';
@@ -76,6 +78,7 @@
       s+=T(578,232,'hₜ = oₜ⊙tanh(cₜ)','#f0a0a0',11,'start');
     }
     s+=T(80,325,'x ve hₜ₋₁ aynı otobana biner',N,10.5,'start');
+    if(live&&v.x!==undefined){s+=T(158,336,'x = '+F(v.x),'#7ad8e8',11,'start',true);s+=T(40,262,'hₜ₋₁ = '+F(v.hp),'#f0a0a0',11,'middle',true);}
     // vurgu (adım adım ileri için): hl = ['x','h0','c0','fbox','ibox','gbox','obox','mulf','mului','plus','mulo','tanhe','ct','ht']
     const HL={x:['c',150,360,24],h0:['c',40,290,22],c0:['c',40,100,22],fbox:['r',230,240,56,38],ibox:['r',320,240,56,38],gbox:['r',410,240,68,38],obox:['r',500,240,56,38],mulf:['c',230,100,21],mului:['c',410,150,21],plus:['c',410,100,21],mulo:['c',560,195,21],tanhe:['e',560,140,38,20],ct:['c',736,100,22],ht:['c',736,290,22]};
     (hl||[]).forEach(k=>{const g=HL[k];if(!g)return;const st='fill="none" stroke="#ffd84a" stroke-width="3.5" stroke-dasharray="6 4"';

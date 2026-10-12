@@ -3,7 +3,7 @@
 (function(){
   function mk(id,label){
     const svg=document.getElementById(id); if(!svg) return;
-    const wrap=svg.parentElement, W0=660, H0=339;
+    const wrap=svg.parentElement, W0=760, H0=390;
     const bar=document.createElement('div');
     bar.style.cssText='display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:12.5px;color:#ccd5e8;margin:0 0 6px';
     bar.innerHTML='<b>📐 '+label+' boyutu:</b>'+
