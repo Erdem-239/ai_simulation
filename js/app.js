@@ -3624,7 +3624,7 @@ function setupFloatingPanel(ids){
     ['f','i','o','cp','ct'].forEach(k=>{ $('lv_'+k+'_v').textContent=F(parseFloat($('lv_'+k).value),2); });
     const c=f*cp+i*ct, h=o*Math.tanh(c);
     pipe.setAttribute('viewBox','0 0 760 390');
-    pipe.style.minWidth='620px'; pipe.style.width='100%';
+    pipe.style.minWidth='560px'; pipe.style.width='100%'; pipe.style.maxWidth='660px'; pipe.style.display='block'; pipe.style.margin='0 auto';
     pipe.innerHTML=window.lstmCellSvg('lp_',{f:f,i:i,o:o,cp:cp,ct:ct,fc:f*cp,ic:i*ct,c:c,tc:Math.tanh(c),h:h},window.__lstmPipeHL||[]);
     $('lv_work').innerHTML=
       'c = f·c₋₁ + i·c̃ = ('+F(f,2)+')('+F(cp,2)+') + ('+F(i,2)+')('+F(ct,2)+')   = <b>'+F(c)+'</b>\n'+
