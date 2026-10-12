@@ -3619,18 +3619,25 @@ function setupFloatingPanel(ids){
     return '<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+(sz||11)+'" fill="'+(col||'#ccd5e8')+'">'+t+'</text>';
   }
   function drawPipe(){
-    const f=parseFloat($('lv_f').value), i=parseFloat($('lv_i').value), o=parseFloat($('lv_o').value);
-    const cp=parseFloat($('lv_cp').value), ct=parseFloat($('lv_ct').value);
-    ['f','i','o','cp','ct'].forEach(k=>{ $('lv_'+k+'_v').textContent=F(parseFloat($('lv_'+k).value),2); });
+    const rv=id=>parseFloat($(id).value);
+    const x=rv('lv_x'), hp=rv('lv_hp'), cp=rv('lv_cp');
+    const Wt={}, zz={};
+    ['f','i','c','o'].forEach(g=>{ Wt[g]=[rv('lv_W'+g),rv('lv_U'+g),rv('lv_b'+g)]; zz[g]=Wt[g][0]*x+Wt[g][1]*hp+Wt[g][2];
+      ['W','U','b'].forEach((p,k)=>{ $('lv_'+p+g+'_v').textContent=F(Wt[g][k],2); }); });
+    ['x','hp','cp'].forEach(k=>{ $('lv_'+k+'_v').textContent=F(rv('lv_'+k),2); });
+    const f=sig(zz.f), i=sig(zz.i), o=sig(zz.o), ct=Math.tanh(zz.c);
+    $('lv_f').value=f; $('lv_i').value=i; $('lv_o').value=o; $('lv_ct').value=ct;
     const c=f*cp+i*ct, h=o*Math.tanh(c);
     pipe.setAttribute('viewBox','0 0 760 390');
     if(!pipe.dataset.sized){ pipe.style.minWidth='560px'; pipe.style.width='100%'; pipe.style.maxWidth='660px'; pipe.style.display='block'; pipe.style.margin='0 auto'; }
-    pipe.innerHTML=window.lstmCellSvg('lp_',{f:f,i:i,o:o,cp:cp,ct:ct,fc:f*cp,ic:i*ct,c:c,tc:Math.tanh(c),h:h},window.__lstmPipeHL||[]);
+    pipe.innerHTML=window.lstmCellSvg('lp_',{f:f,i:i,o:o,cp:cp,ct:ct,fc:f*cp,ic:i*ct,c:c,tc:Math.tanh(c),h:h,Wt:Wt,zz:zz,x:x,hp:hp},window.__lstmPipeHL||[]);
     $('lv_work').innerHTML=
+      'f = σ('+F(Wt.f[0],2)+'·'+F(x,2)+' + '+F(Wt.f[1],2)+'·'+F(hp,2)+' + '+F(Wt.f[2],2)+') = σ('+F(zz.f)+') = <b>'+F(f)+'</b>   i = <b>'+F(i)+'</b>   c̃ = <b>'+F(ct)+'</b>   o = <b>'+F(o)+'</b>\n'+
       'c = f·c₋₁ + i·c̃ = ('+F(f,2)+')('+F(cp,2)+') + ('+F(i,2)+')('+F(ct,2)+')   = <b>'+F(c)+'</b>\n'+
       'h = o·tanh(c)  = ('+F(o,2)+')·tanh('+F(c)+') = ('+F(o,2)+')('+F(Math.tanh(c))+')   = <b>'+F(h)+'</b>';
+    if(window.__lstmStepRefresh) window.__lstmStepRefresh();
   }
-  ['lv_f','lv_i','lv_o','lv_cp','lv_ct'].forEach(id=>$(id).addEventListener('input',drawPipe));
+  ['lv_x','lv_hp','lv_cp'].concat(['f','i','c','o'].reduce((r,g)=>r.concat(['lv_W'+g,'lv_U'+g,'lv_b'+g]),[])).forEach(id=>$(id).addEventListener('input',drawPipe));
   window.__lstmPipeRedraw=drawPipe;
   drawPipe();
 

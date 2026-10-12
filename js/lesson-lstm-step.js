@@ -47,6 +47,7 @@
   }
   go.addEventListener('click',()=>{const n=steps(q()).length;step=step>=n?0:step+1;draw();});
   $('lvStepRst').addEventListener('click',()=>{step=0;draw();});
-  ['lv_f','lv_i','lv_o','lv_cp','lv_ct'].forEach(id=>$(id).addEventListener('input',()=>{if(step>0)draw();}));
+  let busy=false;
+  window.__lstmStepRefresh=()=>{if(step>0&&!busy){busy=true;try{draw();}finally{busy=false;}}};
   draw();
 })();
