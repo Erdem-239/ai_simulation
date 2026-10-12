@@ -1341,3 +1341,5 @@ Kullanıcı RNN şemasında W_xh/W_hh/b_h açıkça yazılıyken LSTM'de "neyle 
 **LSTM şemaları küçültüldü**: kullanıcı "bu mimari çok büyük, en boy oranını küçült" dedi. Vana paneli (`#lstmPipe`, `drawPipe` içinde) ve Nedir şeması (`#lstmArch`) artık `min-width:560px; width:100%; max-width:660px` ve ortalı (geniş ekranda ~880×450 → 660×339; 375px'te 560px, mevcut `overflow-x:auto` sarmalayıcıda yatay kaydırılır).
 
 **LSTM hücre şeması etiketi**: kutu altındaki kriptik `Wfx+Ufh+bf` → `W·x+U·h₋₁+b` (kullanıcı "ufh ne, notasyonda da yazmıyo" dedi); Notasyon tablosu W/U/b'yi tek tek açıklıyor. **Ders**: şemadaki her kısaltma notasyonda okunur biçimde tanımlı olmalı.
+
+**LSTM şemalarında kullanıcı-ayarlı boyut** (`js/lesson-lstm-size.js`): kullanıcı "mimariyi ayarlanabilir yap, boyunu ben genişleteyim/uzatayım" dedi. `#lstmArch` ve `#lstmPipe` üstüne genişlik (360–1400) + yükseklik (200–800) kaydırıcıları ve ↺ varsayılan; `preserveAspectRatio=none` (metin hafif uzar/ezilir). `drawPipe` her çizimde stil yazdığı için `svg.dataset.sized` varsa stile dokunmaz.
