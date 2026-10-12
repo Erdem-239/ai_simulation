@@ -1656,3 +1656,12 @@ body.xt-full-lock{overflow:hidden}
 .nn-edge-flow{stroke-dasharray:7 6; animation:nnflow 1.4s linear infinite}
 @keyframes nnflow{to{stroke-dashoffset:-26}}
 @media (prefers-reduced-motion:reduce){.nn-edge-flow{animation:none}}
+
+/* LSTM vana paneli: şemanın iki yanında sezgisel kapı açıklamaları */
+.lv-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:center}
+.lv-side{flex:1 1 230px;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.lv-mid{flex:0 1 auto;max-width:100%}
+.lv-card{background:rgba(255,255,255,.04);border-radius:8px;padding:8px 11px;font-size:12.5px;line-height:1.55;color:#ccd5e8}
+.lv-card p{margin:5px 0}
+.lv-card .lv-live{background:rgba(255,216,74,.08);border-radius:6px;padding:4px 7px;color:#ffe9a0}
+@media(max-width:1300px){.lv-mid{order:-1;flex-basis:100%}.lv-side{max-width:none}}

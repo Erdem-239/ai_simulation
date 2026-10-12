@@ -3635,6 +3635,9 @@ function setupFloatingPanel(ids){
       'f = σ('+F(Wt.f[0],2)+'·'+F(x,2)+' + '+F(Wt.f[1],2)+'·'+F(hp,2)+' + '+F(Wt.f[2],2)+') = σ('+F(zz.f)+') = <b>'+F(f)+'</b>   i = <b>'+F(i)+'</b>   c̃ = <b>'+F(ct)+'</b>   o = <b>'+F(o)+'</b>\n'+
       'c = f·c₋₁ + i·c̃ = ('+F(f,2)+')('+F(cp,2)+') + ('+F(i,2)+')('+F(ct,2)+')   = <b>'+F(c)+'</b>\n'+
       'h = o·tanh(c)  = ('+F(o,2)+')·tanh('+F(c)+') = ('+F(o,2)+')('+F(Math.tanh(c))+')   = <b>'+F(h)+'</b>';
+    const tv=(id,t)=>{const e=$(id); if(e) e.textContent=t;};
+    tv('lvT_f',F(f,2)); tv('lvT_cp',F(cp,2)); tv('lvT_fc',F(f*cp,2)); tv('lvT_i',F(i,2)); tv('lvT_ip',Math.round(i*100));
+    tv('lvT_ct',F(ct,2)); tv('lvT_ic',F(i*ct,2)); tv('lvT_o',F(o,2)); tv('lvT_c',F(c,2)); tv('lvT_h',F(h,3));
     if(window.__lstmStepRefresh) window.__lstmStepRefresh();
   }
   ['lv_x','lv_hp','lv_cp'].concat(['f','i','c','o'].reduce((r,g)=>r.concat(['lv_W'+g,'lv_U'+g,'lv_b'+g]),[])).forEach(id=>$(id).addEventListener('input',drawPipe));
