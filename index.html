@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610121830"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610121900"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610121830">
+<link rel="stylesheet" href="css/style.css?v=202610121900">
 </head>
 <body>
 <div class="applayout">
@@ -2360,15 +2360,21 @@ for epoch in range(101):
     <div class="tpl-body closed">
 <!-- İNTERAKTİF 1: VANA PANELİ -->
   <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent)">🎛️ Vana paneli — kapıları elinle aç/kapa, hafızanın akışını izle</h3>
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Boruların <b>kalınlığı akan miktarı</b> gösterir. f'yi kıs → eski hafıza incelir; i'yi aç → yeni bilgi gürleşir; o'yu kıs → hücre bilse de söylemez.</div>
-    <div style="display:flex; flex-wrap:wrap; gap:16px 26px; margin-bottom:12px">
-      <div style="display:flex; align-items:center; gap:8px"><span style="min-width:88px">f (unutma)</span><input type="range" id="lv_f" min="0" max="1" step="0.01" value="0.9" style="width:120px"><b id="lv_f_v" style="color:var(--accent); min-width:40px; text-align:right">0.90</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span style="min-width:88px">i (giriş)</span><input type="range" id="lv_i" min="0" max="1" step="0.01" value="0.5" style="width:120px"><b id="lv_i_v" style="color:var(--accent); min-width:40px; text-align:right">0.50</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span style="min-width:88px">o (çıkış)</span><input type="range" id="lv_o" min="0" max="1" step="0.01" value="0.8" style="width:120px"><b id="lv_o_v" style="color:var(--accent); min-width:40px; text-align:right">0.80</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span style="min-width:88px">c₋₁ (eski hafıza)</span><input type="range" id="lv_cp" min="-2" max="2" step="0.05" value="1.2" style="width:120px"><b id="lv_cp_v" style="color:var(--accent); min-width:40px; text-align:right">1.20</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span style="min-width:88px">c̃ (yeni aday)</span><input type="range" id="lv_ct" min="-1" max="1" step="0.05" value="0.6" style="width:120px"><b id="lv_ct_v" style="color:var(--accent); min-width:40px; text-align:right">0.60</b></div>
-    </div>
+    <h3 style="color:var(--accent)">🎛️ Vana paneli — ağırlıkları değiştir, kapıların nasıl karar verdiğini izle</h3>
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Boruların <b>kalınlığı akan miktarı</b> gösterir. f kapısının ağırlıklarını (veya b'sini) düşür → f küçülür, eski hafıza incelir; i'nin ağırlıklarını artır → yeni bilgi gürleşir; o'yu kıs → hücre bilse de söylemez. Kapılar artık <b>x, h₋₁ ve ağırlıklardan gerçekten hesaplanıyor</b> (şemada W, U, b kendi yerlerinde yazıyor).</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:8px">
+<label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">x</span><input type="range" id="lv_x" min="-2" max="2" step="0.05" value="1" style="width:110px"><b id="lv_x_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
+<label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">h₋₁</span><input type="range" id="lv_hp" min="-1" max="1" step="0.05" value="0.3" style="width:110px"><b id="lv_hp_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
+<label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">c₋₁</span><input type="range" id="lv_cp" min="-2" max="2" step="0.05" value="1.2" style="width:110px"><b id="lv_cp_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
+</div>
+<div style="font-size:12.5px;color:#ccd5e8;margin:2px 0 4px"><b>Ağırlıklar</b> — her kapının kendi <b>W</b> (x için), <b>U</b> (h₋₁ için), <b>b</b> (bias) değeri var. Kaydır → şemada yerinde değişir, kapılar kendisi hesaplanır:</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:6px 18px;margin-bottom:8px">
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">f (unutma)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wf" min="-2" max="2" step="0.05" value="0.5" style="width:70px"><b id="lv_Wf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uf" min="-2" max="2" step="0.05" value="0.4" style="width:70px"><b id="lv_Uf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bf" min="-1" max="1" step="0.05" value="0.1" style="width:70px"><b id="lv_bf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">i (giriş)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wi" min="-2" max="2" step="0.05" value="0.6" style="width:70px"><b id="lv_Wi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Ui" min="-2" max="2" step="0.05" value="0.3" style="width:70px"><b id="lv_Ui_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bi" min="-1" max="1" step="0.05" value="0" style="width:70px"><b id="lv_bi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">c̃ (aday)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wc" min="-2" max="2" step="0.05" value="0.8" style="width:70px"><b id="lv_Wc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uc" min="-2" max="2" step="0.05" value="0.5" style="width:70px"><b id="lv_Uc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bc" min="-1" max="1" step="0.05" value="0" style="width:70px"><b id="lv_bc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">o (çıkış)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wo" min="-2" max="2" step="0.05" value="0.7" style="width:70px"><b id="lv_Wo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uo" min="-2" max="2" step="0.05" value="0.4" style="width:70px"><b id="lv_Uo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bo" min="-1" max="1" step="0.05" value="0.1" style="width:70px"><b id="lv_bo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+</div>
+<div style="display:none"><input type="range" id="lv_f" min="0" max="1" step="any" value="0.9"><span id="lv_f_v"></span><input type="range" id="lv_i" min="0" max="1" step="any" value="0.5"><span id="lv_i_v"></span><input type="range" id="lv_o" min="0" max="1" step="any" value="0.8"><span id="lv_o_v"></span><input type="range" id="lv_ct" min="-1" max="1" step="any" value="0.6"><span id="lv_ct_v"></span><span id="lv_cp_v2"></span></div>
     <div class="acc" style="margin:0 0 10px"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim? (şemadaki her harf ne demek)</div><div class="acc-body">
       <table class="rex-tbl"><tr><th>şemada</th><th>anlamı</th><th>ne yapar</th></tr>
         <tr><td><b>c₋₁</b> (soldaki yeşil hat)</td><td>önceki adımdan gelen <b>uzun hafıza</b> (cell state)</td><td>otobanda ilerler, kapılarla ölçeklenir</td></tr>
@@ -2384,8 +2390,7 @@ for epoch in range(101):
         <tr><td><b>σ</b> kutuları, <b>tanh</b> kutusu</td><td>kapıları üreten hesap: aktivasyon</td><td>altlarındaki <code>W·x+U·h₋₁+b</code>: <b>W</b> = x'in ağırlığı, <b>U</b> = h₋₁'in ağırlığı (RNN'deki W_hh), <b>b</b> = bias; her kapının kendi W, U, b'si var</td></tr>
         <tr><td><b>x<sub>t</sub></b>, <b>h<sub>t−1</sub></b> (alttan)</td><td>yeni girdi ve önceki çıktı</td><td>dört kutuya girer; her kutu kendi W, U, b'sini kullanır</td></tr>
       </table>
-      <div class="callout" style="margin-top:8px">⚠️ <b>Bu panelde</b> f, i, o, c̃ değerlerini <b>kaydırıcıyla elle veriyorsun</b> — vana mantığını görmek için. Gerçek hücrede bunlar x<sub>t</sub> ve h<sub>t−1</sub>'den <b>W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanır; o hesabı yukarıdaki <b>4️⃣ Nedir → "Neyle ne çarpılıyor?"</b> bölümünde adım adım gör. Ve aşağıdaki "tam hücre" bölümünde x, h₋₁, c₋₁'i verince kapılar kendisi hesaplanır.</div>
-    </div></div>
+      <div class="callout" style="margin-top:8px">✅ <b>Bu panelde</b> f, i, o, c̃ artık elle verilmiyor: <b>z = W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanıyor (RNN'deki W_xh, W_hh, b_h ile aynı iş, ama dört kapı için dört ayrı set). Şemada her kutunun altında o kapının W, U, b ve z değeri yazıyor.</div></div>
     <div style="display:flex;gap:8px;margin:2px 0 8px"><button class="rex-btn" id="lvStepGo">İleri ▶</button><button class="rex-btn" id="lvStepRst">↺ Sıfırla</button></div>
     <div class="work" id="lvStepFormula" style="margin-bottom:6px"></div>
     <div style="overflow-x:auto"><svg id="lstmPipe" role="img"></svg></div>
@@ -7362,33 +7367,33 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610121830"></script>
-<script src="js/lesson-turev.js?v=202610121830"></script>
-<script src="js/lesson-xor.js?v=202610121830"></script>
-<script src="js/lesson-xor-arch.js?v=202610121830"></script>
-<script src="js/lesson-xor-maps.js?v=202610121830"></script>
-<script src="js/lesson-xor-epoch.js?v=202610121830"></script>
-<script src="js/lesson-nn.js?v=202610121830"></script>
-<script src="js/lesson-trig.js?v=202610121830"></script>
+<script src="js/lesson-linreg.js?v=202610121900"></script>
+<script src="js/lesson-turev.js?v=202610121900"></script>
+<script src="js/lesson-xor.js?v=202610121900"></script>
+<script src="js/lesson-xor-arch.js?v=202610121900"></script>
+<script src="js/lesson-xor-maps.js?v=202610121900"></script>
+<script src="js/lesson-xor-epoch.js?v=202610121900"></script>
+<script src="js/lesson-nn.js?v=202610121900"></script>
+<script src="js/lesson-trig.js?v=202610121900"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610121830"></script>
-<script src="js/lesson-rnn-soz.js?v=202610121830"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610121900"></script>
+<script src="js/lesson-rnn-soz.js?v=202610121900"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610121830"></script>
-<script src="js/lesson-lstm-cell.js?v=202610121830"></script>
-<script src="js/app.js?v=202610121830"></script>
-<script src="js/lesson-lstm-big.js?v=202610121830"></script>
-<script src="js/lesson-lstm-step.js?v=202610121830"></script>
-<script src="js/lesson-lstm-size.js?v=202610121830"></script>
-<script src="js/lesson-lstm-gate.js?v=202610121830"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610121830"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610121830"></script>
-<script src="js/lesson-linreg-big.js?v=202610121830"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610121830"></script>
-<script src="js/lesson-act-big.js?v=202610121830"></script>
-<script src="js/lesson-act-ornek.js?v=202610121830"></script>
-<script src="js/lesson-xor-ornek.js?v=202610121830"></script>
-<script src="js/lesson-nn-ornek.js?v=202610121830"></script>
-<script src="js/lesson-nn-net.js?v=202610121830"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610121900"></script>
+<script src="js/lesson-lstm-cell.js?v=202610121900"></script>
+<script src="js/app.js?v=202610121900"></script>
+<script src="js/lesson-lstm-big.js?v=202610121900"></script>
+<script src="js/lesson-lstm-step.js?v=202610121900"></script>
+<script src="js/lesson-lstm-size.js?v=202610121900"></script>
+<script src="js/lesson-lstm-gate.js?v=202610121900"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610121900"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610121900"></script>
+<script src="js/lesson-linreg-big.js?v=202610121900"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610121900"></script>
+<script src="js/lesson-act-big.js?v=202610121900"></script>
+<script src="js/lesson-act-ornek.js?v=202610121900"></script>
+<script src="js/lesson-xor-ornek.js?v=202610121900"></script>
+<script src="js/lesson-nn-ornek.js?v=202610121900"></script>
+<script src="js/lesson-nn-net.js?v=202610121900"></script>
 </body>
 </html>

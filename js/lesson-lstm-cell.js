@@ -53,7 +53,11 @@
     s+='<ellipse cx="560" cy="140" rx="28" ry="14" fill="#14283a" stroke="#5aa0e0" stroke-width="2"/>'+T(560,145,'tanh','#fff',12,'middle',true);
     s+=box(230,240,{w:44,s:'σ'},'#3a2f14',GC)+box(320,240,{w:44,s:'σ'},'#3a2f14',GC)+box(410,240,{w:56,s:'tanh'},'#14283a','#5aa0e0')+box(500,240,{w:44,s:'σ'},'#3a2f14',GC);
     // kutu girişleri: her kutu W·x + U·h + b hesaplar
-    [[230,'f'],[320,'i'],[410,'c'],[500,'o']].forEach(([x,k])=>{s+=T(x,272,'W·x+U·h₋₁+b',N,10,'middle');});
+[[230,'f'],[320,'i'],[410,'c'],[500,'o']].forEach(([x,k])=>{
+      if(live&&v.Wt){const w=v.Wt[k],z=v.zz[k];
+        s+=T(x,268,'W='+F(w[0])+' U='+F(w[1]),'#ffd84a',9.5,'middle');
+        s+=T(x,279,'b='+F(w[2])+' z='+F(z),N,9.5,'middle');}
+      else s+=T(x,272,'W·x+U·h₋₁+b',N,10,'middle');});
     // etiketler
     const val=(k,d)=>live?' = '+F(v[k],d||2):'';
     s+=T(222,175,'fₜ'+val('f'),GC,12,'end',true);
