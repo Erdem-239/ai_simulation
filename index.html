@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610131000"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610131100"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610131000">
+<link rel="stylesheet" href="css/style.css?v=202610131100">
 </head>
 <body>
 <div class="applayout">
@@ -2585,6 +2585,94 @@ print(&quot;sinyal t=1&#x27;e ulaşıyor: RNN %.2e  LSTM %.2e&quot; % (saglik_rn
 # epoch 1500  RNN kayıp=0.693  LSTM kayıp=0.001
 # sinyal t=1&#x27;e ulaşıyor: RNN 1.37e-09  LSTM 1.57e-02
 </pre><p style="font-size:12px; color:var(--muted)">Bu kod ile yukarıdaki canlı simülasyon aynı sayıları üretir (epoch 1: 0,693 / 0,552; epoch 100: 0,693 / 0,024).</p></div></div>
+    </div>
+        <div class="pts" id="lstmM2oWrap" style="border-left:3px solid var(--green)">
+      <h3 style="color:var(--green)">Örnek 2 — Many-to-one: 30 kelimelik cümle, tek cevap</h3>
+      <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 30 kelimelik bir cümleyi okuyup <b>tek bir cevap</b> vermek: cümle "kedi" ile mi, "köpek" ile mi başlıyor? (kedi → "miyav" = 1, köpek → "hav" = 0). Cevap, <b>cümle bitince</b> son adımdaki h'den çıkıyor — RNN'deki <b>many-to-one</b> ile aynı düzen. Aynı LSTM hücresi 30 kez çalışıyor; kelimeler tek tek giriyor, hafıza (c, h) adımdan adıma taşınıyor.</p>
+      <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🧠 Ağırlıkları biz vermiyoruz: yukarıdaki örnekle aynı başlangıçtan gradyan inişiyle ağ kendisi öğreniyor. Eğitimden sonra <b>t kaydırıcısıyla</b> 30 adımı gez: şemada o adımın tüm sayıları, altında hesabın kendisi, yanda c/h ve kapıların zaman içindeki grafiği.</p>
+            <div id="lstmM2oBody"></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı örnek Python'da (kütüphanesiz, yorumlu — eğitim + 30 adımlık iz)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.5">import math
+
+def sig(z): return 1 / (1 + math.exp(-z))
+
+T = 30                                    # cümle uzunluğu: 30 kelime
+# kelime -&gt; sayı: &quot;kedi&quot; = +1, &quot;köpek&quot; = -1, diğer 29 kelime = 0 (elle verilmiş mini &quot;gömme&quot;)
+veri = [([+1] + [0] * (T - 1), 1),        # &quot;kedi dün akşam ... başladı&quot;   -&gt; doğru cevap 1 (miyav)
+        ([-1] + [0] * (T - 1), 0)]        # &quot;köpek dün akşam ... başladı&quot; -&gt; doğru cevap 0 (hav)
+
+KAPILAR = &#x27;fico&#x27;                           # f: unutma, i: giriş, c: aday (c~), o: çıkış
+P = {&#x27;f&#x27;: [.5, .5, 1], &#x27;i&#x27;: [.5, .5, 1], &#x27;c&#x27;: [.5, .5, 0], &#x27;o&#x27;: [.5, .5, 1], &#x27;why&#x27;: 1}
+# her kapı: [W (x için), U (h_{t-1} için), b (bias)]; why: son h&#x27;den cevaba giden ağırlık
+
+def ileri(P, xs):
+    h = c = 0.0
+    kayit = []
+    for x in xs:                                            # many-to-one: 30 adım, aynı hücre
+        f = sig(P[&#x27;f&#x27;][0]*x + P[&#x27;f&#x27;][1]*h + P[&#x27;f&#x27;][2])      # z = W*x + U*h + b  -&gt;  sigmoid
+        i = sig(P[&#x27;i&#x27;][0]*x + P[&#x27;i&#x27;][1]*h + P[&#x27;i&#x27;][2])
+        g = math.tanh(P[&#x27;c&#x27;][0]*x + P[&#x27;c&#x27;][1]*h + P[&#x27;c&#x27;][2])
+        o = sig(P[&#x27;o&#x27;][0]*x + P[&#x27;o&#x27;][1]*h + P[&#x27;o&#x27;][2])
+        c_yeni = f * c + i * g                              # uzun hafıza: eski*f + yeni*i
+        h_yeni = o * math.tanh(c_yeni)                      # kısa hafıza / çıktı
+        kayit.append((x, h, c, f, i, g, o, c_yeni, math.tanh(c_yeni), h_yeni))
+        h, c = h_yeni, c_yeni
+    p = sig(P[&#x27;why&#x27;] * h)                                   # cevap YALNIZ son h&#x27;den alınır
+    return kayit, p
+
+def ileri_geri(P, xs, y):
+    kayit, p = ileri(P, xs)
+    kayip = -math.log(p) if y else -math.log(1 - p)
+    dzy = p - y
+    G = {k: [0.0, 0.0, 0.0] for k in KAPILAR}
+    G[&#x27;why&#x27;] = dzy * kayit[-1][9]
+    dh = dzy * P[&#x27;why&#x27;]; dc = 0.0
+    for (x, hp, cp, f, i, g, o, cn, tc, hn) in reversed(kayit):   # geri yayılım (zamanda geriye)
+        dcn = dc + dh * o * (1 - tc * tc)
+        dz = {&#x27;f&#x27;: dcn * cp * f * (1 - f), &#x27;i&#x27;: dcn * g * i * (1 - i),
+              &#x27;c&#x27;: dcn * i * (1 - g * g), &#x27;o&#x27;: dh * tc * o * (1 - o)}
+        for k in KAPILAR:
+            G[k][0] += dz[k] * x; G[k][1] += dz[k] * hp; G[k][2] += dz[k]
+        dh = sum(dz[k] * P[k][1] for k in KAPILAR)
+        dc = dcn * f
+    return kayip, G
+
+LR = 0.5
+for epoch in range(1, 1501):                                # tam-yığın gradyan inişi
+    ort = 0.0; Gs = {k: [0.0, 0.0, 0.0] for k in KAPILAR}; Gw = 0.0
+    for xs, y in veri:
+        kayip, G = ileri_geri(P, xs, y)
+        ort += kayip / len(veri)
+        for k in KAPILAR:
+            for j in range(3): Gs[k][j] += G[k][j] / len(veri)
+        Gw += G[&#x27;why&#x27;] / len(veri)
+    for k in KAPILAR:
+        for j in range(3): P[k][j] -= LR * Gs[k][j]
+    P[&#x27;why&#x27;] -= LR * Gw
+    if epoch in (1, 100, 500, 1500):
+        print(f&quot;epoch {epoch:4d}  kayıp = {ort:.3f}&quot;)
+
+# ---- eğitilmiş ağın &quot;kedi&quot; cümlesini nasıl okuduğu: adım adım ----
+kayit, p = ileri(P, veri[0][0])
+print(&quot;  t    x     f     i    c~     o      c      h&quot;)
+for t in (1, 2, 3, 10, 20, 29, 30):
+    x, hp, cp, f, i, g, o, cn, tc, hn = kayit[t - 1]
+    print(f&quot;{t:3d} {x:+.0f}  {f:.3f} {i:.3f} {g:+.3f} {o:.3f} {cn:+.3f} {hn:+.3f}&quot;)
+print(f&quot;cevap p = sigmoid(why*h30) = {p:.4f}  -&gt; {&#x27;miyav (kedi)&#x27; if p &gt; .5 else &#x27;hav (köpek)&#x27;}&quot;)
+
+# ---- ÇIKTI ----
+# epoch    1  kayıp = 0.552
+# epoch  100  kayıp = 0.024
+# epoch  500  kayıp = 0.004
+# epoch 1500  kayıp = 0.001
+#   t    x     f     i    c~     o      c      h
+#   1 +1  0.901 0.856 +0.318 0.976 +0.273 +0.259
+#   2 +0  0.853 0.798 +0.079 0.962 +0.295 +0.276
+#   3 +0  0.853 0.799 +0.099 0.962 +0.331 +0.308
+#  10 +0  0.868 0.833 +0.711 0.965 +2.035 +0.933
+#  20 +0  0.870 0.837 +0.750 0.965 +4.123 +0.965
+#  29 +0  0.870 0.837 +0.751 0.965 +4.630 +0.965
+#  30 +0  0.870 0.837 +0.751 0.965 +4.656 +0.965
+# cevap p = sigmoid(why*h30) = 0.9987  -> miyav (kedi)</pre><p style="font-size:12px; color:var(--muted)">Bu kod ile yukarıdaki canlı simülasyon aynı ağırlıkları ve sayıları üretir (eğitilmiş ağırlıklar: f=(0,50; 0,205; 1,704), why=6,875; son adım h₃₀=0,965, p=0,9987).</p></div></div>
     </div>
     </div>
   </div>
@@ -7380,34 +7468,35 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610131000"></script>
-<script src="js/lesson-turev.js?v=202610131000"></script>
-<script src="js/lesson-xor.js?v=202610131000"></script>
-<script src="js/lesson-xor-arch.js?v=202610131000"></script>
-<script src="js/lesson-xor-maps.js?v=202610131000"></script>
-<script src="js/lesson-xor-epoch.js?v=202610131000"></script>
-<script src="js/lesson-nn.js?v=202610131000"></script>
-<script src="js/lesson-trig.js?v=202610131000"></script>
+<script src="js/lesson-linreg.js?v=202610131100"></script>
+<script src="js/lesson-turev.js?v=202610131100"></script>
+<script src="js/lesson-xor.js?v=202610131100"></script>
+<script src="js/lesson-xor-arch.js?v=202610131100"></script>
+<script src="js/lesson-xor-maps.js?v=202610131100"></script>
+<script src="js/lesson-xor-epoch.js?v=202610131100"></script>
+<script src="js/lesson-nn.js?v=202610131100"></script>
+<script src="js/lesson-trig.js?v=202610131100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610131000"></script>
-<script src="js/lesson-rnn-soz.js?v=202610131000"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610131100"></script>
+<script src="js/lesson-rnn-soz.js?v=202610131100"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610131000"></script>
-<script src="js/lesson-lstm-cell.js?v=202610131000"></script>
-<script src="js/app.js?v=202610131000"></script>
-<script src="js/lesson-lstm-big.js?v=202610131000"></script>
-<script src="js/lesson-lstm-step.js?v=202610131000"></script>
-<script src="js/lesson-lstm-size.js?v=202610131000"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610131000"></script>
-<script src="js/lesson-lstm-gate.js?v=202610131000"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610131000"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610131000"></script>
-<script src="js/lesson-linreg-big.js?v=202610131000"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610131000"></script>
-<script src="js/lesson-act-big.js?v=202610131000"></script>
-<script src="js/lesson-act-ornek.js?v=202610131000"></script>
-<script src="js/lesson-xor-ornek.js?v=202610131000"></script>
-<script src="js/lesson-nn-ornek.js?v=202610131000"></script>
-<script src="js/lesson-nn-net.js?v=202610131000"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610131100"></script>
+<script src="js/lesson-lstm-cell.js?v=202610131100"></script>
+<script src="js/app.js?v=202610131100"></script>
+<script src="js/lesson-lstm-big.js?v=202610131100"></script>
+<script src="js/lesson-lstm-step.js?v=202610131100"></script>
+<script src="js/lesson-lstm-size.js?v=202610131100"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610131100"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610131100"></script>
+<script src="js/lesson-lstm-gate.js?v=202610131100"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610131100"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610131100"></script>
+<script src="js/lesson-linreg-big.js?v=202610131100"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610131100"></script>
+<script src="js/lesson-act-big.js?v=202610131100"></script>
+<script src="js/lesson-act-ornek.js?v=202610131100"></script>
+<script src="js/lesson-xor-ornek.js?v=202610131100"></script>
+<script src="js/lesson-nn-ornek.js?v=202610131100"></script>
+<script src="js/lesson-nn-net.js?v=202610131100"></script>
 </body>
 </html>
