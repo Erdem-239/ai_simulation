@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610140500"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610140700"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610140500">
+<link rel="stylesheet" href="css/style.css?v=202610140700">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 05:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 07:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -797,6 +797,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
       <h1>RNN — Zaman İçinde Geri Yayılım (BPTT)</h1>
       <p class="lesson-hook">🌌 Bu cümlenin sonunu anlaman, başını hatırlamana bağlı — hafıza olmadan düşünce olmaz. 1990'da bir dilbilimci, ağlara ilk kez "geçmişini taşı" demeyi öğretti. O tek fikir, bugün konuştuğun her dil modelinin soy ağacının başlangıcı oldu.</p>
     </div>
+<div class="callout">🔗 <b>Kaldığımız yer:</b> 🧠 Neural Network'te girdi sabit boyutluydu ve ağ her örneğe <b>sıfırdan</b> bakıyordu: önceki örnekten haberi yoktu. 🌡️ Softmax'te de her tahmin tek başına bir karardı. Ama cümle, ses, hisse fiyatı gibi verilerde <b>sıra önemli</b>. RNN aynı küçük ağı adım adım tekrar kullanır ve bir önceki adımın özetini (h, hafıza) bir sonrakine taşır. Bu derste her şey <b>tek sayıyla</b> yürüyor (kelime→sayı dönüşümü sonraki derslerde); geri yayılım da artık zamanda geriye gidiyor (BPTT).</div>
     </div>
   </div>
 
@@ -1952,7 +1953,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
         </ul>
       </div>
       <p style="font-size:14px; color:#ccd5e8">Kurabiye analojisindeki "8x" gibi: orada tek bir çarpan vardı; RNN'de bu çarpan <b>zaman adımı kadar</b> üst üste biner. Çözüm olarak <b>LSTM/GRU</b> (kapılı hücreler) ve <b>gradient clipping</b> geliştirildi.</p>
-      <div class="callout" style="margin-top:10px; border-left-color:#9c4dff">🧮 <b>Gerçek (çok boyutlu) RNN'lerde bu nasıl görünür?</b> Burada h tek bir sayı, W<sub>hh</sub> tek bir sayı olduğu için çarpan da tek bir sayıydı (r). Gerçek RNN'lerde h bir <b>vektör</b>, W<sub>hh</sub> bir <b>matris</b>tir — aynı "çarpıla çarpıla küçül/büyü" hikâyesi bu kez W<sub>hh</sub>'nin <b>özdeğerlerinin (eigenvalue)</b> büyüklüğüne bakar: özdeğerlerin tümü 1'den küçükse (spektral yarıçap &lt;1) vanishing, biri bile 1'den büyükse exploding olur. r=W<sub>hh</sub>(1−h²) burada gördüğün skaler çarpan, aslında bu matrisin özdeğerlerinin 1 boyutlu (tek sayılık) hali. (<b>Vektör &amp; Nokta Çarpım</b> dersindeki "matris = raf" sezgisini hatırlarsan: bir matris, çarptığı vektörü döndürüp uzatır/kısaltır — özdeğer/özvektör, matrisin bir vektörü yönünü <b>değiştirmeden</b> sadece ne kadar uzatıp kısalttığını söyler.)</div>
+      <div class="callout" style="margin-top:10px; border-left-color:#9c4dff">🧮 <b>Gerçek (çok boyutlu) RNN'lerde bu nasıl görünür?</b> Burada h tek bir sayı, W<sub>hh</sub> tek bir sayı olduğu için çarpan da tek bir sayıydı (r). Gerçek RNN'lerde h bir <b>vektör</b>, W<sub>hh</sub> bir <b>matris</b>tir — aynı "çarpıla çarpıla küçül/büyü" hikâyesi bu kez W<sub>hh</sub>'nin <b>özdeğerlerinin (eigenvalue)</b> büyüklüğüne bakar: özdeğerlerin tümü 1'den küçükse (spektral yarıçap &lt;1) vanishing, biri bile 1'den büyükse exploding olur. r=W<sub>hh</sub>(1−h²) burada gördüğün skaler çarpan, aslında bu matrisin özdeğerlerinin 1 boyutlu (tek sayılık) hali. (İleride <b>Vektör &amp; Nokta Çarpım</b> dersinde "matris = raf" sezgisini göreceksin; şimdilik şunu bil: bir matris, çarptığı vektörü döndürüp uzatır/kısaltır — özdeğer/özvektör, matrisin bir vektörü yönünü <b>değiştirmeden</b> sadece ne kadar uzatıp kısalttığını söyler.)</div>
     </div>
     </div><!-- /rnnBody3 -->
 
@@ -2283,7 +2284,7 @@ for epoch in range(101):
 <h1>LSTM / GRU — Hafıza Otoyolu ve Kapılar</h1>
   <p class="sub">RNN'in vanishing duvarını aşan tasarım. Fikir tek cümle: gradyanın <b>çarpıla çarpıla ölmediği</b>, korumalı bir hafıza hattı kur — ve o hatta ne girip ne çıkacağına <b>öğrenilebilir kapılar</b> karar versin.</p>
 
-  <div class="callout">🔗 <b>Kaldığımız yer:</b> RNN'de gradyan geriye akarken her adımda <b>W<sub>hh</sub>·(1−h²)</b> ile çarpılıyordu → 20 adımda 0.5²⁰ ≈ sıfır. Sorun <b>çarpmanın kendisiydi</b>. LSTM'in cevabı: hafızayı çarparak değil, <b>toplayarak</b> taşı.</div>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> RNN'de gradyan geriye akarken her adımda <b>W<sub>hh</sub>·(1−h²)</b> ile çarpılıyordu → 20 adımda 0.5²⁰ ≈ sıfır. Sorun <b>çarpmanın kendisiydi</b>. LSTM'in cevabı: hafızayı çarparak değil, <b>toplayarak</b> taşı. Bu derste de girdiler <b>tek sayı</b>; kelimeleri anlamlı vektörlere çevirmek bir sonraki durak (🧮 Vektör → 🔤 Kelime Temsili).</div>
     </div>
   </div>
 
@@ -2465,7 +2466,7 @@ for epoch in range(101):
       <tr><td>Parametre</td><td>daha çok</td><td>~%25 daha az</td></tr>
       <tr><td>Ne zaman?</td><td>büyük veri, uzun dizi</td><td>az veri, hız önemli</td></tr>
     </table>
-    <p style="font-size:13px; color:var(--muted)">Pratik gerçek: çoğu problemde ikisi başa baş; GRU ucuz olduğu için sık tercih edildi. İkisinin de tahtını 2017'de attention devraldı — sıradaki durağın.</p>
+    <p style="font-size:13px; color:var(--muted)">Pratik gerçek: çoğu problemde ikisi başa baş; GRU ucuz olduğu için sık tercih edildi. İkisinin de tahtını 2017'de attention devraldı. Oraya giden yol: önce kelimeleri vektöre çevirmek (🧮 Vektör, 🔤 Kelime Temsili), sonra iki LSTM'i köprüleyen 🌉 Seq2Seq — attention orada doğuyor.</p>
   </div>
     </div>
   </div>
@@ -8213,48 +8214,48 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610140500"></script>
-<script src="js/lesson-turev.js?v=202610140500"></script>
-<script src="js/lesson-xor.js?v=202610140500"></script>
-<script src="js/lesson-xor-arch.js?v=202610140500"></script>
-<script src="js/lesson-xor-maps.js?v=202610140500"></script>
-<script src="js/lesson-xor-epoch.js?v=202610140500"></script>
-<script src="js/lesson-nn.js?v=202610140500"></script>
-<script src="js/lesson-trig.js?v=202610140500"></script>
+<script src="js/lesson-linreg.js?v=202610140700"></script>
+<script src="js/lesson-turev.js?v=202610140700"></script>
+<script src="js/lesson-xor.js?v=202610140700"></script>
+<script src="js/lesson-xor-arch.js?v=202610140700"></script>
+<script src="js/lesson-xor-maps.js?v=202610140700"></script>
+<script src="js/lesson-xor-epoch.js?v=202610140700"></script>
+<script src="js/lesson-nn.js?v=202610140700"></script>
+<script src="js/lesson-trig.js?v=202610140700"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610140500"></script>
-<script src="js/lesson-rnn-soz.js?v=202610140500"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610140700"></script>
+<script src="js/lesson-rnn-soz.js?v=202610140700"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610140500"></script>
-<script src="js/lesson-lstm-cell.js?v=202610140500"></script>
-<script src="js/app.js?v=202610140500"></script>
-<script src="js/lesson-lstm-big.js?v=202610140500"></script>
-<script src="js/lesson-lstm-step.js?v=202610140500"></script>
-<script src="js/lesson-lstm-size.js?v=202610140500"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610140500"></script>
-<script src="js/lesson-emb-kullan.js?v=202610140500"></script>
-<script src="js/lesson-emb-draco.js?v=202610140500"></script>
-<script src="js/lesson-emb-arch.js?v=202610140500"></script>
-<script src="js/lesson-emb-extra.js?v=202610140500"></script>
-<script src="js/lesson-s2s-weights.js?v=202610140500"></script>
-<script src="js/lesson-s2s-add.js?v=202610140500"></script>
-<script src="js/lesson-s2s-extra.js?v=202610140500"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610140500"></script>
-<script src="js/lesson-emb-ornek.js?v=202610140500"></script>
-<script src="js/lesson-emb-steps.js?v=202610140500"></script>
-<script src="js/lesson-emb-big.js?v=202610140500"></script>
-<script src="js/lesson-sm-ornek.js?v=202610140500"></script>
-<script src="js/lesson-sm-big.js?v=202610140500"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610140500"></script>
-<script src="js/lesson-lstm-gate.js?v=202610140500"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610140500"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610140500"></script>
-<script src="js/lesson-linreg-big.js?v=202610140500"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610140500"></script>
-<script src="js/lesson-act-big.js?v=202610140500"></script>
-<script src="js/lesson-act-ornek.js?v=202610140500"></script>
-<script src="js/lesson-xor-ornek.js?v=202610140500"></script>
-<script src="js/lesson-nn-ornek.js?v=202610140500"></script>
-<script src="js/lesson-nn-net.js?v=202610140500"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610140700"></script>
+<script src="js/lesson-lstm-cell.js?v=202610140700"></script>
+<script src="js/app.js?v=202610140700"></script>
+<script src="js/lesson-lstm-big.js?v=202610140700"></script>
+<script src="js/lesson-lstm-step.js?v=202610140700"></script>
+<script src="js/lesson-lstm-size.js?v=202610140700"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610140700"></script>
+<script src="js/lesson-emb-kullan.js?v=202610140700"></script>
+<script src="js/lesson-emb-draco.js?v=202610140700"></script>
+<script src="js/lesson-emb-arch.js?v=202610140700"></script>
+<script src="js/lesson-emb-extra.js?v=202610140700"></script>
+<script src="js/lesson-s2s-weights.js?v=202610140700"></script>
+<script src="js/lesson-s2s-add.js?v=202610140700"></script>
+<script src="js/lesson-s2s-extra.js?v=202610140700"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610140700"></script>
+<script src="js/lesson-emb-ornek.js?v=202610140700"></script>
+<script src="js/lesson-emb-steps.js?v=202610140700"></script>
+<script src="js/lesson-emb-big.js?v=202610140700"></script>
+<script src="js/lesson-sm-ornek.js?v=202610140700"></script>
+<script src="js/lesson-sm-big.js?v=202610140700"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610140700"></script>
+<script src="js/lesson-lstm-gate.js?v=202610140700"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610140700"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610140700"></script>
+<script src="js/lesson-linreg-big.js?v=202610140700"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610140700"></script>
+<script src="js/lesson-act-big.js?v=202610140700"></script>
+<script src="js/lesson-act-ornek.js?v=202610140700"></script>
+<script src="js/lesson-xor-ornek.js?v=202610140700"></script>
+<script src="js/lesson-nn-ornek.js?v=202610140700"></script>
+<script src="js/lesson-nn-net.js?v=202610140700"></script>
 </body>
 </html>
