@@ -1379,3 +1379,7 @@ Kullanıcı Örnek 1'e bakıp "nasıl, nereden öğreniyor, sıfırda gerçek ko
 ## SÜREÇ KURALI (güncel, önceki "birleştir demedikçe birleştirme" kuralının YERİNE geçer)
 
 Kullanıcı: "bir daha birleştir diye sorma; bir şey yap diyorsam yap, cümleden anlaşılır; cevap ver diyorsam cevap ver; yap diyorsam sonra yayınla." → **Soru = yalnız metin cevabı. İstek/iş ("yap", "ekle", "göster", "düzelt" vb.) = uygula, doğrula, PR aç ve KENDİN birleştir (squash); onay sorma.** Birleştirdikten sonra tek satırla bildir.
+
+## Seq2Seq — "🧠 Nöron/katman görünümü" (`js/lesson-s2s-add.js` içinde `neur()`, `#sa_neur`)
+
+Kullanıcı "seq2seq'e de nöron katmanlı şema ekle" dedi (skip-gram'daki gibi ağ şeması). 5️⃣ Simülasyon'da hücre animasyonunun hemen altına, AYNI durumu (soru a+b, model epoch'u) paylaşan canlı şema: 6 zaman sütunu (3 encoder + 3 decoder), her sütunda aşağıdan yukarı girdi kutusu → gömme (8'den ilk 4 nöron) → LSTM gizli katmanı (24'ten bağlam `|h|` en büyük 6 nöron, gerçek değerlerle yeşil/kırmızı) → decoder'da 13 nöronluk çıktı katmanı (olasılığa göre mavi, kazanan yeşil çerçeve + %); sütunlar arası yinelemeli bağlar, encoder→decoder 🍾 bağlam (h ve c) kutusu. `run()` artık decoder adımında tam olasılık vektörünü (`pv`) da döndürür. JS=Python parite (400/400) bozulmadı. **Ders**: bir katmandaki düğümleri aynı x'e dizip dikey sıralamak katman olduğunu gizler — katman = yatay sıra, katmanlar dikey yığın; ilk çizimde bu ters yapılmıştı, ekran görüntüsüne bakmadan fark edilmezdi.

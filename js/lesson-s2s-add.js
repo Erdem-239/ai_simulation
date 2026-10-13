@@ -20,7 +20,7 @@
       const lg=P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*h[j];return q;});
       const mx=Math.max(...lg),ex=lg.map(v=>Math.exp(v-mx)),sm=ex.reduce((x,y)=>x+y,0),p=ex.map(v=>v/sm);
       let best=0;for(let k=1;k<V;k++)if(lg[k]>lg[best])best=k;
-      dec.push({inp:tok,out:best,p:p[best],h:r.h,c:r.c});tok=best;
+      dec.push({inp:tok,out:best,p:p[best],pv:p,h:r.h,c:r.c});tok=best;
     }
     return {enc,ctx,dec,code:dec[0].out*169+dec[1].out*13+dec[2].out};
   }
@@ -36,6 +36,8 @@
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="addbtn" id="sa_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="sa_all" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">⏭ Hepsini göster</button><button class="addbtn" id="sa_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
    '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:640px;width:100%;max-width:820px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder toplama animasyonu"></svg></div>'+
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
+   '<div style="font-size:13px;color:#ccd5e8;margin:14px 0 4px"><b>🧠 Nöron/katman görünümü:</b> aynı soru, bu kez katman katman. Her sütun bir zaman adımı; altta girdi → gömme (8 sayı) → LSTM gizli katmanı (24 nöron) → (decoder\'da) 13 çıktı nöronu (softmax). Hepsini çizmek yerine gizli katmandan en etkin 6, gömmeden ilk 4 nöron gösteriliyor; renkler gerçek değerler.</div>'+
+   '<div style="overflow-x:auto"><svg id="sa_neur" style="min-width:780px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder nöron düzeyinde şema"></svg></div>'+
    '<div style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
    '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
   const sa=document.getElementById('sa_a'),sb=document.getElementById('sa_b');
@@ -92,6 +94,48 @@
     if(S>=7)m+=(ok?'✅ Doğru ('+st.a+' + '+st.b+' = '+tgt+').':'❌ Yanlış — doğrusu '+tgt+'.')+(TEST.has(st.a*10+st.b)?' <i>Bu soru eğitimde hiç görülmemişti.</i>':'');
     document.getElementById('sa_msg').innerHTML=m;
   }
+
+  function neur(){
+    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),P=ck.W;
+    const NH=6,NE=4,NO=13,CW=118,X0=10;
+    const idx=r.ctx.h.map((v,i)=>[Math.abs(v),i]).sort((a,b)=>b[0]-a[0]).slice(0,NH).map(x=>x[1]).sort((a,b)=>a-b);
+    const col=v=>v>=0?'rgba(70,196,106,'+(0.15+0.85*Math.min(1,Math.abs(v)))+')':'rgba(224,106,106,'+(0.15+0.85*Math.min(1,Math.abs(v)))+')';
+    const yO=40,yH=190,yE=290,yT=362;
+    const nx=(t,k,n,dx)=>t.x+(k-(n-1)/2)*dx;
+    const cxs=[0,1,2,4,5,6].map(i=>X0+i*CW+CW/2);
+    const steps=[];
+    r.enc.forEach((e,i)=>steps.push({x:cxs[i],h:e.h,tok:e.tok,emb:P.emb[e.tok],dec:false}));
+    r.dec.forEach((d,i)=>steps.push({x:cxs[3+i],h:d.h,tok:d.inp,emb:P.emb[d.inp],dec:true,d}));
+    let s='<defs><marker id="sn" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#e06a6a"/></marker></defs>';
+    s+='<text x="'+((cxs[0]+cxs[2])/2)+'" y="-18" font-size="11" fill="#95a2c2" text-anchor="middle">ENCODER (okur)</text><text x="'+cxs[4]+'" y="-18" font-size="11" fill="#95a2c2" text-anchor="middle">DECODER (üretir)</text>';
+    const HD=15,ED=18,OD=8;
+    steps.forEach((t,i)=>{
+      for(let a=0;a<NE;a++)for(let b=0;b<NH;b++)s+='<line x1="'+nx(t,a,NE,ED)+'" y1="'+(yE-7)+'" x2="'+nx(t,b,NH,HD)+'" y2="'+(yH+9)+'" stroke="#3a4a74" stroke-width=".6" opacity=".6"/>';
+      if(t.dec)for(let b=0;b<NH;b++)for(let k=0;k<NO;k++){const w=k===t.d.out;s+='<line x1="'+nx(t,b,NH,HD)+'" y1="'+(yH-9)+'" x2="'+nx(t,k,NO,OD)+'" y2="'+(yO+6)+'" stroke="'+(w?'#46c46a':'#3a4a74')+'" stroke-width="'+(w?1:.4)+'" opacity="'+(w?.6:.3)+'"/>';}
+      if(i>0&&i!==3){const q=steps[i-1];for(let a=0;a<NH;a++)for(let b=0;b<NH;b++)s+='<line x1="'+(nx(q,a,NH,HD)+9)+'" y1="'+yH+'" x2="'+(nx(t,b,NH,HD)-9)+'" y2="'+yH+'" stroke="#5a6a9a" stroke-width=".4" opacity=".35"/>';}
+    });
+    // bağlam: encoder son -> decoder ilk gizli katman
+    const q=steps[2],d0=steps[3];
+    const xa=nx(q,NH-1,NH,HD)+10,xb=nx(d0,0,NH,HD)-10;
+    s+='<rect x="'+(xa+2)+'" y="'+(yH-24)+'" width="'+(xb-xa-4)+'" height="48" rx="8" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-dasharray="4 3"/>';
+    s+='<line x1="'+xa+'" y1="'+yH+'" x2="'+xb+'" y2="'+yH+'" stroke="#e06a6a" stroke-width="2.5" marker-end="url(#sn)"/>';
+    s+='<text x="'+((xa+xb)/2)+'" y="'+(yH-30)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e06a6a">🍾 bağlam</text><text x="'+((xa+xb)/2)+'" y="'+(yH+40)+'" text-anchor="middle" font-size="9" fill="#95a2c2">h ve c (2×24 sayı)</text>';
+    steps.forEach((t,i)=>{
+      const stroke=t.dec?'#46c46a':'#3a7afe';
+      if(t.dec){
+        for(let k=0;k<NO;k++){const p=t.d.pv[k],win=k===t.d.out,x=nx(t,k,NO,OD);
+          s+='<circle cx="'+x+'" cy="'+yO+'" r="3.6" fill="rgba(58,122,254,'+(0.1+0.9*p)+')" stroke="'+(win?'#46c46a':'#334063')+'" stroke-width="'+(win?1.8:.8)+'"/><text x="'+x+'" y="'+(yO-8)+'" text-anchor="middle" font-size="7" fill="#95a2c2" transform="rotate(-60 '+x+' '+(yO-8)+')">'+NAME(k)+'</text>';}
+        s+='<text x="'+t.x+'" y="'+(yO+22)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#46c46a">→ '+NAME(t.d.out)+' (%'+Math.round(t.d.p*100)+')</text>'+(i===3?'<text x="'+t.x+'" y="'+(yO-34)+'" text-anchor="middle" font-size="9" fill="#95a2c2">çıktı katmanı: 13 nöron</text>':'');
+      }
+      for(let k=0;k<NH;k++)s+='<circle cx="'+nx(t,k,NH,HD)+'" cy="'+yH+'" r="7" fill="'+col(t.h[idx[k]])+'" stroke="'+stroke+'" stroke-width="1.5"/>';
+      s+='<text x="'+t.x+'" y="'+(yH+24)+'" text-anchor="middle" font-size="9.5" fill="#95a2c2">LSTM gizli: 24 nöron</text>';
+      for(let k=0;k<NE;k++)s+='<circle cx="'+nx(t,k,NE,ED)+'" cy="'+yE+'" r="6" fill="'+col(t.emb[k]*2)+'" stroke="#334063"/>';
+      s+='<text x="'+t.x+'" y="'+(yE+21)+'" text-anchor="middle" font-size="9.5" fill="#95a2c2">gömme: 8 sayı</text>';
+      s+='<line x1="'+t.x+'" y1="'+(yT)+'" x2="'+t.x+'" y2="'+(yE+26)+'" stroke="#95a2c2" stroke-width=".8"/><rect x="'+(t.x-22)+'" y="'+yT+'" width="44" height="24" rx="6" fill="#0e1424" stroke="'+stroke+'"/><text x="'+t.x+'" y="'+(yT+17)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">'+NAME(t.tok)+'</text>';
+    });
+    const W=X0+7*CW;
+    const svg=document.getElementById('sa_neur');svg.setAttribute('viewBox','0 -26 '+W+' 412');svg.innerHTML=s;
+  }
   function grid(){
     const ck=D.ck[st.ci];let h='<tr><th></th>';for(let b=0;b<10;b++)h+='<th style="padding:2px 6px">+'+b+'</th>';h+='</tr>';
     for(let a=0;a<10;a++){h+='<tr><th style="padding:2px 6px">'+a+'</th>';for(let b=0;b<10;b++){
@@ -103,7 +147,7 @@
     const nT=D.test.filter(i=>ck.preds[i]===Math.floor((Math.floor(i/10)+i%10)/10)*169+((Math.floor(i/10)+i%10)%10)*13+EN).length;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  function all(){draw();grid();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
+  function all(){draw();neur();grid();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
   ckb.addEventListener('click',e=>{if(e.target.dataset.i!==undefined){st.ci=+e.target.dataset.i;st.step=7;all();}});
   sa.addEventListener('change',()=>{st.a=+sa.value;st.step=0;all();});sb.addEventListener('change',()=>{st.b=+sb.value;st.step=0;all();});
   document.getElementById('sa_next').addEventListener('click',()=>{st.step=st.step>=7?1:st.step+1;all();});
