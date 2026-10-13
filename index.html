@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610132100"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610132200"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610132100">
+<link rel="stylesheet" href="css/style.css?v=202610132200">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 21:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 22:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5125,6 +5125,7 @@ print(&quot;4) kararlı softmax:&quot;, softmax(dev))
         <div class="ex-card"><span class="ex-ico">🎧</span><b>Öneri sistemleri</b> — şarkılar, filmler, ürünler de kelime gibi vektöre çevrilir; "bunu dinleyenler şunu da dinledi" = vektörleri yakın.</div>
         <div class="ex-card"><span class="ex-ico">🌐</span><b>Makine çevirisi</b> — farklı dillerdeki "kedi / cat / chat" kelimelerinin vektörleri benzer bölgeye düşer; çeviri bu uzayda yol bulmaktır.</div>
         <div class="ex-card"><span class="ex-ico">🤖</span><b>ChatGPT'nin ilk katmanı</b> — sizin yazdığınız her kelime önce bir embedding tablosundan vektöre çevrilir; asıl hesap bu vektörler üzerinde yapılır.</div>
+        <div class="ex-card"><span class="ex-ico">🍽️</span><b>Restoran önerisi</b> — "caz müzikli bir et lokantası" isteyene, "et lokantası" ve "caz" vektörlerinin toplamına en yakın mekânlar önerilir (bir rezervasyon sitesinin gerçek kullanımı).</div>
         <div class="ex-card"><span class="ex-ico">📧</span><b>Spam ve duygu analizi</b> — "bedava, kazan, tıkla" kelimelerinin vektörleri benzer yöne bakar; sınıflandırıcı o yöne bakan cümleleri yakalar.</div>
       </div>
     </div>
@@ -5212,6 +5213,54 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="sechead">➕ "Yüz" sorunu: tek vektör yetmiyor</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Yüzü güzel", "yüz lira", "yüzmeyi bilmiyor": üç ayrı anlam. Klasik embedding "yüz" kelimesine <b>tek</b> bir vektör verir ve üç anlamın ortalamasında bir yerde kalır. <b>Bağlamsal embedding</b> (ELMo, BERT, ChatGPT) vektörü her cümlede <b>çevre kelimelere bakarak</b> yeniden hesaplar: "yüz lira"daki "yüz" sayı bölgesine, "yüzü güzel"deki surat bölgesine gider. Bunu yapan mekanizma sıradaki derslerin konusu: <b>attention</b>.</p>
+  </div>
+  <div class="sechead">➕ word2vec'in ek parçaları: CBOW, pencere, negatif örnekleme, hazır modeller</div>
+  <div class="pts">
+    <p style="font-size:13px;color:var(--muted)">Bu bölüm, word2vec'i Türkçe anlatan bir yazıdaki ek konularla (Muhammed Büyükkınacı, "Word2Vec Nedir?", Medium, 2018) sayfayı tamamlar.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>🧱 Ağın şekli.</b> Girdi katmanı = <b>one-hot</b> kelime (V nöron, V = sözlük boyu), gizli katman = <b>D nöron</b> (vektör boyutu: 100, 150, 300…), çıktı katmanı = yine <b>V nöron</b> + softmax. Girdi ile çıktı nöron sayısı eşittir çünkü ikisi de "sözlükteki kelime"dir. Girdi→gizli arasında <b>aktivasyon yoktur</b> (doğrusal): one-hot × W zaten W'nin bir satırını okumaktır, yani yukarıdaki lookup tablosu. Kelimenin vektörü = o satır. Aktivasyon (softmax) yalnız gizli→çıktı arasında vardır.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>🔀 İki alt yöntem.</b> <b>Skip-gram</b>: merkez kelimeden <b>komşuları</b> tahmin eder (bu sayfanın anlattığı). <b>CBOW</b> (Continuous Bag of Words): <b>komşulardan</b> merkez kelimeyi tahmin eder. Aşağıda aynı cümleden hangi eğitim örneklerinin çıktığını ve pencere boyunun etkisini gör.</p>
+    <div id="embExtra"></div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>⚙️ Hiperparametreler.</b> (1) <b>Pencere boyu</b>: merkezin sağında ve solunda kaç kelime komşu sayılır. (2) <b>Vektör boyutu</b> (gizli nöron sayısı): kelimeler kaç boyutlu uzayda temsil edilir; 150 nöron = 150 boyut. (3) <b>Epoch</b>: veri üzerinden kaç tur; gensim'in varsayılanı 5, 15–20'ye çıkarmak sonucu iyileştirebilir. Sayfadaki 2 boyut yalnız çizilebilsin diye; gerçek modelde yüzlerce boyut kullanılır ve 2B'de görmek için <b>t-SNE</b> gibi bir yöntemle boyut düşürülür.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>🧹 Ön işleme.</b> Ham metin önce küçük harfe çevrilir, cümlelere bölünür, noktalama atılır ve her cümle <b>kelime listesi</b> olur; modele "liste listesi" verilir. Ek adımlar: <b>etkisiz kelimeleri</b> (stop-words: "ama", "belki", "şey") atmak ve <b>lemmatization</b> (köke indirme: "albayım" → "albay"). Türkçe gibi ek alan dillerde bu adım önemlidir: "gitti, gidiyor, gidecek" ayrı kelimeler sayılır.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>🚀 Eğitimi hızlandıran üç hile</b> (Mikolov ve arkadaşlarının ikinci makalesi): (1) <b>Deyimleşmiş çiftleri tek kelime</b> saymak ("sabancı holding" → <i>sabancı_holding</i>); (2) <b>Etkisiz/çok sık kelimeleri</b> seyreltmek ya da atmak; (3) <b>Negatif örnekleme</b> (aşağıdaki hesap): her çiftte 2–20 yanlış kelimeyi güncellemek.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>📦 Hazır model.</b> Kendin eğitmek zorunda değilsin: Google, <b>~100 milyar kelimelik</b> Google News verisiyle 300 boyutlu bir word2vec modeli eğitti (~1,5 GB, İngilizce). gensim ile tek satırda yüklenir (aşağıdaki kod kutusunun sonunda). Türkçe için ayrı eğitilmiş modeller ya da <b>fastText</b> (ek alan dillerde alt-kelime parçalarıyla daha iyi) tercih edilir.</p>
+    <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Python — eğitim örneklerini üretmek + negatif örnekleme hesabı (çalıştırıldı)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># word2vec eğitim örneklerini üretmek: cümle + pencere (w) -&gt; (girdi, çıktı) çiftleri
+def ornekler(kelimeler, w, yontem):
+    cikti = []
+    for i, orta in enumerate(kelimeler):                      # her kelime sırayla &quot;merkez&quot; olur
+        komsular = [kelimeler[j] for j in range(max(0, i - w), min(len(kelimeler), i + w + 1)) if j != i]
+        if yontem == &quot;skipgram&quot;:
+            for k in komsular:                                # merkez -&gt; her komşu ayrı örnek
+                cikti.append((orta, k))
+        else:                                                 # cbow: tüm komşular birlikte -&gt; merkez (tek örnek)
+            cikti.append((komsular, orta))
+    return cikti
+
+cumle = &quot;bir yandan da hiç konuşmak istemiyor&quot;.split()
+for w in (1, 2):
+    sg = ornekler(cumle, w, &quot;skipgram&quot;); cb = ornekler(cumle, w, &quot;cbow&quot;)
+    print(&quot;pencere&quot;, w, &quot;skip-gram:&quot;, len(sg), &quot;örnek | cbow:&quot;, len(cb), &quot;örnek&quot;)   # kaç eğitim örneği çıktı
+print(ornekler(cumle, 1, &quot;skipgram&quot;)[:4])                     # ilk 4 skip-gram örneği
+print(ornekler(cumle, 1, &quot;cbow&quot;)[:3])                         # ilk 3 cbow örneği
+
+V, D, k = 100_000, 300, 10
+print(&quot;tam softmax çarpım-toplam:&quot;, V * D)                    # her çift için V aday x D boyut
+print(&quot;negatif örnekleme:&quot;, (1 + k) * D)                      # 1 doğru + k yanlış aday x D boyut
+print(&quot;oran:&quot;, round(V / (1 + k)))
+
+# --- Hazır model yüklemek (gensim ile; bu sayfada ÇALIŞTIRILMADI, yalnız kullanım örneği) ---
+# from gensim.models import KeyedVectors
+# model = KeyedVectors.load_word2vec_format(&quot;GoogleNews-vectors-negative300.bin&quot;, binary=True)  # ~1,5 GB, 300 boyut
+# model.most_similar(positive=[&quot;king&quot;, &quot;woman&quot;], negative=[&quot;man&quot;])   # -&gt; &quot;queen&quot; gibi sonuçlar
+
+# ---- ÇIKTI (ilk bölüm) ----
+# pencere 1 skip-gram: 10 örnek | cbow: 6 örnek
+# pencere 2 skip-gram: 18 örnek | cbow: 6 örnek
+# [('bir', 'yandan'), ('yandan', 'bir'), ('yandan', 'da'), ('da', 'yandan')]
+# [(['yandan'], 'bir'), (['bir', 'da'], 'yandan'), (['yandan', 'hiç'], 'da')]
+# tam softmax çarpım-toplam: 30000000
+# negatif örnekleme: 3300
+# oran: 9091</pre></div></div>
   </div>
     </div>
   </div>
@@ -8060,43 +8109,44 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610132100"></script>
-<script src="js/lesson-turev.js?v=202610132100"></script>
-<script src="js/lesson-xor.js?v=202610132100"></script>
-<script src="js/lesson-xor-arch.js?v=202610132100"></script>
-<script src="js/lesson-xor-maps.js?v=202610132100"></script>
-<script src="js/lesson-xor-epoch.js?v=202610132100"></script>
-<script src="js/lesson-nn.js?v=202610132100"></script>
-<script src="js/lesson-trig.js?v=202610132100"></script>
+<script src="js/lesson-linreg.js?v=202610132200"></script>
+<script src="js/lesson-turev.js?v=202610132200"></script>
+<script src="js/lesson-xor.js?v=202610132200"></script>
+<script src="js/lesson-xor-arch.js?v=202610132200"></script>
+<script src="js/lesson-xor-maps.js?v=202610132200"></script>
+<script src="js/lesson-xor-epoch.js?v=202610132200"></script>
+<script src="js/lesson-nn.js?v=202610132200"></script>
+<script src="js/lesson-trig.js?v=202610132200"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610132100"></script>
-<script src="js/lesson-rnn-soz.js?v=202610132100"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610132200"></script>
+<script src="js/lesson-rnn-soz.js?v=202610132200"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610132100"></script>
-<script src="js/lesson-lstm-cell.js?v=202610132100"></script>
-<script src="js/app.js?v=202610132100"></script>
-<script src="js/lesson-lstm-big.js?v=202610132100"></script>
-<script src="js/lesson-lstm-step.js?v=202610132100"></script>
-<script src="js/lesson-lstm-size.js?v=202610132100"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610132100"></script>
-<script src="js/lesson-s2s-weights.js?v=202610132100"></script>
-<script src="js/lesson-s2s-add.js?v=202610132100"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610132100"></script>
-<script src="js/lesson-emb-ornek.js?v=202610132100"></script>
-<script src="js/lesson-emb-steps.js?v=202610132100"></script>
-<script src="js/lesson-emb-big.js?v=202610132100"></script>
-<script src="js/lesson-sm-ornek.js?v=202610132100"></script>
-<script src="js/lesson-sm-big.js?v=202610132100"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610132100"></script>
-<script src="js/lesson-lstm-gate.js?v=202610132100"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610132100"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610132100"></script>
-<script src="js/lesson-linreg-big.js?v=202610132100"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610132100"></script>
-<script src="js/lesson-act-big.js?v=202610132100"></script>
-<script src="js/lesson-act-ornek.js?v=202610132100"></script>
-<script src="js/lesson-xor-ornek.js?v=202610132100"></script>
-<script src="js/lesson-nn-ornek.js?v=202610132100"></script>
-<script src="js/lesson-nn-net.js?v=202610132100"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610132200"></script>
+<script src="js/lesson-lstm-cell.js?v=202610132200"></script>
+<script src="js/app.js?v=202610132200"></script>
+<script src="js/lesson-lstm-big.js?v=202610132200"></script>
+<script src="js/lesson-lstm-step.js?v=202610132200"></script>
+<script src="js/lesson-lstm-size.js?v=202610132200"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610132200"></script>
+<script src="js/lesson-emb-extra.js?v=202610132200"></script>
+<script src="js/lesson-s2s-weights.js?v=202610132200"></script>
+<script src="js/lesson-s2s-add.js?v=202610132200"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610132200"></script>
+<script src="js/lesson-emb-ornek.js?v=202610132200"></script>
+<script src="js/lesson-emb-steps.js?v=202610132200"></script>
+<script src="js/lesson-emb-big.js?v=202610132200"></script>
+<script src="js/lesson-sm-ornek.js?v=202610132200"></script>
+<script src="js/lesson-sm-big.js?v=202610132200"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610132200"></script>
+<script src="js/lesson-lstm-gate.js?v=202610132200"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610132200"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610132200"></script>
+<script src="js/lesson-linreg-big.js?v=202610132200"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610132200"></script>
+<script src="js/lesson-act-big.js?v=202610132200"></script>
+<script src="js/lesson-act-ornek.js?v=202610132200"></script>
+<script src="js/lesson-xor-ornek.js?v=202610132200"></script>
+<script src="js/lesson-nn-ornek.js?v=202610132200"></script>
+<script src="js/lesson-nn-net.js?v=202610132200"></script>
 </body>
 </html>
