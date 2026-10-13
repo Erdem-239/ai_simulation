@@ -27,13 +27,19 @@
     }
     return cells;
   }
-  const ui={cell:0,gate:0,k:null};
+  const ui={cell:0,gate:0,k:null,step:0};
   const strip=(vals,w,hgt)=>{const cw=w/vals.length;let s='<svg width="'+w+'" height="'+hgt+'" style="display:block">';vals.forEach((v,j)=>{const a=Math.min(1,Math.abs(v));s+='<rect x="'+(j*cw)+'" y="0" width="'+Math.max(1,cw-0.6)+'" height="'+hgt+'" fill="'+(v>=0?'rgba(70,196,106,':'rgba(224,106,106,')+(0.12+0.88*a)+')"><title>'+fm(v,3)+'</title></rect>';});return s+'</svg>';};
   host.innerHTML=
    '<div style="font-size:13px;color:#ccd5e8;line-height:1.7;margin:4px 0 10px">A\'daki her "LSTM hücre" kutusu aslında şu hesabı yapıyor. Aşağıda <b>seçtiğin soru ve modelin gerçek ağırlıklarıyla</b> bir hücreyi, bir nöronu açıyoruz. Soru ve model A bölümündeki seçimle aynı (oradan değiştir, burası takip eder).</div>'+
    '<div id="si_cells" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>'+
    '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px"><span>Hangi nöron? (24 gizli nörondan biri)</span><select id="si_k" class="rex-sel"></select><span id="si_kinfo" style="color:var(--muted)"></span></div>'+
    '<div id="si_head" style="font-size:13px;color:#ccd5e8;line-height:1.7;margin-bottom:6px"></div>'+
+   '<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin:10px 0">'+
+     '<div style="flex:1 1 520px;min-width:0;overflow-x:auto"><svg id="si_cellsvg" viewBox="0 0 760 390" style="width:100%;max-width:680px;min-width:500px;display:block;margin:0 auto" role="img" aria-label="Seçilen nöron için LSTM hücre şeması"></svg></div>'+
+     '<div style="flex:1 1 260px;min-width:0"><div style="font-size:13px;color:#ccd5e8;line-height:1.6;margin-bottom:6px">🧱 <b>Hücrenin mimarisi.</b> Soldaki şema, seçtiğin <b>tek nöronun</b> hesabı: 24 nöronun her biri aynı şemayı kendi ağırlıklarıyla çalıştırır.</div>'+
+     '<div style="display:flex;gap:6px;margin-bottom:8px"><button class="addbtn" id="si_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="si_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
+     '<div id="si_stepmsg" class="callout" style="font-size:13px;line-height:1.6"></div>'+
+     '<div style="font-size:12px;color:#aeb9d4;line-height:1.7;margin-top:8px"><b>Şemada:</b> <span style="color:#7ad8e8">x</span> = girdinin gömmesi (8 sayı), <span style="color:#f0a0a0">hₜ₋₁</span> = önceki durum (24 sayı), <b>W·x</b> ve <b>U·h</b> = bu nöronun ağırlıklarıyla çarpım toplamları (tablodaki sütunlar), ⊗ çarp, ⊕ topla, σ/tanh aktivasyon, üstteki yeşil hat = uzun hafıza c, alttaki kırmızı hat = h.</div></div></div>'+
    '<div id="si_tbl"></div>'+
    '<div id="si_gatebtn" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px;font-size:13px;align-items:center"></div>'+
    '<div style="overflow-x:auto"><svg id="si_bars" style="min-width:560px;width:100%;max-width:760px;display:block"></svg></div>'+
@@ -59,6 +65,25 @@
       '<b>c</b> = f · c₋₁ + i · c̃ = '+fm(d.f[k],3)+' × '+fm(d.cp[k],3)+' + '+fm(d.i[k],3)+' × '+fm(d.g[k],3)+' = <b>'+fm(d.c[k],3)+'</b> <span style="color:var(--muted)">(unutma kapısı eski hafızayı ne kadar tutacağını, giriş kapısı adayı ne kadar yazacağını söyler)</span><br>'+
       '<b>h</b> = o · tanh(c) = '+fm(d.o[k],3)+' × tanh('+fm(d.c[k],3)+') = <b>'+fm(d.h[k],3)+'</b> <span style="color:var(--muted)">(bu nöronun bu adımdaki çıktısı; sonraki hücreye ve çıktı katmanına gider)</span></div>';
     $('si_tbl').innerHTML=t;
+    // --- seçilen nöron için hücre şeması + adım adım ---
+    const kk=k,V={f:d.f[kk],i:d.i[kk],o:d.o[kk],cp:d.cp[kk],ct:d.g[kk],fc:d.f[kk]*d.cp[kk],ic:d.i[kk]*d.g[kk],c:d.c[kk],tc:Math.tanh(d.c[kk]),h:d.h[kk],lbl:'dot',xTxt:'x (8 sayı)',hpTxt:'hₜ₋₁ (24)',x:0,hp:0,
+      Wt:{f:[d.wx[kk],d.uh[kk],d.b[kk]],i:[d.wx[H+kk],d.uh[H+kk],d.b[H+kk]],c:[d.wx[2*H+kk],d.uh[2*H+kk],d.b[2*H+kk]],o:[d.wx[3*H+kk],d.uh[3*H+kk],d.b[3*H+kk]]},
+      zz:{f:d.z[kk],i:d.z[H+kk],c:d.z[2*H+kk],o:d.z[3*H+kk]}};
+    const B=x=>'<b>'+x+'</b>',n3=x=>fm(x,3);
+    const STEPS=[
+     {hl:[],m:'Şemadaki sayılar seçtiğin nöronun gerçek değerleri. <b>İleri ▶</b> ile hesabı sırayla kur.'},
+     {hl:['x','h0','fbox','ibox','gbox','obox'],m:'<b>1) Kapılar.</b> x ve hₜ₋₁ dört kutuya girer; her kutu kendi ağırlıklarıyla <b>z = W·x + U·h + b</b> hesaplar, sonra aktivasyon: f='+B(n3(V.f))+', i='+B(n3(V.i))+', c̃='+B(n3(V.ct))+', o='+B(n3(V.o))+'. (Sayılar tablodaki gibi.)'},
+     {hl:['c0','mulf','fbox'],m:'<b>2) Unut.</b> Eski hafıza c₋₁ unutma kapısıyla çarpılır: f·c₋₁ = '+n3(V.f)+' × '+n3(V.cp)+' = '+B(n3(V.fc))+'. f 1\'e yakınsa hafıza korunur, 0\'a yakınsa silinir.'},
+     {hl:['mului','ibox','gbox'],m:'<b>3) Yeni bilgi.</b> Aday c̃ giriş kapısıyla çarpılır: i·c̃ = '+n3(V.i)+' × '+n3(V.ct)+' = '+B(n3(V.ic))+'. i yeni bilginin ne kadarının defter\'e yazılacağını söyler.'},
+     {hl:['plus'],m:'<b>4) Topla.</b> c = f·c₋₁ + i·c̃ = '+n3(V.fc)+' + '+n3(V.ic)+' = '+B(n3(V.c))+'. Yeni uzun hafıza.'},
+     {hl:['ct'],m:'<b>5) Hafızayı ilet.</b> c = '+B(n3(V.c))+' sağdaki yeşil hattan <b>bir sonraki hücreye</b> gider (otoban).'},
+     {hl:['tanhe'],m:'<b>6) Sıkıştır.</b> tanh(c) = tanh('+n3(V.c)+') = '+B(n3(V.tc))+' (−1…+1 arası).'},
+     {hl:['mulo','obox'],m:'<b>7) Çıkış kapısı.</b> h = o · tanh(c) = '+n3(V.o)+' × '+n3(V.tc)+' = '+B(n3(V.h))+'. Hafızanın ne kadarının dışarı söyleneceği.'},
+     {hl:['ht'],m:'<b>8) Bitti.</b> h = '+B(n3(V.h))+' '+(d.role==='dec'?'çıktı katmanına (13 skor) ve bir sonraki hücreye':'bir sonraki hücreye')+' gider. <b style="color:#46c46a">✓ Bu nöronun hesabı tamam.</b>'}];
+    const stp=STEPS[ui.step];
+    $('si_cellsvg').innerHTML=window.lstmCellSvg?window.lstmCellSvg('si_',V,stp.hl):'';
+    $('si_stepmsg').innerHTML='<div style="color:var(--muted);font-size:11.5px;margin-bottom:3px">Adım '+ui.step+' / 8</div>'+stp.m;
+    $('si_next').textContent=ui.step>=8?'↺ Baştan':'İleri ▶';
     $('si_gatebtn').innerHTML='<span>Bu kapının z\'sine <b>kim ne kadar katkı yaptı?</b></span>'+GS.map((n,g)=>'<button class="addbtn" data-g="'+g+'" style="'+(g===ui.gate?'background:'+GC[g]+';color:#111':'background:var(--panel);color:var(--text)')+';border:1px solid var(--line)">'+n+'</button>').join('');
     // katkı çubukları: 8 girdi terimi + 24 durum terimi
     const g=ui.gate,r=g*H+k,row=d.W[r],terms=[];
@@ -76,6 +101,8 @@
   $('si_cells').addEventListener('click',e=>{const b=e.target.closest('[data-ci]');if(b){ui.cell=+b.dataset.ci;render();}});
   $('si_gatebtn').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b){ui.gate=+b.dataset.g;render();}});
   ks.addEventListener('change',()=>{ui.k=+ks.value;render();});
+  $('si_next').addEventListener('click',()=>{ui.step=ui.step>=8?1:ui.step+1;render();});
+  $('si_rst').addEventListener('click',()=>{ui.step=0;render();});
   // ---- ağırlık ısı haritaları ----
   const MATS=[['emb','Gömme tablosu (13×8)',14,'satır = sembol, sütun = gömme boyutu'],['We','Encoder W (96×32)',4,'satırlar 4 kapı × 24 nöron (f,i,c̃,o), sütunlar: ilk 8 = x ağırlığı, son 24 = h₋₁ ağırlığı'],['Wd','Decoder W (96×32)',4,'encoder ile aynı şekil, ayrı ağırlıklar'],['Wo','Çıktı katmanı (13×24)',7,'satır = çıktı sembolü, sütun = gizli nöron']];
   let mi=1,sel=null;
