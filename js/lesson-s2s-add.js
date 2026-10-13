@@ -11,7 +11,7 @@
     for(let k=0;k<H;k++){f[k]=sig(z[k]);i[k]=sig(z[H+k]);g[k]=Math.tanh(z[2*H+k]);o[k]=sig(z[3*H+k]);c2[k]=f[k]*c[k]+i[k]*g[k];h2[k]=o[k]*Math.tanh(c2[k]);}
     return {h:h2,c:c2,f,i,g,o};
   }
-  function run(ck,a,b){
+  function run(ck,a,b,feed){
     const P=ck.W, src=[a,PLUS,b], enc=[]; let h=new Array(H).fill(0), c=new Array(H).fill(0);
     for(const t of src){const r=cell(P.We,P.be,P.emb[t],h,c);h=r.h;c=r.c;enc.push({tok:t,h:r.h,c:r.c});}
     const ctx={h:h.slice(),c:c.slice()}, dec=[]; let tok=ST;
@@ -20,10 +20,28 @@
       const lg=P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*h[j];return q;});
       const mx=Math.max(...lg),ex=lg.map(v=>Math.exp(v-mx)),sm=ex.reduce((x,y)=>x+y,0),p=ex.map(v=>v/sm);
       let best=0;for(let k=1;k<V;k++)if(lg[k]>lg[best])best=k;
-      dec.push({inp:tok,out:best,p:p[best],pv:p,h:r.h,c:r.c});tok=best;
+      dec.push({inp:tok,out:best,p:p[best],pv:p,h:r.h,c:r.c});tok=(feed&&feed[s]!==undefined)?feed[s]:best;
     }
     return {enc,ctx,dec,code:dec[0].out*169+dec[1].out*13+dec[2].out};
   }
+
+  function beam(ck,a,b,width){
+    const P=ck.W;let h=new Array(H).fill(0),c=new Array(H).fill(0);
+    for(const t of [a,PLUS,b]){const r=cell(P.We,P.be,P.emb[t],h,c);h=r.h;c=r.c;}
+    let hyps=[{seq:[],lp:0,h,c,tok:ST}];
+    for(let s=0;s<3;s++){
+      const cand=[];
+      hyps.forEach(hy=>{
+        const r=cell(P.Wd,P.bd,P.emb[hy.tok],hy.h,hy.c);
+        const lg=P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*r.h[j];return q;});
+        const mx=Math.max(...lg),lse=mx+Math.log(lg.reduce((x,v)=>x+Math.exp(v-mx),0));
+        for(let k=0;k<V;k++)cand.push({seq:hy.seq.concat(k),lp:hy.lp+lg[k]-lse,h:r.h,c:r.c,tok:k});
+      });
+      cand.sort((x,y)=>y.lp-x.lp);hyps=cand.slice(0,width);
+    }
+    return hyps.map(x=>({seq:x.seq,lp:x.lp,p:Math.exp(x.lp)}));
+  }
+  window.__s2sBeam=beam;
   window.__s2sRun=run; window.__s2sParity=()=>{const bad=[];D.ck.forEach((ck,ci)=>{for(let a=0;a<10;a++)for(let b=0;b<10;b++)if(run(ck,a,b).code!==ck.preds[a*10+b])bad.push([ci,a,b]);});return bad;};
   const el=document.getElementById('s2sAdd'); if(!el) return;
   const TEST=new Set(D.test);
