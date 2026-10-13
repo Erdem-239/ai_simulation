@@ -1665,3 +1665,5 @@ body.xt-full-lock{overflow:hidden}
 .lv-card p{margin:5px 0}
 .lv-card .lv-live{background:rgba(255,216,74,.08);border-radius:6px;padding:4px 7px;color:#ffe9a0}
 @media(max-width:1300px){.lv-mid{order:-1;flex-basis:100%}.lv-side{max-width:none}}
+.s2s-go{color:#7ec8ff; text-decoration:underline dotted; cursor:pointer}
+.s2s-go:hover{color:#ffd54a}

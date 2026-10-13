@@ -110,6 +110,13 @@
   mb.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(b){mi=+b.dataset.m;sel=null;drawMaps();journey();}});
   const P0=D.ck[0].W;let np=0;['emb','We','Wd','Wo'].forEach(k=>np+=P0[k].length*P0[k][0].length);['be','bd','bo'].forEach(k=>np+=P0[k].length);
   $('si_params').textContent='Bu ağın toplam '+np.toLocaleString('tr-TR')+' ağırlığı var (gömme + encoder + decoder + çıktı katmanı + bias\'lar). Eğitim bunların hepsini birlikte ayarlıyor.';
+  // A–F haritası: bağlantıya tıkla → ilgili bölüme kay (kapalı sahne ise önce aç)
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a.s2s-go');if(!a)return;e.preventDefault();
+    const t=document.getElementById(a.dataset.goto);if(!t)return;
+    const sh=t.querySelector('.sahne-head.closed');if(sh)sh.click();
+    t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
   window.__s2sInsideRender=render;
   window.__s2sInsideCheck=()=>{const S=window.__s2sAdd,r=window.__s2sRun(D.ck[S.ci],S.a,S.b),t=trace(D.ck[S.ci],S.a,S.b);let m=0;r.enc.forEach((e,i)=>e.h.forEach((v,j)=>m=Math.max(m,Math.abs(v-t[i].h[j]))));r.dec.forEach((d,i)=>{d.h.forEach((v,j)=>m=Math.max(m,Math.abs(v-t[3+i].h[j])));if(d.out!==t[3+i].out)m=9;});return m;};
   drawMaps();journey();render();
