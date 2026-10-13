@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610140000"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610140100"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610140000">
+<link rel="stylesheet" href="css/style.css?v=202610140100">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 00:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 01:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5282,7 +5282,7 @@ print(&quot;oran:&quot;, round(V / (1 + k)))
   <div class="tpl-cl" data-stage="3">
     <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç küçük örnek. Birincisinde <b>kelime vektörlerini ağ kendisi öğrenir</b> (başta rastgele, yan yana geçen kelimeler yaklaşır); ikincisi one-hot ile öğrenilmiş embedding'i kıyaslar; üçüncüsü "tablodan satır okuma"yı elle gösterir. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Dört küçük örnek. Birincisinde <b>kelime vektörlerini ağ kendisi öğrenir</b> (başta rastgele, yan yana geçen kelimeler yaklaşır); ikincisi one-hot ile öğrenilmiş embedding'i kıyaslar; üçüncüsü "tablodan satır okuma"yı elle gösterir. Dördüncüsü <b>eğitilmiş vektörleri kullanmayı</b> gösterir: en yakın kelimeler ve başka bir modele girdi yapmak. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
 <div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Kelime vektörleri komşu tahminiyle kendi kendine öğreniliyor</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 6 kelimenin 2 sayıdan oluşan vektörleri başta <b>rastgele</b>. Eğitim verisi sadece "hangi kelime hangisinin yanında geçmiş": kedi/köpek → uyudu, koştu; kral/kraliçe → yönetti, tahtta; elma/armut → tatlı, taze. Model "kelimeye bakıp komşusunu tahmin et" oyununu oynarken vektörleri de düzeltiyor. ▶ ile izle ya da <b>+1 epoch</b> ile adım adım ilerle.</p><div id="embEx1"></div><div class="callout"><b>💡 Sezgi:</b> Başlangıçta ilişki yok, hatta rastgele "kedi~kral" +0,98 çıkıyor (aynı yöne bakıyorlar) ve "kedi~köpek" −0,46. Eğitimden sonra <b>aynı bağlamları paylaşan kelimeler tam aynı yöne</b> (kedi~köpek +1,00), farklı gruplar uzak yönlere (≈ −0,5; 2 boyutta 3 grup 120° arayla dizilir) yerleşiyor. Kimse "kedi ile köpek benzer" demedi — sadece <b>komşuluk</b> verildi. Gerçek modellerde milyarlarca cümle ve yüzlerce boyut var; mantık aynı. <i>Not: bu oyuncakta aynı gruptaki kelimeler bağlamları <b>tamamen</b> paylaştığı için cosine tam 1,00 çıkıyor; gerçek dilde komşuluklar kısmen örtüştüğü için benzerlik 0,6–0,8 gibi değerlerde kalır.</i></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 
 kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
@@ -5384,6 +5384,86 @@ print(&quot;aynı mı? :&quot;, carpim == satir)
 # çarpım   : [2.07, -1.04]
 # lookup   : [2.07, -1.04]
 # aynı mı? : True</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 4 — Eğitilmiş vektörleri kullanmak (mini Hogwarts kitabı)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bir kitabı (burada minik bir "Hogwarts" kitabı) word2vec'e okutuyoruz. Sorular: (1) vektörler gerçekten anlamlı mı, en yakın kelimeler kim? (2) Bu vektörleri başka bir modele girdi yapınca ne kazanırız? Akış: <b>kitap → sözlük → eğitim çiftleri → rastgele vektörler → tahmin oyunuyla eğitim → vektörleri kullan</b>.</p><div id="embUse"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Python — baştan sona (çalıştırıldı, sayfadaki sayılarla aynı)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+def S(it):
+    t = 0.0
+    for x in it: t += x                   # düz toplama (Python&#x27;un sum() fonksiyonu telafili toplar; JS ile birebir olsun diye elle yazıldı)
+    return t
+# mini &quot;Hogwarts&quot; kitabı: 3 kelimelik cümleler, pencere = 1
+CUMLE = [&quot;harry kitap okudu&quot;,&quot;ron kitap okudu&quot;,&quot;hermione kitap okudu&quot;,
+         &quot;harry büyü yaptı&quot;,&quot;ron büyü yaptı&quot;,&quot;hermione büyü yaptı&quot;,
+         &quot;dumbledore büyü öğretti&quot;,&quot;snape büyü öğretti&quot;,
+         &quot;dumbledore hogwarts yönetti&quot;,&quot;snape hogwarts yönetti&quot;,
+         &quot;hogwarts büyülü kale&quot;]
+SOZLUK = [&quot;harry&quot;,&quot;ron&quot;,&quot;hermione&quot;,&quot;dumbledore&quot;,&quot;snape&quot;,&quot;hogwarts&quot;,&quot;kitap&quot;,&quot;büyü&quot;,&quot;okudu&quot;,&quot;yaptı&quot;,&quot;öğretti&quot;,&quot;yönetti&quot;,&quot;büyülü&quot;,&quot;kale&quot;]
+ID = {w:i for i,w in enumerate(SOZLUK)}
+def ciftler(w=1):
+    out=[]
+    for c in CUMLE:
+        k=[ID[x] for x in c.split()]
+        for i,m in enumerate(k):
+            for j in range(max(0,i-w),min(len(k),i+w+1)):
+                if j!=i: out.append((m,k[j]))
+    return out
+def lcg(s):
+    while True:
+        s=(s*1664525+1013904223)%4294967296; yield s/4294967296
+def egit(D=4,ep=500,lr=2.0,seed=1,sc=0.3):
+    V=len(SOZLUK);r=lcg(seed)
+    W=[[(next(r)-.5)*2*sc for _ in range(D)] for _ in range(V)]
+    C=[[(next(r)-.5)*2*sc for _ in range(D)] for _ in range(V)]
+    P=ciftler();n=len(P)
+    for _ in range(ep):
+        gW=[[0]*D for _ in range(V)];gC=[[0]*D for _ in range(V)]
+        for i,j in P:
+            s=[S(W[i][d]*C[k][d] for d in range(D)) for k in range(V)]
+            m=max(s);e=[math.exp(v-m) for v in s];z=S(e);p=[v/z for v in e]
+            for k in range(V):
+                dk=p[k]-(1 if k==j else 0)
+                for d in range(D):
+                    gW[i][d]+=dk*C[k][d]/n; gC[k][d]+=dk*W[i][d]/n
+        for i in range(V):
+            for d in range(D):
+                W[i][d]-=lr*gW[i][d]; C[i][d]-=lr*gC[i][d]
+    return W
+def cos(a,b):
+    return S(x*y for x,y in zip(a,b))/math.sqrt(S(x*x for x in a)*S(y*y for y in b))
+
+def sinif(W, egitim, test, ep=800, lr=1.0, onehot=False):
+    # lojistik regresyon: girdi = kelimenin vektörü (ya da one-hot), çıktı = P(öğrenci)
+    V=len(SOZLUK)
+    X=lambda w: ([1.0 if i==ID[w] else 0.0 for i in range(V)] if onehot else W[ID[w]])
+    n=len(X(egitim[0][0]));w=[0.0]*n;b=0.0
+    for _ in range(ep):
+        gw=[0.0]*n;gb=0.0
+        for k,y in egitim:
+            x=X(k);z=S(a*c for a,c in zip(w,x))+b;p=1/(1+math.exp(-z))
+            for d in range(n): gw[d]+=(p-y)*x[d]/len(egitim)
+            gb+=(p-y)/len(egitim)
+        w=[a-lr*g for a,g in zip(w,gw)];b-=lr*gb
+    out={}
+    for k in test:
+        x=X(k);z=S(a*c for a,c in zip(w,x))+b;out[k]=round(1/(1+math.exp(-z)),3)
+    return out
+
+W = egit(seed=1)                                   # kitabı oku, vektörleri öğren (500 epoch)
+def en_yakin(w, k=4):
+    i = ID[w]
+    return [(SOZLUK[j], round(cos(W[i], W[j]), 2)) for j in sorted(range(len(W)), key=lambda j: -cos(W[i], W[j])) if j != i][:k]
+print(len(ciftler()), &quot;eğitim çifti&quot;)
+print(&quot;harry&#x27;ye yakın:&quot;, en_yakin(&quot;harry&quot;))            # öğrenciler yan yana
+print(&quot;snape&#x27;e yakın :&quot;, en_yakin(&quot;snape&quot;))            # öğretmenler yan yana
+eg = [(&quot;harry&quot;, 1), (&quot;snape&quot;, 0)]                      # yalnızca 2 kelimeye etiket
+te = [&quot;harry&quot;, &quot;snape&quot;, &quot;ron&quot;, &quot;hermione&quot;, &quot;dumbledore&quot;]
+print(&quot;vektör girdisi :&quot;, sinif(W, eg, te))
+print(&quot;one-hot girdisi:&quot;, sinif(W, eg, te, onehot=True))
+
+# ---- ÇIKTI ----
+# 44 eğitim çifti
+# harry'ye yakın: [('hermione', 1.0), ('ron', 1.0), ('okudu', 0.77), ('yaptı', 0.75)]
+# snape'e yakın : [('dumbledore', 1.0), ('yaptı', 0.8), ('yönetti', 0.79), ('öğretti', 0.76)]
+# vektör girdisi : {'harry': 0.999, 'snape': 0.001, 'ron': 0.999, 'hermione': 0.999, 'dumbledore': 0.001}
+# one-hot girdisi: {'harry': 0.997, 'snape': 0.003, 'ron': 0.5, 'hermione': 0.5, 'dumbledore': 0.5}</pre></div></div></div></div>
     </div>
   </div>
 
@@ -8133,46 +8213,47 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610140000"></script>
-<script src="js/lesson-turev.js?v=202610140000"></script>
-<script src="js/lesson-xor.js?v=202610140000"></script>
-<script src="js/lesson-xor-arch.js?v=202610140000"></script>
-<script src="js/lesson-xor-maps.js?v=202610140000"></script>
-<script src="js/lesson-xor-epoch.js?v=202610140000"></script>
-<script src="js/lesson-nn.js?v=202610140000"></script>
-<script src="js/lesson-trig.js?v=202610140000"></script>
+<script src="js/lesson-linreg.js?v=202610140100"></script>
+<script src="js/lesson-turev.js?v=202610140100"></script>
+<script src="js/lesson-xor.js?v=202610140100"></script>
+<script src="js/lesson-xor-arch.js?v=202610140100"></script>
+<script src="js/lesson-xor-maps.js?v=202610140100"></script>
+<script src="js/lesson-xor-epoch.js?v=202610140100"></script>
+<script src="js/lesson-nn.js?v=202610140100"></script>
+<script src="js/lesson-trig.js?v=202610140100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610140000"></script>
-<script src="js/lesson-rnn-soz.js?v=202610140000"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610140100"></script>
+<script src="js/lesson-rnn-soz.js?v=202610140100"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610140000"></script>
-<script src="js/lesson-lstm-cell.js?v=202610140000"></script>
-<script src="js/app.js?v=202610140000"></script>
-<script src="js/lesson-lstm-big.js?v=202610140000"></script>
-<script src="js/lesson-lstm-step.js?v=202610140000"></script>
-<script src="js/lesson-lstm-size.js?v=202610140000"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610140000"></script>
-<script src="js/lesson-emb-arch.js?v=202610140000"></script>
-<script src="js/lesson-emb-extra.js?v=202610140000"></script>
-<script src="js/lesson-s2s-weights.js?v=202610140000"></script>
-<script src="js/lesson-s2s-add.js?v=202610140000"></script>
-<script src="js/lesson-s2s-extra.js?v=202610140000"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610140000"></script>
-<script src="js/lesson-emb-ornek.js?v=202610140000"></script>
-<script src="js/lesson-emb-steps.js?v=202610140000"></script>
-<script src="js/lesson-emb-big.js?v=202610140000"></script>
-<script src="js/lesson-sm-ornek.js?v=202610140000"></script>
-<script src="js/lesson-sm-big.js?v=202610140000"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610140000"></script>
-<script src="js/lesson-lstm-gate.js?v=202610140000"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610140000"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610140000"></script>
-<script src="js/lesson-linreg-big.js?v=202610140000"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610140000"></script>
-<script src="js/lesson-act-big.js?v=202610140000"></script>
-<script src="js/lesson-act-ornek.js?v=202610140000"></script>
-<script src="js/lesson-xor-ornek.js?v=202610140000"></script>
-<script src="js/lesson-nn-ornek.js?v=202610140000"></script>
-<script src="js/lesson-nn-net.js?v=202610140000"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610140100"></script>
+<script src="js/lesson-lstm-cell.js?v=202610140100"></script>
+<script src="js/app.js?v=202610140100"></script>
+<script src="js/lesson-lstm-big.js?v=202610140100"></script>
+<script src="js/lesson-lstm-step.js?v=202610140100"></script>
+<script src="js/lesson-lstm-size.js?v=202610140100"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610140100"></script>
+<script src="js/lesson-emb-kullan.js?v=202610140100"></script>
+<script src="js/lesson-emb-arch.js?v=202610140100"></script>
+<script src="js/lesson-emb-extra.js?v=202610140100"></script>
+<script src="js/lesson-s2s-weights.js?v=202610140100"></script>
+<script src="js/lesson-s2s-add.js?v=202610140100"></script>
+<script src="js/lesson-s2s-extra.js?v=202610140100"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610140100"></script>
+<script src="js/lesson-emb-ornek.js?v=202610140100"></script>
+<script src="js/lesson-emb-steps.js?v=202610140100"></script>
+<script src="js/lesson-emb-big.js?v=202610140100"></script>
+<script src="js/lesson-sm-ornek.js?v=202610140100"></script>
+<script src="js/lesson-sm-big.js?v=202610140100"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610140100"></script>
+<script src="js/lesson-lstm-gate.js?v=202610140100"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610140100"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610140100"></script>
+<script src="js/lesson-linreg-big.js?v=202610140100"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610140100"></script>
+<script src="js/lesson-act-big.js?v=202610140100"></script>
+<script src="js/lesson-act-ornek.js?v=202610140100"></script>
+<script src="js/lesson-xor-ornek.js?v=202610140100"></script>
+<script src="js/lesson-nn-ornek.js?v=202610140100"></script>
+<script src="js/lesson-nn-net.js?v=202610140100"></script>
 </body>
 </html>
