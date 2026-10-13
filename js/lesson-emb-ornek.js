@@ -21,6 +21,7 @@
   }
   function loss(st){let l=0;PAIRS.forEach(([i,j])=>{const p=softmax(st.C.map(c=>st.W[i][0]*c[0]+st.W[i][1]*c[1]));l-=Math.log(p[j])/PAIRS.length;});return l;}
   const trained=(()=>{const st=init();for(let e=0;e<MAXEP;e++)epoch(st);return st;})();
+  window.__embLab={init,epoch,loss,PAIRS,WD,CD,softmax,cos,MAXEP};
 
   /* ============ Örnek 1 ============ */
   const h1=$('embEx1');
