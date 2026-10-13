@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610132300"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610140000"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610132300">
+<link rel="stylesheet" href="css/style.css?v=202610140000">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 23:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 00:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5198,6 +5198,20 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div class="tpl-body closed">
       <div id="embSrc" style="display:none"></div>
       <div class="callout" style="border-left-color:#f0a032">🧭 <b>Bu bölüm bir kısaltma:</b> aynı adımın <b>3 adaylı</b> (uyudu, yönetti, tatlı) ve kutulu-oklu özeti. Verinin nereden geldiğini, kelime→sayı dönüşümünü ve adımları sıfırdan görmek için <b>4️⃣ Nedir → 🧭 En temelden</b> bölümüne bak (6 adaylı gerçek örnek). Buradaki <b>e</b> = kelimenin 2 sayılık vektörü, <b>c</b> = aday komşu kelimenin vektörü.</div>
+      <div class="callout" style="border-left-color:#ffd54a">🏷️ <b>Bu hangi model?</b> <b>word2vec — Skip-gram</b>. Tek gizli katmanlı, <b>aktivasyonsuz</b> (doğrusal) sığ bir sinir ağı: <b>girdi</b> = merkez kelime, <b>tahmin</b> (çıktı) = yanındaki kelimelerin olasılıkları (softmax). Ağın <b>ağırlıkları</b> iki tablo: <b>W</b> (kelime vektörleri) ve <b>C</b> (komşu/bağlam vektörleri). Eğitim bittikten sonra kullanılan şey W'dir: kelime vektörleri.</div>
+      <div id="embArch" style="margin:10px 0"></div>
+      <div class="acc open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — hangi harf ne? (ve "tahmin" nerede?)</div><div class="acc-body"><table class="rex-tbl" style="font-size:12.5px"><tr><th>sembol</th><th>anlamı</th><th>boyut / örnek</th></tr>
+        <tr><td><b>x</b></td><td>girdi: merkez kelime, <b>one-hot</b> (seçilen 1, diğerleri 0)</td><td>V sayı (V = sözlük; burada 6)</td></tr>
+        <tr><td><b>W</b></td><td>kelime tablosu (ağırlık). x·W = tablodan o kelimenin <b>satırı</b></td><td>V × D (6 × 2)</td></tr>
+        <tr><td><b>e</b></td><td>seçilen kelimenin <b>vektörü</b> (W'nin satırı)</td><td>D sayı (D = 2)</td></tr>
+        <tr><td><b>C</b>, <b>c<sub>k</sub></b></td><td>komşu (bağlam) tablosu; c<sub>k</sub> = k. adayın vektörü</td><td>her aday D sayı (burada 3 aday)</td></tr>
+        <tr><td><b>s<sub>k</sub></b></td><td><b>skor</b> = e · c<sub>k</sub> (nokta çarpım): vektörler aynı yöne bakıyorsa büyük</td><td>1 sayı / aday</td></tr>
+        <tr><td><b>p<sub>k</sub></b></td><td><b>TAHMİN</b>: softmax(s) = modelin "k. aday komşu olur" olasılığı</td><td>0–1, toplam 1</td></tr>
+        <tr><td><b>y<sub>k</sub></b></td><td><b>GERÇEK</b>: doğru komşuysa 1, değilse 0</td><td>one-hot</td></tr>
+        <tr><td><b>δ<sub>k</sub></b></td><td><b>tahmin hatası</b> = p<sub>k</sub> − y<sub>k</sub></td><td>1 sayı / aday</td></tr>
+        <tr><td><b>L</b></td><td><b>kayıp</b> = −ln p<sub>doğru</sub>: tahmin ne kadar yanlış (0'a yaklaştıkça iyi)</td><td>1 sayı</td></tr>
+        <tr><td><b>∂L/∂·</b>, <b>α</b></td><td>gradyan (hangi yöne ne kadar oynat), öğrenme hızı (adım büyüklüğü)</td><td>parametreyle aynı boyut</td></tr></table>
+        <p style="font-size:13px;color:#ccd5e8;line-height:1.7;margin:8px 0 0"><b>"Tahmin" ne demek?</b> Ağın çıktısı p: <i>"kedi'nin yanında hangi kelime gelir?"</i> sorusuna verdiği olasılıklar. Eğitim = p'yi gerçek y'ye yaklaştırmak. Aşağıdaki sayılarda p = <b>tahmin</b>, y = <b>doğru cevap</b>, δ = aradaki <b>fark</b>.</p></div></div>
       <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Embedding'in <b>bütün resmi</b>: bir <b>skip-gram adımı</b>. <b>İleri yol</b>: kelime numarası → tablodan vektör → komşu adaylarıyla nokta çarpım → softmax → "gerçek komşuyu ne kadar bekliyordun" kaybı. <b>Geri yol</b>: kayıp hem <b>kelimenin vektörüne</b> hem <b>komşu vektörlerine</b> gradyan gönderir — ikisi de öğrenilir. Sayıları değiştir; kutulara/oklara gel → türev nasıl bulunuyor.</p>
       <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Bir skip-gram adımının bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="embBigMap"></div></div></div>
     </div>
@@ -8119,45 +8133,46 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610132300"></script>
-<script src="js/lesson-turev.js?v=202610132300"></script>
-<script src="js/lesson-xor.js?v=202610132300"></script>
-<script src="js/lesson-xor-arch.js?v=202610132300"></script>
-<script src="js/lesson-xor-maps.js?v=202610132300"></script>
-<script src="js/lesson-xor-epoch.js?v=202610132300"></script>
-<script src="js/lesson-nn.js?v=202610132300"></script>
-<script src="js/lesson-trig.js?v=202610132300"></script>
+<script src="js/lesson-linreg.js?v=202610140000"></script>
+<script src="js/lesson-turev.js?v=202610140000"></script>
+<script src="js/lesson-xor.js?v=202610140000"></script>
+<script src="js/lesson-xor-arch.js?v=202610140000"></script>
+<script src="js/lesson-xor-maps.js?v=202610140000"></script>
+<script src="js/lesson-xor-epoch.js?v=202610140000"></script>
+<script src="js/lesson-nn.js?v=202610140000"></script>
+<script src="js/lesson-trig.js?v=202610140000"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610132300"></script>
-<script src="js/lesson-rnn-soz.js?v=202610132300"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610140000"></script>
+<script src="js/lesson-rnn-soz.js?v=202610140000"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610132300"></script>
-<script src="js/lesson-lstm-cell.js?v=202610132300"></script>
-<script src="js/app.js?v=202610132300"></script>
-<script src="js/lesson-lstm-big.js?v=202610132300"></script>
-<script src="js/lesson-lstm-step.js?v=202610132300"></script>
-<script src="js/lesson-lstm-size.js?v=202610132300"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610132300"></script>
-<script src="js/lesson-emb-extra.js?v=202610132300"></script>
-<script src="js/lesson-s2s-weights.js?v=202610132300"></script>
-<script src="js/lesson-s2s-add.js?v=202610132300"></script>
-<script src="js/lesson-s2s-extra.js?v=202610132300"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610132300"></script>
-<script src="js/lesson-emb-ornek.js?v=202610132300"></script>
-<script src="js/lesson-emb-steps.js?v=202610132300"></script>
-<script src="js/lesson-emb-big.js?v=202610132300"></script>
-<script src="js/lesson-sm-ornek.js?v=202610132300"></script>
-<script src="js/lesson-sm-big.js?v=202610132300"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610132300"></script>
-<script src="js/lesson-lstm-gate.js?v=202610132300"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610132300"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610132300"></script>
-<script src="js/lesson-linreg-big.js?v=202610132300"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610132300"></script>
-<script src="js/lesson-act-big.js?v=202610132300"></script>
-<script src="js/lesson-act-ornek.js?v=202610132300"></script>
-<script src="js/lesson-xor-ornek.js?v=202610132300"></script>
-<script src="js/lesson-nn-ornek.js?v=202610132300"></script>
-<script src="js/lesson-nn-net.js?v=202610132300"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610140000"></script>
+<script src="js/lesson-lstm-cell.js?v=202610140000"></script>
+<script src="js/app.js?v=202610140000"></script>
+<script src="js/lesson-lstm-big.js?v=202610140000"></script>
+<script src="js/lesson-lstm-step.js?v=202610140000"></script>
+<script src="js/lesson-lstm-size.js?v=202610140000"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610140000"></script>
+<script src="js/lesson-emb-arch.js?v=202610140000"></script>
+<script src="js/lesson-emb-extra.js?v=202610140000"></script>
+<script src="js/lesson-s2s-weights.js?v=202610140000"></script>
+<script src="js/lesson-s2s-add.js?v=202610140000"></script>
+<script src="js/lesson-s2s-extra.js?v=202610140000"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610140000"></script>
+<script src="js/lesson-emb-ornek.js?v=202610140000"></script>
+<script src="js/lesson-emb-steps.js?v=202610140000"></script>
+<script src="js/lesson-emb-big.js?v=202610140000"></script>
+<script src="js/lesson-sm-ornek.js?v=202610140000"></script>
+<script src="js/lesson-sm-big.js?v=202610140000"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610140000"></script>
+<script src="js/lesson-lstm-gate.js?v=202610140000"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610140000"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610140000"></script>
+<script src="js/lesson-linreg-big.js?v=202610140000"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610140000"></script>
+<script src="js/lesson-act-big.js?v=202610140000"></script>
+<script src="js/lesson-act-ornek.js?v=202610140000"></script>
+<script src="js/lesson-xor-ornek.js?v=202610140000"></script>
+<script src="js/lesson-nn-ornek.js?v=202610140000"></script>
+<script src="js/lesson-nn-net.js?v=202610140000"></script>
 </body>
 </html>
