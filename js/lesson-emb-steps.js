@@ -88,8 +88,12 @@
       h='<p><b>6 · Hata ve gradyan.</b> Her aday için hata: δ<sub>k</sub> = p<sub>k</sub> − y<sub>k</sub> (y: doğruysa 1, değilse 0). Doğru aday için negatif (olasılığı artmalı), yanlışlar için pozitif (azalmalı).</p>'+
         tbl(['aday','p','y','δ = p − y'],CD.map((w,k)=>[hl(w,k===cj),f(base.p[k]),k===cj?1:0,'<b>'+f(d[k])+'</b>']))+
         '<p><b>Kelime vektörünün gradyanı:</b> ∂L/∂e = Σ δ<sub>k</sub>·c<sub>k</sub><br>= '+CD.map((w,k)=>'('+f(d[k])+')·('+f(st.C[k][0],2)+' ; '+f(st.C[k][1],2)+')').join(' + ')+'<br>= <b>('+f(base.ge[0])+' ; '+f(base.ge[1])+')</b></p>'+
-        '<p><b>Komşu vektörlerinin gradyanı:</b> ∂L/∂c<sub>k</sub> = δ<sub>k</sub>·e</p>'+
-        tbl(['aday','∂L/∂c = δ·e'],CD.map((w,k)=>[hl(w,k===cj),'('+f(base.gc[k][0])+' ; '+f(base.gc[k][1])+')']))+
+        '<p><b>Komşu vektörlerinin gradyanı.</b> Harfler: <b>e</b> = '+WDn+' kelimesinin vektörü = ('+f(e[0])+' ; '+f(e[1])+') (yukarıdaki W tablosundan), <b>c<sub>k</sub></b> = k. adayın kendi vektörü (C tablosundan), <b>δ<sub>k</sub></b> = o adayın hatası (tek sayı). Formül: <b>∂L/∂c<sub>k</sub> = δ<sub>k</sub> · e</b> → e\'nin iki sayısını δ<sub>k</sub> ile çarparsın, gradyan da 2 sayı çıkar. Sonra c<sub>yeni</sub> = c<sub>eski</sub> − α·gradyan (α = '+f(S.lr,1)+').</p>'+
+        tbl(['aday','δ','δ · e = gradyan','c eski','c yeni','skor e·c'],CD.map((w,k)=>{
+          const cn=[st.C[k][0]-S.lr*base.gc[k][0],st.C[k][1]-S.lr*base.gc[k][1]];
+          const s0=e[0]*st.C[k][0]+e[1]*st.C[k][1],s1=e[0]*cn[0]+e[1]*cn[1];
+          return [hl(w,k===cj),f(d[k]),'('+f(d[k])+')·('+f(e[0])+' ; '+f(e[1])+') = <b>('+f(base.gc[k][0])+' ; '+f(base.gc[k][1])+')</b>',f(st.C[k][0])+' ; '+f(st.C[k][1]),'<b>'+f(cn[0])+' ; '+f(cn[1])+'</b>',f(s0)+' → <b>'+f(s1)+'</b> '+(s1>s0+1e-9?'<span style="color:#46c46a">arttı</span>':(s1<s0-1e-9?'<span style="color:#e06a6a">azaldı</span>':'aynı'))];}))+
+        '<p>📌 <b>Nasıl okunur:</b> doğru aday ('+CDn+') için δ <b>negatif</b> → gradyan e\'nin <b>zıt</b> işaretlisi → eksiyle çevirince c<sub>'+CDn+'</sub> <b>e yönüne</b> kayar; yeni c ile e\'nin nokta çarpımı (skor) <b>artar</b>. Yanlış adaylar için δ <b>pozitif</b> → c, <b>−e yönüne</b> kayar; skorları <b>azalır</b>. Büyüklük de δ ile orantılı: olasılığı çok yanlış olan aday çok oynar; δ ≈ 0 olan (zaten ≈%0 olasılık) hiç oynamaz. δ\'ların toplamı her zaman 0 olduğu için artış ve azalışlar birbirini dengeler.</p>'+
         '<div class="callout">🔑 Hem kelime vektörü hem komşu vektörleri öğrenilir; ikisi birbirine doğru çekilir.</div>';
     }else if(n===6){
       h='<p><b>7 · Güncelle.</b> Gradyanın <b>tersi yönünde</b> küçük bir adım: yeni = eski − α·gradyan (burada α = '+f(S.lr,1)+', adım sayısı: '+(S.extra+1)+').</p>'+
