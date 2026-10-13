@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610132200"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610132300"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610132200">
+<link rel="stylesheet" href="css/style.css?v=202610132300">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 22:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 23:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5525,6 +5525,16 @@ print(&quot;aynı mı? :&quot;, carpim == satir)
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bahdanau'nun attention'ı hâlâ bir RNN/LSTM'in içindeydi — decoder yine kelime kelime, sırayla üretim yapıyordu. 2017'nin sıçraması: <b>"Peki recurrence'a hiç ihtiyacımız var mı?"</b> Cevap hayırdı — aynı "ağırlıklı bakış" fikrini RNN'siz, tüm kelimeler <b>aynı anda birbirine</b> bakacak şekilde genelleştirince ortaya <b>Self-Attention</b> çıktı (makalenin adı: <i>Attention Is All You Need</i>).</p>
     <div class="callout" style="border-left-color:#46c46a">🏆 Ağaçta artık "Dizi Modelleme Çağı" tamamlanmak üzere — 🎯 Self-Attention bir adım ötede.</div>
   </div>
+  <div class="sechead">➕ Seq2Seq'in ek parçaları: teacher forcing, beam search, derin ve çift yönlü encoder</div>
+  <div class="pts">
+    <p style="font-size:13px;color:var(--muted)">Seq2Seq'i anlatan standart kaynaklarda (Sutskever–Vinyals–Le 2014, Cho ve ark. 2014, Bahdanau ve ark. 2014) öne çıkan ama sayfada henüz olmayan konular. Canlı kısımlar 5️⃣ Simülasyon'daki eğitilmiş toplama modelini kullanır.</p>
+    <div id="s2sExtra"></div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>🔁 Girdiyi tersten okutma.</b> Sutskever ve arkadaşları kaynak cümleyi <b>ters sırayla</b> okuttu: kaynağın ilk kelimesi, çevirinin ilk kelimesine zaman olarak daha yakın olur, ilk bağımlılıklar kısalır ve öğrenme kolaylaşır. Basit ama o dönemde belirgin fark yaratan bir hileydi.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>📚 Çok katmanlı (stacked) ve ↔️ çift yönlü (bidirectional) encoder.</b> Derin sürümlerde LSTM katmanları üst üste dizilir (Sutskever'de 4, Google'ın sinir ağı çevirisinde 8 katman). Bahdanau'nun encoder'ı <b>çift yönlü</b>: cümleyi hem soldan sağa hem sağdan sola okur, her kelimenin vektörü hem öncesini hem sonrasını bilir. Attention bu kelime başına vektörlere bakar.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>📏 Değişken uzunluk ve toplu eğitim.</b> Cümleler farklı uzunlukta olduğundan toplu (batch) eğitimde kısa olanlar özel bir <b>padding</b> işaretiyle doldurulur ve hesapta <b>maskelenir</b>. Her dizinin başında bir başlangıç (<code>&lt;s&gt;</code>), sonunda bir bitiş (<code>&lt;e&gt;</code>) işareti bulunur; decoder bitiş işaretini üretince durur (toplama modelimizde de böyle).</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>📐 Nasıl ölçülür?</b> Çeviri kalitesi için en yaygın metrik <b>BLEU</b>: modelin ürettiği cümledeki 1–4 kelimelik parçaların, referans çeviride de geçen kısmını sayar (kısa cevapları cezalandırır). Toplama gibi tek doğru cevaplı işlerde ise basit <b>doğru/yanlış</b> yeterli (bizim 10×10 ızgara).</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>💸 Sözlük softmax'ı pahalı.</b> Decoder her adımda sözlüğün <b>tamamı</b> üzerinde softmax yapar. 30.000 kelimelik sözlükte bu, word2vec'te gördüğümüz maliyet sorununun aynısıdır. Çözümler: <b>örneklemeli softmax</b> (negatif örneklemeye benzer), kelimeyi <b>alt-kelime parçalarına</b> bölmek (BPE) ve daha küçük sözlük. Toplama modelimizde sözlük yalnızca 13 sembol olduğu için sorun yok.</p>
+  </div>
     </div>
   </div>
 
@@ -8109,44 +8119,45 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610132200"></script>
-<script src="js/lesson-turev.js?v=202610132200"></script>
-<script src="js/lesson-xor.js?v=202610132200"></script>
-<script src="js/lesson-xor-arch.js?v=202610132200"></script>
-<script src="js/lesson-xor-maps.js?v=202610132200"></script>
-<script src="js/lesson-xor-epoch.js?v=202610132200"></script>
-<script src="js/lesson-nn.js?v=202610132200"></script>
-<script src="js/lesson-trig.js?v=202610132200"></script>
+<script src="js/lesson-linreg.js?v=202610132300"></script>
+<script src="js/lesson-turev.js?v=202610132300"></script>
+<script src="js/lesson-xor.js?v=202610132300"></script>
+<script src="js/lesson-xor-arch.js?v=202610132300"></script>
+<script src="js/lesson-xor-maps.js?v=202610132300"></script>
+<script src="js/lesson-xor-epoch.js?v=202610132300"></script>
+<script src="js/lesson-nn.js?v=202610132300"></script>
+<script src="js/lesson-trig.js?v=202610132300"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610132200"></script>
-<script src="js/lesson-rnn-soz.js?v=202610132200"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610132300"></script>
+<script src="js/lesson-rnn-soz.js?v=202610132300"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610132200"></script>
-<script src="js/lesson-lstm-cell.js?v=202610132200"></script>
-<script src="js/app.js?v=202610132200"></script>
-<script src="js/lesson-lstm-big.js?v=202610132200"></script>
-<script src="js/lesson-lstm-step.js?v=202610132200"></script>
-<script src="js/lesson-lstm-size.js?v=202610132200"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610132200"></script>
-<script src="js/lesson-emb-extra.js?v=202610132200"></script>
-<script src="js/lesson-s2s-weights.js?v=202610132200"></script>
-<script src="js/lesson-s2s-add.js?v=202610132200"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610132200"></script>
-<script src="js/lesson-emb-ornek.js?v=202610132200"></script>
-<script src="js/lesson-emb-steps.js?v=202610132200"></script>
-<script src="js/lesson-emb-big.js?v=202610132200"></script>
-<script src="js/lesson-sm-ornek.js?v=202610132200"></script>
-<script src="js/lesson-sm-big.js?v=202610132200"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610132200"></script>
-<script src="js/lesson-lstm-gate.js?v=202610132200"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610132200"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610132200"></script>
-<script src="js/lesson-linreg-big.js?v=202610132200"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610132200"></script>
-<script src="js/lesson-act-big.js?v=202610132200"></script>
-<script src="js/lesson-act-ornek.js?v=202610132200"></script>
-<script src="js/lesson-xor-ornek.js?v=202610132200"></script>
-<script src="js/lesson-nn-ornek.js?v=202610132200"></script>
-<script src="js/lesson-nn-net.js?v=202610132200"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610132300"></script>
+<script src="js/lesson-lstm-cell.js?v=202610132300"></script>
+<script src="js/app.js?v=202610132300"></script>
+<script src="js/lesson-lstm-big.js?v=202610132300"></script>
+<script src="js/lesson-lstm-step.js?v=202610132300"></script>
+<script src="js/lesson-lstm-size.js?v=202610132300"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610132300"></script>
+<script src="js/lesson-emb-extra.js?v=202610132300"></script>
+<script src="js/lesson-s2s-weights.js?v=202610132300"></script>
+<script src="js/lesson-s2s-add.js?v=202610132300"></script>
+<script src="js/lesson-s2s-extra.js?v=202610132300"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610132300"></script>
+<script src="js/lesson-emb-ornek.js?v=202610132300"></script>
+<script src="js/lesson-emb-steps.js?v=202610132300"></script>
+<script src="js/lesson-emb-big.js?v=202610132300"></script>
+<script src="js/lesson-sm-ornek.js?v=202610132300"></script>
+<script src="js/lesson-sm-big.js?v=202610132300"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610132300"></script>
+<script src="js/lesson-lstm-gate.js?v=202610132300"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610132300"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610132300"></script>
+<script src="js/lesson-linreg-big.js?v=202610132300"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610132300"></script>
+<script src="js/lesson-act-big.js?v=202610132300"></script>
+<script src="js/lesson-act-ornek.js?v=202610132300"></script>
+<script src="js/lesson-xor-ornek.js?v=202610132300"></script>
+<script src="js/lesson-nn-ornek.js?v=202610132300"></script>
+<script src="js/lesson-nn-net.js?v=202610132300"></script>
 </body>
 </html>
