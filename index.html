@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610140900"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610141100"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610140900">
+<link rel="stylesheet" href="css/style.css?v=202610141100">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 09:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 11:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5586,7 +5586,8 @@ print(&quot;one-hot girdisi:&quot;, sinif(W, eg, te, onehot=True))
     <div class="pts" style="border-left:3px solid var(--accent)">
       <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Gerçek, eğitilmiş bir encoder–decoder.</b> Bir toplama sorusu seç, <b>İleri ▶</b> ile encoder'ın okuyuşunu, bağlam paketini ve decoder'ın basamak basamak cevabı üretişini izle. Hücrelerdeki renkli şeritler gerçek <span style="color:#ffd54a">c</span> ve <span style="color:#7ec8ff">h</span> değerleri (yeşil +, kırmızı −). Üstteki <b>model düğmeleri</b> eğitimin farklı anlarını yükler: epoch 0'da ağ rastgele, 800'de neredeyse kusursuz.</p>
       <div id="s2sAdd"></div>
-      <div class="callout" style="border-left-color:#f0a032">🧪 <b>Dürüst not:</b> bu ağ (24 gizli birim) tarayıcıda değil, <b>çevrimdışı Python/numpy ile</b> eğitildi (kod: 7️⃣ Örnek Çalışmalar); sayfa yalnız eğitilmiş ağırlıkları yükleyip <b>ileri hesabı</b> canlı yapıyor — JS çıktısı Python ile 400/400 soruda birebir aynı. Hücreler çok boyutlu (24 sayı), bu yüzden ağırlıkları tek tek yazamıyoruz; şeritler onların resmi.</div>
+      <div id="s2sInside"></div>
+      <div class="callout" style="border-left-color:#f0a032">🧪 <b>Dürüst not:</b> bu ağ (24 gizli birim) tarayıcıda değil, <b>çevrimdışı Python/numpy ile</b> eğitildi (kod: 7️⃣ Örnek Çalışmalar); sayfa yalnız eğitilmiş ağırlıkları yükleyip <b>ileri hesabı</b> canlı yapıyor — JS çıktısı Python ile 400/400 soruda birebir aynı. Animasyondaki hücreler çok boyutlu (24 sayı), şeritler onların resmi; tek bir hücrenin içindeki hesabı ve ağırlıkların epoch'lar arası değişimini yukarıdaki <b>🔬 Hücrenin içine gir</b> ve <b>📈 Ağırlıklar nasıl değişti</b> bölümlerinde görebilirsin.</div>
     </div>
   <div class="lesson-sub-h" style="font-weight:700;color:#ccd5e8;margin:18px 0 6px">🔬 İkinci oyuncak: Bahdanau'nun çözümü — hizalama (alignment) haritası</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
@@ -8214,48 +8215,49 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610140900"></script>
-<script src="js/lesson-turev.js?v=202610140900"></script>
-<script src="js/lesson-xor.js?v=202610140900"></script>
-<script src="js/lesson-xor-arch.js?v=202610140900"></script>
-<script src="js/lesson-xor-maps.js?v=202610140900"></script>
-<script src="js/lesson-xor-epoch.js?v=202610140900"></script>
-<script src="js/lesson-nn.js?v=202610140900"></script>
-<script src="js/lesson-trig.js?v=202610140900"></script>
+<script src="js/lesson-linreg.js?v=202610141100"></script>
+<script src="js/lesson-turev.js?v=202610141100"></script>
+<script src="js/lesson-xor.js?v=202610141100"></script>
+<script src="js/lesson-xor-arch.js?v=202610141100"></script>
+<script src="js/lesson-xor-maps.js?v=202610141100"></script>
+<script src="js/lesson-xor-epoch.js?v=202610141100"></script>
+<script src="js/lesson-nn.js?v=202610141100"></script>
+<script src="js/lesson-trig.js?v=202610141100"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610140900"></script>
-<script src="js/lesson-rnn-soz.js?v=202610140900"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610141100"></script>
+<script src="js/lesson-rnn-soz.js?v=202610141100"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610140900"></script>
-<script src="js/lesson-lstm-cell.js?v=202610140900"></script>
-<script src="js/app.js?v=202610140900"></script>
-<script src="js/lesson-lstm-big.js?v=202610140900"></script>
-<script src="js/lesson-lstm-step.js?v=202610140900"></script>
-<script src="js/lesson-lstm-size.js?v=202610140900"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610140900"></script>
-<script src="js/lesson-emb-kullan.js?v=202610140900"></script>
-<script src="js/lesson-emb-draco.js?v=202610140900"></script>
-<script src="js/lesson-emb-arch.js?v=202610140900"></script>
-<script src="js/lesson-emb-extra.js?v=202610140900"></script>
-<script src="js/lesson-s2s-weights.js?v=202610140900"></script>
-<script src="js/lesson-s2s-add.js?v=202610140900"></script>
-<script src="js/lesson-s2s-extra.js?v=202610140900"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610140900"></script>
-<script src="js/lesson-emb-ornek.js?v=202610140900"></script>
-<script src="js/lesson-emb-steps.js?v=202610140900"></script>
-<script src="js/lesson-emb-big.js?v=202610140900"></script>
-<script src="js/lesson-sm-ornek.js?v=202610140900"></script>
-<script src="js/lesson-sm-big.js?v=202610140900"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610140900"></script>
-<script src="js/lesson-lstm-gate.js?v=202610140900"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610140900"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610140900"></script>
-<script src="js/lesson-linreg-big.js?v=202610140900"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610140900"></script>
-<script src="js/lesson-act-big.js?v=202610140900"></script>
-<script src="js/lesson-act-ornek.js?v=202610140900"></script>
-<script src="js/lesson-xor-ornek.js?v=202610140900"></script>
-<script src="js/lesson-nn-ornek.js?v=202610140900"></script>
-<script src="js/lesson-nn-net.js?v=202610140900"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610141100"></script>
+<script src="js/lesson-lstm-cell.js?v=202610141100"></script>
+<script src="js/app.js?v=202610141100"></script>
+<script src="js/lesson-lstm-big.js?v=202610141100"></script>
+<script src="js/lesson-lstm-step.js?v=202610141100"></script>
+<script src="js/lesson-lstm-size.js?v=202610141100"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610141100"></script>
+<script src="js/lesson-emb-kullan.js?v=202610141100"></script>
+<script src="js/lesson-emb-draco.js?v=202610141100"></script>
+<script src="js/lesson-emb-arch.js?v=202610141100"></script>
+<script src="js/lesson-emb-extra.js?v=202610141100"></script>
+<script src="js/lesson-s2s-weights.js?v=202610141100"></script>
+<script src="js/lesson-s2s-add.js?v=202610141100"></script>
+<script src="js/lesson-s2s-inside.js?v=202610141100"></script>
+<script src="js/lesson-s2s-extra.js?v=202610141100"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610141100"></script>
+<script src="js/lesson-emb-ornek.js?v=202610141100"></script>
+<script src="js/lesson-emb-steps.js?v=202610141100"></script>
+<script src="js/lesson-emb-big.js?v=202610141100"></script>
+<script src="js/lesson-sm-ornek.js?v=202610141100"></script>
+<script src="js/lesson-sm-big.js?v=202610141100"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610141100"></script>
+<script src="js/lesson-lstm-gate.js?v=202610141100"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610141100"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610141100"></script>
+<script src="js/lesson-linreg-big.js?v=202610141100"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610141100"></script>
+<script src="js/lesson-act-big.js?v=202610141100"></script>
+<script src="js/lesson-act-ornek.js?v=202610141100"></script>
+<script src="js/lesson-xor-ornek.js?v=202610141100"></script>
+<script src="js/lesson-nn-ornek.js?v=202610141100"></script>
+<script src="js/lesson-nn-net.js?v=202610141100"></script>
 </body>
 </html>
