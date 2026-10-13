@@ -47,7 +47,7 @@
   host.innerHTML=
     '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px">'+
       '<b>Cümle:</b><button class="rex-btn" id="m2S0">kedi …</button><button class="rex-btn" id="m2S1">köpek …</button>'+
-      '<span style="width:12px"></span><button class="rex-btn" id="m2Go">▶ eğit</button><button class="rex-btn" id="m2Fast">⚡ hemen bitir (1500 epoch)</button><button class="rex-btn" id="m2Rst">↺ başa dön</button>'+
+      '<span style="width:12px"></span><button class="rex-btn" id="m2Go">▶ eğit (otomatik)</button><button class="rex-btn" id="m2Pause">⏸</button><button class="rex-btn" id="m2S1x">🔧 +1 epoch</button><button class="rex-btn" id="m2S10x">+10</button><button class="rex-btn" id="m2S100x">+100</button><button class="rex-btn" id="m2Fast">⚡ hemen bitir (1500 epoch)</button><button class="rex-btn" id="m2Rst">↺ başa dön</button>'+
     '</div><div class="rex-stat" id="m2Stat" style="margin-bottom:8px"></div>'+
     '<div style="font-size:12.5px;color:#ccd5e8;margin:4px 0">30 kelime — birine tıkla (ya da kaydırıcı / ▶ ile gez). <span style="color:var(--muted)">Kelime→sayı elle verildi: "kedi"=+1, "köpek"=−1, diğer 29 kelime=0.</span></div>'+
     '<div id="m2Chips" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px"></div>'+
@@ -103,6 +103,9 @@
   const stopPlay=()=>{if(playT){clearInterval(playT);playT=null;$('m2Play').textContent='⏵ otomatik oynat';}};
   $('m2S0').onclick=()=>{sel=0;render();};$('m2S1').onclick=()=>{sel=1;render();};
   $('m2Go').onclick=()=>{if(!timer&&ep<MAXEP)timer=requestAnimationFrame(loop);};
+  $('m2Pause').onclick=stop;
+  const stepN=n=>()=>{stop();for(let i=0;i<n&&ep<MAXEP;i++)epoch();render();};
+  $('m2S1x').onclick=stepN(1);$('m2S10x').onclick=stepN(10);$('m2S100x').onclick=stepN(100);
   $('m2Fast').onclick=()=>{stop();while(ep<MAXEP)epoch();render();};
   $('m2Rst').onclick=()=>{stop();P=init();ep=0;lossNow=null;render();};
   $('m2T').addEventListener('input',e=>{stopPlay();t=+e.target.value;render();});
