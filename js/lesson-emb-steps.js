@@ -18,7 +18,7 @@
    '<span>Ağın durumu:</span><select id="es_ep" class="rex-sel"><option value="0">epoch 0 (hiç öğrenmemiş)</option><option value="10">epoch 10</option><option value="100">epoch 100</option><option value="500">epoch 500 (eğitilmiş)</option></select></div>'+
    '<div id="es_chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>'+
    '<div style="overflow-x:auto"><svg id="es_net" viewBox="0 0 640 250" style="width:100%;min-width:560px;max-width:720px;display:block;margin:0 auto" role="img" aria-label="Skip-gram ağı: one-hot girdi, 2 boyutlu vektör, 6 komşu çıktısı"></svg></div>'+
-   '<div id="es_body" class="work" style="margin-top:8px;line-height:1.75;font-size:13.5px"></div>'+
+   '<div id="es_body" style="margin-top:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:#ccd5e8;line-height:1.75;font-size:13.5px"></div>'+
    '<div style="display:flex;gap:8px;margin-top:8px"><button class="rex-btn" id="es_prev">◀ Geri</button><button class="rex-btn" id="es_next">İleri ▶</button></div>';
   const sel=$('es_pair');
   PAIRS.forEach(([i,j],k)=>sel.add(new Option(WD[i]+' → '+CD[j],k)));
