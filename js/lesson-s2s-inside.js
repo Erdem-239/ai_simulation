@@ -30,15 +30,17 @@
   const ui={cell:0,gate:0,k:null};
   const strip=(vals,w,hgt)=>{const cw=w/vals.length;let s='<svg width="'+w+'" height="'+hgt+'" style="display:block">';vals.forEach((v,j)=>{const a=Math.min(1,Math.abs(v));s+='<rect x="'+(j*cw)+'" y="0" width="'+Math.max(1,cw-0.6)+'" height="'+hgt+'" fill="'+(v>=0?'rgba(70,196,106,':'rgba(224,106,106,')+(0.12+0.88*a)+')"><title>'+fm(v,3)+'</title></rect>';});return s+'</svg>';};
   host.innerHTML=
-   '<div style="border-left:3px solid #ffd54a;padding:6px 12px;margin:16px 0 8px"><div style="font-size:14px;color:#e9edf8"><b>🔬 Bir hücrenin içine gir: gerçek hesap</b></div><div style="font-size:13px;color:#ccd5e8;line-height:1.7">Yukarıdaki animasyondaki her "LSTM hücre" kutusu aslında şu hesabı yapıyor. Aşağıda <b>seçtiğin soru ve modelin gerçek ağırlıklarıyla</b> bir hücreyi, bir nöronu açıyoruz. Soru ve model yukarıdaki seçimle aynı (yukarıdan değiştir, burası takip eder).</div></div>'+
+   '<div style="font-size:13px;color:#ccd5e8;line-height:1.7;margin:4px 0 10px">A\'daki her "LSTM hücre" kutusu aslında şu hesabı yapıyor. Aşağıda <b>seçtiğin soru ve modelin gerçek ağırlıklarıyla</b> bir hücreyi, bir nöronu açıyoruz. Soru ve model A bölümündeki seçimle aynı (oradan değiştir, burası takip eder).</div>'+
    '<div id="si_cells" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>'+
    '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:13px"><span>Hangi nöron? (24 gizli nörondan biri)</span><select id="si_k" class="rex-sel"></select><span id="si_kinfo" style="color:var(--muted)"></span></div>'+
    '<div id="si_head" style="font-size:13px;color:#ccd5e8;line-height:1.7;margin-bottom:6px"></div>'+
    '<div id="si_tbl"></div>'+
    '<div id="si_gatebtn" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px;font-size:13px;align-items:center"></div>'+
    '<div style="overflow-x:auto"><svg id="si_bars" style="min-width:560px;width:100%;max-width:760px;display:block"></svg></div>'+
-   '<div id="si_out"></div>'+
-   '<div style="border-left:3px solid #5aa0e0;padding:6px 12px;margin:22px 0 8px"><div style="font-size:14px;color:#e9edf8"><b>📈 Ağırlıklar nasıl değişti?</b></div><div style="font-size:13px;color:#ccd5e8;line-height:1.7">Eğitim başında ağırlıklar rastgele; her adımda hata geriye yayılır ve <b>bütün ağırlıklar çok az</b> oynar. Bir ısı haritasında yeşil = pozitif, kırmızı = negatif ağırlık. Sayfada eğitimin <b>4 anlık fotoğrafı</b> var (epoch 0, 30, 150, 800); aralarında her adımı tutmuyoruz. Bir kutuya tıklarsan o <b>tek ağırlığın</b> yolculuğunu görürsün.</div></div>'+
+   '<div id="si_out"></div>'+'';
+  const hostE=document.getElementById('s2sWeights');
+  if(hostE) hostE.innerHTML=
+   '<div style="font-size:13px;color:#ccd5e8;line-height:1.7;margin:4px 0 10px">Eğitim başında ağırlıklar rastgele; her adımda hata geriye yayılır ve <b>bütün ağırlıklar çok az</b> oynar. Bir ısı haritasında yeşil = pozitif, kırmızı = negatif ağırlık. Sayfada eğitimin <b>4 anlık fotoğrafı</b> var (epoch 0, 30, 150, 800); aralarında her adımı tutmuyoruz. Bir kutuya tıklarsan o <b>tek ağırlığın</b> yolculuğunu görürsün.</div>'+
    '<div id="si_mbtn" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div><div id="si_maps" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;overflow-x:auto"></div>'+
    '<div id="si_jour" class="callout" style="margin-top:10px"></div><div id="si_params" style="font-size:12.5px;color:var(--muted);margin-top:6px"></div>';
   const ks=$('si_k');for(let k=0;k<H;k++)ks.add(new Option('nöron '+(k+1),k));
