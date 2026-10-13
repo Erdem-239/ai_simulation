@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610140700"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610140900"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610140700">
+<link rel="stylesheet" href="css/style.css?v=202610140900">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 07:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 09:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4514,7 +4514,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
       <li><b>Gizli katman (hidden layer)</b> — dışarıdan görünmez, kendi z=Σwx+b'sini hesaplayıp aktivasyondan geçirir (h1, h2).</li>
       <li><b>Çıktı katmanı</b> — gizli katmanın çıktısını girdi gibi alıp son tahmini üretir (y).</li>
     </ul>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir katmandaki <b>tüm</b> ağırlıkları tek tek yazmak yerine, Vektör dersindeki fikri hatırla: <b>"matris = vektör rafı"</b> — üst üste dizilmiş vektörler. Girdi katmanından gizli katmana giden 4 ağırlığı (x1→h1, x2→h1, x1→h2, x2→h2) tek bir <b>W⁽¹⁾</b> matrisinde topluyoruz:</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir katmandaki <b>tüm</b> ağırlıkları tek tek yazmak yerine, Vektör dersinde ayrıntılı göreceğin fikir şu: <b>"matris = vektör rafı"</b> — üst üste dizilmiş vektörler. Girdi katmanından gizli katmana giden 4 ağırlığı (x1→h1, x2→h1, x1→h2, x2→h2) tek bir <b>W⁽¹⁾</b> matrisinde topluyoruz:</p>
     \[ W^{(1)}=\begin{bmatrix}w_{11} & w_{12}\\ w_{21} & w_{22}\end{bmatrix},\quad b^{(1)}=\begin{bmatrix}b_1\\ b_2\end{bmatrix},\quad z^{(1)}=W^{(1)}x+b^{(1)},\quad h=g\!\left(z^{(1)}\right) \]
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı şekilde gizli katmandan çıktıya giden 2 ağırlık <b>W⁽²⁾</b> (bu kez 1×2, tek satır — çünkü çıktı katmanında tek nöron var):</p>
     \[ z^{(2)}=W^{(2)}h+b^{(2)},\quad \hat y=g\!\left(z^{(2)}\right) \]
@@ -5164,7 +5164,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
     <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki durak:</b> Seq2Seq (iki LSTM + "nereye bakayım?" fikri), ardından Attention: bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
   </div>
     </div>
   </div>
@@ -5227,7 +5227,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   </div>
   <div class="sechead">➕ "Yüz" sorunu: tek vektör yetmiyor</div>
   <div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Yüzü güzel", "yüz lira", "yüzmeyi bilmiyor": üç ayrı anlam. Klasik embedding "yüz" kelimesine <b>tek</b> bir vektör verir ve üç anlamın ortalamasında bir yerde kalır. <b>Bağlamsal embedding</b> (ELMo, BERT, ChatGPT) vektörü her cümlede <b>çevre kelimelere bakarak</b> yeniden hesaplar: "yüz lira"daki "yüz" sayı bölgesine, "yüzü güzel"deki surat bölgesine gider. Bunu yapan mekanizma sıradaki derslerin konusu: <b>attention</b>.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Yüzü güzel", "yüz lira", "yüzmeyi bilmiyor": üç ayrı anlam. Klasik embedding "yüz" kelimesine <b>tek</b> bir vektör verir ve üç anlamın ortalamasında bir yerde kalır. <b>Bağlamsal embedding</b> (ELMo, BERT, ChatGPT) vektörü her cümlede <b>çevre kelimelere bakarak</b> yeniden hesaplar: "yüz lira"daki "yüz" sayı bölgesine, "yüzü güzel"deki surat bölgesine gider. Bunu yapan mekanizma sıradaki derslerin konusu (Seq2Seq'te doğuyor, Self-Attention'da olgunlaşıyor): <b>attention</b>.</p>
   </div>
   <div class="sechead">➕ word2vec'in ek parçaları: CBOW, pencere, negatif örnekleme, hazır modeller</div>
   <div class="pts">
@@ -7028,7 +7028,7 @@ kareler:  225, 25, 25, 225   →  toplam = 500
   <div class="lesson-examples">
     <div class="lesson-ex-h" style="font-size:12px; color:var(--dot); font-weight:700; letter-spacing:.5px; margin-bottom:8px">🌍 GERÇEK HAYATTA NEREDE?</div>
     <div class="ex-grid">
-      <div class="ex-card has-example"><span class="ex-ico">🧠</span><b>Ağırlık başlatma (Xavier/He init)</b> — bir sinir ağı eğitime başlarken ağırlıkları rastgele mi seçer? Evet ama <b>rastgele üniform değil</b> — genelde ortalaması 0, küçük bir varyanslı <b>normal dağılım</b>dan çekilir. Bu, katmanlar arasında sinyalin ne patlamasını ne sönmesini sağlar (RNN dersindeki vanishing/exploding gradient'i hatırla).<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir sinir ağı eğitime sıfırdan başlarken, ağırlıkların ilk değerleri rastgele belirlenir — ama tamamen keyfi değil: çok büyük seçilirlerse katmanlar arasında sinyal patlar, çok küçük seçilirlerse sinyal söner (RNN dersindeki vanishing/exploding gradient problemini hatırla). He başlatma yöntemi, ağırlıkları ortalaması 0 olan bir normal dağılımdan çeker ve bu dağılımın standart sapmasını katmanın girdi sayısına (fan_in) göre ayarlar: σ=√(2/fan_in). Bir katmanın 100 girdisi olduğunu varsayarsak, bu katmanın ağırlıkları hangi standart sapmalı normal dağılımdan çekilmelidir?</div><div class="work">σ = √(2/fan_in) = √(2/100) = √0.02 ≈ 0.141
+      <div class="ex-card has-example"><span class="ex-ico">🧠</span><b>Ağırlık başlatma (Xavier/He init)</b> — bir sinir ağı eğitime başlarken ağırlıkları rastgele mi seçer? Evet ama <b>rastgele üniform değil</b> — genelde ortalaması 0, küçük bir varyanslı <b>normal dağılım</b>dan çekilir. Bu, katmanlar arasında sinyalin ne patlamasını ne sönmesini sağlar (RNN dersindeki vanishing/exploding gradient'e bak).<span class="ex-more">📐 Örnek işlem ▸</span><div class="ex-detail"><div class="ex-detail-q">Bir sinir ağı eğitime sıfırdan başlarken, ağırlıkların ilk değerleri rastgele belirlenir — ama tamamen keyfi değil: çok büyük seçilirlerse katmanlar arasında sinyal patlar, çok küçük seçilirlerse sinyal söner (RNN dersindeki vanishing/exploding gradient problemine bak). He başlatma yöntemi, ağırlıkları ortalaması 0 olan bir normal dağılımdan çeker ve bu dağılımın standart sapmasını katmanın girdi sayısına (fan_in) göre ayarlar: σ=√(2/fan_in). Bir katmanın 100 girdisi olduğunu varsayarsak, bu katmanın ağırlıkları hangi standart sapmalı normal dağılımdan çekilmelidir?</div><div class="work">σ = √(2/fan_in) = √(2/100) = √0.02 ≈ 0.141
 
 Ağırlıklar N(0, 0.141²) normal dağılımından
 rastgele çekilir — ne çok büyük ne çok küçük.</div></div></div>
@@ -7137,7 +7137,7 @@ cezalanmaz, nadir/şaşırtıcı kelimelerde çok daha fazla.</div></div></div>
 
   <div class="pts" style="border-left:3px solid var(--accent)" id="yts-12-1">
     <h3 style="color:var(--accent); margin-top:0">🔁 En çarpıcı örnek: bu formülü zaten görmüştün</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Modül 2'de (Logaritma) simüle ettiğin <b>−ln(p)</b> ceza eğrisi, aslında ikili (binary) çapraz entropinin ta kendisiydi: \(L=-\big(y\ln p+(1-y)\ln(1-p)\big)\). Aktivasyon dersindeki sklearn keşfini hatırla: simetrik XOR verisinde model <b>w=0</b>'a saplanmıştı, çünkü her nokta için p=0.5 tahmini veriyordu. Çapraz entropi kaybı orada tam olarak <b>−ln(0.5)=ln(2)≈0.693</b> çıkıyordu — "hiçbir fikrim yok" cezası. Şimdi bunun neden <b>ln(2)</b> olduğunu (bir bit'lik "adil yazı-tura" belirsizliği) biliyorsun.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Modül 2'de (Logaritma) simüle ettiğin <b>−ln(p)</b> ceza eğrisi, aslında ikili (binary) çapraz entropinin ta kendisiydi: \(L=-\big(y\ln p+(1-y)\ln(1-p)\big)\). Aktivasyon dersindeki sklearn keşfine bak (henüz görmediysen): simetrik XOR verisinde model <b>w=0</b>'a saplanmıştı, çünkü her nokta için p=0.5 tahmini veriyordu. Çapraz entropi kaybı orada tam olarak <b>−ln(0.5)=ln(2)≈0.693</b> çıkıyordu — "hiçbir fikrim yok" cezası. Şimdi bunun neden <b>ln(2)</b> olduğunu (bir bit'lik "adil yazı-tura" belirsizliği) biliyorsun.</p>
   </div>
 
   <div class="pts">
@@ -7308,7 +7308,7 @@ Yani model her kelimede kabaca 6 eşit olası seçenek arasında kalmış gibi.<
   <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 🌊 Trigonometri</div><div class="cat-desc">Sin, cos ve birim çember — Transformer'ın kelime sırasını nasıl hatırladığının sırrı.</div></div>
   <div class="acc-body">
 
-  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" demiştik, AIpedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" diye not düşülür, AIpedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
 
   <div class="acc acc-module" id="ytmod-13">
   <div class="acc-head"><span class="ac">▸</span> 13) Sin, Cos ve Birim Çember</div>
@@ -7437,7 +7437,7 @@ v(10ms) = 325·sin(2π×50×0.010) = 325·sin(180°) = 325×0 = 0V
   <div class="acc-body">
 
   <div class="pts" style="border-left:3px solid #3a7afe">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Self-Attention modülünde gördüğün gibi, bir Transformer tüm kelimelere <b>aynı anda</b> (paralel) bakar — RNN gibi soldan sağa sırayla okumaz. Ama bu bir sorun doğurur: <b>"kedi köpeği kovaladı"</b> ile <b>"köpek kediyi kovaladı"</b>, kelimelerin sırası dışında birebir aynı kelime çorbasına dönüşür. Model sırayı bilmeden bu ikisini ayıramaz.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Self-Attention modülünde anlatıldığı gibi, bir Transformer tüm kelimelere <b>aynı anda</b> (paralel) bakar — RNN gibi soldan sağa sırayla okumaz. Ama bu bir sorun doğurur: <b>"kedi köpeği kovaladı"</b> ile <b>"köpek kediyi kovaladı"</b>, kelimelerin sırası dışında birebir aynı kelime çorbasına dönüşür. Model sırayı bilmeden bu ikisini ayıramaz.</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">2017'nin çözümü zarif: her kelimenin vektörüne, konumuna özgü bir "imza" ekle — <b>Positional Encoding</b>. Bu imzayı, bir <b>saat kadranı</b> gibi düşün: saniye kolu hızlı döner, dakika kolu daha yavaş, saat kolu daha da yavaş. Üçünün konumuna birlikte bakarsan, günün hangi anında olduğunu <b>tek anlamlı</b> şekilde bilirsin. Positional Encoding da tam bunu yapar — <b>farklı hızlarda dönen sin/cos dalgaları</b> kullanır:</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7; text-align:center">\( PE(pos, 2i) = \sin\!\left(\dfrac{pos}{10000^{2i/d}}\right) \qquad PE(pos, 2i{+}1) = \cos\!\left(\dfrac{pos}{10000^{2i/d}}\right) \)</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Burada <b>pos</b> kelimenin cümledeki konumu (0, 1, 2, …), <b>i</b> ise vektörün hangi boyutuna baktığını (küçük i = hızlı "saniye kolu" dalgası, büyük i = yavaş "saat kolu" dalgası) belirler. Aynı sin/cos'u, tek bir kaydırıcı yerine, <b>onlarca farklı hızda</b> aynı anda kullanıyor.</p>
@@ -8214,48 +8214,48 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610140700"></script>
-<script src="js/lesson-turev.js?v=202610140700"></script>
-<script src="js/lesson-xor.js?v=202610140700"></script>
-<script src="js/lesson-xor-arch.js?v=202610140700"></script>
-<script src="js/lesson-xor-maps.js?v=202610140700"></script>
-<script src="js/lesson-xor-epoch.js?v=202610140700"></script>
-<script src="js/lesson-nn.js?v=202610140700"></script>
-<script src="js/lesson-trig.js?v=202610140700"></script>
+<script src="js/lesson-linreg.js?v=202610140900"></script>
+<script src="js/lesson-turev.js?v=202610140900"></script>
+<script src="js/lesson-xor.js?v=202610140900"></script>
+<script src="js/lesson-xor-arch.js?v=202610140900"></script>
+<script src="js/lesson-xor-maps.js?v=202610140900"></script>
+<script src="js/lesson-xor-epoch.js?v=202610140900"></script>
+<script src="js/lesson-nn.js?v=202610140900"></script>
+<script src="js/lesson-trig.js?v=202610140900"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610140700"></script>
-<script src="js/lesson-rnn-soz.js?v=202610140700"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610140900"></script>
+<script src="js/lesson-rnn-soz.js?v=202610140900"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610140700"></script>
-<script src="js/lesson-lstm-cell.js?v=202610140700"></script>
-<script src="js/app.js?v=202610140700"></script>
-<script src="js/lesson-lstm-big.js?v=202610140700"></script>
-<script src="js/lesson-lstm-step.js?v=202610140700"></script>
-<script src="js/lesson-lstm-size.js?v=202610140700"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610140700"></script>
-<script src="js/lesson-emb-kullan.js?v=202610140700"></script>
-<script src="js/lesson-emb-draco.js?v=202610140700"></script>
-<script src="js/lesson-emb-arch.js?v=202610140700"></script>
-<script src="js/lesson-emb-extra.js?v=202610140700"></script>
-<script src="js/lesson-s2s-weights.js?v=202610140700"></script>
-<script src="js/lesson-s2s-add.js?v=202610140700"></script>
-<script src="js/lesson-s2s-extra.js?v=202610140700"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610140700"></script>
-<script src="js/lesson-emb-ornek.js?v=202610140700"></script>
-<script src="js/lesson-emb-steps.js?v=202610140700"></script>
-<script src="js/lesson-emb-big.js?v=202610140700"></script>
-<script src="js/lesson-sm-ornek.js?v=202610140700"></script>
-<script src="js/lesson-sm-big.js?v=202610140700"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610140700"></script>
-<script src="js/lesson-lstm-gate.js?v=202610140700"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610140700"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610140700"></script>
-<script src="js/lesson-linreg-big.js?v=202610140700"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610140700"></script>
-<script src="js/lesson-act-big.js?v=202610140700"></script>
-<script src="js/lesson-act-ornek.js?v=202610140700"></script>
-<script src="js/lesson-xor-ornek.js?v=202610140700"></script>
-<script src="js/lesson-nn-ornek.js?v=202610140700"></script>
-<script src="js/lesson-nn-net.js?v=202610140700"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610140900"></script>
+<script src="js/lesson-lstm-cell.js?v=202610140900"></script>
+<script src="js/app.js?v=202610140900"></script>
+<script src="js/lesson-lstm-big.js?v=202610140900"></script>
+<script src="js/lesson-lstm-step.js?v=202610140900"></script>
+<script src="js/lesson-lstm-size.js?v=202610140900"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610140900"></script>
+<script src="js/lesson-emb-kullan.js?v=202610140900"></script>
+<script src="js/lesson-emb-draco.js?v=202610140900"></script>
+<script src="js/lesson-emb-arch.js?v=202610140900"></script>
+<script src="js/lesson-emb-extra.js?v=202610140900"></script>
+<script src="js/lesson-s2s-weights.js?v=202610140900"></script>
+<script src="js/lesson-s2s-add.js?v=202610140900"></script>
+<script src="js/lesson-s2s-extra.js?v=202610140900"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610140900"></script>
+<script src="js/lesson-emb-ornek.js?v=202610140900"></script>
+<script src="js/lesson-emb-steps.js?v=202610140900"></script>
+<script src="js/lesson-emb-big.js?v=202610140900"></script>
+<script src="js/lesson-sm-ornek.js?v=202610140900"></script>
+<script src="js/lesson-sm-big.js?v=202610140900"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610140900"></script>
+<script src="js/lesson-lstm-gate.js?v=202610140900"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610140900"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610140900"></script>
+<script src="js/lesson-linreg-big.js?v=202610140900"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610140900"></script>
+<script src="js/lesson-act-big.js?v=202610140900"></script>
+<script src="js/lesson-act-ornek.js?v=202610140900"></script>
+<script src="js/lesson-xor-ornek.js?v=202610140900"></script>
+<script src="js/lesson-nn-ornek.js?v=202610140900"></script>
+<script src="js/lesson-nn-net.js?v=202610140900"></script>
 </body>
 </html>
