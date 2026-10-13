@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610131200"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610131400"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610131200">
+<link rel="stylesheet" href="css/style.css?v=202610131400">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-11 22:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 14:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2390,7 +2390,7 @@ for epoch in range(101):
         <tr><td><b>σ</b> kutuları, <b>tanh</b> kutusu</td><td>kapıları üreten hesap: aktivasyon</td><td>altlarındaki <code>W·x+U·h₋₁+b</code>: <b>W</b> = x'in ağırlığı, <b>U</b> = h₋₁'in ağırlığı (RNN'deki W_hh), <b>b</b> = bias; her kapının kendi W, U, b'si var</td></tr>
         <tr><td><b>x<sub>t</sub></b>, <b>h<sub>t−1</sub></b> (alttan)</td><td>yeni girdi ve önceki çıktı</td><td>dört kutuya girer; her kutu kendi W, U, b'sini kullanır</td></tr>
       </table>
-      <div class="callout" style="margin-top:8px">✅ <b>Bu panelde</b> f, i, o, c̃ artık elle verilmiyor: <b>z = W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanıyor (RNN'deki W_xh, W_hh, b_h ile aynı iş, ama dört kapı için dört ayrı set). Şemada her kutunun altında o kapının W, U, b ve z değeri yazıyor.</div></div>
+      <div class="callout" style="margin-top:8px">✅ <b>Bu panelde</b> f, i, o, c̃ artık elle verilmiyor: <b>z = W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanıyor (RNN'deki W_xh, W_hh, b_h ile aynı iş, ama dört kapı için dört ayrı set). Şemada her kutunun altında o kapının W, U, b ve z değeri yazıyor.</div></div></div>
     <div style="display:flex;gap:8px;margin:2px 0 8px"><button class="rex-btn" id="lvStepGo">İleri ▶</button><button class="rex-btn" id="lvStepRst">↺ Sıfırla</button></div>
     <div class="work" id="lvStepFormula" style="margin-bottom:6px"></div>
     <div class="lv-grid"><div class="lv-side"><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">🧹 f — Unutma kapısı</b><p>Defterini düşün (= <b>c</b>, uzun hafıza). Yeni bir kelime gelince LSTM önce eski notlara bakıp sorar: <i>"Bunlardan hangisi hâlâ işime yarıyor?"</i></p><p><b>0</b> = hepsini sil, <b>1</b> = hepsini koru. Karar x ve h₋₁'e bakarak verilir (<code>W·x+U·h₋₁+b</code> → σ).</p><p class="lv-live">Şu an <b id="lvT_f"></b> → eski hafıza <b id="lvT_cp"></b>, kalan kısmı <b id="lvT_fc"></b>.</p></div><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">📥 i — Giriş kapısı</b><p>Yeni gelen bilginin <b>ne kadarı deftere yazılmaya değer?</b> Her kelime önemli değil: "ve", "bir" gibi gürültüyü kapı kısar, önemli kelimeyi geçirir.</p><p><b>0</b> = hiçbirini yazma, <b>1</b> = tamamını yaz.</p><p class="lv-live">Şu an <b id="lvT_i"></b> → yeni bilginin %<b id="lvT_ip"></b>'i girecek.</p></div></div><div class="lv-mid" style="overflow-x:auto"><svg id="lstmPipe" role="img"></svg></div><div class="lv-side"><div class="lv-card" style="border-left:3px solid #7aa8ff"><b style="color:#7aa8ff">📝 c̃ — Aday (yeni not taslağı)</b><p>Defterine <b>yazılabilecek</b> yeni bilginin taslağı: x ve h₋₁'den üretilen, <b>−1 ile +1</b> arası bir değer (tanh). Ör. "olumlu bir şey söylendi" = +, "olumsuz" = −.</p><p><b>Henüz yazılmadı!</b> Taslak sadece teklif; deftere girip girmeyeceğini <b>i kapısı</b> belirler: yazılan = i × c̃.</p><p class="lv-live">Şu an c̃ = <b id="lvT_ct"></b>, i·c̃ = <b id="lvT_ic"></b> yazılıyor.</p></div><div class="lv-card" style="border-left:3px solid #e06a6a"><b style="color:#e06a6a">📣 o — Çıkış kapısı</b><p>Defterde bir sürü not var ama <b>şu an hepsini söylemek gerekmez.</b> Hafıza (c) ile ağzından çıkan söz (h) farklı şeyler. o kapısı: <i>"Defterin ne kadarı şimdi dışarı söylensin?"</i></p><p><b>0</b> = bilsen de sus, <b>1</b> = hepsini söyle. Çıktı h = o × tanh(c).</p><p class="lv-live">Şu an <b id="lvT_o"></b> → defter <b id="lvT_c"></b>, söylenen h = <b id="lvT_h"></b>.</p></div></div></div>
@@ -7468,35 +7468,35 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610131200"></script>
-<script src="js/lesson-turev.js?v=202610131200"></script>
-<script src="js/lesson-xor.js?v=202610131200"></script>
-<script src="js/lesson-xor-arch.js?v=202610131200"></script>
-<script src="js/lesson-xor-maps.js?v=202610131200"></script>
-<script src="js/lesson-xor-epoch.js?v=202610131200"></script>
-<script src="js/lesson-nn.js?v=202610131200"></script>
-<script src="js/lesson-trig.js?v=202610131200"></script>
+<script src="js/lesson-linreg.js?v=202610131400"></script>
+<script src="js/lesson-turev.js?v=202610131400"></script>
+<script src="js/lesson-xor.js?v=202610131400"></script>
+<script src="js/lesson-xor-arch.js?v=202610131400"></script>
+<script src="js/lesson-xor-maps.js?v=202610131400"></script>
+<script src="js/lesson-xor-epoch.js?v=202610131400"></script>
+<script src="js/lesson-nn.js?v=202610131400"></script>
+<script src="js/lesson-trig.js?v=202610131400"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610131200"></script>
-<script src="js/lesson-rnn-soz.js?v=202610131200"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610131400"></script>
+<script src="js/lesson-rnn-soz.js?v=202610131400"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610131200"></script>
-<script src="js/lesson-lstm-cell.js?v=202610131200"></script>
-<script src="js/app.js?v=202610131200"></script>
-<script src="js/lesson-lstm-big.js?v=202610131200"></script>
-<script src="js/lesson-lstm-step.js?v=202610131200"></script>
-<script src="js/lesson-lstm-size.js?v=202610131200"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610131200"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610131200"></script>
-<script src="js/lesson-lstm-gate.js?v=202610131200"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610131200"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610131200"></script>
-<script src="js/lesson-linreg-big.js?v=202610131200"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610131200"></script>
-<script src="js/lesson-act-big.js?v=202610131200"></script>
-<script src="js/lesson-act-ornek.js?v=202610131200"></script>
-<script src="js/lesson-xor-ornek.js?v=202610131200"></script>
-<script src="js/lesson-nn-ornek.js?v=202610131200"></script>
-<script src="js/lesson-nn-net.js?v=202610131200"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610131400"></script>
+<script src="js/lesson-lstm-cell.js?v=202610131400"></script>
+<script src="js/app.js?v=202610131400"></script>
+<script src="js/lesson-lstm-big.js?v=202610131400"></script>
+<script src="js/lesson-lstm-step.js?v=202610131400"></script>
+<script src="js/lesson-lstm-size.js?v=202610131400"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610131400"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610131400"></script>
+<script src="js/lesson-lstm-gate.js?v=202610131400"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610131400"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610131400"></script>
+<script src="js/lesson-linreg-big.js?v=202610131400"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610131400"></script>
+<script src="js/lesson-act-big.js?v=202610131400"></script>
+<script src="js/lesson-act-ornek.js?v=202610131400"></script>
+<script src="js/lesson-xor-ornek.js?v=202610131400"></script>
+<script src="js/lesson-nn-ornek.js?v=202610131400"></script>
+<script src="js/lesson-nn-net.js?v=202610131400"></script>
 </body>
 </html>
