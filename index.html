@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610131400"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610131800"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610131400">
+<link rel="stylesheet" href="css/style.css?v=202610131800">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 14:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 18:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4782,11 +4782,66 @@ for k in (2, 3, 4, 8):
   <!-- ===================== SOFTMAX MODELİ ===================== -->
   <div class="model" id="model-softmax">
 
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 230" role="img" aria-label="Dört skor, softmax, dört olasılık">
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">skorlar (herhangi bir sayı) → softmax → olasılıklar (hepsi pozitif, toplamı 1)</text>
+      <line x1="60" y1="150" x2="300" y2="150" stroke="#334063"/><line x1="460" y1="190" x2="700" y2="190" stroke="#334063"/>
+      <g font-size="11" fill="#ccd5e8" text-anchor="middle" font-family="Segoe UI, Arial">
+        <rect x="75" y="80" width="38" height="70" fill="#46c46a"/><text x="94" y="72">2,0</text><text x="94" y="168">uyudu</text>
+        <rect x="132" y="115" width="38" height="35" fill="#f0a032"/><text x="151" y="107">1,0</text><text x="151" y="168">kaçtı</text>
+        <rect x="189" y="150" width="38" height="17" fill="#3a7afe"/><text x="208" y="182">−0,5</text><text x="208" y="199">havladı</text>
+        <rect x="246" y="150" width="38" height="52" fill="#e06a6a"/><text x="265" y="216">−2,0</text><text x="265" y="228" font-size="9" fill="#95a2c2">mor</text>
+        <rect x="475" y="116" width="38" height="74" fill="#46c46a"/><text x="494" y="108">%68</text>
+        <rect x="532" y="163" width="38" height="27" fill="#f0a032"/><text x="551" y="155">%25</text>
+        <rect x="589" y="184" width="38" height="6" fill="#3a7afe"/><text x="608" y="176">%6</text>
+        <rect x="646" y="189" width="38" height="1.4" fill="#e06a6a"/><text x="665" y="181">%1</text>
+      </g>
+      <path d="M318,140 L440,140" stroke="#c77dff" stroke-width="3" fill="none" marker-end="url(#smA)"/>
+      <defs><marker id="smA" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#c77dff"/></marker></defs>
+      <text x="379" y="130" text-anchor="middle" font-size="13" fill="#c77dff" font-weight="700" font-family="Segoe UI, Arial">softmax</text>
+      <text x="379" y="162" text-anchor="middle" font-size="10.5" fill="#95a2c2" font-family="Segoe UI, Arial">eᶻ / Σeᶻ</text>
+    </svg>
   <h1>Softmax & Temperature — Skorları Olasılığa Çevirmek</h1>
   <p class="sub">Model her adayA bir <b>skor</b> (logit) verir: "uyudu: 2.0, kaçtı: 1.0, mor: −2.0". Ama karar vermek için <b>olasılık</b> gerekir. Softmax bu çeviriyi yapar — ve <b>temperature</b>, ChatGPT'deki "yaratıcılık" düğmesinin ta kendisidir.</p>
 
   <div class="callout">🔗 <b>Bağlantı:</b> Sigmoid tek soruya "evet/hayır olasılığı" veriyordu. Softmax, onun <b>çok seçenekli</b> genellemesi: N skoru, toplamı 1 olan N olasılığa çevirir. Attention'da QKᵀ benzerlik tablosunun her satırı softmax'ten geçer → "dikkat yüzdeleri" çıkar.</div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Sıcak gazdan çıkıp yapay zekâya giren formül</div>
+      <p>1860'lı yıllarda <b>Ludwig Boltzmann</b> gaz moleküllerinin davranışını anlamaya çalışıyordu: bir kapta milyarlarca molekül var, hangisinin hangi enerjide olduğunu tek tek bilemezsin. Ama <b>toplu</b> olarak şu kural çıkıyor: bir enerji düzeyindeki molekül oranı <b>e<sup>−E/kT</sup></b> ile orantılı. Düşük enerji daha olası; sıcaklık (T) yükseldikçe fark silinir, molekül her düzeye daha eşit dağılır.</p>
+      <p>Yarım yüzyıl sonra <b>Josiah Willard Gibbs</b> (1902) bunu istatistiksel mekaniğin temeli yaptı. Aynı formül başka bir alanda da yeniden doğdu: <b>1950-70'lerde</b> psikolog <b>Duncan Luce</b> ile iktisatçı <b>Daniel McFadden</b>, insanların çok seçenek arasından birini <i>nasıl seçtiğini</i> modellerken aynı e<sup>değer</sup> / Σe<sup>değer</sup> oranını buldu (McFadden bu çalışmayla 2000'de Nobel aldı): bir seçeneğin çekiciliği ne kadar yüksekse seçilme olasılığı o kadar fazla, ama hiçbir seçeneğin şansı sıfır değil.</p>
+      <p>Sinir ağları dünyasına <b>1989</b>'da <b>John Bridle</b> getirdi ve ona <b>"softmax"</b> adını verdi: <i>"max"</i> gibi en büyüğü seçer ama <i>"soft"</i> — kazananı tek başına yutmaz, herkese olasılık payı bırakır. Bugün ChatGPT'nin her kelimeyi seçişinde, bir fotoğrafın "kedi mi köpek mi" kararında ve Transformer'ın attention formülünde aynı fonksiyon çalışıyor. "Temperature" (sıcaklık) ayarının adı da Boltzmann'dan geliyor — tesadüf değil.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-soft" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>ChatGPT'nin sonraki kelimesi</b> — model on binlerce aday kelimeye skor verir; softmax bunları olasılığa çevirir ve bir kelime çekilir. "Yaratıcılık" ayarı = temperature.</div>
+        <div class="ex-card"><span class="ex-ico">🖼️</span><b>Fotoğraf sınıflandırma</b> — "kedi %92, köpek %5, tilki %2…" — son katmanın çıktısı her zaman softmax'tir; toplam %100'e tamamlanır.</div>
+        <div class="ex-card"><span class="ex-ico">🎮</span><b>Oyun yapay zekâsı</b> — AlphaGo gibi sistemler "hangi hamle?" sorusuna her hamle için olasılık üretir (softmax), arama bu olasılıklara göre dallanır.</div>
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>Arama ve öneri sıralaması</b> — adaylara skor verilir, softmax ile "hangisi ne kadar çekici" payına çevrilir; öneri listesi ya da reklam seçimi buradan çekilir.</div>
+        <div class="ex-card"><span class="ex-ico">🔬</span><b>Transformer'ın attention'ı</b> — her kelime, cümledeki diğerlerine "yüzde kaç bakacağını" softmax ile hesaplar: dikkat yüzdeleri toplamı 1 olan olasılıklardır.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">1) Neden basitçe oranlamıyoruz? Neden e?</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İlk akla gelen: "skorları toplamlarına böl, olasılık olsun." İki sorun: <b>(1)</b> skorlar <b>negatif</b> olabilir (−2 olasılığa bölünmez), <b>(2)</b> skor farklarının anlamı kaybolur. Çözüm — eski dostumuz: her skoru önce <b>e üzeri</b> yap:</p>
@@ -4799,6 +4854,33 @@ for k in (2, 3, 4, 8):
     <div class="tip">Euler bölümünde tanıştığın e, üçüncü kez sahnede: sigmoid'de, tanh'ta ve şimdi softmax'te. Derin öğrenme boyunca hep aynı sayıya döneceğiz.</div>
   </div>
 
+    <div class="pts" style="border-left:3px solid var(--accent)">
+      <h3 style="color:var(--accent)">Elle hesap: z = (2,0; 1,0; −0,5; −2,0)</h3>
+      <table class="rex-tbl"><tr><th>aday</th><th>skor z</th><th>e<sup>z</sup></th><th>p = e<sup>z</sup> / 10,849</th></tr>
+        <tr><td>uyudu</td><td>2,0</td><td>7,389</td><td><b>0,681</b></td></tr>
+        <tr><td>kaçtı</td><td>1,0</td><td>2,718</td><td><b>0,251</b></td></tr>
+        <tr><td>havladı</td><td>−0,5</td><td>0,607</td><td><b>0,056</b></td></tr>
+        <tr><td>mor</td><td>−2,0</td><td>0,135</td><td><b>0,012</b></td></tr>
+        <tr><td colspan="2"><b>toplam</b></td><td>10,849</td><td><b>1,000</b></td></tr></table>
+      <p style="font-size:13px; color:#ccd5e8; margin-top:8px">Üç adım: <b>(1)</b> her skorun e üzerisini al (hepsi pozitif oldu), <b>(2)</b> hepsini topla, <b>(3)</b> her birini toplama böl. Skor farkı 1 olan "uyudu" ile "kaçtı" arasında olasılık oranı 2,7 kat (= e); farkı 2 olan "uyudu" ile "havladı" arasında 12 kat (= e<sup>2,5</sup>). <b>Fark arttıkça fark üstel büyür.</b></p>
+    </div>
+
+  <div class="sechead">3) Temperature'ın sırrı: z yerine z/T</div>
+  <div class="pts">
+    \[ \text{softmax}_T(z_i)=\frac{e^{z_i/T}}{\sum_j e^{z_j/T}} \]
+    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
+      <li><b>T → 0:</b> farklar devleşir → en yüksek skor <b>tüm olasılığı yutar</b> (greedy/argmax). Deterministik, güvenli, tekrarcı.</li>
+      <li><b>T = 1:</b> saf softmax — modelin "dürüst" dağılımı.</li>
+      <li><b>T büyük:</b> farklar silinir → dağılım <b>düzleşir</b>, düşük skorlu "mor" bile şans bulur. Yaratıcı… ya da saçma.</li>
+    </ul>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İsim tesadüf değil: bu formül fizikteki <b>Boltzmann dağılımından</b> geliyor — orada T gerçekten sıcaklıktır: sıcak gazda moleküller her enerji seviyesine dağılır, soğukta en düşük seviyeye çöker. LLM API'lerindeki <code>temperature</code> parametresi, 150 yıllık istatistiksel fiziğin mirası.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — skorları ve sıcaklığı oyna</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">2) 🎛️ Oyuncak: "Kedi mırıldanarak ___" — sonraki kelimeyi seç</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Bir dil modelinin kafasının içindesin: 4 adayın <b>logit</b>lerini ve <b>sıcaklığı (T)</b> kaydır → olasılık çubukları canlı değişsin. Sonra 🎲 ile gerçekten <b>örnekle</b> — düşük T'de hep aynı kelime, yüksek T'de kaos.</div>
@@ -4817,18 +4899,21 @@ for k in (2, 3, 4, 8):
     <div class="callout" id="smVerdict" style="margin:10px 0"></div>
     <div class="work" id="smWork" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
   </div>
-
-  <div class="sechead">3) Temperature'ın sırrı: z yerine z/T</div>
-  <div class="pts">
-    \[ \text{softmax}_T(z_i)=\frac{e^{z_i/T}}{\sum_j e^{z_j/T}} \]
-    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
-      <li><b>T → 0:</b> farklar devleşir → en yüksek skor <b>tüm olasılığı yutar</b> (greedy/argmax). Deterministik, güvenli, tekrarcı.</li>
-      <li><b>T = 1:</b> saf softmax — modelin "dürüst" dağılımı.</li>
-      <li><b>T büyük:</b> farklar silinir → dağılım <b>düzleşir</b>, düşük skorlu "mor" bile şans bulur. Yaratıcı… ya da saçma.</li>
-    </ul>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İsim tesadüf değil: bu formül fizikteki <b>Boltzmann dağılımından</b> geliyor — orada T gerçekten sıcaklıktır: sıcak gazda moleküller her enerji seviyesine dağılır, soğukta en düşük seviyeye çöker. LLM API'lerindeki <code>temperature</code> parametresi, 150 yıllık istatistiksel fiziğin mirası.</p>
+    </div>
   </div>
 
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — softmax + çapraz-entropi: ileri yol ve geri yayılım</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="smSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Softmax'in <b>bütün resmi</b>: <b>ileri yol</b> (skorlar → olasılıklar → doğru kelimeye göre kayıp) ve <b>geri yol</b> (kayıptan her skora). Skorları ve "doğru kelime"yi değiştir; kutulara/oklara gel → türev nasıl bulunuyor. Sürpriz: karmaşık görünen türevler sadeleşip tek bir sade ifadeye iniyor — <b>p − y</b>.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Softmax + çapraz-entropinin bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="smBigMap"></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — attention formülü, taşma tuzağı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">4) Büyük an: attention formülünü artık okuyabilirsin</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     \[ \text{Attention}(Q,K,V)=\text{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V \]
@@ -4841,6 +4926,123 @@ for k in (2, 3, 4, 8):
     <div class="callout">🎯 Formülün 4 parçasından 3'ünü artık <b>tanıyorsun</b>. Embedding'i bitirince bu satır, korkutucu bir sembol yığını değil, sıradan bir cümle olacak: <i>"her kelime, benzediği kelimelerin içeriğinden yüzdeli karışım alır."</i></div>
   </div>
 
+  <div class="sechead">➕ Taşma tuzağı: neden her skordan en büyüğünü çıkarıyoruz?</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">e<sup>1000</sup> bilgisayarın tutabileceği en büyük sayıyı aşar (∞). Gerçek modellerde skorlar yüzlerle ifade edilebildiği için doğrudan <b>e<sup>z</sup> / Σe<sup>z</sup></b> hesaplamak <b>NaN</b> üretir. Hile: pay ve paydayı e<sup>−max</sup> ile çarp — sonuç değişmez, ama en büyük terim e<sup>0</sup>=1 olur ve hiçbir şey taşmaz. Yan yana görmek için 7️⃣ Örnek Çalışmalar → Örnek 3.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç küçük örnek. Birincisinde softmax'i <b>kendi kendine eğitirsin</b> (ağırlıkları biz vermiyoruz); ikincisi temperature'ı sayılarla, üçüncüsü softmax'in kırılma noktalarını gösteriyor. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Dil modeli veriden oranları öğreniyor (kendi kendine)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 4 aday kelimenin skorları (z) başta hepsi 0. 10 örnek cümlede boşluğa <b>uyudu 6, kaçtı 3, havladı 1, mor 0</b> kez gelmiş. Model çapraz-entropiyle skorlarını kendisi ayarlıyor. ▶ ile izle ya da <b>+1 epoch</b> ile adım adım ilerle.</p><div id="smEx1"></div><div class="callout"><b>💡 Sezgi:</b> Eğitim biterken olasılıklar tam olarak <b>verideki oranlara</b> (0,6 / 0,3 / 0,1 / ≈0) yaklaşır — kayıp sıfıra inemez, çünkü verinin kendisinde belirsizlik var (entropisi 0,898). Her adımda skorlar <b>p − y</b> kadar itilir: fazla olasılık verdiği kelimenin skoru düşer, az verdiğininki artar. "Mor" hiç görülmediği için skoru sürekli düşer ama asla tam sıfır olasılığa ulaşamaz.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def softmax(z):
+    m = max(z)                                   # taşmasın diye en büyüğü çıkar (sonuç değişmez)
+    e = [math.exp(v - m) for v in z]
+    s = sum(e)
+    return [v / s for v in e]
+
+kelimeler = [&#x27;uyudu&#x27;, &#x27;kaçtı&#x27;, &#x27;havladı&#x27;, &#x27;mor&#x27;]
+sayim = [6, 3, 1, 0]                             # 10 cümlede &quot;Kedi mırıldanarak ___&quot; boşluğuna gerçekte gelen kelimeler
+N = sum(sayim)
+oran = [c / N for c in sayim]                    # gerçek oranlar = (0.6, 0.3, 0.1, 0.0)
+
+z = [0.0] * 4                                    # model başta hiçbir şey bilmiyor: tüm skorlar 0
+LR = 0.5
+for epoch in range(1, 1501):
+    p = softmax(z)
+    g = [p[i] - oran[i] for i in range(4)]       # dL/dz = p - y  (ortalama): sade sonuç!
+    z = [z[i] - LR * g[i] for i in range(4)]     # gradyan inişi
+    if epoch in (1, 10, 100, 500, 1500):         # güncellemeden SONRAKİ durum (sayfadaki gibi)
+        p = softmax(z)
+        kayip = -sum(c * math.log(p[i]) for i, c in enumerate(sayim) if c) / N   # çapraz-entropi (veri ortalaması)
+        print(f&quot;epoch {epoch:4d}  kayıp = {kayip:.4f}  p = {[round(v, 3) for v in p]}&quot;)
+
+# ---- ÇIKTI ----
+# epoch    1  kayıp = 1.2880  p = [0.296, 0.255, 0.23, 0.219]
+# epoch   10  kayıp = 1.0027  p = [0.525, 0.252, 0.132, 0.091]
+# epoch  100  kayıp = 0.9122  p = [0.596, 0.296, 0.095, 0.014]
+# epoch  500  kayıp = 0.9009  p = [0.599, 0.299, 0.099, 0.003]
+# epoch 1500  kayıp = 0.8989  p = [0.6, 0.3, 0.1, 0.001]</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Temperature: soğuk, ılık, sıcak</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Aynı skorlarla (2,0 / 1,0 / −0,5 / −2,0) sıcaklığı değiştirince olasılıklar ve model davranışı nasıl değişiyor? Tabloda bir sıcaklığa tıkla ve <b>1000 kelime çek</b>.</p><div id="smEx2"></div><div class="callout"><b>💡 Sezgi:</b> T küçüldükçe en yüksek skorlu kelime tüm olasılığı yutar (T=0,2'de %99), model <b>deterministik ve tekrarcı</b> olur. T büyüdükçe dağılım düzleşir (T=5'te en olası kelime bile %35), model <b>yaratıcı ama saçma</b> kelimeleri de seçer. ChatGPT'de "daha yaratıcı" demek bu kaydırıcıyı sağa çekmek demek.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı tablo ve çekiliş Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def softmax(z, T=1.0):
+    m = max(z)
+    e = [math.exp((v - m) / T) for v in z]       # skoru T&#x27;ye böl, sonra softmax
+    s = sum(e)
+    return [v / s for v in e]
+
+def entropi(p):
+    return -sum(v * math.log(v) for v in p if v &gt; 0)
+
+z = [2.0, 1.0, -0.5, -2.0]                       # uyudu, kaçtı, havladı, mor
+for T in (0.2, 0.5, 1, 2, 5):
+    p = softmax(z, T)
+    print(f&quot;T={T:&lt;4} p = {[round(v, 3) for v in p]}  entropi = {entropi(p):.2f}&quot;)
+
+def lcg(s):                                      # sabit tohumlu, yeniden üretilebilir rastgele sayı üreteci
+    while True:
+        s = (s * 1664525 + 1013904223) % 2**32
+        yield s / 2**32
+
+for T in (0.2, 1, 5):
+    p = softmax(z, T)
+    r = lcg(12345)
+    sayac = [0, 0, 0, 0]
+    for _ in range(1000):                        # 1000 kez kelime çek
+        u = next(r); toplam = 0
+        for i, v in enumerate(p):
+            toplam += v
+            if u &lt; toplam:
+                sayac[i] += 1
+                break
+        else:
+            sayac[3] += 1
+    print(f&quot;T={T}: 1000 çekilişte {sayac}&quot;)
+
+# ---- ÇIKTI ----
+# T=0.2  p = [0.993, 0.007, 0.0, 0.0]  entropi = 0.04
+# T=0.5  p = [0.875, 0.118, 0.006, 0.0]  entropi = 0.40
+# T=1    p = [0.681, 0.251, 0.056, 0.012]  entropi = 0.82
+# T=2    p = [0.493, 0.299, 0.141, 0.067]  entropi = 1.17
+# T=5    p = [0.348, 0.285, 0.211, 0.156]  entropi = 1.34
+# T=0.2: 1000 çekilişte [993, 7, 0, 0]
+# T=1: 1000 çekilişte [679, 250, 57, 14]
+# T=5: 1000 çekilişte [329, 296, 220, 155]</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Neden "oranlama" yetmiyor, neden "en büyüğü çıkar"?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Aynı üç skoru üç yöntemle olasılığa çevir: naif oranlama, ham softmax, kararlı softmax. Negatif ve dev skorlar dene.</p><div id="smEx3"></div><div class="callout"><b>💡 Sezgi:</b> Naif oranlama negatif skorda <b>negatif olasılık</b> üretir; ham e<sup>z</sup> büyük skorda <b>taşar</b> (∞/∞ = NaN). Kararlı softmax ikisini de çözer: e<sup>z</sup> negatifi pozitife çevirir, "en büyüğü çıkar" hilesi de taşmayı önler. Derin öğrenme kütüphanelerinin softmax'i hep bu sürümdür.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı karşılaştırma Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+z = [2, 1, -2]
+print(&quot;1) naif oranlama :&quot;, [v / sum(z) for v in z])              # negatif &quot;olasılık&quot; çıktı: geçersiz!
+
+def softmax(z):
+    m = max(z)                                   # kararlı sürüm: en büyüğü çıkar
+    e = [math.exp(v - m) for v in z]
+    s = sum(e)
+    return [round(v / s, 4) for v in e]
+
+print(&quot;2) softmax        :&quot;, softmax(z))
+
+dev = [1000, 1001, 1002]
+try:
+    print(&quot;3) ham e^z        :&quot;, [math.exp(v) for v in dev])
+except OverflowError:
+    print(&quot;3) ham e^z        : OverflowError (e^1000 sayı sınırını aşıyor)&quot;)
+print(&quot;4) kararlı softmax:&quot;, softmax(dev))
+
+# ---- ÇIKTI ----
+# 1) naif oranlama : [2.0, 1.0, -2.0]
+# 2) softmax        : [0.7214, 0.2654, 0.0132]
+# 3) ham e^z        : OverflowError (e^1000 sayı sınırını aşıyor)
+# 4) kararlı softmax: [0.09, 0.2447, 0.6652]</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Softmax</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -4862,18 +5064,76 @@ for k in (2, 3, 4, 8):
     </div>
   </div>
 
+    </div>
+  </div>
+
   <p class="footer">Softmax & temperature • skor→olasılık · e'nin üçüncü sahnesi · Boltzmann mirası · √d termostatı</p>
   </div><!-- /model-softmax -->
 
+<div class="model" id="model-embedding">
 
-  <!-- ===================== EMBEDDING MODELİ ===================== -->
-  <div class="model" id="model-embedding">
-
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 230" role="img" aria-label="İki boyutlu kelime uzayı: kral, kraliçe, erkek, kadın ve paralel oklar">
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">anlam = uzayda konum: benzer kelimeler komşu, ilişkiler paralel yönler</text>
+      <defs><marker id="embA" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#c77dff"/></marker><marker id="embB" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#f0a032"/></marker></defs>
+      <line x1="60" y1="200" x2="700" y2="200" stroke="#334063"/><line x1="60" y1="35" x2="60" y2="200" stroke="#334063"/>
+      <text x="700" y="216" text-anchor="end" font-size="10" fill="#6b7794" font-family="Segoe UI, Arial">soyluluk →</text><text x="66" y="46" font-size="10" fill="#6b7794" font-family="Segoe UI, Arial">↑ kadınlık</text>
+      <line x1="215" y1="160" x2="395" y2="68" stroke="#c77dff" stroke-width="2.5" marker-end="url(#embA)"/>
+      <line x1="215" y1="162" x2="215" y2="95" stroke="#f0a032" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#embB)"/>
+      <line x1="395" y1="160" x2="395" y2="95" stroke="#f0a032" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#embB)"/>
+      <line x1="215" y1="162" x2="393" y2="162" stroke="#c77dff" stroke-width="2.5" marker-end="url(#embA)" opacity=".7"/>
+      <g font-family="Segoe UI, Arial" font-size="13" fill="#ccd5e8" font-weight="700">
+        <circle cx="215" cy="162" r="6" fill="#3a7afe"/><text x="125" y="180">erkek</text>
+        <circle cx="215" cy="92" r="6" fill="#3a7afe"/><text x="140" y="90">kadın</text>
+        <circle cx="395" cy="162" r="6" fill="#46c46a"/><text x="405" y="176">kral</text>
+        <circle cx="395" cy="92" r="6" fill="#46c46a"/><text x="405" y="86">kraliçe</text>
+        <circle cx="565" cy="150" r="6" fill="#e06a6a"/><text x="575" y="148">elma</text>
+        <circle cx="595" cy="170" r="6" fill="#e06a6a"/><text x="605" y="172">armut</text>
+      </g>
+      <text x="470" y="212" font-size="11" fill="#f0a032" font-family="Segoe UI, Arial">↑ aynı "erkek→kadın" yönü</text>
+      <text x="260" y="140" font-size="11" fill="#c77dff" font-family="Segoe UI, Arial" transform="rotate(-27 260 140)">kral − erkek + kadın ≈ kraliçe</text>
+    </svg>
   <h1>Kelime Temsili (Embedding) — Anlamı Sayıya Gömmek</h1>
   <p class="sub">Bilgisayar "kral" kelimesini göremez, sadece sayı görür. Embedding, her kelimeyi bir <b>vektör</b> (ok) yapar — öyle ki <b>anlamca yakın kelimeler uzayda komşu</b> olur. İşte attention'ın üzerinde çalıştığı hammadde bu.</p>
 
   <div class="callout">🔗 <b>Bağlantı:</b> 🧮 Vektör dersinde nokta çarpımın "benzerlik ölçtüğünü" gördün. Embedding o benzerliğin <b>anlam</b> taşımasını sağlar: "kral" ile "kraliçe"nin okları yakın yöne bakar → nokta çarpımları yüksek → attention onları ilişkilendirir.</div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — "Bir kelimeyi tuttuğu arkadaşlarından tanırsın"</div>
+      <p>1950'lerde dilbilimciler anlamın sözlükte değil <b>kullanımda</b> yattığını söylüyordu. <b>Zellig Harris</b> (1954) benzer bağlamlarda geçen kelimelerin benzer anlam taşıdığını yazdı; <b>J. R. Firth</b> (1957) bunu ünlü cümlesiyle özetledi: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> "Kedi" ile "köpek" aynı cümle kalıplarında dolaşır ("…uyudu", "…koştu"); "kedi" ile "kral" dolaşmaz. Anlam, komşuluk istatistiğidir.</p>
+      <p>Fikri sayıya dökmek yıllar aldı. <b>2003'te Yoshua Bengio</b> ve arkadaşları, bir sinir ağı sonraki kelimeyi tahmin etmeyi öğrenirken kelimeler için <b>vektörler de öğrendiğini</b> gösterdi. Ama asıl patlama <b>2013'te</b> geldi: Google'da <b>Tomas Mikolov</b> ve ekibi, çok hızlı eğitilen <b>word2vec</b>'i yayımladı. Sonuç şaşırtıcıydı — vektörler üzerinde aritmetik yapılabiliyordu: <b>kral − erkek + kadın ≈ kraliçe</b>. 2014'te Stanford'dan <b>GloVe</b> aynı fikri başka bir yoldan getirdi.</p>
+      <p>Sınır tek: word2vec her kelimeye <b>tek</b> bir vektör verir; "yüz" kelimesi (surat? sayı? yüzmek?) hep aynı noktada durur. <b>2018'de ELMo ve BERT</b> bu sınırı kırdı: vektör artık <b>cümleye göre değişiyor</b> (bağlamsal embedding). ChatGPT gibi modellerin ilk katmanı hâlâ bir embedding tablosu — ama üstündeki katmanlar bu vektörleri her cümlede yeniden işliyor.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-emb" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>Akıllı arama</b> — "ucuz otel" ararken "uygun fiyatlı konaklama" sayfaları da gelir: kelimeler değil <b>anlam vektörleri</b> eşleştirilir.</div>
+        <div class="ex-card"><span class="ex-ico">🎧</span><b>Öneri sistemleri</b> — şarkılar, filmler, ürünler de kelime gibi vektöre çevrilir; "bunu dinleyenler şunu da dinledi" = vektörleri yakın.</div>
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Makine çevirisi</b> — farklı dillerdeki "kedi / cat / chat" kelimelerinin vektörleri benzer bölgeye düşer; çeviri bu uzayda yol bulmaktır.</div>
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>ChatGPT'nin ilk katmanı</b> — sizin yazdığınız her kelime önce bir embedding tablosundan vektöre çevrilir; asıl hesap bu vektörler üzerinde yapılır.</div>
+        <div class="ex-card"><span class="ex-ico">📧</span><b>Spam ve duygu analizi</b> — "bedava, kazan, tıkla" kelimelerinin vektörleri benzer yöne bakar; sınıflandırıcı o yöne bakan cümleleri yakalar.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">1) Kötü fikir: one-hot (her kelime bir kutu)</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İlk akla gelen: sözlükte 50.000 kelime varsa, her kelimeye 50.000 uzunlukta bir liste ver — sadece kendi yerinde 1, gerisi 0:</p>
@@ -4895,6 +5155,19 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   </div>
 
   <!-- İNTERAKTİF: 2D kelime uzayı -->
+
+  <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
+    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — kelime uzayında gez</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">3) 🎯 Oyuncak: kelime uzayında gez</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Kelimeleri <b>sürükle</b>, komşuluklarını değiştir. Bir kelimeye <b>tıkla</b> → ona en yakın 3 komşuyu (cosine benzerliği) göster. <b>"kral − erkek + kadın"</b> okunu çizdirmek için 🧭 butonuna bas.</div>
@@ -4914,14 +5187,143 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     </div>
     <div class="tip">Gerçek modellerde bu uzay 2D değil <b>yüzlerce boyutlu</b>; her boyut ismini bilmediğimiz bir "anlam ekseni". Ama mantık aynı: <b>yakınlık = anlamca benzerlik</b>.</div>
   </div>
-
-  <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
-  <div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
-    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
+    </div>
   </div>
 
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — bir skip-gram adımı: ileri yol ve geri yayılım</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="embSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Embedding'in <b>bütün resmi</b>: bir <b>skip-gram adımı</b>. <b>İleri yol</b>: kelime numarası → tablodan vektör → komşu adaylarıyla nokta çarpım → softmax → "gerçek komşuyu ne kadar bekliyordun" kaybı. <b>Geri yol</b>: kayıp hem <b>kelimenin vektörüne</b> hem <b>komşu vektörlerine</b> gradyan gönderir — ikisi de öğrenilir. Sayıları değiştir; kutulara/oklara gel → türev nasıl bulunuyor.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Bir skip-gram adımının bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="embBigMap"></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — tablodan satır okumak, "yüz" sorunu</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">➕ Embedding = tablodan satır okumak (ve parametre sayısı)</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir embedding katmanı, aslında <b>V × D boyutlu bir tablo</b>: V kelime, her birinin D sayısı. Kelimenin numarası verilir, tablodan o <b>satır</b> okunur. Bunu "one-hot vektör × matris" diye düşünmek matematiksel olarak doğru — ama 49.999 sıfırla çarpmak israf olduğu için gerçekte doğrudan satır okunur (lookup). Sözlük 50.000 kelime ve D=300 ise tablo <b>15 milyon</b> sayıdır; <b>hepsi</b> eğitimde öğrenilir. Yani embedding ayrı bir "ön işlem" değil, <b>modelin ağırlıklarının bir parçası</b>. (Elle hesap için 7️⃣ Örnek Çalışmalar → Örnek 3.)</p>
+  </div>
+  <div class="sechead">➕ "Yüz" sorunu: tek vektör yetmiyor</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Yüzü güzel", "yüz lira", "yüzmeyi bilmiyor": üç ayrı anlam. Klasik embedding "yüz" kelimesine <b>tek</b> bir vektör verir ve üç anlamın ortalamasında bir yerde kalır. <b>Bağlamsal embedding</b> (ELMo, BERT, ChatGPT) vektörü her cümlede <b>çevre kelimelere bakarak</b> yeniden hesaplar: "yüz lira"daki "yüz" sayı bölgesine, "yüzü güzel"deki surat bölgesine gider. Bunu yapan mekanizma sıradaki derslerin konusu: <b>attention</b>.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç küçük örnek. Birincisinde <b>kelime vektörlerini ağ kendisi öğrenir</b> (başta rastgele, yan yana geçen kelimeler yaklaşır); ikincisi one-hot ile öğrenilmiş embedding'i kıyaslar; üçüncüsü "tablodan satır okuma"yı elle gösterir. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Kelime vektörleri komşu tahminiyle kendi kendine öğreniliyor</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 6 kelimenin 2 sayıdan oluşan vektörleri başta <b>rastgele</b>. Eğitim verisi sadece "hangi kelime hangisinin yanında geçmiş": kedi/köpek → uyudu, koştu; kral/kraliçe → yönetti, tahtta; elma/armut → tatlı, taze. Model "kelimeye bakıp komşusunu tahmin et" oyununu oynarken vektörleri de düzeltiyor. ▶ ile izle ya da <b>+1 epoch</b> ile adım adım ilerle.</p><div id="embEx1"></div><div class="callout"><b>💡 Sezgi:</b> Başlangıçta ilişki yok, hatta rastgele "kedi~kral" +0,98 çıkıyor (aynı yöne bakıyorlar) ve "kedi~köpek" −0,46. Eğitimden sonra <b>aynı bağlamları paylaşan kelimeler tam aynı yöne</b> (kedi~köpek +1,00), farklı gruplar uzak yönlere (≈ −0,5; 2 boyutta 3 grup 120° arayla dizilir) yerleşiyor. Kimse "kedi ile köpek benzer" demedi — sadece <b>komşuluk</b> verildi. Gerçek modellerde milyarlarca cümle ve yüzlerce boyut var; mantık aynı. <i>Not: bu oyuncakta aynı gruptaki kelimeler bağlamları <b>tamamen</b> paylaştığı için cosine tam 1,00 çıkıyor; gerçek dilde komşuluklar kısmen örtüştüğü için benzerlik 0,6–0,8 gibi değerlerde kalır.</i></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+baglam    = [&#x27;uyudu&#x27;, &#x27;koştu&#x27;, &#x27;yönetti&#x27;, &#x27;tahtta&#x27;, &#x27;tatlı&#x27;, &#x27;taze&#x27;]
+# eğitim verisi: (kelime, yanında gördüğü kelime). Her grup, kendi iki bağlam kelimesiyle birlikte geçiyor.
+ciftler = [(i, j) for i in range(6) for j in range(6) if i // 2 == j // 2]
+
+def lcg(s):                                  # sabit tohumlu rastgele sayı üreteci (sayfadakiyle aynı)
+    while True:
+        s = (s * 1664525 + 1013904223) % 2**32
+        yield s / 2**32
+
+def softmax(z):
+    m = max(z); e = [math.exp(v - m) for v in z]; t = sum(e)
+    return [v / t for v in e]
+
+r = lcg(1)
+W = [[(next(r) - .5) * 2 * 0.3 for _ in range(2)] for _ in range(6)]   # kelime vektörleri (6 satır x 2 sayı): BAŞTA RASTGELE
+C = [[(next(r) - .5) * 2 * 0.3 for _ in range(2)] for _ in range(6)]   # komşu (bağlam) vektörleri
+
+def kayip():
+    return -sum(math.log(softmax([W[i][0]*c[0] + W[i][1]*c[1] for c in C])[j]) for i, j in ciftler) / len(ciftler)
+
+def cosine(a, b):
+    return (a[0]*b[0] + a[1]*b[1]) / (math.hypot(*a) * math.hypot(*b))
+
+print(f&quot;epoch   0  kayıp = {kayip():.3f}  kedi~köpek = {cosine(W[0], W[1]):+.2f}  kedi~kral = {cosine(W[0], W[2]):+.2f}&quot;)
+LR = 1.0
+for epoch in range(1, 501):
+    gW = [[0.0, 0.0] for _ in range(6)]; gC = [[0.0, 0.0] for _ in range(6)]
+    for i, j in ciftler:
+        p = softmax([W[i][0]*c[0] + W[i][1]*c[1] for c in C])   # kelime i&#x27;nin vektörü, her komşu adayıyla nokta çarpım -&gt; olasılık
+        for k in range(6):
+            d = p[k] - (1 if k == j else 0)                     # dL/ds = p - y
+            for q in range(2):
+                gW[i][q] += d * C[k][q] / len(ciftler)          # kelime vektörünün gradyanı
+                gC[k][q] += d * W[i][q] / len(ciftler)          # komşu vektörünün gradyanı
+    for i in range(6):
+        for q in range(2):
+            W[i][q] -= LR * gW[i][q]; C[i][q] -= LR * gC[i][q]  # gradyan inişi: İKİ tablo da öğreniliyor
+    if epoch in (1, 10, 100, 500):
+        print(f&quot;epoch {epoch:3d}  kayıp = {kayip():.3f}  kedi~köpek = {cosine(W[0], W[1]):+.2f}  kedi~kral = {cosine(W[0], W[2]):+.2f}&quot;)
+print(&quot;son vektörler:&quot;, {k: [round(v, 2) for v in W[i]] for i, k in enumerate(kelimeler)})
+
+# ---- ÇIKTI ----
+# epoch   0  kayıp = 1.781  kedi~köpek = -0.46  kedi~kral = +0.98
+# epoch   1  kayıp = 1.771  kedi~köpek = -0.23  kedi~kral = +0.99
+# epoch  10  kayıp = 1.469  kedi~köpek = +0.96  kedi~kral = -0.86
+# epoch 100  kayıp = 0.698  kedi~köpek = +1.00  kedi~kral = -0.51
+# epoch 500  kayıp = 0.694  kedi~köpek = +1.00  kedi~kral = -0.51
+# son vektörler: {'kedi': [-0.15, 2.33], 'köpek': [-0.12, 2.33], 'kral': [2.07, -1.04], 'kraliçe': [2.11, -0.99], 'elma': [-1.98, -1.23], 'armut': [-1.94, -1.28]}</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — One-hot ve öğrenilmiş embedding yan yana</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Aynı 6 kelime için iki temsili karşılaştır: her kelime bir kutu (one-hot) ve Örnek 1'de öğrenilen 2 boyutlu vektörler. İki kelimenin benzerliği cosine ile ölçülüyor.</p><div id="embEx2"></div><div class="callout"><b>💡 Sezgi:</b> One-hot'ta "kedi" ile "köpek" de, "kedi" ile "kral" da <b>0</b> — bilgisayar için ikisi eşit derecede alakasız. Öğrenilmiş embedding'de grup içi 1,00, gruplar arası negatif. Üstelik vektör 50.000 yerine 300 sayı. Fark: komşuluktan öğrenilen <b>anlam</b>.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı karşılaştırma Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+# Örnek 1&#x27;in 500 epoch sonundaki vektörleri (2 ondalığa yuvarlanmış; sayfadaki tablo yuvarlanmamış değerlerle hesaplanır, fark ±0,01)
+E = [[-0.15, 2.33], [-0.12, 2.33], [2.07, -1.04], [2.11, -0.99], [-1.98, -1.23], [-1.94, -1.28]]
+
+def cosine(a, b):
+    return (a[0]*b[0] + a[1]*b[1]) / (math.hypot(*a) * math.hypot(*b))
+
+print(&quot;          &quot; + &quot;&quot;.join(f&quot;{k[:5]:&gt;7}&quot; for k in kelimeler))
+for i, a in enumerate(kelimeler):
+    onehot = &quot;&quot;.join(f&quot;{1.0 if i == j else 0.0:7.2f}&quot; for j in range(6))      # one-hot: köşegen hariç hep 0
+    emb    = &quot;&quot;.join(f&quot;{cosine(E[i], E[j]):7.2f}&quot; for j in range(6))          # öğrenilmiş: benzer kelimeler 1&#x27;e yakın
+    print(f&quot;{a:9s} one-hot:{onehot}   embedding:{emb}&quot;)
+
+V, D = 50_000, 300
+print(f&quot;\nV={V:,} kelime, D={D}: one-hot vektör boyu {V:,}; embedding boyu {D}; tablo = {V*D:,} parametre&quot;)
+
+# ---- ÇIKTI ----
+# kedi  köpek   kral  krali   elma  armut
+# kedi      one-hot:   1.00   0.00   0.00   0.00   0.00   0.00   embedding:   1.00   1.00  -0.51  -0.48  -0.47  -0.50
+# köpek     one-hot:   0.00   1.00   0.00   0.00   0.00   0.00   embedding:   1.00   1.00  -0.49  -0.47  -0.48  -0.51
+# kral      one-hot:   0.00   0.00   1.00   0.00   0.00   0.00   embedding:  -0.51  -0.49   1.00   1.00  -0.52  -0.50
+# kraliçe   one-hot:   0.00   0.00   0.00   1.00   0.00   0.00   embedding:  -0.48  -0.47   1.00   1.00  -0.54  -0.52
+# elma      one-hot:   0.00   0.00   0.00   0.00   1.00   0.00   embedding:  -0.47  -0.48  -0.52  -0.54   1.00   1.00
+# armut     one-hot:   0.00   0.00   0.00   0.00   0.00   1.00   embedding:  -0.50  -0.51  -0.50  -0.52   1.00   1.00
+# 
+# V=50,000 kelime, D=300: one-hot vektör boyu 50,000; embedding boyu 300; tablo = 15,000,000 parametre</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Gömme tablosu: one-hot × matris = bir satır</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bir kelimeyi seç. One-hot satırı ile 6×2'lik gömme matrisini çarp: sonuç matrisin o kelimeye ait <b>tek satırı</b>.</p><div id="embEx3"></div><div class="callout"><b>💡 Sezgi:</b> Çarpımda 5 satır sıfırla çarpılıp siliniyor; geriye seçilen kelimenin satırı kalıyor. Bu yüzden embedding katmanı pratikte bir <b>arama tablosu</b>: kelimenin numarasıyla satırı oku. Matris çarpımı ile lookup aynı sonucu verir ama lookup 50.000 kat ucuzdur.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Matris çarpımı ve lookup Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+E = [[-0.15, 2.33], [-0.12, 2.33], [2.07, -1.04], [2.11, -0.99], [-1.98, -1.23], [-1.94, -1.28]]   # gömme matrisi (6 x 2)
+
+kelime = &#x27;kral&#x27;
+i = kelimeler.index(kelime)
+onehot = [1 if k == i else 0 for k in range(6)]
+
+# 1) matris çarpımı: one-hot satırı x E  (5 satır sıfırla çarpılıp toplanır)
+carpim = [sum(onehot[k] * E[k][d] for k in range(6)) for d in range(2)]
+# 2) lookup: doğrudan tablodan satır oku (aynı sonuç, 50.000 kat ucuz)
+satir = E[i]
+
+print(&quot;one-hot  :&quot;, onehot)
+print(&quot;çarpım   :&quot;, carpim)
+print(&quot;lookup   :&quot;, satir)
+print(&quot;aynı mı? :&quot;, carpim == satir)
+
+# ---- ÇIKTI ----
+# one-hot  : [0, 0, 1, 0, 0, 0]
+# çarpım   : [2.07, -1.04]
+# lookup   : [2.07, -1.04]
+# aynı mı? : True</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Embedding</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -4943,19 +5345,64 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     </div>
   </div>
 
+    </div>
+  </div>
+
   <p class="footer">Kelime temsili • one-hot → yoğun vektör · anlam geometrisi · vektör aritmetiği · attention'ın hammaddesi</p>
   </div><!-- /model-embedding -->
 
+<div class="model" id="model-seq2seq">
 
-  <!-- ===================== SELF-ATTENTION MODELİ ===================== -->
-  <div class="model" id="model-seq2seq">
-
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div style="overflow-x:auto"><svg class="lesson-hero-svg" viewBox="0 -14 820 264" role="img" aria-label="Encoder-decoder mimarisi: 7+5 girdisi, bağlam paketi, 12 çıktısı" style="width:100%;min-width:620px;max-width:820px;display:block;margin:0 auto"><defs><marker id="s2sH" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#95a2c2"/></marker></defs><text x="20" y="-2" font-size="11" fill="#95a2c2">ENCODER — okur</text><text x="486" y="-2" font-size="11" fill="#95a2c2">DECODER — üretir</text><rect x="20" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="63" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="28" y1="100" x2="98" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="24" y="98" font-size="9" fill="#ffd54a">c</text><line x1="28" y1="128" x2="98" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="24" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="63" y1="190" x2="63" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="43" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="63" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">7</text><rect x="130" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="173" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="138" y1="100" x2="208" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="134" y="98" font-size="9" fill="#ffd54a">c</text><line x1="138" y1="128" x2="208" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="134" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="173" y1="190" x2="173" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="153" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="173" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">+</text><rect x="240" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="283" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="248" y1="100" x2="318" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="244" y="98" font-size="9" fill="#ffd54a">c</text><line x1="248" y1="128" x2="318" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="244" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="283" y1="190" x2="283" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="263" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="283" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">5</text><line x1="106" y1="107" x2="128" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sH)"/><line x1="216" y1="107" x2="238" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sH)"/><line x1="326" y1="107" x2="356" y2="107" stroke="#e06a6a" stroke-width="3" marker-end="url(#s2sH)"/><rect x="358" y="56" width="96" height="102" rx="12" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-width="2"/><text x="406" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#e06a6a">🍾 bağlam</text><text x="406" y="98" text-anchor="middle" font-size="10" fill="#ffd54a">c (uzun hafıza)</text><text x="406" y="116" text-anchor="middle" font-size="10" fill="#7ec8ff">h (son durum)</text><text x="406" y="142" text-anchor="middle" font-size="9.5" fill="#95a2c2">TEK sabit paket</text><line x1="454" y1="107" x2="484" y2="107" stroke="#e06a6a" stroke-width="3" marker-end="url(#s2sH)"/><rect x="486" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="529" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="494" y1="100" x2="564" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="490" y="98" font-size="9" fill="#ffd54a">c</text><line x1="494" y1="128" x2="564" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="490" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="529" y1="190" x2="529" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="507" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="529" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">&lt;s&gt;</text><line x1="529" y1="70" x2="529" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sH)"/><rect x="507" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="529" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">1</text><rect x="596" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="639" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="604" y1="100" x2="674" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="600" y="98" font-size="9" fill="#ffd54a">c</text><line x1="604" y1="128" x2="674" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="600" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="639" y1="190" x2="639" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="617" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="639" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">1</text><line x1="639" y1="70" x2="639" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sH)"/><rect x="617" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="639" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">2</text><rect x="706" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="749" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="714" y1="100" x2="784" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="710" y="98" font-size="9" fill="#ffd54a">c</text><line x1="714" y1="128" x2="784" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="710" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="749" y1="190" x2="749" y2="146" stroke="#95a2c2" marker-end="url(#s2sH)"/><rect x="727" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="749" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">2</text><line x1="749" y1="70" x2="749" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sH)"/><rect x="727" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="749" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">&lt;e&gt;</text><line x1="572" y1="107" x2="594" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sH)"/><line x1="682" y1="107" x2="704" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sH)"/><text x="20" y="240" font-size="10.5" fill="#95a2c2">girdi: "7 + 5"</text><text x="486" y="240" font-size="10.5" fill="#95a2c2">çıktı: "1 2" — her adımda önceki çıktı bir sonrakinin girdisi</text></svg></div>
   <h1>🌉 Seq2Seq + Klasik Attention — Darboğazdan Kurtuluş</h1>
   <p class="sub">İki 🚪 LSTM'i bir "köprü"yle birbirine bağla: biri cümleyi <b>okur</b> (encoder), diğeri yeni bir cümle <b>üretir</b> (decoder). Sorun şu: köprü tek bir sabit vektörse, uzun cümlelerde bilgi boğulur. 2014'ün zarif çözümü — <b>Bahdanau attention</b> — decoder'ın her adımda kaynağın istediği yerine bakmasına izin verir. Bu, tam attention'a giden ilk adım.</p>
 
   <div class="callout">🔗 <b>Kaldığımız yer:</b> 🚪 LSTM/GRU'da gradyanın bozulmadan akan bir "otoyol"unu gördün. 🔤 Embedding'de kelimelerin sayı vektörüne dönüştüğünü gördün. Şimdi ikisini birleştiriyoruz: bir LSTM cümleyi <b>okuyup</b> anlamını sıkıştırır, başka bir LSTM o sıkışmış anlamdan yeni bir cümle <b>üretir</b> — örneğin çeviri.</div>
+    </div>
+  </div>
 
-  <div class="sechead">1) Encoder–Decoder: iki LSTM, tek bir köprü — ve o köprünün sorunu</div>
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — "Bir cümleyi oku, sonra başka bir dilde anlat"</div>
+      <p>Sinir ağları 2013'e kadar genelde <b>sabit boyutlu</b> girdiyle çalışıyordu: bir resim, bir vektör. Oysa çeviri ve konuşma <b>değişken uzunlukta dizi</b> ister: 5 kelime girer, 7 kelime çıkar. LSTM dizileri okuyabiliyordu ama çıktı uzunluğunu girdiye bağlı tutmak zordu.</p>
+      <p><b>2014'te iki ekip aynı fikre ayrı ayrı vardı</b>: önce bir ağ cümleyi <b>okuyup tek bir vektöre</b> özetlesin (encoder), sonra ikinci bir ağ o vektörden <b>yeni bir cümle üretsin</b> (decoder). <b>Kyunghyun Cho ve arkadaşları</b> bu encoder–decoder düzenini (ve sadeleştirilmiş hafıza hücresi GRU'yu) önerdi; <b>Ilya Sutskever, Oriol Vinyals ve Quoc Le</b> ise 4 katmanlı LSTM'lerle İngilizce→Fransızca çeviride o dönemin klasik sistemleriyle yarışır sonuç aldı. Bir ayrıntı: kaynak cümleyi <b>tersten</b> okutmak sonuçları belirgin iyileştirdi — ilk kelimeler üretilecek ilk kelimelere daha yakın olunca öğrenmek kolaylaştı.</p>
+      <p>Sorun hemen göründü: ne kadar uzun olursa olsun cümlenin tamamı <b>tek bir sabit vektöre</b> sığmak zorundaydı. Uzun cümlelerde çeviri kalitesi çöküyordu. Aynı yıl <b>Bahdanau, Cho ve Bengio</b> çözümü buldu: decoder her kelimeyi üretirken kaynağın <b>tüm</b> durumlarına geri dönüp bakabilsin (attention). <b>2016'da Google Translate</b> bu aileyle (derin LSTM + attention) sinir ağı tabanlı çeviriye geçti. <b>2017'de</b> "Attention Is All You Need" recurrence'ı da attı — bir sonraki ders.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-s2s" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Makine çevirisi</b> — "I love cats" → "Kedileri seviyorum": girdi ve çıktı uzunluğu farklı, ilk akla gelen kullanım.</div>
+        <div class="ex-card"><span class="ex-ico">📝</span><b>Özetleme</b> — uzun haber metni girer (encoder), 2 cümlelik özet çıkar (decoder).</div>
+        <div class="ex-card"><span class="ex-ico">💬</span><b>Sohbet / soru-cevap</b> — soru encoder'a girer, cevap decoder'dan kelime kelime üretilir.</div>
+        <div class="ex-card"><span class="ex-ico">🎙️</span><b>Konuşma tanıma</b> — encoder ses karelerini okur, decoder yazıya döker (girdi ve çıktı farklı "dil" bile).</div>
+        <div class="ex-card"><span class="ex-ico">🖼️</span><b>Resim altyazısı</b> — encoder resmi okur (CNN), decoder "çimde koşan köpek" cümlesini üretir.</div>
+        <div class="ex-card"><span class="ex-ico">➕</span><b>Bu sayfadaki oyuncak</b> — "7+5" girer, "12" çıkar: aynı mekanizmanın en küçük, kendi gözünle doğrulayabileceğin hâli.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts">
+      <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir <b>encoder–decoder</b> iki LSTM'in bir bağlam paketiyle birleşimi. Aşağıda en küçük örnek: <b>"7 + 5"</b> girer, <b>"1 2"</b> çıkar. Soldaki mavi hücreler soruyu okur; sağdaki yeşil hücreler cevabı <b>her adımda bir basamak</b> üretir ve ürettiğini sonraki adımın girdisi yapar. Hücrelerin içi LSTM dersindeki gibi: <span style="color:#ffd54a">c</span> uzun hafıza hattı, <span style="color:#7ec8ff">h</span> kısa durum.</p>
+      <div style="overflow-x:auto"><svg class="" viewBox="0 -14 820 264" role="img" aria-label="Encoder-decoder mimarisi: 7+5 girdisi, bağlam paketi, 12 çıktısı" style="width:100%;min-width:620px;max-width:820px;display:block;margin:0 auto"><defs><marker id="s2sN" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#95a2c2"/></marker></defs><text x="20" y="-2" font-size="11" fill="#95a2c2">ENCODER — okur</text><text x="486" y="-2" font-size="11" fill="#95a2c2">DECODER — üretir</text><rect x="20" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="63" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="28" y1="100" x2="98" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="24" y="98" font-size="9" fill="#ffd54a">c</text><line x1="28" y1="128" x2="98" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="24" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="63" y1="190" x2="63" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="43" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="63" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">7</text><rect x="130" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="173" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="138" y1="100" x2="208" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="134" y="98" font-size="9" fill="#ffd54a">c</text><line x1="138" y1="128" x2="208" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="134" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="173" y1="190" x2="173" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="153" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="173" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">+</text><rect x="240" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#3a7afe" stroke-width="1.6"/><text x="283" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="248" y1="100" x2="318" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="244" y="98" font-size="9" fill="#ffd54a">c</text><line x1="248" y1="128" x2="318" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="244" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="283" y1="190" x2="283" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="263" y="190" width="40" height="28" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="283" y="210" text-anchor="middle" font-size="15" font-weight="700" fill="#ccd5e8">5</text><line x1="106" y1="107" x2="128" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sN)"/><line x1="216" y1="107" x2="238" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sN)"/><line x1="326" y1="107" x2="356" y2="107" stroke="#e06a6a" stroke-width="3" marker-end="url(#s2sN)"/><rect x="358" y="56" width="96" height="102" rx="12" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-width="2"/><text x="406" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#e06a6a">🍾 bağlam</text><text x="406" y="98" text-anchor="middle" font-size="10" fill="#ffd54a">c (uzun hafıza)</text><text x="406" y="116" text-anchor="middle" font-size="10" fill="#7ec8ff">h (son durum)</text><text x="406" y="142" text-anchor="middle" font-size="9.5" fill="#95a2c2">TEK sabit paket</text><line x1="454" y1="107" x2="484" y2="107" stroke="#e06a6a" stroke-width="3" marker-end="url(#s2sN)"/><rect x="486" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="529" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="494" y1="100" x2="564" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="490" y="98" font-size="9" fill="#ffd54a">c</text><line x1="494" y1="128" x2="564" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="490" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="529" y1="190" x2="529" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="507" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="529" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">&lt;s&gt;</text><line x1="529" y1="70" x2="529" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sN)"/><rect x="507" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="529" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">1</text><rect x="596" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="639" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="604" y1="100" x2="674" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="600" y="98" font-size="9" fill="#ffd54a">c</text><line x1="604" y1="128" x2="674" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="600" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="639" y1="190" x2="639" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="617" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="639" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">1</text><line x1="639" y1="70" x2="639" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sN)"/><rect x="617" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="639" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">2</text><rect x="706" y="70" width="86" height="74" rx="9" fill="#17203a" stroke="#46c46a" stroke-width="1.6"/><text x="749" y="86" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM</text><line x1="714" y1="100" x2="784" y2="100" stroke="#ffd54a" stroke-width="1.8" opacity=".9"/><text x="710" y="98" font-size="9" fill="#ffd54a">c</text><line x1="714" y1="128" x2="784" y2="128" stroke="#7ec8ff" stroke-width="1.8" opacity=".9"/><text x="710" y="126" font-size="9" fill="#7ec8ff">h</text><line x1="749" y1="190" x2="749" y2="146" stroke="#95a2c2" marker-end="url(#s2sN)"/><rect x="727" y="190" width="44" height="28" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="749" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">2</text><line x1="749" y1="70" x2="749" y2="42" stroke="#46c46a" stroke-width="2" marker-end="url(#s2sN)"/><rect x="727" y="14" width="44" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="749" y="33" text-anchor="middle" font-size="14" font-weight="700" fill="#46c46a">&lt;e&gt;</text><line x1="572" y1="107" x2="594" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sN)"/><line x1="682" y1="107" x2="704" y2="107" stroke="#95a2c2" stroke-width="2" marker-end="url(#s2sN)"/><text x="20" y="240" font-size="10.5" fill="#95a2c2">girdi: "7 + 5"</text><text x="486" y="240" font-size="10.5" fill="#95a2c2">çıktı: "1 2" — her adımda önceki çıktı bir sonrakinin girdisi</text></svg></div>
+    </div>
+    <div class="pts" style="border-left:3px solid var(--accent)"><b>Üç parça, üç iş:</b><ol style="font-size:14px; color:#ccd5e8; line-height:1.9"><li><b>Encoder</b> — soruyu kelime kelime okur; her adımda (c, h) çifti güncellenir. İki hücre aynı ağırlıkları paylaşır (zamanda açılmış tek LSTM).</li><li><b>Bağlam (🍾)</b> — encoder'ın SON (c, h) durumu. Soru hakkında decoder'ın bileceği <b>her şey</b> bu paket.</li><li><b>Decoder</b> — bağlamla başlar, başlangıç işaretiyle ilk basamağı, sonra kendi çıktısıyla sonrakini üretir; bitiş işaretini üretince durur.</li></ol><div class="callout">🔗 <b>RNN dersinden hatırla:</b> encoder = many-to-one, decoder = one-to-many. Seq2Seq bu ikisini <b>uç uca ekler</b>: giriş uzunluğu ile çıkış uzunluğu artık birbirinden bağımsız.</div></div>
+  <div class="lesson-sub-h" style="font-weight:700;color:#ccd5e8;margin:14px 0 6px">🍾 Köprünün sorunu: bilgi darboğazı</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Encoder</b>, kaynak cümleyi kelime kelime okur; her adımda gizli durumunu günceller (tıpkı RNN/LSTM dersinde gördüğün gibi). Son kelimeyi okuduğunda elinde kalan <b>tek bir vektör</b> — cümlenin <b>tamamının</b> anlamını taşıması beklenen bir özet — <b>decoder</b>'a devredilir. Decoder da bu tek vektörden yola çıkıp hedef cümleyi kelime kelime üretir.</p>
     <div style="overflow-x:auto; margin:16px 0">
@@ -4983,7 +5430,18 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   </div>
 
   <!-- İNTERAKTİF: Bahdanau hizalama haritası -->
-  <div class="sechead">2) 🔬 Oyuncak: Bahdanau'nun çözümü — hizalama (alignment) haritası</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — toplamayı öğrenmiş bir encoder–decoder</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts" style="border-left:3px solid var(--accent)">
+      <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Gerçek, eğitilmiş bir encoder–decoder.</b> Bir toplama sorusu seç, <b>İleri ▶</b> ile encoder'ın okuyuşunu, bağlam paketini ve decoder'ın basamak basamak cevabı üretişini izle. Hücrelerdeki renkli şeritler gerçek <span style="color:#ffd54a">c</span> ve <span style="color:#7ec8ff">h</span> değerleri (yeşil +, kırmızı −). Üstteki <b>model düğmeleri</b> eğitimin farklı anlarını yükler: epoch 0'da ağ rastgele, 800'de neredeyse kusursuz.</p>
+      <div id="s2sAdd"></div>
+      <div class="callout" style="border-left-color:#f0a032">🧪 <b>Dürüst not:</b> bu ağ (24 gizli birim) tarayıcıda değil, <b>çevrimdışı Python/numpy ile</b> eğitildi (kod: 7️⃣ Örnek Çalışmalar); sayfa yalnız eğitilmiş ağırlıkları yükleyip <b>ileri hesabı</b> canlı yapıyor — JS çıktısı Python ile 400/400 soruda birebir aynı. Hücreler çok boyutlu (24 sayı), bu yüzden ağırlıkları tek tek yazamıyoruz; şeritler onların resmi.</div>
+    </div>
+  <div class="lesson-sub-h" style="font-weight:700;color:#ccd5e8;margin:18px 0 6px">🔬 İkinci oyuncak: Bahdanau'nun çözümü — hizalama (alignment) haritası</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Bahdanau'nun (2014) fikri zarif: decoder, <b>tek sabit c</b> yerine, her kelimeyi üretirken kaynak cümlenin <b>tüm</b> gizli durumlarına yeniden bakar ve kendi context vektörünü o an için <b>yeniden hesaplar</b>. Aşağıdaki matris = decoder her kelimeyi üretirken kaynağın neresine baktığı. Sol taraftaki bir kelimeye <b>tıkla</b>.</div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px">
@@ -4993,8 +5451,13 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div style="overflow-x:auto"><svg id="s2sSvg" role="img"></svg></div>
     <div class="work" id="s2sWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
   </div>
+    </div>
+  </div>
 
-  <div class="sechead">3) Formül: skor → softmax → ağırlıklı context</div>
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — attention formülü ve köprü</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">➕ Formül: skor → softmax → ağırlıklı context</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     \[ \alpha_{ij} = \text{softmax}_j\big(\text{score}(s_{i-1}, h_j)\big) \qquad c_i = \sum_j \alpha_{ij}\, h_j \]
     <ol style="font-size:14px; color:#ccd5e8; line-height:1.9">
@@ -5005,12 +5468,135 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div class="callout">🎯 Sezgi: klasik Seq2Seq'te decoder tek bir fotoğrafa bakarak konuşuyordu. Attention ile decoder, konuşurken istediği ana <b>geri sarıp bakabilen</b> bir video izliyor.</div>
   </div>
 
-  <div class="sechead">4) Köprü: buradan tam Self-Attention'a</div>
+  <div class="sechead">➕ Köprü: buradan tam Self-Attention'a</div>
   <div class="pts" style="border-left:3px solid var(--green)">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bahdanau'nun attention'ı hâlâ bir RNN/LSTM'in içindeydi — decoder yine kelime kelime, sırayla üretim yapıyordu. 2017'nin sıçraması: <b>"Peki recurrence'a hiç ihtiyacımız var mı?"</b> Cevap hayırdı — aynı "ağırlıklı bakış" fikrini RNN'siz, tüm kelimeler <b>aynı anda birbirine</b> bakacak şekilde genelleştirince ortaya <b>Self-Attention</b> çıktı (makalenin adı: <i>Attention Is All You Need</i>).</p>
     <div class="callout" style="border-left-color:#46c46a">🏆 Ağaçta artık "Dizi Modelleme Çağı" tamamlanmak üzere — 🎯 Self-Attention bir adım ötede.</div>
   </div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>6️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">İki örnek: birincisi gerçek eğitim, ikincisi darboğazın sayısal resmi.</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1: Toplamayı kendi kendine öğrenen encoder–decoder</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Kimse ağa toplama kuralı yazmadı: yalnızca 90 örnek soru-cevap çifti gösterildi ("7+5 → 12"). Ağırlıklar rastgele başladı; hata geri yayılımla azaltıldı. Aşağıdaki tablo eğitimin 4 anı: ağ önce hiçbir şey bilmiyor, sonra kuralı yakalıyor.</p><div id="s2sOrn1"><table class="rex-tbl" style="border-collapse:collapse;font-size:13px;margin:8px 0"><tr><th style="padding:3px 10px">epoch</th><th style="padding:3px 10px">kayıp</th><th style="padding:3px 10px">eğitim doğru</th><th style="padding:3px 10px">hiç görülmeyen sınav</th></tr><tr><td style="padding:3px 10px">0</td><td style="padding:3px 10px">2.5894</td><td style="padding:3px 10px">0/90</td><td style="padding:3px 10px">0/10</td></tr><tr><td style="padding:3px 10px">30</td><td style="padding:3px 10px">0.9849</td><td style="padding:3px 10px">2/90</td><td style="padding:3px 10px">0/10</td></tr><tr><td style="padding:3px 10px">150</td><td style="padding:3px 10px">0.0948</td><td style="padding:3px 10px">89/90</td><td style="padding:3px 10px">8/10</td></tr><tr><td style="padding:3px 10px">800</td><td style="padding:3px 10px">0.0011</td><td style="padding:3px 10px">90/90</td><td style="padding:3px 10px">7/10</td></tr></table><p style="font-size:13.5px;color:#ccd5e8;line-height:1.7">Bu tablo 5️⃣ Simülasyon'daki dört model düğmesinin sayılarının aynısı. Eğitimde hiç görmediği 10 sorudan <b>7'sini</b> (epoch 150'de 8'ini) doğru bildi — yani ağ tabloyu ezberlemekten fazlasını yaptı ama <b>tam genelleyemedi</b>. Epoch 800'de yanlış kalanlar: <b>4+9, 7+1, 9+1</b> (üçü de sınav sorusu). Biraz daha uzun eğitmek sınav doğruluğunu <b>düşürdü</b> (8 → 7): küçük veride aşırı uyum.</p></div><div class="callout">🧠 <b>Ne öğrendik:</b> encoder–decoder kuralı örneklerden çıkardı. Ama 90 örnekle yetinen küçük bir model, görmediği sorularda hâlâ yanılabiliyor — gerçek sistemler bu yüzden milyonlarca örnekle eğitilir.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Python kodu — tam eğitim döngüsü (numpy)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># Seq2Seq toplama: encoder-decoder LSTM, saf numpy (elle yazılmış geri yayılım)
+# V=13 sembol: 0-9 rakam, 10 = &quot;+&quot;, 11 = &lt;s&gt; (başlangıç), 12 = &lt;e&gt; (bitiş)
+# Girdi: [a, +, b]  -&gt;  Hedef: [onlar, birler, &lt;e&gt;]   (örn. 7+5 -&gt; 1,2,&lt;e&gt;)
+# Eğitim: 90 soru; 10 soru (sınav) HİÇ gösterilmez. Adam, lr=0.01, 800 epoch.
+
+import numpy as np, json, sys
+V=13; PLUS=10; S=11; E=12
+def sig(x): return 1/(1+np.exp(-x))
+class Net:
+    def __init__(s,H,D,seed):
+        r=np.random.RandomState(seed); s.H=H; s.D=D
+        g=lambda *sh:(r.randn(*sh)*0.3)
+        s.P={&#x27;emb&#x27;:g(V,D),&#x27;We&#x27;:g(4*H,D+H),&#x27;be&#x27;:np.zeros(4*H),&#x27;Wd&#x27;:g(4*H,D+H),&#x27;bd&#x27;:np.zeros(4*H),&#x27;Wo&#x27;:g(V,H),&#x27;bo&#x27;:np.zeros(V)}
+        s.P[&#x27;be&#x27;][:H]=1; s.P[&#x27;bd&#x27;][:H]=1   # forget bias 1
+    def cell(s,W,b,x,h,c):
+        H=s.H; z=W@np.concatenate([x,h])+b
+        f=sig(z[:H]); i=sig(z[H:2*H]); g=np.tanh(z[2*H:3*H]); o=sig(z[3*H:])
+        c2=f*c+i*g; h2=o*np.tanh(c2)
+        return h2,c2,(x,h,c,f,i,g,o,c2)
+    def forward(s,src,dec_in,tgt=None):
+        P=s.P;H=s.H;h=np.zeros(H);c=np.zeros(H);ec=[]
+        for t in src:
+            h,c,k=s.cell(P[&#x27;We&#x27;],P[&#x27;be&#x27;],P[&#x27;emb&#x27;][t],h,c);ec.append((t,k))
+        dc=[];outs=[]
+        for t in dec_in:
+            h,c,k=s.cell(P[&#x27;Wd&#x27;],P[&#x27;bd&#x27;],P[&#x27;emb&#x27;][t],h,c);lg=P[&#x27;Wo&#x27;]@h+P[&#x27;bo&#x27;]
+            p=np.exp(lg-lg.max());p/=p.sum();dc.append((t,k,h,p));outs.append(p)
+        L=0
+        if tgt is not None: L=-sum(np.log(o[y]) for o,y in zip(outs,tgt))
+        return L,ec,dc,outs
+    def grad(s,src,dec_in,tgt):
+        P=s.P;H=s.H;G={k:np.zeros_like(v) for k,v in P.items()}
+        L,ec,dc,outs=s.forward(src,dec_in,tgt)
+        dh=np.zeros(H);dcn=np.zeros(H)
+        def back(W,Wk,bk,k,dh,dc_,tok):
+            x,hp,cp,f,i,g,o,c2=k;tc=np.tanh(c2)
+            do=dh*tc; dc2=dc_+dh*o*(1-tc**2)
+            df=dc2*cp; di=dc2*g; dg=dc2*i; dcp=dc2*f
+            dz=np.concatenate([df*f*(1-f),di*i*(1-i),dg*(1-g**2),do*o*(1-o)])
+            G[Wk]+=np.outer(dz,np.concatenate([x,hp]));G[bk]+=dz
+            dxh=W.T@dz; G[&#x27;emb&#x27;][tok]+=dxh[:s.D]; return dxh[s.D:],dcp
+        for (t,k,h,p),y in zip(reversed(dc),reversed(tgt)):
+            dl=p.copy();dl[y]-=1;G[&#x27;Wo&#x27;]+=np.outer(dl,h);G[&#x27;bo&#x27;]+=dl
+            dh=dh+P[&#x27;Wo&#x27;].T@dl
+            dh,dcn=back(P[&#x27;Wd&#x27;],&#x27;Wd&#x27;,&#x27;bd&#x27;,k,dh,dcn,t)
+        for t,k in reversed(ec):
+            dh,dcn=back(P[&#x27;We&#x27;],&#x27;We&#x27;,&#x27;be&#x27;,k,dh,dcn,t)
+        return L,G
+def enc(a,b): return [a,PLUS,b]
+def tgt(a,b): s=a+b; return [s//10,s%10,E]
+DEC=[S,None,None]
+def pair(a,b):
+    t=tgt(a,b); return enc(a,b),[S,t[0],t[1]],t
+def predict(net,a,b):
+    # greedy: feed back own output
+    P=net.P;H=net.H;h=np.zeros(H);c=np.zeros(H)
+    for t in enc(a,b): h,c,_=net.cell(P[&#x27;We&#x27;],P[&#x27;be&#x27;],P[&#x27;emb&#x27;][t],h,c)
+    tok=S;out=[]
+    for _ in range(3):
+        h,c,_=net.cell(P[&#x27;Wd&#x27;],P[&#x27;bd&#x27;],P[&#x27;emb&#x27;][tok],h,c);lg=P[&#x27;Wo&#x27;]@h+P[&#x27;bo&#x27;];tok=int(lg.argmax());out.append(tok)
+    return out
+def acc(net,pairs): return sum(predict(net,a,b)==tgt(a,b) for a,b in pairs)
+
+# ---- eğitim + kontrol noktaları ----
+H,D,seed,EP,lr,NT=24,8,1,800,0.01,10
+allp=[(a,b) for a in range(10) for b in range(10)]
+r=np.random.RandomState(7);idx=r.permutation(100);test=[allp[i] for i in idx[:NT]];train=[allp[i] for i in idx[NT:]]
+net=Net(H,D,seed);m={k:np.zeros_like(v) for k,v in net.P.items()};v={k:np.zeros_like(x) for k,x in net.P.items()}
+CK=[0,30,150,800];out=[]
+def snap(ep,Lt):
+    n2=Net(H,D,0)
+    for k in net.P: n2.P[k]=np.round(net.P[k],3)
+    preds=[predict(n2,a,b) for a,b in allp]
+    ok=[p==tgt(a,b) for p,(a,b) in zip(preds,allp)]
+    trn=sum(ok[a*10+b] for a,b in train);tst=sum(ok[a*10+b] for a,b in test)
+    # loss with rounded weights on train
+    L=np.mean([n2.forward(*pair(a,b)[::2][:1],pair(a,b)[1],pair(a,b)[2])[0] for a,b in train])/3
+    out.append({&#x27;ep&#x27;:ep,&#x27;loss&#x27;:round(float(L),4),&#x27;train&#x27;:int(trn),&#x27;test&#x27;:int(tst),&#x27;preds&#x27;:[int(p[0]*169+p[1]*13+p[2]) for p in preds],
+      &#x27;W&#x27;:{k:np.round(net.P[k],3).tolist() for k in net.P}})
+    print(ep,round(float(L),4),trn,tst,flush=True)
+snap(0,0)
+for ep in range(1,EP+1):
+    GS={k:np.zeros_like(x) for k,x in net.P.items()}
+    for a,b in train:
+        s_,d_,t_=pair(a,b);L,G=net.grad(s_,d_,t_)
+        for k in GS: GS[k]+=G[k]
+    for k in net.P:
+        g=np.clip(GS[k]/len(train),-1,1)
+        m[k]=0.9*m[k]+0.1*g;v[k]=0.999*v[k]+0.001*g*g
+        net.P[k]-=lr*(m[k]/(1-0.9**ep))/(np.sqrt(v[k]/(1-0.999**ep))+1e-8)
+    if ep in CK: snap(ep,0)
+json.dump({&#x27;H&#x27;:H,&#x27;D&#x27;:D,&#x27;test&#x27;:[a*10+b for a,b in test],&#x27;ck&#x27;:out},open(&#x27;s2s_ck.json&#x27;,&#x27;w&#x27;),separators=(&#x27;,&#x27;,&#x27;:&#x27;))
+import os;print(os.path.getsize(&#x27;s2s_ck.json&#x27;))
+
+# ---- ÇIKTI ----
+# epoch  kayıp(eğitim/soru)  eğitim_doğru/90  sınav_doğru/10
+# 0 2.5894 0 0
+# 30 0.9849 2 0
+# 150 0.0948 89 8
+# 800 0.0011 90 7</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2: Darboğaz — tek paket kaç sayı taşıyabilir?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Klasik Seq2Seq'te kaynak cümle ne kadar uzun olursa olsun decoder yalnızca <b>bağlam paketini</b> (burada 2×24=48 sayı) görür. Attention'lı sürümde ise encoder'ın <b>her adımdaki</b> durumuna erişir. Kaydırıcıyla kaynak uzunluğunu değiştir ve sayıları karşılaştır (bu bir sayı sayma alıştırması, eğitilmiş bir deney değil).</p><div id="s2sBn"></div><div class="callout">🍾 <b>Ne öğrendik:</b> paket T'den bağımsız sabit (48 sayı); attention'ın erişebildiği bilgi T ile büyür. 3 kelimede fark küçük (1,5×), 50 kelimede 25×. Bu fark, uzun cümlelerde klasik Seq2Seq'in çökmesinin sayısal özeti.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Python kodu — sayı sayma</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">H = 24                      # gizli boyut: h ve c için 24&#x27;er sayı
+for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
+    paket = 2 * H           # klasik Seq2Seq: tek (c, h) çifti
+    attn  = T * H           # attention: her kelime için bir h (encoder durumları)
+    print(T, paket, attn, round(attn / paket, 1))
+
+# ---- ÇIKTI ----
+# 3 48 72 1.5
+# 10 48 240 5.0
+# 30 48 720 15.0
+# 50 48 1200 25.0</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Seq2Seq & Attention</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -5033,6 +5619,9 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 5) Bahdanau attention ile Self-Attention arasındaki fark ne?</div>
       <div class="acc-body">Bahdanau attention hâlâ bir <b>RNN/LSTM'in içinde</b>, decoder'ın encoder'a bakışı için kullanılıyordu (sıralı üretim devam ediyordu). Self-Attention, recurrence'ı tamamen atıp aynı "ağırlıklı bakış" fikrini <b>tüm kelimelerin birbirine aynı anda</b> bakması için genelleştirdi.</div>
+    </div>
+  </div>
+
     </div>
   </div>
 
@@ -7468,35 +8057,42 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610131400"></script>
-<script src="js/lesson-turev.js?v=202610131400"></script>
-<script src="js/lesson-xor.js?v=202610131400"></script>
-<script src="js/lesson-xor-arch.js?v=202610131400"></script>
-<script src="js/lesson-xor-maps.js?v=202610131400"></script>
-<script src="js/lesson-xor-epoch.js?v=202610131400"></script>
-<script src="js/lesson-nn.js?v=202610131400"></script>
-<script src="js/lesson-trig.js?v=202610131400"></script>
+<script src="js/lesson-linreg.js?v=202610131800"></script>
+<script src="js/lesson-turev.js?v=202610131800"></script>
+<script src="js/lesson-xor.js?v=202610131800"></script>
+<script src="js/lesson-xor-arch.js?v=202610131800"></script>
+<script src="js/lesson-xor-maps.js?v=202610131800"></script>
+<script src="js/lesson-xor-epoch.js?v=202610131800"></script>
+<script src="js/lesson-nn.js?v=202610131800"></script>
+<script src="js/lesson-trig.js?v=202610131800"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610131400"></script>
-<script src="js/lesson-rnn-soz.js?v=202610131400"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610131800"></script>
+<script src="js/lesson-rnn-soz.js?v=202610131800"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610131400"></script>
-<script src="js/lesson-lstm-cell.js?v=202610131400"></script>
-<script src="js/app.js?v=202610131400"></script>
-<script src="js/lesson-lstm-big.js?v=202610131400"></script>
-<script src="js/lesson-lstm-step.js?v=202610131400"></script>
-<script src="js/lesson-lstm-size.js?v=202610131400"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610131400"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610131400"></script>
-<script src="js/lesson-lstm-gate.js?v=202610131400"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610131400"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610131400"></script>
-<script src="js/lesson-linreg-big.js?v=202610131400"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610131400"></script>
-<script src="js/lesson-act-big.js?v=202610131400"></script>
-<script src="js/lesson-act-ornek.js?v=202610131400"></script>
-<script src="js/lesson-xor-ornek.js?v=202610131400"></script>
-<script src="js/lesson-nn-ornek.js?v=202610131400"></script>
-<script src="js/lesson-nn-net.js?v=202610131400"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610131800"></script>
+<script src="js/lesson-lstm-cell.js?v=202610131800"></script>
+<script src="js/app.js?v=202610131800"></script>
+<script src="js/lesson-lstm-big.js?v=202610131800"></script>
+<script src="js/lesson-lstm-step.js?v=202610131800"></script>
+<script src="js/lesson-lstm-size.js?v=202610131800"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610131800"></script>
+<script src="js/lesson-s2s-weights.js?v=202610131800"></script>
+<script src="js/lesson-s2s-add.js?v=202610131800"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610131800"></script>
+<script src="js/lesson-emb-ornek.js?v=202610131800"></script>
+<script src="js/lesson-emb-big.js?v=202610131800"></script>
+<script src="js/lesson-sm-ornek.js?v=202610131800"></script>
+<script src="js/lesson-sm-big.js?v=202610131800"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610131800"></script>
+<script src="js/lesson-lstm-gate.js?v=202610131800"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610131800"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610131800"></script>
+<script src="js/lesson-linreg-big.js?v=202610131800"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610131800"></script>
+<script src="js/lesson-act-big.js?v=202610131800"></script>
+<script src="js/lesson-act-ornek.js?v=202610131800"></script>
+<script src="js/lesson-xor-ornek.js?v=202610131800"></script>
+<script src="js/lesson-nn-ornek.js?v=202610131800"></script>
+<script src="js/lesson-nn-net.js?v=202610131800"></script>
 </body>
 </html>
