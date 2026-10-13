@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610131600"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610131700"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610131600">
+<link rel="stylesheet" href="css/style.css?v=202610131700">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 16:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 17:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5072,11 +5072,68 @@ print(&quot;4) kararlı softmax:&quot;, softmax(dev))
 
 <div class="model" id="model-embedding">
 
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 230" role="img" aria-label="İki boyutlu kelime uzayı: kral, kraliçe, erkek, kadın ve paralel oklar">
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">anlam = uzayda konum: benzer kelimeler komşu, ilişkiler paralel yönler</text>
+      <defs><marker id="embA" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#c77dff"/></marker><marker id="embB" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#f0a032"/></marker></defs>
+      <line x1="60" y1="200" x2="700" y2="200" stroke="#334063"/><line x1="60" y1="35" x2="60" y2="200" stroke="#334063"/>
+      <text x="700" y="216" text-anchor="end" font-size="10" fill="#6b7794" font-family="Segoe UI, Arial">soyluluk →</text><text x="66" y="46" font-size="10" fill="#6b7794" font-family="Segoe UI, Arial">↑ kadınlık</text>
+      <line x1="215" y1="160" x2="395" y2="68" stroke="#c77dff" stroke-width="2.5" marker-end="url(#embA)"/>
+      <line x1="215" y1="162" x2="215" y2="95" stroke="#f0a032" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#embB)"/>
+      <line x1="395" y1="160" x2="395" y2="95" stroke="#f0a032" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#embB)"/>
+      <line x1="215" y1="162" x2="393" y2="162" stroke="#c77dff" stroke-width="2.5" marker-end="url(#embA)" opacity=".7"/>
+      <g font-family="Segoe UI, Arial" font-size="13" fill="#ccd5e8" font-weight="700">
+        <circle cx="215" cy="162" r="6" fill="#3a7afe"/><text x="125" y="180">erkek</text>
+        <circle cx="215" cy="92" r="6" fill="#3a7afe"/><text x="140" y="90">kadın</text>
+        <circle cx="395" cy="162" r="6" fill="#46c46a"/><text x="405" y="176">kral</text>
+        <circle cx="395" cy="92" r="6" fill="#46c46a"/><text x="405" y="86">kraliçe</text>
+        <circle cx="565" cy="150" r="6" fill="#e06a6a"/><text x="575" y="148">elma</text>
+        <circle cx="595" cy="170" r="6" fill="#e06a6a"/><text x="605" y="172">armut</text>
+      </g>
+      <text x="470" y="212" font-size="11" fill="#f0a032" font-family="Segoe UI, Arial">↑ aynı "erkek→kadın" yönü</text>
+      <text x="260" y="140" font-size="11" fill="#c77dff" font-family="Segoe UI, Arial" transform="rotate(-27 260 140)">kral − erkek + kadın ≈ kraliçe</text>
+    </svg>
   <h1>Kelime Temsili (Embedding) — Anlamı Sayıya Gömmek</h1>
   <p class="sub">Bilgisayar "kral" kelimesini göremez, sadece sayı görür. Embedding, her kelimeyi bir <b>vektör</b> (ok) yapar — öyle ki <b>anlamca yakın kelimeler uzayda komşu</b> olur. İşte attention'ın üzerinde çalıştığı hammadde bu.</p>
 
   <div class="callout">🔗 <b>Bağlantı:</b> 🧮 Vektör dersinde nokta çarpımın "benzerlik ölçtüğünü" gördün. Embedding o benzerliğin <b>anlam</b> taşımasını sağlar: "kral" ile "kraliçe"nin okları yakın yöne bakar → nokta çarpımları yüksek → attention onları ilişkilendirir.</div>
+    </div>
+  </div>
 
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — "Bir kelimeyi tuttuğu arkadaşlarından tanırsın"</div>
+      <p>1950'lerde dilbilimciler anlamın sözlükte değil <b>kullanımda</b> yattığını söylüyordu. <b>Zellig Harris</b> (1954) benzer bağlamlarda geçen kelimelerin benzer anlam taşıdığını yazdı; <b>J. R. Firth</b> (1957) bunu ünlü cümlesiyle özetledi: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> "Kedi" ile "köpek" aynı cümle kalıplarında dolaşır ("…uyudu", "…koştu"); "kedi" ile "kral" dolaşmaz. Anlam, komşuluk istatistiğidir.</p>
+      <p>Fikri sayıya dökmek yıllar aldı. <b>2003'te Yoshua Bengio</b> ve arkadaşları, bir sinir ağı sonraki kelimeyi tahmin etmeyi öğrenirken kelimeler için <b>vektörler de öğrendiğini</b> gösterdi. Ama asıl patlama <b>2013'te</b> geldi: Google'da <b>Tomas Mikolov</b> ve ekibi, çok hızlı eğitilen <b>word2vec</b>'i yayımladı. Sonuç şaşırtıcıydı — vektörler üzerinde aritmetik yapılabiliyordu: <b>kral − erkek + kadın ≈ kraliçe</b>. 2014'te Stanford'dan <b>GloVe</b> aynı fikri başka bir yoldan getirdi.</p>
+      <p>Sınır tek: word2vec her kelimeye <b>tek</b> bir vektör verir; "yüz" kelimesi (surat? sayı? yüzmek?) hep aynı noktada durur. <b>2018'de ELMo ve BERT</b> bu sınırı kırdı: vektör artık <b>cümleye göre değişiyor</b> (bağlamsal embedding). ChatGPT gibi modellerin ilk katmanı hâlâ bir embedding tablosu — ama üstündeki katmanlar bu vektörleri her cümlede yeniden işliyor.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-emb" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>Akıllı arama</b> — "ucuz otel" ararken "uygun fiyatlı konaklama" sayfaları da gelir: kelimeler değil <b>anlam vektörleri</b> eşleştirilir.</div>
+        <div class="ex-card"><span class="ex-ico">🎧</span><b>Öneri sistemleri</b> — şarkılar, filmler, ürünler de kelime gibi vektöre çevrilir; "bunu dinleyenler şunu da dinledi" = vektörleri yakın.</div>
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Makine çevirisi</b> — farklı dillerdeki "kedi / cat / chat" kelimelerinin vektörleri benzer bölgeye düşer; çeviri bu uzayda yol bulmaktır.</div>
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>ChatGPT'nin ilk katmanı</b> — sizin yazdığınız her kelime önce bir embedding tablosundan vektöre çevrilir; asıl hesap bu vektörler üzerinde yapılır.</div>
+        <div class="ex-card"><span class="ex-ico">📧</span><b>Spam ve duygu analizi</b> — "bedava, kazan, tıkla" kelimelerinin vektörleri benzer yöne bakar; sınıflandırıcı o yöne bakan cümleleri yakalar.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">1) Kötü fikir: one-hot (her kelime bir kutu)</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İlk akla gelen: sözlükte 50.000 kelime varsa, her kelimeye 50.000 uzunlukta bir liste ver — sadece kendi yerinde 1, gerisi 0:</p>
@@ -5098,6 +5155,19 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   </div>
 
   <!-- İNTERAKTİF: 2D kelime uzayı -->
+
+  <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
+    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — kelime uzayında gez</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">3) 🎯 Oyuncak: kelime uzayında gez</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Kelimeleri <b>sürükle</b>, komşuluklarını değiştir. Bir kelimeye <b>tıkla</b> → ona en yakın 3 komşuyu (cosine benzerliği) göster. <b>"kral − erkek + kadın"</b> okunu çizdirmek için 🧭 butonuna bas.</div>
@@ -5117,14 +5187,143 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     </div>
     <div class="tip">Gerçek modellerde bu uzay 2D değil <b>yüzlerce boyutlu</b>; her boyut ismini bilmediğimiz bir "anlam ekseni". Ama mantık aynı: <b>yakınlık = anlamca benzerlik</b>.</div>
   </div>
-
-  <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
-  <div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
-    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki büyük adım:</b> Attention, bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
+    </div>
   </div>
 
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — bir skip-gram adımı: ileri yol ve geri yayılım</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="embSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Embedding'in <b>bütün resmi</b>: bir <b>skip-gram adımı</b>. <b>İleri yol</b>: kelime numarası → tablodan vektör → komşu adaylarıyla nokta çarpım → softmax → "gerçek komşuyu ne kadar bekliyordun" kaybı. <b>Geri yol</b>: kayıp hem <b>kelimenin vektörüne</b> hem <b>komşu vektörlerine</b> gradyan gönderir — ikisi de öğrenilir. Sayıları değiştir; kutulara/oklara gel → türev nasıl bulunuyor.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Bir skip-gram adımının bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="embBigMap"></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — tablodan satır okumak, "yüz" sorunu</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">➕ Embedding = tablodan satır okumak (ve parametre sayısı)</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir embedding katmanı, aslında <b>V × D boyutlu bir tablo</b>: V kelime, her birinin D sayısı. Kelimenin numarası verilir, tablodan o <b>satır</b> okunur. Bunu "one-hot vektör × matris" diye düşünmek matematiksel olarak doğru — ama 49.999 sıfırla çarpmak israf olduğu için gerçekte doğrudan satır okunur (lookup). Sözlük 50.000 kelime ve D=300 ise tablo <b>15 milyon</b> sayıdır; <b>hepsi</b> eğitimde öğrenilir. Yani embedding ayrı bir "ön işlem" değil, <b>modelin ağırlıklarının bir parçası</b>. (Elle hesap için 7️⃣ Örnek Çalışmalar → Örnek 3.)</p>
+  </div>
+  <div class="sechead">➕ "Yüz" sorunu: tek vektör yetmiyor</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Yüzü güzel", "yüz lira", "yüzmeyi bilmiyor": üç ayrı anlam. Klasik embedding "yüz" kelimesine <b>tek</b> bir vektör verir ve üç anlamın ortalamasında bir yerde kalır. <b>Bağlamsal embedding</b> (ELMo, BERT, ChatGPT) vektörü her cümlede <b>çevre kelimelere bakarak</b> yeniden hesaplar: "yüz lira"daki "yüz" sayı bölgesine, "yüzü güzel"deki surat bölgesine gider. Bunu yapan mekanizma sıradaki derslerin konusu: <b>attention</b>.</p>
+  </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç küçük örnek. Birincisinde <b>kelime vektörlerini ağ kendisi öğrenir</b> (başta rastgele, yan yana geçen kelimeler yaklaşır); ikincisi one-hot ile öğrenilmiş embedding'i kıyaslar; üçüncüsü "tablodan satır okuma"yı elle gösterir. Altlarında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Kelime vektörleri komşu tahminiyle kendi kendine öğreniliyor</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 6 kelimenin 2 sayıdan oluşan vektörleri başta <b>rastgele</b>. Eğitim verisi sadece "hangi kelime hangisinin yanında geçmiş": kedi/köpek → uyudu, koştu; kral/kraliçe → yönetti, tahtta; elma/armut → tatlı, taze. Model "kelimeye bakıp komşusunu tahmin et" oyununu oynarken vektörleri de düzeltiyor. ▶ ile izle ya da <b>+1 epoch</b> ile adım adım ilerle.</p><div id="embEx1"></div><div class="callout"><b>💡 Sezgi:</b> Başlangıçta ilişki yok, hatta rastgele "kedi~kral" +0,98 çıkıyor (aynı yöne bakıyorlar) ve "kedi~köpek" −0,46. Eğitimden sonra <b>aynı bağlamları paylaşan kelimeler tam aynı yöne</b> (kedi~köpek +1,00), farklı gruplar uzak yönlere (≈ −0,5; 2 boyutta 3 grup 120° arayla dizilir) yerleşiyor. Kimse "kedi ile köpek benzer" demedi — sadece <b>komşuluk</b> verildi. Gerçek modellerde milyarlarca cümle ve yüzlerce boyut var; mantık aynı. <i>Not: bu oyuncakta aynı gruptaki kelimeler bağlamları <b>tamamen</b> paylaştığı için cosine tam 1,00 çıkıyor; gerçek dilde komşuluklar kısmen örtüştüğü için benzerlik 0,6–0,8 gibi değerlerde kalır.</i></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+baglam    = [&#x27;uyudu&#x27;, &#x27;koştu&#x27;, &#x27;yönetti&#x27;, &#x27;tahtta&#x27;, &#x27;tatlı&#x27;, &#x27;taze&#x27;]
+# eğitim verisi: (kelime, yanında gördüğü kelime). Her grup, kendi iki bağlam kelimesiyle birlikte geçiyor.
+ciftler = [(i, j) for i in range(6) for j in range(6) if i // 2 == j // 2]
+
+def lcg(s):                                  # sabit tohumlu rastgele sayı üreteci (sayfadakiyle aynı)
+    while True:
+        s = (s * 1664525 + 1013904223) % 2**32
+        yield s / 2**32
+
+def softmax(z):
+    m = max(z); e = [math.exp(v - m) for v in z]; t = sum(e)
+    return [v / t for v in e]
+
+r = lcg(1)
+W = [[(next(r) - .5) * 2 * 0.3 for _ in range(2)] for _ in range(6)]   # kelime vektörleri (6 satır x 2 sayı): BAŞTA RASTGELE
+C = [[(next(r) - .5) * 2 * 0.3 for _ in range(2)] for _ in range(6)]   # komşu (bağlam) vektörleri
+
+def kayip():
+    return -sum(math.log(softmax([W[i][0]*c[0] + W[i][1]*c[1] for c in C])[j]) for i, j in ciftler) / len(ciftler)
+
+def cosine(a, b):
+    return (a[0]*b[0] + a[1]*b[1]) / (math.hypot(*a) * math.hypot(*b))
+
+print(f&quot;epoch   0  kayıp = {kayip():.3f}  kedi~köpek = {cosine(W[0], W[1]):+.2f}  kedi~kral = {cosine(W[0], W[2]):+.2f}&quot;)
+LR = 1.0
+for epoch in range(1, 501):
+    gW = [[0.0, 0.0] for _ in range(6)]; gC = [[0.0, 0.0] for _ in range(6)]
+    for i, j in ciftler:
+        p = softmax([W[i][0]*c[0] + W[i][1]*c[1] for c in C])   # kelime i&#x27;nin vektörü, her komşu adayıyla nokta çarpım -&gt; olasılık
+        for k in range(6):
+            d = p[k] - (1 if k == j else 0)                     # dL/ds = p - y
+            for q in range(2):
+                gW[i][q] += d * C[k][q] / len(ciftler)          # kelime vektörünün gradyanı
+                gC[k][q] += d * W[i][q] / len(ciftler)          # komşu vektörünün gradyanı
+    for i in range(6):
+        for q in range(2):
+            W[i][q] -= LR * gW[i][q]; C[i][q] -= LR * gC[i][q]  # gradyan inişi: İKİ tablo da öğreniliyor
+    if epoch in (1, 10, 100, 500):
+        print(f&quot;epoch {epoch:3d}  kayıp = {kayip():.3f}  kedi~köpek = {cosine(W[0], W[1]):+.2f}  kedi~kral = {cosine(W[0], W[2]):+.2f}&quot;)
+print(&quot;son vektörler:&quot;, {k: [round(v, 2) for v in W[i]] for i, k in enumerate(kelimeler)})
+
+# ---- ÇIKTI ----
+# epoch   0  kayıp = 1.781  kedi~köpek = -0.46  kedi~kral = +0.98
+# epoch   1  kayıp = 1.771  kedi~köpek = -0.23  kedi~kral = +0.99
+# epoch  10  kayıp = 1.469  kedi~köpek = +0.96  kedi~kral = -0.86
+# epoch 100  kayıp = 0.698  kedi~köpek = +1.00  kedi~kral = -0.51
+# epoch 500  kayıp = 0.694  kedi~köpek = +1.00  kedi~kral = -0.51
+# son vektörler: {'kedi': [-0.15, 2.33], 'köpek': [-0.12, 2.33], 'kral': [2.07, -1.04], 'kraliçe': [2.11, -0.99], 'elma': [-1.98, -1.23], 'armut': [-1.94, -1.28]}</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — One-hot ve öğrenilmiş embedding yan yana</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Aynı 6 kelime için iki temsili karşılaştır: her kelime bir kutu (one-hot) ve Örnek 1'de öğrenilen 2 boyutlu vektörler. İki kelimenin benzerliği cosine ile ölçülüyor.</p><div id="embEx2"></div><div class="callout"><b>💡 Sezgi:</b> One-hot'ta "kedi" ile "köpek" de, "kedi" ile "kral" da <b>0</b> — bilgisayar için ikisi eşit derecede alakasız. Öğrenilmiş embedding'de grup içi 1,00, gruplar arası negatif. Üstelik vektör 50.000 yerine 300 sayı. Fark: komşuluktan öğrenilen <b>anlam</b>.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı karşılaştırma Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+# Örnek 1&#x27;in 500 epoch sonundaki vektörleri (2 ondalığa yuvarlanmış; sayfadaki tablo yuvarlanmamış değerlerle hesaplanır, fark ±0,01)
+E = [[-0.15, 2.33], [-0.12, 2.33], [2.07, -1.04], [2.11, -0.99], [-1.98, -1.23], [-1.94, -1.28]]
+
+def cosine(a, b):
+    return (a[0]*b[0] + a[1]*b[1]) / (math.hypot(*a) * math.hypot(*b))
+
+print(&quot;          &quot; + &quot;&quot;.join(f&quot;{k[:5]:&gt;7}&quot; for k in kelimeler))
+for i, a in enumerate(kelimeler):
+    onehot = &quot;&quot;.join(f&quot;{1.0 if i == j else 0.0:7.2f}&quot; for j in range(6))      # one-hot: köşegen hariç hep 0
+    emb    = &quot;&quot;.join(f&quot;{cosine(E[i], E[j]):7.2f}&quot; for j in range(6))          # öğrenilmiş: benzer kelimeler 1&#x27;e yakın
+    print(f&quot;{a:9s} one-hot:{onehot}   embedding:{emb}&quot;)
+
+V, D = 50_000, 300
+print(f&quot;\nV={V:,} kelime, D={D}: one-hot vektör boyu {V:,}; embedding boyu {D}; tablo = {V*D:,} parametre&quot;)
+
+# ---- ÇIKTI ----
+# kedi  köpek   kral  krali   elma  armut
+# kedi      one-hot:   1.00   0.00   0.00   0.00   0.00   0.00   embedding:   1.00   1.00  -0.51  -0.48  -0.47  -0.50
+# köpek     one-hot:   0.00   1.00   0.00   0.00   0.00   0.00   embedding:   1.00   1.00  -0.49  -0.47  -0.48  -0.51
+# kral      one-hot:   0.00   0.00   1.00   0.00   0.00   0.00   embedding:  -0.51  -0.49   1.00   1.00  -0.52  -0.50
+# kraliçe   one-hot:   0.00   0.00   0.00   1.00   0.00   0.00   embedding:  -0.48  -0.47   1.00   1.00  -0.54  -0.52
+# elma      one-hot:   0.00   0.00   0.00   0.00   1.00   0.00   embedding:  -0.47  -0.48  -0.52  -0.54   1.00   1.00
+# armut     one-hot:   0.00   0.00   0.00   0.00   0.00   1.00   embedding:  -0.50  -0.51  -0.50  -0.52   1.00   1.00
+# 
+# V=50,000 kelime, D=300: one-hot vektör boyu 50,000; embedding boyu 300; tablo = 15,000,000 parametre</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Gömme tablosu: one-hot × matris = bir satır</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bir kelimeyi seç. One-hot satırı ile 6×2'lik gömme matrisini çarp: sonuç matrisin o kelimeye ait <b>tek satırı</b>.</p><div id="embEx3"></div><div class="callout"><b>💡 Sezgi:</b> Çarpımda 5 satır sıfırla çarpılıp siliniyor; geriye seçilen kelimenin satırı kalıyor. Bu yüzden embedding katmanı pratikte bir <b>arama tablosu</b>: kelimenin numarasıyla satırı oku. Matris çarpımı ile lookup aynı sonucu verir ama lookup 50.000 kat ucuzdur.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Matris çarpımı ve lookup Python'da</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">kelimeler = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kral&#x27;, &#x27;kraliçe&#x27;, &#x27;elma&#x27;, &#x27;armut&#x27;]
+E = [[-0.15, 2.33], [-0.12, 2.33], [2.07, -1.04], [2.11, -0.99], [-1.98, -1.23], [-1.94, -1.28]]   # gömme matrisi (6 x 2)
+
+kelime = &#x27;kral&#x27;
+i = kelimeler.index(kelime)
+onehot = [1 if k == i else 0 for k in range(6)]
+
+# 1) matris çarpımı: one-hot satırı x E  (5 satır sıfırla çarpılıp toplanır)
+carpim = [sum(onehot[k] * E[k][d] for k in range(6)) for d in range(2)]
+# 2) lookup: doğrudan tablodan satır oku (aynı sonuç, 50.000 kat ucuz)
+satir = E[i]
+
+print(&quot;one-hot  :&quot;, onehot)
+print(&quot;çarpım   :&quot;, carpim)
+print(&quot;lookup   :&quot;, satir)
+print(&quot;aynı mı? :&quot;, carpim == satir)
+
+# ---- ÇIKTI ----
+# one-hot  : [0, 0, 1, 0, 0, 0]
+# çarpım   : [2.07, -1.04]
+# lookup   : [2.07, -1.04]
+# aynı mı? : True</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
   <div class="sechead">🧠 Kendini Test Et — Embedding</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
@@ -5146,12 +5345,13 @@ kadın   = (   −0.6    ,    +0.7   )</div>
     </div>
   </div>
 
+    </div>
+  </div>
+
   <p class="footer">Kelime temsili • one-hot → yoğun vektör · anlam geometrisi · vektör aritmetiği · attention'ın hammaddesi</p>
   </div><!-- /model-embedding -->
 
-
-  <!-- ===================== SELF-ATTENTION MODELİ ===================== -->
-  <div class="model" id="model-seq2seq">
+<div class="model" id="model-seq2seq">
 
   <h1>🌉 Seq2Seq + Klasik Attention — Darboğazdan Kurtuluş</h1>
   <p class="sub">İki 🚪 LSTM'i bir "köprü"yle birbirine bağla: biri cümleyi <b>okur</b> (encoder), diğeri yeni bir cümle <b>üretir</b> (decoder). Sorun şu: köprü tek bir sabit vektörse, uzun cümlelerde bilgi boğulur. 2014'ün zarif çözümü — <b>Bahdanau attention</b> — decoder'ın her adımda kaynağın istediği yerine bakmasına izin verir. Bu, tam attention'a giden ilk adım.</p>
@@ -7671,37 +7871,39 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610131600"></script>
-<script src="js/lesson-turev.js?v=202610131600"></script>
-<script src="js/lesson-xor.js?v=202610131600"></script>
-<script src="js/lesson-xor-arch.js?v=202610131600"></script>
-<script src="js/lesson-xor-maps.js?v=202610131600"></script>
-<script src="js/lesson-xor-epoch.js?v=202610131600"></script>
-<script src="js/lesson-nn.js?v=202610131600"></script>
-<script src="js/lesson-trig.js?v=202610131600"></script>
+<script src="js/lesson-linreg.js?v=202610131700"></script>
+<script src="js/lesson-turev.js?v=202610131700"></script>
+<script src="js/lesson-xor.js?v=202610131700"></script>
+<script src="js/lesson-xor-arch.js?v=202610131700"></script>
+<script src="js/lesson-xor-maps.js?v=202610131700"></script>
+<script src="js/lesson-xor-epoch.js?v=202610131700"></script>
+<script src="js/lesson-nn.js?v=202610131700"></script>
+<script src="js/lesson-trig.js?v=202610131700"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610131600"></script>
-<script src="js/lesson-rnn-soz.js?v=202610131600"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610131700"></script>
+<script src="js/lesson-rnn-soz.js?v=202610131700"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610131600"></script>
-<script src="js/lesson-lstm-cell.js?v=202610131600"></script>
-<script src="js/app.js?v=202610131600"></script>
-<script src="js/lesson-lstm-big.js?v=202610131600"></script>
-<script src="js/lesson-lstm-step.js?v=202610131600"></script>
-<script src="js/lesson-lstm-size.js?v=202610131600"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610131600"></script>
-<script src="js/lesson-sm-ornek.js?v=202610131600"></script>
-<script src="js/lesson-sm-big.js?v=202610131600"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610131600"></script>
-<script src="js/lesson-lstm-gate.js?v=202610131600"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610131600"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610131600"></script>
-<script src="js/lesson-linreg-big.js?v=202610131600"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610131600"></script>
-<script src="js/lesson-act-big.js?v=202610131600"></script>
-<script src="js/lesson-act-ornek.js?v=202610131600"></script>
-<script src="js/lesson-xor-ornek.js?v=202610131600"></script>
-<script src="js/lesson-nn-ornek.js?v=202610131600"></script>
-<script src="js/lesson-nn-net.js?v=202610131600"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610131700"></script>
+<script src="js/lesson-lstm-cell.js?v=202610131700"></script>
+<script src="js/app.js?v=202610131700"></script>
+<script src="js/lesson-lstm-big.js?v=202610131700"></script>
+<script src="js/lesson-lstm-step.js?v=202610131700"></script>
+<script src="js/lesson-lstm-size.js?v=202610131700"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610131700"></script>
+<script src="js/lesson-emb-ornek.js?v=202610131700"></script>
+<script src="js/lesson-emb-big.js?v=202610131700"></script>
+<script src="js/lesson-sm-ornek.js?v=202610131700"></script>
+<script src="js/lesson-sm-big.js?v=202610131700"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610131700"></script>
+<script src="js/lesson-lstm-gate.js?v=202610131700"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610131700"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610131700"></script>
+<script src="js/lesson-linreg-big.js?v=202610131700"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610131700"></script>
+<script src="js/lesson-act-big.js?v=202610131700"></script>
+<script src="js/lesson-act-ornek.js?v=202610131700"></script>
+<script src="js/lesson-xor-ornek.js?v=202610131700"></script>
+<script src="js/lesson-nn-ornek.js?v=202610131700"></script>
+<script src="js/lesson-nn-net.js?v=202610131700"></script>
 </body>
 </html>
