@@ -54,9 +54,9 @@
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="addbtn" id="sa_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="sa_all" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">⏭ Hepsini göster</button><button class="addbtn" id="sa_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
    '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:640px;width:100%;max-width:820px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder toplama animasyonu"></svg></div>'+
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
-   '<div style="font-size:13px;color:#ccd5e8;margin:14px 0 4px"><b>🧠 Nöron/katman görünümü:</b> aynı soru, bu kez katman katman. Her sütun bir zaman adımı; altta girdi → gömme (8 sayı) → LSTM gizli katmanı (24 nöron) → (decoder\'da) 13 çıktı nöronu (softmax). Hepsini çizmek yerine gizli katmandan en etkin 6, gömmeden ilk 4 nöron gösteriliyor; renkler gerçek değerler.</div>'+
+   '<div style="font-size:13px;color:#ccd5e8;margin:14px 0 4px"><b>B) 🧠 Nöron/katman görünümü:</b> A\'daki aynı olay, bu kez katman katman. Her sütun bir zaman adımı; altta girdi → gömme (8 sayı) → LSTM gizli katmanı (24 nöron) → (decoder\'da) 13 çıktı nöronu (softmax). Hepsini çizmek yerine gizli katmandan en etkin 6, gömmeden ilk 4 nöron gösteriliyor; renkler gerçek değerler.</div>'+
    '<div style="overflow-x:auto"><svg id="sa_neur" style="min-width:780px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder nöron düzeyinde şema"></svg></div>'+
-   '<div style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
+   '<div style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>C) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
    '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
   const sa=document.getElementById('sa_a'),sb=document.getElementById('sa_b');
   for(let i=0;i<10;i++){sa.add(new Option(i,i));sb.add(new Option(i,i));}
@@ -99,7 +99,7 @@
         '<line x1="'+(x+(CW-8)/2)+'" y1="60" x2="'+(x+(CW-8)/2)+'" y2="30" stroke="#46c46a" stroke-width="2" marker-end="url(#saAr)"/>'+
         '<rect x="'+(x+(CW-8)/2-26)+'" y="2" width="52" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="'+(x+(CW-8)/2)+'" y="21" text-anchor="middle" font-size="15" font-weight="700" fill="#46c46a">'+NAME(d.out)+'</text>'+
         '<line x1="'+(x+(CW-8)/2)+'" y1="190" x2="'+(x+(CW-8)/2)+'" y2="148" stroke="#95a2c2" marker-end="url(#saAr)"/><rect x="'+(x+(CW-8)/2-24)+'" y="190" width="48" height="30" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="'+(x+(CW-8)/2)+'" y="210" text-anchor="middle" font-size="14" font-weight="700" fill="#ccd5e8">'+NAME(d.inp)+'</text>'+
-        '<text x="'+(x+(CW-8)/2)+'" y="236" text-anchor="middle" font-size="9.5" fill="#95a2c2">%'+Math.round(d.p*100)+' emin</text></g>';
+        '<text x="'+(x+(CW-8)/2+31)+'" y="19" font-size="10" fill="#95a2c2"><title>decoder bu çıktıdan ne kadar emin</title>%'+Math.round(d.p*100)+'</text></g>';
       if(i<2)s+='<line x1="'+(x+CW-8)+'" y1="103" x2="'+(x+CW-8+GAP-10)+'" y2="103" stroke="#95a2c2" stroke-width="2" marker-end="url(#saAr)" opacity="'+(S>=6+i?1:.25)+'"/>';
     });
     const W=dx0+3*(CW+GAP-8);
