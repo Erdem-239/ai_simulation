@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610140300"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610140500"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610140300">
+<link rel="stylesheet" href="css/style.css?v=202610140500">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 03:00 TR</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 05:00 TR</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4806,7 +4806,7 @@ for k in (2, 3, 4, 8):
   <h1>Softmax & Temperature — Skorları Olasılığa Çevirmek</h1>
   <p class="sub">Model her adayA bir <b>skor</b> (logit) verir: "uyudu: 2.0, kaçtı: 1.0, mor: −2.0". Ama karar vermek için <b>olasılık</b> gerekir. Softmax bu çeviriyi yapar — ve <b>temperature</b>, ChatGPT'deki "yaratıcılık" düğmesinin ta kendisidir.</p>
 
-  <div class="callout">🔗 <b>Bağlantı:</b> Sigmoid tek soruya "evet/hayır olasılığı" veriyordu. Softmax, onun <b>çok seçenekli</b> genellemesi: N skoru, toplamı 1 olan N olasılığa çevirir. Attention'da QKᵀ benzerlik tablosunun her satırı softmax'ten geçer → "dikkat yüzdeleri" çıkar.</div>
+  <div class="callout">🔗 <b>Bağlantı:</b> Sigmoid tek soruya "evet/hayır olasılığı" veriyordu. Softmax, onun <b>çok seçenekli</b> genellemesi: N skoru, toplamı 1 olan N olasılığa çevirir. Neural Network'ün çıktı katmanı "hangi sınıf?" diye soruyorsa son adım softmax'tir. Bu derste öğrendiğin formül ileride üç yerde daha karşına çıkacak: word2vec'in "komşu kelime hangisi?" tahmininde, Seq2Seq'in "hangi kelimeye bakayım?" ağırlıklarında ve attention'ın QKᵀ tablosunun her satırında ("dikkat yüzdeleri").</div>
     </div>
   </div>
 
@@ -5098,7 +5098,7 @@ print(&quot;4) kararlı softmax:&quot;, softmax(dev))
   <h1>Kelime Temsili (Embedding) — Anlamı Sayıya Gömmek</h1>
   <p class="sub">Bilgisayar "kral" kelimesini göremez, sadece sayı görür. Embedding, her kelimeyi bir <b>vektör</b> (ok) yapar — öyle ki <b>anlamca yakın kelimeler uzayda komşu</b> olur. İşte attention'ın üzerinde çalıştığı hammadde bu.</p>
 
-  <div class="callout">🔗 <b>Bağlantı:</b> 🧮 Vektör dersinde nokta çarpımın "benzerlik ölçtüğünü" gördün. Embedding o benzerliğin <b>anlam</b> taşımasını sağlar: "kral" ile "kraliçe"nin okları yakın yöne bakar → nokta çarpımları yüksek → attention onları ilişkilendirir.</div>
+  <div class="callout">🔗 <b>Bağlantı:</b> 🧮 Vektör dersinde nokta çarpımın "benzerlik ölçtüğünü" gördün. Embedding o benzerliğin <b>anlam</b> taşımasını sağlar: "kral" ile "kraliçe"nin okları yakın yöne bakar → nokta çarpımları yüksek → attention onları ilişkilendirir. 🌡️ Softmax dersinde gördüğün formül de burada geri geliyor: word2vec komşu kelimeyi softmax ile tahmin ederek öğrenir.</div>
     </div>
   </div>
 
@@ -5506,7 +5506,7 @@ print(&quot;one-hot girdisi:&quot;, sinif(W, eg, te, onehot=True))
   <h1>🌉 Seq2Seq + Klasik Attention — Darboğazdan Kurtuluş</h1>
   <p class="sub">İki 🚪 LSTM'i bir "köprü"yle birbirine bağla: biri cümleyi <b>okur</b> (encoder), diğeri yeni bir cümle <b>üretir</b> (decoder). Sorun şu: köprü tek bir sabit vektörse, uzun cümlelerde bilgi boğulur. 2014'ün zarif çözümü — <b>Bahdanau attention</b> — decoder'ın her adımda kaynağın istediği yerine bakmasına izin verir. Bu, tam attention'a giden ilk adım.</p>
 
-  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🚪 LSTM/GRU'da gradyanın bozulmadan akan bir "otoyol"unu gördün. 🔤 Embedding'de kelimelerin sayı vektörüne dönüştüğünü gördün. Şimdi ikisini birleştiriyoruz: bir LSTM cümleyi <b>okuyup</b> anlamını sıkıştırır, başka bir LSTM o sıkışmış anlamdan yeni bir cümle <b>üretir</b> — örneğin çeviri.</div>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🚪 LSTM/GRU'da gradyanın bozulmadan akan bir "otoyol"unu gördün. 🔤 Embedding'de kelimelerin sayı vektörüne dönüştüğünü, 🌡️ Softmax'te skorların olasılığa çevrildiğini gördün. Şimdi üçünü birleştiriyoruz: bir LSTM cümleyi <b>okuyup</b> anlamını sıkıştırır, başka bir LSTM o sıkışmış anlamdan yeni bir cümle <b>üretir</b> — örneğin çeviri.</div>
     </div>
   </div>
 
@@ -7519,7 +7519,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   </div>
 
   
-<div class="callout">🔗 <b>Neden şimdi?</b> Şu ana kadar her şey tek sayıyla (skaler) yürüdü. Ama kelimeler vektör (Embedding), attention skorları ise vektörlerin nokta çarpımı. Bu kapıdan geçmeden <b>softmax(QKᵀ/√d)·V</b> okunmaz — geçince kendiliğinden okunur.</div>
+<div class="callout">🔗 <b>Neden şimdi?</b> Şu ana kadar her şey tek sayıyla (skaler) yürüdü. Ama sıradaki derste kelimeler vektör olacak (Embedding), attention skorları ise vektörlerin nokta çarpımı. Bu kapıdan geçmeden <b>softmax(QKᵀ/√d)·V</b> okunmaz — geçince kendiliğinden okunur.</div>
 
   
     </div>
@@ -8213,48 +8213,48 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610140300"></script>
-<script src="js/lesson-turev.js?v=202610140300"></script>
-<script src="js/lesson-xor.js?v=202610140300"></script>
-<script src="js/lesson-xor-arch.js?v=202610140300"></script>
-<script src="js/lesson-xor-maps.js?v=202610140300"></script>
-<script src="js/lesson-xor-epoch.js?v=202610140300"></script>
-<script src="js/lesson-nn.js?v=202610140300"></script>
-<script src="js/lesson-trig.js?v=202610140300"></script>
+<script src="js/lesson-linreg.js?v=202610140500"></script>
+<script src="js/lesson-turev.js?v=202610140500"></script>
+<script src="js/lesson-xor.js?v=202610140500"></script>
+<script src="js/lesson-xor-arch.js?v=202610140500"></script>
+<script src="js/lesson-xor-maps.js?v=202610140500"></script>
+<script src="js/lesson-xor-epoch.js?v=202610140500"></script>
+<script src="js/lesson-nn.js?v=202610140500"></script>
+<script src="js/lesson-trig.js?v=202610140500"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610140300"></script>
-<script src="js/lesson-rnn-soz.js?v=202610140300"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610140500"></script>
+<script src="js/lesson-rnn-soz.js?v=202610140500"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610140300"></script>
-<script src="js/lesson-lstm-cell.js?v=202610140300"></script>
-<script src="js/app.js?v=202610140300"></script>
-<script src="js/lesson-lstm-big.js?v=202610140300"></script>
-<script src="js/lesson-lstm-step.js?v=202610140300"></script>
-<script src="js/lesson-lstm-size.js?v=202610140300"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610140300"></script>
-<script src="js/lesson-emb-kullan.js?v=202610140300"></script>
-<script src="js/lesson-emb-draco.js?v=202610140300"></script>
-<script src="js/lesson-emb-arch.js?v=202610140300"></script>
-<script src="js/lesson-emb-extra.js?v=202610140300"></script>
-<script src="js/lesson-s2s-weights.js?v=202610140300"></script>
-<script src="js/lesson-s2s-add.js?v=202610140300"></script>
-<script src="js/lesson-s2s-extra.js?v=202610140300"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610140300"></script>
-<script src="js/lesson-emb-ornek.js?v=202610140300"></script>
-<script src="js/lesson-emb-steps.js?v=202610140300"></script>
-<script src="js/lesson-emb-big.js?v=202610140300"></script>
-<script src="js/lesson-sm-ornek.js?v=202610140300"></script>
-<script src="js/lesson-sm-big.js?v=202610140300"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610140300"></script>
-<script src="js/lesson-lstm-gate.js?v=202610140300"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610140300"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610140300"></script>
-<script src="js/lesson-linreg-big.js?v=202610140300"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610140300"></script>
-<script src="js/lesson-act-big.js?v=202610140300"></script>
-<script src="js/lesson-act-ornek.js?v=202610140300"></script>
-<script src="js/lesson-xor-ornek.js?v=202610140300"></script>
-<script src="js/lesson-nn-ornek.js?v=202610140300"></script>
-<script src="js/lesson-nn-net.js?v=202610140300"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610140500"></script>
+<script src="js/lesson-lstm-cell.js?v=202610140500"></script>
+<script src="js/app.js?v=202610140500"></script>
+<script src="js/lesson-lstm-big.js?v=202610140500"></script>
+<script src="js/lesson-lstm-step.js?v=202610140500"></script>
+<script src="js/lesson-lstm-size.js?v=202610140500"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610140500"></script>
+<script src="js/lesson-emb-kullan.js?v=202610140500"></script>
+<script src="js/lesson-emb-draco.js?v=202610140500"></script>
+<script src="js/lesson-emb-arch.js?v=202610140500"></script>
+<script src="js/lesson-emb-extra.js?v=202610140500"></script>
+<script src="js/lesson-s2s-weights.js?v=202610140500"></script>
+<script src="js/lesson-s2s-add.js?v=202610140500"></script>
+<script src="js/lesson-s2s-extra.js?v=202610140500"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610140500"></script>
+<script src="js/lesson-emb-ornek.js?v=202610140500"></script>
+<script src="js/lesson-emb-steps.js?v=202610140500"></script>
+<script src="js/lesson-emb-big.js?v=202610140500"></script>
+<script src="js/lesson-sm-ornek.js?v=202610140500"></script>
+<script src="js/lesson-sm-big.js?v=202610140500"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610140500"></script>
+<script src="js/lesson-lstm-gate.js?v=202610140500"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610140500"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610140500"></script>
+<script src="js/lesson-linreg-big.js?v=202610140500"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610140500"></script>
+<script src="js/lesson-act-big.js?v=202610140500"></script>
+<script src="js/lesson-act-ornek.js?v=202610140500"></script>
+<script src="js/lesson-xor-ornek.js?v=202610140500"></script>
+<script src="js/lesson-nn-ornek.js?v=202610140500"></script>
+<script src="js/lesson-nn-net.js?v=202610140500"></script>
 </body>
 </html>
