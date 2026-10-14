@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610131808"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610141945"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610131808">
+<link rel="stylesheet" href="css/style.css?v=202610141945">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-13 18:08 TR · #389</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-14 19:45 TR · #390</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5843,7 +5843,26 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
     <div class="callout">🎯 <b>İşin özü:</b> "kedi" kelimesi tek başına anlamsızdır; "açtı"ya bakıp "bu bir eylemin öznesi", "sütü"ye bakıp "içmekle ilgili" bilgisini <b>kendine katar</b>. Her kelime, cümledeki komşularından yüzdeli bilgi çekerek <b>bağlam kazanır</b>. Recurrence yok — hepsi tek hamlede, paralel.</div>
   </div>
 
-  <div class="sechead">4) Tebrikler — formülü artık okuyabiliyorsun</div>
+  <div class="sechead">4) 🧱 Mimari: veri akışı ve boyutlar</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki oyuncağın arkasındaki <b>bütün hesabı</b> tek akışta, gerçek sayılarla görelim. Girdi ve çıktı <b>aynı şekilde</b> (n kelime × d sayı): katman her kelimenin vektörünü, diğer kelimelerden gelen bilgiyle zenginleştirip geri veriyor. Aşağıdaki "birim" seçeneği oyuncaktaki sadeleştirme (Q=K=V=X); "örnek W" ise Q, K, V'nin <b>üç ayrı matrisle</b> üretildiğinde nasıl farklılaştığını gösterir (matrisleri elle seçtim, <b>öğrenilmiş değiller</b>: gerçek modelde eğitimle bulunurlar).</p>
+    <div id="atFlow"></div>
+    <div class="callout" style="margin-top:8px">🧮 <b>Öğrenilen tek şey:</b> W_Q, W_K, W_V (her biri d×d). Başka ağırlık yok. Skor tablosu ve softmax'in kendi ağırlığı yok, sadece bu üç matristen çıkan Q, K, V üzerinde çalışır. Boyut notu: skor tablosu <b>n×n</b> olduğu için cümle uzayınca maliyet <b>karesel</b> büyür (LSTM'de doğrusaldı, ama sıralıydı).</div>
+  </div>
+
+  <div class="sechead">5) 🔁 Self mi, çapraz mı? (Bahdanau ile bağ)</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı mekanizma (QKᵀ → softmax → ·V) iki farklı yerde kullanılır. Fark yalnızca <b>Q'nun ve K, V'nin hangi cümleden geldiği</b>:</p>
+    <div id="atCross"></div>
+  </div>
+
+  <div class="sechead">6) 🗺️ Büyük resim: bu katman Transformer'ın neresinde?</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Self-attention tek başına bir model değil, <b>bir katman</b>. Transformer bu katmanı (ve çapraz kardeşini) FFN ve Add &amp; Norm ile bir <b>blok</b> hâline getirip N kez üst üste dizer. Çizimdeki renkli kutulara tıkla. Multi-Head, Positional Encoding, FFN ve Add &amp; Norm'un ayrıntıları sıradaki derslerde.</p>
+    <div id="atBig"></div>
+  </div>
+
+  <div class="sechead">7) Tebrikler — formülü artık okuyabiliyorsun</div>
   <div class="pts" style="border-left:3px solid var(--green)">
     <div class="work" style="white-space:pre-wrap; line-height:2; font-size:13.5px">Attention(Q, K, V) = softmax( QKᵀ / √d ) · V
                           └──┬──┘  └┬┘   └┬┘
@@ -5876,6 +5895,14 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 5) Bu neden RNN'den iyi? (tek kelime cevap yeterli değil 🙂)</div>
       <div class="acc-body"><b>Paralellik + uzun menzil.</b> RNN kelimeleri sırayla işler (yavaş) ve uzak bağları vanishing yüzünden kaybeder. Attention her kelimeyi her kelimeye <b>tek hamlede, doğrudan</b> bağlar: hem GPU'da paralel (hızlı), hem cümlenin başıyla sonu arasında kısa yol (bağlam korunur).</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 6) Q, K ve V neden üç AYRI matrisle üretilir (X'in kendisi yetmez mi)?</div>
+      <div class="acc-body">Aynı kelimenin üç <b>farklı rolü</b> var: "ne arıyorum" (Q), "ben neyim" (K), "içeriğim" (V). X'i üçüne birden kullanırsak bir kelime en çok <b>kendine</b> benzer (kendi nokta çarpımı en büyük) ve rol ayrımı olmaz. Üç ayrı öğrenilen matris ağa şunu söyleme özgürlüğü verir: "arama" ile "tanım" ile "içerik" aynı vektörün farklı projeksiyonları olsun. Yukarıdaki "örnek W" seçeneğinde Q, K, V'nin aynı X'ten farklı çıktığını gör.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 7) Self-attention ile çapraz (cross) attention arasındaki fark nedir?</div>
+      <div class="acc-body">Mekanizma aynı, <b>K ve V'nin kaynağı</b> farklı. Self-attention'da Q, K, V aynı cümleden gelir (skor tablosu n×n, kare). Çapraz attention'da Q hedef cümleden (decoder), K ve V kaynak cümleden (encoder) gelir (skor tablosu m×n). Çapraz attention, Bahdanau'nun attention'ının Q/K/V diliyle yazılmış hâlidir.</div>
     </div>
   </div>
 
@@ -8225,49 +8252,50 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610131808"></script>
-<script src="js/lesson-turev.js?v=202610131808"></script>
-<script src="js/lesson-xor.js?v=202610131808"></script>
-<script src="js/lesson-xor-arch.js?v=202610131808"></script>
-<script src="js/lesson-xor-maps.js?v=202610131808"></script>
-<script src="js/lesson-xor-epoch.js?v=202610131808"></script>
-<script src="js/lesson-nn.js?v=202610131808"></script>
-<script src="js/lesson-trig.js?v=202610131808"></script>
+<script src="js/lesson-linreg.js?v=202610141945"></script>
+<script src="js/lesson-turev.js?v=202610141945"></script>
+<script src="js/lesson-xor.js?v=202610141945"></script>
+<script src="js/lesson-xor-arch.js?v=202610141945"></script>
+<script src="js/lesson-xor-maps.js?v=202610141945"></script>
+<script src="js/lesson-xor-epoch.js?v=202610141945"></script>
+<script src="js/lesson-nn.js?v=202610141945"></script>
+<script src="js/lesson-trig.js?v=202610141945"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610131808"></script>
-<script src="js/lesson-rnn-soz.js?v=202610131808"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610141945"></script>
+<script src="js/lesson-rnn-soz.js?v=202610141945"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610131808"></script>
-<script src="js/lesson-lstm-cell.js?v=202610131808"></script>
-<script src="js/app.js?v=202610131808"></script>
-<script src="js/lesson-lstm-big.js?v=202610131808"></script>
-<script src="js/lesson-lstm-step.js?v=202610131808"></script>
-<script src="js/lesson-lstm-size.js?v=202610131808"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610131808"></script>
-<script src="js/lesson-emb-kullan.js?v=202610131808"></script>
-<script src="js/lesson-emb-draco.js?v=202610131808"></script>
-<script src="js/lesson-emb-arch.js?v=202610131808"></script>
-<script src="js/lesson-emb-extra.js?v=202610131808"></script>
-<script src="js/lesson-s2s-weights.js?v=202610131808"></script>
-<script src="js/lesson-s2s-add.js?v=202610131808"></script>
-<script src="js/lesson-s2s-inside.js?v=202610131808"></script>
-<script src="js/lesson-s2s-extra.js?v=202610131808"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610131808"></script>
-<script src="js/lesson-emb-ornek.js?v=202610131808"></script>
-<script src="js/lesson-emb-steps.js?v=202610131808"></script>
-<script src="js/lesson-emb-big.js?v=202610131808"></script>
-<script src="js/lesson-sm-ornek.js?v=202610131808"></script>
-<script src="js/lesson-sm-big.js?v=202610131808"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610131808"></script>
-<script src="js/lesson-lstm-gate.js?v=202610131808"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610131808"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610131808"></script>
-<script src="js/lesson-linreg-big.js?v=202610131808"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610131808"></script>
-<script src="js/lesson-act-big.js?v=202610131808"></script>
-<script src="js/lesson-act-ornek.js?v=202610131808"></script>
-<script src="js/lesson-xor-ornek.js?v=202610131808"></script>
-<script src="js/lesson-nn-ornek.js?v=202610131808"></script>
-<script src="js/lesson-nn-net.js?v=202610131808"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610141945"></script>
+<script src="js/lesson-lstm-cell.js?v=202610141945"></script>
+<script src="js/app.js?v=202610141945"></script>
+<script src="js/lesson-lstm-big.js?v=202610141945"></script>
+<script src="js/lesson-lstm-step.js?v=202610141945"></script>
+<script src="js/lesson-lstm-size.js?v=202610141945"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610141945"></script>
+<script src="js/lesson-emb-kullan.js?v=202610141945"></script>
+<script src="js/lesson-emb-draco.js?v=202610141945"></script>
+<script src="js/lesson-emb-arch.js?v=202610141945"></script>
+<script src="js/lesson-emb-extra.js?v=202610141945"></script>
+<script src="js/lesson-s2s-weights.js?v=202610141945"></script>
+<script src="js/lesson-s2s-add.js?v=202610141945"></script>
+<script src="js/lesson-s2s-inside.js?v=202610141945"></script>
+<script src="js/lesson-att-extra.js?v=202610141945"></script>
+<script src="js/lesson-s2s-extra.js?v=202610141945"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610141945"></script>
+<script src="js/lesson-emb-ornek.js?v=202610141945"></script>
+<script src="js/lesson-emb-steps.js?v=202610141945"></script>
+<script src="js/lesson-emb-big.js?v=202610141945"></script>
+<script src="js/lesson-sm-ornek.js?v=202610141945"></script>
+<script src="js/lesson-sm-big.js?v=202610141945"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610141945"></script>
+<script src="js/lesson-lstm-gate.js?v=202610141945"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610141945"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610141945"></script>
+<script src="js/lesson-linreg-big.js?v=202610141945"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610141945"></script>
+<script src="js/lesson-act-big.js?v=202610141945"></script>
+<script src="js/lesson-act-ornek.js?v=202610141945"></script>
+<script src="js/lesson-xor-ornek.js?v=202610141945"></script>
+<script src="js/lesson-nn-ornek.js?v=202610141945"></script>
+<script src="js/lesson-nn-net.js?v=202610141945"></script>
 </body>
 </html>
