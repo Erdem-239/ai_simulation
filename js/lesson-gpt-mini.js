@@ -9,12 +9,12 @@
   const D=16,M=32,LR=0.01,EPMAX=800,NS=SM.Y.length,SQ=Math.sqrt(D);
   const lcg=s=>()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};
   const SHAPES={E:V*D,P:N*D,WQ:D*D,WK:D*D,WV:D*D,WO:D*D,W1:D*M,b1:M,W2:M*D,b2:D,Wo:D*V,bo:V};
-  let P,Mo,Vv,ep,hist,seedNow=1;
+  let P,Mo,Vv,ep,hist,seedNow=1,E0;
   function init(seed){
     seedNow=seed;const r=lcg(seed),U=(n,sc)=>{const a=new Float64Array(n);for(let i=0;i<n;i++)a[i]=(r()-.5)*2*sc;return a;},sd=1/Math.sqrt(D);
     P={E:U(V*D,.5),P:U(N*D,.5),WQ:U(D*D,sd),WK:U(D*D,sd),WV:U(D*D,sd),WO:U(D*D,sd),W1:U(D*M,sd),b1:new Float64Array(M),W2:U(M*D,1/Math.sqrt(M)),b2:new Float64Array(D),Wo:U(D*V,sd),bo:new Float64Array(V)};
     Mo={};Vv={};for(const k in P){Mo[k]=new Float64Array(P[k].length);Vv[k]=new Float64Array(P[k].length);}
-    ep=0;hist=[lossOf()];
+    E0=Float64Array.from(P.E);ep=0;hist=[lossOf()];
   }
   function newCache(){return {x:new Float64Array(N*D),q:new Float64Array(D),K:new Float64Array(N*D),V:new Float64Array(N*D),s:new Float64Array(N),a:new Float64Array(N),o:new Float64Array(D),r:new Float64Array(D),u:new Float64Array(M),g:new Float64Array(M),f:new Float64Array(D),h:new Float64Array(D),lg:new Float64Array(V),p:new Float64Array(V)};}
   function fwd1(ctx,c){
@@ -68,7 +68,7 @@
     return out;
   }
 
-  window.__gptMini={init,step,gen,lossOf,fwd1,newCache,get ep(){return ep;},get hist(){return hist;},get P(){return P;},D,M,N,V,EPMAX};
+  window.__gptMini={init,step,gen,lossOf,fwd1,newCache,get ep(){return ep;},get hist(){return hist;},get P(){return P;},get E0(){return E0;},D,M,N,V,EPMAX};
   init(1);
 
   /* ================= arayüz ================= */
@@ -96,6 +96,40 @@
    '<div class="acc" style="margin-top:8px"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon: şemadaki her harf ne demek?</div><div class="acc-body"><div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th>simge</th><th>anlamı</th><th>boyut</th></tr>'+NOTA.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</table></div></div></div>';
   grid.insertAdjacentElement('afterend',arch);
   arch.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',e=>{e.stopPropagation();h.closest('.acc').classList.toggle('open');}));
+
+  /* ----- E tablosu görünümü ----- */
+  const ET=document.createElement('div');ET.className='acc open';ET.style.marginTop='8px';ET.id='gmETab';
+  ET.innerHTML='<div class="acc-head"><span class="ac">▸</span> 📚 E tablosu (gömme, 40×16) — şimdi nasıl göründüğüne bak</div><div class="acc-body"><div style="font-size:13px;color:#aeb9d4;line-height:1.7;margin-bottom:6px">Her satır bir karakterin 16 sayılık vektörü (<span style="color:#5aa0e0">mavi +</span>, <span style="color:#e06a6a">kırmızı −</span>). <b style="color:#ffd54a">Sarı çerçeveli</b> satırlar şu anki pencerede kullanılanlar. Sağdaki çubuk karakterin <b>eğitim metninde kaç kez geçtiğini</b> gösterir. Eğitmeden önceki <b>rastgele</b> haline ve eğitilmiş haline geçip karşılaştır; bir satırın üstüne gelince sayıları görürsün.</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"><button class="rex-btn" id="gm_et_now">Şimdiki E</button><button class="rex-btn" id="gm_et_0">Başlangıç (rastgele)</button><span id="gm_et_info" style="font-size:12.5px;color:#ffd54a;align-self:center"></span></div><div style="overflow-x:auto"><svg id="gm_et" viewBox="0 0 480 640" style="display:block;width:100%;max-width:520px;margin:auto"></svg></div></div>';
+  $('gmFull').insertAdjacentElement('afterend',ET);
+  ET.querySelector('.acc-head').addEventListener('click',e=>{e.stopPropagation();ET.classList.toggle('open');});
+  let etMode='now';
+  const CNT=new Array(V).fill(0);G.TRAINADD.concat(G.DIAL.map(x=>x[0]+'>'+x[1]+'.')).join('').split('').forEach(ch=>{const k=G.IX[ch];if(k!==undefined)CNT[k]++;});
+  const CMAX=Math.max.apply(null,CNT);
+  function drawE(ctx){
+    const E=etMode==='now'?P.E:E0,used={};(ctx||[]).forEach((c,i)=>{(used[c]=used[c]||[]).push(i);});
+    let o='';
+    o+='<text x="60" y="12" font-size="10" fill="#8a99bd">16 sayı (her satır bir karakter)</text><text x="396" y="12" font-size="10" fill="#8a99bd">metinde kaç kez</text>';
+    for(let v=0;v<V;v++){
+      const y=18+v*15,u=used[v];
+      o+='<g class="gm-erow" data-v="'+v+'">';
+      o+='<rect x="0" y="'+y+'" width="480" height="15" fill="transparent"/>';
+      o+='<text x="26" y="'+(y+11)+'" font-size="11.5" fill="'+(u?'#ffd54a':'#ccd5e8')+'" text-anchor="end" font-family="ui-monospace,Consolas,monospace">'+esc(chOf(v)===' '?'␣':chOf(v))+'</text><text x="52" y="'+(y+11)+'" font-size="9" fill="#6a7a9a" text-anchor="end">'+v+'</text>';
+      for(let k=0;k<D;k++){const val=E[v*D+k],t=Math.min(1,Math.abs(val)/SC);o+='<rect x="'+(60+k*20)+'" y="'+(y+1)+'" width="20" height="13" fill="'+(val>=0?'#5aa0e0':'#e06a6a')+'" fill-opacity="'+(0.08+0.92*t).toFixed(2)+'"/>';}
+      if(u)o+='<rect x="59" y="'+y+'" width="322" height="15" fill="none" stroke="#ffd54a" stroke-width="1.6"/>';
+      const w=CNT[v]/CMAX*70;
+      o+='<rect x="396" y="'+(y+3)+'" width="'+w.toFixed(1)+'" height="9" fill="'+(CNT[v]?'#46c46a':'#3a4666')+'" fill-opacity=".8"/><text x="'+(398+w)+'" y="'+(y+11)+'" font-size="9.5" fill="#aeb9d4">'+CNT[v]+'</text>';
+      o+='</g>';
+    }
+    $('gm_et').innerHTML=o;
+    $('gm_et_now').style.outline=etMode==='now'?'2px solid #ffd54a':'none';$('gm_et_0').style.outline=etMode==='0'?'2px solid #ffd54a':'none';
+  }
+  $('gm_et_now').onclick=()=>{etMode='now';drawE(cur().ctx);};
+  $('gm_et_0').onclick=()=>{etMode='0';drawE(cur().ctx);};
+  $('gm_et').addEventListener('mousemove',e=>{
+    const g=e.target.closest&&e.target.closest('.gm-erow');if(!g){$('gm_et_info').textContent='';return;}
+    const v=+g.dataset.v,E=etMode==='now'?P.E:E0;
+    $('gm_et_info').textContent='«'+(chOf(v)===' '?'boşluk':chOf(v))+'» (kimlik '+v+'): ['+Array.from(E.slice(v*D,v*D+6)).map(x=>fm(x,2)).join('; ')+' …] · metinde '+CNT[v]+' kez';
+  });
 
   /* ----- şema çizimi ----- */
   const CX=i=>100+44*i,SC=1.5;
@@ -188,6 +222,7 @@
     w+='<path d="M722 253 H 772 V 122 H 701" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(776,190,'r aynen',9.5,'#46c46a')+txt(776,202,'geçer',9.5,'#46c46a');
     w+='</g>';
     $('gm_svg').innerHTML=o+w;
+    drawE(ctx);
     caption(c,ctx,idx,sI,aI);
   }
   function caption(c,ctx,idx,sI,aI){
