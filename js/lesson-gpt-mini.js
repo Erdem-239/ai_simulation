@@ -76,6 +76,7 @@
   const fm=(v,d=2)=>v.toFixed(d).replace('.',',');
   const pct=v=>'%'+Math.round(v*100);
   const chOf=i=>CHARS[i]==='.'?'.':CHARS[i];
+  const st=document.createElement('style');st.textContent='.gm-fsonly{display:none}.gm-box.gm-full{position:fixed;inset:0;z-index:99999;background:#0b1020;padding:14px 18px;overflow:auto;box-sizing:border-box}.gm-box.gm-full .gm-fsonly{display:inline-flex}.gm-box.gm-full #gm_svg{min-width:0!important;max-width:none!important;width:100%!important;height:auto}@media(min-width:900px){.gm-box.gm-full #gm_svg{height:calc(100vh - 240px)}}.gm-box.gm-full #gm_cap{font-size:15px;line-height:1.75}';document.head.appendChild(st);
   const grid=host.querySelector('.gt-grid');
   grid.insertAdjacentHTML('beforeend',
    '<div class="gt-card"><div class="gt-t">🔦 Minik GPT <span style="color:var(--muted);font-weight:400">(self-attention, 1 blok)</span></div>'+
@@ -87,9 +88,10 @@
   arch.innerHTML=
    '<div style="font-size:14px;color:#ccd5e8;margin-bottom:4px"><b>🏗️ Minik GPT\'nin mimarisi</b> (bu kartta eğittiğin ağın tam şeması)</div>'+
    '<div style="font-size:13px;color:#aeb9d4;line-height:1.7;margin-bottom:6px">Şema <b>yukarıdaki başlangıç kutusundaki yazıyı</b> okur (şu an: <code id="gm_pv"></code>); son 10 karakterlik pencereyi alır. Renkli kutular 16 sayılık vektörlerin <b>gerçek değerleri</b> (<span style="color:#5aa0e0">mavi +</span>, <span style="color:#e06a6a">kırmızı −</span>, koyu = sıfıra yakın). Eğitmeden önce ağırlıklar rastgele, eğitince şema değişir.</div>'+
-   '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px"><button class="rex-btn" id="gm_next">İleri ▶</button><button class="rex-btn" id="gm_all">↺ hepsi birden</button><span id="gm_stp" style="font-size:12.5px;color:#ffd54a"></span></div>'+
+   '<div id="gmFull" class="gm-box">'+
+   '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px"><button class="rex-btn" id="gm_next">İleri ▶</button><button class="rex-btn" id="gm_all">↺ hepsi birden</button><button class="rex-btn" id="gm_add" title="Modelin seçtiği karakteri başlangıç yazısının sonuna ekler ve şemayı baştan çalıştırır">➕ Seçileni ekle ▶</button><span class="gm-fsonly" style="align-items:center;gap:4px;font-size:12.5px">başlangıç: <input id="gm_p2" class="rex-sel" style="width:190px;background:#0e1424;color:#ccd5e8;border:1px solid var(--line);border-radius:6px;padding:4px 8px" spellcheck="false"></span><span id="gm_stp" style="font-size:12.5px;color:#ffd54a"></span><button class="rex-btn" id="gm_fs" style="margin-left:auto">⛶ Tam ekran</button><button class="rex-btn gm-fsonly" id="gm_x">✕ Kapat (Esc)</button></div>'+
    '<div style="overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#0e1424"><svg id="gm_svg" viewBox="0 0 1000 770" style="display:block;min-width:900px;width:100%;max-width:1100px;margin:auto"></svg></div>'+
-   '<div class="callout" id="gm_cap" style="margin-top:8px"></div>'+
+   '<div class="callout" id="gm_cap" style="margin-top:8px"></div></div>'+
    '<div style="font-size:12px;color:var(--muted);margin-top:4px">Boyutlar: E 40×16 · P 10×16 · W<sub>Q</sub>,W<sub>K</sub>,W<sub>V</sub>,W<sub>O</sub> 16×16 · W<sub>1</sub> 16×32 · W<sub>2</sub> 32×16 · W<sub>out</sub> 16×40 · toplam <b>3.576 parametre</b>. Gerçek GPT\'den farkları: <b>1</b> katman (onlarca), <b>1</b> kafa (onlarca), LayerNorm yok, karakter bazlı.</div>'+
    '<div class="acc" style="margin-top:8px"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon: şemadaki her harf ne demek?</div><div class="acc-body"><div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th>simge</th><th>anlamı</th><th>boyut</th></tr>'+NOTA.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</table></div></div></div>';
   grid.insertAdjacentElement('afterend',arch);
@@ -112,7 +114,7 @@
   function cur(){const pr=$('gt_p').value;return {pr,ctx:padOf(pr).slice(-N),padN:Math.max(0,N-Array.from(pr).length)};}
   function drawArch(){
     const {pr,ctx,padN}=cur(),c=fwd1(ctx,newCache()),L=(N-1)*D;
-    $('gm_pv').textContent=pr;
+    $('gm_pv').textContent=pr;if(document.activeElement!==$('gm_p2'))$('gm_p2').value=pr;
     const on=k=>stepNow===0||STEPS[stepNow-1].k===k,dim=k=>on(k)?'':' opacity="0.3"';
     let o='<defs><marker id="gmAr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8a99bd"/></marker></defs>';
     // halo
@@ -195,6 +197,19 @@
   }
   $('gm_next').onclick=()=>{stepNow=stepNow>=9?0:stepNow+1;drawArch();};
   $('gm_all').onclick=()=>{stepNow=0;drawArch();};
+  $('gm_add').onclick=()=>{
+    const {ctx}=cur(),c=fwd1(ctx,newCache());let b=0;for(let v=1;v<V;v++)if(c.p[v]>c.p[b])b=v;
+    stepNow=0;
+    if(b===DOT){drawArch();$('gm_cap').innerHTML='<b>Model "." (satır sonu) seçti: cevap bitti.</b> Üretim döngüsü satır sonu karakteri gelince durur. Yeni bir deneme için başlangıç yazısını değiştir.';return;}
+    $('gt_p').value+=CHARS[b];$('gt_go').click();
+  };
+  const fsOff=()=>{$('gmFull').classList.remove('gm-full');document.body.style.overflow='';$('gm_fs').textContent='⛶ Tam ekran';};
+  const fsOn=()=>{$('gmFull').classList.add('gm-full');document.body.style.overflow='hidden';$('gm_fs').textContent='⛶ Küçült';};
+  $('gm_fs').onclick=()=>{$('gmFull').classList.contains('gm-full')?fsOff():fsOn();};
+  $('gm_x').onclick=fsOff;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('gmFull').classList.contains('gm-full'))fsOff();});
+  $('gm_p2').onkeydown=e=>{if(e.key==='Enter'){$('gt_p').value=$('gm_p2').value;$('gt_go').click();}};
+  $('gm_p2').oninput=()=>{$('gt_p').value=$('gm_p2').value;$('gt_go').click();};
 
   /* ----- kart: eğitim ----- */
   let timer=null;
