@@ -99,6 +99,8 @@
      '<svg id="gt_curve" viewBox="0 0 320 90" style="width:100%;max-width:340px;margin-top:6px"></svg></div>'+
    '</div>'+
    '<div class="acc" style="margin-top:12px"><div class="acc-head"><span class="ac">▸</span> 📋 Karşılaştırma tablosu: aynı sorular, iki model, doğru cevap</div><div class="acc-body"><div id="gt_tbl"></div></div></div>';
+  // .acc-head dinleyicileri sayfa yüklenirken bağlanıyor; bu kutular sonradan üretildiği için burada bağlıyoruz
+  host.querySelectorAll('.acc-head').forEach(h=>h.addEventListener('click',e=>{e.stopPropagation();h.closest('.acc').classList.toggle('open');}));
   const chips=[["7+5=","eğitimdeki toplam"],["0+3=","GÖRMEDİĞİ toplam"],["2+8=","GÖRMEDİĞİ toplam"],["nasılsın>","eğitimdeki diyalog"],["hayatın anlamı>","eğitimdeki diyalog"],["selam>","hiç görmedi"],["nasılsınız>","yakın ama farklı"]];
   $('gt_chips').innerHTML=chips.map(c=>'<button class="rex-btn" data-q="'+esc(c[0])+'" title="'+c[1]+'">'+esc(c[0])+'</button>').join('')+' <span style="font-size:11.5px;color:var(--muted)">(üstüne gelince: ne olduğu)</span>';
   const style=document.createElement('style');
