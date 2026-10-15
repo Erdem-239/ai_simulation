@@ -89,7 +89,7 @@
    '<div style="font-size:14px;color:#ccd5e8;margin-bottom:4px"><b>🏗️ Minik GPT\'nin mimarisi</b> (bu kartta eğittiğin ağın tam şeması)</div>'+
    '<div style="font-size:13px;color:#aeb9d4;line-height:1.7;margin-bottom:6px">Şema <b>yukarıdaki başlangıç kutusundaki yazıyı</b> okur (şu an: <code id="gm_pv"></code>); son 10 karakterlik pencereyi alır. Renkli kutular 16 sayılık vektörlerin <b>gerçek değerleri</b> (<span style="color:#5aa0e0">mavi +</span>, <span style="color:#e06a6a">kırmızı −</span>, koyu = sıfıra yakın). Eğitmeden önce ağırlıklar rastgele, eğitince şema değişir.</div>'+
    '<div id="gmFull" class="gm-box">'+
-   '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px"><button class="rex-btn" id="gm_next">İleri ▶</button><button class="rex-btn" id="gm_all">↺ hepsi birden</button><button class="rex-btn" id="gm_add" title="Modelin seçtiği karakteri başlangıç yazısının sonuna ekler ve şemayı baştan çalıştırır">➕ Seçileni ekle ▶</button><span class="gm-fsonly" style="align-items:center;gap:4px;font-size:12.5px">başlangıç: <input id="gm_p2" class="rex-sel" style="width:190px;background:#0e1424;color:#ccd5e8;border:1px solid var(--line);border-radius:6px;padding:4px 8px" spellcheck="false"></span><span id="gm_stp" style="font-size:12.5px;color:#ffd54a"></span><button class="rex-btn" id="gm_fs" style="margin-left:auto">⛶ Tam ekran</button><button class="rex-btn gm-fsonly" id="gm_x">✕ Kapat (Esc)</button></div>'+
+   '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px"><button class="rex-btn" id="gm_prev" title="Bir adım geri">◀ Geri</button><button class="rex-btn" id="gm_next">İleri ▶</button><button class="rex-btn" id="gm_all">↺ hepsi birden</button><button class="rex-btn" id="gm_add" title="Modelin seçtiği karakteri başlangıç yazısının sonuna ekler ve şemayı baştan çalıştırır">➕ Seçileni ekle ▶</button><span class="gm-fsonly" style="align-items:center;gap:4px;font-size:12.5px">başlangıç: <input id="gm_p2" class="rex-sel" style="width:190px;background:#0e1424;color:#ccd5e8;border:1px solid var(--line);border-radius:6px;padding:4px 8px" spellcheck="false"></span><span id="gm_stp" style="font-size:12.5px;color:#ffd54a"></span><button class="rex-btn" id="gm_fs" style="margin-left:auto">⛶ Tam ekran</button><button class="rex-btn gm-fsonly" id="gm_x">✕ Kapat (Esc)</button></div>'+
    '<div style="overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#0e1424"><svg id="gm_svg" viewBox="0 0 1000 770" style="display:block;min-width:900px;width:100%;max-width:1100px;margin:auto"></svg></div>'+
    '<div class="callout" id="gm_cap" style="margin-top:8px"></div></div>'+
    '<div style="font-size:12px;color:var(--muted);margin-top:4px">Boyutlar: E 40×16 · P 10×16 · W<sub>Q</sub>,W<sub>K</sub>,W<sub>V</sub>,W<sub>O</sub> 16×16 · W<sub>1</sub> 16×32 · W<sub>2</sub> 32×16 · W<sub>out</sub> 16×40 · toplam <b>3.576 parametre</b>. Gerçek GPT\'den farkları: <b>1</b> katman (onlarca), <b>1</b> kafa (onlarca), LayerNorm yok, karakter bazlı.</div>'+
@@ -209,6 +209,7 @@
       '<b>Softmax → olasılık.</b> Ham skorlar olasılığa çevrilir. Seçilen sonraki karakter: <b>«'+esc(chOf(idx[0]))+'»</b> ('+pct(c.p[idx[0]])+'). "➕ Seçileni ekle" ile bu karakteri pencerenin sonuna ekleyip şemayı baştan çalıştırabilirsin (GPT\'nin üretim döngüsü).'];
     $('gm_cap').innerHTML=T[stepNow];
     $('gm_stp').textContent=stepNow===0?'':'Adım '+stepNow+' / '+NSTEP+' — '+STEPS[stepNow-1].t;
+    $('gm_prev').disabled=stepNow===0;$('gm_prev').style.opacity=stepNow===0?'.45':'1';
     $('gm_next').textContent=stepNow>=NSTEP?'↺ Baştan':'İleri ▶';
   }
   /* ----- bilgi kutusu (hover / dokunma) ----- */
@@ -218,6 +219,7 @@
   svgEl.addEventListener('mousemove',e=>{const l=e.target.closest&&e.target.closest('.gm-layer');if(l)tipShow(e,l.dataset.tip);else tip.style.display='none';});
   svgEl.addEventListener('mouseleave',()=>{tip.style.display='none';});
   svgEl.addEventListener('click',e=>{const l=e.target.closest&&e.target.closest('.gm-layer');if(l)tipShow(e,l.dataset.tip);else tip.style.display='none';});
+  $('gm_prev').onclick=()=>{stepNow=stepNow<=0?NSTEP:stepNow-1;drawArch();};
   $('gm_next').onclick=()=>{stepNow=stepNow>=NSTEP?0:stepNow+1;drawArch();};
   $('gm_all').onclick=()=>{stepNow=0;drawArch();};
   $('gm_add').onclick=()=>{
