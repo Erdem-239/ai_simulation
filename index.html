@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610151346"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610151405"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610151346">
+<link rel="stylesheet" href="css/style.css?v=202610151405">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-15 13:46 TR · #393</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-15 14:05 TR · #394</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -7781,8 +7781,8 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   <div class="model" id="model-gpt">
 
   <h1>🤖 GPT Test — Sıfırdan Minik Dil Modeli</h1>
-  <p class="sub">Sohbet modellerinin çekirdeği "sıradaki parçayı tahmin et" görevidir. Burada onu <b>en küçük hâliyle</b> kuruyoruz: bir metin dosyası, iki öğrenici (sayma tablosu ve minik sinir ağı) ve bir üretim döngüsü. Cevapları elle yazmıyoruz; <b>metin kendi etiketini veriyor</b>.</p>
-  <div class="callout">🔗 <b>Kaldığımız yer:</b> Transformer bloğunda GPT'nin parçalarını gördün. Burada o parçaları kullanmıyoruz (bilerek): önce görevin kendisini, yani metinden sonraki karakteri öğrenmeyi, en yalın araçlarla yapıyoruz. Sonunda "buraya attention eklesek GPT olur" bağlantısını kuruyoruz.</div>
+  <p class="sub">Sohbet modellerinin çekirdeği "sıradaki parçayı tahmin et" görevidir. Burada onu <b>en küçük hâliyle</b> kuruyoruz: bir metin dosyası, üç öğrenici (sayma tablosu, pencereli sinir ağı ve <b>attention'lı minik GPT</b>) ve bir üretim döngüsü. Cevapları elle yazmıyoruz; <b>metin kendi etiketini veriyor</b>.</p>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> Transformer bloğunda GPT'nin parçalarını gördün. Burada önce görevin kendisini, yani metinden sonraki karakteri öğrenmeyi, en yalın araçlarla (sayma, pencereli ağ) yapıyoruz; sonra pencerenin yerine <b>Self-Attention</b> koyup <b>minik bir GPT</b> kuruyoruz ve mimarisinin şemasını çiziyoruz.</div>
 
   <div class="tpl-cl" data-stage="1">
     <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
@@ -7801,7 +7801,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
       <text x="470" y="198" text-anchor="middle" font-size="12" fill="#46c46a" font-family="Segoe UI, Arial">tahmin: "i" → metne ekle → pencere bir kayar → tekrar</text>
     </svg>
   </div>
-  <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir sohbet modelinin çekirdeği şu tek iştir: <b>şimdiye kadar yazılana bakıp sıradaki parçayı tahmin etmek</b>. Bu sayfada bunun <b>en küçük hâlini</b> baştan kuruyoruz: tek bir küçük metin dosyası, iki öğrenici (sayma tablosu ve minik bir sinir ağı) ve bir üretim döngüsü.</p>
+  <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir sohbet modelinin çekirdeği şu tek iştir: <b>şimdiye kadar yazılana bakıp sıradaki parçayı tahmin etmek</b>. Bu sayfada bunun <b>en küçük hâlini</b> baştan kuruyoruz: tek bir küçük metin dosyası, üç öğrenici (sayma tablosu, pencereli sinir ağı ve attention'lı minik GPT) ve bir üretim döngüsü.</p>
   <div class="callout">🎯 <b>Cevapları elle ayarlamıyoruz.</b> Modele "nasılsın'a iyiyim de" diye kural yazmıyoruz. Yalnızca <b>düz bir metin</b> veriyoruz; model her karakterde "sıradaki ne?" diye soruyor ve <b>doğru cevabı metnin kendisinden</b> görüyor. Soru-cevap davranışı, metinde böyle örüntüler olduğu için ortaya çıkıyor.</div>
     </div>
   </div>
@@ -7812,22 +7812,23 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>1) Etiketi metin verir.</b> "nasılsın&gt;iyiyim." satırından onlarca eğitim örneği çıkıyor: her karakter için (önceki karakterler → o karakter). Kimse tek tek etiketlemiyor. Bir satır seç:</p>
   <div id="gtPairs"></div>
   <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>2) Metni biz tasarlıyoruz, ama cevapları değil biçimi.</b> Satırlar <code>soru&gt;cevap.</code> ya da <code>a+b=sonuç.</code> biçiminde. <code>&gt;</code> ve <code>=</code> modele "burada cevap başlıyor" demiyor, sadece metinde hep aynı yerde duran işaretler; model bunlardan sonra ne geldiğini istatistik olarak öğreniyor. <code>.</code> satır sonu: modele "dur" işareti.</p>
-  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>3) İki öğrenici, aynı görev.</b></p>
-  <div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th></th><th>🧮 Sayma modeli</th><th>🧠 Sinir ağı</th></tr>
-   <tr><td>ne yapar</td><td>son k karakter daha önce görüldüyse, arkasından en çok gelen karakteri seçer</td><td>son 10 karakteri sayılara (embedding) çevirir, gizli katmandan geçirip her karakter için olasılık üretir</td></tr>
-   <tr><td>öğrenme</td><td>metni bir kez sayar</td><td>geri yayılımla ağırlıkları ayarlar (Neural Network dersindeki gibi)</td></tr>
-   <tr><td>hiç görmediği bağlamda</td><td>kısa bağlama <b>geri düşer</b> (k küçülür)</td><td>benzer girdilere benzer cevap verebilir (genelleme)</td></tr></table></div>
-  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>4) Üretim döngüsü.</b> Başlangıç yazılır → model sonraki karakterin olasılıklarını verir → en olası seçilir → başlangıcın sonuna eklenir → tekrar. <code>.</code> gelince dur. Önceki derslerdeki decoder döngüsünün (Seq2Seq) ve ChatGPT'nin yaptığının aynısı.</p>
+  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>3) Üç öğrenici, aynı görev.</b></p>
+  <div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th></th><th>🧮 Sayma modeli</th><th>🧠 Pencereli sinir ağı</th><th>🔦 Minik GPT (attention)</th></tr>
+   <tr><td>ne yapar</td><td>son k karakter daha önce görüldüyse, arkasından en çok gelen karakteri seçer</td><td>son 10 karakteri sayılara (embedding) çevirir, gizli katmandan geçirip her karakter için olasılık üretir</td><td>son karaktere "pencerenin neresine bakmalıyım?" diye sorduran <b>attention</b>; bakılan karakterlerin bilgisini toplar, sonra küçük bir ağdan (FFN) geçirir</td></tr>
+   <tr><td>öğrenme</td><td>metni bir kez sayar</td><td>geri yayılımla ağırlıkları ayarlar (Neural Network dersindeki gibi)</td><td>gradyan inişi; attention ağırlıkları (W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>) dahil hepsi öğrenilir</td></tr>
+   <tr><td>hiç görmediği bağlamda</td><td>kısa bağlama <b>geri düşer</b> (k küçülür)</td><td>benzer girdilere benzer cevap verebilir (genelleme)</td><td>benzer girdilere benzer cevap; burada görmediği toplamların <b>çoğunu</b> bildi (aşağıda ölçülü)</td></tr></table></div>
+  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>4) Attention pencerenin yerini nasıl alıyor?</b> Pencereli ağ 10 karakteri <b>yan yana dizip</b> tek matrisle çarpar: "7" 3. sıradaysa bir ağırlık takımı, 5. sıradaysa başka bir takım gerekir, her konum ayrı öğrenilir. Attention'da ise son karakter bir <b>sorgu</b> (q) üretir, her karakter bir <b>anahtar</b> (K) taşır; sorguya uyan karakterlere yüzde kaç bakılacağı hesaplanır ve onların <b>değerleri</b> (V) karıştırılır. Aynı W matrisleri bütün konumlarda <b>paylaşılır</b>: "7" nerede olursa olsun aynı işlemden geçer. Ayrıntılı şema Simülasyon bölümünde.</p>
+  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>5) Üretim döngüsü.</b> Başlangıç yazılır → model sonraki karakterin olasılıklarını verir → en olası seçilir → başlangıcın sonuna eklenir → tekrar. <code>.</code> gelince dur. Önceki derslerdeki decoder döngüsünün (Seq2Seq) ve ChatGPT'nin yaptığının aynısı.</p>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>5️⃣ Simülasyon — iki modeli aynı metinle eğit, üret</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — üç modeli aynı metinle eğit, üret; minik GPT'nin şeması</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<p style="font-size:14px; color:#ccd5e8; line-height:1.7">🔬 Aşağıda iki model <b>aynı metinden</b> öğreniyor. Önce yukarıdaki başlangıç kutusuna bir şey yaz ya da düğmelerden seç. Denenecekler: (1) sayma modelinde bağlam uzunluğunu 1'den 10'a çıkar, çıktıların nasıl düzeldiğini izle; (2) sinir ağını eğit ve kaybın düşmesiyle çıktıların <b>rastgele harflerden</b> cevaplara dönüşmesini gör; (3) <b>görmediği toplamları</b> ve <b>hiç görmediği soruları</b> (selam&gt;, nasılsınız&gt;) dene.</p>
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">🔬 Aşağıda üç model <b>aynı metinden</b> öğreniyor. Önce yukarıdaki başlangıç kutusuna bir şey yaz ya da düğmelerden seç. Denenecekler: (1) sayma modelinde bağlam uzunluğunu 1'den 10'a çıkar, çıktıların nasıl düzeldiğini izle; (2) sinir ağını eğit ve kaybın düşmesiyle çıktıların <b>rastgele harflerden</b> cevaplara dönüşmesini gör; (3) <b>görmediği toplamları</b> ve <b>hiç görmediği soruları</b> (selam&gt;, nasılsınız&gt;) dene (4) <b>Minik GPT</b>'yi eğit (≈30 sn, ▶ eğit) ve altındaki <b>mimari şemasında</b> "7+5=" için dikkatin iki rakama kaymasını izle; <b>İleri ▶</b> ile adım adım ilerle.</p>
   <div id="gtApp"></div>
   <div class="callout" style="margin-top:10px">📉 <b>Kayıp neden sıfıra inmiyor (≈0,56)?</b> Modele her karakteri tahmin ettiriyoruz, soruların kendisini de. Hangi sorunun hangi sırayla geleceği metinde rastgele; bunu kimse tahmin edemez. Cevap kısımları ve toplamlar ise tamamen belirli, onlar kayıp 0'a yaklaşır. Kalan 0,56 "tahmin edilemeyen" kısımdan geliyor, yani ağ bozuk değil.</div>
-  <div class="callout" style="margin-top:8px">🪞 <b>Dürüst sonuç:</b> Her iki model eğitim metnindeki cümleleri neredeyse eksiksiz ezberliyor (toplamlar 80/80, diyaloglar 10/10) ama <b>görmediği toplamlarda</b> yalnız şansa yakın doğru bulur (20'de 0–2). Küçük model ve az veriyle "toplamayı öğrenmek" ile "tabloyu ezberlemek" ayrılmıyor. Bu, gerçek modellerin neden milyarlarca örnek ve büyük boyut istediğinin küçük bir kanıtı.</div>
+  <div class="callout" style="margin-top:8px">🪞 <b>Dürüst sonuç:</b> Sayma modeli ve pencereli ağ eğitim metnindeki cümleleri neredeyse eksiksiz ezberliyor (toplamlar 80/80, diyaloglar 10/10) ama <b>görmediği toplamlarda</b> yalnız şansa yakın doğru bulur (20'de 0–2). <b>Attention'lı minik GPT</b> aynı metinle 800 epoch sonra görmediği 20 toplamın <b>13–18'ini</b> (tohuma göre) doğru buluyor. Bunun nedeni büyük olasılıkla attention'ın aynı rakamı <b>konumdan bağımsız</b> işleyebilmesi, ama bunu ayrıca denemedik; ölçtüğümüz yalnızca sonuç. Yine de model küçük, veri küçük, görev dar: sonuç "toplamayı öğrendi" demek için yetersiz, "ezberden daha fazlası var" demek için yeterli.</div>
   <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı sinir ağı Python'da (numpy, çalıştırıldı)</div><div class="acc-body"><div style="font-size:12.5px;color:var(--muted);margin-bottom:6px">Sayfadaki "tohum 1, 300 epoch" ile aynı sonucu verir (kayıp, doğru sayıları ve çıktılar birebir). Çıktı: eğitimdeki toplamlar 80/80 · görmediği toplamlar 1/20 · diyaloglar 10/10 · 7+5= → 12 · nasılsın&gt; → iyiyim · hayatın anlamı&gt; → sevmek ve öğrenmek.</div><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># Minik karakter dili modeli: metinden &quot;sonraki karakteri&quot; öğrenir (numpy gerekir)
 import numpy as np, math
 
@@ -7897,6 +7898,94 @@ print(&quot;eğitimdeki toplamlar:&quot;, dogru(egitim), &quot;/&quot;, len(egit
 print(&quot;GÖRMEDİĞİ toplamlar :&quot;, dogru(sinav), &quot;/&quot;, len(sinav))
 print(&quot;diyaloglar          :&quot;, sum(uret(q + &#x27;&gt;&#x27;) == a for q, a in diyalog), &quot;/&quot;, len(diyalog))
 print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&gt;&quot;, uret(&quot;nasılsın&gt;&quot;), &quot;| hayatın anlamı&gt; -&gt;&quot;, uret(&quot;hayatın anlamı&gt;&quot;))</pre></div></div>
+  <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Minik GPT Python'da (numpy, çalıştırıldı)</div><div class="acc-body"><div style="font-size:12.5px;color:var(--muted);margin-bottom:6px">Sayfadaki "tohum 1, 800 epoch" ile aynı sonucu verir: eğitimdeki toplamlar 80/80 · görmediği toplamlar 14/20 · diyaloglar 10/10 · 7+5= → 12 · nasılsın&gt; → iyiyim · hayatın anlamı&gt; → sevmek ve öğrenmek. Kayıp ilk ~200 epoch'ta 6 haneye kadar aynı; sonra kayan nokta toplama sırası farkı birikir (800. epoch'ta fark ~1e-3), doğru sayıları ve çıktılar aynı kalır. Gradyanlar sonlu farkla doğrulandı.</div><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># Minik GPT: tek katmanlı, tek kafalı self-attention (decoder-only) karakter modeli (numpy gerekir)
+import numpy as np, math
+
+# 1) METİN ve KARAKTER -&gt; SAYI (üstteki kutuyla aynı)
+egitim, sinav = [], []
+for a in range(10):
+    for b in range(10):
+        (sinav if (a*10+b) % 5 == 3 else egitim).append(f&quot;{a}+{b}={a+b}.&quot;)
+diyalog = [(&quot;merhaba&quot;,&quot;merhaba&quot;),(&quot;nasılsın&quot;,&quot;iyiyim&quot;),(&quot;naber&quot;,&quot;iyidir&quot;),(&quot;adın ne&quot;,&quot;ben bir ağım&quot;),
+           (&quot;hayatın anlamı&quot;,&quot;sevmek ve öğrenmek&quot;),(&quot;sen kimsin&quot;,&quot;küçük bir model&quot;),(&quot;teşekkürler&quot;,&quot;rica ederim&quot;),
+           (&quot;günaydın&quot;,&quot;günaydın&quot;),(&quot;hoşça kal&quot;,&quot;görüşürüz&quot;),(&quot;nerelisin&quot;,&quot;bilgisayardan&quot;)]
+satirlar = egitim + [q + &quot;&gt;&quot; + a + &quot;.&quot; for q, a in diyalog]
+harf = sorted(set(&quot;&quot;.join(egitim + sinav + satirlar)))
+no = {c: i for i, c in enumerate(harf)}; V = len(harf)
+N, D, M = 10, 16, 32           # pencere, gömme boyutu, FFN gizli nöron sayısı
+X, Y = [], []
+for s in satirlar:
+    p = [no[&#x27;.&#x27;]] * N + [no[c] for c in s]
+    for i in range(N, len(p)):
+        X.append(p[i-N:i]); Y.append(p[i])
+X, Y = np.array(X), np.array(Y); n = len(X)
+
+# 2) AĞIRLIKLAR (sayfadakiyle aynı rastgele sayı üreteci)
+s0 = [1]
+def r():
+    s0[0] = (s0[0] * 1664525 + 1013904223) % 4294967296
+    return s0[0] / 4294967296
+U = lambda a, b, sc: np.array([[(r() - .5) * 2 * sc for _ in range(b)] for _ in range(a)])
+sd = 1 / math.sqrt(D)
+P = {&#x27;E&#x27;: U(V, D, .5), &#x27;P&#x27;: U(N, D, .5), &#x27;WQ&#x27;: U(D, D, sd), &#x27;WK&#x27;: U(D, D, sd), &#x27;WV&#x27;: U(D, D, sd), &#x27;WO&#x27;: U(D, D, sd),
+     &#x27;W1&#x27;: U(D, M, sd), &#x27;b1&#x27;: np.zeros(M), &#x27;W2&#x27;: U(M, D, 1/math.sqrt(M)), &#x27;b2&#x27;: np.zeros(D), &#x27;Wo&#x27;: U(D, V, sd), &#x27;bo&#x27;: np.zeros(V)}
+
+# 3) İLERİ YOL: pencere -&gt; sonraki karakterin olasılıkları
+def ileri(X):
+    x = P[&#x27;E&#x27;][X] + P[&#x27;P&#x27;][None]                   # her karakter: gömme E + konum P   (n, N, D)
+    xs = x[:, -1]                                   # SON karakter: tahmini o yapacak
+    q = xs @ P[&#x27;WQ&#x27;]; K = x @ P[&#x27;WK&#x27;]; Vv = x @ P[&#x27;WV&#x27;]   # sorgu, anahtar, değer
+    s = np.einsum(&#x27;nd,nid-&gt;ni&#x27;, q, K) / math.sqrt(D); s -= s.max(1, keepdims=True)
+    a = np.exp(s); a /= a.sum(1, keepdims=True)    # dikkat: pencerenin neresine yüzde kaç bakılıyor
+    o = np.einsum(&#x27;ni,nid-&gt;nd&#x27;, a, Vv)             # değerlerin dikkate göre karışımı
+    rr = xs + o @ P[&#x27;WO&#x27;]                           # artık bağlantı 1
+    g = np.tanh(rr @ P[&#x27;W1&#x27;] + P[&#x27;b1&#x27;])
+    h = rr + g @ P[&#x27;W2&#x27;] + P[&#x27;b2&#x27;]                  # FFN + artık bağlantı 2
+    z = h @ P[&#x27;Wo&#x27;] + P[&#x27;bo&#x27;]; z -= z.max(1, keepdims=True)
+    p = np.exp(z); p /= p.sum(1, keepdims=True)    # softmax
+    return dict(x=x, xs=xs, q=q, K=K, V=Vv, a=a, o=o, r=rr, g=g, h=h, p=p)
+
+def uret(baslangic, mx=30):                        # en olası karakteri seç, ekle, tekrarla
+    ctx = ([no[&#x27;.&#x27;]] * N + [no[c] for c in baslangic])[-N:]; out = &quot;&quot;
+    for _ in range(mx):
+        k = int(ileri(np.array([ctx]))[&#x27;p&#x27;][0].argmax())
+        if harf[k] == &#x27;.&#x27;: break
+        out += harf[k]; ctx = ctx[1:] + [k]
+    return out
+
+# 4) GERİ YOL: her halkanın yerel türevi (zincir kuralı), sonra Adam
+def gradyan():
+    c = ileri(X); G = {k: np.zeros_like(v) for k, v in P.items()}
+    dl = c[&#x27;p&#x27;].copy(); dl[np.arange(n), Y] -= 1; dl /= n      # softmax + çapraz entropi: p - y
+    G[&#x27;Wo&#x27;] = c[&#x27;h&#x27;].T @ dl; G[&#x27;bo&#x27;] = dl.sum(0); dh = dl @ P[&#x27;Wo&#x27;].T
+    G[&#x27;W2&#x27;] = c[&#x27;g&#x27;].T @ dh; G[&#x27;b2&#x27;] = dh.sum(0); du = (dh @ P[&#x27;W2&#x27;].T) * (1 - c[&#x27;g&#x27;]**2)
+    G[&#x27;W1&#x27;] = c[&#x27;r&#x27;].T @ du; G[&#x27;b1&#x27;] = du.sum(0); dr = dh + du @ P[&#x27;W1&#x27;].T
+    dxs = dr.copy(); G[&#x27;WO&#x27;] = c[&#x27;o&#x27;].T @ dr; do = dr @ P[&#x27;WO&#x27;].T
+    dVv = c[&#x27;a&#x27;][:, :, None] * do[:, None, :]; da = np.einsum(&#x27;nid,nd-&gt;ni&#x27;, c[&#x27;V&#x27;], do)
+    ds = c[&#x27;a&#x27;] * (da - (c[&#x27;a&#x27;] * da).sum(1, keepdims=True))   # softmax türevi
+    dq = np.einsum(&#x27;ni,nid-&gt;nd&#x27;, ds, c[&#x27;K&#x27;]) / math.sqrt(D); dK = ds[:, :, None] * c[&#x27;q&#x27;][:, None, :] / math.sqrt(D)
+    G[&#x27;WQ&#x27;] = c[&#x27;xs&#x27;].T @ dq; dxs += dq @ P[&#x27;WQ&#x27;].T
+    dx = dK @ P[&#x27;WK&#x27;].T + dVv @ P[&#x27;WV&#x27;].T
+    G[&#x27;WK&#x27;] = np.einsum(&#x27;nid,nie-&gt;de&#x27;, c[&#x27;x&#x27;], dK); G[&#x27;WV&#x27;] = np.einsum(&#x27;nid,nie-&gt;de&#x27;, c[&#x27;x&#x27;], dVv)
+    dx[:, -1] += dxs
+    np.add.at(G[&#x27;E&#x27;], X, dx); G[&#x27;P&#x27;] = dx.sum(0)
+    return G
+
+Mo = {k: np.zeros_like(v) for k, v in P.items()}; Vv2 = {k: np.zeros_like(v) for k, v in P.items()}
+for t in range(1, 801):
+    G = gradyan()
+    for k in P:
+        Mo[k] = .9*Mo[k] + .1*G[k]; Vv2[k] = .999*Vv2[k] + .001*G[k]**2
+        P[k] -= 0.01 * (Mo[k]/(1-.9**t)) / (np.sqrt(Vv2[k]/(1-.999**t)) + 1e-8)
+
+# 5) KARNE
+dogru = lambda ls: sum(uret(x.split(&#x27;=&#x27;)[0] + &#x27;=&#x27;) == x.split(&#x27;=&#x27;)[1][:-1] for x in ls)
+print(&quot;eğitimdeki toplamlar:&quot;, dogru(egitim), &quot;/&quot;, len(egitim))
+print(&quot;GÖRMEDİĞİ toplamlar :&quot;, dogru(sinav), &quot;/&quot;, len(sinav))
+print(&quot;diyaloglar          :&quot;, sum(uret(q + &#x27;&gt;&#x27;) == a for q, a in diyalog), &quot;/&quot;, len(diyalog))
+c = ileri(np.array([([no[&#x27;.&#x27;]] * N + [no[ch] for ch in &quot;7+5=&quot;])[-N:]]))
+print(&quot;7+5= -&gt; dikkat:&quot;, {&quot;7&quot;: round(float(c[&#x27;a&#x27;][0][6]), 2), &quot;+&quot;: round(float(c[&#x27;a&#x27;][0][7]), 2), &quot;5&quot;: round(float(c[&#x27;a&#x27;][0][8]), 2), &quot;=&quot;: round(float(c[&#x27;a&#x27;][0][9]), 2)})
+print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&gt;&quot;, uret(&quot;nasılsın&gt;&quot;), &quot;| hayatın anlamı&gt; -&gt;&quot;, uret(&quot;hayatın anlamı&gt;&quot;))</pre></div></div>
     </div>
   </div>
 
@@ -7909,11 +7998,11 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
    <tr><td>parametre</td><td>≈ 8.100</td><td>onlarca – yüzlerce milyar</td></tr>
    <tr><td>bağlam</td><td>son 10 karakter</td><td>binlerce – yüz binlerce parça</td></tr>
    <tr><td>parça (tokenizer)</td><td>karakter</td><td>alt-kelime (kelimenin sık parçaları)</td></tr>
-   <tr><td>çekirdek ağ</td><td>pencere + tek gizli katman</td><td>Transformer (self-attention + FFN) yığını</td></tr>
+   <tr><td>çekirdek ağ</td><td>pencere + tek gizli katman; <b>minik GPT:</b> 1 attention bloğu (1 kafa) + FFN, ≈3.576 parametre</td><td>Transformer (self-attention + FFN) yığını</td></tr>
    <tr><td>seçim</td><td>hep en olası</td><td>olasılığa göre örnekleme + sıcaklık (Softmax dersi)</td></tr>
    <tr><td>sonradan</td><td>yok</td><td>talimat örnekleriyle ince ayar ve insan tercihleriyle eğitim (soru gelince yardımcı cevap yazması buradan)</td></tr></table></div>
-  <div class="callout"><b>🧪 Toplama neden öğrenilmedi? Neler denendi:</b> sayfadaki 0–9 aralığında görmediği toplamlar ezberlenemedi. Ayrı bir denemede (bu sayfada yok) 0–19 aralığıyla, 400 toplamdan 80'i saklı tutuldu; aynı ağ görmediği 80 toplamdan yalnız 8'ini bildi. Daha fazla örnek işe yarıyor ama yavaş. Gerçek modellerin aritmetiği öğrenmesi çok daha büyük ölçek ister.</div>
-  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki adım:</b> bu pencereyi, Self-Attention dersindeki mekanizmayla değiştirmek. Pencere her zaman son 10 karakteri bakıyor; attention ise "hangi önceki karaktere bakmalı" sorusunu <b>öğreniyor</b>. Transformer bloğunu bu karakter modelinin içine koymak GPT'nin kendisi olur.</p>
+  <div class="callout"><b>🧪 Toplama ne kadar öğrenildi? Neler denendi:</b> sayma modeli ve pencereli ağ 0–9 aralığında görmediği toplamları ezberleyemedi (20'de 0–2), <b>minik GPT</b> 13–18'ini doğru buldu. Ayrı bir denemede (bu sayfada yok) pencereli ağla 0–19 aralığında, 400 toplamdan 80'i saklı tutuldu; görmediği 80'in yalnız 8'ini bildi. Minik GPT'yi 0–19 aralığında denemedik. Daha fazla örnek ve büyük model gerekir; gerçek modellerin aritmetiği çok daha büyük ölçekte öğrenmesi bu yüzden.</div>
+  <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Gerçek GPT'ye kalan farklar:</b> (1) <b>çok katman:</b> bu blok onlarca kez üst üste dizilir, (2) <b>çok kafa:</b> aynı anda birçok "neye bakmalıyım" sorusu (Multi-Head dersi), (3) <b>LayerNorm</b> ve ölçek ayarları, (4) her konumda tahmin: eğitimde pencerenin <i>her</i> karakteri bir sonrakini tahmin eder (burada yalnız son karakter), (5) alt-kelime parçaları, (6) milyar kat daha çok metin. Yani bu sayfadaki Minik GPT, çekirdek fikrin (attention + artık bağlantı + FFN + softmax + üret-ekle-tekrarla) küçültülmüş ama <b>gerçek</b> hâlidir.</p>
     </div>
   </div>
 
@@ -7943,9 +8032,17 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
       <div class="acc-head"><span class="ac">▸</span> 5) Bu model ile ChatGPT arasındaki temel fark nedir?</div>
       <div class="acc-body">Görev aynı: sıradaki parçayı tahmin et. Fark <b>ölçek</b> (trilyonlarca sözcük, yüz milyarlarca parametre), <b>mimari</b> (pencere yerine Transformer ve attention), parça türü (alt-kelime) ve <b>sonraki eğitim</b> (talimat örnekleri ve insan tercihleri). Çekirdek fikir bu sayfadakiyle aynı.</div>
     </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 6) Pencereli ağdan farkı nedir: attention pencerenin yerine ne koyuyor?</div>
+      <div class="acc-body">Pencereli ağ 10 karakteri yan yana dizip tek matrisle çarpar: her konumun ayrı ağırlığı vardır. Attention'da son karakter bir <b>sorgu</b> üretir, her karakterin bir <b>anahtarı</b> ve <b>değeri</b> vardır; sorguyla anahtarların benzerliği softmax'la yüzdeye çevrilip değerler karıştırılır. W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> bütün konumlarda <b>paylaşılır</b>, model bilgiyi konumdan bağımsız toplayabilir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 7) Şemada x₁₀ neden iki yerde görünüyor (q'ya giriyor ve artık bağlantıyla r'ye ekleniyor)?</div>
+      <div class="acc-body">x₁₀ (son karakterin girdisi) hem <b>sorgu q'yu</b> üretir hem de <b>aynen</b> r'ye eklenir. Artık bağlantı (r = x₁₀ + o·W<sub>O</sub>) sayesinde attention karakterin kendi bilgisini silmez, <b>üstüne</b> ekler; ayrıca derin ağlarda gradyanın bozulmadan geri akmasını sağlar (Transformer Bloğu dersindeki fikir).</div>
+    </div>
   </div>
 
-  <p class="footer">GPT Test • sıfırdan karakter dil modeli · sayma ve sinir ağı · üret-ekle-tekrarla · ezber ve genelleme</p>
+  <p class="footer">GPT Test • sıfırdan karakter dil modeli · sayma · pencereli ağ · attention'lı minik GPT · üret-ekle-tekrarla · ezber ve genelleme</p>
 
     </div>
   </div>
@@ -8434,52 +8531,53 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610151346"></script>
-<script src="js/lesson-turev.js?v=202610151346"></script>
-<script src="js/lesson-xor.js?v=202610151346"></script>
-<script src="js/lesson-xor-arch.js?v=202610151346"></script>
-<script src="js/lesson-xor-maps.js?v=202610151346"></script>
-<script src="js/lesson-xor-epoch.js?v=202610151346"></script>
-<script src="js/lesson-nn.js?v=202610151346"></script>
-<script src="js/lesson-trig.js?v=202610151346"></script>
+<script src="js/lesson-linreg.js?v=202610151405"></script>
+<script src="js/lesson-turev.js?v=202610151405"></script>
+<script src="js/lesson-xor.js?v=202610151405"></script>
+<script src="js/lesson-xor-arch.js?v=202610151405"></script>
+<script src="js/lesson-xor-maps.js?v=202610151405"></script>
+<script src="js/lesson-xor-epoch.js?v=202610151405"></script>
+<script src="js/lesson-nn.js?v=202610151405"></script>
+<script src="js/lesson-trig.js?v=202610151405"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610151346"></script>
-<script src="js/lesson-rnn-soz.js?v=202610151346"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610151405"></script>
+<script src="js/lesson-rnn-soz.js?v=202610151405"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610151346"></script>
-<script src="js/lesson-lstm-cell.js?v=202610151346"></script>
-<script src="js/app.js?v=202610151346"></script>
-<script src="js/lesson-lstm-big.js?v=202610151346"></script>
-<script src="js/lesson-lstm-step.js?v=202610151346"></script>
-<script src="js/lesson-lstm-size.js?v=202610151346"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610151346"></script>
-<script src="js/lesson-emb-kullan.js?v=202610151346"></script>
-<script src="js/lesson-emb-draco.js?v=202610151346"></script>
-<script src="js/lesson-emb-arch.js?v=202610151346"></script>
-<script src="js/lesson-emb-extra.js?v=202610151346"></script>
-<script src="js/lesson-s2s-weights.js?v=202610151346"></script>
-<script src="js/lesson-s2s-add.js?v=202610151346"></script>
-<script src="js/lesson-s2s-inside.js?v=202610151346"></script>
-<script src="js/lesson-att-train.js?v=202610151346"></script>
-<script src="js/lesson-att-extra.js?v=202610151346"></script>
-<script src="js/lesson-s2s-extra.js?v=202610151346"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610151346"></script>
-<script src="js/lesson-emb-ornek.js?v=202610151346"></script>
-<script src="js/lesson-emb-steps.js?v=202610151346"></script>
-<script src="js/lesson-emb-big.js?v=202610151346"></script>
-<script src="js/lesson-sm-ornek.js?v=202610151346"></script>
-<script src="js/lesson-sm-big.js?v=202610151346"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610151346"></script>
-<script src="js/lesson-lstm-gate.js?v=202610151346"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610151346"></script>
-<script src="js/lesson-gpt.js?v=202610151346"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610151346"></script>
-<script src="js/lesson-linreg-big.js?v=202610151346"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610151346"></script>
-<script src="js/lesson-act-big.js?v=202610151346"></script>
-<script src="js/lesson-act-ornek.js?v=202610151346"></script>
-<script src="js/lesson-xor-ornek.js?v=202610151346"></script>
-<script src="js/lesson-nn-ornek.js?v=202610151346"></script>
-<script src="js/lesson-nn-net.js?v=202610151346"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610151405"></script>
+<script src="js/lesson-lstm-cell.js?v=202610151405"></script>
+<script src="js/app.js?v=202610151405"></script>
+<script src="js/lesson-lstm-big.js?v=202610151405"></script>
+<script src="js/lesson-lstm-step.js?v=202610151405"></script>
+<script src="js/lesson-lstm-size.js?v=202610151405"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610151405"></script>
+<script src="js/lesson-emb-kullan.js?v=202610151405"></script>
+<script src="js/lesson-emb-draco.js?v=202610151405"></script>
+<script src="js/lesson-emb-arch.js?v=202610151405"></script>
+<script src="js/lesson-emb-extra.js?v=202610151405"></script>
+<script src="js/lesson-s2s-weights.js?v=202610151405"></script>
+<script src="js/lesson-s2s-add.js?v=202610151405"></script>
+<script src="js/lesson-s2s-inside.js?v=202610151405"></script>
+<script src="js/lesson-att-train.js?v=202610151405"></script>
+<script src="js/lesson-att-extra.js?v=202610151405"></script>
+<script src="js/lesson-s2s-extra.js?v=202610151405"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610151405"></script>
+<script src="js/lesson-emb-ornek.js?v=202610151405"></script>
+<script src="js/lesson-emb-steps.js?v=202610151405"></script>
+<script src="js/lesson-emb-big.js?v=202610151405"></script>
+<script src="js/lesson-sm-ornek.js?v=202610151405"></script>
+<script src="js/lesson-sm-big.js?v=202610151405"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610151405"></script>
+<script src="js/lesson-lstm-gate.js?v=202610151405"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610151405"></script>
+<script src="js/lesson-gpt.js?v=202610151405"></script>
+<script src="js/lesson-gpt-mini.js?v=202610151405"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610151405"></script>
+<script src="js/lesson-linreg-big.js?v=202610151405"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610151405"></script>
+<script src="js/lesson-act-big.js?v=202610151405"></script>
+<script src="js/lesson-act-ornek.js?v=202610151405"></script>
+<script src="js/lesson-xor-ornek.js?v=202610151405"></script>
+<script src="js/lesson-nn-ornek.js?v=202610151405"></script>
+<script src="js/lesson-nn-net.js?v=202610151405"></script>
 </body>
 </html>

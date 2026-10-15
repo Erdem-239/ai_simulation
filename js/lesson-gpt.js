@@ -104,7 +104,7 @@
   const chips=[["7+5=","eğitimdeki toplam"],["0+3=","GÖRMEDİĞİ toplam"],["2+8=","GÖRMEDİĞİ toplam"],["nasılsın>","eğitimdeki diyalog"],["hayatın anlamı>","eğitimdeki diyalog"],["selam>","hiç görmedi"],["nasılsınız>","yakın ama farklı"]];
   $('gt_chips').innerHTML=chips.map(c=>'<button class="rex-btn" data-q="'+esc(c[0])+'" title="'+c[1]+'">'+esc(c[0])+'</button>').join('')+' <span style="font-size:11.5px;color:var(--muted)">(üstüne gelince: ne olduğu)</span>';
   const style=document.createElement('style');
-  style.textContent='.gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:820px){.gt-grid{grid-template-columns:1fr}}.gt-card{background:#141c33;border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}.gt-t{font-weight:700;font-size:13.5px;margin-bottom:6px}.gt-out{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:#0e1424;border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-height:20px;margin-bottom:6px;word-break:break-all}';
+  style.textContent='.gt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}.gt-card{background:#141c33;border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}.gt-t{font-weight:700;font-size:13.5px;margin-bottom:6px}.gt-out{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:#0e1424;border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-height:20px;margin-bottom:6px;word-break:break-all}';
   document.head.appendChild(style);
   const gtK=$('gt_k');
   let timer=null;
@@ -123,15 +123,16 @@
     $('gt_on').innerHTML=esc(q)+'<b style="color:#46c46a">'+esc(genNet(q))+'</b>';
     $('gt_sn').innerHTML=scHtml(score(genNet));curve();
   }
+  const EXTRA=[];
   function table(){
     const k=+gtK.value;const rows=[];
     DIAL.forEach(([q,a])=>rows.push([q+'>',a,'diyalog (eğitimde)']));
     ['7+5=','3+4=','9+9=','1+1=','6+2='].forEach(q=>{const s=TRAINADD.find(x=>x.startsWith(q));if(s)rows.push([q,split(s)[1],'toplam (eğitimde)']);});
     TESTADD.slice(0,6).forEach(s=>rows.push([split(s)[0],split(s)[1],'toplam (GÖRMEDİĞİ)']));
     [['selam>','?','hiç görmediği soru'],['nasılsınız>','iyiyim','yakın ama farklı yazılmış'],['2+3+4=','9','hiç görmediği biçim']].forEach(r=>rows.push(r));
-    $('gt_tbl').innerHTML='<div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th>başlangıç</th><th>doğru</th><th>sayma (k='+k+')</th><th>sinir ağı</th><th>tür</th></tr>'+rows.map(r=>{const c=genCount(r[0],k),n=genNet(r[0]);const ok=x=>x===r[1]?'✅':(r[1]==='?'?'':'❌');return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(c)+' '+ok(c)+'</td><td>'+esc(n)+' '+ok(n)+'</td><td style="color:var(--muted)">'+r[2]+'</td></tr>';}).join('')+'</table></div>';
+    $('gt_tbl').innerHTML='<div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th>başlangıç</th><th>doğru</th><th>sayma (k='+k+')</th><th>sinir ağı</th>'+EXTRA.map(m=>'<th>'+m.name+'</th>').join('')+'<th>tür</th></tr>'+rows.map(r=>{const c=genCount(r[0],k),n=genNet(r[0]);const ok=x=>x===r[1]?'✅':(r[1]==='?'?'':'❌');return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(c)+' '+ok(c)+'</td><td>'+esc(n)+' '+ok(n)+'</td>'+EXTRA.map(m=>{const e=m.gen(r[0]);return '<td>'+esc(e)+' '+ok(e)+'</td>';}).join('')+'<td style="color:var(--muted)">'+r[2]+'</td></tr>';}).join('')+'</table></div>';
   }
-  function all(){drawCount();drawNet();table();}
+  function all(){drawCount();drawNet();EXTRA.forEach(m=>m.onPrompt&&m.onPrompt());table();}
   function stop(){if(timer){clearTimeout(timer);timer=null;$('gt_go2').textContent='▶ eğit';}}
   function adv(n){stop();for(let i=0;i<n;i++)step();drawNet();table();}
   function run(){
@@ -147,7 +148,8 @@
   $('gt_go2').onclick=()=>{if(timer){stop();return;}$('gt_go2').textContent='⏸ durdur';run();};
   $('gt_rst').onclick=()=>{stop();init(+$('gt_seed').value);all();};
   $('gt_seed').onchange=()=>{stop();init(+$('gt_seed').value);all();};
-  window.__gpt={init,step,genNet,genCount,score,lossOf,get hist(){return hist;},get ep(){return ep;},TRAINADD,TESTADD,DIAL,CHARS};
+  window.__gptAddModel=m=>{EXTRA.push(m);table();};window.__gptTable=table;window.__gptHost=host;
+  window.__gpt={init,step,genNet,genCount,score,lossOf,get hist(){return hist;},get ep(){return ep;},TRAINADD,TESTADD,DIAL,CHARS,SM,padOf,N,V,IX,DOT,esc,split,scHtml};
   /* ---------- Nedir bölümü: bir satırdan eğitim çiftleri ---------- */
   const pe=$('gtPairs');
   if(pe){
