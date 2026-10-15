@@ -9,12 +9,12 @@
   const D=16,M=32,LR=0.01,EPMAX=800,NS=SM.Y.length,SQ=Math.sqrt(D);
   const lcg=s=>()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296;};
   const SHAPES={E:V*D,P:N*D,WQ:D*D,WK:D*D,WV:D*D,WO:D*D,W1:D*M,b1:M,W2:M*D,b2:D,Wo:D*V,bo:V};
-  let P,Mo,Vv,ep,hist,seedNow=1,E0;
+  let P,Mo,Vv,ep,hist,seedNow=1,E0,P0;
   function init(seed){
     seedNow=seed;const r=lcg(seed),U=(n,sc)=>{const a=new Float64Array(n);for(let i=0;i<n;i++)a[i]=(r()-.5)*2*sc;return a;},sd=1/Math.sqrt(D);
     P={E:U(V*D,.5),P:U(N*D,.5),WQ:U(D*D,sd),WK:U(D*D,sd),WV:U(D*D,sd),WO:U(D*D,sd),W1:U(D*M,sd),b1:new Float64Array(M),W2:U(M*D,1/Math.sqrt(M)),b2:new Float64Array(D),Wo:U(D*V,sd),bo:new Float64Array(V)};
     Mo={};Vv={};for(const k in P){Mo[k]=new Float64Array(P[k].length);Vv[k]=new Float64Array(P[k].length);}
-    E0=Float64Array.from(P.E);ep=0;hist=[lossOf()];
+    E0=Float64Array.from(P.E);P0=Float64Array.from(P.P);ep=0;hist=[lossOf()];
   }
   function newCache(){return {x:new Float64Array(N*D),q:new Float64Array(D),K:new Float64Array(N*D),V:new Float64Array(N*D),s:new Float64Array(N),a:new Float64Array(N),o:new Float64Array(D),r:new Float64Array(D),u:new Float64Array(M),g:new Float64Array(M),f:new Float64Array(D),h:new Float64Array(D),lg:new Float64Array(V),p:new Float64Array(V)};}
   function fwd1(ctx,c){
@@ -68,7 +68,7 @@
     return out;
   }
 
-  window.__gptMini={init,step,gen,lossOf,fwd1,newCache,get ep(){return ep;},get hist(){return hist;},get P(){return P;},get E0(){return E0;},D,M,N,V,EPMAX};
+  window.__gptMini={init,step,gen,lossOf,fwd1,newCache,get ep(){return ep;},get hist(){return hist;},get P(){return P;},get E0(){return E0;},get P0(){return P0;},D,M,N,V,EPMAX};
   init(1);
 
   /* ================= arayüz ================= */
@@ -91,7 +91,7 @@
    '<div id="gmFull" class="gm-box">'+
    '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px"><button class="rex-btn" id="gm_prev" title="Bir adım geri">◀ Geri</button><button class="rex-btn" id="gm_next">İleri ▶</button><button class="rex-btn" id="gm_all">↺ hepsi birden</button><button class="rex-btn" id="gm_add" title="Modelin seçtiği karakteri başlangıç yazısının sonuna ekler ve şemayı baştan çalıştırır">➕ Seçileni ekle ▶</button><span class="gm-fsonly" style="align-items:center;gap:4px;font-size:12.5px">başlangıç: <input id="gm_p2" class="rex-sel" style="width:190px;background:#0e1424;color:#ccd5e8;border:1px solid var(--line);border-radius:6px;padding:4px 8px" spellcheck="false"></span><span id="gm_stp" style="font-size:12.5px;color:#ffd54a"></span><button class="rex-btn" id="gm_fs" style="margin-left:auto">⛶ Tam ekran</button><button class="rex-btn gm-fsonly" id="gm_x">✕ Kapat (Esc)</button></div>'+
    '<div class="gm-body"><div class="gm-sv"><div style="overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#0e1424"><svg id="gm_svg" viewBox="0 0 1000 770" style="display:block;min-width:900px;width:100%;max-width:1100px;margin:auto"></svg></div>'+
-   '<div class="callout" id="gm_cap" style="margin-top:8px"></div></div><div id="gmETab" class="gm-et"><div style="font-size:13.5px;color:#ccd5e8;margin-bottom:4px"><b>📚 E tablosu</b> (gömme, 40×16)</div><div style="font-size:12px;color:#aeb9d4;line-height:1.6;margin-bottom:6px">Her satır bir karakterin 16 sayısı. <b style="color:#ffd54a">Sarı</b> = şu anki pencerede kullanılanlar; sağdaki çubuk = eğitim metninde kaç kez geçtiği. Eğitirken buradan da izle.</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"><button class="rex-btn" id="gm_et_now">Şimdiki E</button><button class="rex-btn" id="gm_et_0">Başlangıç (rastgele)</button></div><div id="gm_et_info" style="font-size:12px;color:#ffd54a;min-height:18px;margin-bottom:4px"></div><svg id="gm_et" viewBox="0 0 480 640" style="display:block;width:100%;max-width:440px;margin:auto"></svg></div></div></div>'+
+   '<div class="callout" id="gm_cap" style="margin-top:8px"></div></div><div id="gmETab" class="gm-et"><div style="font-size:13.5px;color:#ccd5e8;margin-bottom:4px"><b>📚 E tablosu</b> (gömme, 40×16)</div><div style="font-size:12px;color:#aeb9d4;line-height:1.6;margin-bottom:6px">Her satır bir karakterin 16 sayısı. <b style="color:#ffd54a">Sarı</b> = şu anki pencerede kullanılanlar; sağdaki çubuk = eğitim metninde kaç kez geçtiği. Eğitirken buradan da izle.</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"><button class="rex-btn" id="gm_et_now">Şimdiki E</button><button class="rex-btn" id="gm_et_0">Başlangıç (rastgele)</button></div><div id="gm_et_info" style="font-size:12px;color:#ffd54a;min-height:18px;margin-bottom:4px"></div><svg id="gm_et" viewBox="0 0 480 640" style="display:block;width:100%;max-width:440px;margin:auto"></svg><div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><div style="font-size:13.5px;color:#ccd5e8;margin-bottom:4px"><b>📍 P tablosu</b> (konum, 10×16)</div><div style="font-size:12px;color:#aeb9d4;line-height:1.6;margin-bottom:6px">Her satır pencerenin bir slotu (0 = en sol, 9 = en sağ, tahmin yapılan son slot). Sağdaki çubuk: satırın <b>başlangıçtaki rastgele halinden ne kadar uzaklaştığı</b> (ortalama |değişim|).</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"><button class="rex-btn" id="gm_pt_now">Şimdiki P</button><button class="rex-btn" id="gm_pt_0">Başlangıç (rastgele)</button></div><div id="gm_pt_info" style="font-size:12px;color:#ffd54a;min-height:18px;margin-bottom:4px"></div><svg id="gm_pt" viewBox="0 0 480 190" style="display:block;width:100%;max-width:440px;margin:auto"></svg></div></div></div></div>'+
    '<div style="font-size:12px;color:var(--muted);margin-top:4px">Boyutlar: E 40×16 · P 10×16 · W<sub>Q</sub>,W<sub>K</sub>,W<sub>V</sub>,W<sub>O</sub> 16×16 · W<sub>1</sub> 16×32 · W<sub>2</sub> 32×16 · W<sub>out</sub> 16×40 · toplam <b>3.576 parametre</b>. Gerçek GPT\'den farkları: <b>1</b> katman (onlarca), <b>1</b> kafa (onlarca), LayerNorm yok, karakter bazlı.</div>'+
    '<div class="acc" style="margin-top:8px"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon: şemadaki her harf ne demek?</div><div class="acc-body"><div style="overflow-x:auto"><table class="rex-tbl" style="font-size:12.5px"><tr><th>simge</th><th>anlamı</th><th>boyut</th></tr>'+NOTA.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>').join('')+'</table></div></div></div>';
   grid.insertAdjacentElement('afterend',arch);
@@ -122,6 +122,30 @@
     $('gm_et').innerHTML=o;
     $('gm_et_now').style.outline=etMode==='now'?'2px solid #ffd54a':'none';$('gm_et_0').style.outline=etMode==='0'?'2px solid #ffd54a':'none';
   }
+  let ptMode='now';
+  function drawP(){
+    const E=ptMode==='now'?P.P:P0;let o='',mx=1e-9;const mv=[];
+    for(let i=0;i<N;i++){let t=0;for(let k=0;k<D;k++)t+=Math.abs(P.P[i*D+k]-P0[i*D+k]);mv[i]=t/D;if(mv[i]>mx)mx=mv[i];}
+    o+='<text x="60" y="12" font-size="10" fill="#8a99bd">16 sayı (her satır bir slot)</text><text x="396" y="12" font-size="10" fill="#8a99bd">başlangıçtan uzaklık</text>';
+    for(let i=0;i<N;i++){
+      const y=18+i*16,last=i===N-1;
+      o+='<g class="gm-prow" data-i="'+i+'"><rect x="0" y="'+y+'" width="480" height="16" fill="transparent"/>';
+      o+='<text x="52" y="'+(y+12)+'" font-size="10.5" fill="'+(last?'#ffd54a':'#ccd5e8')+'" text-anchor="end" font-family="ui-monospace,Consolas,monospace">i='+i+'</text>';
+      for(let k=0;k<D;k++){const val=E[i*D+k],t=Math.min(1,Math.abs(val)/SC);o+='<rect x="'+(60+k*20)+'" y="'+(y+1)+'" width="20" height="14" fill="'+(val>=0?'#5aa0e0':'#e06a6a')+'" fill-opacity="'+(0.08+0.92*t).toFixed(2)+'"/>';}
+      if(last)o+='<rect x="59" y="'+y+'" width="322" height="16" fill="none" stroke="#ffd54a" stroke-width="1.6"/>';
+      const w=mv[i]/mx*50;
+      o+='<rect x="396" y="'+(y+3)+'" width="'+w.toFixed(1)+'" height="10" fill="#46c46a" fill-opacity=".8"/><text x="'+(398+w)+'" y="'+(y+12)+'" font-size="9.5" fill="#aeb9d4">'+fm(mv[i],2)+'</text></g>';
+    }
+    $('gm_pt').innerHTML=o;
+    $('gm_pt_now').style.outline=ptMode==='now'?'2px solid #ffd54a':'none';$('gm_pt_0').style.outline=ptMode==='0'?'2px solid #ffd54a':'none';
+  }
+  $('gm_pt_now').onclick=()=>{ptMode='now';drawP();};
+  $('gm_pt_0').onclick=()=>{ptMode='0';drawP();};
+  $('gm_pt').addEventListener('mousemove',e=>{
+    const g=e.target.closest&&e.target.closest('.gm-prow');if(!g){$('gm_pt_info').textContent='';return;}
+    const i=+g.dataset.i,E=ptMode==='now'?P.P:P0;
+    $('gm_pt_info').textContent='slot i='+i+(i===N-1?' (son, tahmin slotu)':'')+': ['+Array.from(E.slice(i*D,i*D+6)).map(x=>fm(x,2)).join('; ')+' …]';
+  });
   $('gm_et_now').onclick=()=>{etMode='now';drawE(cur().ctx);};
   $('gm_et_0').onclick=()=>{etMode='0';drawE(cur().ctx);};
   $('gm_et').addEventListener('mousemove',e=>{
@@ -221,7 +245,7 @@
     w+='<path d="M722 253 H 772 V 122 H 701" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(776,190,'r aynen',9.5,'#46c46a')+txt(776,202,'geçer',9.5,'#46c46a');
     w+='</g>';
     $('gm_svg').innerHTML=o+w;
-    drawE(ctx);
+    drawE(ctx);drawP();
     caption(c,ctx,idx,sI,aI);
   }
   function caption(c,ctx,idx,sI,aI){
