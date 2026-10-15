@@ -2456,7 +2456,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['🏆','BİLİM ZAFERİ: makale ana dilin gibi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Makaleyi baştan sona oku','Şekil 1 mimarisini kendi cümlelerinle anlat','Sonuç tablolarını yorumla']},
-    {id:'llm',  nm:'🤖 Modern LLM\'ler (GPT)', tier:10, v:50, pre:['paper'],
+    {id:'llm',  nm:'🤖 Modern LLM\'ler (GPT)', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
       real:[['🤖','ChatGPT, Claude, Gemini'],['👨‍💻','Copilot: kod yazan YZ'],['🔬','Bilimsel keşif asistanları']],
