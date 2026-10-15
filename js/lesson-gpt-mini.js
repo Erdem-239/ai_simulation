@@ -108,94 +108,117 @@
   const txt=(x,y,t,sz,col,anc,extra)=>'<text x="'+x+'" y="'+y+'" font-size="'+(sz||11)+'" fill="'+(col||'#ccd5e8')+'"'+(anc?' text-anchor="'+anc+'"':'')+' font-family="Segoe UI, Arial"'+(extra||'')+'>'+t+'</text>';
   const box=(x,y,w,h,t,col,sz)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="6" fill="#141c33" stroke="'+col+'" stroke-width="1.6"/>'+txt(x+w/2,y+h/2+4,t,sz||11.5,'#ccd5e8','middle');
   const STEPS=[
-    {k:'tok',t:'karakterler'},{k:'emb',t:'gömme + konum'},{k:'qkv',t:'q, K, V'},{k:'s',t:'skor'},{k:'a',t:'softmax (dikkat)'},{k:'mix',t:'karışım + artık'},{k:'ffn',t:'FFN + artık'},{k:'out',t:'çıkış katmanı'},{k:'prob',t:'olasılıklar'}];
-  let stepNow=0;
-  const HALO={tok:[[78,704,442,40]],emb:[[78,598,442,92]],qkv:[[78,548,490,30],[516,494,56,24]],s:[[68,490,456,32]],a:[[78,408,442,52]],mix:[[78,352,442,52],[622,236,140,132]],ffn:[[622,86,160,148]],out:[[622,40,140,42]],prob:[[622,8,370,44],[802,6,190,222]]};
+    {k:['tok'],t:'karakterler'},{k:['emb'],t:'gömme E'},{k:['pos'],t:'konum P'},{k:['x'],t:'x = E + P'},{k:['kv','q'],t:'q, K, V'},{k:['s'],t:'skor'},{k:['a'],t:'dikkat (softmax)'},{k:['mix','o'],t:'karışım'},{k:['res1'],t:'W_O + artık bağlantı'},{k:['ffn'],t:'FFN'},{k:['res2'],t:'ikinci artık bağlantı'},{k:['out'],t:'çıkış katmanı'},{k:['prob'],t:'olasılıklar'}];
+  const NSTEP=STEPS.length;
+  const TIPS={
+    tok:['Karakterler (girdi penceresi)','Yazdığın metnin son 10 karakteri. Boş yerler satır başı dolgusu (·). Her karakterin bir kimlik numarası var, ağ harf değil sayı görür.','Modele "bakabileceği" bütün bağlamı verir. Sarı çerçeveli son karakter, sıradaki karakteri tahmin edeceğimiz konumdur.'],
+    emb:['Gömme tablosu E (40×16)','Her karakter için öğrenilen 16 sayılık bir satır. Kimlik numarası bu tabloda satır seçer.','Karakterin "kim olduğunu" taşır. Eğitimde benzer davranan karakterlerin (örn. rakamların) satırları birbirine benzer hâle gelir. Aynı karakter pencerenin neresinde olursa olsun aynı E satırını alır.'],
+    pos:['Konum tablosu P (10×16)','Pencerenin 0. ... 9. yeri için öğrenilen 16 sayılık satırlar. Karakterden bağımsızdır, yalnızca yere bağlıdır.','Attention sırayı kendi başına bilmez: "7+5" ile "5+7" onun için aynı karakter kümesidir. P, "bu karakter kaçıncı yerde" bilgisini ekler.'],
+    x:['x = E + P','Karakterin gömme vektörü ile konum vektörünün toplamı (16 sayı).','Tek vektörde hem "kim" hem "nerede" bilgisi. Bundan sonraki bütün katmanlar yalnız x ile çalışır. Aynı "7" farklı yerde farklı x verir.'],
+    kv:['K ve V (her karakter için)','x\'in iki farklı matrisle (W_K, W_V) çarpılmasından çıkan iki 16 sayılık vektör.','K (anahtar): "bende şu bilgi var" etiketi, sorguyla eşleştirilir. V (değer): karakter seçilirse taşıyacağı içerik. İkisi ayrı olduğu için "neye bakacağını" ve "ne alacağını" ayrı öğrenebilir.'],
+    q:['q: son karakterin sorgusu','Yalnız son karakterin x\'inden W_Q ile üretilen 16 sayı.','"Sıradaki karakteri bulmak için pencerenin neresine bakmalıyım?" sorusunu temsil eder. Bütün K\'lara karşı denenir.'],
+    s:['Skor s = q·K ÷ √16','q ile her K\'nın nokta çarpımı (ham benzerlik), √16\'ya bölünmüş.','Büyük skor = "bu karakter şu an benim için ilgili". √16\'ya bölmek skorların aşırı büyüyüp softmax\'ı doyurmasını önler.'],
+    a:['Dikkat a = softmax(s)','Skorların yüzdeye çevrilmiş hâli (toplam %100).','Pencerenin hangi karakterine yüzde kaç bakıldığını söyler. Eğitimle ağ, işe yarayan karakterlere (burada toplamada iki rakama) yüksek yüzde vermeyi öğrenir.'],
+    mix:['a · V (ağırlıklı değerler)','Her karakterin V vektörü kendi dikkat yüzdesiyle çarpılır (silik kutu = az dikkat).','Az ilgili karakterlerin içeriği silinir, ilgili olanlarınki kalır.'],
+    o:['o = Σ aᵢ·Vᵢ','Ağırlıklı değerlerin toplamı: pencerenin dikkatle süzülmüş tek özeti (16 sayı).','Attention bloğunun çıktısı. "Soruya cevap olabilecek bilgi" burada toplanır.'],
+    res1:['W_O ve ilk artık bağlantı','o, W_O ile çarpılır, sonra x₁₀\'a eklenir: r = x₁₀ + o·W_O.','Artık bağlantı: son karakterin kendi bilgisi silinmez, dikkatin bulduğu bilgi üstüne eklenir. Derin ağlarda gradyanın bozulmadan akmasını da sağlar.'],
+    ffn:['FFN (ileri besleme ağı)','r, 16→32 nörona açılır, tanh uygulanır, tekrar 16\'ya indirilir.','Dikkat "nereye bakacağını" buldu, FFN bulunan bilgiyi işler (ör. iki rakamı toplamak gibi). Her karakter için aynı küçük ağ kullanılır.'],
+    res2:['İkinci artık bağlantı: h = r + FFN(r)','FFN çıktısı r\'ye eklenir.','FFN yalnız bir düzeltme üretir; r aynen korunur. h, bloğun nihai 16 sayılık çıktısıdır.'],
+    out:['Çıkış katmanı W_out (16→40)','h, bir matrisle 40 karakterin ham skoruna (logit) çevrilir.','Her sözlük karakteri için "ne kadar uygun" skoru üretir.'],
+    prob:['Softmax → olasılıklar','Ham skorlar olasılığa çevrilir (toplam %100). Sağda en olası 8 karakter.','En olası karakter seçilir, pencerenin sonuna eklenir ve bütün şema baştan çalışır: GPT\'nin üretim döngüsü.']};
   function cur(){const pr=$('gt_p').value;return {pr,ctx:padOf(pr).slice(-N),padN:Math.max(0,N-Array.from(pr).length)};}
+  const f4=(vec,off)=>'['+[0,1,2,3].map(k=>fm(vec[off+k],2)).join('; ')+' …]';
+  let LIVE={};
+  let stepNow=0;
   function drawArch(){
     const {pr,ctx,padN}=cur(),c=fwd1(ctx,newCache()),L=(N-1)*D;
     $('gm_pv').textContent=pr;if(document.activeElement!==$('gm_p2'))$('gm_p2').value=pr;
-    const on=k=>stepNow===0||STEPS[stepNow-1].k===k,dim=k=>on(k)?'':' opacity="0.3"';
-    let o='<defs><marker id="gmAr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8a99bd"/></marker></defs>';
-    // halo
-    if(stepNow>0)(HALO[STEPS[stepNow-1].k]||[]).forEach(r=>{o+='<rect x="'+r[0]+'" y="'+r[1]+'" width="'+r[2]+'" height="'+r[3]+'" rx="8" fill="rgba(255,213,74,.07)" stroke="#ffd54a" stroke-width="1.6" stroke-dasharray="5 4"/>';});
-    o+='<g>'+'<rect x="10" y="14" width="12" height="8" fill="#5aa0e0"/>'+txt(26,22,'pozitif sayı',10,'#95a2c2')+'<rect x="10" y="28" width="12" height="8" fill="#e06a6a"/>'+txt(26,36,'negatif sayı',10,'#95a2c2')+txt(10,52,'her renkli kutu = 16 sayılık vektör',10,'#95a2c2')+'<rect x="10" y="58" width="12" height="8" fill="none" stroke="#ffd54a" stroke-width="1.5"/>'+txt(26,66,'tahmin yapılan son karakter',10,'#95a2c2')+'</g>';
-    // satır etiketleri
-    const lab=(y,t)=>txt(6,y,t,10.5,'#95a2c2');
-    o+=lab(728,'① karakter')+lab(681,'② gömme E')+lab(654,'③ konum P')+lab(617,'④ x = E + P')+lab(565,'⑤ K  V')+lab(510,'⑥ skor s')+lab(440,'⑦ dikkat a')+lab(390,'⑧ a·V')+lab(364,'Σ → o');
-    // ① karakterler
-    o+='<g'+dim('tok')+'>';
-    for(let i=0;i<N;i++){const x=CX(i),isPad=i<padN,last=i===N-1;
-      o+='<rect x="'+(x-17)+'" y="712" width="34" height="24" rx="5" fill="'+(last?'#2a3560':'#141c33')+'" stroke="'+(last?'#ffd54a':'#56658a')+'" stroke-width="'+(last?1.8:1)+'"/>'+txt(x,730,isPad?'·':esc(chOf(ctx[i])),15,isPad?'#5a6a8a':'#ccd5e8','middle',' font-family="ui-monospace,Consolas,monospace"')+txt(x,752,'i='+i,9,last?'#ffd54a':'#7080a8','middle');
-    }
-    o+='</g>';
-    // ②③④ gömme, konum, x
-    o+='<g'+dim('emb')+'>';
-    for(let i=0;i<N;i++){const x=CX(i);
-      o+=chip(x-17,664,34,14,P.E,ctx[i]*D)+txt(x,661,'+',10,'#95a2c2','middle')+chip(x-17,640,34,14,P.P,i*D)+arrow(x,712,x,680)+arrow(x,640,x,622)+chip(x-17,606,34,14,c.x,i*D);
-    }
-    o+='</g>';
-    // ⑤ K,V (+q)
-    o+='<g'+dim('qkv')+'>';
-    for(let i=0;i<N;i++){const x=CX(i);o+=arrow(x-6,606,x-10,570)+arrow(x+6,606,x+10,570)+chip(x-22,554,20,14,c.K,i*D,2)+chip(x+2,554,20,14,c.V,i*D,2)+txt(x-12,550,'K',8.5,'#e6b455','middle')+txt(x+12,550,'V',8.5,'#b78bf0','middle');}
-    o+='<path d="M'+(CX(N-1)+17)+' 613 H 544 V 515" fill="none" stroke="#e06a6a" stroke-width="1.3" marker-end="url(#gmAr)"/>'+chip(524,499,40,14,c.q,0,2)+txt(544,480,'q (sorgu)',10,'#e06a6a','middle')+txt(544,491,'= x₁₀·W_Q',9.5,'#e06a6a','middle');
-    o+='</g>';
-    // ⑥ skorlar
-    o+='<g'+dim('s')+'><line x1="'+(CX(0)-26)+'" y1="506" x2="524" y2="506" stroke="#e06a6a" stroke-width="1.3" stroke-dasharray="3 3"/>'+txt(84,484,'q bütün skorlara girer',9,'#e06a6a');
-    for(let i=0;i<N;i++){const x=CX(i)-12;o+=arrow(x,554,x,518)+'<circle cx="'+x+'" cy="506" r="10.5" fill="#141c33" stroke="#e6b455" stroke-width="1.4"/>'+txt(x,509.5,fm(c.s[i],1),8.5,'#ccd5e8','middle');}
-    o+='</g>';
-    // ⑦ softmax / dikkat çubukları
-    o+='<g'+dim('a')+'>';
-    for(let i=0;i<N;i++){const x=CX(i)-12,h=Math.max(1.5,c.a[i]*44);o+=arrow(x,494,x,462,'#56658a')+'<rect x="'+(x-7)+'" y="'+(456-h)+'" width="14" height="'+h+'" fill="#ffd54a" fill-opacity=".85" rx="2"/>'+txt(x,(450-h).toFixed(1),pct(c.a[i]),9,'#ffd54a','middle');}
-    o+='</g>';
-    // ⑧ a·V ve Σ, zone 2 üst
-    o+='<g'+dim('mix')+'>';
-    const aV=new Float64Array(N*D);for(let i=0;i<N;i++)for(let k=0;k<D;k++)aV[i*D+k]=c.a[i]*c.V[i*D+k];
-    for(let i=0;i<N;i++){const x=CX(i);
-      o+='<path d="M'+(x+12)+' 554 V 404 L '+(x+3)+' 402" fill="none" stroke="#b78bf0" stroke-width="1.1"/><path d="M'+(x-12)+' '+(456-Math.max(1.5,c.a[i]*44)-14)+' V 408 L '+(x-3)+' 404" fill="none" stroke="#ffd54a" stroke-width="1.1"/>'+
-        '<circle cx="'+x+'" cy="400" r="6.5" fill="#141c33" stroke="#8a99bd"/>'+txt(x,403.5,'×',10,'#ccd5e8','middle')+arrow(x,393,x,383)+chip(x-17,370,34,13,aV,i*D)+'<line x1="'+x+'" y1="370" x2="'+x+'" y2="360" stroke="#8a99bd" stroke-width="1.1"/>';}
-    o+='<line x1="'+CX(0)+'" y1="360" x2="'+CX(N-1)+'" y2="360" stroke="#8a99bd" stroke-width="1.3"/>'+txt(CX(N-1)+22,356,'Σ',13,'#ccd5e8')+arrow(CX(N-1),360,656,360);
-    o+=chip(658,351,64,18,c.o,0,1)+txt(690,386,'o = Σ aᵢ·Vᵢ',10.5,'#b78bf0','middle')+arrow(690,350,690,334)+box(655,308,70,26,'× W_O','#b78bf0')+arrow(690,308,690,294)+
-      '<circle cx="690" cy="282" r="11" fill="#141c33" stroke="#46c46a" stroke-width="1.6"/>'+txt(690,287,'⊕',15,'#46c46a','middle')+
-      '<path d="M'+(CX(N-1)+17)+' 613 H 590 V 282 H 679" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(594,330,'artık bağlantı:',9.5,'#46c46a')+txt(594,342,'x₁₀ aynen geçer',9.5,'#46c46a')+
-      arrow(690,271,690,263)+chip(658,244,64,18,c.r,0,3)+txt(735,257,'r',12,'#ccd5e8','',' font-weight="700"');
-    o+='</g>';
-    // FFN
-    o+='<g'+dim('ffn')+'>'+arrow(690,244,690,228)+box(640,203,100,24,'× W₁ + b₁  (16→32)','#4fc3f7',10)+arrow(690,203,690,197)+'<ellipse cx="690" cy="186" rx="26" ry="11" fill="#141c33" stroke="#4fc3f7" stroke-width="1.6"/>'+txt(690,190,'tanh',11,'#ccd5e8','middle')+arrow(690,175,690,169)+box(640,145,100,24,'× W₂ + b₂  (32→16)','#4fc3f7',10)+arrow(690,145,690,134)+
-      '<circle cx="690" cy="122" r="11" fill="#141c33" stroke="#46c46a" stroke-width="1.6"/>'+txt(690,127,'⊕',15,'#46c46a','middle')+'<path d="M722 253 H 772 V 122 H 701" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(776,190,'r aynen',9.5,'#46c46a')+txt(776,202,'geçer',9.5,'#46c46a')+txt(646,242,'FFN',10,'#4fc3f7')+
-      arrow(690,111,690,106)+chip(658,88,64,18,c.h,0,3)+txt(735,101,'h',12,'#ccd5e8','',' font-weight="700"');
-    o+='</g>';
-    // çıkış
-    o+='<g'+dim('out')+'>'+arrow(690,88,690,80)+box(640,52,100,28,'× W_out + b  (16→40)','#e6b455',10)+'</g>';
-    // olasılıklar
+    const act=k=>stepNow>0&&STEPS[stepNow-1].k.indexOf(k)>=0,dimOn=stepNow>0;
     const idx=Array.from({length:V},(_,i)=>i).sort((x,y)=>c.p[y]-c.p[x]);
-    o+='<g'+dim('prob')+'>'+arrow(690,52,690,36)+'<circle cx="690" cy="24" r="12" fill="#141c33" stroke="#ffd54a" stroke-width="1.6"/>'+txt(690,28,'σ',13,'#ffd54a','middle')+txt(640,22,'softmax',10,'#ffd54a','end')+arrow(702,24,806,24,'#ffd54a');
-    o+=txt(812,14,'sonraki karakter olasılıkları (ilk 8)',10.5,'#ffd54a');
-    for(let j=0;j<8;j++){const v=idx[j],y=40+j*24,w=Math.max(2,c.p[v]*112);
-      o+=txt(820,y+13,esc(chOf(v)),13,j===0?'#46c46a':'#ccd5e8','middle',' font-family="ui-monospace,Consolas,monospace"')+'<rect x="836" y="'+y+'" width="'+w+'" height="16" rx="3" fill="'+(j===0?'#46c46a':'#5aa0e0')+'" fill-opacity="'+(j===0?.9:.6)+'"/>'+txt(840+w,y+12.5,pct(c.p[v]),10.5,'#ccd5e8');}
-    o+='</g>';
-    $('gm_svg').innerHTML=o;
-    caption(c,ctx,idx);
+    const sI=Array.from({length:N},(_,i)=>i).sort((x,y)=>c.s[y]-c.s[x]),aI=Array.from({length:N},(_,i)=>i).sort((x,y)=>c.a[y]-c.a[x]);
+    const lastC=esc(chOf(ctx[N-1])),nAct=Array.from(c.g).filter(v=>Math.abs(v)>0.5).length;
+    let hi=0;for(let v=1;v<V;v++)if(c.lg[v]>c.lg[hi])hi=v;
+    LIVE={tok:'Şu an son karakter «'+lastC+'» → kimlik no '+ctx[N-1]+'.',emb:'«'+lastC+'» için E satırı: '+f4(P.E,ctx[N-1]*D),pos:'Son konum (i=9) için P satırı: '+f4(P.P,(N-1)*D),x:'x₁₀ = E + P: '+f4(c.x,L),kv:'K₁₀: '+f4(c.K,L)+'  ·  V₁₀: '+f4(c.V,L),q:'q: '+f4(c.q,0),s:'En yüksek skor: konum '+sI[0]+' «'+esc(chOf(ctx[sI[0]]))+'» (s='+fm(c.s[sI[0]],2)+').',a:'En çok bakılan: «'+esc(chOf(ctx[aI[0]]))+'» '+pct(c.a[aI[0]])+', sonra «'+esc(chOf(ctx[aI[1]]))+'» '+pct(c.a[aI[1]])+'.',mix:'Silik olmayan kutular: '+aI.slice(0,2).map(i=>'konum '+i).join(', ')+'.',o:'o: '+f4(c.o,0),res1:'r: '+f4(c.r,0),ffn:'32 nörondan '+nAct+' tanesi güçlü etkin (|tanh|>0,5).',res2:'h: '+f4(c.h,0),out:'En yüksek ham skor: «'+esc(chOf(hi))+'» ('+fm(c.lg[hi],1)+').',prob:'Seçilen: «'+esc(chOf(idx[0]))+'» '+pct(c.p[idx[0]])+'.'};
+    // katman kutusu: rects=[[x,y,w,h],...]
+    const layer=(k,rects,inner,title)=>{const a=act(k);let o='<g class="gm-layer" data-tip="'+k+'"'+(dimOn&&!a?' opacity="0.28"':'')+'>';
+      rects.forEach((r,ri)=>{o+='<rect x="'+r[0]+'" y="'+r[1]+'" width="'+r[2]+'" height="'+r[3]+'" rx="8" fill="'+(a?'rgba(255,213,74,.10)':'rgba(255,255,255,.018)')+'" stroke="'+(a?'#ffd54a':'#34426a')+'" stroke-width="'+(a?2:1)+'"'+(a?' stroke-dasharray="5 4"':'')+'/>';});
+      if(title)o+=txt(title[0],title[1],title[2],10.5,a?'#ffd54a':'#95a2c2');
+      return o+inner+'</g>';};
+    let o='<defs><marker id="gmAr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8a99bd"/></marker></defs>';
+    o+='<g>'+'<rect x="10" y="14" width="12" height="8" fill="#5aa0e0"/>'+txt(26,22,'pozitif sayı',10,'#95a2c2')+'<rect x="10" y="28" width="12" height="8" fill="#e06a6a"/>'+txt(26,36,'negatif sayı',10,'#95a2c2')+txt(10,52,'her renkli kutu = 16 sayılık vektör',10,'#95a2c2')+'<rect x="10" y="58" width="12" height="8" fill="none" stroke="#ffd54a" stroke-width="1.5"/>'+txt(26,66,'tahmin yapılan son karakter',10,'#95a2c2')+txt(10,84,'kutuların üstüne gel: ne olduğunu ve ne işe yaradığını söyler',10,'#ffd54a')+'</g>';
+    // ---- bölge 1: pencere sütunları ----
+    let t='';for(let i=0;i<N;i++){const x=CX(i),isPad=i<padN,last=i===N-1;
+      t+='<rect x="'+(x-17)+'" y="712" width="34" height="24" rx="5" fill="'+(last?'#2a3560':'#141c33')+'" stroke="'+(last?'#ffd54a':'#56658a')+'" stroke-width="'+(last?1.8:1)+'"/>'+txt(x,730,isPad?'·':esc(chOf(ctx[i])),15,isPad?'#5a6a8a':'#ccd5e8','middle',' font-family="ui-monospace,Consolas,monospace"')+txt(x,752,'i='+i,9,last?'#ffd54a':'#7080a8','middle');}
+    o+=layer('tok',[[2,704,516,54]],t,[8,732,'karakter']);
+    t='';for(let i=0;i<N;i++)t+=chip(CX(i)-17,664,34,14,P.E,ctx[i]*D);
+    o+=layer('emb',[[2,658,516,30]],t,[8,677,'gömme E']);
+    t='';for(let i=0;i<N;i++)t+=chip(CX(i)-17,640,34,14,P.P,i*D);
+    o+=layer('pos',[[2,630,516,28]],t,[8,651,'konum P']);
+    t='';for(let i=0;i<N;i++)t+=chip(CX(i)-17,606,34,14,c.x,i*D);
+    o+=layer('x',[[2,596,516,30]],t,[8,617,'x = E + P']);
+    t='';for(let i=0;i<N;i++){const x=CX(i);t+=chip(x-22,554,20,14,c.K,i*D,2)+chip(x+2,554,20,14,c.V,i*D,2)+txt(x-12,550,'K',8.5,'#e6b455','middle')+txt(x+12,550,'V',8.5,'#b78bf0','middle');}
+    o+=layer('kv',[[2,540,516,36]],t,[8,564,'K ve V']);
+    o+=layer('q',[[522,468,52,52]],chip(524,499,40,14,c.q,0,2)+txt(548,481,'q',11,'#e06a6a','middle')+txt(548,493,'sorgu',8.5,'#e06a6a','middle'),null);
+    t='';for(let i=0;i<N;i++){const x=CX(i)-12;t+='<circle cx="'+x+'" cy="506" r="10.5" fill="#141c33" stroke="#e6b455" stroke-width="1.4"/>'+txt(x,509.5,fm(c.s[i],1),8.5,'#ccd5e8','middle');}
+    o+=layer('s',[[2,486,516,40]],t+txt(100,494,'q bütün skorlara girer',8.5,'#e06a6a'),[8,510,'skor s']);
+    t='';for(let i=0;i<N;i++){const x=CX(i)-12,h=Math.max(1.5,c.a[i]*40);t+='<rect x="'+(x-7)+'" y="'+(458-h)+'" width="14" height="'+h+'" fill="#ffd54a" fill-opacity=".85" rx="2"/>'+txt(x,(454-h).toFixed(1),pct(c.a[i]),9,'#ffd54a','middle');}
+    o+=layer('a',[[2,404,516,60]],t,[8,440,'dikkat a']);
+    const aV=new Float64Array(N*D);for(let i=0;i<N;i++)for(let k=0;k<D;k++)aV[i*D+k]=c.a[i]*c.V[i*D+k];
+    t='';for(let i=0;i<N;i++){const x=CX(i);t+='<circle cx="'+x+'" cy="396" r="6" fill="#141c33" stroke="#8a99bd"/>'+txt(x,399.5,'×',10,'#ccd5e8','middle')+chip(x-17,370,34,13,aV,i*D);}
+    o+=layer('mix',[[2,346,516,58]],t+txt(CX(N-1)+22,357,'Σ',13,'#ccd5e8'),[8,392,'a · V']);
+    // ---- bölge 2 ----
+    o+=layer('o',[[636,344,108,50]],chip(658,351,64,18,c.o,0,1)+txt(690,386,'o = Σ aᵢ·Vᵢ',10.5,'#b78bf0','middle'),null);
+    o+=layer('res1',[[630,236,120,104]],box(655,308,70,26,'× W_O','#b78bf0')+'<circle cx="690" cy="282" r="11" fill="#141c33" stroke="#46c46a" stroke-width="1.6"/>'+txt(690,287,'⊕',15,'#46c46a','middle')+chip(658,244,64,18,c.r,0,3)+txt(735,257,'r',12,'#ccd5e8','',' font-weight="700"'),[634,248,'']);
+    o+=layer('ffn',[[628,136,124,98]],box(640,203,100,24,'× W₁ + b₁  (16→32)','#4fc3f7',10)+'<ellipse cx="690" cy="186" rx="26" ry="11" fill="#141c33" stroke="#4fc3f7" stroke-width="1.6"/>'+txt(690,190,'tanh',11,'#ccd5e8','middle')+box(640,145,100,24,'× W₂ + b₂  (32→16)','#4fc3f7',10),[632,148,'']);
+    o+=layer('res2',[[630,84,120,50]],'<circle cx="690" cy="122" r="11" fill="#141c33" stroke="#46c46a" stroke-width="1.6"/>'+txt(690,127,'⊕',15,'#46c46a','middle')+chip(658,88,64,18,c.h,0,3)+txt(735,101,'h',12,'#ccd5e8','',' font-weight="700"'),null);
+    o+=layer('out',[[630,44,120,40]],box(640,52,100,28,'× W_out + b  (16→40)','#e6b455',10),null);
+    t='<circle cx="690" cy="24" r="12" fill="#141c33" stroke="#ffd54a" stroke-width="1.6"/>'+txt(690,28,'σ',13,'#ffd54a','middle')+txt(676,22,'softmax',10,'#ffd54a','end')+txt(812,18,'sonraki karakter olasılıkları (ilk 8)',10.5,'#ffd54a');
+    for(let j=0;j<8;j++){const v=idx[j],y=40+j*24,w=Math.max(2,c.p[v]*112);t+=txt(820,y+13,esc(chOf(v)),13,j===0?'#46c46a':'#ccd5e8','middle',' font-family="ui-monospace,Consolas,monospace"')+'<rect x="836" y="'+y+'" width="'+w+'" height="16" rx="3" fill="'+(j===0?'#46c46a':'#5aa0e0')+'" fill-opacity="'+(j===0?.9:.6)+'"/>'+txt(840+w,y+12.5,pct(c.p[v]),10.5,'#ccd5e8');}
+    o+=layer('prob',[[650,6,92,38],[806,4,192,232]],t,null);
+    // ---- teller (tıklanmaz, üstte) ----
+    const wd=dimOn?'0.45':'1';
+    let w='<g pointer-events="none" opacity="'+wd+'">';
+    for(let i=0;i<N;i++){const x=CX(i);
+      w+=arrow(x,712,x,690)+txt(x,661,'+',10,'#95a2c2','middle')+arrow(x,640,x,628)+arrow(x-6,606,x-10,572)+arrow(x+6,606,x+10,572)+arrow(x-12,554,x-12,518)+arrow(x-12,494,x-12,466);
+      w+='<path d="M'+(x+12)+' 554 V 400 L '+(x+3)+' 398" fill="none" stroke="#b78bf0" stroke-width="1.1"/><path d="M'+(x-12)+' '+(458-Math.max(1.5,c.a[i]*40)-13)+' V 402 L '+(x-3)+' 398" fill="none" stroke="#ffd54a" stroke-width="1.1"/>'+arrow(x,390,x,384)+'<line x1="'+x+'" y1="370" x2="'+x+'" y2="360" stroke="#8a99bd" stroke-width="1.1"/>';}
+    w+='<line x1="'+(CX(0)-26)+'" y1="506" x2="524" y2="506" stroke="#e06a6a" stroke-width="1.3" stroke-dasharray="3 3"/>';
+    w+='<path d="M'+(CX(N-1)+17)+' 613 H 544 V 521" fill="none" stroke="#e06a6a" stroke-width="1.3" marker-end="url(#gmAr)"/>';
+    w+='<line x1="'+CX(0)+'" y1="360" x2="'+CX(N-1)+'" y2="360" stroke="#8a99bd" stroke-width="1.3"/>'+arrow(CX(N-1),360,656,360)+arrow(690,350,690,334)+arrow(690,308,690,294)+arrow(690,271,690,263)+arrow(690,244,690,228)+arrow(690,203,690,197)+arrow(690,175,690,169)+arrow(690,145,690,134)+arrow(690,111,690,106)+arrow(690,88,690,80)+arrow(690,52,690,36)+arrow(702,24,806,24,'#ffd54a');
+    w+='<path d="M'+(CX(N-1)+17)+' 613 H 590 V 282 H 679" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(594,330,'artık bağlantı:',9.5,'#46c46a')+txt(594,342,'x₁₀ aynen geçer',9.5,'#46c46a');
+    w+='<path d="M722 253 H 772 V 122 H 701" fill="none" stroke="#46c46a" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#gmAr)"/>'+txt(776,190,'r aynen',9.5,'#46c46a')+txt(776,202,'geçer',9.5,'#46c46a');
+    w+='</g>';
+    $('gm_svg').innerHTML=o+w;
+    caption(c,ctx,idx,sI,aI);
   }
-  function caption(c,ctx,idx){
-    const sI=Array.from({length:N},(_,i)=>i).sort((x,y)=>c.a[y]-c.a[x]),chs=i=>'«'+esc(chOf(ctx[i]))+'»';
-    const best=idx[0];
+  function caption(c,ctx,idx,sI,aI){
+    const chs=i=>'«'+esc(chOf(ctx[i]))+'»',L=(N-1)*D,last=ctx[N-1];
     const T=[
-      'Şema <b>tüm hâliyle</b> gösteriliyor. <b>İleri ▶</b> ile adım adım ilerle: her adımda ilgili kısım sarı çerçeveyle vurgulanır, diğerleri soluklaşır.',
-      '<b>Karakterler → sayı.</b> Pencerede son 10 karakter var (baştaki <code>·</code> = satır başı dolgusu). Son karakter '+chs(N-1)+' sarı çerçeveli: <b>sıradaki karakteri o konumdan tahmin edeceğiz</b>. Her karakter bir kimlik numarasına dönüşür.',
-      '<b>Gömme + konum.</b> Her karakter için E tablosundan 16 sayılık vektör alınır; üstüne <b>konum vektörü P<sub>i</sub></b> eklenir (attention sırayı kendi başına bilmez, konumu biz ekleriz). Toplam <b>x<sub>i</sub></b> bu karakterin girdisidir.',
+      'Şema <b>tüm hâliyle</b> gösteriliyor. Her katman bir kutu içinde. <b>İleri ▶</b> ile adım adım ilerle: ilgili kutu sarı çerçeveyle vurgulanır, diğerleri soluklaşır. Bir kutunun <b>üstüne gelince</b> (telefonda dokununca) ne olduğu ve ne işe yaradığı yazar.',
+      '<b>Karakterler → sayı.</b> Pencerede son 10 karakter var (baştaki <code>·</code> = satır başı dolgusu). Son karakter '+chs(N-1)+' (kimlik no '+last+') sarı çerçeveli: <b>sıradaki karakteri o konumdan tahmin edeceğiz</b>. Ağ harf bilmez, her karakter bir kimlik numarasına dönüşür.',
+      '<b>Gömme (E): "bu karakter kim?"</b> Kimlik numarası E tablosunda bir satır seçer: 16 sayı. Örnek: '+chs(N-1)+' için '+f4(P.E,last*D)+'. Bu 16 sayı eğitimle öğrenilir: benzer işlev gören karakterler (örn. rakamlar) benzer satırlar alır. <b>Karakter pencerenin neresinde olursa olsun aynı E satırı gelir.</b>',
+      '<b>Konum (P): "bu karakter nerede?"</b> Attention bir karakterin yerini kendi başına bilmez ("7+5=" ve "5+7=" onun için aynı karakter kümesi). Bu yüzden 10 konumun her biri için ayrı bir P satırı var. Son konum (i=9): '+f4(P.P,(N-1)*D)+'. <b>P karaktere değil yalnız yere bağlıdır.</b>',
+      '<b>Toplama: x = E + P.</b> Her karakterin E ve P vektörleri sayı sayı toplanır (16 sayı). Böylece tek vektörde hem <b>kim</b> hem <b>nerede</b> bilgisi olur. '+chs(N-1)+' için x = '+f4(c.x,L)+'. Bundan sonra ağ yalnız x ile çalışır.',
       '<b>q, K, V.</b> Yalnız <b>son</b> karakterin x\'inden sorgu <b>q</b> çıkar ("neye bakmalıyım?"). Her karakterin kendi x\'inden <b>K</b> (anahtar: "bende şu var") ve <b>V</b> (değer: seçilirse taşıyacağım içerik) çıkar. W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> eğitimle öğrenilir.',
       '<b>Skor.</b> Her karakter için s<sub>i</sub> = q·K<sub>i</sub> ÷ √16. En yüksek skor: konum '+sI[0]+' '+chs(sI[0])+' (s='+fm(c.s[sI[0]],2)+'), sonra '+sI[1]+' '+chs(sI[1])+' (s='+fm(c.s[sI[1]],2)+'). Skor büyükse "bu karakter şu an benim için ilgili" demek.',
-      '<b>Softmax → dikkat.</b> Skorlar yüzdeye çevrilir (toplam %100). Şu an en çok bakılan: '+chs(sI[0])+' '+pct(c.a[sI[0]])+', '+chs(sI[1])+' '+pct(c.a[sI[1]])+', '+chs(sI[2])+' '+pct(c.a[sI[2]])+'. <b>Eğitmeden önce yüzdeler dağınık; eğittikçe işe yarayan karakterlere kayar</b> (toplamada: iki rakama).',
-      '<b>Karışım + artık bağlantı.</b> Her V<sub>i</sub> kendi dikkat yüzdesiyle çarpılıp toplanır: <b>o = Σ aᵢ·Vᵢ</b> (dikkat az olan karakterin kutusu silikleşir). Sonra W<sub>O</sub> ile çarpılıp <b>x₁₀\'a eklenir</b> (artık bağlantı): <b>r = x₁₀ + o·W<sub>O</sub></b>. Yani dikkat, karakterin kendi bilgisini silmez, üstüne ekler.',
-      '<b>FFN + ikinci artık bağlantı.</b> r her karakter için aynı küçük ağdan geçer: 16→32 nöron, tanh, 32→16. Sonucu yine r\'ye eklenir: <b>h = r + FFN(r)</b>. Dikkat "nereye bakacağını" bulur, FFN bulunan bilgiyi işler (örneğin iki rakamı toplamak).',
-      '<b>Çıkış katmanı.</b> h (16 sayı) bir matrisle 40 karakterin ham skoruna (logit) çevrilir. En yüksek ham skor: «'+esc(chOf(best))+'».',
-      '<b>Softmax → olasılık.</b> Ham skorlar olasılığa çevrilir. Seçilen sonraki karakter: <b>«'+esc(chOf(best))+'»</b> ('+pct(c.p[best])+'). Seçilen karakter pencerenin sonuna eklenir ve bütün şema <b>baştan</b> çalışır: GPT\'nin üretim döngüsü.'];
+      '<b>Softmax → dikkat.</b> Skorlar yüzdeye çevrilir (toplam %100). Şu an en çok bakılan: '+chs(aI[0])+' '+pct(c.a[aI[0]])+', '+chs(aI[1])+' '+pct(c.a[aI[1]])+', '+chs(aI[2])+' '+pct(c.a[aI[2]])+'. <b>Eğitmeden önce yüzdeler dağınık; eğittikçe işe yarayan karakterlere kayar</b> (toplamada: iki rakama).',
+      '<b>Karışım.</b> Her V<sub>i</sub> kendi dikkat yüzdesiyle çarpılır (az dikkat edilen karakterin kutusu silikleşir), sonra hepsi toplanır: <b>o = Σ aᵢ·Vᵢ</b> (16 sayı). Pencerenin dikkatle süzülmüş tek özeti.',
+      '<b>W<sub>O</sub> + artık bağlantı.</b> o, W<sub>O</sub> ile çarpılıp <b>x₁₀\'a eklenir</b>: <b>r = x₁₀ + o·W<sub>O</sub></b>. Yani dikkat, karakterin kendi bilgisini silmez, bulduğunu üstüne ekler.',
+      '<b>FFN.</b> r küçük bir ağdan geçer: 16→32 nöron, tanh, 32→16. Dikkat "nereye bakacağını" buldu, FFN bulunan bilgiyi işler (örneğin iki rakamı toplamak). Şu an 32 nörondan '+Array.from(c.g).filter(v=>Math.abs(v)>0.5).length+' tanesi güçlü etkin.',
+      '<b>İkinci artık bağlantı.</b> FFN çıktısı yine r\'ye eklenir: <b>h = r + FFN(r)</b>. FFN yalnız bir düzeltme üretir, r aynen korunur. h bloğun nihai çıktısıdır (16 sayı).',
+      '<b>Çıkış katmanı.</b> h (16 sayı) bir matrisle 40 karakterin ham skoruna (logit) çevrilir. En yüksek ham skor: «'+esc(chOf((()=>{let b=0;for(let v=1;v<V;v++)if(c.lg[v]>c.lg[b])b=v;return b;})()))+'».',
+      '<b>Softmax → olasılık.</b> Ham skorlar olasılığa çevrilir. Seçilen sonraki karakter: <b>«'+esc(chOf(idx[0]))+'»</b> ('+pct(c.p[idx[0]])+'). "➕ Seçileni ekle" ile bu karakteri pencerenin sonuna ekleyip şemayı baştan çalıştırabilirsin (GPT\'nin üretim döngüsü).'];
     $('gm_cap').innerHTML=T[stepNow];
-    $('gm_stp').textContent=stepNow===0?'':'Adım '+stepNow+' / 9 — '+STEPS[stepNow-1].t;
-    $('gm_next').textContent=stepNow>=9?'↺ Baştan':'İleri ▶';
+    $('gm_stp').textContent=stepNow===0?'':'Adım '+stepNow+' / '+NSTEP+' — '+STEPS[stepNow-1].t;
+    $('gm_next').textContent=stepNow>=NSTEP?'↺ Baştan':'İleri ▶';
   }
-  $('gm_next').onclick=()=>{stepNow=stepNow>=9?0:stepNow+1;drawArch();};
+  /* ----- bilgi kutusu (hover / dokunma) ----- */
+  const tip=document.createElement('div');tip.id='gm_tip';tip.style.cssText='position:fixed;z-index:100000;display:none;max-width:320px;background:#101a33;border:1px solid #ffd54a;border-radius:10px;padding:9px 11px;font-size:12.5px;line-height:1.55;color:#ccd5e8;box-shadow:0 6px 22px rgba(0,0,0,.55);pointer-events:none';document.body.appendChild(tip);
+  const tipShow=(e,k)=>{const d=TIPS[k];if(!d)return;tip.innerHTML='<div style="color:#ffd54a;font-weight:700;margin-bottom:3px">'+d[0]+'</div><div><b>Ne:</b> '+d[1]+'</div><div style="margin-top:3px"><b>Ne işe yarar:</b> '+d[2]+'</div>'+(LIVE[k]?'<div style="margin-top:5px;padding-top:4px;border-top:1px solid #34426a;color:#46c46a"><b>Şu an:</b> '+LIVE[k]+'</div>':'');tip.style.display='block';const w=tip.offsetWidth,h=tip.offsetHeight;let x=e.clientX+16,y=e.clientY+14;if(x+w>innerWidth-8)x=Math.max(8,e.clientX-w-16);if(y+h>innerHeight-8)y=Math.max(8,innerHeight-h-8);tip.style.left=x+'px';tip.style.top=y+'px';};
+  const svgEl=$('gm_svg');
+  svgEl.addEventListener('mousemove',e=>{const l=e.target.closest&&e.target.closest('.gm-layer');if(l)tipShow(e,l.dataset.tip);else tip.style.display='none';});
+  svgEl.addEventListener('mouseleave',()=>{tip.style.display='none';});
+  svgEl.addEventListener('click',e=>{const l=e.target.closest&&e.target.closest('.gm-layer');if(l)tipShow(e,l.dataset.tip);else tip.style.display='none';});
+  $('gm_next').onclick=()=>{stepNow=stepNow>=NSTEP?0:stepNow+1;drawArch();};
   $('gm_all').onclick=()=>{stepNow=0;drawArch();};
   $('gm_add').onclick=()=>{
     const {ctx}=cur(),c=fwd1(ctx,newCache());let b=0;for(let v=1;v<V;v++)if(c.p[v]>c.p[b])b=v;
