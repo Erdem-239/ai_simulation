@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610171612"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610171618"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610171612">
+<link rel="stylesheet" href="css/style.css?v=202610171618">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:12 TR · #411</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:18 TR · #412</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -8646,7 +8646,40 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — "Sıradaki harf ne?" sorusunun yüz yıllık yolculuğu</div>
+      <p><b>1913</b>: Rus matematikçi <b>Andrey Markov</b>, Puşkin'in <i>Yevgeni Onegin</i> romanının ilk 20.000 harfini elle sayıp "bir ünlüden sonra ünsüz gelme olasılığı kaç?" diye hesapladı. Bu, metindeki bir harfin <b>önceki harflere bağlı</b> olduğunu gösteren ilk istatistikti (bugün Markov zinciri diyoruz).</p>
+      <p><b>1948</b>: <b>Claude Shannon</b> aynı fikirle İngilizce'ye benzeyen metinler <b>üretti</b>: önce harf harf, sonra önceki 2-3 harfe bakarak, sonra kelime kelime. Her seferinde metin biraz daha anlamlı görünüyordu. Bu sayfadaki "sayma tablosu" tam olarak bu fikir.</p>
+      <p><b>2003</b>: <b>Bengio ve ekibi</b> sayma tablosunu bir <b>sinir ağıyla</b> değiştirdi: her kelime bir sayı vektörüne (embedding) çevrilir, önceki birkaç kelimenin vektörleri ağa girer, ağ sıradaki kelimeyi tahmin eder. Bu sayfadaki "pencereli sinir ağı" ve Bütün Resim bölümündeki model bunun minik hâli. Ardından RNN ve LSTM dil modelleri geldi (hafıza = pencere sınırı olmasın diye).</p>
+      <p><b>2017</b>'de Transformer pencerenin yerine <b>self-attention</b> koydu. <b>2018</b>'de OpenAI bu mimariyi "sıradaki kelimeyi tahmin et" görevinde dev bir metin yığınıyla eğitip <b>GPT</b> adını verdi; GPT-2 (2019) ve GPT-3 (2020, 175 milyar ağırlık) aynı tarifi büyüttü. <b>2022</b>'de ChatGPT, GPT'ye ek olarak insan geri bildirimiyle sohbet etmeyi öğretti.</p>
+      <p>Hikâyenin ortak kahramanı tek bir fikir: <b>metnin kendisi etiket</b>. Kimsenin elle "doğru cevap" yazmasına gerek yok: her karakterin sonraki karakteri zaten metinde duruyor. Bu sayfa o fikri en küçük ölçekte baştan kuruyor.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-llm" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">💬</span><b>ChatGPT ve sohbet asistanları</b> — cevabın her kelimesi "sıradaki parça ne?" sorusunun cevabı; model kendi ürettiğini girdiye ekleyip tekrar sorar (bu sayfadaki üretim döngüsü).</div>
+        <div class="ex-card"><span class="ex-ico">💻</span><b>Kod tamamlama</b> — yazdığın satırdan sonra gelecek kodu tahmin eder; aynı görev, sözlük kod parçalarından oluşur.</div>
+        <div class="ex-card"><span class="ex-ico">📱</span><b>Telefon klavyesi</b> — yazarken önerilen sonraki kelime; en basit hâli bu sayfadaki sayma tablosu.</div>
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>Arama otomatik tamamlama</b> — yazdığın ilk harflerden sonra gelebilecek sorguları sıralar.</div>
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Çeviri ve özetleme</b> — büyük modeller bunları da "sıradaki kelimeyi tahmin et" olarak yapar: girdi bir talimat, çıktı sırayla yazılan cevaptır.</div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="4">
     <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — metin kendi etiketini verir</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>1) Etiketi metin verir.</b> "nasılsın&gt;iyiyim." satırından onlarca eğitim örneği çıkıyor: her karakter için (önceki karakterler → o karakter). Kimse tek tek etiketlemiyor. Bir satır seç:</p>
@@ -8829,7 +8862,110 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — bir eğitim adımı: ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="gtSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Bir dil modelinin <b>bir eğitim adımının bütün resmi</b>: pencere (4 karakter) → E tablosundan 4 kart → ara katman → 7 skor → softmax → kayıp <b>L = −ln p(doğru karakter)</b>; geri yolda kayıp her ağırlığa dağılır. Bu, simülasyondaki <b>pencereli sinir ağının minik hâli</b> (7 karakterlik sözlük, kart 2 sayı, ara katman 6): aynı mekanizma, pop-up'larda gösterilebilecek boyutta. Pencereyi ve doğru karakteri değiştir, ağırlıkları rastgele ya da eğitilmiş yükle; oklara gel → türev. Sürpriz: <b>E tablosunda yalnız penceredeki karakterlerin satırları gradyan alır</b>.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Bir eğitim adımının bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="gtBigMap"></div></div></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (elle geri yayılım + sonlu fark doğrulaması)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+SOZLUK = [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;+&#x27;, &#x27;=&#x27;, &#x27;.&#x27;]      # 7 karakterlik sözlük
+KIM = {c: i for i, c in enumerate(SOZLUK)}
+V, N, D, H = len(SOZLUK), 4, 2, 6                 # pencere 4 karakter, her karakter 2 sayı, ara katman 6 nöron
+
+def rastgele(satir, sutun, r, olcek):
+    return [[(r() * 2 - 1) * olcek for _ in range(sutun)] for _ in range(satir)]
+
+def baslangic(tohum=1, olcek=0.5):
+    r = lcg(tohum)
+    return {&quot;E&quot;: rastgele(V, D, r, olcek),        # E tablosu: her karakterin 2 sayılık kimlik kartı
+            &quot;Wh&quot;: rastgele(N * D, H, r, olcek), &quot;bh&quot;: [0.0] * H,     # pencere → ara katman
+            &quot;Wo&quot;: rastgele(H, V, r, olcek), &quot;bo&quot;: [0.0] * V}         # ara katman → 7 skor
+
+def ileri(M, pencere):
+    x = [v for c in pencere for v in M[&quot;E&quot;][c]]                      # 4 kimlik kartını yan yana diz (8 sayı)
+    u = []
+    for b in range(H):
+        s = M[&quot;bh&quot;][b]
+        for a in range(N * D): s += x[a] * M[&quot;Wh&quot;][a][b]
+        u.append(s)
+    h = [math.tanh(v) for v in u]
+    z = []
+    for k in range(V):
+        s = M[&quot;bo&quot;][k]
+        for b in range(H): s += h[b] * M[&quot;Wo&quot;][b][k]
+        z.append(s)                                                  # skorlar
+    m = max(z); e = [math.exp(v - m) for v in z]; top = 0.0
+    for v in e: top += v
+    p = [v / top for v in e]                                         # olasılıklar
+    return x, u, h, z, p
+
+def kayip(M, pencere, hedef):
+    return -math.log(ileri(M, pencere)[4][hedef])
+
+M = baslangic()
+pencere = [KIM[c] for c in &quot;1+2=&quot;]; hedef = KIM[&quot;3&quot;]                 # &quot;1+2=&quot; gördü, sıradaki karakter &quot;3&quot; olmalı
+x, u, h, z, p = ileri(M, pencere)
+print(&quot;p(&#x27;3&#x27;) =&quot;, round(p[hedef], 4), &quot; kayıp =&quot;, round(-math.log(p[hedef]), 4), &quot; (ln 7 =&quot;, round(math.log(7), 4), &quot;)&quot;)
+
+# ---------- GERİ YAYILIM ----------
+dz = p[:]; dz[hedef] -= 1.0                                          # ∂L/∂z = p − y  (softmax + çapraz-entropi)
+dWo = [[h[b] * dz[k] for k in range(V)] for b in range(H)]; dbo = dz[:]
+dh = []
+for b in range(H):
+    s = 0.0
+    for k in range(V): s += dz[k] * M[&quot;Wo&quot;][b][k]
+    dh.append(s)
+du = [dh[b] * (1 - h[b] ** 2) for b in range(H)]                     # tanh&#x27;ın türevi: 1 − h²
+dWh = [[x[a] * du[b] for b in range(H)] for a in range(N * D)]; dbh = du[:]
+dx = []
+for a in range(N * D):
+    s = 0.0
+    for b in range(H): s += du[b] * M[&quot;Wh&quot;][a][b]
+    dx.append(s)
+dE = [[0.0] * D for _ in range(V)]
+for i, c in enumerate(pencere):                                      # her karakterin kartına, penceredeki payı eklenir
+    for j in range(D): dE[c][j] += dx[i * D + j]
+for c in range(V):
+    print(&quot;dE[%s] = %s&quot; % (SOZLUK[c], [round(v, 4) for v in dE[c]]))   # pencerede olmayan karakterlerin satırı 0
+
+# ---------- DOĞRULAMA: sonlu fark ----------
+def sonlu_fark(T, a, b, eps=1e-6):
+    eski = T[a][b]
+    T[a][b] = eski + eps; Lp = kayip(M, pencere, hedef)
+    T[a][b] = eski - eps; Lm = kayip(M, pencere, hedef)
+    T[a][b] = eski
+    return (Lp - Lm) / (2 * eps)
+fark = 0.0
+for T, G in ((M[&quot;E&quot;], dE), (M[&quot;Wh&quot;], dWh), (M[&quot;Wo&quot;], dWo)):
+    for a in range(len(T)):
+        for b in range(len(T[0])): fark = max(fark, abs(sonlu_fark(T, a, b) - G[a][b]))
+print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; % fark)
+
+# ---- ÇIKTI ----
+# p(&#x27;3&#x27;) = 0.1476  kayıp = 1.9134  (ln 7 = 1.9459 )
+# dE[1] = [0.1008, 0.088]
+# dE[2] = [-0.2521, -0.1101]
+# dE[3] = [0.0, 0.0]
+# dE[4] = [0.0, 0.0]
+# dE[+] = [0.0543, 0.1816]
+# dE[=] = [-0.1605, 0.0215]
+# dE[.] = [0.0, 0.0]
+# en büyük |sonlu fark − elle gradyan| = 2.0e-10</pre></div></div>
+      <p style="font-size:12.5px;color:var(--mute);margin-top:6px">Sayfadaki sayılar varsayılan seçimle (rastgele başlangıç, "1+2=" → "3") bu kodun çıktısıyla aynıdır.</p>
+
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="x">
     <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — ChatGPT ile fark ve sıradaki adım</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Bu minik model ile ChatGPT arasındaki fark</b> mimarinin sihri değil, çoğunlukla <b>ölçek ve eğitim</b>:</p>
@@ -8846,8 +8982,129 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
     </div>
   </div>
 
-  <div class="tpl-cl" data-stage="7">
-    <div class="tpl-head closed"><span>6️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bütün Resim'deki minik dil modelini <b>kendi kendine eğitirsin</b>: dört toplama satırından başka hiçbir "doğru cevap" yok, metin kendi etiketini veriyor. Altında aynı eğitimin Python kodu (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Dört toplama satırından dil modeli kur, sonra "görmediği" toplamı sına</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Metin: <span class="mono">1+1=2.  1+2=3.  2+1=3.  2+2=4.</span> Model her karakteri önceki 4 karakterden tahmin etmeyi öğrenir. ▶ ile eğit, sağdaki E tablosunda rakamların nasıl yerleştiğini izle. Sonra <b>"2+1=3." satırını çıkar</b> ve eğitimde hiç görmediği toplamı sor.</p><div id="gtEx1"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+SOZLUK = [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;+&#x27;, &#x27;=&#x27;, &#x27;.&#x27;]      # 7 karakterlik sözlük
+KIM = {c: i for i, c in enumerate(SOZLUK)}
+V, N, D, H = len(SOZLUK), 4, 2, 6                 # pencere 4 karakter, her karakter 2 sayı, ara katman 6 nöron
+
+def rastgele(satir, sutun, r, olcek):
+    return [[(r() * 2 - 1) * olcek for _ in range(sutun)] for _ in range(satir)]
+
+def baslangic(tohum=1, olcek=0.5):
+    r = lcg(tohum)
+    return {&quot;E&quot;: rastgele(V, D, r, olcek),        # E tablosu: her karakterin 2 sayılık kimlik kartı
+            &quot;Wh&quot;: rastgele(N * D, H, r, olcek), &quot;bh&quot;: [0.0] * H,     # pencere → ara katman
+            &quot;Wo&quot;: rastgele(H, V, r, olcek), &quot;bo&quot;: [0.0] * V}         # ara katman → 7 skor
+
+def ileri(M, pencere):
+    x = [v for c in pencere for v in M[&quot;E&quot;][c]]                      # 4 kimlik kartını yan yana diz (8 sayı)
+    u = []
+    for b in range(H):
+        s = M[&quot;bh&quot;][b]
+        for a in range(N * D): s += x[a] * M[&quot;Wh&quot;][a][b]
+        u.append(s)
+    h = [math.tanh(v) for v in u]
+    z = []
+    for k in range(V):
+        s = M[&quot;bo&quot;][k]
+        for b in range(H): s += h[b] * M[&quot;Wo&quot;][b][k]
+        z.append(s)                                                  # skorlar
+    m = max(z); e = [math.exp(v - m) for v in z]; top = 0.0
+    for v in e: top += v
+    p = [v / top for v in e]                                         # olasılıklar
+    return x, u, h, z, p
+
+def kayip(M, pencere, hedef):
+    return -math.log(ileri(M, pencere)[4][hedef])
+
+
+SATIRLAR = [&quot;1+1=2.&quot;, &quot;1+2=3.&quot;, &quot;2+1=3.&quot;, &quot;2+2=4.&quot;]                  # eğitim metni: dört toplama satırı
+
+def cift_uret(satirlar):                                             # her karakter için (önceki 4 karakter → o karakter)
+    cift = []
+    for satir in satirlar:
+        s = &quot;.&quot; * N + satir                                          # başa nokta dolgusu
+        for k in range(N, len(s)):
+            cift.append(([KIM[c] for c in s[k - N:k]], KIM[s[k]]))
+    return cift
+
+def gradyan(M, cift):                                                # ortalama kayıp ve gradyanlar (geri yayılım Bütün Resim&#x27;dekiyle aynı)
+    G = {&quot;E&quot;: [[0.0] * D for _ in range(V)], &quot;Wh&quot;: [[0.0] * H for _ in range(N * D)], &quot;bh&quot;: [0.0] * H,
+         &quot;Wo&quot;: [[0.0] * V for _ in range(H)], &quot;bo&quot;: [0.0] * V}
+    top = 0.0
+    for pencere, hedef in cift:
+        x, u, h, z, p = ileri(M, pencere)
+        top += -math.log(p[hedef])
+        dz = p[:]; dz[hedef] -= 1.0
+        for b in range(H):
+            for k in range(V): G[&quot;Wo&quot;][b][k] += h[b] * dz[k]
+        for k in range(V): G[&quot;bo&quot;][k] += dz[k]
+        du = []
+        for b in range(H):
+            s = 0.0
+            for k in range(V): s += dz[k] * M[&quot;Wo&quot;][b][k]
+            du.append(s * (1 - h[b] ** 2))
+        for a in range(N * D):
+            for b in range(H): G[&quot;Wh&quot;][a][b] += x[a] * du[b]
+        for b in range(H): G[&quot;bh&quot;][b] += du[b]
+        for a in range(N * D):
+            s = 0.0
+            for b in range(H): s += du[b] * M[&quot;Wh&quot;][a][b]
+            G[&quot;E&quot;][pencere[a // D]][a % D] += s
+    return top / len(cift), G
+
+def egit(satirlar, tur=3000, lr=1.0, rapor=()):
+    M = baslangic(); cift = cift_uret(satirlar); n = len(cift); log = []
+    for ep in range(tur + 1):
+        L, G = gradyan(M, cift)
+        if ep in rapor: log.append((ep, L))
+        for ad in G:
+            if ad in (&quot;bh&quot;, &quot;bo&quot;):
+                for i in range(len(G[ad])): M[ad][i] -= lr * G[ad][i] / n
+            else:
+                for i in range(len(G[ad])):
+                    for j in range(len(G[ad][i])): M[ad][i][j] -= lr * G[ad][i][j] / n
+    return M, log
+
+def sonraki(M, metin):                                               # en olası sonraki karakter ve olasılığı
+    p = ileri(M, [KIM[c] for c in metin])[4]; i = p.index(max(p))
+    return SOZLUK[i], p[i]
+
+M, log = egit(SATIRLAR, rapor=(0, 100, 500, 1000, 3000))
+print(&quot;kayıp:&quot;, [(e, round(L, 3)) for e, L in log])
+for q in (&quot;1+1=&quot;, &quot;1+2=&quot;, &quot;2+1=&quot;, &quot;2+2=&quot;):
+    c, pr = sonraki(M, q); print(q, &quot;→&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100))
+
+# ---- &quot;görmediği&quot; toplama: 2+1=3 satırını eğitimden çıkar ----
+M2, _ = egit([&quot;1+1=2.&quot;, &quot;1+2=3.&quot;, &quot;2+2=4.&quot;])
+c, pr = sonraki(M2, &quot;2+1=&quot;)
+print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100), &quot; p(&#x27;3&#x27;) = %.3f&quot; % ileri(M2, [KIM[c_] for c_ in &quot;2+1=&quot;])[4][KIM[&quot;3&quot;]])
+
+# ---- ÇIKTI ----
+# kayıp: [(0, 1.922), (100, 0.268), (500, 0.235), (1000, 0.233), (3000, 0.232)]
+# 1+1= → 2 (99.8%)
+# 1+2= → 3 (99.8%)
+# 2+1= → 3 (99.8%)
+# 2+2= → 4 (99.7%)
+# 2+1= (eğitimde YOK) → 2 (90.6%)  p(&#x27;3&#x27;) = 0.000</pre></div></div></div></div>
+
+    </div>
+  </div>
+
+<div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <div class="sechead">🧠 Kendini Test Et — GPT Test</div>
   <div class="pts">
@@ -8879,6 +9136,14 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 7) Şemada x₁₀ neden iki yerde görünüyor (q'ya giriyor ve artık bağlantıyla r'ye ekleniyor)?</div>
       <div class="acc-body">x₁₀ (son karakterin girdisi) hem <b>sorgu q'yu</b> üretir hem de <b>aynen</b> r'ye eklenir. Artık bağlantı (r = x₁₀ + o·W<sub>O</sub>) sayesinde attention karakterin kendi bilgisini silmez, <b>üstüne</b> ekler; ayrıca derin ağlarda gradyanın bozulmadan geri akmasını sağlar (Transformer Bloğu dersindeki fikir).</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 6) Bütün Resim'de E tablosunun neden yalnız penceredeki karakterlerin satırları gradyan alır?</div>
+      <div class="acc-body">Kartlar E tablosundan <b>satır okuyarak</b> geldi; geri dönüşte sinyal de o satırlara yazılır. Pencerede olmayan bir karakterin kartı o adımda kayba hiç girmedi, dolayısıyla gradyanı 0. Aynı karakter pencerede iki kez geçerse iki payın toplamı gelir. Eğitimde binlerce pencere bu satırları yavaş yavaş anlamlı hâle getirir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 7) Örnek 1'de model "2+1=" için neden yanlış cevap veriyor?</div>
+      <div class="acc-body">Bu satırı hiç görmedi ve model toplama kuralını değil <b>gördüğü örnekleri</b> öğrendi: elindeki üç satırda "2" sonrası "+" sonrası "2" ise 4 geliyordu, "1+" ise 2 ya da 3. Küçük bir ağ ve dört satırlık bir metinle genelleme çıkmaz; gerçek dil modelleri çok büyük metinler ve çok daha fazla örnekle eğitildiği için benzer kuralları yakalayabilir.</div>
     </div>
   </div>
 
@@ -9371,59 +9636,62 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610171612"></script>
-<script src="js/lesson-turev.js?v=202610171612"></script>
-<script src="js/lesson-xor.js?v=202610171612"></script>
-<script src="js/lesson-xor-arch.js?v=202610171612"></script>
-<script src="js/lesson-xor-maps.js?v=202610171612"></script>
-<script src="js/lesson-xor-epoch.js?v=202610171612"></script>
-<script src="js/lesson-nn.js?v=202610171612"></script>
-<script src="js/lesson-trig.js?v=202610171612"></script>
+<script src="js/lesson-linreg.js?v=202610171618"></script>
+<script src="js/lesson-turev.js?v=202610171618"></script>
+<script src="js/lesson-xor.js?v=202610171618"></script>
+<script src="js/lesson-xor-arch.js?v=202610171618"></script>
+<script src="js/lesson-xor-maps.js?v=202610171618"></script>
+<script src="js/lesson-xor-epoch.js?v=202610171618"></script>
+<script src="js/lesson-nn.js?v=202610171618"></script>
+<script src="js/lesson-trig.js?v=202610171618"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610171612"></script>
-<script src="js/lesson-rnn-soz.js?v=202610171612"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610171618"></script>
+<script src="js/lesson-rnn-soz.js?v=202610171618"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610171612"></script>
-<script src="js/lesson-lstm-cell.js?v=202610171612"></script>
-<script src="js/app.js?v=202610171612"></script>
-<script src="js/lesson-lstm-big.js?v=202610171612"></script>
-<script src="js/lesson-lstm-step.js?v=202610171612"></script>
-<script src="js/lesson-lstm-size.js?v=202610171612"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610171612"></script>
-<script src="js/lesson-emb-kullan.js?v=202610171612"></script>
-<script src="js/lesson-emb-draco.js?v=202610171612"></script>
-<script src="js/lesson-emb-arch.js?v=202610171612"></script>
-<script src="js/lesson-emb-extra.js?v=202610171612"></script>
-<script src="js/lesson-s2s-weights.js?v=202610171612"></script>
-<script src="js/lesson-s2s-add.js?v=202610171612"></script>
-<script src="js/lesson-s2s-inside.js?v=202610171612"></script>
-<script src="js/lesson-att-train.js?v=202610171612"></script>
-<script src="js/lesson-att-extra.js?v=202610171612"></script>
-<script src="js/lesson-att-big.js?v=202610171612"></script>
-<script src="js/lesson-att-ornek.js?v=202610171612"></script>
-<script src="js/lesson-mh-big.js?v=202610171612"></script>
-<script src="js/lesson-mh-ornek.js?v=202610171612"></script>
-<script src="js/lesson-tf-big.js?v=202610171612"></script>
-<script src="js/lesson-tf-ornek.js?v=202610171612"></script>
-<script src="js/lesson-s2s-extra.js?v=202610171612"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610171612"></script>
-<script src="js/lesson-emb-ornek.js?v=202610171612"></script>
-<script src="js/lesson-emb-steps.js?v=202610171612"></script>
-<script src="js/lesson-emb-big.js?v=202610171612"></script>
-<script src="js/lesson-sm-ornek.js?v=202610171612"></script>
-<script src="js/lesson-sm-big.js?v=202610171612"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610171612"></script>
-<script src="js/lesson-lstm-gate.js?v=202610171612"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610171612"></script>
-<script src="js/lesson-gpt.js?v=202610171612"></script>
-<script src="js/lesson-gpt-mini.js?v=202610171612"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610171612"></script>
-<script src="js/lesson-linreg-big.js?v=202610171612"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610171612"></script>
-<script src="js/lesson-act-big.js?v=202610171612"></script>
-<script src="js/lesson-act-ornek.js?v=202610171612"></script>
-<script src="js/lesson-xor-ornek.js?v=202610171612"></script>
-<script src="js/lesson-nn-ornek.js?v=202610171612"></script>
-<script src="js/lesson-nn-net.js?v=202610171612"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610171618"></script>
+<script src="js/lesson-lstm-cell.js?v=202610171618"></script>
+<script src="js/app.js?v=202610171618"></script>
+<script src="js/lesson-lstm-big.js?v=202610171618"></script>
+<script src="js/lesson-lstm-step.js?v=202610171618"></script>
+<script src="js/lesson-lstm-size.js?v=202610171618"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610171618"></script>
+<script src="js/lesson-emb-kullan.js?v=202610171618"></script>
+<script src="js/lesson-emb-draco.js?v=202610171618"></script>
+<script src="js/lesson-emb-arch.js?v=202610171618"></script>
+<script src="js/lesson-emb-extra.js?v=202610171618"></script>
+<script src="js/lesson-s2s-weights.js?v=202610171618"></script>
+<script src="js/lesson-s2s-add.js?v=202610171618"></script>
+<script src="js/lesson-s2s-inside.js?v=202610171618"></script>
+<script src="js/lesson-att-train.js?v=202610171618"></script>
+<script src="js/lesson-att-extra.js?v=202610171618"></script>
+<script src="js/lesson-att-big.js?v=202610171618"></script>
+<script src="js/lesson-att-ornek.js?v=202610171618"></script>
+<script src="js/lesson-mh-big.js?v=202610171618"></script>
+<script src="js/lesson-mh-ornek.js?v=202610171618"></script>
+<script src="js/lesson-tf-big.js?v=202610171618"></script>
+<script src="js/lesson-tf-ornek.js?v=202610171618"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610171618"></script>
+<script src="js/lesson-gpt-big.js?v=202610171618"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610171618"></script>
+<script src="js/lesson-s2s-extra.js?v=202610171618"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610171618"></script>
+<script src="js/lesson-emb-ornek.js?v=202610171618"></script>
+<script src="js/lesson-emb-steps.js?v=202610171618"></script>
+<script src="js/lesson-emb-big.js?v=202610171618"></script>
+<script src="js/lesson-sm-ornek.js?v=202610171618"></script>
+<script src="js/lesson-sm-big.js?v=202610171618"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610171618"></script>
+<script src="js/lesson-lstm-gate.js?v=202610171618"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610171618"></script>
+<script src="js/lesson-gpt.js?v=202610171618"></script>
+<script src="js/lesson-gpt-mini.js?v=202610171618"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610171618"></script>
+<script src="js/lesson-linreg-big.js?v=202610171618"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610171618"></script>
+<script src="js/lesson-act-big.js?v=202610171618"></script>
+<script src="js/lesson-act-ornek.js?v=202610171618"></script>
+<script src="js/lesson-xor-ornek.js?v=202610171618"></script>
+<script src="js/lesson-nn-ornek.js?v=202610171618"></script>
+<script src="js/lesson-nn-net.js?v=202610171618"></script>
 </body>
 </html>
