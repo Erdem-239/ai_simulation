@@ -30,6 +30,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 #cmp.on{display:block}
 #tour{position:fixed;left:max(14px,env(safe-area-inset-left,0px));top:108px;width:min(480px,calc(100vw - 28px));max-height:calc(100vh - 340px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:none;backdrop-filter:blur(6px);z-index:5}
 #tour.on{display:block}
+#tour .sz{margin-top:5px;padding:5px 8px;border-radius:6px;background:#2a2410aa;border-left:3px solid var(--hl);font-size:12.8px;color:#f1e8c8;line-height:1.45}
 #tour .sh{margin-top:5px;padding:4px 8px;border-radius:6px;background:#0f1218aa;font-size:12.5px;color:#cfd6e6}
 #tour .pk{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:2px 0 8px;color:var(--mute);font-size:12.5px}
 #tour .pk button{font:inherit;color:var(--ink);background:#232d44;border:1px solid var(--line);border-radius:8px;padding:3px 9px;cursor:pointer}
@@ -569,6 +570,31 @@ const SHP=[
  {mini:()=>'h = <b>1×16</b>: tek blok, doğrudan çıkışa.',gpt2:()=>'Bloğun çıktısı <b>'+TT()+'×768</b>: giriş şekliyle aynı, bu yüzden 12 blok art arda dizilebilir.'},
  {mini:()=>'h (1×16) · W_out (16×40) → <b>40 skor</b> → 40 yüzde.',gpt2:()=>TT()+'×768 · (768×50.257) → <b>'+TT()+'×50.257</b> ('+NF(TT()*50257)+' skor). Sonraki token için yalnız <b>son satır</b> kullanılır.'},
  {mini:()=>'Seçilen karakter pencerenin sonuna eklenir, pencere 1 kayar: yine <b>10 slot</b>, adımlar baştan.',gpt2:()=>'Seçilen token eklenir: T '+TT()+' → <b>'+(TT()+1)+'</b>; sonraki turda matrisler <b>'+(TT()+1)+'×768</b>.'}];
+const TOPA=()=>D.a.map((v,i)=>({c:dsp(D.ctxChars[i]),p:Math.round(v*100),i})).sort((x,y)=>y.p-x.p).slice(0,2);
+const LASTC=()=>dsp(D.ctxChars[9]);
+const SOZ=[
+ {mini:()=>PK==='B'?'Cümle harf harf kutulara konur, ama kutu yalnız 10 tane: "'+WIN()+'" girer, baştaki "hayatın an" dışarıda kalır. Model onu hiç görmez.':'Cümle harf harf kutulara konur: "'+WIN()+'". Baştaki 6 boş kutu dolgu, model yalnız bu 10 kutuya bakar.',
+  gpt2:()=>PK==='B'?'Metin parçalara bölünür ve her parça bir numara olur (11 numara). Model harfleri/kelimeleri değil bu numaraları görür; Türkçe sözlüğe pek oturmadığı için kelimeler küçük parçalara dağılır, ama 20 karakterin hepsi içeride.':'Metin parçalara bölünür ve her parça bir numara olur: 7, +, 5, = → 4 numara. Model rakamı değil bu numaraları görür; pencere sınırı yok, cümle ne kadar uzunsa o kadar token.'},
+ {mini:()=>'Her harfe bir "kimlik kartı" verilir (16 sayı): o harfin ne olduğunu anlatan, eğitimde öğrenilmiş bir kart. Aynı harf hep aynı kartı alır'+(PK==='B'?'.':' (6 nokta da aynı kartı çeker).'),
+  gpt2:()=>'Her parça için 768 sayılık bir kimlik kartı: parçanın ne olduğunu anlatan, eğitimde öğrenilmiş bir kart. Kartlar tek büyük tablodan (50.257 satır) satır seçilerek alınır.'},
+ {mini:()=>'Kartlar sırayı bilmez, "bu harf kaçıncı kutuda?" bilgisi ayrı bir yer kartından (P) gelir. Bu olmasa "7+5" ile "5+7" aynı görünürdü.',
+  gpt2:()=>'Aynı fikir: kimlik kartı sırayı bilmez, bu yüzden her konum için ayrı bir yer kartı eklenir (1., 2., 3., 4. konum). Bu model yer kartlarını öğreniyor; Llama bunun yerine açı döndürür.'},
+ {mini:()=>'Kimlik kartı ile yer kartı toplanır: her kutu artık "ben '+(PK==='B'?'bu harfim':'bu rakam/işaretim')+' ve şu sıradayım" der. Bundan sonra yalnız bu birleşik tablo (x) kullanılır.',
+  gpt2:()=>'Aynı toplama. Sonra LayerNorm sayıları dengeler (çok büyük ya da çok küçük kalmasın diye). Minik GPT\'de bu dengeleme adımı yok, çünkü tek blok ve küçük sayılar var.'},
+ {mini:()=>'Yalnız SON kutu ("'+LASTC()+'") soru sorar: "cevabı bulmak için kime bakayım?" (q). Diğer 10 kutu kendini etiketler (K, "beni böyle bul") ve verebileceği bilgiyi hazırlar (V).',
+  gpt2:()=>'Burada HER token hem soru (Q), hem etiket (K), hem bilgi (V) üretir: '+TT()+' token '+TT()+' soru soruyor. 12 kafa var; her kafa eğitimde farklı türde şey aramayı öğrenir (kafaların ne aradığı bu sayfada ölçülmedi).'},
+ {mini:()=>{const t=TOPA();return 'Soru, her kutunun etiketiyle karşılaştırılır ve yüzdelere çevrilir. En çok bakılanlar: "'+t[0].c+'" %'+t[0].p+', "'+t[1].c+'" %'+t[1].p+'. '+(PK==='B'?'Bu soru eğitimde hiç görülmediği için bu bakışın anlamlı bir şey aradığını söyleyemeyiz.':'Yani model "7 ile 5\'e bakıp toplamalıyım" gibi bir şey öğrenmiş: toplama için gereken iki rakama bakıyor.')},
+  gpt2:()=>'Her token, kendinden ÖNCEKİ token\'lara ne kadar bakacağını yüzdeyle belirler (geleceğe bakamaz). 12 kafa bunu ayrı ayrı yapar. Gerçek GPT-2\'nin '+(PK==='B'?'bu cümlede':'"7+5=" için')+' nereye baktığını ölçmedik; çizilen kare renkleri şematik.'},
+ {mini:()=>{const t=TOPA();return 'Bakılan kutuların bilgileri yüzdelere göre karıştırılır ("'+t[0].c+'"\'den %'+t[0].p+', "'+t[1].c+'"\'den %'+t[1].p+') ve son kutunun kartına eklenir. Son kutu artık "ben '+LASTC()+'\'yım ve yanımda şu bilgiler var" bilgisini taşır.'},
+  gpt2:()=>'12 kafanın karışımları yan yana konup W_O ile birleştirilir, eski karta eklenir. Her token artık çevresindeki token\'lardan topladığı bilgiyle zenginleşmiştir ('+TT()+' token\'ın hepsi için).'},
+ {mini:()=>'Toplanan bilgi tek başına yetmez; küçük bir "düşünme" katmanı (16→32→16) onu işler. Burası, toplanan bilgiyi yorumladığı varsayılan yer; hangi nöronun ne yaptığını ölçmedik.',
+  gpt2:()=>'Aynı fikir, 4 kat büyük (768→3072→768). Her token ayrı ayrı işlenir; token\'lar burada birbirine bakmaz (bakma işi attention\'daydı).'},
+ {mini:()=>'Tek blok yetiyor, çünkü görev küçük. Son kutunun vektörü artık cevabı seçmek için gereken her şeyi (umarız) taşıyor.',
+  gpt2:()=>'Bu blok 12 kez art arda tekrarlanır, her turda bilgi biraz daha işlenir. Genel eğilim: ilk bloklar basit ilişkileri, sonrakiler daha soyut olanları yakalar (burada ölçülmedi).'},
+ {mini:()=>'Son kutunun vektörü 40 harfe puan olur; en yüksek puanlı harf "'+AM()+'" (%'+AP()+').',
+  gpt2:()=>'Son token\'ın vektörü sözlükteki 50.257 parçanın her birine puan olur; yalnız SON satır, sıradaki parçayı seçmek için kullanılır.'},
+ {mini:()=>PK==='B'?'"e" cevaba eklenir ve döngü devam eder. Model neredeyse tam emin ama bu soruyu hiç görmedi: kendinden emin ama anlamsız. Model cevabı bir seferde değil, harf harf üretir.':'"1" cevaba eklenir, pencere bir kayar, her şey baştan çalışır ve bu sefer "2" çıkar: "12" harf harf üretilmiş olur.',
+  gpt2:()=>'Seçilen parça diziye eklenir ('+TT()+' → '+(TT()+1)+' token) ve her şey baştan çalışır. Uzun bir cevap, bu döngünün yüzlerce kez tekrarıdır.'}];
 const PRN=()=>PK==='B'?{
  mini:'Metin <b>harf harf</b> okunur (sözlük 40 karakter; ç ö ü ğ ı ş dahil). "hayatın anlamı nedir" <b>20 karakter</b>, pencere ise yalnız <b>10 slot</b>: yalnız <b>SON 10 karakter</b> alınır: <span class="mono">lamı nedir</span>. Baştaki "hayatın an" pencerenin dışında kalır; model onu <b>hiç görmez</b>. Dolgu yok.',
  gpt2:'Aynı metin GPT-2\'nin BPE sözlüğüyle <b>11 token</b>\'a bölünür: <span class="mono">h | ay | at | ı | n | ␣an | lam | ı | ␣n | ed | ir</span> (numaralar 71, 323, 265, 30102, 77, 281, 2543, 30102, 299, 276, 343 — gerçek, ölçüldü). Sözlük büyük ölçüde İngilizce metinle kurulduğu için Türkçe kelimeler parçalanır; "ı" ayrı bir parça. <b>T = 11</b>, dolgu yok, 20 karakterin hepsi içeride.',
@@ -636,7 +662,7 @@ const PROMPTS={A:'7+5=',B:'hayatın anlamı nedir'};
 function tourPanel(){const st=TOUR[tourIdx],act=ARCHS.filter(A=>A.on),el=$('tour');
   el.innerHTML='<div class="hd"><h3>🎬 Eş zamanlı gezi · adım '+(tourIdx+1)+'/'+TOUR.length+'</h3><button class="cx" aria-label="Kapat">×</button></div><div class="ts">'+st.t+'</div>'+
     '<div class="pk">İstem: '+Object.keys(PROMPTS).map(k=>'<button data-pk="'+k+'" class="'+(PK===k?'on':'')+'">'+esc(PROMPTS[k])+'</button>').join('')+'</div>'+
-    act.map(A=>'<div class="r" style="--c2:'+ACOL[A.key]+'"><b>'+esc(A.btn)+':</b> '+fv(st.txt[A.key])+(SHP[tourIdx][A.key]?'<div class="sh">📐 '+SHP[tourIdx][A.key]()+'</div>':'')+'</div>').join('')+
+    act.map(A=>'<div class="r" style="--c2:'+ACOL[A.key]+'"><b>'+esc(A.btn)+':</b> '+fv(st.txt[A.key])+(SOZ[tourIdx][A.key]?'<div class="sz">💬 '+SOZ[tourIdx][A.key]()+'</div>':'')+(SHP[tourIdx][A.key]?'<div class="sh">📐 '+SHP[tourIdx][A.key]()+'</div>':'')+'</div>').join('')+
     '<div class="fk">🔍 <b>Fark:</b> '+fv(st.fark)+'</div>'+
     '<div class="tc"><button id="tPrev"'+(tourIdx===0?' disabled':'')+'>◀ Geri</button><button id="tNext"'+(tourIdx===TOUR.length-1?' disabled':'')+'>İleri ▶</button><button id="tAuto">'+(tourTimer?'⏸ Durdur':'▶▶ Otomatik')+'</button></div>'+
     '<div class="dots">'+TOUR.map((_,i)=>'<i class="'+(i===tourIdx?'on':'')+'" data-i="'+i+'"></i>').join('')+'</div>';
