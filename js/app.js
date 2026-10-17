@@ -2416,8 +2416,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Word2vec: Mikolov ve ekibi, Google (2013). "kral − erkek + kadın ≈ kraliçe" ile dünyayı şaşırttı: anlam, vektör aritmetiğine dönüştü.',
       real:[['🔍','Arama motorlarında anlamsal eşleme'],['🎬','Öneri sistemleri (film/ürün benzerliği)'],['🌐','Çok dilli anlam haritaları']],
       sub:['One-hot vs yoğun vektör','Word2vec fikri','Benzerlik (cosine)']},
-    {id:'van',  nm:'📉 Vanishing / Exploding', tier:4, v:26, pre:['rnn'], tab:'rnn',
-      d:'Whh·(1−h²) çarpanı zaman boyunca üst üste binince gradyan ya söner ya patlar. RNN çağının duvarı.',
+    {id:'van',  nm:'📉 Vanishing / Exploding', tier:4, v:26, pre:['rnn'], tab:'rnn', gostage:'x', golabel:'RNN dersinde ilgili bölüme git →',
+      d:'Whh·(1−h²) çarpanı zaman boyunca üst üste binince gradyan ya söner ya patlar. RNN çağının duvarı. <i>Ayrı bir ders sayfası yok: bu durak RNN dersinin "➕ Ekstra" bölümünde (Vanishing/Exploding, r<sup>T</sup> sezgisi ve gradient clipping) ve Bütün Resim\'deki δ zincirinde işleniyor; düğme seni oraya götürür.</i>',
       sci:'Teşhis: Sepp Hochreiter\'ın yüksek lisans tezi (1991, Almanca!) ve Bengio (1994). Derin öğrenmenin 20 yıl gecikmesinin baş şüphelisi.',
       real:[['🧱','Derin ağ duvarının teşhisi'],['✂️','Gradient clipping tekniği'],['🛣️','LSTM ve ResNet\'e giden yolun açılması']],
       sub:['Whh·(1−h²) çarpanı','0.5²⁰ vs 1.5²⁰ sezgisi','Gradient clipping']},
@@ -2456,8 +2456,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['🏆','BİLİM ZAFERİ: makale ana dilin gibi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Makaleyi baştan sona oku','Şekil 1 mimarisini kendi cümlelerinle anlat','Sonuç tablolarını yorumla']},
-    {id:'llm',  nm:'🤖 Modern LLM\'ler (GPT)', tier:10, v:50, pre:['paper'], tab:'gpt',
-      d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi.',
+    {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
+      d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
       real:[['🤖','ChatGPT, Claude, Gemini'],['👨‍💻','Copilot: kod yazan YZ'],['🔬','Bilimsel keşif asistanları']],
       sub:['Decoder-only mimari','Next-token eğitimi','Ölçekleme fikri']}
@@ -2777,7 +2777,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         +'<span'+(c?' style="color:#46c46a"':'')+'>'+esc(t)+'</span></label>';
     }).join('');
     let btns='';
-    if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'" style="background:var(--blue); color:#fff">Sayfada aç →</button> ';
+    if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'"'+(n.gostage?' data-gostage="'+n.gostage+'"':'')+' style="background:var(--blue); color:#fff">'+(n.golabel||'Sayfada aç →')+'</button> ';
     btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 AIpedia&#39;da oku</button> ';
     if(st!=='locked') btns+='<button class="addbtn" data-tg="'+n.id+'" style="background:'+(done.has(n.id)?'var(--panel); color:var(--muted); border:1px solid var(--line)':'var(--green); color:#0b2a12')+'">'+(done.has(n.id)?'↩ Hepsini geri al':'✔ Hepsini tamamladım')+'</button>';
     info.innerHTML='<b style="font-size:16px">'+esc(n.nm)+'</b>'
@@ -2796,6 +2796,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       +btns;
     info.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
       const t=document.querySelector('.navbtn[data-model="'+b.dataset.go+'"]'); if(t) t.click();
+      const gs=b.dataset.gostage;
+      if(gs) setTimeout(()=>{ // düğüm dersin belirli bir aşamasına gidiyorsa (ör. Vanishing → RNN'in Ekstra bölümü): aşamayı aç ve kaydır
+        const m=document.getElementById('model-'+b.dataset.go), cl=m&&m.querySelector('.tpl-cl[data-stage="'+gs+'"]');
+        if(cl){const h=cl.querySelector('.tpl-head'); if(h&&h.classList.contains('closed')) h.click(); cl.scrollIntoView({behavior:'smooth',block:'start'});}
+      },150);
     }));
     info.querySelectorAll('[data-pedia]').forEach(b=>b.addEventListener('click',()=>{
       const t=document.querySelector('.navbtn[data-model="pedia"]'); if(t) t.click();
@@ -3332,7 +3337,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   function applyTreeOrder(){
     const api=window.__ttAPI; if(!api) return;
     const HEAD={yol:-2, pedia:-1};              // ders değil, hep en üstte
-    const head=[], lessons=[], extra=[];        // extra = data-model'i olmayan düğmeler (şu an yok) → sona
+    const head=[], lessons=[], extra=[];        // extra = ağaçta düğümü olmayan düğmeler (ör. 🧭 Transformer Haritası ekstra dersi) → sona
     btns.forEach(b=>{
       const m=b.dataset.model;
       if(m in HEAD){ head.push([HEAD[m], b]); return; }
