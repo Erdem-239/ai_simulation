@@ -71,9 +71,9 @@ body.nobar #barShow{display:block}
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
   <div class="row" id="archs"><span class="lab">Mimari (birden çok seçilebilir)</span></div>
-  <div class="row" id="opts"><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
+  <div class="row" id="opts"><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
   <div class="row"><span class="lab">Birleşik</span><input id="sl" type="range" min="0" max="100" value="0" aria-label="Parçalama"><span class="lab">Parçalı</span><button id="bb" title="Birleştir">Birleştir</button><button id="bx" title="Parçala">Parçala</button><button id="bf" title="Hepsini görünür yap">Sığdır</button><button id="bz1" title="Uzaklaş">−</button><button id="bz2" title="Yakınlaş">+</button><button id="bl" title="Yerleşim: iki satır (sığdırılmış) / tek düzlem">Yerleşim: iki satır</button></div>
-  <div id="hint">Tekerlek: parçala, sonra imlece yakınlaş/uzaklaş · Sürükle: döndür · Sağ tuş ya da Shift+sürükle: kaydır · Klavye: ← → ↑ ↓ kaydır, W/S yakınlaş/uzaklaş, A/D döndür, +/− parçala/birleştir · Parçaya tıkla: bilgi ve odak</</div>
+  <div id="hint">Tekerlek: parçala, sonra imlece yakınlaş/uzaklaş · Sürükle: döndür · Sağ tuş ya da Shift+sürükle: kaydır · Klavye: ← → ↑ ↓ kaydır, W/S yakınlaş/uzaklaş, A/D döndür, +/− parçala/birleştir · Parçaya tıkla: bilgi (kamera hareketi için "Tıklayınca zoom") · Kaybolursan: Sığdır ya da H tuşu</</div>
 </div>
 <div id="nomod">3B sahne yüklenemedi (WebGL ya da kütüphane engelli olabilir).</div>
 
@@ -307,23 +307,24 @@ addEventListener('resize',resize);resize();
 $('sl').oninput=e=>{tT=e.target.value/100};
 $('bb').onclick=()=>{tT=0};$('bx').onclick=()=>{tT=1};
 $('bl').onclick=()=>{MINI.mT=MINI.mT?0:1;$('bl').textContent=MINI.mT?'Yerleşim: tek düzlem':'Yerleşim: iki satır'};
-const panOff=new THREE.Vector3(),ZMIN=0.015,ZMAX=6;let hoverOn=false,hoverXY=null,hoverDirty=false,cmpOpen=false;
+const panOff=new THREE.Vector3(),ZMIN=0.015,ZMAX=2.6;let focusOn=false,hoverOn=false,hoverXY=null,hoverDirty=false,cmpOpen=false;
 function worldAt(cx,cy){mouse.x=(cx/innerWidth)*2-1;mouse.y=-(cy/innerHeight)*2+1;ray.setFromCamera(mouse,camera);
   const n=new THREE.Vector3();camera.getWorldDirection(n);const pl=new THREE.Plane().setFromNormalAndCoplanarPoint(n,tgt),P=new THREE.Vector3();return ray.ray.intersectPlane(pl,P)?P:null}
 function zoomAt(k,cx,cy){const nz=clamp(zoom*k,ZMIN,ZMAX);k=nz/zoom;
-  if(k<1&&cx!=null&&!selected){const P=worldAt(cx,cy);if(P)panOff.add(P.sub(tgt).multiplyScalar(1-k))}else if(k>1)panOff.multiplyScalar(0.88);zoom=nz}
+  if(k<1&&cx!=null&&!(selected&&focusOn)){const P=worldAt(cx,cy);if(P)panOff.add(P.sub(tgt).multiplyScalar(1-k))}else if(k>1)panOff.multiplyScalar(0.88);zoom=nz}
 $('bz1').onclick=()=>zoomAt(1.3);$('bz2').onclick=()=>zoomAt(1/1.3);
-$('bf').onclick=()=>{select(null);zoom=1;panOff.set(0,0,0);if(tT<.9)tT=1};
+function resetView(){select(null);zoom=1;panOff.set(0,0,0);yaw=0.32;pitch=0.2;if(tT<.9)tT=1}
+$('bf').onclick=resetView;
 $('ix').onclick=()=>select(null);
 stage.addEventListener('wheel',e=>{e.preventDefault();const d=e.deltaY,k=Math.exp(d*0.0016);
   if(e.ctrlKey||e.metaKey){zoomAt(k,e.clientX,e.clientY);return}
   if(tT<0.999&&d<0){tT=clamp(tT-d*0.0012,0,1);return}
-  if(d>0&&zoom>=0.999&&!selected){tT=clamp(tT-d*0.0012,0,1);return}
+  if(d>0&&zoom>=0.999&&!(selected&&focusOn)){tT=clamp(tT-d*0.0012,0,1);return}
   zoomAt(k,e.clientX,e.clientY)},{passive:false});
 const keys=new Set();
 addEventListener('keydown',e=>{const k=e.key;
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'].includes(k)){keys.add(k.toLowerCase());e.preventDefault();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
-  else if(k==='+'||k==='=')tT=clamp(tT+.08,0,1);else if(k==='-'||k==='_')tT=clamp(tT-.08,0,1);else if(k===' '){tT=tT>.5?0:1;e.preventDefault()}else if(k==='Escape')select(null)});
+  else if(k==='+'||k==='=')tT=clamp(tT+.08,0,1);else if(k==='-'||k==='_')tT=clamp(tT-.08,0,1);else if(k===' '){tT=tT>.5?0:1;e.preventDefault()}else if(k==='Escape')select(null);else if(k==='Home'||k==='h'||k==='H')resetView()});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));addEventListener('blur',()=>keys.clear());
 function keyMove(){if(!keys.size)return;const sh=keys.has('shift');
   const dist=camera.position.distanceTo(tgt),sp=dist*0.012;
@@ -372,7 +373,7 @@ function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.siz
 
 /* ---------- döngü ---------- */
 const sizeOf=p=>{const s=p.group.scale.x;return {w:p.w*s,h:p.h*s,d:0.12*s}};
-const GAPY=3.5,wt=new THREE.Vector3();
+const GAPY=3.5,wt=new THREE.Vector3();let frameN=0,lostN=0;
 function frame(){
   t+=(tT-t)*0.12;if(Math.abs(tT-t)<1e-4)t=tT;$('sl').value=Math.round(tT*100);
   const e=ease(t),sc=0.28+0.72*e;hoverTick();keyMove();
@@ -394,13 +395,16 @@ function frame(){
   lmat.opacity=e*0.5;
   halos.forEach(h=>{h.m.position.copy(h.p.group.position);h.m.scale.setScalar(h.p.group.scale.x)});
   if(linkL&&selected){const a=linkL.geometry.attributes.position.array,sp=selected.group.position;pairs.forEach((q,i)=>{const qp=q.group.position;a.set([sp.x,sp.y,sp.z,qp.x,qp.y,qp.z],i*6)});linkL.geometry.attributes.position.needsUpdate=true;linkL.computeLineDistances()}
-  // kamera
+  // kamera: kaybolmayı engelle (kaydırmayı sahne sınırlarına kıstır, görünürde parça kalmadıysa otomatik sıfırla)
+  {const Lm=Math.max(...act.map(A=>A.LENc));panOff.x=clamp(panOff.x,-Lm/2-4,Lm/2+4);panOff.y=clamp(panOff.y,-totH/2-6,totH/2+6);panOff.z=clamp(panOff.z,-12,12)}
+  if((frameN=(frameN||0)+1)%15===0){let vis=0;const pv=new THREE.Vector3();act.forEach(A=>A.parts.forEach(p=>{pv.copy(p.group.position).project(camera);if(pv.z<1&&Math.abs(pv.x)<1.15&&Math.abs(pv.y)<1.15)vis++}));
+    lostN=vis?0:(lostN||0)+1;if(lostN>=3){lostN=0;resetView()}}
   const Lmax=Math.max(...act.map(A=>A.LENc)),xa=act.reduce((s,A)=>s+A.XC_A,0)/act.length,cx=xa+(Lmax/2-xa)*e;
-  let span=0;if(selected){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
+  let span=0;const foc=selected&&focusOn;if(foc){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
     grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}))}
-  wt.set(cx,0,0).add(panOff);tgt.lerp(selected?focusV:wt,0.14);
+  wt.set(cx,0,0).add(panOff);tgt.lerp(foc?focusV:wt,0.14);
   const distEx=Math.max(Lmax*1.12,totH*1.6+4);
-  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6+span*1.7):(5+(distEx-5)*e))*zoom;
+  const dist=(foc?(Math.max(selected.w,selected.h)*sc+6+span*1.7):(5+(distEx-5)*e))*zoom;
   camPos.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));
   camera.position.lerp(camPos,0.2);camera.lookAt(tgt);
   renderer.render(scene,camera);
@@ -443,14 +447,16 @@ const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'att
  gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
 ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
-ARCHS.forEach(A=>{A.on=A===MINI;A.mm=0;A.mT=0;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
+ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
-  b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=0}
+  b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=A.mDef}
     if(ARCHS.filter(x=>x.on).length>=2&&was<2)cmpOpen=true;if(ARCHS.filter(x=>x.on).length<2)cmpOpen=false;$('bc').classList.toggle('on',cmpOpen);applyArch()};
   $('archs').appendChild(b)});
 $('barHide').onclick=()=>document.body.classList.add('nobar');$('barShow').onclick=()=>document.body.classList.remove('nobar');
+$('bz').onclick=()=>{focusOn=!focusOn;$('bz').textContent='Tıklayınca zoom: '+(focusOn?'açık':'kapalı');$('bz').classList.toggle('on',focusOn);focusV=null};
 $('bc').onclick=()=>{cmpOpen=!cmpOpen;$('bc').classList.toggle('on',cmpOpen);buildCmp()};
 $('bh').onclick=()=>{hoverOn=!hoverOn;$('bh').textContent='İmleç bilgisi: '+(hoverOn?'açık':'kapalı');$('bh').classList.toggle('on',hoverOn);hoverDirty=true};
+$('bl').textContent='Yerleşim: tek düzlem';
 applyArch();
 zoom=1;tgt.set(MINI.XC_A,0,0);
 camera.position.set(MINI.XC_A+5*Math.sin(yaw)*Math.cos(pitch),5*Math.sin(pitch),5*Math.cos(yaw)*Math.cos(pitch));
