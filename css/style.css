@@ -1667,3 +1667,12 @@ body.xt-full-lock{overflow:hidden}
 @media(max-width:1300px){.lv-mid{order:-1;flex-basis:100%}.lv-side{max-width:none}}
 .s2s-go{color:#7ec8ff; text-decoration:underline dotted; cursor:pointer}
 .s2s-go:hover{color:#ffd54a}
+
+/* ---- Ekstra ders: Transformer Haritası (model-harita) ---- */
+.hr-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; margin:14px 0}
+.hr-card{background:#1c2238; border:1px solid var(--line); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px}
+.hr-card h3{margin:0 0 2px; font-size:16px}
+.hr-card p{margin:0; font-size:13.5px; line-height:1.5}
+.hr-card ul{margin:4px 0 6px; padding-left:18px; font-size:13px; line-height:1.5}
+.hr-go{margin-top:auto; align-self:flex-start; display:inline-block; padding:8px 14px; border-radius:8px; background:rgba(90,160,224,.16); border:1px solid rgba(90,160,224,.55); color:#9fc8f0; font-weight:700; font-size:13.5px; text-decoration:none}
+.hr-go:hover{background:rgba(90,160,224,.28)}
