@@ -54,7 +54,7 @@ body.nobar #barShow{display:block}
 #info h2{margin:0 0 2px;font-size:18px;line-height:1.2}
 #info .sh{font:600 12px var(--mono);color:var(--c,var(--blue));margin-bottom:6px}
 #info p{margin:6px 0;font-size:14px;line-height:1.5}
-#info .nums{font:12px var(--mono);color:var(--mute);margin-top:6px;word-break:break-all}
+#info .nums{white-space:pre-line;font:12px var(--mono);color:var(--mute);margin-top:6px;word-break:break-all}
 #info .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer;line-height:1}
 #nomod{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--mute)}
 @media (max-width:700px){#info{top:auto;bottom:150px;right:12px;max-height:38vh}#top h1{font-size:18px}}
@@ -348,10 +348,17 @@ stage.addEventListener('pointerleave',()=>{hoverXY=null;hoverDirty=true});
 const up=e=>{ptr.delete(e.pointerId);if(!ptr.size)stage.classList.remove('drag');
   if(moved<6&&downAt&&!panMode){select(pick(e.clientX,e.clientY))}downAt=null};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',e=>{ptr.delete(e.pointerId);stage.classList.remove('drag')});
-function showInfo(p){const info=$('info');if(!p){info.classList.remove('on');return}
-  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;$('in').textContent=p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'';info.classList.add('on')}
-function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);ARCHS.forEach(A=>A.parts.forEach(q=>{q.lb.classList.toggle('sel',q===p);if(q.edge)q.edge.material.color.set(q===p?'#ffc82e':q.col)}));
-  showInfo(p);if(p&&tT<.5)tT=1}
+const selSet=new Set();let pairs=[];
+function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
+  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
+  $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
+function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
+  if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
+    others.forEach(A=>{const m=p.eq?A.parts.filter(q=>q.eq===p.eq):[];m.forEach(q=>{selSet.add(q);pairs.push(q)});
+      lines.push('↔ '+A.btn+': '+(m.length?m.map(q=>q.name+' ('+q.shape+')').join(' + '):'karşılığı yok'))});
+    extra=lines.join('\n')}
+  ARCHS.forEach(A=>A.parts.forEach(q=>{const on=selSet.has(q);q.lb.classList.toggle('sel',on);if(q.edge)q.edge.material.color.set(on?'#ffc82e':q.col)}));
+  showInfo(p,extra);if(p&&tT<.5)tT=1}
 function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.size)return;
   if(!hoverOn||!hoverXY){showInfo(null);return}showInfo(pick(hoverXY.x,hoverXY.y))}
 
@@ -368,7 +375,7 @@ function frame(){
   act.forEach(A=>{if(A._fresh){A.yo=A.yoT;A._fresh=false}A.yo+=(A.yoT-A.yo)*0.12;const mm=A.mm,P=A.parts;
     P.forEach(p=>{p.E.x=p.E2.x+(p.E1.x-p.E2.x)*mm;p.E.y=p.E2.y+(p.E1.y-p.E2.y)*mm;p.E.z=p.E2.z;
       p.group.scale.setScalar(sc);p.group.position.set(p.A.x+(p.E.x-p.A.x)*e,A.yo+p.A.y+(p.E.y-p.A.y)*e,p.A.z+(p.E.z-p.A.z)*e);
-      const dim=selected&&selected!==p;p.group.traverse(o=>{if(o.material&&!Array.isArray(o.material)&&o.material.isLineBasicMaterial){o.material.opacity=dim?0.25:0.9}})});
+      const dim=selected&&!selSet.has(p);p.group.traverse(o=>{if(o.material&&!Array.isArray(o.material)&&o.material.isLineBasicMaterial){o.material.opacity=dim?0.25:0.9}})});
     const pos=A.lgeo.attributes.position.array;A.links.forEach(([a,b],i)=>{const g1=a.group.position,g2=b.group.position;pos.set([g1.x+a.w*sc/2,g1.y+a.h*sc/2,g1.z,g2.x-b.w*sc/2,g2.y+b.h*sc/2,g2.z],i*6)});
     A.lgeo.attributes.position.needsUpdate=true;
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position,cp=A.contGeo.attributes.position.array;
@@ -379,10 +386,11 @@ function frame(){
   lmat.opacity=e*0.5;
   // kamera
   const Lmax=Math.max(...act.map(A=>A.LENc)),xa=act.reduce((s,A)=>s+A.XC_A,0)/act.length,cx=xa+(Lmax/2-xa)*e;
-  if(selected){const g=selected.group.position;focusV=focusV||new THREE.Vector3(g.x,g.y,g.z);focusV.lerp(g,0.2)}
+  let span=0;if(selected){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
+    grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}))}
   wt.set(cx,0,0).add(panOff);tgt.lerp(selected?focusV:wt,0.14);
   const distEx=Math.max(Lmax*1.12,totH*1.6+4);
-  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6):(5+(distEx-5)*e))*zoom;
+  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6+span*0.9):(5+(distEx-5)*e))*zoom;
   camPos.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));
   camera.position.lerp(camPos,0.2);camera.lookAt(tgt);
   renderer.render(scene,camera);
@@ -421,6 +429,10 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
+const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'attn',K:'attn',V:'attn',skor:'attn',a:'attn',o:'attn',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
+ gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
+ llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
+ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mm=0;A.mT=0;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
   b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=0}
