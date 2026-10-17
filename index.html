@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610171557"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610171604"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610171557">
+<link rel="stylesheet" href="css/style.css?v=202610171604">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 15:57 TR · #409</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:04 TR · #410</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -6133,12 +6133,70 @@ for d in (4, 16, 64, 256):
   <!-- ===================== MULTI-HEAD MODELİ ===================== -->
   <div class="model" id="model-multihead">
 
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 240" role="img" aria-label="Aynı cümlede üç kafa, üç farklı ilişki">
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">aynı cümle, üç kafa: her kafa farklı bir ilişkiyi izler (örnek)</text>
+      <g fill="none" stroke-linecap="round">
+        <path d="M130,160 C190,60 340,60 400,160" stroke="#46c46a" stroke-width="5" opacity=".9"/>
+        <path d="M250,160 C280,100 160,100 130,160" stroke="#f0a032" stroke-width="5" opacity=".9" transform="translate(0,0)"/>
+        <path d="M400,160 C460,60 600,60 640,160" stroke="#3a7afe" stroke-width="5" opacity=".9"/>
+      </g>
+      <g font-size="13" fill="#e8ebf2" text-anchor="middle" font-family="Segoe UI, Arial" font-weight="700">
+        <rect x="75" y="160" width="110" height="34" rx="8" fill="#16203a" stroke="#46c46a"/><text x="130" y="182">kedi</text>
+        <rect x="195" y="160" width="110" height="34" rx="8" fill="#16203a" stroke="#f0a032"/><text x="250" y="182">kuyruğunu</text>
+        <rect x="345" y="160" width="110" height="34" rx="8" fill="#16203a" stroke="#46c46a"/><text x="400" y="182">salladı</text>
+        <rect x="585" y="160" width="110" height="34" rx="8" fill="#16203a" stroke="#3a7afe"/><text x="640" y="182">mutluydu</text>
+      </g>
+      <g font-size="11.5" font-family="Segoe UI, Arial">
+        <text x="150" y="216" fill="#46c46a">● kafa 1: kim ne yaptı (kedi ↔ salladı)</text>
+        <text x="365" y="216" fill="#f0a032">● kafa 2: "onun" kime ait (kuyruğunu → kedi)</text>
+        <text x="365" y="234" fill="#3a7afe">● kafa 3: neden (salladı ↔ mutluydu)</text>
+      </g>
+    </svg>
   <h1>🧩 Multi-Head Attention — Aynı Anda Birçok Bakış (+ Positional Encoding)</h1>
   <p class="sub">Tek bir attention "ortalama bir bakış" öğrenir — her şeye biraz, hiçbir şeye tam. Çözüm zarif: temsili parçalara böl, her parçada <b>bağımsız bir dikkat kafası</b> çalıştır, sonra birleştir. Sekiz göz, bir çift gözden iyidir. Sayfanın sonunda, Self-Attention'ın kaybettiği sıra bilgisini geri kazandıran <b>Positional Encoding</b>'i de göreceksin.</p>
-
   <div class="callout">🔗 <b>Kaldığımız yer:</b> 🎯 Self-Attention'da tek bir ısı haritası gördün. Multi-head, o haritanın <b>h tane paralel kopyası</b>. Her kafa, embedding'i farklı bir "mercek"ten (öğrenilen W matrisi) geçirir → farklı ilişkileri yakalar. Sonra hepsi birleşir.</p></div>
+    </div>
+  </div>
 
-  <div class="sechead">1) Neden tek kafa yetmez?</div>
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — "Tek bakış yetmiyor"</div>
+      <p>🎯 Self-Attention'ı kuran <b>2017</b> makalesindeki (Vaswani ve ark., "Attention Is All You Need") ikinci büyük fikir hemen onun arkasından geldi. Yazarlar şunu fark etti: tek bir attention, bir kelimenin <b>bütün</b> ilişkilerini tek bir yüzde dağılımına sığdırmaya çalışıyor; dikkatin ağırlıklı ortalaması farklı türden bilgileri birbirine <b>karıştırıp bulanıklaştırıyor</b>.</p>
+      <p>Çözümleri basitti: temsili <b>küçük parçalara böl</b>, her parçada bağımsız bir attention çalıştır, sonuçları yapıştır. Makalede <b>8 kafa</b> kullanıldı (her biri 64 boyutlu dilimle, 8×64=512). Önemli ayrıntı: toplam hesap, tek kafalı tam boyutlu attention'a yakın kalıyor; yani "bedava" bir zenginlik.</p>
+      <p>Yıllar içinde araştırmacılar kafaları tek tek açıp inceledi. <b>Clark ve ark. (2019)</b> BERT'in bazı kafalarının belirli dilbilgisi ilişkilerini (örneğin bir fiilin nesnesini) izlediğini gösterdi; <b>Voita ve ark. (2019)</b> az sayıda kafanın işin çoğunu yaptığını, kalanların çıkarılabildiğini buldu; <b>Michel ve ark. (2019)</b> "Are Sixteen Heads Really Better Than One?" diye sordu. Sonuç: işbölümü var ama bazı kafalar gereksiz. Hikâye hâlâ yazılıyor.</p>
+      <p>Aynı makalenin üçüncü parçası <b>sıra bilgisi</b>: attention tüm kelimelere aynı anda baktığı için "kedi köpeği kovaladı" ile "köpek kediyi kovaladı"yı ayıramaz. Çözüm: her pozisyona sinüs/kosinüs dalgalarından örülmüş bir <b>imza</b> eklemek (makale ayrıca öğrenilen pozisyon tablolarını da denedi, sonuçlar neredeyse aynı çıktı). Bu sayfa ikisini birden anlatıyor.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-mha" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>GPT-3</b> — her katmanda <b>96 kafa</b>, 96 katman: toplam 9.216 ayrı dikkat kafası aynı anda çalışıyor.</div>
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>BERT (arama ve anlama)</b> — BERT-base'de 12 kafa × 12 katman = 144 kafa; her biri cümlede farklı bir ilişkiyi tarar.</div>
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Makine çevirisi</b> — bir kafa fiil–özne uyumunu, bir kafa zamirin neye gittiğini, bir kafa komşu kelimeleri izleyebilir.</div>
+        <div class="ex-card"><span class="ex-ico">🖼️</span><b>Görüntü modelleri (ViT)</b> — ViT-Base'de 12 kafa; kafalar yamaların hem yakınına hem uzağına bakmayı paylaşır.</div>
+        <div class="ex-card"><span class="ex-ico">🎙️</span><b>Konuşma tanıma</b> — ses parçaları arasındaki bağlam (hangi hece hangi kelimenin parçası) çok kafayla yakalanır.</div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — neden çok kafa, Concat + W<sub>O</sub></span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">Neden tek kafa yetmez?</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">"Kedi, uzun kuyruğunu salladı çünkü mutluydu" cümlesinde bir kelime aynı anda birçok ilişki taşır:</p>
     <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
@@ -6150,16 +6208,7 @@ for d in (4, 16, 64, 256):
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Tek dikkat kafası bunların hepsini tek bir dağılıma sıkıştırmaya çalışır — bulanık bir ortalama çıkar. <b>Çözüm:</b> her ilişki türüne ayrı bir kafa ayır.</p>
   </div>
 
-  <!-- İNTERAKTİF: çok kafa -->
-  <div class="sechead">2) 🔬 Oyuncak: üç kafa, üç farklı desen</div>
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Aynı cümle, <b>3 kafa</b>. Her kafa embedding'i farklı bir W merceğinden geçirdiği için <b>farklı</b> dikkat deseni çizer. Bir <b>kelimeye tıkla</b> → o kelimenin 3 kafada nereye baktığını yan yana kıyasla. Tek kafa bunların ortalamasını görürdü; çok-kafa hepsini ayrı yakalar.</div>
-    <div style="overflow-x:auto"><svg id="mhSvg" role="img"></svg></div>
-    <div class="work" id="mhWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
-    <div class="tip">Gerçek modellerde 8–16 kafa, yüzlerce boyut olur. Sonradan yapılan "beyin otopsileri" (probing) kafaların gerçekten işbölümü yaptığını gösterdi: kimi özne–yüklemi, kimi zamiri, kimi bir önceki kelimeyi izler. (AIpedia → 🧩 maddesinde tam hikâye.)</p></div>
-  </div>
-
-  <div class="sechead">3) Birleştirme: Concat + W_O</div>
+  <div class="sechead">Birleştirme: Concat + W_O</div>
   <div class="pts" style="border-left:3px solid var(--blue)">
     \[ \text{MultiHead}(Q,K,V)=\text{Concat}(\text{kafa}_1,\dots,\text{kafa}_h)\,W_O \]
     \[ \text{kafa}_i=\text{Attention}(QW_i^Q,\;KW_i^K,\;VW_i^V) \]
@@ -6171,7 +6220,23 @@ for d in (4, 16, 64, 256):
     <div class="callout">🎯 Sezgi: bir olayı <b>farklı açılardan çeken kameralar</b> düşün (kim, nerede, neden). Her kafa bir kamera; W<sub>O</sub> ise bütün çekimleri tek bir kurguda birleştiren yönetmen. Sonuç: tek kameranın asla yakalayamayacağı zenginlikte bir temsil.</div>
   </div>
 
-  <div class="sechead">4) 📍 Positional Encoding — sıranın imzası</div>
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — üç kafa + Positional Encoding</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<!-- İNTERAKTİF: çok kafa -->
+  <div class="sechead">🔬 Oyuncak: üç kafa, üç farklı desen</div>
+  <div class="pts" style="border-left:3px solid var(--accent)">
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Aynı cümle, <b>3 kafa</b>. Her kafa embedding'i farklı bir W merceğinden geçirdiği için <b>farklı</b> dikkat deseni çizer. Bir <b>kelimeye tıkla</b> → o kelimenin 3 kafada nereye baktığını yan yana kıyasla. Tek kafa bunların ortalamasını görürdü; çok-kafa hepsini ayrı yakalar.</div>
+    <div style="overflow-x:auto"><svg id="mhSvg" role="img"></svg></div>
+    <div class="work" id="mhWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
+    <div class="tip">Gerçek modellerde 8–16 kafa, yüzlerce boyut olur. Sonradan yapılan "beyin otopsileri" (probing) kafaların gerçekten işbölümü yaptığını gösterdi: kimi özne–yüklemi, kimi zamiri, kimi bir önceki kelimeyi izler. (AIpedia → 🧩 maddesinde tam hikâye.)</p></div>
+  </div>
+
+  <div class="sechead">📍 Positional Encoding — sıranın imzası</div>
   <div class="pts" style="border-left:3px solid #5aa0e0">
     <div class="callout" style="margin:0 0 14px">🔗 <b>Kaldığımız yer:</b> Yapı Taşları → Trigonometri modülünde formülü ve 4 boyutluk mini bir örneği görmüştün: \( PE(pos,2i)=\sin(pos/10000^{2i/d}) \), \( PE(pos,2i{+}1)=\cos(pos/10000^{2i/d}) \). Self-Attention tüm kelimelere <b>aynı anda</b> baktığı için (RNN gibi sırayla okumadığı için) "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" sırasız aynı kelime çorbasına döner — Positional Encoding, her pozisyona sinüs/kosinüs dalgalarından örülmüş benzersiz bir "imza" ekleyerek bunu çözer. Aşağıda gerçek boyutuna (d=12) yakın bir versiyonunu canlı görüyorsun.</div>
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Her <b>satır</b> bir pozisyon (0–15), her <b>sütun</b> bir boyut çifti (i=0 en hızlı dalga, i=5 en yavaş). Turuncu = pozitif değer, mavi = negatif; renk ne kadar koyuysa değer o kadar uçta (±1'e yakın). Bir <b>pozisyon numarasına tıkla</b> → o satırın 12 sayılık imzasını oku.</div>
@@ -6180,7 +6245,204 @@ for d in (4, 16, 64, 256):
     <div class="callout" style="margin-top:10px; border-left-color:#5aa0e0">💡 <b>Saat kadranı benzetmesi:</b> i=0 sütunu saniye kolu gibi hızla döner (her pozisyonda çok değişir), i=5 saat kolu gibi neredeyse durur. Birlikte bakınca her pozisyon benzersiz — tıpkı saatin üç kolunun birlikte günün tam anını vermesi gibi. Bu 12 sayı kelimenin embedding vektörüne <b>eklenir</b> (concat değil, toplama); model artık "ne" ile "nerede"yi tek vektörde taşır.</div>
   </div>
 
-  <div class="sechead">🧠 Kendini Test Et — Multi-Head & Positional Encoding</div>
+  
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — 2 kafa: ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="mhSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Multi-Head'in <b>bütün resmi</b>: 3 kelime, 4 sayılık vektörler, <b>2 kafa</b> (her kafanın kendi W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>'si, 4×2). <b>İleri yol:</b> her kafa kendi attention'ını çalıştırır → Concat → çıktı → kayıp. <b>Geri yol:</b> kayıp Concat'te <b>ikiye bölünür</b>, her kafa kendi başına geri yürür; 7 yaprak (W<sub>O</sub> + 2×3 matris). Girdileri ve hedefi değiştir; kutulara/oklara gel → türev nasıl bulunuyor. (Tek-kafalı geri yolu 🎯 Self-Attention → Bütün Resim'de gördün; burada tek yeni halka Concat'in türevi.)</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Multi-Head'in bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="mhBigMap"></div></div></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (elle geri yayılım + sonlu fark doğrulaması)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+# 3 kelime (&quot;kedi&quot;, &quot;süt&quot;, &quot;içti&quot;), her biri 4 sayılık vektör (d_model = 4)
+X = [[1.0, 0.2, 0.5, -0.3], [0.1, 0.9, -0.4, 0.6], [0.8, 0.7, 0.3, 0.2]]
+# 2 kafa; her kafanın KENDİ üç matrisi var (4×2: 4 sayıyı 2 sayılık alt-uzaya indirir, d_k = 2)
+WQ = [[[1.2, -0.6], [0.4, 1.0], [-0.5, 0.8], [0.7, 0.3]], [[-0.7, 1.1], [1.3, 0.2], [0.5, -0.9], [-0.2, 0.6]]]
+WK = [[[1.0, 0.7], [-0.8, 1.2], [0.6, -0.4], [0.3, 0.9]], [[0.6, -0.9], [0.9, 1.1], [-0.3, 0.7], [0.8, -0.2]]]
+WV = [[[0.9, 0.1], [-0.2, 0.6], [0.4, -0.5], [0.1, 0.3]], [[-0.5, 0.8], [0.7, 0.2], [0.3, 0.6], [-0.4, 0.5]]]
+w = [0.7, -0.5, 0.6, 0.4]          # W_O (burada tek sayıya indiren çıktı katmanı): concat&#x27;in 4 sayısı → y
+t = 0.9                            # hedef
+H, DK = 2, 2
+
+def matmul(A, B):
+    return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+def transpose(A):
+    return [list(r) for r in zip(*A)]
+
+def kafa(h):                                          # tek bir kafanın ileri yolu
+    Q, K, V = matmul(X, WQ[h]), matmul(X, WK[h]), matmul(X, WV[h])
+    S = [[sum(Q[i][k] * K[j][k] for k in range(DK)) / math.sqrt(DK) for j in range(3)] for i in range(3)]
+    A = []
+    for satir in S:
+        m = max(satir); e = [math.exp(v - m) for v in satir]; s = sum(e)
+        A.append([v / s for v in e])
+    return Q, K, V, S, A, matmul(A, V)
+
+def ileri():
+    kafalar = [kafa(h) for h in range(H)]
+    Z = [kafalar[0][5][i] + kafalar[1][5][i] for i in range(3)]       # CONCAT: iki kafanın çıktısı yan yana (3×4)
+    y = sum(Z[2][k] * w[k] for k in range(4))                         # yalnız SON kelime çıktıya girer
+    return kafalar, Z, y, 0.5 * (y - t) ** 2
+
+kafalar, Z, y, L = ileri()
+for h in range(H):
+    print(&quot;kafa&quot;, h + 1, &quot;son satır dikkat =&quot;, [round(v, 3) for v in kafalar[h][4][2]])
+print(&quot;y =&quot;, round(y, 3), &quot; L =&quot;, round(L, 4))
+
+# ---------- GERİ YAYILIM ----------
+e = y - t
+dw = [e * Z[2][k] for k in range(4)]                  # ∂L/∂W_O
+dC = [e * w[k] for k in range(4)]                     # ∂L/∂concat (son kelime)
+Xt = transpose(X)
+sonuc = []
+for h in range(H):
+    Q, K, V, S, A, _ = kafalar[h]
+    dz = dC[2 * h: 2 * h + 2]                         # concat&#x27;i böl: bu kafanın payı
+    dV = [[A[2][j] * dz[0], A[2][j] * dz[1]] for j in range(3)]
+    dA = [dz[0] * V[j][0] + dz[1] * V[j][1] for j in range(3)]
+    ort = sum(A[2][j] * dA[j] for j in range(3))
+    dS = [A[2][j] * (dA[j] - ort) for j in range(3)]
+    dq = [sum(dS[j] * K[j][k] for j in range(3)) / math.sqrt(DK) for k in range(2)]
+    dK = [[dS[j] * Q[2][k] / math.sqrt(DK) for k in range(2)] for j in range(3)]
+    dWV = matmul(Xt, dV)                              # üç kelimeden toplanır
+    dWK = matmul(Xt, dK)
+    dWQ = [[X[2][a] * dq[b] for b in range(2)] for a in range(4)]   # yalnız son kelime
+    sonuc.append((dWQ, dWK, dWV))
+    print(&quot;kafa&quot;, h + 1, &quot;dW_V[0] =&quot;, [round(v, 4) for v in dWV[0]], &quot; dW_Q[0] =&quot;, [round(v, 4) for v in dWQ[0]])
+
+# ---------- DOĞRULAMA: sonlu fark ----------
+def sonlu_fark(M, a, b, hh=1e-6):
+    eski = M[a][b]
+    M[a][b] = eski + hh; Lp = ileri()[3]
+    M[a][b] = eski - hh; Lm = ileri()[3]
+    M[a][b] = eski
+    return (Lp - Lm) / (2 * hh)
+fark = 0
+for h in range(H):
+    for M, G in ((WQ[h], sonuc[h][0]), (WK[h], sonuc[h][1]), (WV[h], sonuc[h][2])):
+        for a in range(4):
+            for b in range(2):
+                fark = max(fark, abs(sonlu_fark(M, a, b) - G[a][b]))
+for k in range(4):
+    eski = w[k]; w[k] = eski + 1e-6; Lp = ileri()[3]; w[k] = eski - 1e-6; Lm = ileri()[3]; w[k] = eski
+    fark = max(fark, abs((Lp - Lm) / 2e-6 - dw[k]))
+print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; % fark)
+
+# ---- ÇIKTI ----
+# kafa 1 son satır dikkat = [0.445, 0.164, 0.39]
+# kafa 2 son satır dikkat = [0.199, 0.454, 0.348]
+# y = 0.72  L = 0.0161
+# kafa 1 dW_V[0] = [-0.0973, 0.0695]  dW_Q[0] = [-0.0294, 0.0248]
+# kafa 2 dW_V[0] = [-0.0563, -0.0375]  dW_Q[0] = [0.0011, 0.0011]
+# en büyük |sonlu fark − elle gradyan| = 1.8e-11</pre></div></div>
+      <p style="font-size:12.5px;color:var(--mute);margin-top:6px">Sayfadaki sayılar varsayılan girdilerle bu kodun çıktısıyla aynıdır.</p>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — GQA ve RoPE</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">Modern varyantlar: GQA ve RoPE</div>
+  <div class="pts">
+    <ul style="font-size:14px; color:#ccd5e8; line-height:1.9">
+      <li><b>GQA (grouped-query attention):</b> sorgu kafaları çok kalır ama K ve V kafaları gruplanıp paylaşılır (ör. Llama-3 8B'de 32 sorgu kafası, 8 K/V kafası). Üretirken saklanan K/V önbelleği küçülür; kalite neredeyse korunur.</li>
+      <li><b>RoPE:</b> konum bilgisi bir tablo olarak eklenmez, Q ve K'nın sayı çiftleri konum numarasıyla orantılı bir açıyla döndürülür; skor mutlak konuma değil mesafeye bağlı olur. Bu sayfadaki sin/cos imzasının modern kuzeni.</li>
+      <li>İkisini de 🧭 <b>Transformer Haritası (Ekstra)</b> dersindeki <b>3B mimari</b> kartında Llama tarzı mimaride görebilirsin (kafa kartları ve renkli K/V grupları).</li>
+    </ul>
+  </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — sayıyla gör</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">İki örnek, ikisi de sayıyla: birincisinde <b>pozisyon imzası olmadan</b> attention'ın kelime sırasını göremediğini ölçersin; ikincisinde <b>kafa sayısı değişince</b> neyin değişip neyin sabit kaldığını hesaplarsın. Altlarında aynı hesabın Python kodu (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Aynı kelimeler, ters sıra: attention fark görüyor mu?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" aynı kelimeler, ama anlam tersine döner. Attention kelimelerin sırasını görebiliyor mu? Aynı W'lerle iki cümleyi çalıştır, her kelimenin çıktısını kıyasla; sonra pozisyon imzasını aç.</p><div id="mhEx1"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı deney Python'da (yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+def matmul(A, B):
+    return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+
+D = 4
+kelime = {&quot;kedi&quot;: [0.9, -0.2, 0.4, 0.1], &quot;kovaladı&quot;: [-0.3, 0.8, 0.1, 0.6], &quot;köpek&quot;: [0.7, 0.5, -0.4, -0.2]}
+def rastgele_matris(tohum):                       # 4×4, sayılar -1..1 arası, her çalıştırmada aynı
+    r = lcg(tohum)
+    return [[r() * 2 - 1 for _ in range(D)] for _ in range(D)]
+WQ, WK, WV = rastgele_matris(1), rastgele_matris(2), rastgele_matris(3)
+
+def pozisyon(pos):                                # sinüs/kosinüs imzası (d=4)
+    return [math.sin(pos / 10000 ** (0 / D)), math.cos(pos / 10000 ** (0 / D)),
+            math.sin(pos / 10000 ** (2 / D)), math.cos(pos / 10000 ** (2 / D))]
+
+def attention(X):                                 # tek kafa: softmax(QKᵀ/√d)·V
+    Q, K, V = matmul(X, WQ), matmul(X, WK), matmul(X, WV)
+    S = [[sum(Q[i][k] * K[j][k] for k in range(D)) / math.sqrt(D) for j in range(len(X))] for i in range(len(X))]
+    A = []
+    for satir in S:
+        m = max(satir); e = [math.exp(v - m) for v in satir]; s = sum(e)
+        A.append([v / s for v in e])
+    return matmul(A, V)
+
+def cumle(sira, pe):
+    X = [[a + b for a, b in zip(kelime[k], pozisyon(i))] if pe else list(kelime[k]) for i, k in enumerate(sira)]
+    return dict(zip(sira, attention(X)))
+
+A_SIRA = [&quot;kedi&quot;, &quot;kovaladı&quot;, &quot;köpek&quot;]            # kedi köpeği kovaladı
+B_SIRA = [&quot;köpek&quot;, &quot;kovaladı&quot;, &quot;kedi&quot;]            # köpek kediyi kovaladı (aynı kelimeler, ters sıra)
+for pe in (False, True):
+    ca, cb = cumle(A_SIRA, pe), cumle(B_SIRA, pe)
+    print(&quot;Pozisyon imzası&quot;, &quot;VAR&quot; if pe else &quot;YOK&quot;)
+    for k in A_SIRA:
+        fark = math.sqrt(sum((a - b) ** 2 for a, b in zip(ca[k], cb[k])))
+        print(f&quot;  {k:9s} A: {[round(v, 3) for v in ca[k]]}  B: {[round(v, 3) for v in cb[k]]}  fark = {fark:.3f}&quot;)
+
+# ---- ÇIKTI ----
+# Pozisyon imzası YOK
+#   kedi      A: [-0.357, 0.334, 0.521, 0.315]  B: [-0.357, 0.334, 0.521, 0.315]  fark = 0.000
+#   kovaladı  A: [-0.38, 0.345, 0.496, 0.355]  B: [-0.38, 0.345, 0.496, 0.355]  fark = 0.000
+#   köpek     A: [-0.337, 0.374, 0.494, 0.309]  B: [-0.337, 0.374, 0.494, 0.309]  fark = 0.000
+# Pozisyon imzası VAR
+#   kedi      A: [-0.545, 0.782, 1.593, 1.354]  B: [-0.741, 1.01, 1.377, 1.565]  fark = 0.426
+#   kovaladı  A: [-0.533, 0.736, 1.617, 1.35]  B: [-0.902, 0.776, 1.35, 1.895]  fark = 0.712
+#   köpek     A: [-0.574, 0.927, 1.528, 1.365]  B: [-0.82, 0.901, 1.363, 1.727]  fark = 0.468</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Kafa sayısını artırınca ağırlık sayısı değişir mi?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 8 kafa, 1 kafadan 8 kat pahalı mı? d, H ve cümle uzunluğunu değiştirip hangi sayıların değiştiğine bak. GPT-2 small (d=768, 12 kafa) ve Llama-3 8B'nin (d=4096, 32 kafa) değerleri listede.</p><div id="mhEx2"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># Kafa sayısı H değişince ağırlık sayısı ne olur? (her kafa d_k = d / H boyutlu dilim kullanır)
+def say(d, H, n=10):
+    dk = d // H
+    qkv = 3 * (d * (H * dk))             # W_Q, W_K, W_V: her biri d × (H·d_k) = d × d
+    wo = (H * dk) * d                    # W_O: (H·d_k) × d
+    skor = H * n * n                     # H kafa × n×n skor tablosu (n kelimelik cümle)
+    return dk, qkv + wo, skor
+
+for d, H in ((512, 1), (512, 8), (512, 64), (768, 12), (4096, 32)):
+    dk, parametre, skor = say(d, H)
+    print(f&quot;d={d:4d}  kafa={H:2d}  d_k={dk:3d}  ağırlık(Q,K,V,O)={parametre:&gt;11,}  skor hücresi (10 kelime)={skor}&quot;)
+# 4·d² her kafa sayısında AYNI; değişen: kafa başına boyut (d_k) ve skor tablosu sayısı.
+
+# ---- ÇIKTI ----
+# d= 512  kafa= 1  d_k=512  ağırlık(Q,K,V,O)=  1,048,576  skor hücresi (10 kelime)=100
+# d= 512  kafa= 8  d_k= 64  ağırlık(Q,K,V,O)=  1,048,576  skor hücresi (10 kelime)=800
+# d= 512  kafa=64  d_k=  8  ağırlık(Q,K,V,O)=  1,048,576  skor hücresi (10 kelime)=6400
+# d= 768  kafa=12  d_k= 64  ağırlık(Q,K,V,O)=  2,359,296  skor hücresi (10 kelime)=1200
+# d=4096  kafa=32  d_k=128  ağırlık(Q,K,V,O)= 67,108,864  skor hücresi (10 kelime)=3200</pre></div></div></div></div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">🧠 Kendini Test Et — Multi-Head & Positional Encoding</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -6207,11 +6469,26 @@ for d in (4, 16, 64, 256):
       <div class="acc-head"><span class="ac">▸</span> 6) Neden tek bir sinüs değil de onlarca farklı frekans birden?</div>
       <div class="acc-body">Tek bir dalga periyodik olduğu için pozisyonları <b>tekrar tekrar karıştırırdı</b> (saatte tek bir kol olsaydı günün hangi saati olduğunu bilemezdin). Hızlı + yavaş dalgaları <b>birlikte</b> kullanmak — saniye/dakika/saat kolları gibi — her pozisyona gerçekten benzersiz bir imza verir, üstelik göreli mesafeleri de matematiksel olarak korur.</div>
     </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 7) Concat'in geri yayılımda türevi ne yapar?</div>
+      <div class="acc-body">Concat yalnızca yan yana yapıştırmaydı, türevi de <b>kopya-kes</b>: birleşik vektöre gelen sinyal, kafaların payına <b>bölünür</b> (ilk 2 sayı kafa 1'e, son 2 sayı kafa 2'ye). Sonra her kafa kendi attention'ının geri yolunu kendi başına yürür; sonuçta her kafanın kendi W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> gradyanı çıkar.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 8) Pozisyon imzası olmadan "kedi köpeği kovaladı" ile "köpek kediyi kovaladı" neden aynı görünür?</div>
+      <div class="acc-body">Attention her kelimeyi diğerlerine <b>bakarak</b> işler ama kelimelerin <b>sırasını</b> kullanmaz: aynı kelime kümesi aynı skorları ve aynı çıktıyı üretir (Örnek 1'de fark = 0). Pozisyon imzası kelimenin vektörüne "kaçıncı sırada" bilgisini ekleyince aynı kelime farklı yerde farklı çıktı verir.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 9) Kafa sayısını 1'den 8'e çıkarınca ağırlık sayısı artar mı?</div>
+      <div class="acc-body">Hayır: W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, W<sub>O</sub> toplamı her zaman 4·d² (Örnek 2). Her kafa matrislerin d/H sütunluk dilimini kullanır. Artan şey ayrı skor tablosu sayısı (H tane), yani yakalanabilecek farklı ilişki sayısıdır.</div>
+    </div>
+  </div>
+
+  
+    </div>
   </div>
 
   <p class="footer">Multi-Head • paralel kafalar · farklı mercekler (W) · Concat + W_O · işbölümü · Positional Encoding · sin/cos imza</p>
-  </div><!-- /model-multihead -->
-
+    </div><!-- /model-multihead -->
   <div class="model" id="model-transformer">
 
   <h1>🏗️ Transformer Bloğu — Parçalar Tek Tuğlada Birleşiyor</h1>
@@ -8786,55 +9063,57 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610171557"></script>
-<script src="js/lesson-turev.js?v=202610171557"></script>
-<script src="js/lesson-xor.js?v=202610171557"></script>
-<script src="js/lesson-xor-arch.js?v=202610171557"></script>
-<script src="js/lesson-xor-maps.js?v=202610171557"></script>
-<script src="js/lesson-xor-epoch.js?v=202610171557"></script>
-<script src="js/lesson-nn.js?v=202610171557"></script>
-<script src="js/lesson-trig.js?v=202610171557"></script>
+<script src="js/lesson-linreg.js?v=202610171604"></script>
+<script src="js/lesson-turev.js?v=202610171604"></script>
+<script src="js/lesson-xor.js?v=202610171604"></script>
+<script src="js/lesson-xor-arch.js?v=202610171604"></script>
+<script src="js/lesson-xor-maps.js?v=202610171604"></script>
+<script src="js/lesson-xor-epoch.js?v=202610171604"></script>
+<script src="js/lesson-nn.js?v=202610171604"></script>
+<script src="js/lesson-trig.js?v=202610171604"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610171557"></script>
-<script src="js/lesson-rnn-soz.js?v=202610171557"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610171604"></script>
+<script src="js/lesson-rnn-soz.js?v=202610171604"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610171557"></script>
-<script src="js/lesson-lstm-cell.js?v=202610171557"></script>
-<script src="js/app.js?v=202610171557"></script>
-<script src="js/lesson-lstm-big.js?v=202610171557"></script>
-<script src="js/lesson-lstm-step.js?v=202610171557"></script>
-<script src="js/lesson-lstm-size.js?v=202610171557"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610171557"></script>
-<script src="js/lesson-emb-kullan.js?v=202610171557"></script>
-<script src="js/lesson-emb-draco.js?v=202610171557"></script>
-<script src="js/lesson-emb-arch.js?v=202610171557"></script>
-<script src="js/lesson-emb-extra.js?v=202610171557"></script>
-<script src="js/lesson-s2s-weights.js?v=202610171557"></script>
-<script src="js/lesson-s2s-add.js?v=202610171557"></script>
-<script src="js/lesson-s2s-inside.js?v=202610171557"></script>
-<script src="js/lesson-att-train.js?v=202610171557"></script>
-<script src="js/lesson-att-extra.js?v=202610171557"></script>
-<script src="js/lesson-att-big.js?v=202610171557"></script>
-<script src="js/lesson-att-ornek.js?v=202610171557"></script>
-<script src="js/lesson-s2s-extra.js?v=202610171557"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610171557"></script>
-<script src="js/lesson-emb-ornek.js?v=202610171557"></script>
-<script src="js/lesson-emb-steps.js?v=202610171557"></script>
-<script src="js/lesson-emb-big.js?v=202610171557"></script>
-<script src="js/lesson-sm-ornek.js?v=202610171557"></script>
-<script src="js/lesson-sm-big.js?v=202610171557"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610171557"></script>
-<script src="js/lesson-lstm-gate.js?v=202610171557"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610171557"></script>
-<script src="js/lesson-gpt.js?v=202610171557"></script>
-<script src="js/lesson-gpt-mini.js?v=202610171557"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610171557"></script>
-<script src="js/lesson-linreg-big.js?v=202610171557"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610171557"></script>
-<script src="js/lesson-act-big.js?v=202610171557"></script>
-<script src="js/lesson-act-ornek.js?v=202610171557"></script>
-<script src="js/lesson-xor-ornek.js?v=202610171557"></script>
-<script src="js/lesson-nn-ornek.js?v=202610171557"></script>
-<script src="js/lesson-nn-net.js?v=202610171557"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610171604"></script>
+<script src="js/lesson-lstm-cell.js?v=202610171604"></script>
+<script src="js/app.js?v=202610171604"></script>
+<script src="js/lesson-lstm-big.js?v=202610171604"></script>
+<script src="js/lesson-lstm-step.js?v=202610171604"></script>
+<script src="js/lesson-lstm-size.js?v=202610171604"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610171604"></script>
+<script src="js/lesson-emb-kullan.js?v=202610171604"></script>
+<script src="js/lesson-emb-draco.js?v=202610171604"></script>
+<script src="js/lesson-emb-arch.js?v=202610171604"></script>
+<script src="js/lesson-emb-extra.js?v=202610171604"></script>
+<script src="js/lesson-s2s-weights.js?v=202610171604"></script>
+<script src="js/lesson-s2s-add.js?v=202610171604"></script>
+<script src="js/lesson-s2s-inside.js?v=202610171604"></script>
+<script src="js/lesson-att-train.js?v=202610171604"></script>
+<script src="js/lesson-att-extra.js?v=202610171604"></script>
+<script src="js/lesson-att-big.js?v=202610171604"></script>
+<script src="js/lesson-att-ornek.js?v=202610171604"></script>
+<script src="js/lesson-mh-big.js?v=202610171604"></script>
+<script src="js/lesson-mh-ornek.js?v=202610171604"></script>
+<script src="js/lesson-s2s-extra.js?v=202610171604"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610171604"></script>
+<script src="js/lesson-emb-ornek.js?v=202610171604"></script>
+<script src="js/lesson-emb-steps.js?v=202610171604"></script>
+<script src="js/lesson-emb-big.js?v=202610171604"></script>
+<script src="js/lesson-sm-ornek.js?v=202610171604"></script>
+<script src="js/lesson-sm-big.js?v=202610171604"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610171604"></script>
+<script src="js/lesson-lstm-gate.js?v=202610171604"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610171604"></script>
+<script src="js/lesson-gpt.js?v=202610171604"></script>
+<script src="js/lesson-gpt-mini.js?v=202610171604"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610171604"></script>
+<script src="js/lesson-linreg-big.js?v=202610171604"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610171604"></script>
+<script src="js/lesson-act-big.js?v=202610171604"></script>
+<script src="js/lesson-act-ornek.js?v=202610171604"></script>
+<script src="js/lesson-xor-ornek.js?v=202610171604"></script>
+<script src="js/lesson-nn-ornek.js?v=202610171604"></script>
+<script src="js/lesson-nn-net.js?v=202610171604"></script>
 </body>
 </html>

@@ -1509,3 +1509,11 @@ Kullanıcı sitenin şablona/teknoloji haritasına uygunluğunu denetletti; dene
 - **Örnek 2**: rastgele q + 5 k (LCG, `7+d`), d=4…256, 2000 deneme; ölçeksiz skor yayılımı √d ile büyür (1,65→13,38), d=256'da denemelerin %69'unda %99+ kilitlenme; √d ile yayılım ≈0,84 sabit. JS = Python birebir.
 - **Dürüst eksik**: Örnek 1'in (eski W eğitimi) Python kodu kutusu yok (sayfada "Python karşılığı" deniyor ama kod gömülü değil) — istenirse ayrı iş.
 - Sıradaki: Multi-Head, sonra Transformer Bloğu (3B mimari kartıyla örtüşmeyi bağla), sonra GPT Test eksik aşamaları ve Yol Haritası düğüm düzeltmeleri.
+
+## Multi-Head → 8 aşamalı şablon (#410) — denetimin 2. adımı
+
+Self-Attention'ın ardından Multi-Head (+ Positional Encoding) 8 aşamaya çevrildi: 1 Giriş (hero: aynı cümlede 3 kafa), 2 Hikâye (Vaswani 2017 → Clark/Voita/Michel 2019 kafa analizleri → PE), 3 Gerçek Hayat (GPT-3 96×96 kafa, BERT 12×12, ViT-B 12, …), 4 Nedir (neden tek kafa yetmez + Concat/W_O), 5 Simülasyon (3 kafa oyuncağı + Positional Encoding ısı haritası), 6 **Bütün Resim** (`js/lesson-mh-big.js`), Ekstra (GQA, RoPE; 3B mimari kartına bağlantı), 7 Örnek Çalışmalar (`js/lesson-mh-ornek.js`), 8 Test (+3 soru). Mevcut içerik taşındı (id'ler aynı: `mhSvg`, `posSvg`).
+- **Bütün Resim**: 3 kelime × 4 sayı (d_model=4), 2 kafa, d_k=2; her kafanın KENDİ W_Q/W_K/W_V'si (4×2), çıktı W_O (4→1) yalnız SON kelimeden. Ağaç: L→y→{W_O, c₃→[Concat'in türevi: kopya-kes, ikiye böl]→her kafada {V→W_V, A→S→{q→W_Q, K→W_K}}}, 7 yaprak, 28 pop-up (`xtsrc-mb_*`). Tek-kafalı geri yolu Self-Attention Bütün Resim'inden bilinir, yeni halka yalnız Concat. Python sonlu fark farkı ≈2e-11, JS = Python, MathJax hatası 0.
+- **Örnek 1** (pozisyon imzası): aynı W'lerle "kedi kovaladı köpek" / "köpek kovaladı kedi"; imza YOKken her kelimenin çıktısı iki cümlede birebir aynı (fark 0), imzayla 0,43–0,71. **Örnek 2** (sayarak gör): 4·d² ağırlık H'den bağımsız, skor tablosu sayısı H·n². JS = Python.
+- **Kullanıcı sorusu**: "Q,K,V aynı boyut mu, bizde q 1×16 idi": gerçek modelde üçü de T×d (kafa başına T×d_k); Minik GPT ve Bütün Resim demolarında q yalnız son konum için kullanılır, bu bir sadeleştirme.
+- Sıradaki: Transformer Bloğu (3B mimari kartıyla örtüşmeyi bağla), sonra GPT Test eksik aşamaları ve Yol Haritası düğüm düzeltmeleri.
