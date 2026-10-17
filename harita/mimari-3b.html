@@ -54,6 +54,11 @@ body.nobar #barShow{display:block}
 #info h2{margin:0 0 2px;font-size:18px;line-height:1.2}
 #info .sh{font:600 12px var(--mono);color:var(--c,var(--blue));margin-bottom:6px}
 #info p{margin:6px 0;font-size:14px;line-height:1.5}
+#cx{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+#cx h4{margin:0 0 4px;font-size:13px;color:var(--hl)}
+#cx .r{font-size:12.5px;line-height:1.45;margin:4px 0;padding-left:8px;border-left:3px solid var(--c2,var(--line))}
+#cx .r b{color:var(--c2)}
+#cx .r.off{opacity:.55}
 #info .nums{white-space:pre-line;font:12px var(--mono);color:var(--mute);margin-top:6px;word-break:break-all}
 #info .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer;line-height:1}
 #nomod{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--mute)}
@@ -66,7 +71,7 @@ body.nobar #barShow{display:block}
 <div id="labels"></div>
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
-<div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div></div>
+<div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div><div id="cx"></div></div>
 <button id="barShow" title="Ayar panelini aç">▴ Panel</button>
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
@@ -357,6 +362,7 @@ function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w
   const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
+  $('cx').innerHTML=cmpBlock(p);
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
 function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
   if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
@@ -443,6 +449,32 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
+const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0'};
+const AMAX=CHARS[D.p.indexOf(Math.max(...D.p))],APCT=(Math.max(...D.p)*100).toFixed(1).replace('.',',');
+const CMPTXT={
+ tok:{mini:'Metin harf harf: 40 karakterlik sözlük, 10 karakterlik pencere ("······7+5=").',gpt2:'Metin BPE alt-kelime parçalarına bölünür: 50.257 parçalık sözlük, en çok 1024 token.',llama:'BPE parçaları, çok daha büyük sözlük (128.256 parça), bağlam 8192 token.'},
+ emb:{mini:'E tablosu 40×16: her karakter için 16 sayılık kimlik kartı (640 ağırlık).',gpt2:'wte 50.257×768 (≈38,6 milyon ağırlık, modelin yaklaşık üçte biri); çıkış tablosuyla PAYLAŞIMLI.',llama:'Emb 128.256×4096 (≈525 milyon ağırlık); çıkış tablosundan AYRI.'},
+ pos:{mini:'P tablosu 10×16: her slot için öğrenilen yer kartı, x = E + P ile toplanır.',gpt2:'wpe 1024×768: yine öğrenilen yer kartları, aynı toplama.',llama:'Tablo yok: RoPE, Q ve K\'yı konum numarasıyla döndürür; skor mutlak konuma değil mesafeye bağlı olur.'},
+ x:{mini:'x: 10 slot × 16 sayı (kim + nerede), blok girişi.',gpt2:'x: T × 768 (kim + nerede), blok girişi.',llama:'x: T × 4096, yalnız kimlik; konum bilgisi sonradan RoPE ile gelir.'},
+ norm1:{mini:'Yok.',gpt2:'LayerNorm: her token satırını ortalama 0, yayılım 1 yapar (+ öğrenilen γ, β); alt-bloğun girişinde.',llama:'RMSNorm: ortalamayı çıkarmadan yalnız ölçekler, daha ucuz; alt-bloğun girişinde.'},
+ Wq:{mini:'W_Q 16×16; yalnız SON slotun q\'su çıkar.',gpt2:'W_Q 768×768; HER konum için q çıkar, 12 kafaya 64\'lük dilimlerle bölünür.',llama:'W_Q 4096×4096, 32 sorgu kafası.'},
+ Wk:{mini:'W_K 16×16; 10 slotun hepsi için etiket K çıkar.',gpt2:'W_K 768×768, 12 kafaya bölünür.',llama:'W_K 4096×1024: yalnız 8 anahtar kafası (GQA).'},
+ Wv:{mini:'W_V 16×16; 10 slotun hepsi için içerik V çıkar.',gpt2:'W_V 768×768, 12 kafaya bölünür.',llama:'W_V 4096×1024: 8 değer kafası; 4 sorgu kafası aynı V\'yi paylaşır.'},
+ attn:{mini:'Tek kafa, tek skor satırı: q son slottan, 10 skor → softmax yüzdeleri → o = Σ aᵢ·Vᵢ. (q, K, V, skor, dikkat ve o bu tek kartta.)',gpt2:'12 kafa; her biri kendi T×T skor tablosunu çıkarır, üst üçgen (gelecek) kapalı: her konum yalnız kendinden öncekilere bakar.',llama:'32 sorgu kafası × T×T, aynı nedensel maske; her 4 kafa bir K/V grubunu paylaşır; Q ve K RoPE ile döndürülmüş.'},
+ oproj:{mini:'W_O 16×16: notları kimlik diline çevirir.',gpt2:'Kafa çıktıları yan yana birleşir (12×64=768), W_O 768×768 ile karıştırılır.',llama:'32 kafa birleşir, W_O 4096×4096 ile karıştırılır.'},
+ res1:{mini:'r = x[9] + o·W_O (yalnız son slot).',gpt2:'x + attention, HER konumda.',llama:'x + attention, HER konumda.'},
+ norm2:{mini:'Yok.',gpt2:'LayerNorm 2 (FFN öncesi).',llama:'RMSNorm 2 (FFN öncesi).'},
+ up:{mini:'W1 16→32 (2 kat genişletir).',gpt2:'W_fc 768→3072 (4 kat).',llama:'W_gate ve W_up, 4096→14.336: iki paralel yol.'},
+ act:{mini:'tanh (u → g).',gpt2:'GELU: yumuşak, negatifleri sıfıra yakın bastırır.',llama:'SwiGLU: SiLU(kapı) ⊙ değer; kapı hangi özelliklerin geçeceğini seçer.'},
+ down:{mini:'W2 32→16 (+ b2) → f.',gpt2:'W_proj 3072→768.',llama:'W_down 14.336→4096.'},
+ res2:{mini:'h = r + f: tek blok olduğu için doğrudan çıkış tablosuna gider.',gpt2:'Blok çıktısı bir sonrakine girer; aynı blok 12 kez tekrarlanır.',llama:'Blok çıktısı bir sonrakine girer; aynı blok 32 kez tekrarlanır.'},
+ normf:{mini:'Yok.',gpt2:'Son LayerNorm (tüm bloklardan sonra).',llama:'Son RMSNorm (tüm bloklardan sonra).'},
+ head:{mini:'W_out 16×40 (+ b), girişten ayrı.',gpt2:'768×50.257, wte ile PAYLAŞIMLI.',llama:'4096×128.256, girişten AYRI.'},
+ logits:{mini:'40 skor → 40 yüzde (softmax), yalnız son slot için.',gpt2:'T × 50.257: HER konum için bir skor satırı (T ayrı tahmin).',llama:'T × 128.256: HER konum için bir skor satırı.'},
+ next:{mini:'En yüksek yüzde: "'+AMAX+'" (%'+APCT+'); bu karakter pencereye eklenip döngü tekrarlanır.',gpt2:'Örnek bir token seçilir ve diziye eklenir.',llama:'Örnek bir token seçilir ve diziye eklenir.'}};
+function cmpBlock(p){const t=p.eq&&CMPTXT[p.eq];if(!t)return'';
+  const ord=[p.arch,...ARCHS.filter(A=>A!==p.arch)];
+  return '<h4>🔁 Aynı iş, farklı yapı</h4>'+ord.map(A=>'<div class="r'+(A.on?'':' off')+'" style="--c2:'+ACOL[A.key]+'"><b>'+esc(A.btn)+(A===p.arch?' (bu)':'')+(A.on?'':' · kapalı')+':</b> '+esc(t[A.key])+'</div>').join('')}
 const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'attn',K:'attn',V:'attn',skor:'attn',a:'attn',o:'attn',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
  gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
