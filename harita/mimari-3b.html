@@ -260,7 +260,10 @@ function gpt2(){const L=[],K='g2';
   mkP(L,K,'x','x = wte + wpe','x','in',10,16,'T × 768','Her konumun kim + nerede bilgisi toplanır (Minik GPT\'deki x ile aynı).');
   mkP(L,K,'ln1','LayerNorm 1','LayerNorm','norm',10,16,'T × 768','Her satırı kendi içinde ortalaması 0, yayılımı 1 olacak şekilde ölçekler (+ öğrenilen γ, β). Minik GPT\'de YOK: onlarca blok üst üste binince sayılar patlamasın ya da sönmesin diye. GPT-2\'de normalizasyon alt-bloğun GİRİŞİNDE ("pre-LN").');
   ['Q','K','V'].forEach((q,i)=>mkP(L,K,'W'+q,'W_'+q,'W_'+q,'att',16,16,'768 × 768','Minik GPT\'deki W_'+q+' ile aynı iş, ama 12 kafaya bölünür: her kafa kendi 64\'lük dilimini (768/12) kullanır. HER konum için sorgu/etiket/içerik üretilir (Minik GPT yalnız son konum için q üretiyordu).'));
-  mkP(L,K,'heads','Dikkat kafaları (12 ayrı kart)','12 kafa','att',8,32,'12 kafa × (T × T)','Minik GPT\'de tek kafa ve tek skor satırı vardı. Burada 12 kafanın HEPSİ ayrı bir kart (k1…k12): her biri 768\'lik q\'nun kendi 64\'lük dilimiyle kendi T×T skor tablosunu çıkarır. Üst üçgen (gelecek) kapalı, yani bir token geleceğe bakamaz. Kartlar farklı örüntü gösterir çünkü her kafa farklı bir ilişki arar. Renkli sayılar şematik.',{multi:{n:12,cols:4},w:4.0,h:3.0});
+  mkP(L,K,'qT','Q = x · W_Q','Q','att',4,16,'T × 768','Her token\'ın sorusu: x (T×768) · W_Q (768×768). Minik GPT\'de q yalnız SON slot için 1×16 idi; burada HER token kendi sorusunu sorar, o yüzden T satır. Sonra 12 kafaya sütunlardan dilimlenir (kafa başına T×64).');
+  mkP(L,K,'kT','K = x · W_K','K','att',4,16,'T × 768','Her token\'ın "beni böyle bul" etiketi: x · W_K → T×768. 12 kafaya dilimlenir (kafa başına T×64).');
+  mkP(L,K,'vT','V = x · W_V','V','att',4,16,'T × 768','Her token\'ın verebileceği bilgi: x · W_V → T×768. 12 kafaya dilimlenir (kafa başına T×64).');
+  mkP(L,K,'heads','Kafaların SKOR tabloları (12 ayrı kart)','12 kafa · skor','att',8,32,'12 kafa × (T × T)','DİKKAT: bu kartlar Q, K, V DEĞİL — Q, K, V solda (T×768) duran üç tablo. Burada 12 kafanın HEPSİNİN skor tablosu var (k1…k12): kafa i, Q\'nun i. 64 sütunluk dilimi ile K\'nın i. dilimini çarpar (Qᵢ·Kᵢᵀ) → kendi T×T tablosu. Üst üçgen (gelecek) kapalı, yani bir token geleceğe bakamaz. Kartlar farklı örüntü gösterir çünkü her kafa farklı bir ilişki arar. Renkli sayılar şematik.',{multi:{n:12,cols:4},w:4.0,h:3.0});
   mkP(L,K,'WO','W_O','W_O','att',16,16,'768 × 768','Kafaların çıktıları yan yana birleştirilir (12 × 64 = 768), sonra W_O ile karıştırılır. Minik GPT\'deki W_O ile aynı iş.');
   mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 768','Artık bağlantı: giriş + attention çıktısı. Minik GPT\'deki r = x + o·W_O adımının aynısı, ama her konumda.');
   mkP(L,K,'ln2','LayerNorm 2','LayerNorm','norm',10,16,'T × 768','FFN\'e girmeden önce ikinci normalizasyon.');
@@ -270,8 +273,8 @@ function gpt2(){const L=[],K='g2';
   mkP(L,K,'add2','⊕ + FFN','⊕ artık','ffn',10,16,'T × 768','Bloğun çıktısı = giriş + FFN çıktısı. Bu blok 12 kez üst üste tekrarlanır; her blok çıktısını bir sonrakine verir.');
   tail(L,K,'Son LayerNorm',  '50.257',true,'Son LayerNorm','Tüm bloklardan sonra bir kez daha normalizasyon.');
   return {key:'gpt2',btn:'GPT-2 (2019)',parts:L,two:false,
-    cols:[['tok'],['Wte'],['Wpe'],['x'],['ln1'],['WQ','WK','WV'],['heads'],['WO'],['add1'],['ln2'],['Wfc'],['gelu'],['Wproj'],['add2'],['lnf'],['head'],['logits'],['next']],
-    blocks:[[4,13]],blockHtml:['BLOK × 12<small>12 blok üst üste: her biri attention + FFN</small>'],
+    cols:[['tok'],['Wte'],['Wpe'],['x'],['ln1'],['WQ','WK','WV'],['qT','kT','vT'],['heads'],['WO'],['add1'],['ln2'],['Wfc'],['gelu'],['Wproj'],['add2'],['lnf'],['head'],['logits'],['next']],
+    blocks:[[4,14]],blockHtml:['BLOK × 12<small>12 blok üst üste: her biri attention + FFN</small>'],
     asm:'GPT-2 small<small>124 milyon ağırlık</small>',title:'GPT-2: gerçek mimarinin şeması',
     sub:'Minik GPT\'nin gerçek hâli (GPT-2 small, 2019). Şekiller gerçek, sayılar şematik. Minik GPT\'de olmayan her şey burada: çok kafa, çok blok, LayerNorm, her konumda tahmin.'}}
 function llama(){const L=[],K='ll';
@@ -283,7 +286,10 @@ function llama(){const L=[],K='ll';
   mkP(L,K,'Wk','W_K','W_K','att',16,8,'4096 × 1024','Yalnız 8 anahtar kafası (GQA): 4 sorgu kafası aynı K\'yı paylaşır. KV önbelleği (üretirken saklanan K,V) 4 kat küçülür.');
   mkP(L,K,'Wv','W_V','W_V','att',16,8,'4096 × 1024','8 değer kafası; 4 sorgu kafası aynı V\'yi paylaşır (GQA).');
   mkP(L,K,'rope','RoPE','RoPE','att',10,16,'T × 4096 (Q ve K\'ya)','Konum bilgisi tabloda DEĞİL: Q ve K\'nın sayı çiftleri konum numarasıyla orantılı bir açıyla döndürülür. İki token\'ın skoru böylece mutlak konuma değil aralarındaki MESAFEYE bağlı olur. Minik GPT\'deki P tablosunun yerini alır, öğrenilen ağırlık yok. Çizim: konum × frekans açı örüntüsü.',{get:(a,b)=>Math.cos(a*Math.pow(10,-b/5)*1.6),vmax:1});
-  mkP(L,K,'heads','Dikkat kafaları (32 ayrı kart)','32 kafa','att',8,32,'32 sorgu kafası × (T × T), 8 K/V grubu','32 sorgu kafasının HEPSİ ayrı kart (k1…k32). Aynı renkli çerçeveli 4 kafa AYNI K ve V\'yi paylaşır (GQA: 8 K/V grubu). Her kafa kendi T×T skor tablosunu çıkarır, üst üçgen kapalıdır. Renkli sayılar şematik.',{multi:{n:32,cols:8,groups:4},w:4.8,h:2.4});
+  mkP(L,K,'qT','Q = x · W_Q','Q','att',4,16,'T × 4096','Her token\'ın sorusu (T×4096), 32 kafaya dilimlenir (kafa başına T×128).');
+  mkP(L,K,'kT','K = x · W_K','K','att',4,8,'T × 1024','Etiketler: yalnız 8 K/V kafası (8×128=1024 sütun), T×1024. 4 sorgu kafası aynı K dilimini paylaşır (GQA).',{w:8*U});
+  mkP(L,K,'vT','V = x · W_V','V','att',4,8,'T × 1024','İçerikler: 8 K/V kafası, T×1024; her dilim 4 sorgu kafasınca paylaşılır.',{w:8*U});
+  mkP(L,K,'heads','Kafaların SKOR tabloları (32 ayrı kart)','32 kafa · skor','att',8,32,'32 sorgu kafası × (T × T), 8 K/V grubu','DİKKAT: bu kartlar Q, K, V DEĞİL (onlar solda). 32 sorgu kafasının HEPSİNİN skor tablosu (k1…k32). Aynı renkli çerçeveli 4 kafa AYNI K ve V\'yi paylaşır (GQA: 8 K/V grubu). Her kafa kendi T×T tablosunu çıkarır, üst üçgen kapalıdır. Renkli sayılar şematik.',{multi:{n:32,cols:8,groups:4},w:4.8,h:2.4});
   mkP(L,K,'Wo','W_O','W_O','att',16,16,'4096 × 4096','Kafaların çıktıları birleştirilip karıştırılır.');
   mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 4096','Artık bağlantı: giriş + attention.');
   mkP(L,K,'rms2','RMSNorm 2','RMSNorm','norm',10,16,'T × 4096','FFN öncesi ikinci normalizasyon.');
@@ -294,8 +300,8 @@ function llama(){const L=[],K='ll';
   mkP(L,K,'add2','⊕ + FFN','⊕ artık','ffn',10,16,'T × 4096','Bloğun çıktısı. Bu blok 32 kez üst üste tekrarlanır.');
   tail(L,K,'Son RMSNorm','128.256',false,'Son RMSNorm','Tüm bloklardan sonra bir kez daha normalizasyon.');
   return {key:'llama',btn:'Llama tarzı (modern)',parts:L,two:false,
-    cols:[['tok'],['Emb'],['x'],['rms1'],['Wq','Wk','Wv'],['rope'],['heads'],['Wo'],['add1'],['rms2'],['Wgate','Wup'],['swi'],['Wdown'],['add2'],['lnf'],['head'],['logits'],['next']],
-    blocks:[[3,13]],blockHtml:['BLOK × 32<small>32 blok üst üste: her biri attention + SwiGLU</small>'],
+    cols:[['tok'],['Emb'],['x'],['rms1'],['Wq','Wk','Wv'],['qT','kT','vT'],['rope'],['heads'],['Wo'],['add1'],['rms2'],['Wgate','Wup'],['swi'],['Wdown'],['add2'],['lnf'],['head'],['logits'],['next']],
+    blocks:[[3,14]],blockHtml:['BLOK × 32<small>32 blok üst üste: her biri attention + SwiGLU</small>'],
     asm:'Llama-3 8B tarzı<small>≈ 8 milyar ağırlık</small>',title:'Modern mimari: Llama tarzı şema',
     sub:'Bugünkü büyük modellerin ortak şeması (Llama-3 8B ölçüleriyle). GPT-2\'den farkı: RMSNorm, RoPE (konum tablosu yok), GQA, SwiGLU, paylaşımsız çıkış. Şekiller gerçek, sayılar şematik.'}}
 const GPT2=gpt2(),LLAMA=llama();layoutArch(GPT2);layoutArch(LLAMA);
@@ -514,6 +520,9 @@ const CMPTXT={
  Wq:{mini:'W_Q 16×16; yalnız SON slotun q\'su çıkar.',gpt2:'W_Q 768×768; HER konum için q çıkar, 12 kafaya 64\'lük dilimlerle bölünür.',llama:'W_Q 4096×4096, 32 sorgu kafası.'},
  Wk:{mini:'W_K 16×16; 10 slotun hepsi için etiket K çıkar.',gpt2:'W_K 768×768, 12 kafaya bölünür.',llama:'W_K 4096×1024: yalnız 8 anahtar kafası (GQA).'},
  Wv:{mini:'W_V 16×16; 10 slotun hepsi için içerik V çıkar.',gpt2:'W_V 768×768, 12 kafaya bölünür.',llama:'W_V 4096×1024: 8 değer kafası; 4 sorgu kafası aynı V\'yi paylaşır.'},
+ qt:{mini:'q: 1×16 — yalnız SON slotun sorusu.',gpt2:'Q: T×768 — HER token\'ın sorusu (7+5= için 4×768); 12 kafaya dilimlenir (T×64).',llama:'Q: T×4096, 32 kafaya dilimlenir (T×128).'},
+ kt:{mini:'K: 10×16 — 10 slotun etiketi.',gpt2:'K: T×768 (7+5= için 4×768); 12 kafaya dilimlenir.',llama:'K: T×1024 (yalnız 8 K/V kafası).'},
+ vt:{mini:'V: 10×16 — 10 slotun içeriği.',gpt2:'V: T×768 (7+5= için 4×768); 12 kafaya dilimlenir.',llama:'V: T×1024 (8 K/V kafası).'},
  attn:{mini:'Tek kafa, tek skor satırı: q son slottan, 10 skor → softmax yüzdeleri → o = Σ aᵢ·Vᵢ. (q, K, V, skor, dikkat ve o bu tek kartta.)',gpt2:'12 kafa; her biri kendi T×T skor tablosunu çıkarır, üst üçgen (gelecek) kapalı: her konum yalnız kendinden öncekilere bakar.',llama:'32 sorgu kafası × T×T, aynı nedensel maske; her 4 kafa bir K/V grubunu paylaşır; Q ve K RoPE ile döndürülmüş.'},
  oproj:{mini:'W_O 16×16: notları kimlik diline çevirir.',gpt2:'Kafa çıktıları yan yana birleşir (12×64=768), W_O 768×768 ile karıştırılır.',llama:'32 kafa birleşir, W_O 4096×4096 ile karıştırılır.'},
  res1:{mini:'r = x[9] + o·W_O (yalnız son slot).',gpt2:'x + attention, HER konumda.',llama:'x + attention, HER konumda.'},
@@ -529,9 +538,9 @@ const CMPTXT={
 function cmpBlock(p){const t=p.eq&&CMPTXT[p.eq];if(!t)return'';
   const ord=[p.arch,...ARCHS.filter(A=>A!==p.arch)];
   return '<h4>🔁 Aynı iş, farklı yapı</h4>'+ord.map(A=>'<div class="r'+(A.on?'':' off')+'" style="--c2:'+ACOL[A.key]+'"><b>'+esc(A.btn)+(A===p.arch?' (bu)':'')+(A.on?'':' · kapalı')+':</b> '+esc(fv(t[A.key]))+'</div>').join('')}
-const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'attn',K:'attn',V:'attn',skor:'attn',a:'attn',o:'attn',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
- gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
- llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
+const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'qt',K:'kt',V:'vt',skor:'attn',a:'attn',o:'attn',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
+ gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',qT:'qt',kT:'kt',vT:'vt',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
+ llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
 ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
@@ -580,7 +589,7 @@ const TOUR=[
    gpt2:'<b>x = wte + wpe</b>, sonra <b>LayerNorm</b>: her tokenın 768 sayısı ortalama 0, yayılım 1 olacak şekilde hizalanır (kestirme yol hizalanmamış x ile devam eder: pre-LN).',
    llama:'x yalnız Emb; <b>RMSNorm</b> ile ölçeklenir (ortalamayı çıkarmadan).'},
   fark:'Normalizasyon: Minik GPT\'de yok; gerçek modellerde her alt-bloğun girişinde (GPT-2 LayerNorm, Llama RMSNorm).'},
- {t:'5 · Q, K, V: üç ayrı rol',ids:{mini:['WQ','WK','WV','q','K','V'],gpt2:['WQ','WK','WV'],llama:['Wq','Wk','Wv','rope']},
+ {t:'5 · Q, K, V: üç ayrı rol',ids:{mini:['WQ','WK','WV','q','K','V'],gpt2:['WQ','WK','WV','qT','kT','vT'],llama:['Wq','Wk','Wv','qT','kT','vT','rope']},
   txt:{mini:'W_Q, W_K, W_V her biri 16×16. <b>Yalnız son slotun q\'su</b> çıkar (1×16); K ve V 10 slotun hepsi için (10×16).',
    gpt2:'W_Q, W_K, W_V her biri 768×768; <b>HER konum için</b> q, K, V çıkar (üçü de T×768) ve <b>12 kafaya</b> 64\'lük dilimlerle bölünür.',
    llama:'W_Q 4096×4096 (32 kafa); W_K ve W_V 4096×1024 (yalnız <b>8 K/V kafası</b>, GQA). RoPE, Q ve K\'yı konum açısıyla döndürür.'},
