@@ -71,6 +71,27 @@ body.nobar #barShow{display:block}
 #hint{font-size:12px;color:var(--mute);line-height:1.4}
 #info{position:fixed;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));width:min(340px,calc(100vw - 24px));max-height:calc(100vh - 150px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c,var(--blue));border-radius:12px;padding:14px 16px;display:none;backdrop-filter:blur(6px)}
 #info.on{display:block}
+#hgo button{margin-top:8px;width:100%;font:700 13px var(--sans);color:#1b1500;background:var(--hl);border:0;border-radius:8px;padding:7px 10px;cursor:pointer}
+#hin{position:fixed;inset:max(8px,3vh) max(8px,3vw);z-index:9;display:none;background:#12161f;border:1px solid var(--line);border-radius:14px;padding:12px 14px;overflow:auto}
+#hin.on{display:block}
+#hin h2{margin:0;font-size:18px}
+#hin .hh{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+#hin .hh .sp{flex:1}
+#hin button{font:inherit;font-size:13px;color:var(--ink);background:#232d44;border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer}
+#hin button:disabled{opacity:.4;cursor:default}
+#hin button.on{background:var(--hl);color:#1b1500;border-color:var(--hl)}
+#hin .hs{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0;transition:opacity .2s}
+#hin .hs.dim{opacity:.22}
+#hin .hs.cur{border-color:var(--hl);box-shadow:0 0 0 2px #ffc82e55}
+#hin .hs h3{margin:0 0 4px;font-size:14px;color:var(--hl)}
+#hin .hs p{margin:2px 0 6px;font-size:13px;color:#cfd6e6}
+#hin .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+#hin .cd{flex:1 1 220px;min-width:0}
+#hin .cd b{font:600 12px var(--mono);color:var(--teal)}
+#hin canvas{display:block;max-width:100%;height:auto;image-rendering:pixelated;border:1px solid var(--line);border-radius:4px;margin:3px 0}
+#hin table.at{border-collapse:collapse;font:11px var(--mono)}
+#hin table.at td{border:1px solid var(--line);padding:2px 4px;text-align:right}
+#hin .note{font-size:12px;color:var(--mute)}
 #info h2{margin:0 0 2px;font-size:18px;line-height:1.2}
 #info .sh{font:600 12px var(--mono);color:var(--c,var(--blue));margin-bottom:6px}
 #info p{margin:6px 0;font-size:14px;line-height:1.5}
@@ -92,7 +113,8 @@ body.nobar #barShow{display:block}
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
 <div id="tour"></div>
-<div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div><div id="cx"></div></div>
+<div id="hin"></div>
+<div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div><div id="cx"></div><div id="hgo"></div></div>
 <button id="barShow" title="Ayar panelini aç">▴ Panel</button>
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
@@ -302,7 +324,7 @@ function mkGroup(p){
     const {n,cols,groups}=p.multi,rows=Math.ceil(n/cols),cw=p.w/cols,ch=p.h/rows,side=new THREE.MeshStandardMaterial({color:0x1a1f2a});
     for(let i=0;i<n;i++){const col=groups?GCOL[Math.floor(i/groups)%GCOL.length]:p.col;
       const geo=new THREE.BoxGeometry(cw*0.88,ch*0.88,0.1),fm=new THREE.MeshBasicMaterial({map:tex(headCard(i,8,col)),transparent:true,opacity:0.88});
-      const m=new THREE.Mesh(geo,[side,side,side,side,fm,side]);m.position.set((i%cols+.5)*cw-p.w/2,p.h/2-(Math.floor(i/cols)+.5)*ch,-(i%3)*0.07);m.userData.part=p;grp.add(m);
+      const m=new THREE.Mesh(geo,[side,side,side,side,fm,side]);m.position.set((i%cols+.5)*cw-p.w/2,p.h/2-(Math.floor(i/cols)+.5)*ch,-(i%3)*0.07);m.userData.part=p;m.userData.head=i;grp.add(m);
       const ed=mkEdges(geo,new THREE.Color(col),0.9);ed.position.copy(m.position);grp.add(ed)}
     p.edge=null;
   }else{
@@ -367,7 +389,8 @@ function keyMove(){if(!keys.size)return;const sh=keys.has('shift');
 const ptr=new Map();let moved=0,downAt=null,panMode=false;
 const activeParts=()=>ARCHS.filter(A=>A.on).flatMap(A=>A.parts);
 function pick(cx,cy){mouse.x=(cx/innerWidth)*2-1;mouse.y=-(cy/innerHeight)*2+1;ray.setFromCamera(mouse,camera);
-  const hits=ray.intersectObjects(activeParts().map(p=>p.group),true).filter(h=>h.object.userData.part);return hits.length?hits[0].object.userData.part:null}
+  const hits=ray.intersectObjects(activeParts().map(p=>p.group),true).filter(h=>h.object.userData.part);if(hits.length&&hits[0].object.userData.head!==undefined)lastHead=hits[0].object.userData.head;return hits.length?hits[0].object.userData.part:null}
+let lastHead=0;
 stage.addEventListener('contextmenu',e=>e.preventDefault());
 stage.addEventListener('pointerdown',e=>{stage.setPointerCapture(e.pointerId);ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});stage.classList.add('drag');moved=0;downAt={x:e.clientX,y:e.clientY};panMode=e.button===2||e.button===1||e.shiftKey});
 stage.addEventListener('pointermove',e=>{const p=ptr.get(e.pointerId);
@@ -389,7 +412,7 @@ function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w
   const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
-  $('cx').innerHTML=cmpBlock(p);
+  $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
 function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
   if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
@@ -625,6 +648,45 @@ $('tour').addEventListener('click',e=>{
   el.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');if(!hd||e.target.closest('.cx'))return;const r=el.getBoundingClientRect();st={dx:e.clientX-r.left,dy:e.clientY-r.top};el.setPointerCapture(e.pointerId);e.preventDefault()});
   el.addEventListener('pointermove',e=>{if(!st)return;el.style.left=clamp(e.clientX-st.dx,0,innerWidth-60)+'px';el.style.top=clamp(e.clientY-st.dy,0,innerHeight-40)+'px'});
   el.addEventListener('pointerup',()=>{st=null})})();
+
+/* ---------- 🔬 Kafanın içi ---------- */
+const HC={gpt2:{d:768,H:12,dk:64,kvg:1,kvN:12,nm:'GPT-2',Tf:()=>TT()},llama:{d:4096,H:32,dk:128,kvg:4,kvN:8,nm:'Llama tarzı',Tf:()=>null}};
+let hArch=null,hIdx=0,hStep=0;
+function hRng(k){return RNG(hsh('hin'+k))}
+function hHeat(rows,cols,seed,cell,mask){const r=hRng(seed);const v=[];for(let a=0;a<rows;a++){v.push([]);for(let b=0;b<cols;b++)v[a].push(r()+r()+r()-1.5)}
+  const c=heat(rows,cols,(a,b)=>v[a][b],1.2,cell);return c}
+function hSplit(d,H,k,kvg,kvN,kind){const c=cv(120,120),g=c.getContext('2d');g.fillStyle='#0f1218';g.fillRect(0,0,120,120);
+  const n=kind==='Q'?H:kvN,idx=kind==='Q'?k:Math.floor(k/kvg),bw=120/n;
+  for(let i=0;i<n;i++){g.fillStyle=i===idx?'#ffc82e':(i%2?'#1e2a44':'#26365a');g.fillRect(i*bw,0,bw-1,120)}
+  g.strokeStyle='#6a7390';g.strokeRect(.5,.5,119,119);return c}
+function hTable(a,t){let h='<table class="at">';for(let i=0;i<t;i++){h+='<tr>';for(let j=0;j<t;j++)h+='<td style="'+(j>i?'color:#4a5266':'background:rgba(63,199,193,'+(0.1+0.7*a[i][j])+')')+'">'+(j>i?'0':Math.round(a[i][j]*100)+'%')+'</td>';h+='</tr>'}return h+'</table>'}
+function openHead(A,i){if(!HC[A.key])return;hArch=A;hIdx=i;hStep=0;$('hin').classList.add('on');buildHead()}
+function closeHead(){$('hin').classList.remove('on')}
+function buildHead(){const A=hArch,C=HC[A.key],k=hIdx,Tn=C.Tf(),t=Tn||6,Tl=Tn||'T',d=C.d,dk=C.dk,H=C.H,el=$('hin');
+  const g=Math.floor(k/C.kvg);const cell=Math.max(5,Math.min(10,Math.round(420/dk))),sw=[['Q','W_Q',k],['K','W_K',g],['V','W_V',g]];
+  const sc=[];{const r=hRng(A.key+k+'sc');for(let a=0;a<t;a++){sc.push([]);for(let b=0;b<t;b++)sc[a].push(b<=a?(r()+r()+r()-1.5)*2.4:-Infinity)}}
+  const at=sc.map(row=>{const m=Math.max(...row),e=row.map(v=>v===-Infinity?0:Math.exp(v-m)),s=e.reduce((x,y)=>x+y,0);return e.map(v=>v/s)});
+  const mk=(c)=>{const h=document.createElement('div');h.appendChild(c);return h.innerHTML};
+  const cvh=c=>{const u=c.toDataURL();return '<img src="'+u+'" style="display:block;max-width:100%;image-rendering:pixelated;border:1px solid var(--line);border-radius:4px;margin:3px 0" width="'+c.width+'" height="'+c.height+'">'};
+  const xc=hHeat(t,Math.min(d,96),A.key+'x',Math.max(4,Math.round(380/Math.min(d,96))));
+  const scc=(()=>{const c=hHeat(t,t,A.key+k+'s',Math.max(14,Math.round(220/t))),g2=c.getContext('2d'),cl=c.width/t;g2.fillStyle='#0b0e14';for(let a=0;a<t;a++)for(let b=a+1;b<t;b++)g2.fillRect(b*cl,a*cl,cl,cl);return c})();
+  const outc=hHeat(t,dk,A.key+k+'o',cell);
+  const strip=(()=>{const c=cv(Math.max(H*22,200),44),g2=c.getContext('2d');g2.fillStyle='#161b26';g2.fillRect(0,0,c.width,44);const w=c.width/H;for(let i=0;i<H;i++){g2.fillStyle=i===k?'#ffc82e':GCOL[i%GCOL.length];g2.globalAlpha=i===k?1:.55;g2.fillRect(i*w+1,4,w-2,36);g2.globalAlpha=1;g2.fillStyle='#10131b';g2.font='700 11px ui-monospace,monospace';g2.textAlign='center';g2.fillText(String(i+1),i*w+w/2,27)}return c})();
+  const secs=[
+   ['1 · Bu kafanın ağırlık dilimleri','Üç büyük ağırlık tablosu (her biri '+d+'×'+d+(A.key==='llama'?', K/V '+d+'×'+(C.kvN*dk):'')+') sütunlarından dilimlenir. Sarı bant = bu kafanın payı:<div class="row">'+sw.map(([n,w,idx])=>'<div class="cd"><b>'+w+(n==='Q'||A.key!=='llama'?'':' (grup '+(g+1)+'/'+C.kvN+')')+'</b>'+cvh(hSplit(d,H,k,C.kvg,C.kvN,n))+'<span class="note">kafa '+(k+1)+' için <b>'+d+'×'+dk+'</b> dilim ('+NF(d*dk)+' ağırlık)'+(n!=='Q'&&C.kvg>1?'; '+C.kvg+' kafa bu dilimi paylaşır':'')+'</span></div>').join('')+'</div>'],
+   ['2 · Q₁, K₁, V₁ = x · dilim','x ('+Tl+'×'+d+') her dilimle çarpılır → üç küçük tablo, her biri <b>'+Tl+'×'+dk+'</b>:<div class="row"><div class="cd"><b>x '+Tl+'×'+d+'</b>'+cvh(xc)+'<span class="note">(çizimde ilk '+Math.min(d,96)+' sütun)</span></div>'+['Q "ne arıyorum"','K "beni böyle bul"','V "verebileceğim bilgi"'].map((n,i)=>'<div class="cd"><b>'+n.replace(/^(.)/,'$1(kafa '+(k+1)+')')+' · '+Tl+'×'+dk+'</b>'+cvh(hHeat(t,dk,A.key+k+'qkv'+i,cell))+'</div>').join('')+'</div>'],
+   ['3 · Skor = Q₁·K₁ᵀ / √'+dk,'('+Tl+'×'+dk+')·('+dk+'×'+Tl+') = <b>'+Tl+'×'+Tl+'</b>: her token\'ın her token\'la uyumu. <b>Karanlık üst üçgen = maske</b> (token geleceğe bakamaz).<div class="row"><div class="cd">'+cvh(scc)+'</div></div>'],
+   ['4 · Softmax: her satır %100','Her satırın skorları yüzdeye çevrilir (maskelenenler 0):<div class="row"><div class="cd">'+hTable(at,Math.min(t,11))+'</div></div>'],
+   ['5 · Çıkış = a · V₁','('+Tl+'×'+Tl+')·('+Tl+'×'+dk+') = <b>'+Tl+'×'+dk+'</b>: her token, dikkat yüzdeleriyle V satırlarının karışımını alır.<div class="row"><div class="cd"><b>kafa '+(k+1)+' çıkışı '+Tl+'×'+dk+'</b>'+cvh(outc)+'</div></div>'],
+   ['6 · '+H+' kafa yan yana','Her kafa kendi '+Tl+'×'+dk+' çıkışını verir; yan yana yapıştırılır: '+H+' × '+dk+' = '+d+' → <b>'+Tl+'×'+d+'</b>, sonra W_O.<div class="row"><div class="cd">'+cvh(strip)+'<span class="note">sarı = bu kafa</span></div></div>']];
+  el.innerHTML='<div class="hh"><h2>🔬 '+C.nm+' · kafa '+(k+1)+'/'+H+' içi</h2><span class="sp"></span><button id="hPrevH"'+(k===0?' disabled':'')+'>◀ kafa</button><button id="hNextH"'+(k===H-1?' disabled':'')+'>kafa ▶</button><button id="hClose">✕ Kapat (Esc)</button></div>'+
+   '<div class="hh"><span class="note">Adım adım:</span><button id="hPrevS"'+(hStep===0?' disabled':'')+'>◀ Geri</button><button id="hNextS"'+(hStep===6?' disabled':'')+'>İleri ▶</button><button id="hAll"'+(hStep===0?' class="on"':'')+'>Hepsi</button><span class="note">'+(Tn?'İstem: '+esc(PROMPTS[PK])+' → T = '+Tn:'T = token sayısı (çizimde 6)')+' · renkler/sayılar şematik (rastgele), şekiller gerçek</span></div>'+
+   secs.map((s,i)=>'<div class="hs'+(hStep&&hStep-1!==i?' dim':'')+(hStep-1===i?' cur':'')+'"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>').join('')}
+$('hin').addEventListener('click',e=>{const id=e.target.id;
+  if(id==='hClose')closeHead();else if(id==='hPrevH'&&hIdx>0){hIdx--;buildHead()}else if(id==='hNextH'&&hIdx<HC[hArch.key].H-1){hIdx++;buildHead()}
+  else if(id==='hPrevS'&&hStep>0){hStep--;buildHead()}else if(id==='hNextS'&&hStep<6){hStep++;buildHead()}else if(id==='hAll'){hStep=0;buildHead()}});
+$('info').addEventListener('click',e=>{if(e.target.id==='hgob'&&selected&&selected.kind==='multi')openHead(selected.arch,lastHead%selected.multi.n)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('hin').classList.contains('on')){closeHead();e.stopPropagation();e.preventDefault()}},true);
 $('barHide').onclick=()=>document.body.classList.add('nobar');$('barShow').onclick=()=>document.body.classList.remove('nobar');
 $('bz').onclick=()=>{focusOn=!focusOn;$('bz').textContent='Tıklayınca zoom: '+(focusOn?'açık':'kapalı');$('bz').classList.toggle('on',focusOn);focusV=null};
 $('bc').onclick=()=>{cmpOpen=!cmpOpen;$('bc').classList.toggle('on',cmpOpen);buildCmp()};
