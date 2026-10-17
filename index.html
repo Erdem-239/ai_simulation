@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610171621"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610171624"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610171621">
+<link rel="stylesheet" href="css/style.css?v=202610171624">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:21 TR · #413</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:24 TR · #414</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -6037,7 +6037,138 @@ print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; %
 <div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — W'leri kim buluyor? Eğitimle (rastgeleden başla)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Önceki bölümlerde W matrisleri elle seçilmişti. Gerçekte <b>rastgele başlar</b> ve hata sinyaliyle ayarlanır. Aşağıda minik bir görevde W_Q, W_K, W_V'yi (ve küçük bir çıktı katmanını) gerçekten eğitiyoruz. Python ile aynı kodun JS karşılığı, ikisi 300 epoch sonunda aynı sayıları veriyor.</p>
     <div id="atTrain"></div>
-    <div class="callout" style="margin-top:8px">⚠️ <b>Dürüst sınırlar:</b> kelime vektörleri sabit rastgele (öğrenilmiyor), görev çok basit, ağ tek katman ve tek kafa. Gerçek modellerde vektörler de W'ler de birlikte, milyarlarca örnekten öğrenilir; ama "dikkat kime verilecek"in <b>kendiliğinden öğrenildiği</b> mekanizma aynıdır.</div>
+    <div class="callout" style="margin-top:8px">⚠️ <b>Dürüst sınırlar:</b> kelime vektörleri sabit rastgele (öğrenilmiyor), görev çok basit, ağ tek katman ve tek kafa. Gerçek modellerde vektörler de W'ler de birlikte, milyarlarca örnekten öğrenilir; ama "dikkat kime verilecek"in <b>kendiliğinden öğrenildiği</b> mekanizma aynıdır.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+SOZ = [&#x27;kedi&#x27;, &#x27;köpek&#x27;, &#x27;kuş&#x27;, &#x27;hızlıca&#x27;, &#x27;sessizce&#x27;, &#x27;bugün&#x27;, &#x27;yine&#x27;, &#x27;?&#x27;]    # 0-2 hayvan, 3-6 dolgu, 7 = &quot;?&quot;
+D, LR, OLCEK = 6, 0.05, 0.4
+
+# ---- veri: 1 hayvan + 2 dolgu kelime (hayvanın yeri değişir) + &quot;?&quot;; cevap = hayvanın kendisi ----
+CUMLELER = []
+for hayvan in range(3):
+    for yer in range(3):
+        for f1 in range(4):
+            for f2 in range(4):
+                dolgu = [3 + f1, 3 + f2]; kelimeler = []; k = 0
+                for poz in range(3):
+                    if poz == yer: kelimeler.append(hayvan)
+                    else: kelimeler.append(dolgu[k]); k += 1
+                kelimeler.append(7)
+                CUMLELER.append((kelimeler, hayvan, yer))
+EGITIM = [c for i, c in enumerate(CUMLELER) if i % 5 != 0]       # 115 cümle
+SINAV  = [c for i, c in enumerate(CUMLELER) if i % 5 == 0]       # 29 cümle (eğitimde YOK)
+
+def rastgele(n, m, r, olcek):
+    return [[(r() - 0.5) * 2 * olcek for _ in range(m)] for _ in range(n)]
+
+def baslangic(tohum):
+    r = lcg(tohum)
+    E = rastgele(8, D, r, 1)                                      # kelime vektörleri (SABİT, öğrenilmez)
+    P = {&quot;WQ&quot;: rastgele(D, D, r, OLCEK), &quot;WK&quot;: rastgele(D, D, r, OLCEK), &quot;WV&quot;: rastgele(D, D, r, OLCEK),
+         &quot;WO&quot;: rastgele(D, 3, r, OLCEK), &quot;bO&quot;: [[0.0] * 3]}       # öğrenilenler: W_Q, W_K, W_V ve küçük çıktı katmanı
+    return E, P
+
+def vm(x, M):                                                     # vektör × matris
+    o = [0.0] * len(M[0])
+    for i in range(len(x)):
+        for j in range(len(o)): o[j] += x[i] * M[i][j]
+    return o
+
+def softmax(z):
+    m = max(z); e = [math.exp(v - m) for v in z]; top = 0.0
+    for v in e: top += v
+    return [v / top for v in e]
+
+def ileri(E, P, kel):
+    X = [E[t] for t in kel]
+    q = vm(X[3], P[&quot;WQ&quot;])                                         # yalnız &quot;?&quot; kelimesi soru sorar
+    K = [vm(x, P[&quot;WK&quot;]) for x in X]; V = [vm(x, P[&quot;WV&quot;]) for x in X]
+    s = []
+    for k in K:
+        a = 0.0
+        for i in range(D): a += k[i] * q[i]
+        s.append(a / math.sqrt(D))                                # skor = q·k/√d
+    a = softmax(s)                                                # &quot;?&quot;-in dikkat yüzdeleri (4 kelimeye)
+    o = [0.0] * D
+    for w, v in zip(a, V):
+        for j in range(D): o[j] += w * v[j]                       # yüzdelerle içerik karışımı
+    lg = vm(o, P[&quot;WO&quot;]); lg = [lg[i] + P[&quot;bO&quot;][0][i] for i in range(3)]
+    return X, q, K, V, a, o, softmax(lg)
+
+def degerlendir(E, P, set_):
+    L = dogru = pay = 0.0
+    for kel, y, yer in set_:
+        a, p = ileri(E, P, kel)[4], ileri(E, P, kel)[6]
+        L += -math.log(p[y]); dogru += (p.index(max(p)) == y); pay += a[yer]
+    return L / len(set_), dogru / len(set_), pay / len(set_)      # kayıp, doğruluk, dikkatin hayvana düşen payı
+
+def egit(tohum, tur=300, rapor=()):
+    E, P = baslangic(tohum)
+    m = {k: [[0.0] * len(P[k][0]) for _ in P[k]] for k in P}; v = {k: [[0.0] * len(P[k][0]) for _ in P[k]] for k in P}   # Adam durumları
+    log = {}
+    if 0 in rapor: log[0] = degerlendir(E, P, EGITIM) + degerlendir(E, P, SINAV)[1:2]
+    for t in range(1, tur + 1):
+        G = {k: [[0.0] * len(P[k][0]) for _ in P[k]] for k in P}
+        for kel, y, yer in EGITIM:                                # tam yığın: 115 cümlenin gradyanı toplanır
+            X, q, K, V, a, o, p = ileri(E, P, kel)
+            dl = p[:]; dl[y] -= 1.0                               # p − y
+            for i in range(D):
+                for j in range(3): G[&quot;WO&quot;][i][j] += o[i] * dl[j]
+            for j in range(3): G[&quot;bO&quot;][0][j] += dl[j]
+            dO = []
+            for i in range(D):
+                s = 0.0
+                for j in range(3): s += P[&quot;WO&quot;][i][j] * dl[j]
+                dO.append(s)
+            da = []
+            for vv in V:
+                s = 0.0
+                for j in range(D): s += vv[j] * dO[j]
+                da.append(s)
+            sa = 0.0
+            for i in range(len(a)): sa += a[i] * da[i]
+            ds = [a[i] * (da[i] - sa) for i in range(len(a))]     # softmax türevi
+            dq = [0.0] * D
+            for i, k in enumerate(K):
+                for j in range(D): dq[j] += ds[i] * k[j] / math.sqrt(D)
+            for i, xv in enumerate(X):
+                for r in range(D):
+                    for c in range(D):
+                        G[&quot;WV&quot;][r][c] += xv[r] * a[i] * dO[c]     # dört kelimeden toplanır
+                        G[&quot;WK&quot;][r][c] += xv[r] * ds[i] * q[c] / math.sqrt(D)
+            for r in range(D):
+                for c in range(D): G[&quot;WQ&quot;][r][c] += X[3][r] * dq[c]   # yalnız &quot;?&quot; kelimesi
+        n = len(EGITIM)
+        for k in P:                                               # Adam güncellemesi
+            for i in range(len(P[k])):
+                for j in range(len(P[k][0])):
+                    g = G[k][i][j] / n
+                    m[k][i][j] = 0.9 * m[k][i][j] + 0.1 * g
+                    v[k][i][j] = 0.999 * v[k][i][j] + 0.001 * g * g
+                    P[k][i][j] -= LR * (m[k][i][j] / (1 - 0.9 ** t)) / (math.sqrt(v[k][i][j] / (1 - 0.999 ** t)) + 1e-8)
+        if t in rapor: log[t] = degerlendir(E, P, EGITIM) + degerlendir(E, P, SINAV)[1:2]
+    return log
+
+print(&quot;tohum | epoch | eğitim kaybı | eğitim doğruluğu | dikkat payı (hayvana) | sınav doğruluğu&quot;)
+for tohum in (1, 3):
+    for ep, (L, d, pay, sd) in sorted(egit(tohum, 300, rapor=(0, 100, 300)).items()):
+        print(f&quot;{tohum:5d} | {ep:5d} | {L:12.4g} | {d:16.3f} | {pay:21.3f} | {sd:15.3f}&quot;)
+
+# ---- ÇIKTI ----
+# tohum | epoch | eğitim kaybı | eğitim doğruluğu | dikkat payı (hayvana) | sınav doğruluğu
+#     1 |     0 |        1.123 |            0.061 |                 0.235 |           0.069
+#     1 |   100 |     1.02e-05 |            1.000 |                 0.984 |           1.000
+#     1 |   300 |    4.669e-06 |            1.000 |                 0.985 |           1.000
+#     3 |     0 |        1.126 |            0.383 |                 0.248 |           0.345
+#     3 |   100 |    2.329e-06 |            1.000 |                 0.692 |           1.000
+#     3 |   300 |    2.037e-06 |            1.000 |                 0.692 |           1.000</pre></div></div>
+<p style="font-size:12.5px;color:var(--mute);margin-top:6px">Kod, sayfadaki eğitimle aynı başlangıçtan (tohum 1 ve 3), aynı veriden ve aynı Adam ayarından çalışır; çıktıdaki sayılar yukarıdaki eğitimle (300 epoch) aynıdır. Çıktıdaki "dikkat payı" tohum 1'de ≈0,98, tohum 3'te ≈0,69: doğruluk ikisinde de %100 ama dikkatin hayvana yoğunlaşması başlangıca bağlı.</p>
   </div>
 
   </div></div><div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — √d'ye neden bölüyoruz? Ölçerek gör</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Vektör boyutu d büyüdükçe q·k skorları da büyür; softmax'e büyük sayılar girerse dikkat tek kelimeye kilitlenir ve gradyan söner. Gerçekten öyle mi? Rastgele q ve k'larla ölç: boyutu 4'ten 256'ya çıkar, √d ile bölünmüş ve bölünmemiş yan yana.</p><div id="attEx2"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı ölçüm Python'da (yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
@@ -9646,63 +9777,63 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610171621"></script>
-<script src="js/lesson-turev.js?v=202610171621"></script>
-<script src="js/lesson-xor.js?v=202610171621"></script>
-<script src="js/lesson-xor-arch.js?v=202610171621"></script>
-<script src="js/lesson-xor-maps.js?v=202610171621"></script>
-<script src="js/lesson-xor-epoch.js?v=202610171621"></script>
-<script src="js/lesson-nn.js?v=202610171621"></script>
-<script src="js/lesson-trig.js?v=202610171621"></script>
+<script src="js/lesson-linreg.js?v=202610171624"></script>
+<script src="js/lesson-turev.js?v=202610171624"></script>
+<script src="js/lesson-xor.js?v=202610171624"></script>
+<script src="js/lesson-xor-arch.js?v=202610171624"></script>
+<script src="js/lesson-xor-maps.js?v=202610171624"></script>
+<script src="js/lesson-xor-epoch.js?v=202610171624"></script>
+<script src="js/lesson-nn.js?v=202610171624"></script>
+<script src="js/lesson-trig.js?v=202610171624"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610171621"></script>
-<script src="js/lesson-rnn-soz.js?v=202610171621"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610171624"></script>
+<script src="js/lesson-rnn-soz.js?v=202610171624"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610171621"></script>
-<script src="js/lesson-lstm-cell.js?v=202610171621"></script>
-<script src="js/app.js?v=202610171621"></script>
-<script src="js/lesson-lstm-big.js?v=202610171621"></script>
-<script src="js/lesson-lstm-step.js?v=202610171621"></script>
-<script src="js/lesson-lstm-size.js?v=202610171621"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610171621"></script>
-<script src="js/lesson-emb-kullan.js?v=202610171621"></script>
-<script src="js/lesson-emb-draco.js?v=202610171621"></script>
-<script src="js/lesson-emb-arch.js?v=202610171621"></script>
-<script src="js/lesson-emb-extra.js?v=202610171621"></script>
-<script src="js/lesson-s2s-weights.js?v=202610171621"></script>
-<script src="js/lesson-s2s-add.js?v=202610171621"></script>
-<script src="js/lesson-s2s-inside.js?v=202610171621"></script>
-<script src="js/lesson-att-train.js?v=202610171621"></script>
-<script src="js/lesson-att-extra.js?v=202610171621"></script>
-<script src="js/lesson-att-big.js?v=202610171621"></script>
-<script src="js/lesson-att-ornek.js?v=202610171621"></script>
-<script src="js/lesson-mh-big.js?v=202610171621"></script>
-<script src="js/lesson-mh-ornek.js?v=202610171621"></script>
-<script src="js/lesson-tf-big.js?v=202610171621"></script>
-<script src="js/lesson-tf-ornek.js?v=202610171621"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610171621"></script>
-<script src="js/lesson-gpt-big.js?v=202610171621"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610171621"></script>
-<script src="js/lesson-rnn-van.js?v=202610171621"></script>
-<script src="js/lesson-s2s-extra.js?v=202610171621"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610171621"></script>
-<script src="js/lesson-emb-ornek.js?v=202610171621"></script>
-<script src="js/lesson-emb-steps.js?v=202610171621"></script>
-<script src="js/lesson-emb-big.js?v=202610171621"></script>
-<script src="js/lesson-sm-ornek.js?v=202610171621"></script>
-<script src="js/lesson-sm-big.js?v=202610171621"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610171621"></script>
-<script src="js/lesson-lstm-gate.js?v=202610171621"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610171621"></script>
-<script src="js/lesson-gpt.js?v=202610171621"></script>
-<script src="js/lesson-gpt-mini.js?v=202610171621"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610171621"></script>
-<script src="js/lesson-linreg-big.js?v=202610171621"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610171621"></script>
-<script src="js/lesson-act-big.js?v=202610171621"></script>
-<script src="js/lesson-act-ornek.js?v=202610171621"></script>
-<script src="js/lesson-xor-ornek.js?v=202610171621"></script>
-<script src="js/lesson-nn-ornek.js?v=202610171621"></script>
-<script src="js/lesson-nn-net.js?v=202610171621"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610171624"></script>
+<script src="js/lesson-lstm-cell.js?v=202610171624"></script>
+<script src="js/app.js?v=202610171624"></script>
+<script src="js/lesson-lstm-big.js?v=202610171624"></script>
+<script src="js/lesson-lstm-step.js?v=202610171624"></script>
+<script src="js/lesson-lstm-size.js?v=202610171624"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610171624"></script>
+<script src="js/lesson-emb-kullan.js?v=202610171624"></script>
+<script src="js/lesson-emb-draco.js?v=202610171624"></script>
+<script src="js/lesson-emb-arch.js?v=202610171624"></script>
+<script src="js/lesson-emb-extra.js?v=202610171624"></script>
+<script src="js/lesson-s2s-weights.js?v=202610171624"></script>
+<script src="js/lesson-s2s-add.js?v=202610171624"></script>
+<script src="js/lesson-s2s-inside.js?v=202610171624"></script>
+<script src="js/lesson-att-train.js?v=202610171624"></script>
+<script src="js/lesson-att-extra.js?v=202610171624"></script>
+<script src="js/lesson-att-big.js?v=202610171624"></script>
+<script src="js/lesson-att-ornek.js?v=202610171624"></script>
+<script src="js/lesson-mh-big.js?v=202610171624"></script>
+<script src="js/lesson-mh-ornek.js?v=202610171624"></script>
+<script src="js/lesson-tf-big.js?v=202610171624"></script>
+<script src="js/lesson-tf-ornek.js?v=202610171624"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610171624"></script>
+<script src="js/lesson-gpt-big.js?v=202610171624"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610171624"></script>
+<script src="js/lesson-rnn-van.js?v=202610171624"></script>
+<script src="js/lesson-s2s-extra.js?v=202610171624"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610171624"></script>
+<script src="js/lesson-emb-ornek.js?v=202610171624"></script>
+<script src="js/lesson-emb-steps.js?v=202610171624"></script>
+<script src="js/lesson-emb-big.js?v=202610171624"></script>
+<script src="js/lesson-sm-ornek.js?v=202610171624"></script>
+<script src="js/lesson-sm-big.js?v=202610171624"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610171624"></script>
+<script src="js/lesson-lstm-gate.js?v=202610171624"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610171624"></script>
+<script src="js/lesson-gpt.js?v=202610171624"></script>
+<script src="js/lesson-gpt-mini.js?v=202610171624"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610171624"></script>
+<script src="js/lesson-linreg-big.js?v=202610171624"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610171624"></script>
+<script src="js/lesson-act-big.js?v=202610171624"></script>
+<script src="js/lesson-act-ornek.js?v=202610171624"></script>
+<script src="js/lesson-xor-ornek.js?v=202610171624"></script>
+<script src="js/lesson-nn-ornek.js?v=202610171624"></script>
+<script src="js/lesson-nn-net.js?v=202610171624"></script>
 </body>
 </html>
