@@ -18,6 +18,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 #labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
 .lb{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;font:700 12px var(--sans);padding:2px 7px;border-radius:6px;background:#0f1218cc;border:1px solid var(--c);color:var(--ink);opacity:0}
 .lb.bot{transform:translate(-50%,0)}
+.lb.gl{pointer-events:auto;cursor:pointer;border-width:2px;background:#0f1218ee}
+.lb.gl:hover{background:#1c2230}
+#info #id{white-space:pre-line}
 .lb.sel{background:var(--hl);color:#1b1500;border-color:var(--hl)}
 .lb small{font:400 10.5px var(--mono);color:var(--mute);margin-left:5px}
 .lb.sel small{color:#4a3a00}
@@ -264,8 +267,8 @@ function tail(L,K,nm,vocab,tie,lnName,lnDesc){
   L.push({id:'next',name:'Sonraki token',short:'sonraki token',st:'out',w:1.2,h:1.2,kind:'slab',canvas:nextCv(),desc:'Son konumun skorları softmax ile yüzdeye çevrilir ve bir token seçilir. Gerçek modelin burada ne seçtiğini ölçmedik (ağırlıkları bu sayfada yok), kart bu yüzden "?". Seçilen token diziye eklenip döngü tekrarlanır — metin böyle uzar.',shape:'1 token',nums:'seçimi ölçmedik',dyn:nextCv})}
 function gpt2(){const L=[],K='g2';
   tokPart(L,'Metin harf harf değil BPE ile "alt kelime" parçalarına bölünür (ör. "gördüm" → "gör"+"dü"+"m"). Minik GPT 40 karakterle çalışıyordu; GPT-2 50.257 parçalık sözlükle. KISACA: token = karakter değil, sık görülen harf grubu; "7+5=" tam 4 token (ölçüldü: 7→22, +→10, 5→20, =→28). Boşluk numarayı değiştirir (" 7" ≠ "7"). Çizilen parçalar GPT-2\'nin gerçek parçalaması; Llama\'nın kendi sözlüğü metni farklı bölebilir.');
-  mkP(L,K,'Wte','Token tablosu (wte)','wte (kim)','in',40,16,'50.257 × 768','wte = word token embedding (token gömme tablosu). Minik GPT\'deki E ile aynı fikir: her token için bir kimlik kartı. 50.257 satır = 50.257 TOKEN (karakter değil): ~50.000 sık görülen kelime/kelime parçası ("the", " ve", "ing") + 256 tek-bayt parça (nadir harf, emoji için) + 1 özel bitiş işareti. Token numarası = okunacak satır: 7→22., +→10., 5→20., =→28. satır. Satırlar eğitimle öğrenilir. 50.257 × 768 ≈ 38,6 milyon ağırlık, modelin yaklaşık üçte biri.');
-  mkP(L,K,'Wpe','Konum tablosu (wpe)','wpe (nerede)','in',10,16,'1024 × 768','Minik GPT\'deki P gibi ÖĞRENİLEN konum kartları; 1024 konum olduğu için bağlam en çok 1024 token.');
+  mkP(L,K,'Wte','Token tablosu (wte)','wte (kim)','in',40,16,'50.257×768 → T satır','wte = word token embedding (token gömme tablosu). Minik GPT\'deki E ile aynı fikir: her token için bir kimlik kartı. Tablonun hepsi çizilmedi: istemdeki T token için yalnız T satır okunur (7+5= için 22., 10., 20., 28. satır) → T×768. Bu okuma bir hesap değil, sadece satır seçmedir. 50.257 satır = 50.257 TOKEN (karakter değil): ~50.000 sık görülen kelime/kelime parçası ("the", " ve", "ing") + 256 tek-bayt parça (nadir harf, emoji için) + 1 özel bitiş işareti. Token numarası = okunacak satır: 7→22., +→10., 5→20., =→28. satır. Satırlar eğitimle öğrenilir. 50.257 × 768 ≈ 38,6 milyon ağırlık, modelin yaklaşık üçte biri.');
+  mkP(L,K,'Wpe','Konum tablosu (wpe)','wpe (nerede)','in',10,16,'1024×768 → ilk T satır','wpe = word position embedding (konum tablosu). Minik GPT\'deki P gibi ÖĞRENİLEN konum kartları (formül değil, tablo); 1.024 satırın yalnız ilk T\'si okunur (7+5= için konum 0-3) → T×768, hesap yok sadece satır seçme; 1024 konum olduğu için bağlam en çok 1024 token.');
   mkP(L,K,'x','x = wte + wpe','x','in',10,16,'T × 768','Her konumun kim + nerede bilgisi toplanır (Minik GPT\'deki x ile aynı).');
   mkP(L,K,'ln1','LayerNorm 1','LayerNorm','norm',10,16,'T × 768','Her satırı kendi içinde ortalaması 0, yayılımı 1 olacak şekilde ölçekler (+ öğrenilen γ, β). Minik GPT\'de YOK: onlarca blok üst üste binince sayılar patlamasın ya da sönmesin diye. GPT-2\'de normalizasyon alt-bloğun GİRİŞİNDE ("pre-LN").');
   ['Q','K','V'].forEach((q,i)=>mkP(L,K,'W'+q,'W_'+q,'W_'+q,'att',16,16,'768 × 768','Minik GPT\'deki W_'+q+' ile aynı iş, ama 12 kafaya bölünür: her kafa kendi 64\'lük dilimini (768/12) kullanır. HER konum için sorgu/etiket/içerik üretilir (Minik GPT yalnız son konum için q üretiyordu).'));
@@ -354,12 +357,36 @@ const lmat=new THREE.LineBasicMaterial({color:0x6a7390,transparent:true,opacity:
 const bgeo=new THREE.BoxGeometry(1,1,1);
 const labs=$('labels');
 const mkLb=(c,h)=>{const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',c);d.innerHTML=h;labs.appendChild(d);return d};
+
+const GRP_TOK=(mini)=>({title:'Tokenizer',col:'#8a93a6',pm:0.55,cols:[0,0],
+ body:mini?'Minik GPT\'de tokenizer sadece harf → numara tablosu (40 harf); baştaki boş kutular da burada dolguyla doldurulur. Sinir ağının parçası değil, ağırlığı yok.':'Sinir ağının parçası DEĞİL: ağırlığı olmayan, sabit bir program (BPE). Metni parçalara bölüp her parçaya sözlükteki numarasını verir.',
+ carry:'Yalnız numaralar. Anlam ya da konum bilgisi taşımaz; bunlar sadece "tabloda hangi satırı okuyacağız" adresi.'});
+const GRPS={
+ mini:[GRP_TOK(true),
+  {title:'Embedding katmanı',col:'#6ea0ff',pm:1,cols:[1,3],body:'Numaraları anlam taşıyan sayı listelerine çevirir. İçinde 3 parça var: E (kim) tablosu, P (nerede) tablosu ve ikisinin toplamı x. Ağırlıkları: E 640 + P 160 = 800.',carry:'Çıkışı x (10×16): her satır "ben şu harfim ve şu kutudayım". Bağlam yok: harf yanındakini bilmiyor; bağlamı attention ekleyecek.'},
+  {title:'Positional encoding (konum)',col:'#b592f0',pm:0.55,cols:[2,2],bottom:true,body:'Sıra bilgisini ekleyen kısım = P tablosu (öğrenilen 10 konum kartı). Toplama adımı (x) bu bilgiyi harf kartına karıştırır.',carry:'Yalnız "kaçıncı kutu": harf ne olursa olsun 3. kutu hep aynı kart. Anlam bilgisi yok.'}],
+ gpt2:[GRP_TOK(false),
+  {title:'Embedding katmanı',col:'#6ea0ff',pm:1,cols:[1,3],body:'Numaraları anlam taşıyan sayı listelerine çevirir. İçinde 3 parça var: wte (kim) tablosu, wpe (nerede) tablosu ve ikisinin toplamı x. Ağırlıkları: wte 38,6M + wpe 0,8M = 39,4M, modelin yaklaşık üçte biri.',carry:'Çıkışı x (T×768): her satır "ben şu token\'ım ve şu sıradayım". Bağlam yok: "bank" her cümlede aynı vektör; bağlamı attention ekleyecek.'},
+  {title:'Positional encoding (konum)',col:'#b592f0',pm:0.55,cols:[2,2],bottom:true,body:'Sıra bilgisini ekleyen kısım = wpe tablosu. GPT-2\'de formül değil ÖĞRENİLEN tablo ("learned positional embedding"); toplama adımı (x) bu bilgiyi token kartına karıştırır.',carry:'Yalnız "kaçıncı sıra": token ne olursa olsun 3. konum hep aynı kart. En çok 1.024 konum. Anlam bilgisi yok.'}],
+ llama:[GRP_TOK(false),
+  {title:'Embedding katmanı',col:'#6ea0ff',pm:1,cols:[1,2],body:'Numaraları anlam taşıyan sayı listelerine çevirir. İçinde yalnız Emb (kim) tablosu var; konum burada EKLENMEZ, RoPE ile attention içinde Q ve K\'ya işlenir.',carry:'Çıkışı x: yalnız "token ne" bilgisi. Sıra bilgisi sonra, attention\'da gelir.'}]};
+const CARRY={
+ mini:{girdi:'Yalnız harf numaraları. Anlam/konum yok.',E:'Harfin "ne olduğu" (16 sayı), bağlamdan bağımsız. Sıra bilgisi YOK.',P:'Kutunun "kaçıncı olduğu" (16 sayı), hangi harf olduğundan bağımsız. Anlam YOK.',x:'"Kim + nerede" birlikte: "ben bu harfim, şu kutudayım". Bağlam henüz yok.'},
+ gpt2:{tok:'Yalnız kimlik numaraları (7+5= için 22, 10, 20, 28). Anlam ve konum yok, sadece tablo adresi.',Wte:'Her token\'ın "ne olduğu" (768 sayı), bağlamdan bağımsız: "7" hangi cümlede olursa olsun aynı kart. Sıra bilgisi YOK.',Wpe:'Token\'ın "kaçıncı sırada olduğu" (768 sayı), hangi token olduğundan bağımsız. Anlam bilgisi YOK.',x:'"Kim + nerede" birlikte: "ben 7\'yim, 1. sıradayım". Bağlam henüz yok: "7" yanındaki "5"i bilmiyor, bunu attention ekleyecek.'},
+ llama:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',Emb:'Token\'ın "ne olduğu" (4096 sayı). Sıra bilgisi YOK: sıra sonra RoPE ile Q ve K\'ya işlenir.',x:'Yalnız anlam (konum henüz yok).'}};
+[MINI,GPT2,LLAMA].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
+function showGroup(A,g){select(null);const info=$('info');info.style.setProperty('--c',g.col);$('it').textContent=g.title;
+  $('is').textContent=A.btn+' · bölüm (çerçeve)';$('id').textContent=g.body;
+  const names=A.parts.filter(p=>p.ci>=g.cols[0]&&p.ci<=g.cols[1]).map(p=>p.name);
+  $('in').textContent='İçerdiği parçalar: '+names.join(' → ')+'\n\n📦 Taşıdığı bilgi: '+g.carry;$('cx').innerHTML='';$('hgo').innerHTML='';info.classList.add('on')}
 function buildScene(A){
   A.parts.forEach(mkGroup);
   A.links=[];A.cols.forEach((ids,ci)=>{if(ci===A.cols.length-1)return;ids.forEach(a=>A.cols[ci+1].forEach(b=>A.links.push([A.byId[a],A.byId[b]])))});
   A.lgeo=new THREE.BufferGeometry();A.lgeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(A.links.length*6),3));
   A.lines=new THREE.LineSegments(A.lgeo,lmat);A.lines.frustumCulled=false;scene.add(A.lines);
   A.bboxes=A.blocks.map(()=>{const b=new THREE.LineSegments(new THREE.EdgesGeometry(bgeo),new THREE.LineBasicMaterial({color:0x3fc7c1,transparent:true,opacity:0}));b.frustumCulled=false;scene.add(b);return b});
+  A.gbox=(A.groups||[]).map(g=>{const b=new THREE.LineSegments(new THREE.EdgesGeometry(bgeo),new THREE.LineBasicMaterial({color:new THREE.Color(g.col),transparent:true,opacity:0}));b.frustumCulled=false;scene.add(b);return b});
+  A.glb=(A.groups||[]).map(g=>{const d=mkLb(g.col,g.title+'<small>tıkla: ne içeriyor?</small>');d.classList.add('gl');if(g.bottom)d.classList.add('bot');d.addEventListener('click',ev=>{ev.stopPropagation();showGroup(A,g)});return d});
   A.parts.forEach(p=>{const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',p.col);d.innerHTML=p.short+'<small>'+p.shape+'</small>';labs.appendChild(d);p.lb=d;p.arch=A});
   A.blockLb=mkLb('#3fc7c1',A.blockHtml[0]);A.blockLb2=mkLb('#3fc7c1',A.blockHtml[1]||'');A.contLb=mkLb('#3fc7c1','blok burada devam ediyor ↓<small>r → W1 (aynı blok, alt satır)</small>');A.asmLb=mkLb('#6ea0ff',A.asm);
   A.contGeo=new THREE.BufferGeometry();A.contGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));
@@ -426,7 +453,7 @@ function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w
   const f=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xffc82e,transparent:true,opacity:main?0.1:0.3,depthTest:false,depthWrite:false}));f.renderOrder=5;
   const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
-  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
+  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc+(p.carry?'\n\n📦 Taşıdığı bilgi: '+p.carry:'');
   $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
 function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
@@ -463,7 +490,9 @@ function frame(){
       cp.set([pa.x+r.w*sc/2,pa.y,pa.z,pb.x-w1.w*sc/2,pb.y,pb.z]);A.contGeo.attributes.position.needsUpdate=true;A.contLine.computeLineDistances();A.contLine.material.opacity=e*(1-mm);
       const one=mm>0.5;if(A.blockLb._o!==one){A.blockLb._o=one;A.blockLb.innerHTML=one?'BLOK = 1 katman<small>attention + FFN</small>':A.blockHtml[0]}}
     A._boxes=A.blocks.map((rg,bi)=>{let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;P.filter(p=>p.ci>=rg[0]&&p.ci<=(A.two&&bi===0&&mm>0.5?A.oneEnd:rg[1])).forEach(p=>{const g=p.group.position,s2=sizeOf(p);x0=Math.min(x0,g.x-s2.w/2);x1=Math.max(x1,g.x+s2.w/2);y0=Math.min(y0,g.y-s2.h/2);y1=Math.max(y1,g.y+s2.h/2);z0=Math.min(z0,g.z-s2.d);z1=Math.max(z1,g.z+s2.d)});
-      const pd=0.35*sc+0.1,bb=A.bboxes[bi];bb.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);bb.scale.set(x1-x0+pd*2,y1-y0+pd*2,Math.max(z1-z0,0.3)+pd*3);bb.material.opacity=e*0.9*(bi===1?(mm>0.5?0:1):1);return {x:(x0+x1)/2,y:y1+pd+0.25,z:(z0+z1)/2}});});
+      const pd=0.35*sc+0.1,bb=A.bboxes[bi];bb.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);bb.scale.set(x1-x0+pd*2,y1-y0+pd*2,Math.max(z1-z0,0.3)+pd*3);bb.material.opacity=e*0.9*(bi===1?(mm>0.5?0:1):1);return {x:(x0+x1)/2,y:y1+pd+0.25,z:(z0+z1)/2}});
+    A._gb=(A.groups||[]).map((g,gi)=>{let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;P.filter(p=>p.ci>=g.cols[0]&&p.ci<=g.cols[1]).forEach(p=>{const q=p.group.position,s2=sizeOf(p);x0=Math.min(x0,q.x-s2.w/2);x1=Math.max(x1,q.x+s2.w/2);y0=Math.min(y0,q.y-s2.h/2);y1=Math.max(y1,q.y+s2.h/2);z0=Math.min(z0,q.z-s2.d);z1=Math.max(z1,q.z+s2.d)});
+      const pd=(0.35*sc+0.1)*g.pm,bb=A.gbox[gi];bb.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);bb.scale.set(x1-x0+pd*2,y1-y0+pd*2,Math.max(z1-z0,0.3)+pd*3);bb.material.opacity=e*0.8;return {x:(x0+x1)/2,y:g.bottom?y0-pd-0.1:y1+pd+0.25,z:(z0+z1)/2}});});
   lmat.opacity=e*0.5;
   halos.forEach(h=>{h.m.position.copy(h.p.group.position);h.m.scale.setScalar(h.p.group.scale.x)});
   if(linkL&&selected){const a=linkL.geometry.attributes.position.array,sp=selected.group.position;pairs.forEach((q,i)=>{const qp=q.group.position;a.set([sp.x,sp.y,sp.z,qp.x,qp.y,qp.z],i*6)});linkL.geometry.attributes.position.needsUpdate=true;linkL.computeLineDistances()}
@@ -487,6 +516,7 @@ function frame(){
   const bo=clamp((t-0.5)/0.4,0,1);
   act.forEach(A=>{A.parts.forEach(p=>{const g=p.group.position,bot=p.ci%2===1;p.lb.classList.toggle('bot',bot);v3.set(g.x,g.y+(bot?-1:1)*(p.h*sc/2+0.15),g.z);proj(v3,p.lb,p===selected?1:lop)});
     const b=A._boxes;v3.set(b[0].x,b[0].y,b[0].z);proj(v3,A.blockLb,bo);if(b[1]){v3.set(b[1].x,b[1].y,b[1].z);proj(v3,A.blockLb2,bo*(A.mm>0.5?0:1))}
+    (A.groups||[]).forEach((g,gi)=>{const c=A._gb[gi],d=A.glb[gi];v3.set(c.x,c.y,c.z);proj(v3,d,bo);d.style.pointerEvents=Number(d.style.opacity)>0.5?'auto':'none'});
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position;v3.set((pa.x+pb.x)/2,(pa.y+pb.y)/2,(pa.z+pb.z)/2);proj(v3,A.contLb,bo*(1-A.mm))}
     v3.set(A.XC_A,A.yo+0.9,0);proj(v3,A.asmLb,clamp(1-t*4,0,1))});
   requestAnimationFrame(frame)}
@@ -508,7 +538,7 @@ function buildCmp(){const act=ARCHS.filter(A=>A.on),el=$('cmp');
   el.addEventListener('pointermove',e=>{if(!st)return;el.style.left=clamp(e.clientX-st.dx,0,innerWidth-60)+'px';el.style.top=clamp(e.clientY-st.dy,0,innerHeight-40)+'px'});
   el.addEventListener('pointerup',()=>{st=null});})()
 function applyArch(){const act=ARCHS.filter(A=>A.on);
-  ARCHS.forEach(A=>{const on=A.on;A.parts.forEach(p=>{p.group.visible=on;p.lb.style.display=on?'':'none'});A.lines.visible=on;A.bboxes.forEach(b=>b.visible=on);A.contLine.visible=on&&!!A.two;
+  ARCHS.forEach(A=>{const on=A.on;A.parts.forEach(p=>{p.group.visible=on;p.lb.style.display=on?'':'none'});A.lines.visible=on;A.bboxes.forEach(b=>b.visible=on);(A.gbox||[]).forEach(b=>b.visible=on);(A.glb||[]).forEach(d=>d.style.display=on?'':'none');A.contLine.visible=on&&!!A.two;
     A.blockLb.style.display=on?'':'none';A.blockLb2.style.display=on&&A.blockHtml[1]?'':'none';A.contLb.style.display=on&&A.two?'':'none';A.asmLb.style.display=on?'':'none'});
   if(selected&&!selected.arch.on)select(null);else if(selected)select(selected);
   $('bl').style.display=MINI.on?'':'none';
