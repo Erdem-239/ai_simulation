@@ -28,6 +28,22 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 #bar .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #cmp{position:fixed;left:max(14px,env(safe-area-inset-left,0px));top:108px;width:min(430px,calc(100vw - 28px));max-height:calc(100vh - 360px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:none;backdrop-filter:blur(6px)}
 #cmp.on{display:block}
+#tour{position:fixed;left:max(14px,env(safe-area-inset-left,0px));top:108px;width:min(480px,calc(100vw - 28px));max-height:calc(100vh - 340px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:none;backdrop-filter:blur(6px);z-index:5}
+#tour.on{display:block}
+#tour .hd{cursor:move;display:flex;justify-content:space-between;align-items:center;touch-action:none;user-select:none}
+#tour h3{margin:0;font-size:14px;color:var(--hl)}
+#tour .hd button{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer;line-height:1}
+#tour .ts{font:700 17px var(--sans);margin:6px 0 6px}
+#tour .r{font-size:13px;line-height:1.5;margin:6px 0;padding-left:9px;border-left:3px solid var(--c2,var(--line))}
+#tour .r b{color:var(--c2)}
+#tour .fk{font-size:12.5px;line-height:1.5;background:#232a3a;border-radius:8px;padding:6px 9px;margin:8px 0}
+#tour .tc{display:flex;gap:8px;margin:8px 0 4px}
+#tour .tc button{font:700 13px var(--sans);height:32px;border-radius:8px;border:1px solid var(--line);background:#232a3a;color:var(--ink);cursor:pointer;padding:0 12px}
+#tour .tc button:hover{border-color:var(--blue)}
+#tour .tc button:disabled{opacity:.4;cursor:default}
+#tour .dots{display:flex;gap:5px;flex-wrap:wrap}
+#tour .dots i{width:11px;height:11px;border-radius:50%;background:#323a4a;cursor:pointer}
+#tour .dots i.on{background:var(--hl)}
 #cmp h3{margin:0 0 6px;font-size:15px}
 #cmp table{border-collapse:collapse;width:100%;font-size:12px}
 #cmp th,#cmp td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
@@ -71,12 +87,13 @@ body.nobar #barShow{display:block}
 <div id="labels"></div>
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
+<div id="tour"></div>
 <div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div><div id="cx"></div></div>
 <button id="barShow" title="Ayar panelini aç">▴ Panel</button>
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
   <div class="row" id="archs"><span class="lab">Mimari (birden çok seçilebilir)</span></div>
-  <div class="row" id="opts"><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
+  <div class="row" id="opts"><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
   <div class="row"><span class="lab">Birleşik</span><input id="sl" type="range" min="0" max="100" value="0" aria-label="Parçalama"><span class="lab">Parçalı</span><button id="bb" title="Birleştir">Birleştir</button><button id="bx" title="Parçala">Parçala</button><button id="bf" title="Hepsini görünür yap">Sığdır</button><button id="bz1" title="Uzaklaş">−</button><button id="bz2" title="Yakınlaş">+</button><button id="bl" title="Yerleşim: iki satır (sığdırılmış) / tek düzlem">Yerleşim: iki satır</button></div>
   <div id="hint">Tekerlek: parçala, sonra imlece yakınlaş/uzaklaş · Sürükle: döndür · Sağ tuş ya da Shift+sürükle: kaydır · Klavye: ← → ↑ ↓ kaydır, W/S yakınlaş/uzaklaş, A/D döndür, +/− parçala/birleştir · Parçaya tıkla: bilgi (kamera hareketi için "Tıklayınca zoom") · Kaybolursan: Sığdır ya da H tuşu</</div>
 </div>
@@ -312,7 +329,7 @@ addEventListener('resize',resize);resize();
 $('sl').oninput=e=>{tT=e.target.value/100};
 $('bb').onclick=()=>{tT=0};$('bx').onclick=()=>{tT=1};
 $('bl').onclick=()=>{MINI.mT=MINI.mT?0:1;$('bl').textContent=MINI.mT?'Yerleşim: tek düzlem':'Yerleşim: iki satır'};
-const panOff=new THREE.Vector3(),ZMIN=0.015,ZMAX=2.6;let focusOn=false,hoverOn=false,hoverXY=null,hoverDirty=false,cmpOpen=false;
+const panOff=new THREE.Vector3(),ZMIN=0.015,ZMAX=2.6;let tourOn=false,tourParts=[],tourIdx=0,tourTimer=null,focusOn=false,hoverOn=false,hoverXY=null,hoverDirty=false,cmpOpen=false;
 function worldAt(cx,cy){mouse.x=(cx/innerWidth)*2-1;mouse.y=-(cy/innerHeight)*2+1;ray.setFromCamera(mouse,camera);
   const n=new THREE.Vector3();camera.getWorldDirection(n);const pl=new THREE.Plane().setFromNormalAndCoplanarPoint(n,tgt),P=new THREE.Vector3();return ray.ray.intersectPlane(pl,P)?P:null}
 function zoomAt(k,cx,cy){const nz=clamp(zoom*k,ZMIN,ZMAX);k=nz/zoom;
@@ -369,10 +386,11 @@ function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();
     others.forEach(A=>{const m=p.eq?A.parts.filter(q=>q.eq===p.eq):[];m.forEach(q=>{selSet.add(q);pairs.push(q)});
       lines.push('↔ '+A.btn+': '+(m.length?m.map(q=>q.name+' ('+q.shape+')').join(' + '):'karşılığı yok'))});
     extra=lines.join('\n')}
-  clearHalos();if(p){selSet.forEach(q=>addHalo(q,q===p));
+  clearHalos();if(tourOn)tourParts.forEach(q=>addHalo(q,true));if(p){selSet.forEach(q=>addHalo(q,q===p));
     if(pairs.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pairs.length*6),3));
       linkL=new THREE.LineSegments(g,new THREE.LineDashedMaterial({color:0xffc82e,dashSize:0.4,gapSize:0.25,depthTest:false}));linkL.frustumCulled=false;linkL.renderOrder=7;scene.add(linkL)}}
   ARCHS.forEach(A=>A.parts.forEach(q=>{const on=selSet.has(q);q.lb.classList.toggle('sel',on);if(q.edge)q.edge.material.color.set(on?'#ffc82e':q.col)}));
+  if(tourOn)tourParts.forEach(q=>q.lb.classList.add('sel'));
   showInfo(p,extra);if(p&&tT<.5)tT=1}
 function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.size)return;
   if(!hoverOn||!hoverXY){showInfo(null);return}showInfo(pick(hoverXY.x,hoverXY.y))}
@@ -406,11 +424,12 @@ function frame(){
   if((frameN=(frameN||0)+1)%15===0){let vis=0;const pv=new THREE.Vector3();act.forEach(A=>A.parts.forEach(p=>{pv.copy(p.group.position).project(camera);if(pv.z<1&&Math.abs(pv.x)<1.15&&Math.abs(pv.y)<1.15)vis++}));
     lostN=vis?0:(lostN||0)+1;if(lostN>=3){lostN=0;resetView()}}
   const Lmax=Math.max(...act.map(A=>A.LENc)),xa=act.reduce((s,A)=>s+A.XC_A,0)/act.length,cx=xa+(Lmax/2-xa)*e;
-  let span=0;const foc=selected&&focusOn;if(foc){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
-    grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}))}
+  let span=0,fdim=0;const grp=tourOn&&tourParts.length?tourParts:(selected&&focusOn?[selected,...pairs]:null),foc=!!grp;
+  if(foc){const c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
+    grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}));fdim=Math.max(...grp.map(q=>Math.max(q.w,q.h)))}
   wt.set(cx,0,0).add(panOff);tgt.lerp(foc?focusV:wt,0.14);
   const distEx=Math.max(Lmax*1.12,totH*1.6+4);
-  const dist=(foc?(Math.max(selected.w,selected.h)*sc+6+span*1.7):(5+(distEx-5)*e))*zoom;
+  const dist=(foc?(fdim*sc+6+span*(tourOn?2.1:1.7)):(5+(distEx-5)*e))*zoom;
   camPos.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));
   camera.position.lerp(camPos,0.2);camera.lookAt(tgt);
   renderer.render(scene,camera);
@@ -482,8 +501,89 @@ ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
   b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=A.mDef}
-    if(ARCHS.filter(x=>x.on).length>=2&&was<2)cmpOpen=true;if(ARCHS.filter(x=>x.on).length<2)cmpOpen=false;$('bc').classList.toggle('on',cmpOpen);applyArch()};
+    if(ARCHS.filter(x=>x.on).length>=2&&was<2)cmpOpen=true;if(ARCHS.filter(x=>x.on).length<2)cmpOpen=false;$('bc').classList.toggle('on',cmpOpen);if(tourOn){cmpOpen=false;$('bc').classList.remove('on')}applyArch();if(tourOn)applyTour()};
   $('archs').appendChild(b)});
+/* ---------- 🎬 Eş zamanlı gezi: iki (ya da üç) mimariyi aynı anda, adım adım ---------- */
+const TOUR=[
+ {t:'1 · Girdi: metin nasıl sayıya hazırlanıyor?',ids:{mini:['girdi'],gpt2:['tok'],llama:['tok']},
+  txt:{mini:'Metin <b>harf harf</b> okunur (sözlük 40 karakter). Soru "7+5=" sadece 4 karakter; pencere 10 slot olduğu için başa <b>6 nokta (dolgu)</b> konur: <span class="mono">······7+5=</span>.',
+   gpt2:'Metin önce <b>token</b>\'lara bölünür (BPE): başta her harf ayrıdır; metinde en sık yan yana gelen iki parça birleştirilip yeni bir parça yapılır, bu işlem on binlerce kez tekrarlanır. Sonuç: sık geçen harf grupları tek parça (örn. "gördüm" → "gör"+"dü"+"m"). <b>50.257 parçalık sözlükten</b> her parça bir numara. <b>Dolgu yok</b>: T = cümlenin token sayısı (en çok 1024). Çizimdeki token\'lar uydurma örnek.',
+   llama:'Aynı fikir (BPE), daha büyük sözlük: <b>128.256 parça</b>; bağlam en çok 8192 token.'},
+  fark:'Karakter ↔ alt-kelime: GPT-2 aynı metni çok daha az parçayla yazar; sözlük 40 yerine 50.257 (Llama: 128.256). Pencere sabit 10 ↔ cümle kadar uzunluk.'},
+ {t:'2 · Kimlik kartı: her parça bir sayı listesine dönüşür',ids:{mini:['E'],gpt2:['Wte'],llama:['Emb']},
+  txt:{mini:'<b>E tablosu 40×16</b>: her karakterin 16 sayılık kimlik kartı (640 ağırlık). 10 slot → 10 kart çekilir.',
+   gpt2:'<b>wte 50.257×768</b>: her token için 768 sayılık kart (≈38,6 milyon ağırlık, modelin yaklaşık üçte biri). T token → T kart.',
+   llama:'<b>Emb 128.256×4096</b> (≈525 milyon ağırlık).'},
+  fark:'Mantık birebir aynı (tablodan satır oku); fark tablonun boyutu: 640 ↔ 38,6 milyon ↔ 525 milyon ağırlık.'},
+ {t:'3 · Konum: kim kaçıncı sırada?',ids:{mini:['P'],gpt2:['Wpe'],llama:['x']},
+  txt:{mini:'<b>P tablosu 10×16</b>: slot numarasına göre öğrenilen yer kartı (slot 9 = en sondaki). Attention sırayı bilmediği için konum buradan gelir.',
+   gpt2:'<b>wpe 1024×768</b>: yine öğrenilen yer kartları, aynı toplama; 1024. konumdan ötesi yok.',
+   llama:'Bu adımda konum <b>eklenmez</b>! x yalnız kimlik taşır. Konum bilgisi 5-6. adımlarda <b>RoPE</b> ile Q ve K\'ya döndürme olarak girer.'},
+  fark:'Konum: öğrenilen tablo (Minik GPT, GPT-2) ↔ tablo yok, dönüş açısı (Llama).'},
+ {t:'4 · Toplama ve normalizasyon',ids:{mini:['x'],gpt2:['x','ln1'],llama:['x','rms1']},
+  txt:{mini:'<b>x = E + P</b> (10×16). Normalizasyon <b>yok</b>.',
+   gpt2:'<b>x = wte + wpe</b>, sonra <b>LayerNorm</b>: her tokenın 768 sayısı ortalama 0, yayılım 1 olacak şekilde hizalanır (kestirme yol hizalanmamış x ile devam eder: pre-LN).',
+   llama:'x yalnız Emb; <b>RMSNorm</b> ile ölçeklenir (ortalamayı çıkarmadan).'},
+  fark:'Normalizasyon: Minik GPT\'de yok; gerçek modellerde her alt-bloğun girişinde (GPT-2 LayerNorm, Llama RMSNorm).'},
+ {t:'5 · Q, K, V: üç ayrı rol',ids:{mini:['WQ','WK','WV','q','K','V'],gpt2:['WQ','WK','WV'],llama:['Wq','Wk','Wv','rope']},
+  txt:{mini:'W_Q, W_K, W_V her biri 16×16. <b>Yalnız son slotun q\'su</b> çıkar (1×16); K ve V 10 slotun hepsi için (10×16).',
+   gpt2:'W_Q, W_K, W_V her biri 768×768; <b>HER konum için</b> q, K, V çıkar (üçü de T×768) ve <b>12 kafaya</b> 64\'lük dilimlerle bölünür.',
+   llama:'W_Q 4096×4096 (32 kafa); W_K ve W_V 4096×1024 (yalnız <b>8 K/V kafası</b>, GQA). RoPE, Q ve K\'yı konum açısıyla döndürür.'},
+  fark:'Tek konum ↔ her konum; tek kafa ↔ 12/32 kafa; Llama\'da K/V gruplanmış.'},
+ {t:'6 · Dikkat: kim kime bakıyor?',ids:{mini:['skor','a'],gpt2:['heads'],llama:['heads']},
+  txt:{mini:'<b>Tek kafa, tek skor satırı</b>: q·K/4 → 10 skor → softmax → 10 yüzde. Eğitilmiş modelde dikkat 7 ve 5 slotlarına yoğunlaşır. Maskeye gerek yok (pencere zaten yalnız geçmiş).',
+   gpt2:'<b>12 kafa</b>, her biri T×T skor tablosu; <b>üst üçgen (gelecek) kapalı</b>: her token yalnız kendinden öncekilere bakar. Böylece tek geçişte T ayrı tahmin eğitilir.',
+   llama:'<b>32 sorgu kafası</b> × T×T, aynı nedensel maske; her 4 kafa bir K/V grubunu paylaşır.'},
+  fark:'Bir satır ↔ tam T×T tablo; tek bakış ↔ onlarca paralel bakış; GPT-2/Llama\'da maske var.'},
+ {t:'7 · Karışım ve residual',ids:{mini:['o','WO','r'],gpt2:['WO','add1'],llama:['Wo','add1']},
+  txt:{mini:'<b>o = Σ aᵢ·Vᵢ</b> (1×16), W_O ile karıştırılıp x[9]\'a eklenir: <b>r = x[9] + o·W_O</b> (yalnız son slot).',
+   gpt2:'Kafa çıktıları yan yana birleşir (12×64=768), <b>W_O</b> ile karıştırılır ve x\'e eklenir (residual) — <b>HER konumda</b>.',
+   llama:'Aynı iş: 32 kafa birleşir, W_O, residual.'},
+  fark:'Aynı fikir; gerçek modelde her konumda ve kafa birleştirmesiyle.'},
+ {t:'8 · FFN: her kelimeyi ayrı ayrı derinleştir',ids:{mini:['W1','u','g','W2','f'],gpt2:['ln2','Wfc','gelu','Wproj'],llama:['rms2','Wgate','Wup','swi','Wdown']},
+  txt:{mini:'<b>16→32</b> (W1), <b>tanh</b>, <b>32→16</b> (W2); sonuç r\'ye eklenir. Normalizasyon yok.',
+   gpt2:'Önce LayerNorm, sonra <b>768→3072</b> (4 kat), <b>GELU</b>, <b>3072→768</b>.',
+   llama:'Önce RMSNorm, sonra <b>iki paralel yol</b> (W_gate ve W_up, 4096→14.336), <b>SwiGLU</b> (kapı × değer), W_down ile 4096\'ya.'},
+  fark:'Genişlik 2× ↔ 4× ↔ ≈3,5×; aktivasyon tanh ↔ GELU ↔ SwiGLU.'},
+ {t:'9 · Blok sonu: bu bloktan kaç tane?',ids:{mini:['h'],gpt2:['add2'],llama:['add2']},
+  txt:{mini:'<b>h = r + f</b>. <b>Tek blok</b>: h doğrudan çıkış tablosuna gider.',
+   gpt2:'x + FFN çıktısı = bloğun çıktısı. Aynı blok <b>12 kez</b> art arda tekrarlanır; her bloğun <b>kendi ayrı ağırlıkları</b> var, çıktısı bir sonrakine girer. Burada yalnız bir blok çiziliyor.',
+   llama:'Aynı blok <b>32 kez</b> art arda (her biri kendi ağırlıklarıyla).'},
+  fark:'Blok sayısı: 1 ↔ 12 ↔ 32. Derinlik, "ince düşünme"nin kaynağı.'},
+ {t:'10 · Çıkış tablosu: skorlar',ids:{mini:['Wo','lg','p'],gpt2:['lnf','head','logits'],llama:['lnf','head','logits']},
+  txt:{mini:'<b>W_out 16×40</b>: h → 40 karakter için skor, softmax ile 40 yüzde (yalnız son slot için).',
+   gpt2:'Son LayerNorm, sonra <b>768×50.257</b> çıkış tablosu (wte ile <b>paylaşımlı</b>): <b>HER konum</b> için 50.257 skor.',
+   llama:'Son RMSNorm, <b>4096×128.256</b> çıkış tablosu (girişten ayrı): her konum için 128.256 skor.'},
+  fark:'Sözlük boyu: 40 ↔ 50.257 ↔ 128.256; GPT-2 giriş ve çıkış tablosunu paylaşıyor, Llama paylaşmıyor.'},
+ {t:'11 · Sonraki parça seçilir, döngü tekrarlanır',ids:{mini:['cevap'],gpt2:['next'],llama:['next']},
+  txt:{mini:'En yüksek yüzde: <b>"'+AMAX+'"</b> (%'+APCT+') — "12"nin ilk karakteri. Karakter pencereye eklenir, adımlar baştan çalışır, sonra "2" çıkar.',
+   gpt2:'Son konumun skorları softmax ile yüzdeye çevrilir ve bir token seçilir (çizimdeki örnek uydurma); diziye eklenip tüm adımlar yeniden çalışır.',
+   llama:'Aynı: skor → yüzde → seç → ekle → tekrar.'},
+  fark:'Burada fark yok: üçü de aynı döngüyü çalıştırır. Büyüklük farkı ağın içinde.'}];
+function tourPanel(){const st=TOUR[tourIdx],act=ARCHS.filter(A=>A.on),el=$('tour');
+  el.innerHTML='<div class="hd"><h3>🎬 Eş zamanlı gezi · adım '+(tourIdx+1)+'/'+TOUR.length+'</h3><button class="cx" aria-label="Kapat">×</button></div><div class="ts">'+st.t+'</div>'+
+    act.map(A=>'<div class="r" style="--c2:'+ACOL[A.key]+'"><b>'+esc(A.btn)+':</b> '+st.txt[A.key]+'</div>').join('')+
+    '<div class="fk">🔍 <b>Fark:</b> '+st.fark+'</div>'+
+    '<div class="tc"><button id="tPrev"'+(tourIdx===0?' disabled':'')+'>◀ Geri</button><button id="tNext"'+(tourIdx===TOUR.length-1?' disabled':'')+'>İleri ▶</button><button id="tAuto">'+(tourTimer?'⏸ Durdur':'▶▶ Otomatik')+'</button></div>'+
+    '<div class="dots">'+TOUR.map((_,i)=>'<i class="'+(i===tourIdx?'on':'')+'" data-i="'+i+'"></i>').join('')+'</div>';
+  el.classList.add('on')}
+function applyTour(){const st=TOUR[tourIdx];tourParts=ARCHS.filter(A=>A.on).flatMap(A=>(st.ids[A.key]||[]).map(id=>A.byId[id]).filter(Boolean));
+  select(null);focusV=null;tourPanel()}
+let tourHadBar=true;
+function startTour(){tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
+  cmpOpen=false;$('bc').classList.remove('on');tourOn=true;tourIdx=0;tT=1;zoom=1;panOff.set(0,0,0);$('bt').classList.add('on');applyArch();applyTour()}
+function stopTour(){if(tourHadBar)document.body.classList.remove('nobar');tourOn=false;tourParts=[];if(tourTimer){clearInterval(tourTimer);tourTimer=null}$('tour').classList.remove('on');$('bt').classList.remove('on');select(null);focusV=null}
+$('bt').onclick=()=>{tourOn?stopTour():startTour()};
+$('tour').addEventListener('click',e=>{
+  if(e.target.closest('.cx')){stopTour();return}
+  if(e.target.id==='tPrev'&&tourIdx>0){tourIdx--;applyTour()}
+  else if(e.target.id==='tNext'&&tourIdx<TOUR.length-1){tourIdx++;applyTour()}
+  else if(e.target.id==='tAuto'){if(tourTimer){clearInterval(tourTimer);tourTimer=null}else{tourTimer=setInterval(()=>{if(tourIdx<TOUR.length-1){tourIdx++;applyTour()}else{clearInterval(tourTimer);tourTimer=null;tourPanel()}},6500)}tourPanel()}
+  else if(e.target.matches('.dots i')){tourIdx=+e.target.dataset.i;applyTour()}});
+(function(){const el=$('tour');let st=null;
+  el.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');if(!hd||e.target.closest('.cx'))return;const r=el.getBoundingClientRect();st={dx:e.clientX-r.left,dy:e.clientY-r.top};el.setPointerCapture(e.pointerId);e.preventDefault()});
+  el.addEventListener('pointermove',e=>{if(!st)return;el.style.left=clamp(e.clientX-st.dx,0,innerWidth-60)+'px';el.style.top=clamp(e.clientY-st.dy,0,innerHeight-40)+'px'});
+  el.addEventListener('pointerup',()=>{st=null})})();
 $('barHide').onclick=()=>document.body.classList.add('nobar');$('barShow').onclick=()=>document.body.classList.remove('nobar');
 $('bz').onclick=()=>{focusOn=!focusOn;$('bz').textContent='Tıklayınca zoom: '+(focusOn?'açık':'kapalı');$('bz').classList.toggle('on',focusOn);focusV=null};
 $('bc').onclick=()=>{cmpOpen=!cmpOpen;$('bc').classList.toggle('on',cmpOpen);buildCmp()};
