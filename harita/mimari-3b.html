@@ -54,7 +54,7 @@ body.nobar #barShow{display:block}
 #info h2{margin:0 0 2px;font-size:18px;line-height:1.2}
 #info .sh{font:600 12px var(--mono);color:var(--c,var(--blue));margin-bottom:6px}
 #info p{margin:6px 0;font-size:14px;line-height:1.5}
-#info .nums{font:12px var(--mono);color:var(--mute);margin-top:6px;word-break:break-all}
+#info .nums{white-space:pre-line;font:12px var(--mono);color:var(--mute);margin-top:6px;word-break:break-all}
 #info .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer;line-height:1}
 #nomod{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--mute)}
 @media (max-width:700px){#info{top:auto;bottom:150px;right:12px;max-height:38vh}#top h1{font-size:18px}}
@@ -179,11 +179,16 @@ const SCH='şematik: sayılar rastgele, eğitilmiş model değil';
 function mkP(L,key,id,name,short,st,rows,cols,shape,desc,opt){opt=opt||{};const r=RNG(hsh(key+id));
   const arr=Array.from({length:rows*cols},()=>(r()+r()+r()-1.5));
   const cell=rows===1?18:Math.max(8,Math.round(160/Math.max(rows,cols/2)));
-  L.push({id,name,short,st,w:opt.w||cols*U,h:opt.h||Math.max(rows*U,0.3),kind:'slab',canvas:opt.canvas||heat(rows,cols,opt.get||((a,b)=>arr[a*cols+b]),opt.vmax||1.2,cell),desc,shape,nums:SCH});}
+  L.push({id,name,short,st,w:opt.w||cols*U,h:opt.h||Math.max(rows*U,0.3),kind:opt.multi?'multi':'slab',multi:opt.multi,canvas:opt.multi?null:opt.canvas||heat(rows,cols,opt.get||((a,b)=>arr[a*cols+b]),opt.vmax||1.2,cell),desc,shape,nums:SCH});}
 function headsCv(H,T,seed){const cell=14,gap=10,W=H*(T*cell+gap)-gap,c=cv(W,T*cell),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,W,T*cell);const r=RNG(seed);
   for(let h=0;h<H;h++){const ox=h*(T*cell+gap);for(let i=0;i<T;i++){const row=[];let sum=0;for(let j=0;j<=i;j++){const v=Math.exp(2*r());row.push(v);sum+=v}
     for(let j=0;j<T;j++){if(j<=i){const a=Math.min(1,row[j]/sum*2.2);g.fillStyle='rgba(63,199,193,'+(0.12+0.85*a)+')'}else g.fillStyle='#0b0e14';g.fillRect(ox+j*cell+.5,i*cell+.5,cell-1,cell-1)}}}
   return c}
+const GCOL=['#6ea0ff','#3fc7c1','#e8a94d','#b592f0','#e0606e','#7fd36b','#f0d35a','#e58fd0'];
+function headCard(i,T,col){const cell=14,c=cv(T*cell,T*cell),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,c.width,c.height);const r=RNG(1000+i*37);
+  for(let a=0;a<T;a++){const row=[];let sum=0;for(let b=0;b<=a;b++){const v=Math.exp(2.2*r());row.push(v);sum+=v}
+    for(let b=0;b<T;b++){if(b<=a){const al=Math.min(1,row[b]/sum*2.2);g.fillStyle='rgba(63,199,193,'+(0.12+0.85*al)+')'}else g.fillStyle='#0b0e14';g.fillRect(b*cell+.5,a*cell+.5,cell-1,cell-1)}}
+  g.strokeStyle=col;g.lineWidth=4;g.strokeRect(2,2,c.width-4,c.height-4);g.fillStyle='#e8ebf2';g.font='700 26px ui-monospace,Menlo,monospace';g.textAlign='left';g.fillText('k'+(i+1),8,30);return c}
 function tokCv(){const toks=['Dün',' akşam',' kedi','yi',' gör','dü','m','.'],ids=[18420,9021,30517,1204,6633,288,76,13];const c=cv(640,100),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,640,100);
   toks.forEach((t,i)=>{const x=6+i*79;g.fillStyle='#232d44';g.fillRect(x,8,73,84);g.strokeStyle='#6ea0ff';g.lineWidth=2;g.strokeRect(x,8,73,84);g.fillStyle='#e8ebf2';g.font='700 16px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText(t.replace(' ','␣'),x+36,46);g.fillStyle='#9aa3b6';g.font='600 13px ui-monospace,Menlo,monospace';g.fillText(String(ids[i]),x+36,76)});return c}
 function nextCv(){const c=cv(256,256),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,256,256);g.strokeStyle='#b592f0';g.lineWidth=5;g.strokeRect(3,3,250,250);g.fillStyle='#e8ebf2';g.font='700 46px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText('␣uyu',128,120);g.fillStyle='#b592f0';g.font='700 26px ui-monospace,Menlo,monospace';g.fillText('örnek %41',128,190);return c}
@@ -201,7 +206,7 @@ function gpt2(){const L=[],K='g2';
   mkP(L,K,'x','x = wte + wpe','x','in',10,16,'T × 768','Her konumun kim + nerede bilgisi toplanır (Minik GPT\'deki x ile aynı).');
   mkP(L,K,'ln1','LayerNorm 1','LayerNorm','norm',10,16,'T × 768','Her satırı kendi içinde ortalaması 0, yayılımı 1 olacak şekilde ölçekler (+ öğrenilen γ, β). Minik GPT\'de YOK: onlarca blok üst üste binince sayılar patlamasın ya da sönmesin diye. GPT-2\'de normalizasyon alt-bloğun GİRİŞİNDE ("pre-LN").');
   ['Q','K','V'].forEach((q,i)=>mkP(L,K,'W'+q,'W_'+q,'W_'+q,'att',16,16,'768 × 768','Minik GPT\'deki W_'+q+' ile aynı iş, ama 12 kafaya bölünür: her kafa kendi 64\'lük dilimini (768/12) kullanır. HER konum için sorgu/etiket/içerik üretilir (Minik GPT yalnız son konum için q üretiyordu).'));
-  mkP(L,K,'heads','Dikkat kafaları','12 kafa','att',8,32,'12 kafa × (T × T)','Minik GPT\'de tek kafa ve tek skor satırı vardı. Burada HER konum sorgu: skor tablosu T×T ve üst üçgen (gelecek) kapalı, yani bir token geleceğe bakamaz (nedensel maske). 12 kafa paralel çalışır, her biri farklı bir ilişki arar. Çizimde 12\'den 4\'ü var.',{canvas:headsCv(4,8,7),w:3.8,h:0.9});
+  mkP(L,K,'heads','Dikkat kafaları (12 ayrı kart)','12 kafa','att',8,32,'12 kafa × (T × T)','Minik GPT\'de tek kafa ve tek skor satırı vardı. Burada 12 kafanın HEPSİ ayrı bir kart (k1…k12): her biri 768\'lik q\'nun kendi 64\'lük dilimiyle kendi T×T skor tablosunu çıkarır. Üst üçgen (gelecek) kapalı, yani bir token geleceğe bakamaz. Kartlar farklı örüntü gösterir çünkü her kafa farklı bir ilişki arar. Renkli sayılar şematik.',{multi:{n:12,cols:4},w:4.0,h:3.0});
   mkP(L,K,'WO','W_O','W_O','att',16,16,'768 × 768','Kafaların çıktıları yan yana birleştirilir (12 × 64 = 768), sonra W_O ile karıştırılır. Minik GPT\'deki W_O ile aynı iş.');
   mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 768','Artık bağlantı: giriş + attention çıktısı. Minik GPT\'deki r = x + o·W_O adımının aynısı, ama her konumda.');
   mkP(L,K,'ln2','LayerNorm 2','LayerNorm','norm',10,16,'T × 768','FFN\'e girmeden önce ikinci normalizasyon.');
@@ -224,7 +229,7 @@ function llama(){const L=[],K='ll';
   mkP(L,K,'Wk','W_K','W_K','att',16,8,'4096 × 1024','Yalnız 8 anahtar kafası (GQA): 4 sorgu kafası aynı K\'yı paylaşır. KV önbelleği (üretirken saklanan K,V) 4 kat küçülür.');
   mkP(L,K,'Wv','W_V','W_V','att',16,8,'4096 × 1024','8 değer kafası; 4 sorgu kafası aynı V\'yi paylaşır (GQA).');
   mkP(L,K,'rope','RoPE','RoPE','att',10,16,'T × 4096 (Q ve K\'ya)','Konum bilgisi tabloda DEĞİL: Q ve K\'nın sayı çiftleri konum numarasıyla orantılı bir açıyla döndürülür. İki token\'ın skoru böylece mutlak konuma değil aralarındaki MESAFEYE bağlı olur. Minik GPT\'deki P tablosunun yerini alır, öğrenilen ağırlık yok. Çizim: konum × frekans açı örüntüsü.',{get:(a,b)=>Math.cos(a*Math.pow(10,-b/5)*1.6),vmax:1});
-  mkP(L,K,'heads','Dikkat kafaları','32 kafa','att',8,32,'32 kafa × (T × T)','Skor tablosu T×T, üst üçgen kapalı (nedensel maske) ve her konum sorgu. 32 sorgu kafası, 8 K/V grubu. Çizimde 4 kafa.',{canvas:headsCv(4,8,11),w:3.8,h:0.9});
+  mkP(L,K,'heads','Dikkat kafaları (32 ayrı kart)','32 kafa','att',8,32,'32 sorgu kafası × (T × T), 8 K/V grubu','32 sorgu kafasının HEPSİ ayrı kart (k1…k32). Aynı renkli çerçeveli 4 kafa AYNI K ve V\'yi paylaşır (GQA: 8 K/V grubu). Her kafa kendi T×T skor tablosunu çıkarır, üst üçgen kapalıdır. Renkli sayılar şematik.',{multi:{n:32,cols:8,groups:4},w:4.8,h:2.4});
   mkP(L,K,'Wo','W_O','W_O','att',16,16,'4096 × 4096','Kafaların çıktıları birleştirilip karıştırılır.');
   mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 4096','Artık bağlantı: giriş + attention.');
   mkP(L,K,'rms2','RMSNorm 2','RMSNorm','norm',10,16,'T × 4096','FFN öncesi ikinci normalizasyon.');
@@ -261,6 +266,13 @@ function mkGroup(p){
     const geo=new THREE.BoxGeometry(p.w,p.h,0.12),side=new THREE.MeshStandardMaterial({color:0x1a1f2a,roughness:.8}),fm=new THREE.MeshBasicMaterial({map:tex(p.canvas)}),bm=new THREE.MeshStandardMaterial({color:0x232a3a});
     const m=new THREE.Mesh(geo,[side,side,side,side,fm,bm]);m.userData.part=p;grp.add(m);
     const ed=mkEdges(geo,new THREE.Color(p.col),0.9);grp.add(ed);p.edge=ed;
+  }else if(p.kind==='multi'){
+    const {n,cols,groups}=p.multi,rows=Math.ceil(n/cols),cw=p.w/cols,ch=p.h/rows,side=new THREE.MeshStandardMaterial({color:0x1a1f2a});
+    for(let i=0;i<n;i++){const col=groups?GCOL[Math.floor(i/groups)%GCOL.length]:p.col;
+      const geo=new THREE.BoxGeometry(cw*0.88,ch*0.88,0.1),fm=new THREE.MeshBasicMaterial({map:tex(headCard(i,8,col)),transparent:true,opacity:0.88});
+      const m=new THREE.Mesh(geo,[side,side,side,side,fm,side]);m.position.set((i%cols+.5)*cw-p.w/2,p.h/2-(Math.floor(i/cols)+.5)*ch,-(i%3)*0.07);m.userData.part=p;grp.add(m);
+      const ed=mkEdges(geo,new THREE.Color(col),0.9);ed.position.copy(m.position);grp.add(ed)}
+    p.edge=null;
   }else{
     const n=10,cw=0.34,gp=0.03;for(let i=0;i<n;i++){const pad=D.ctxChars[i]==='.'&&i<6;const geo=new THREE.BoxGeometry(cw,0.5,0.14);
       const fm=new THREE.MeshBasicMaterial({map:tex(letter(D.ctxChars[i],D.ids[i],pad))}),side=new THREE.MeshStandardMaterial({color:0x1a1f2a});
@@ -336,10 +348,17 @@ stage.addEventListener('pointerleave',()=>{hoverXY=null;hoverDirty=true});
 const up=e=>{ptr.delete(e.pointerId);if(!ptr.size)stage.classList.remove('drag');
   if(moved<6&&downAt&&!panMode){select(pick(e.clientX,e.clientY))}downAt=null};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',e=>{ptr.delete(e.pointerId);stage.classList.remove('drag')});
-function showInfo(p){const info=$('info');if(!p){info.classList.remove('on');return}
-  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;$('in').textContent=p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'';info.classList.add('on')}
-function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);ARCHS.forEach(A=>A.parts.forEach(q=>{q.lb.classList.toggle('sel',q===p);if(q.edge)q.edge.material.color.set(q===p?'#ffc82e':q.col)}));
-  showInfo(p);if(p&&tT<.5)tT=1}
+const selSet=new Set();let pairs=[];
+function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
+  info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
+  $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
+function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
+  if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
+    others.forEach(A=>{const m=p.eq?A.parts.filter(q=>q.eq===p.eq):[];m.forEach(q=>{selSet.add(q);pairs.push(q)});
+      lines.push('↔ '+A.btn+': '+(m.length?m.map(q=>q.name+' ('+q.shape+')').join(' + '):'karşılığı yok'))});
+    extra=lines.join('\n')}
+  ARCHS.forEach(A=>A.parts.forEach(q=>{const on=selSet.has(q);q.lb.classList.toggle('sel',on);if(q.edge)q.edge.material.color.set(on?'#ffc82e':q.col)}));
+  showInfo(p,extra);if(p&&tT<.5)tT=1}
 function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.size)return;
   if(!hoverOn||!hoverXY){showInfo(null);return}showInfo(pick(hoverXY.x,hoverXY.y))}
 
@@ -356,7 +375,7 @@ function frame(){
   act.forEach(A=>{if(A._fresh){A.yo=A.yoT;A._fresh=false}A.yo+=(A.yoT-A.yo)*0.12;const mm=A.mm,P=A.parts;
     P.forEach(p=>{p.E.x=p.E2.x+(p.E1.x-p.E2.x)*mm;p.E.y=p.E2.y+(p.E1.y-p.E2.y)*mm;p.E.z=p.E2.z;
       p.group.scale.setScalar(sc);p.group.position.set(p.A.x+(p.E.x-p.A.x)*e,A.yo+p.A.y+(p.E.y-p.A.y)*e,p.A.z+(p.E.z-p.A.z)*e);
-      const dim=selected&&selected!==p;p.group.traverse(o=>{if(o.material&&!Array.isArray(o.material)&&o.material.isLineBasicMaterial){o.material.opacity=dim?0.25:0.9}})});
+      const dim=selected&&!selSet.has(p);p.group.traverse(o=>{if(o.material&&!Array.isArray(o.material)&&o.material.isLineBasicMaterial){o.material.opacity=dim?0.25:0.9}})});
     const pos=A.lgeo.attributes.position.array;A.links.forEach(([a,b],i)=>{const g1=a.group.position,g2=b.group.position;pos.set([g1.x+a.w*sc/2,g1.y+a.h*sc/2,g1.z,g2.x-b.w*sc/2,g2.y+b.h*sc/2,g2.z],i*6)});
     A.lgeo.attributes.position.needsUpdate=true;
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position,cp=A.contGeo.attributes.position.array;
@@ -367,10 +386,11 @@ function frame(){
   lmat.opacity=e*0.5;
   // kamera
   const Lmax=Math.max(...act.map(A=>A.LENc)),xa=act.reduce((s,A)=>s+A.XC_A,0)/act.length,cx=xa+(Lmax/2-xa)*e;
-  if(selected){const g=selected.group.position;focusV=focusV||new THREE.Vector3(g.x,g.y,g.z);focusV.lerp(g,0.2)}
+  let span=0;if(selected){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
+    grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}))}
   wt.set(cx,0,0).add(panOff);tgt.lerp(selected?focusV:wt,0.14);
   const distEx=Math.max(Lmax*1.12,totH*1.6+4);
-  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6):(5+(distEx-5)*e))*zoom;
+  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6+span*0.9):(5+(distEx-5)*e))*zoom;
   camPos.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));
   camera.position.lerp(camPos,0.2);camera.lookAt(tgt);
   renderer.render(scene,camera);
@@ -409,6 +429,10 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
+const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'attn',K:'attn',V:'attn',skor:'attn',a:'attn',o:'attn',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
+ gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',heads:'attn',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
+ llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',rope:'pos',heads:'attn',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
+ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mm=0;A.mT=0;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
   b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=0}
