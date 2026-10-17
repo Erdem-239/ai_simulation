@@ -92,6 +92,14 @@ body.nobar #barShow{display:block}
 #hin table.at{border-collapse:collapse;font:11px var(--mono)}
 #hin table.at td{border:1px solid var(--line);padding:2px 4px;text-align:right}
 #hin .note{font-size:12px;color:var(--mute)}
+#hin details.sm{border:1px solid var(--hl);border-radius:10px;padding:8px 12px;margin:8px 0;background:#1a1d12}
+#hin details.sm summary{cursor:pointer;font-weight:700;color:var(--hl);font-size:14px}
+#hin details.sm ol{margin:8px 0 2px;padding-left:20px;font-size:13px;color:#dfe5f2;line-height:1.5}
+#hin details.sm li{margin:5px 0}
+#hin .trw{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+#hin table.tri td{width:24px;height:22px;text-align:center;padding:0}
+#hin table.tri td.ok{background:rgba(63,199,193,.35);color:#7ff0e8}
+#hin table.tri td.no{background:#0b0e14;color:#4a5266}
 #info h2{margin:0 0 2px;font-size:18px;line-height:1.2}
 #info .sh{font:600 12px var(--mono);color:var(--c,var(--blue));margin-bottom:6px}
 #info p{margin:6px 0;font-size:14px;line-height:1.5}
@@ -681,6 +689,18 @@ function buildHead(){const A=hArch,C=HC[A.key],k=hIdx,Tn=C.Tf(),t=Tn||6,Tl=Tn||'
   const scc=(()=>{const c=hHeat(t,t,A.key+k+'s',Math.max(14,Math.round(220/t))),g2=c.getContext('2d'),cl=c.width/t;g2.fillStyle='#0b0e14';for(let a=0;a<t;a++)for(let b=a+1;b<t;b++)g2.fillRect(b*cl,a*cl,cl,cl);return c})();
   const outc=hHeat(t,dk,A.key+k+'o',cell);
   const strip=(()=>{const c=cv(Math.max(H*22,200),44),g2=c.getContext('2d');g2.fillStyle='#161b26';g2.fillRect(0,0,c.width,44);const w=c.width/H;for(let i=0;i<H;i++){g2.fillStyle=i===k?'#ffc82e':GCOL[i%GCOL.length];g2.globalAlpha=i===k?1:.55;g2.fillRect(i*w+1,4,w-2,36);g2.globalAlpha=1;g2.fillStyle='#10131b';g2.font='700 11px ui-monospace,monospace';g2.textAlign='center';g2.fillText(String(i+1),i*w+w/2,27)}return c})();
+
+  const tg=(()=>{const n=Math.min(t,8);let h='<table class="at tri"><tr><td></td>'+Array.from({length:n},(_,j)=>'<td><b>'+(j+1)+'</b></td>').join('')+'</tr>';
+    for(let a=0;a<n;a++){h+='<tr><td><b>'+(a+1)+'</b></td>';for(let b=0;b<n;b++)h+='<td class="'+(b<=a?'ok':'no')+'">'+(b<=a?'✔':'✗')+'</td>';h+='</tr>'}return h+'</table>'})();
+  const kvTxt=A.key==='llama'?'<li><b>Llama farkı:</b> K ve V yalnız '+C.kvN+' dilime bölünür ('+C.kvN+'×'+dk+' = '+(C.kvN*dk)+' sütun); '+C.kvg+' sorgu kafası aynı K/V dilimini paylaşır (GQA).</li>':'';
+  const sum='<details class="sm" open><summary>📘 Özet — bir kafa baştan sona (önce bunu oku)</summary><ol>'+
+   '<li><b>Q, K, V üç AYRI tablodur, kafa değil:</b> x ('+Tl+'×'+d+') üç ayrı ağırlıkla çarpılır → Q = x·W_Q, K = x·W_K, V = x·W_V; her biri <b>'+Tl+'×'+(A.key==='llama'?'(4096 / 1024 / 1024)':d)+'</b>.</li>'+
+   '<li><b>Her tablo SÜTUNLARINDAN '+H+' dilime kesilir</b> ('+d+' / '+H+' = '+dk+' sütun). Satırlar (token\'lar) hep '+Tl+' kalır: Q₁…Q'+H+', K₁…K'+H+', V₁…V'+H+', her biri <b>'+Tl+'×'+dk+'</b>.</li>'+
+   '<li><b>Kafa i = aynı sıradaki üç dilim:</b> (Qᵢ, Kᵢ, Vᵢ), yani <b>3 tane '+Tl+'×'+dk+'</b> tablo. Toplam '+(3*H)+' parça ama <b>'+H+' kafa</b>.</li>'+
+   '<li><b>Skor = Qᵢ · Kᵢᵀ / √'+dk+'</b>: Kᵢ yatırılır (transpoz) ki '+dk+'\'lar karşılıklı gelsin; ('+Tl+'×'+dk+')·('+dk+'×'+Tl+') = <b>'+Tl+'×'+Tl+'</b>. Hücre [a][b] = a. token\'ın sorusu · b. token\'ın etiketi (nokta çarpımı). Bu her kafa için ayrı yapılır: <b>'+H+' tane '+Tl+'×'+Tl+' skor tablosu</b>.</li>'+
+   '<li><b>Maske:</b> üst üçgen (b &gt; a, gelecekteki token\'lar) kapatılır, alt üçgen + köşegen kalır'+(Tn?' (<b>'+NF(Tn*(Tn+1)/2)+'</b> geçerli hücre)':'')+'. Sonra softmax: her satır %100.<div class="trw">'+tg+'<span class="note">✔ bakabilir · ✗ gelecek, kapalı'+(t>8?' (çizimde ilk 8 token)':'')+'</span></div></li>'+
+   '<li><b>Çıkış = a · Vᵢ</b> → ('+Tl+'×'+Tl+')·('+Tl+'×'+dk+') = <b>'+Tl+'×'+dk+'</b>. '+H+' kafanın çıkışı <b>yan yana yapıştırılır</b> (toplanmaz): '+H+'×'+dk+' = '+d+' → <b>'+Tl+'×'+d+'</b>, sonra W_O.</li>'+kvTxt+
+   '</ol></details>';
   const secs=[
    ['1 · Bu kafanın ağırlık dilimleri','Üç büyük ağırlık tablosu (her biri '+d+'×'+d+(A.key==='llama'?', K/V '+d+'×'+(C.kvN*dk):'')+') sütunlarından dilimlenir. Sarı bant = bu kafanın payı:<div class="row">'+sw.map(([n,w,idx])=>'<div class="cd"><b>'+w+(n==='Q'||A.key!=='llama'?'':' (grup '+(g+1)+'/'+C.kvN+')')+'</b>'+cvh(hSplit(d,H,k,C.kvg,C.kvN,n))+'<span class="note">kafa '+(k+1)+' için <b>'+d+'×'+dk+'</b> dilim ('+NF(d*dk)+' ağırlık)'+(n!=='Q'&&C.kvg>1?'; '+C.kvg+' kafa bu dilimi paylaşır':'')+'</span></div>').join('')+'</div>'],
    ['2 · Q₁, K₁, V₁ = x · dilim','x ('+Tl+'×'+d+') her dilimle çarpılır → üç küçük tablo, her biri <b>'+Tl+'×'+dk+'</b>:<div class="row"><div class="cd"><b>x '+Tl+'×'+d+'</b>'+cvh(xc)+'<span class="note">(çizimde ilk '+Math.min(d,96)+' sütun)</span></div>'+['Q "ne arıyorum"','K "beni böyle bul"','V "verebileceğim bilgi"'].map((n,i)=>'<div class="cd"><b>'+n.replace(/^(.)/,'$1(kafa '+(k+1)+')')+' · '+Tl+'×'+dk+'</b>'+cvh(hHeat(t,dk,A.key+k+'qkv'+i,cell))+'</div>').join('')+'</div>'],
@@ -690,7 +710,7 @@ function buildHead(){const A=hArch,C=HC[A.key],k=hIdx,Tn=C.Tf(),t=Tn||6,Tl=Tn||'
    ['6 · '+H+' kafa yan yana','Her kafa kendi '+Tl+'×'+dk+' çıkışını verir; yan yana yapıştırılır: '+H+' × '+dk+' = '+d+' → <b>'+Tl+'×'+d+'</b>, sonra W_O.<div class="row"><div class="cd">'+cvh(strip)+'<span class="note">sarı = bu kafa</span></div></div>']];
   el.innerHTML='<div class="hh"><h2>🔬 '+C.nm+' · kafa '+(k+1)+'/'+H+' içi</h2><span class="sp"></span><button id="hPrevH"'+(k===0?' disabled':'')+'>◀ kafa</button><button id="hNextH"'+(k===H-1?' disabled':'')+'>kafa ▶</button><button id="hClose">✕ Kapat (Esc)</button></div>'+
    '<div class="hh"><span class="note">Adım adım:</span><button id="hPrevS"'+(hStep===0?' disabled':'')+'>◀ Geri</button><button id="hNextS"'+(hStep===6?' disabled':'')+'>İleri ▶</button><button id="hAll"'+(hStep===0?' class="on"':'')+'>Hepsi</button><span class="note">'+(Tn?'İstem: '+esc(PROMPTS[PK])+' → T = '+Tn:'T = token sayısı (çizimde 6)')+' · renkler/sayılar şematik (rastgele), şekiller gerçek</span></div>'+
-   secs.map((s,i)=>'<div class="hs'+(hStep&&hStep-1!==i?' dim':'')+(hStep-1===i?' cur':'')+'"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>').join('')}
+   sum+secs.map((s,i)=>'<div class="hs'+(hStep&&hStep-1!==i?' dim':'')+(hStep-1===i?' cur':'')+'"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>').join('')}
 $('hin').addEventListener('click',e=>{const id=e.target.id;
   if(id==='hClose')closeHead();else if(id==='hPrevH'&&hIdx>0){hIdx--;buildHead()}else if(id==='hNextH'&&hIdx<HC[hArch.key].H-1){hIdx++;buildHead()}
   else if(id==='hPrevS'&&hStep>0){hStep--;buildHead()}else if(id==='hNextS'&&hStep<6){hStep++;buildHead()}else if(id==='hAll'){hStep=0;buildHead()}});
