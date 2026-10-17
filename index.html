@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610171604"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610171612"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610171604">
+<link rel="stylesheet" href="css/style.css?v=202610171612">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:04 TR · #410</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 16:12 TR · #411</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -6491,30 +6491,81 @@ for d, H in ((512, 1), (512, 8), (512, 64), (768, 12), (4096, 32)):
     </div><!-- /model-multihead -->
   <div class="model" id="model-transformer">
 
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head closed"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 250" role="img" aria-label="Transformer bloğu: attention, residual, LayerNorm, FFN, residual, LayerNorm">
+      <defs><marker id="tfA" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#95a2c2"/></marker></defs>
+      <text x="380" y="20" text-anchor="middle" font-size="12" fill="#95a2c2" font-family="Segoe UI, Arial">bir blok = attention + FFN, ikisinin etrafında kestirme yollar (residual) ve LayerNorm — bu blok N kez üst üste dizilir</text>
+      <g font-size="12.5" font-family="Segoe UI, Arial" fill="#e8ebf2" text-anchor="middle" font-weight="700">
+        <rect x="20" y="105" width="70" height="40" rx="8" fill="#16203a" stroke="#334063"/><text x="55" y="130">girdi</text>
+        <rect x="120" y="105" width="110" height="40" rx="8" fill="rgba(58,122,254,.14)" stroke="#3a7afe"/><text x="175" y="130">Multi-Head</text>
+        <circle cx="262" cy="125" r="13" fill="#16203a" stroke="#e06a6a"/><text x="262" y="130" fill="#e06a6a">+</text>
+        <rect x="290" y="105" width="90" height="40" rx="8" fill="rgba(90,160,224,.14)" stroke="#5aa0e0"/><text x="335" y="130">LayerNorm</text>
+        <rect x="410" y="105" width="80" height="40" rx="8" fill="rgba(70,196,106,.14)" stroke="#46c46a"/><text x="450" y="130">FFN</text>
+        <circle cx="522" cy="125" r="13" fill="#16203a" stroke="#e06a6a"/><text x="522" y="130" fill="#e06a6a">+</text>
+        <rect x="550" y="105" width="90" height="40" rx="8" fill="rgba(90,160,224,.14)" stroke="#5aa0e0"/><text x="595" y="130">LayerNorm</text>
+        <rect x="665" y="105" width="75" height="40" rx="8" fill="#16203a" stroke="#334063"/><text x="702" y="130">çıktı</text>
+      </g>
+      <g stroke="#95a2c2" stroke-width="2" fill="none" marker-end="url(#tfA)">
+        <path d="M90,125 L118,125"/><path d="M230,125 L247,125"/><path d="M276,125 L288,125"/><path d="M380,125 L408,125"/><path d="M490,125 L507,125"/><path d="M536,125 L548,125"/><path d="M640,125 L663,125"/>
+      </g>
+      <g stroke="#e06a6a" stroke-width="2.4" fill="none" stroke-dasharray="6 4" marker-end="url(#tfA)">
+        <path d="M55,105 C55,55 262,55 262,110"/><path d="M335,145 C335,200 522,200 522,140"/>
+      </g>
+      <g font-size="11.5" fill="#e06a6a" font-family="Segoe UI, Arial" text-anchor="middle"><text x="160" y="62">kestirme yol (residual): girdi aynen geçer</text><text x="430" y="212">kestirme yol: LayerNorm çıktısı aynen geçer</text></g>
+      <text x="380" y="238" text-anchor="middle" font-size="11.5" fill="#95a2c2" font-family="Segoe UI, Arial">GPT-3'te bu blok 96 kez üst üste (orijinal Transformer'da 6)</text>
+    </svg>
   <h1>🏗️ Transformer Bloğu — Parçalar Tek Tuğlada Birleşiyor</h1>
   <p class="sub">Elindeki bütün parçalar hazır: 🎯 Self-Attention, 🧩 Multi-Head, 📍 Positional Encoding. Şimdi bunları <b>tek, tekrarlanabilir bir tuğlaya</b> paketliyoruz — GPT-3'te bu tuğladan 96 tane üst üste dizili. Üç yeni fikir: <b>residual bağlantı</b> (gradyan için kestirme yol), <b>LayerNorm</b> (değerleri hizada tutan termostat) ve <b>FFN</b> (her kelimeyi derinlemesine işleyen mini bir sinir ağı).</p>
-
   <div class="callout">🔗 <b>Kaldığımız yer:</b> 🧩 Multi-Head Attention'da paralel kafaların çıktısını Concat+W<sub>O</sub> ile birleştirdin. O çıktı şimdi bu bloğun girdisi — ama önce onu derin bir ağın içinde <b>kaybolmadan</b> taşımamız gerekiyor.</div>
+    </div>
+  </div>
 
-  <div class="sechead">1) Residual bağlantı — gradyan için kestirme yol</div>
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head closed"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Üç ayrı fikir, tek tuğla</div>
+      <p><b>2015</b>: <b>Kaiming He</b> ve arkadaşları şaşırtıcı bir şey buldu: 56 katmanlı bir ağ, 20 katmanlıdan <b>daha kötü</b> öğreniyordu — oysa fazladan katmanlar en kötü ihtimalle "hiçbir şey yapma"yı öğrenebilmeliydi. Çözümleri <b>residual bağlantı</b> (ResNet) oldu: katman girdisini aynen geçirsin, üstüne yalnızca bir düzeltme eklesin. Aniden yüzlerce katman eğitilebilir hâle geldi.</p>
+      <p><b>2016</b>: <b>Ba, Kiros ve Hinton</b> <b>LayerNorm</b>'u önerdi: bir örneğin sayılarını kendi içinde hizala (BatchNorm bir batch'e ihtiyaç duyuyordu; dizi uzunluğu değişince zorlanıyordu). Metin gibi değişken uzunluklu veride çok daha uygundu.</p>
+      <p><b>2017</b>: Transformer makalesi bu iki fikri, bir de <b>FFN</b>'i (her kelimeyi ayrı ayrı işleyen küçük sinir ağı) attention'ın etrafında <b>tek bir tuğlaya</b> paketledi ("Add &amp; Norm" = residual + LayerNorm). Orijinal modelde bu tuğladan 6 tane üst üste vardı. Güçlü tarafı: tuğla her yerde <b>aynı</b>, yani istediğin kadar üst üste koyabilirsin.</p>
+      <p><b>2019 ve sonrası</b>: GPT-2 normalizasyonu alt-bloğun <b>girişine</b> aldı ("pre-LN"); sonraki analizler (Xiong ve ark., 2020) bunun eğitimi çok daha kararlı yaptığını gösterdi. Bugünkü büyük modellerin neredeyse hepsi pre-LN ile çalışıyor. Tuğla büyümedi, sadece üst üste çok katlandı: GPT-3'te 96 kat.</p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-blk" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>GPT-3</b> — bu bloktan <b>96</b> tane üst üste; her biri attention + FFN, etrafında residual ve normalizasyon.</div>
+        <div class="ex-card"><span class="ex-ico">🔍</span><b>BERT</b> — base sürümünde 12, large sürümünde 24 blok; arama ve metin anlamada kullanılan model.</div>
+        <div class="ex-card"><span class="ex-ico">🦙</span><b>Llama-3 8B</b> — 32 blok; aynı iskelet, sadece normalizasyon RMSNorm, FFN SwiGLU.</div>
+        <div class="ex-card"><span class="ex-ico">🖼️</span><b>Görüntü modelleri (ViT-Base)</b> — 12 blok; fotoğrafın yamaları aynı bloktan geçer.</div>
+        <div class="ex-card"><span class="ex-ico">🌐</span><b>Orijinal Transformer (2017)</b> — çeviri için 6 encoder + 6 decoder bloğu.</div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — residual, LayerNorm, FFN, tam blok</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">Residual bağlantı — gradyan için kestirme yol</div>
   <div class="pts" style="border-left:3px solid #e06a6a">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">2015'te Kaiming He garip bir şey fark etti: 56 katmanlı bir ağ, 20 katmanlıdan <b>daha kötü</b> öğreniyordu — oysa fazladan katmanlar en kötü ihtimalle "hiçbir şey yapmamayı" öğrenebilmeliydi. Sorun tanıdık: 📉 RNN dersinde gördüğün <b>vanishing gradient</b> duvarı, bu sefer zamanda değil <b>derinlikte</b> — sinyal çok katmandan geçerken siliniyordu.</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Çözümü ürkütücü derecede basit: her katmana "girdiyi <b>aynen</b> geçir, üstüne sadece bir <b>düzeltme</b> ekle" de.</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7; text-align:center">\( \text{çıktı} = x + \text{Sublayer}(x) \)</p>
-    <div style="font-size:13px; color:#ccd5e8; margin:14px 0 8px">🎚️ Kaç blok üst üste dizildiğini değiştir → gradyanın ne kadarının hayatta kaldığını gör (0.9 = her bloğun sinyali biraz zayıflattığı varsayımı, sadece sezgi için):</div>
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px">
-      <span style="font-size:13px">Blok sayısı N =</span>
-      <input type="range" id="blkN" min="1" max="48" step="1" value="6" style="width:220px">
-      <b id="blkNv" style="color:var(--accent); min-width:30px">6</b>
-    </div>
-    <div style="display:flex; flex-direction:column; gap:8px; font-size:12.5px">
-      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#e06a6a">❌ Residual OLMADAN</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarNo" style="height:100%; background:#e06a6a; width:53%; transition:.15s"></div></div><b id="blkValNo" style="min-width:56px; text-align:right">0.53</b></div>
-      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#46c46a">✅ Residual İLE</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarYes" style="height:100%; background:#46c46a; width:100%; transition:.15s"></div></div><b id="blkValYes" style="min-width:56px; text-align:right">1.00</b></div>
-    </div>
     <div class="callout" style="margin-top:12px; border-left-color:#e06a6a">💡 <b>Neden fark ediyor:</b> geri yayılımda türev alınca <code>x + F(x)</code> ifadesinin türevi <code>1 + F'(x)</code> olur — F'(x) ne kadar küçülürse küçülsün, o <b>+1</b> (kestirme yol / identity) her zaman orada durur. Gradyan bu servis yolundan, katmanları <b>bypass ederek</b>, sönmeden akar. LSTM'in cell-state otoyolunun mimari kardeşi.</div>
   </div>
 
-  <div class="sechead">2) LayerNorm — değerleri hizada tutan termostat</div>
+  <div class="sechead">LayerNorm — değerleri hizada tutan termostat</div>
   <div class="pts" style="border-left:3px solid #5aa0e0">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Her katmandan sonra sayılar büyüyüp küçülebilir; bu birikince eğitim dengesizleşir. LayerNorm, <b>bir kelimenin</b> vektöründeki bütün sayıları alır, İstatistik dersindeki ortalama/varyansı kullanarak onları ortalama 0, standart sapma 1 olacak şekilde yeniden ölçekler — sonra öğrenilen γ (ölçek) ve β (kaydırma) ile son bir ince ayar yapar.</p>
     <div class="work" style="white-space:pre-wrap; line-height:1.9">Bir kelimenin ham vektörü (d=4): z = [2.5, −1.0, 4.0, 0.5]
@@ -6527,14 +6578,14 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
     <div class="tip">Fark: BatchNorm (CNN'lerde yaygın) bir *özelliği* bütün batch boyunca normalize eder; LayerNorm <b>tek bir kelimenin</b> bütün özelliklerini normalize eder — dizi uzunluğu değişse de çalışır, bu yüzden Transformer'a daha uygun (Ba, Kiros & Hinton, 2016).</div>
   </div>
 
-  <div class="sechead">3) FFN — her kelimeyi derinlemesine işleyen mini ağ</div>
+  <div class="sechead">FFN — her kelimeyi derinlemesine işleyen mini ağ</div>
   <div class="pts" style="border-left:3px solid var(--green)">
     \[ \text{FFN}(x) = \max(0,\, xW_1+b_1)\,W_2+b_2 \]
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu tam olarak 🧠 Neural Network dersinde gördüğün şey: bir katman + ReLU + bir katman daha — d<sub>model</sub>'den (ör. 512) daha geniş bir ara boyuta (ör. 2048, ~4×) çıkıp geri dönen küçük bir sinir ağı. Fark şu: bu ağ <b>her kelimeye ayrı ayrı, ama aynı ağırlıklarla</b> uygulanır (position-wise) — kelimeler arasında bilgi karıştırmaz (o iş zaten Attention'ın işiydi), sadece her kelimenin kendi temsilini derinleştirir.</p>
     <div class="callout">🎯 <b>İş bölümü:</b> Attention = "kelimeler birbirine bakıp bilgi alışverişi yapsın." FFN = "şimdi her kelime, aldığı bu bilgiyi kendi başına derinlemesine düşünsün."</div>
   </div>
 
-  <div class="sechead">4) Bir araya getirme — tam blok</div>
+  <div class="sechead">Bir araya getirme — tam blok</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <div style="overflow-x:auto; margin:6px 0 14px">
       <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; min-width:660px; font-size:12px">
@@ -6552,11 +6603,253 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
       </div>
       <div style="font-size:11px; color:var(--muted); margin-top:6px">⊕ = residual toplama (girdi + alt-katmanın çıktısı) &nbsp;·&nbsp; bu blok N kez tekrarlanır (GPT-3'te N=96)</div>
     </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — residual derinliği + LayerNorm hesap makinesi</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">🎚️ Residual: kaç blok üst üste?</div>
+  <div class="pts" style="border-left:3px solid #e06a6a">
+    <div style="font-size:13px; color:#ccd5e8; margin:14px 0 8px">🎚️ Kaç blok üst üste dizildiğini değiştir → gradyanın ne kadarının hayatta kaldığını gör (0.9 = her bloğun sinyali biraz zayıflattığı varsayımı, sadece sezgi için):</div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px">
+      <span style="font-size:13px">Blok sayısı N =</span>
+      <input type="range" id="blkN" min="1" max="48" step="1" value="6" style="width:220px">
+      <b id="blkNv" style="color:var(--accent); min-width:30px">6</b>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; font-size:12.5px">
+      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#e06a6a">❌ Residual OLMADAN</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarNo" style="height:100%; background:#e06a6a; width:53%; transition:.15s"></div></div><b id="blkValNo" style="min-width:56px; text-align:right">0.53</b></div>
+      <div style="display:flex; align-items:center; gap:10px"><span style="min-width:150px; color:#46c46a">✅ Residual İLE</span><div style="flex:1; background:var(--panel); border-radius:6px; overflow:hidden; height:18px"><div id="blkBarYes" style="height:100%; background:#46c46a; width:100%; transition:.15s"></div></div><b id="blkValYes" style="min-width:56px; text-align:right">1.00</b></div>
+    </div>
+    
+  </div>
+  <div class="sechead">🧮 LayerNorm hesap makinesi</div>
+  <div class="pts" style="border-left:3px solid #5aa0e0"><div id="tfLnSim"></div><div class="callout" style="margin-top:8px">💡 Dört sayı ne olursa olsun (büyük, küçük, kaymış) normalize çıktının ortalaması 0, std'si 1 çıkıyor: bir sonraki katman <b>hep aynı ölçekte</b> sayı görüyor. γ ve β modelin öğrendiği iki sayıdır (burada elle ayarlanabiliyor).</div></div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — tek blok: ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="tfSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Transformer bloğunun <b>bütün resmi</b>: tek blok, 3 kelime × 4 sayı, tek kafa, FFN 4→6→4. <b>İleri yol:</b> attention → <b>+ girdi</b> → LayerNorm → FFN → <b>+ LN çıktısı</b> → LayerNorm. <b>Geri yol:</b> kayıp bloğun içine <b>geriden</b> girer; iki yeni halka var: <b>LayerNorm'un türevi</b> ve <b>residual'da iki yoldan toplama</b>. 9 yaprak (çıktı katmanı, FFN: W₁ b₁ W₂ b₂, attention: W<sub>O</sub> W<sub>V</sub> W<sub>Q</sub> W<sub>K</sub>); attention'ın içi 🎯 Self-Attention → Bütün Resim'deki geri yolla aynı, burada özetlenmiş. Girdileri ve hedefi değiştir; oklara gel → türev ve sayılar.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Transformer bloğunun bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="tfBigMap"></div></div></div>
+      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (elle geri yayılım + sonlu fark doğrulaması)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+def rastgele(satir, sutun, tohum, olcek):         # -olcek..+olcek arası, her çalıştırmada aynı
+    r = lcg(tohum)
+    return [[(r() * 2 - 1) * olcek for _ in range(sutun)] for _ in range(satir)]
+
+D, F = 4, 6                                       # kelime vektörü 4 sayı, FFN ara boyutu 6
+X  = [[1.0, 0.2, 0.5, -0.3], [0.1, 0.9, -0.4, 0.6], [0.8, 0.7, 0.3, 0.2]]    # 3 kelime
+WQ, WK, WV, WO = (rastgele(D, D, s, 0.8) for s in (1, 2, 3, 4))              # attention matrisleri
+W1, W2 = rastgele(D, F, 5, 0.8), rastgele(F, D, 6, 0.8)                       # FFN matrisleri
+b1, b2 = [0.1] * F, [0.0] * D
+w = [0.7, -0.5, 0.6, 0.4]                         # çıktı katmanı (yalnız son kelime)
+t = 0.9                                           # hedef
+EPS = 1e-5
+
+def matmul(A, B):
+    return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+def transpose(A):
+    return [list(r) for r in zip(*A)]
+
+def layernorm(v):                                 # tek bir kelimenin sayıları: ortalama 0, std 1 (γ=1, β=0)
+    mu = sum(v) / len(v); var = sum((a - mu) ** 2 for a in v) / len(v); s = math.sqrt(var + EPS)
+    return [(a - mu) / s for a in v], s
+
+def ileri():
+    Q, K, V = matmul(X, WQ), matmul(X, WK), matmul(X, WV)
+    S = [[sum(Q[i][k] * K[j][k] for k in range(D)) / math.sqrt(D) for j in range(3)] for i in range(3)]
+    A = []
+    for satir in S:
+        m = max(satir); e = [math.exp(v - m) for v in satir]; s = sum(e); A.append([v / s for v in e])
+    Z = matmul(A, V)
+    A1 = matmul(Z, WO)                                            # attention çıktısı (W_O ile karıştırılmış)
+    r1 = [[X[i][k] + A1[i][k] for k in range(D)] for i in range(3)]           # RESIDUAL 1: girdi + attention
+    n1 = [layernorm(r)[0] for r in r1]                                        # LayerNorm 1
+    u = [[sum(n1[i][a] * W1[a][b] for a in range(D)) + b1[b] for b in range(F)] for i in range(3)]
+    g = [[max(0.0, v) for v in r] for r in u]                                 # ReLU
+    Fo = [[sum(g[i][b] * W2[b][k] for b in range(F)) + b2[k] for k in range(D)] for i in range(3)]   # FFN çıktısı
+    r2 = [[n1[i][k] + Fo[i][k] for k in range(D)] for i in range(3)]          # RESIDUAL 2: LN çıktısı + FFN
+    n2 = [layernorm(r)[0] for r in r2]                                        # LayerNorm 2 (bloğun çıktısı)
+    y = sum(n2[2][k] * w[k] for k in range(D))                                # yalnız SON kelime çıktıya girer
+    return dict(Q=Q, K=K, V=V, S=S, A=A, Z=Z, A1=A1, r1=r1, n1=n1, u=u, g=g, Fo=Fo, r2=r2, n2=n2, y=y, L=0.5 * (y - t) ** 2)
+
+def ln_geri(v, dn):                               # LayerNorm&#x27;un türevi: (1/s)·(dn − ort(dn) − n̂·ort(dn·n̂))
+    n, s = layernorm(v)
+    a = sum(dn) / len(dn); b = sum(x * y_ for x, y_ in zip(dn, n)) / len(dn)
+    return [(dn[k] - a - n[k] * b) / s for k in range(len(v))]
+
+o = ileri()
+print(&quot;y =&quot;, round(o[&quot;y&quot;], 4), &quot; L =&quot;, round(o[&quot;L&quot;], 4))
+e = o[&quot;y&quot;] - t
+dw = [e * v for v in o[&quot;n2&quot;][2]]
+dn2 = [e * v for v in w]
+dr2 = ln_geri(o[&quot;r2&quot;][2], dn2)                    # LayerNorm 2&#x27;den geri
+dF = dr2                                          # residual: FFN yolu, +1 çarpanıyla
+dg = [sum(dF[k] * W2[b][k] for k in range(D)) for b in range(F)]
+dW2 = [[o[&quot;g&quot;][2][b] * dF[k] for k in range(D)] for b in range(F)]; db2 = dF[:]
+du = [dg[b] * (1.0 if o[&quot;u&quot;][2][b] &gt; 0 else 0.0) for b in range(F)]      # ReLU: pozitif olanlardan geçer
+dW1 = [[o[&quot;n1&quot;][2][a] * du[b] for b in range(F)] for a in range(D)]; db1 = du[:]
+dn1_ffn = [sum(du[b] * W1[a][b] for b in range(F)) for a in range(D)]    # FFN yolundan n1&#x27;e gelen pay
+dn1 = [dr2[k] + dn1_ffn[k] for k in range(D)]                            # TOPLAM = kestirme + FFN yolu
+dr1 = ln_geri(o[&quot;r1&quot;][2], dn1)                    # LayerNorm 1&#x27;den geri
+dA1 = dr1                                         # residual: attention yolu
+dWO = [[o[&quot;Z&quot;][2][a] * dA1[b] for b in range(D)] for a in range(D)]
+dZ = [sum(dA1[b] * WO[a][b] for b in range(D)) for a in range(D)]
+A3, V, K, Q = o[&quot;A&quot;][2], o[&quot;V&quot;], o[&quot;K&quot;], o[&quot;Q&quot;]
+dV = [[A3[j] * dZ[k] for k in range(D)] for j in range(3)]
+dA = [sum(dZ[k] * V[j][k] for k in range(D)) for j in range(3)]
+ort = sum(A3[j] * dA[j] for j in range(3)); dS = [A3[j] * (dA[j] - ort) for j in range(3)]
+dq = [sum(dS[j] * K[j][k] for j in range(3)) / math.sqrt(D) for k in range(D)]
+dK = [[dS[j] * Q[2][k] / math.sqrt(D) for k in range(D)] for j in range(3)]
+Xt = transpose(X)
+dWV, dWK = matmul(Xt, dV), matmul(Xt, dK)
+dWQ = [[X[2][a] * dq[b] for b in range(D)] for a in range(D)]
+dn1_ort = sum(dn1) / 4
+print(&quot;dn1 (kestirme + FFN yolu) =&quot;, [round(v, 4) for v in dn1])
+print(&quot;dW_O[0] =&quot;, [round(v, 4) for v in dWO[0]], &quot; dW1[0] =&quot;, [round(v, 4) for v in dW1[0]])
+print(&quot;dW_V[0] =&quot;, [round(v, 4) for v in dWV[0]], &quot; dW_Q[0] =&quot;, [round(v, 4) for v in dWQ[0]])
+
+# ---------- DOĞRULAMA: sonlu fark ----------
+def sf(M, a, b, h=1e-6):
+    eski = M[a][b]
+    M[a][b] = eski + h; Lp = ileri()[&quot;L&quot;]
+    M[a][b] = eski - h; Lm = ileri()[&quot;L&quot;]
+    M[a][b] = eski
+    return (Lp - Lm) / (2 * h)
+fark = 0
+for M, G in ((WQ, dWQ), (WK, dWK), (WV, dWV), (WO, dWO), (W1, dW1), (W2, dW2)):
+    for a in range(len(M)):
+        for b in range(len(M[0])):
+            fark = max(fark, abs(sf(M, a, b) - G[a][b]))
+for vec, G in ((b1, db1), (b2, db2), (w, dw)):
+    for k in range(len(vec)):
+        eski = vec[k]; vec[k] = eski + 1e-6; Lp = ileri()[&quot;L&quot;]; vec[k] = eski - 1e-6; Lm = ileri()[&quot;L&quot;]; vec[k] = eski
+        fark = max(fark, abs((Lp - Lm) / 2e-6 - G[k]))
+print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; % fark)
+
+# ---- ÇIKTI ----
+# y = -0.7494  L = 1.3603
+# dn1 (kestirme + FFN yolu) = [-0.9123, 1.3028, -0.5395, 0.8192]
+# dW_O[0] = [1.1294, -1.1545, 0.7263, -0.7012]  dW1[0] = [0.0, -0.4915, 0.0, 0.0894, 0.0, 0.0]
+# dW_V[0] = [1.344, 1.7155, 0.4508, -0.4035]  dW_Q[0] = [0.1426, -0.05, -0.049, 0.0223]
+# en büyük |sonlu fark − elle gradyan| = 6.6e-10</pre></div></div>
+      <p style="font-size:12.5px;color:var(--mute);margin-top:6px">Sayfadaki sayılar varsayılan girdilerle bu kodun çıktısıyla aynıdır.</p>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — Post-LN / Pre-LN, decoder, modern parçalar</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">Post-LN mi, Pre-LN mi?</div>
+  <div class="pts">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıda anlatılan sıra (<b>attention → + → LayerNorm</b>) orijinal 2017 makalesinin düzeni: normalizasyon alt-bloğun <b>çıkışında</b> (post-LN). Bugünkü modellerin çoğu bunu çevirdi: <b>LayerNorm → attention → +</b>, yani normalizasyon alt-bloğun <b>girişinde</b> (pre-LN), kestirme yolda hiç normalizasyon yok. Sonuç: gradyan kestirme yoldan <b>hiç dokunulmadan</b> akar ve çok derin yığınlar daha kararlı eğitilir. 🧭 Transformer Haritası → 3B mimari kartındaki GPT-2 ve Llama şemaları pre-LN düzenindedir.</p>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Encoder ve decoder, bu bloktan yığınlar halinde inşa edilir. Decoder'da ayrıca <b>maskeli</b> self-attention (gelecekteki kelimeleri göremesin diye) ve encoder çıktısına bakan bir <b>cross-attention</b> katmanı daha var — ama omurga aynı: attention + residual + LayerNorm + FFN, tekrar tekrar.</p>
+    <ul style="font-size:14px; color:#ccd5e8; line-height:1.9">
+      <li><b>RMSNorm:</b> LayerNorm'un sadeleşmişi (ortalamayı çıkarmadan yalnız ölçekler), Llama gibi modellerde.</li>
+      <li><b>SwiGLU:</b> ReLU'lu FFN yerine iki paralel yol (kapı × değer).</li>
+      <li><b>Ağırlık paylaşımı:</b> GPT-2'de giriş ve çıkış tabloları aynı (Örnek 2'de bunu sayarken görürsün).</li>
+    </ul>
     <div class="callout" style="border-left-color:var(--accent)">🏆 <b>Bütün parçalar tamam.</b> Ağaçta artık "Bilim Zaferi" bir kol boyu ötede — 📜 <b>Attention Is All You Need</b> makalesi şimdi ana dilin gibi okunmalı.</div>
   </div>
 
-  <div class="sechead">🧠 Kendini Test Et — Transformer Bloğu</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — sayıyla gör</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">İki örnek, ikisi de sayıyla: birincisinde residual'ın gradyanı katmanlar boyunca <b>gerçekten taşıdığını ölçersin</b>; ikincisinde <b>GPT-2'nin ağırlıklarını katman katman sayarsın</b> (sonuç resmî sayıyla aynı çıkar). Altlarında aynı hesabın Python kodu (çıktısı yorum olarak gömülü).</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Derin bir ağda gradyan: residual YOK / VAR</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 50 katman üst üste koyunca çıkıştaki hata sinyali girişe ulaşabiliyor mu? Rastgele matrislerle bir ağ kur, hatayı geri yay, girişe ulaşan gradyanı ölç. Aynı ağı bir de her katmanda <b>x + F(x)</b> ile kur.</p><div id="tfEx1"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı ölçüm Python'da (yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
+
+def lcg(tohum):
+    st = [tohum]
+    def r():
+        st[0] = (st[0] * 1664525 + 1013904223) % 4294967296
+        return st[0] / 4294967296
+    return r
+
+D = 8
+def katman_matrisleri(N, tohum):                  # N katman, her biri 8×8; sayılar -1..1 arası, ölçek ≈ 0,9/√8 (hafif söndürücü)
+    r = lcg(tohum); s = 0.9 / math.sqrt(D) * math.sqrt(3)
+    return [[[(r() * 2 - 1) * s for _ in range(D)] for _ in range(D)] for _ in range(N)]
+
+def gradyan_orani(N, residual, tohum=11):
+    Ws = katman_matrisleri(N, tohum)
+    r = lcg(99); x = [r() * 2 - 1 for _ in range(D)]
+    girisler, pre = [], []
+    for W in Ws:                                   # ileri yol
+        girisler.append(x)
+        u = [sum(W[i][j] * x[j] for j in range(D)) for i in range(D)]
+        pre.append(u)
+        f = [math.tanh(v) for v in u]
+        x = [a + b for a, b in zip(x, f)] if residual else f   # residual: x + F(x); değil: F(x)
+    g = [1.0] * D                                  # çıkıştaki gradyan (hepsi 1)
+    g0 = math.sqrt(sum(v * v for v in g))
+    for W, u in zip(reversed(Ws), reversed(pre)):  # geri yol
+        dt = [gv * (1 - math.tanh(uv) ** 2) for gv, uv in zip(g, u)]
+        dx = [sum(W[i][j] * dt[i] for i in range(D)) for j in range(D)]
+        g = [a + b for a, b in zip(g, dx)] if residual else dx   # residual: gradyan iki yoldan toplanır
+    return math.sqrt(sum(v * v for v in g)) / g0
+
+print(&quot;katman | residual YOK | residual VAR   (girişteki gradyan büyüklüğü / çıkıştaki)&quot;)
+for N in (1, 5, 10, 20, 50):
+    print(f&quot;{N:6d} | {gradyan_orani(N, False):12.2e} | {gradyan_orani(N, True):12.2e}&quot;)
+
+# ---- ÇIKTI ----
+# katman | residual YOK | residual VAR   (girişteki gradyan büyüklüğü / çıkıştaki)
+#      1 |     6.63e-01 |     8.84e-01
+#      5 |     5.76e-02 |     2.43e+00
+#     10 |     7.52e-02 |     1.01e+01
+#     20 |     9.43e-03 |     1.33e+01
+#     50 |     4.93e-05 |     5.88e+01</pre></div></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — GPT-2'nin ağırlıkları nerede? Katman katman say</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> "124 milyon parametre" dediğimiz sayı nereden geliyor? Bir bloğun attention, FFN ve LayerNorm kısımlarını, sonra gömme tablolarını say; GPT-2'nin dört boyutunu dene.</p><div id="tfEx2"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı sayım Python'da (yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55"># GPT-2 small&#x27;un ağırlıklarını katman katman say (gerçek modelin resmî sayısı: 124.439.808)
+d, ffn, blok, vocab, ctx = 768, 3072, 12, 50257, 1024
+
+attention = 4 * (d * d + d)                      # W_Q, W_K, W_V, W_O (+ bias&#x27;ları)
+ffn_agirlik = d * ffn + ffn + ffn * d + d        # W_1 (+b_1) ve W_2 (+b_2)
+layernorm = 2 * 2 * d                            # blok başına iki LayerNorm, her biri γ ve β
+blok_basina = attention + ffn_agirlik + layernorm
+gomme = vocab * d + ctx * d                      # token tablosu + konum tablosu
+toplam = blok * blok_basina + gomme + 2 * d      # + son LayerNorm (çıkış tablosu gömme ile PAYLAŞILIR, ekstra yok)
+
+print(f&quot;attention   : {attention:&gt;12,}  ({attention / blok_basina:.0%} blok)&quot;)
+print(f&quot;FFN         : {ffn_agirlik:&gt;12,}  ({ffn_agirlik / blok_basina:.0%} blok)&quot;)
+print(f&quot;LayerNorm   : {layernorm:&gt;12,}&quot;)
+print(f&quot;1 blok      : {blok_basina:&gt;12,}&quot;)
+print(f&quot;12 blok     : {blok * blok_basina:&gt;12,}&quot;)
+print(f&quot;gömme tablo : {gomme:&gt;12,}&quot;)
+print(f&quot;TOPLAM      : {toplam:&gt;12,}&quot;)
+
+# ---- ÇIKTI ----
+# attention   :    2,362,368  (33% blok)
+# FFN         :    4,722,432  (67% blok)
+# LayerNorm   :        3,072
+# 1 blok      :    7,087,872
+# 12 blok     :   85,054,464
+# gömme tablo :   39,383,808
+# TOPLAM      :  124,439,808</pre></div></div></div></div>
+
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="7">
+    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<div class="sechead">🧠 Kendini Test Et — Transformer Bloğu</div>
   <div class="pts">
     <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
     <div class="acc">
@@ -6579,11 +6872,26 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
       <div class="acc-head"><span class="ac">▸</span> 5) Bir "Transformer bloğu" hangi 4 parçadan oluşur?</div>
       <div class="acc-body">(Multi-Head) <b>Attention</b> → residual + <b>LayerNorm</b> → <b>FFN</b> → residual + <b>LayerNorm</b>. Bu blok N kez üst üste tekrarlanır (GPT-3'te 96 kez).</div>
     </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 6) Bütün Resim'de n₁'in gradyanı neden iki yolun toplamı?</div>
+      <div class="acc-body">n₁ iki yerde kullanılıyor: FFN'e girdi olarak ve doğrudan r₂ = n₁ + F toplamına (kestirme yol). Bir değişken birden çok yerde kullanılırsa, gradyanı <b>her kullanımdan gelen payın toplamıdır</b>. Kestirme yolun payı (dr₂, çarpan 1) FFN ne yaparsa yapsın sönmez.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 7) LayerNorm geri yayılımda sinyale ne yapar?</div>
+      <div class="acc-body">Her sayı diğer üçüne bağlı ölçeklendiği için türev yalnız kendi payını değil, <b>gelen sinyalin ortalamasını ve n̂ ile ilişkili kısmını da çıkarır</b>. Sonuç: LayerNorm'dan geri çıkan gradyanın toplamı ≈ 0 olur; yani ileri yolda sayıları hizaladığı gibi geri yolda gradyanı da hizalar.</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 8) Pre-LN ile Post-LN arasındaki fark ne?</div>
+      <div class="acc-body">Post-LN (orijinal 2017): alt-blok → toplama → LayerNorm; normalizasyon kestirme yolun <b>üstünde</b>. Pre-LN (GPT-2 ve sonrası): LayerNorm → alt-blok → toplama; kestirme yol <b>hiç normalizasyondan geçmez</b>, gradyan doğrudan akar ve çok derin yığınlar daha kararlı eğitilir.</div>
+    </div>
+  </div>
+
+  
+    </div>
   </div>
 
   <p class="footer">Transformer Bloğu • residual (x+F(x)) · LayerNorm · FFN · Nx tekrar — makaleye bir adım kaldı</p>
-  </div><!-- /model-transformer -->
-
+    </div><!-- /model-transformer -->
   <!-- ===================== MATEMATİK TEMELİ ===================== -->
   <div class="model" id="model-matematik">
 
@@ -9063,57 +9371,59 @@ print(&quot;7+5= -&gt;&quot;, uret(&quot;7+5=&quot;), &quot;| nasılsın&gt; -&g
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610171604"></script>
-<script src="js/lesson-turev.js?v=202610171604"></script>
-<script src="js/lesson-xor.js?v=202610171604"></script>
-<script src="js/lesson-xor-arch.js?v=202610171604"></script>
-<script src="js/lesson-xor-maps.js?v=202610171604"></script>
-<script src="js/lesson-xor-epoch.js?v=202610171604"></script>
-<script src="js/lesson-nn.js?v=202610171604"></script>
-<script src="js/lesson-trig.js?v=202610171604"></script>
+<script src="js/lesson-linreg.js?v=202610171612"></script>
+<script src="js/lesson-turev.js?v=202610171612"></script>
+<script src="js/lesson-xor.js?v=202610171612"></script>
+<script src="js/lesson-xor-arch.js?v=202610171612"></script>
+<script src="js/lesson-xor-maps.js?v=202610171612"></script>
+<script src="js/lesson-xor-epoch.js?v=202610171612"></script>
+<script src="js/lesson-nn.js?v=202610171612"></script>
+<script src="js/lesson-trig.js?v=202610171612"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610171604"></script>
-<script src="js/lesson-rnn-soz.js?v=202610171604"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610171612"></script>
+<script src="js/lesson-rnn-soz.js?v=202610171612"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610171604"></script>
-<script src="js/lesson-lstm-cell.js?v=202610171604"></script>
-<script src="js/app.js?v=202610171604"></script>
-<script src="js/lesson-lstm-big.js?v=202610171604"></script>
-<script src="js/lesson-lstm-step.js?v=202610171604"></script>
-<script src="js/lesson-lstm-size.js?v=202610171604"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610171604"></script>
-<script src="js/lesson-emb-kullan.js?v=202610171604"></script>
-<script src="js/lesson-emb-draco.js?v=202610171604"></script>
-<script src="js/lesson-emb-arch.js?v=202610171604"></script>
-<script src="js/lesson-emb-extra.js?v=202610171604"></script>
-<script src="js/lesson-s2s-weights.js?v=202610171604"></script>
-<script src="js/lesson-s2s-add.js?v=202610171604"></script>
-<script src="js/lesson-s2s-inside.js?v=202610171604"></script>
-<script src="js/lesson-att-train.js?v=202610171604"></script>
-<script src="js/lesson-att-extra.js?v=202610171604"></script>
-<script src="js/lesson-att-big.js?v=202610171604"></script>
-<script src="js/lesson-att-ornek.js?v=202610171604"></script>
-<script src="js/lesson-mh-big.js?v=202610171604"></script>
-<script src="js/lesson-mh-ornek.js?v=202610171604"></script>
-<script src="js/lesson-s2s-extra.js?v=202610171604"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610171604"></script>
-<script src="js/lesson-emb-ornek.js?v=202610171604"></script>
-<script src="js/lesson-emb-steps.js?v=202610171604"></script>
-<script src="js/lesson-emb-big.js?v=202610171604"></script>
-<script src="js/lesson-sm-ornek.js?v=202610171604"></script>
-<script src="js/lesson-sm-big.js?v=202610171604"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610171604"></script>
-<script src="js/lesson-lstm-gate.js?v=202610171604"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610171604"></script>
-<script src="js/lesson-gpt.js?v=202610171604"></script>
-<script src="js/lesson-gpt-mini.js?v=202610171604"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610171604"></script>
-<script src="js/lesson-linreg-big.js?v=202610171604"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610171604"></script>
-<script src="js/lesson-act-big.js?v=202610171604"></script>
-<script src="js/lesson-act-ornek.js?v=202610171604"></script>
-<script src="js/lesson-xor-ornek.js?v=202610171604"></script>
-<script src="js/lesson-nn-ornek.js?v=202610171604"></script>
-<script src="js/lesson-nn-net.js?v=202610171604"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610171612"></script>
+<script src="js/lesson-lstm-cell.js?v=202610171612"></script>
+<script src="js/app.js?v=202610171612"></script>
+<script src="js/lesson-lstm-big.js?v=202610171612"></script>
+<script src="js/lesson-lstm-step.js?v=202610171612"></script>
+<script src="js/lesson-lstm-size.js?v=202610171612"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610171612"></script>
+<script src="js/lesson-emb-kullan.js?v=202610171612"></script>
+<script src="js/lesson-emb-draco.js?v=202610171612"></script>
+<script src="js/lesson-emb-arch.js?v=202610171612"></script>
+<script src="js/lesson-emb-extra.js?v=202610171612"></script>
+<script src="js/lesson-s2s-weights.js?v=202610171612"></script>
+<script src="js/lesson-s2s-add.js?v=202610171612"></script>
+<script src="js/lesson-s2s-inside.js?v=202610171612"></script>
+<script src="js/lesson-att-train.js?v=202610171612"></script>
+<script src="js/lesson-att-extra.js?v=202610171612"></script>
+<script src="js/lesson-att-big.js?v=202610171612"></script>
+<script src="js/lesson-att-ornek.js?v=202610171612"></script>
+<script src="js/lesson-mh-big.js?v=202610171612"></script>
+<script src="js/lesson-mh-ornek.js?v=202610171612"></script>
+<script src="js/lesson-tf-big.js?v=202610171612"></script>
+<script src="js/lesson-tf-ornek.js?v=202610171612"></script>
+<script src="js/lesson-s2s-extra.js?v=202610171612"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610171612"></script>
+<script src="js/lesson-emb-ornek.js?v=202610171612"></script>
+<script src="js/lesson-emb-steps.js?v=202610171612"></script>
+<script src="js/lesson-emb-big.js?v=202610171612"></script>
+<script src="js/lesson-sm-ornek.js?v=202610171612"></script>
+<script src="js/lesson-sm-big.js?v=202610171612"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610171612"></script>
+<script src="js/lesson-lstm-gate.js?v=202610171612"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610171612"></script>
+<script src="js/lesson-gpt.js?v=202610171612"></script>
+<script src="js/lesson-gpt-mini.js?v=202610171612"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610171612"></script>
+<script src="js/lesson-linreg-big.js?v=202610171612"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610171612"></script>
+<script src="js/lesson-act-big.js?v=202610171612"></script>
+<script src="js/lesson-act-ornek.js?v=202610171612"></script>
+<script src="js/lesson-xor-ornek.js?v=202610171612"></script>
+<script src="js/lesson-nn-ornek.js?v=202610171612"></script>
+<script src="js/lesson-nn-net.js?v=202610171612"></script>
 </body>
 </html>
