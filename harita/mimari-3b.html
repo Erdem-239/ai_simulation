@@ -349,6 +349,11 @@ const up=e=>{ptr.delete(e.pointerId);if(!ptr.size)stage.classList.remove('drag')
   if(moved<6&&downAt&&!panMode){select(pick(e.clientX,e.clientY))}downAt=null};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',e=>{ptr.delete(e.pointerId);stage.classList.remove('drag')});
 const selSet=new Set();let pairs=[];
+const haloG=new THREE.Group();scene.add(haloG);let halos=[],linkL=null;
+function clearHalos(){halos.forEach(h=>haloG.remove(h.m));halos=[];if(linkL){scene.remove(linkL);linkL=null}}
+function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w+0.35,p.h+0.35,0.4);
+  const f=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xffc82e,transparent:true,opacity:main?0.1:0.3,depthTest:false,depthWrite:false}));f.renderOrder=5;
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc;
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
@@ -357,6 +362,9 @@ function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();
     others.forEach(A=>{const m=p.eq?A.parts.filter(q=>q.eq===p.eq):[];m.forEach(q=>{selSet.add(q);pairs.push(q)});
       lines.push('↔ '+A.btn+': '+(m.length?m.map(q=>q.name+' ('+q.shape+')').join(' + '):'karşılığı yok'))});
     extra=lines.join('\n')}
+  clearHalos();if(p){selSet.forEach(q=>addHalo(q,q===p));
+    if(pairs.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pairs.length*6),3));
+      linkL=new THREE.LineSegments(g,new THREE.LineDashedMaterial({color:0xffc82e,dashSize:0.4,gapSize:0.25,depthTest:false}));linkL.frustumCulled=false;linkL.renderOrder=7;scene.add(linkL)}}
   ARCHS.forEach(A=>A.parts.forEach(q=>{const on=selSet.has(q);q.lb.classList.toggle('sel',on);if(q.edge)q.edge.material.color.set(on?'#ffc82e':q.col)}));
   showInfo(p,extra);if(p&&tT<.5)tT=1}
 function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.size)return;
@@ -384,13 +392,15 @@ function frame(){
     A._boxes=A.blocks.map((rg,bi)=>{let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;P.filter(p=>p.ci>=rg[0]&&p.ci<=(A.two&&bi===0&&mm>0.5?A.oneEnd:rg[1])).forEach(p=>{const g=p.group.position,s2=sizeOf(p);x0=Math.min(x0,g.x-s2.w/2);x1=Math.max(x1,g.x+s2.w/2);y0=Math.min(y0,g.y-s2.h/2);y1=Math.max(y1,g.y+s2.h/2);z0=Math.min(z0,g.z-s2.d);z1=Math.max(z1,g.z+s2.d)});
       const pd=0.35*sc+0.1,bb=A.bboxes[bi];bb.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);bb.scale.set(x1-x0+pd*2,y1-y0+pd*2,Math.max(z1-z0,0.3)+pd*3);bb.material.opacity=e*0.9*(bi===1?(mm>0.5?0:1):1);return {x:(x0+x1)/2,y:y1+pd+0.25,z:(z0+z1)/2}});});
   lmat.opacity=e*0.5;
+  halos.forEach(h=>{h.m.position.copy(h.p.group.position);h.m.scale.setScalar(h.p.group.scale.x)});
+  if(linkL&&selected){const a=linkL.geometry.attributes.position.array,sp=selected.group.position;pairs.forEach((q,i)=>{const qp=q.group.position;a.set([sp.x,sp.y,sp.z,qp.x,qp.y,qp.z],i*6)});linkL.geometry.attributes.position.needsUpdate=true;linkL.computeLineDistances()}
   // kamera
   const Lmax=Math.max(...act.map(A=>A.LENc)),xa=act.reduce((s,A)=>s+A.XC_A,0)/act.length,cx=xa+(Lmax/2-xa)*e;
   let span=0;if(selected){const grp=[selected,...pairs],c=new THREE.Vector3();grp.forEach(q=>c.add(q.group.position));c.multiplyScalar(1/grp.length);focusV=focusV||c.clone();focusV.lerp(c,0.2);
     grp.forEach(a=>grp.forEach(b=>{span=Math.max(span,a.group.position.distanceTo(b.group.position))}))}
   wt.set(cx,0,0).add(panOff);tgt.lerp(selected?focusV:wt,0.14);
   const distEx=Math.max(Lmax*1.12,totH*1.6+4);
-  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6+span*0.9):(5+(distEx-5)*e))*zoom;
+  const dist=(selected?(Math.max(selected.w,selected.h)*sc+6+span*1.7):(5+(distEx-5)*e))*zoom;
   camPos.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));
   camera.position.lerp(camPos,0.2);camera.lookAt(tgt);
   renderer.render(scene,camera);
@@ -423,7 +433,7 @@ function buildCmp(){const act=ARCHS.filter(A=>A.on),el=$('cmp');
 function applyArch(){const act=ARCHS.filter(A=>A.on);
   ARCHS.forEach(A=>{const on=A.on;A.parts.forEach(p=>{p.group.visible=on;p.lb.style.display=on?'':'none'});A.lines.visible=on;A.bboxes.forEach(b=>b.visible=on);A.contLine.visible=on&&!!A.two;
     A.blockLb.style.display=on?'':'none';A.blockLb2.style.display=on&&A.blockHtml[1]?'':'none';A.contLb.style.display=on&&A.two?'':'none';A.asmLb.style.display=on?'':'none'});
-  if(selected&&!selected.arch.on)select(null);
+  if(selected&&!selected.arch.on)select(null);else if(selected)select(selected);
   $('bl').style.display=MINI.on?'':'none';
   document.querySelectorAll('#archs button').forEach(b=>b.classList.toggle('on',ARCHS.find(A=>A.key===b.dataset.k).on));
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
