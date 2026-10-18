@@ -70,13 +70,22 @@ function ease(v){v=clamp(v,0,1);return v*v*(3-2*v)}
 function col(v,sc,al){var a=clamp(Math.abs(v)/(sc||2),0,1);a=0.12+0.88*a;if(al!=null)a*=al;
   return v>=0?'rgba(86,140,255,'+a.toFixed(3)+')':'rgba(240,100,120,'+a.toFixed(3)+')'}
 var EMPTY='#1a1f2b',HL='#ffc82e';
-var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),CW=1000,CH=400;
+var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),CW=1000,CH=470;
 function fit(){var dpr=window.devicePixelRatio||1;cv.width=CW*dpr;cv.height=CH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
 fit();
 function txt(s,x,y,sz,c,al){ctx.font=(sz||12)+'px ui-monospace,Menlo,Consolas,monospace';ctx.fillStyle=c||'#9aa3b6';ctx.textAlign=al||'left';ctx.fillText(s,x,y)}
 function rect(x,y,w,h,fill,stroke,lw){if(fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h)}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw||1;ctx.strokeRect(x,y,w,h)}}
 function frame(x,y,w,h,c){rect(x,y,w,h,null,c||'#4a5468',1)}
 var head_=0;
+function drawX(x0,y0,w,h,rowsTo,hh,lab){
+  var G2=24,cw=w/G2,ch=h/T;
+  txt(lab,x0,y0-8,12,'#e8ebf2');
+  for(var r=0;r<T;r++){txt(TOK[r],x0-6,y0+r*ch+ch/2+4,11,'#9aa3b6','right');
+    for(var g=0;g<G2;g++)rect(x0+g*cw,y0+r*ch,cw-1,ch-1,col(X[r*D+g*32],2))}
+  frame(x0,y0,w,h);
+  if(hh>=0){rect(x0+hh*2*cw-1,y0-3,2*cw+2,h+6,null,'#6ea0ff',1.5);txt('kafa '+(hh+1)+' dilimi',x0+hh*2*cw+cw,y0+h+14,10,'#6ea0ff','center')}
+  if(rowsTo>=0){ctx.setLineDash([4,3]);rect(x0-2,y0-2,w+4,(rowsTo+1)*ch+3,null,HL,1.5);ctx.setLineDash([])}
+}
 
 /* ---------- SAHNE 1: LN(x)·W_Q ---------- */
 var G=24,P=32;
@@ -204,13 +213,15 @@ var s5={dur:22,tag:'⑤ A·V → çıktı',
   frame(Ax.x,Ax.y,C*T-2,C*T-2);frame(Vx.x,Vx.y,Vx.w,Vx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);
   if(idx<64){var cw2=Vx.w/16;
     rect(Ax.x-1,Ax.y+ar*C-1,C*T,C,null,HL,2);rect(Vx.x+aj*cw2-1,Vx.y-1,cw2+1,Vx.h+2,null,HL,2);rect(Ox.x+aj*cw2-1,Ox.y+ar*C-1,cw2+1,C,null,HL,2)}
-  txt('Kutu başına 4 gerçek sütun (64 → 16 kutu). Çıktının her satırı = V satırlarının yüzdelerle karışımı.',50,340,12,'#9aa3b6');
+  txt('Kutu başına 4 gerçek sütun (64 → 16 kutu). Çıktının her satırı = V satırlarının yüzdelerle karışımı.',50,328,12,'#9aa3b6');
+  drawX(290,372,256,72,idx<64?ar:T-1,h,'x  (LN çıkışı) 4×768 — V\'nin kaynağı: V = x·W_V');
+  txt('sarı kesik: karışıma giren x satırları',50,420,11,'#9aa3b6');
  },
  live:function(t){
   var h=head_,d=head(h),idx=Math.min(63,Math.floor(t*64)),r=Math.floor(idx/16),j=(idx%16)*4,parts=[];
   for(var c=0;c<=r;c++)parts.push(pct(d.A[r][c])+'·('+f2(V[c*D+h*DK+j])+')');
   return 'O['+TOK[r]+']['+(j+1)+'] = '+(r===0?'':'')+parts.join(' + ')+' = <b>'+f2(d.O[r][j])+'</b><br>'+(r===0?'(7 satırı yalnız kendine bakar: V\'sinin %100\'ü)':'= '+TOK.slice(0,r+1).map(function(x,i){return x+'\'in V\'si × '+pct(d.A[r][i])}).join(' + '))},
- say:'Yüzde tablosu (4×4) ile V dilimi (4×64) çarpılır. Çıktının <b>her satırı</b>, V satırlarının yüzdelerle ağırlıklı toplamıdır — token\'lar ilk kez birbirinin <b>bilgisiyle</b> karışır. Sarı kutu, bir çıktı hücresinin hangi A satırı ve hangi V sütunundan oluştuğunu gösterir.'};
+ say:'Yüzde tablosu (4×4) ile V dilimi (4×64) çarpılır. Çıktının <b>her satırı</b>, V satırlarının yüzdelerle ağırlıklı toplamıdır — token\'lar ilk kez birbirinin <b>bilgisiyle</b> karışır. Sarı kutu, bir çıktı hücresinin hangi A satırı ve hangi V sütunundan oluştuğunu gösterir. Altta V\'nin kaynağı olan <b>x</b> satırları da görünür: V = x·W_V.'};
 
 /* ---------- SAHNE 6: birleştir ---------- */
 var s6={dur:16,tag:'⑥ 12 kafayı yapıştır',
@@ -226,6 +237,7 @@ var s6={dur:16,tag:'⑥ 12 kafayı yapıştır',
     rect(30,265,250,60,'#1a1f2a','#4a5468',1);txt('× W_O   (768×768)',155,300,15,'#e8ebf2','center');
     txt('→',305,302,26,'#e8ebf2','center');rect(330,265,250,60,'#1a1f2a','#4a5468',1);txt('4×768  (kafalar harmanlandı)',455,300,13,'#e8ebf2','center');
     txt('+',605,302,26,'#e8ebf2','center');rect(630,265,250,60,'#1a1f2a',HL,1.5);txt('x  (residual: eski satır)',755,300,12,'#ffc82e','center');
+    drawX(630,372,250,72,-1,-1,'bu x geri eklenen asıl x (4×768)');
     ctx.globalAlpha=1}
  },
  live:function(t){return '12 kafa × 64 sütun = <b>768</b> sütun. Yapıştırma hesap değildir; ardından W_O ile bir kez daha çarpılıp sonuç x\'e eklenir.'},
