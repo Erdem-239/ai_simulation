@@ -27,7 +27,7 @@ canvas{display:block;width:100%;height:auto}
 a{color:var(--blue)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
+<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme, W_O + residual, LayerNorm ve FFN. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
 <div class="tabs" id="tabs"></div>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
@@ -286,7 +286,96 @@ var s7={dur:18,tag:'⑦ ×W_O ve residual',
   return s},
  say:'Yapıştırılmış <b>tek</b> 4×768 tablo W_O (768×768) ile bir kez çarpılır, sonuç yine <b>tek</b> bir 4×768 olur (kafa başına ayrı tablo yok). W_O, 12 kafanın bulgularını her satırın <b>içinde</b> birbirine karıştırır; satırlar (token\'lar) birbirine karışmaz. Sonra kısayolda bekleyen asıl x eklenir (residual).'};
 
-var SC=[s1,s2,s3,s4,s5,s6,s7],cur=0,t=0,playing=true,last=0,lastLive='';
+/* ---------- FFN verisi ---------- */
+var FF=null,D3=3072;
+function gelu(x){return 0.5*x*(1+Math.tanh(0.7978845608*(x+0.044715*x*x*x)))}
+function ffn(){
+  if(FF)return FF;wo();
+  var R=new Float32Array(T*D),N=new Float32Array(T*D),MU=[],SD=[],i,j,k;
+  for(i=0;i<T*D;i++)R[i]=X[i]+OUT[i];
+  for(var r=0;r<T;r++){var m=0,v=0;for(j=0;j<D;j++)m+=R[r*D+j];m/=D;for(j=0;j<D;j++)v+=(R[r*D+j]-m)*(R[r*D+j]-m);v/=D;var sd=Math.sqrt(v+1e-5);MU.push(m);SD.push(sd);for(j=0;j<D;j++)N[r*D+j]=(R[r*D+j]-m)/sd}
+  var W1=new Float32Array(D*D3),W2=new Float32Array(D3*D);
+  for(k=0;k<D;k++)for(j=0;j<D3;j++)W1[k*D3+j]=0.05*hsh(6,k,j);
+  for(k=0;k<D3;k++)for(j=0;j<D;j++)W2[k*D+j]=0.05*hsh(7,k,j);
+  var H3=new Float32Array(T*D3),G3=new Float32Array(T*D3),O2=new Float32Array(T*D),R2=new Float32Array(T*D);
+  for(r=0;r<T;r++){for(k=0;k<D;k++){var a=N[r*D+k],wo_=k*D3,oo=r*D3;for(j=0;j<D3;j++)H3[oo+j]+=a*W1[wo_+j]}
+    for(j=0;j<D3;j++)G3[r*D3+j]=gelu(H3[r*D3+j]);
+    for(k=0;k<D3;k++){var g=G3[r*D3+k],w2=k*D,o2=r*D;for(j=0;j<D;j++)O2[o2+j]+=g*W2[w2+j]}
+    for(j=0;j<D;j++)R2[r*D+j]=R[r*D+j]+O2[r*D+j]}
+  return FF={R:R,N:N,MU:MU,SD:SD,W1:W1,W2:W2,H:H3,G:G3,O2:O2,R2:R2};
+}
+/* ---------- SAHNE 8: LayerNorm ---------- */
+var s8={dur:16,tag:'⑧ LayerNorm',
+ draw:function(t){
+  var f=ffn(),A0={x:60,y:90,w:380,h:112},B0={x:560,y:90,w:380,h:112};
+  var cur=t*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=T*G;sub=0}
+  var ar=Math.floor(idx/G),cw=A0.w/G,chh=A0.h/T;
+  txt('R  (residual sonrası)  4×768',A0.x,A0.y-14,13,'#e8ebf2');txt('LayerNorm(R)  4×768',B0.x,B0.y-14,13,'#e8ebf2');
+  txt('→',500,150,30,'#e8ebf2','center');
+  for(var r=0;r<T;r++){txt(TOK[r],A0.x-8,A0.y+r*chh+chh/2+4,12,'#9aa3b6','right');txt(TOK[r],B0.x-8,B0.y+r*chh+chh/2+4,12,'#9aa3b6','right');
+    for(var g=0;g<G;g++){rect(A0.x+g*cw,A0.y+r*chh,cw-1,chh-1,col(f.R[r*D+g*P],2));
+      var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G;
+      rect(B0.x+g*cw,B0.y+r*chh,cw-1,chh-1,done?col(f.N[r*D+g*P],2):isC?col(f.N[r*D+g*P],2,sub):EMPTY)}}
+  frame(A0.x,A0.y,A0.w,A0.h);frame(B0.x,B0.y,B0.w,B0.h);
+  if(idx<T*G){rect(A0.x-1,A0.y+ar*chh-1,A0.w+2,chh+1,null,HL,2);rect(B0.x-1,B0.y+ar*chh-1,B0.w+2,chh+1,null,HL,2)}
+  txt('Satır başına (ort μ, yayılım σ):  önce → sonra',60,262,12,'#e8ebf2');
+  for(var r2=0;r2<T;r2++){var ok=r2*G+G<=idx||t>=1,y=284+r2*22;
+    txt(TOK[r2]+':  μ='+f2(f.MU[r2])+'  σ='+f2(f.SD[r2]),60,y,12,'#9aa3b6');
+    if(ok)txt('→  μ=0,00  σ=1,00',330,y,12,'#6ea0ff');}
+  txt('Şekil değişmez (4×768). Her satır kendi içinde ölçeklenir; satırlar birbirine karışmaz.',60,386,11,'#9aa3b6');
+ },
+ live:function(t){
+  var f=ffn(),idx=Math.min(T*G-1,Math.floor(t*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
+  return 'satır '+TOK[r]+': μ = (768 sayının ortalaması) = <b>'+f2(f.MU[r])+'</b>, σ = <b>'+f2(f.SD[r])+'</b><br>N['+TOK[r]+']['+(j+1)+'] = (R − μ) ÷ σ = ('+f2(f.R[r*D+j])+' − ('+f2(f.MU[r])+')) ÷ '+f2(f.SD[r])+' = <b>'+f2(f.N[r*D+j])+'</b>'},
+ say:'<b>LayerNorm</b> her satırı kendi içinde ortalaması 0, yayılımı 1 olacak şekilde yeniden ölçekler (satırdaki 768 sayının ortalaması ve yayılımı kullanılır). Şekil değişmez ve satırlar birbirine karışmaz. Bu kopya yalnız FFN\'ye gider; asıl R tablosu residual için bekler.'};
+
+/* ---------- genel matris sahnesi (FFN için) ---------- */
+function mmScene(c){return {dur:c.dur,tag:c.tag,
+ draw:function(t){
+  var f=ffn(),Lx={x:30,y:150,w:250,h:96},Wx={x:330,y:50,w:240,h:240},Ox={x:640,y:150,w:250,h:96},Rx={x:640,y:330,w:250,h:96};
+  var p1=clamp(t/0.7,0,1),cur=p1*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(p1>=1){idx=T*G;sub=0}
+  var ar=Math.floor(idx/G),ag=idx%G,pr=clamp((t-0.72)/0.28,0,1),L=c.L(f),O=c.O(f),dl=c.dl,dO=c.dO,lg=dl/G,og=dO/G;
+  txt(c.labL,Lx.x,Lx.y-14,13,'#e8ebf2');txt(c.labW,Wx.x,Wx.y-14,13,'#e8ebf2');txt(c.labO,Ox.x,Ox.y-14,13,'#e8ebf2');
+  txt('×',300,205,30,'#e8ebf2','center');txt('=',605,205,30,'#e8ebf2','center');
+  var cw=Lx.w/G,chh=Lx.h/T,wc=Wx.w/G;
+  for(var r=0;r<T;r++){txt(TOK[r],Lx.x-8,Lx.y+r*chh+16,12,'#9aa3b6','right');txt(TOK[r],Ox.x-8,Ox.y+r*chh+16,12,'#9aa3b6','right');
+    for(var g=0;g<G;g++){rect(Lx.x+g*cw,Lx.y+r*chh,cw-1,chh-1,col(L[r*dl+Math.floor(g*lg)],c.ls));
+      var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G,ov=O[r*dO+Math.floor(g*og)];
+      rect(Ox.x+g*cw,Ox.y+r*chh,cw-1,chh-1,done?col(ov,c.os):isC?col(ov,c.os,sub):EMPTY)}}
+  var Wm=c.W(f);
+  for(var a=0;a<G;a++)for(var b=0;b<G;b++)rect(Wx.x+b*wc,Wx.y+a*wc,wc-1,wc-1,col(Wm[Math.floor(a*dl/G)*dO+Math.floor(b*dO/G)]*20,2));
+  frame(Wx.x,Wx.y,Wx.w,Wx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);frame(Lx.x,Lx.y,Lx.w,Lx.h);
+  if(idx<T*G){
+    rect(Lx.x-1,Lx.y+ar*chh-1,Lx.w+2,chh+1,null,HL,2);rect(Wx.x+ag*wc-1,Wx.y-1,wc+1,Wx.h+2,null,HL,2);rect(Ox.x+ag*cw-1,Ox.y+ar*chh-1,cw+1,chh+1,null,HL,2);
+    ctx.fillStyle=HL;ctx.beginPath();ctx.arc(Lx.x+sub*Lx.w,Lx.y+ar*chh+chh/2,4,0,7);ctx.fill();ctx.beginPath();ctx.arc(Wx.x+ag*wc+wc/2,Wx.y+sub*Wx.h,4,0,7);ctx.fill()}
+  c.note.split('|').forEach(function(l,i){txt(l,30,320+i*16,11,'#9aa3b6')});
+  if(pr>0){ctx.globalAlpha=pr;c.post(f,Rx,cw,chh);ctx.globalAlpha=1}
+ },
+ live:function(t){
+  var f=ffn(),p1=clamp(t/0.7,0,1),idx=Math.min(T*G-1,Math.floor(p1*T*G)),r=Math.floor(idx/G),j=Math.floor((idx%G)*c.dO/G),L=c.L(f),O=c.O(f),W=c.W(f);
+  var pr=[0,1,2].map(function(k){return '('+f2(L[r*c.dl+k])+')('+f2(W[k*c.dO+j])+')'});
+  var s=c.name+'['+TOK[r]+']['+(j+1)+'] = '+c.sym+'₁·W₁ + '+c.sym+'₂·W₂ + … + '+c.sym+'<sub>'+c.dl+'</sub>·W<sub>'+c.dl+'</sub> = '+pr.join(' + ')+' + … = <b>'+f2(O[r*c.dO+j])+'</b>';
+  if(t>0.72)s+='<br>'+c.liveEx(f,r,j);
+  return s},
+ say:c.say}}
+var s9=mmScene({dur:20,tag:'⑨ FFN: ×W₁ ve GELU',labL:'LN(R)  4×768',labW:'W₁  768×3072',labO:'çarpım  4×3072',dl:768,dO:3072,ls:2,os:1.2,name:'H',sym:'n',
+ L:function(f){return f.N},O:function(f){return f.H},W:function(f){return f.W1},
+ note:'Her çıktı kutusu 128 gerçek sütun (3072 sütun → 24 kutu).|Tablo 4 kat genişledi: 768 → 3072.',
+ post:function(f,Rx,cw,chh){txt('GELU(H)  4×3072  (her sayıya ayrı ayrı)',Rx.x,Rx.y-14,13,'#e8ebf2');
+   for(var r=0;r<T;r++){txt(TOK[r],Rx.x-8,Rx.y+r*chh+16,12,'#9aa3b6','right');for(var g=0;g<G;g++)rect(Rx.x+g*cw,Rx.y+r*chh,cw-1,chh-1,col(f.G[r*D3+g*128],1.2))}
+   frame(Rx.x,Rx.y,250,96);txt('GELU ↓',600,380,13,'#ffc82e','center')},
+ liveEx:function(f,r,j){var h=f.H[r*D3+j];return 'GELU('+f2(h)+') = <b>'+f2(gelu(h))+'</b>   (negatif sayılar ≈0\'a çekilir, pozitifler hemen hemen aynı kalır; satırlar karışmaz)'},
+ say:'FFN\'nin 1. katmanı: LayerNorm çıkışının her satırı W₁ (768×3072) ile çarpılır, satır <b>768 → 3072</b> sayıya genişler. Sonra <b>GELU</b> her sayıya ayrı ayrı uygulanır (aktivasyon fonksiyonu; negatifleri bastırır). Token satırları hâlâ birbirine karışmaz.'});
+var s10=mmScene({dur:20,tag:'⑩ FFN: ×W₂ ve residual',labL:'GELU(H)  4×3072',labW:'W₂  3072×768',labO:'çarpım  4×768',dl:3072,dO:768,ls:1.2,os:1.2,name:'F',sym:'g',
+ L:function(f){return f.G},O:function(f){return f.O2},W:function(f){return f.W2},
+ note:'Sol kutu 128, çıktı kutusu 32 gerçek sütun.|Tablo geri daraldı: 3072 → 768.',
+ post:function(f,Rx,cw,chh){txt('+ R (bekleyen asıl tablo)  →  yeni x  4×768',Rx.x,Rx.y-14,13,'#e8ebf2');
+   for(var r=0;r<T;r++){txt(TOK[r],Rx.x-8,Rx.y+r*chh+16,12,'#9aa3b6','right');for(var g=0;g<G;g++)rect(Rx.x+g*cw,Rx.y+r*chh,cw-1,chh-1,col(f.R2[r*D+g*P],2))}
+   frame(Rx.x,Rx.y,250,96)},
+ liveEx:function(f,r,j){return 'residual: R + çarpım = '+f2(f.R[r*D+j])+' + ('+f2(f.O2[r*D+j])+') = <b>'+f2(f.R2[r*D+j])+'</b>'},
+ say:'FFN\'nin 2. katmanı: GELU çıktısı W₂ (3072×768) ile çarpılıp <b>3072 → 768</b>\'e daraltılır. Sonra LayerNorm\'dan önce bekleyen asıl R tablosu eklenir (residual). Çıkan 4×768 tablo bu bloğun sonucudur ve bir sonraki bloğa girer. GPT-2 small bu bloğu <b>12 kez</b> art arda tekrarlar; sonra son LayerNorm ve çıkış katmanı gelir.'});
+
+var SC=[s1,s2,s3,s4,s5,s6,s7,s8,s9,s10],cur=0,t=0,playing=true,last=0,lastLive='';
 var tabs=document.getElementById('tabs');
 SC.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.tag;b.onclick=function(){go(i)};tabs.appendChild(b)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
