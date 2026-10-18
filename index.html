@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610172106"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610181050"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610172106">
+<link rel="stylesheet" href="css/style.css?v=202610181050">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-17 21:06 TR · #427</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-18 10:50 TR · #428</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -8719,7 +8719,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   <div class="model" id="model-harita">
 
   <h1>🧭 Transformer Haritası — Ekstra</h1>
-  <p class="sub">GPT Test'te kurduğumuz Minik GPT'nin <b>7+5= → 1</b> yolculuğunu dört ayrı kartta izle: önce adım adım, sonra epoch epoch; üçüncü kartta mimarinin kendisini 3B olarak gez; dördüncü kartta aynı yolu <b>gerçek GPT-2 boyutlarıyla</b> adım adım izle. Hepsi bu sitedeki Minik GPT'nin gerçek, eğitilmiş sayılarıyla.</p>
+  <p class="sub">GPT Test'te kurduğumuz Minik GPT'nin <b>7+5= → 1</b> yolculuğunu dört ayrı kartta izle: önce adım adım, sonra epoch epoch; üçüncü kartta mimarinin kendisini 3B olarak gez; dördüncü kartta aynı yolu <b>gerçek GPT-2 boyutlarıyla</b> adım adım izle; beşinci kartta dikkat adımındaki <b>matris çarpımlarını animasyon</b> olarak seyret. Hepsi bu sitedeki Minik GPT'nin gerçek, eğitilmiş sayılarıyla.</p>
   <div class="callout">🔗 <b>Kaldığımız yer:</b> GPT Test'te Minik GPT'yi kurdun ve eğittin. Bu ekstra ders, aynı modelin içini <b>sıkıştırılmış, gezilebilir haritalar</b> olarak topluyor. Şimdilik bağımsız bir ekstra: 8 aşamalı ders akışının dışında, ayrı sayfalar olarak duruyor.</div>
 
   <div class="hr-grid">
@@ -8765,6 +8765,15 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
         <li><b>Dürüst sınır:</b> GPT-2'nin ağırlıkları elimizde yok; şekiller, işlem sırası ve ağırlık sayıları gerçek, renkli hücreler şematik. Gerçek GPT-2'nin cevabı ve kafaların neye baktığı ölçülmedi</li>
       </ul>
       <a class="hr-go" href="harita/gpt2-adim-adim.html" target="_blank" rel="noopener">GPT-2 haritasını yeni sekmede aç →</a>
+    </div>
+    <div class="hr-card">
+      <h3>5) Matris çarpımları — animasyon</h3>
+      <p>Dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q → Q</b> (bir hücrenin 768 çarpımı), 12 dilime bölme, <b>Q·Kᵀ → 4×4 skor</b> (64 çarpımın ilerleyişi), maske + softmax, <b>A·V</b> ve 12 kafayı yapıştırma.</p>
+      <ul>
+        <li>6 sahne; oynat/duraklat, kaydırıcıyla ileri-geri sarma, hız ve kafa seçimi</li>
+        <li>Q, K, V ve skorlar gerçekten hesaplanıyor (tohumlu rastgele ağırlıklarla); ekrandaki her sayı tablolardan okunuyor</li>
+      </ul>
+      <a class="hr-go" href="harita/matris-animasyon.html" target="_blank" rel="noopener">Animasyonu yeni sekmede aç →</a>
     </div>
   </div>
 
@@ -9790,63 +9799,63 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610172106"></script>
-<script src="js/lesson-turev.js?v=202610172106"></script>
-<script src="js/lesson-xor.js?v=202610172106"></script>
-<script src="js/lesson-xor-arch.js?v=202610172106"></script>
-<script src="js/lesson-xor-maps.js?v=202610172106"></script>
-<script src="js/lesson-xor-epoch.js?v=202610172106"></script>
-<script src="js/lesson-nn.js?v=202610172106"></script>
-<script src="js/lesson-trig.js?v=202610172106"></script>
+<script src="js/lesson-linreg.js?v=202610181050"></script>
+<script src="js/lesson-turev.js?v=202610181050"></script>
+<script src="js/lesson-xor.js?v=202610181050"></script>
+<script src="js/lesson-xor-arch.js?v=202610181050"></script>
+<script src="js/lesson-xor-maps.js?v=202610181050"></script>
+<script src="js/lesson-xor-epoch.js?v=202610181050"></script>
+<script src="js/lesson-nn.js?v=202610181050"></script>
+<script src="js/lesson-trig.js?v=202610181050"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610172106"></script>
-<script src="js/lesson-rnn-soz.js?v=202610172106"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610181050"></script>
+<script src="js/lesson-rnn-soz.js?v=202610181050"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610172106"></script>
-<script src="js/lesson-lstm-cell.js?v=202610172106"></script>
-<script src="js/app.js?v=202610172106"></script>
-<script src="js/lesson-lstm-big.js?v=202610172106"></script>
-<script src="js/lesson-lstm-step.js?v=202610172106"></script>
-<script src="js/lesson-lstm-size.js?v=202610172106"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610172106"></script>
-<script src="js/lesson-emb-kullan.js?v=202610172106"></script>
-<script src="js/lesson-emb-draco.js?v=202610172106"></script>
-<script src="js/lesson-emb-arch.js?v=202610172106"></script>
-<script src="js/lesson-emb-extra.js?v=202610172106"></script>
-<script src="js/lesson-s2s-weights.js?v=202610172106"></script>
-<script src="js/lesson-s2s-add.js?v=202610172106"></script>
-<script src="js/lesson-s2s-inside.js?v=202610172106"></script>
-<script src="js/lesson-att-train.js?v=202610172106"></script>
-<script src="js/lesson-att-extra.js?v=202610172106"></script>
-<script src="js/lesson-att-big.js?v=202610172106"></script>
-<script src="js/lesson-att-ornek.js?v=202610172106"></script>
-<script src="js/lesson-mh-big.js?v=202610172106"></script>
-<script src="js/lesson-mh-ornek.js?v=202610172106"></script>
-<script src="js/lesson-tf-big.js?v=202610172106"></script>
-<script src="js/lesson-tf-ornek.js?v=202610172106"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610172106"></script>
-<script src="js/lesson-gpt-big.js?v=202610172106"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610172106"></script>
-<script src="js/lesson-rnn-van.js?v=202610172106"></script>
-<script src="js/lesson-s2s-extra.js?v=202610172106"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610172106"></script>
-<script src="js/lesson-emb-ornek.js?v=202610172106"></script>
-<script src="js/lesson-emb-steps.js?v=202610172106"></script>
-<script src="js/lesson-emb-big.js?v=202610172106"></script>
-<script src="js/lesson-sm-ornek.js?v=202610172106"></script>
-<script src="js/lesson-sm-big.js?v=202610172106"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610172106"></script>
-<script src="js/lesson-lstm-gate.js?v=202610172106"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610172106"></script>
-<script src="js/lesson-gpt.js?v=202610172106"></script>
-<script src="js/lesson-gpt-mini.js?v=202610172106"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610172106"></script>
-<script src="js/lesson-linreg-big.js?v=202610172106"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610172106"></script>
-<script src="js/lesson-act-big.js?v=202610172106"></script>
-<script src="js/lesson-act-ornek.js?v=202610172106"></script>
-<script src="js/lesson-xor-ornek.js?v=202610172106"></script>
-<script src="js/lesson-nn-ornek.js?v=202610172106"></script>
-<script src="js/lesson-nn-net.js?v=202610172106"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610181050"></script>
+<script src="js/lesson-lstm-cell.js?v=202610181050"></script>
+<script src="js/app.js?v=202610181050"></script>
+<script src="js/lesson-lstm-big.js?v=202610181050"></script>
+<script src="js/lesson-lstm-step.js?v=202610181050"></script>
+<script src="js/lesson-lstm-size.js?v=202610181050"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610181050"></script>
+<script src="js/lesson-emb-kullan.js?v=202610181050"></script>
+<script src="js/lesson-emb-draco.js?v=202610181050"></script>
+<script src="js/lesson-emb-arch.js?v=202610181050"></script>
+<script src="js/lesson-emb-extra.js?v=202610181050"></script>
+<script src="js/lesson-s2s-weights.js?v=202610181050"></script>
+<script src="js/lesson-s2s-add.js?v=202610181050"></script>
+<script src="js/lesson-s2s-inside.js?v=202610181050"></script>
+<script src="js/lesson-att-train.js?v=202610181050"></script>
+<script src="js/lesson-att-extra.js?v=202610181050"></script>
+<script src="js/lesson-att-big.js?v=202610181050"></script>
+<script src="js/lesson-att-ornek.js?v=202610181050"></script>
+<script src="js/lesson-mh-big.js?v=202610181050"></script>
+<script src="js/lesson-mh-ornek.js?v=202610181050"></script>
+<script src="js/lesson-tf-big.js?v=202610181050"></script>
+<script src="js/lesson-tf-ornek.js?v=202610181050"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610181050"></script>
+<script src="js/lesson-gpt-big.js?v=202610181050"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610181050"></script>
+<script src="js/lesson-rnn-van.js?v=202610181050"></script>
+<script src="js/lesson-s2s-extra.js?v=202610181050"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610181050"></script>
+<script src="js/lesson-emb-ornek.js?v=202610181050"></script>
+<script src="js/lesson-emb-steps.js?v=202610181050"></script>
+<script src="js/lesson-emb-big.js?v=202610181050"></script>
+<script src="js/lesson-sm-ornek.js?v=202610181050"></script>
+<script src="js/lesson-sm-big.js?v=202610181050"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610181050"></script>
+<script src="js/lesson-lstm-gate.js?v=202610181050"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610181050"></script>
+<script src="js/lesson-gpt.js?v=202610181050"></script>
+<script src="js/lesson-gpt-mini.js?v=202610181050"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610181050"></script>
+<script src="js/lesson-linreg-big.js?v=202610181050"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610181050"></script>
+<script src="js/lesson-act-big.js?v=202610181050"></script>
+<script src="js/lesson-act-ornek.js?v=202610181050"></script>
+<script src="js/lesson-xor-ornek.js?v=202610181050"></script>
+<script src="js/lesson-nn-ornek.js?v=202610181050"></script>
+<script src="js/lesson-nn-net.js?v=202610181050"></script>
 </body>
 </html>
