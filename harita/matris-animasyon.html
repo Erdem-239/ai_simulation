@@ -27,7 +27,7 @@ canvas{display:block;width:100%;height:auto}
 a{color:var(--blue)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme, W_O + residual, LayerNorm ve FFN. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
+<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme, W_O + residual, LayerNorm, FFN, 12 blok, çıkış katmanı ve üretim döngüsü. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
 <div class="tabs" id="tabs"></div>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
@@ -375,7 +375,134 @@ var s10=mmScene({dur:20,tag:'⑩ FFN: ×W₂ ve residual',labL:'GELU(H)  4×3072
  liveEx:function(f,r,j){return 'residual: R + çarpım = '+f2(f.R[r*D+j])+' + ('+f2(f.O2[r*D+j])+') = <b>'+f2(f.R2[r*D+j])+'</b>'},
  say:'FFN\'nin 2. katmanı: GELU çıktısı W₂ (3072×768) ile çarpılıp <b>3072 → 768</b>\'e daraltılır. Sonra LayerNorm\'dan önce bekleyen asıl R tablosu eklenir (residual). Çıkan 4×768 tablo bu bloğun sonucudur ve bir sonraki bloğa girer. GPT-2 small bu bloğu <b>12 kez</b> art arda tekrarlar; sonra son LayerNorm ve çıkış katmanı gelir.'});
 
-var SC=[s1,s2,s3,s4,s5,s6,s7,s8,s9,s10],cur=0,t=0,playing=true,last=0,lastLive='';
+/* ---------- 11: 12 blok ---------- */
+var s11={dur:20,tag:'⑪ 12 blok art arda',
+ draw:function(t){
+  var cur=t*12,k=Math.min(11,Math.floor(cur)),sub=cur-k;if(t>=1){k=12;sub=0}
+  var bx=30,bw=66,gap=8,by=190,bh=70,i,r,g;
+  txt('giriş x  4×768',30,60,13,'#e8ebf2');txt('çıkış  4×768',760,60,13,'#e8ebf2');
+  for(i=0;i<12;i++){var x=bx+i*(bw+gap),done=i<k||t>=1,act=i===k&&t<1;
+    rect(x,by,bw,bh,done?'rgba(63,199,193,.22)':'#1a1f2a',act?HL:'#4a5468',act?2:1);
+    txt('blok',x+bw/2,by+26,12,done||act?'#e8ebf2':'#9aa3b6','center');txt(String(i+1),x+bw/2,by+50,16,act?HL:'#e8ebf2','center');
+    if(i<11){txt('›',x+bw+gap/2,by+bh/2+6,16,'#9aa3b6','center')}}
+  var kk=Math.min(11,Math.floor(Math.max(0,cur-0.001))),tx=bx+kk*(bw+gap);
+  var m=t>=1?12:k;
+  var gx=t>=1?760:(m===0?30:bx+(m-1)*(bw+gap)),gy=t>=1?70:100;
+  var seed=t>=1?12:m;
+  var mx=t>=1?760:(k===0&&sub<.01?30:bx+k*(bw+gap)),my=t>=1?70:100,mw=t>=1?160:bw,mh=60;
+  for(r=0;r<T;r++)for(g=0;g<24;g++)rect(mx+g*mw/24,my+r*mh/T,mw/24-0.5,mh/T-0.5,col(hsh(100+seed,r,g)*2,2));
+  frame(mx,my,mw,mh,HL);
+  for(r=0;r<T;r++)for(g=0;g<24;g++)rect(30+g*160/24,70+r*60/T,160/24-0.5,60/T-0.5,col(hsh(99,r,g)*2,2));
+  frame(30,70,160,60);
+  txt('Şekil hep 4×768: her blok tabloyu günceller, boyutunu değiştirmez.',30,300,12,'#9aa3b6');
+  txt('Bir blok = LayerNorm → attention (12 kafa) → +  →  LayerNorm → FFN → +   (7.087.872 ağırlık)',30,324,12,'#9aa3b6');
+  txt('12 blok × 7.087.872 = 85.054.464 ağırlık  (GPT-2 small toplamı 124.439.808; kalanı gömme tabloları)',30,348,12,'#9aa3b6');
+  txt('Renkler şematik: gerçek GPT-2 değil, sadece "her blokta tablo değişir" fikri.',30,372,11,'#9aa3b6');
+ },
+ live:function(t){var k=Math.min(12,Math.floor(t*12)+1);return 'blok <b>'+k+'/12</b>: giriş 4×768 → çıkış 4×768. Aynı işlemler (LayerNorm, attention, W_O, residual, LayerNorm, FFN, residual) bu bloğun <b>kendi ağırlıklarıyla</b> tekrarlanır.'},
+ say:'Şimdiye kadar izlediğin her şey <b>bir blokta</b> oldu. GPT-2 small bu bloğu <b>12 kez</b> art arda uygular; her blok kendi W_Q, W_K, W_V, W_O, W₁, W₂ ağırlıklarına sahiptir ve bir önceki bloğun çıkışını girdi olarak alır. Tablonun şekli hiç değişmez (4×768). Alt bloklarda tablo "ne olduğuna" dair ham bilgiyi, üst bloklarda daha soyut bilgiyi taşır; bunu <b>ölçmedik</b>, genel bilgidir.'};
+
+/* ---------- 12: son LayerNorm ---------- */
+var s12={dur:16,tag:'⑫ Son LayerNorm',
+ draw:function(t){
+  var f=ffn(),fn=fin(),A0={x:60,y:90,w:380,h:112},B0={x:560,y:90,w:380,h:112};
+  var cur=t*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=T*G;sub=0}
+  var ar=Math.floor(idx/G),cw=A0.w/G,chh=A0.h/T;
+  txt('12. bloğun çıkışı  4×768  (burada blok-1 çıkışı örnek)',A0.x,A0.y-14,12,'#e8ebf2');txt('LayerNorm(çıkış)  4×768',B0.x,B0.y-14,13,'#e8ebf2');
+  txt('→',500,150,30,'#e8ebf2','center');
+  for(var r=0;r<T;r++){var dim=t>=1&&r<T-1?0.25:1;ctx.globalAlpha=dim;
+    txt(TOK[r],A0.x-8,A0.y+r*chh+chh/2+4,12,'#9aa3b6','right');txt(TOK[r],B0.x-8,B0.y+r*chh+chh/2+4,12,'#9aa3b6','right');
+    for(var g=0;g<G;g++){rect(A0.x+g*cw,A0.y+r*chh,cw-1,chh-1,col(f.R2[r*D+g*P],2));
+      var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G;
+      rect(B0.x+g*cw,B0.y+r*chh,cw-1,chh-1,done?col(fn.N[r*D+g*P],2):isC?col(fn.N[r*D+g*P],2,sub):EMPTY)}
+    ctx.globalAlpha=1}
+  frame(A0.x,A0.y,A0.w,A0.h);frame(B0.x,B0.y,B0.w,B0.h);
+  if(idx<T*G){rect(A0.x-1,A0.y+ar*chh-1,A0.w+2,chh+1,null,HL,2);rect(B0.x-1,B0.y+ar*chh-1,B0.w+2,chh+1,null,HL,2)}
+  if(t>=1){rect(B0.x-3,B0.y+(T-1)*chh-2,B0.w+6,chh+3,null,'#3fc7c1',2.5);txt('yalnız SON satır (=) çıkış katmanına gider',B0.x,B0.y+B0.h+22,13,'#3fc7c1')}
+  txt('Son LayerNorm bloklardakiyle aynı iş: her satırı kendi içinde ölçekler (şekil 4×768).',60,300,12,'#9aa3b6');
+  txt('Bundan sonra yalnız sonraki token\'ı belirleyen "=" satırı kullanılır.',60,322,12,'#9aa3b6');
+ },
+ live:function(t){var f=ffn(),fn=fin(),idx=Math.min(T*G-1,Math.floor(t*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
+  return 'satır '+TOK[r]+': μ = <b>'+f2(fn.MU[r])+'</b>, σ = <b>'+f2(fn.SD[r])+'</b>; N['+TOK[r]+']['+(j+1)+'] = ('+f2(f.R2[r*D+j])+' − ('+f2(fn.MU[r])+')) ÷ '+f2(fn.SD[r])+' = <b>'+f2(fn.N[r*D+j])+'</b>'},
+ say:'12 bloktan sonra <b>son bir LayerNorm</b> (GPT-2\'de ln_f) tabloyu normalize eder. Ardından sıradaki token\'ı tahmin etmek için <b>yalnızca son satır</b> (burada "=" satırı) kullanılır: o satır artık 7, + ve 5\'in bilgisini taşıyor. Diğer satırlar bu tahmin için gerekmez (eğitimde hepsi kullanılır).'};
+
+/* ---------- 13: LM head ---------- */
+var LG=null;
+function fin(){if(FIN)return FIN;var f=ffn(),N2=new Float32Array(T*D),MU=[],SD=[],r,j;
+  for(r=0;r<T;r++){var m=0,v=0;for(j=0;j<D;j++)m+=f.R2[r*D+j];m/=D;for(j=0;j<D;j++)v+=(f.R2[r*D+j]-m)*(f.R2[r*D+j]-m);v/=D;var sd=Math.sqrt(v+1e-5);MU.push(m);SD.push(sd);for(j=0;j<D;j++)N2[r*D+j]=(f.R2[r*D+j]-m)/sd}
+  return FIN={N:N2,MU:MU,SD:SD}}
+var FIN=null,VOC=50257;
+function wte(j,k){return 0.05*hsh(8,j,k)}
+function logit(j){var n=fin().N,s=0;for(var k=0;k<D;k++)s+=n[(T-1)*D+k]*wte(j,k);return s}
+function lgAll(){if(LG)return LG;var v=new Float32Array(VOC),mx=-1e9,j;
+  for(j=0;j<VOC;j++){v[j]=logit(j);if(v[j]>mx)mx=v[j]}
+  var sum=0,e=new Float32Array(VOC);for(j=0;j<VOC;j++){e[j]=Math.exp(v[j]-mx);sum+=e[j]}
+  var P2=new Float32Array(VOC);for(j=0;j<VOC;j++)P2[j]=e[j]/sum;
+  var idx=[];for(j=0;j<VOC;j++)idx.push(j);idx.sort(function(a,b){return P2[b]-P2[a]});
+  return LG={v:v,P:P2,top:idx.slice(0,8),mx:mx,sum:sum}}
+var s13={dur:18,tag:'⑬ Çıkış katmanı (wteᵀ)',
+ draw:function(t){
+  var fn=fin(),Lx={x:30,y:190,w:250,h:26},Wx={x:330,y:50,w:240,h:240},Ox={x:640,y:190,w:270,h:26};
+  var NV=48,cur=t*NV,idx=Math.min(NV-1,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=NV;sub=0}
+  txt('son satır "="  1×768',Lx.x,Lx.y-14,13,'#e8ebf2');txt('wteᵀ  768×50.257',Wx.x,Wx.y-14,13,'#e8ebf2');txt('skorlar (logit)  1×50.257',Ox.x,Ox.y-14,13,'#e8ebf2');
+  txt('×',300,205,30,'#e8ebf2','center');txt('=',605,205,30,'#e8ebf2','center');
+  var cw=Lx.w/24,wc=Wx.w/24,oc=Ox.w/NV;
+  for(var g=0;g<24;g++)rect(Lx.x+g*cw,Lx.y,cw-1,Lx.h,col(fn.N[(T-1)*D+g*P],2));
+  for(var a=0;a<24;a++)for(var b=0;b<24;b++)rect(Wx.x+b*wc,Wx.y+a*wc,wc-1,wc-1,col(wte(b*2094,a*32)*20,2));
+  for(var q=0;q<NV;q++){var tok=q*1047,v=logit(tok);rect(Ox.x+q*oc,Ox.y,oc-1,Ox.h,q<idx?col(v,2):q===idx&&idx<NV?col(v,2,sub):EMPTY)}
+  frame(Lx.x,Lx.y,Lx.w,Lx.h);frame(Wx.x,Wx.y,Wx.w,Wx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);
+  if(idx<NV){var bq=idx;rect(Wx.x+Math.floor(bq*24/NV)*wc-1,Wx.y-1,wc+1,Wx.h+2,null,HL,2);rect(Ox.x+bq*oc-1,Ox.y-1,oc+1,Ox.h+2,null,HL,2);rect(Lx.x-1,Lx.y-1,Lx.w+2,Lx.h+2,null,HL,2);
+    ctx.fillStyle=HL;ctx.beginPath();ctx.arc(Lx.x+sub*Lx.w,Lx.y+Lx.h/2,4,0,7);ctx.fill();ctx.beginPath();ctx.arc(Wx.x+Math.floor(bq*24/NV)*wc+wc/2,Wx.y+sub*Wx.h,4,0,7);ctx.fill()}
+  txt('wteᵀ, giriş gömme tablosunun (50.257×768) AYNI ağırlıkları ters çevrilmiş hali (ağırlık paylaşımı).',30,316,11,'#9aa3b6');
+  txt('Çıktı şeridinde her kutu 1.047 token\'ın skorundan birini temsil ediyor (50.257 → 48 kutu).',30,334,11,'#9aa3b6');
+  txt('Her skor: "=" satırının 768 sayısı ile o token\'ın 768 sayılık satırının nokta çarpımı.',30,352,11,'#9aa3b6');
+ },
+ live:function(t){var fn=fin(),q=Math.min(47,Math.floor(t*48)),tok=q*1047,ps=[0,1,2].map(function(k){return '('+f2(fn.N[(T-1)*D+k])+')('+f2(wte(tok,k))+')'});
+  return 'skor[token #'+tok+'] = n₁·e₁ + n₂·e₂ + … + n₇₆₈·e₇₆₈ = '+ps.join(' + ')+' + … = <b>'+f2(logit(tok))+'</b>'},
+ say:'Son satır (768 sayı), giriş gömme tablosunun devriği <b>wteᵀ (768×50.257)</b> ile çarpılır: sözlükteki <b>her token için bir skor</b> (logit) çıkar, yani 1×50.257 sayı. Skor ne kadar yüksekse, "bu token sırada gelsin" demektir. Ağırlıklar rastgele olduğundan bu demoda skorların anlamı yok; gerçek GPT-2\'de bunlar eğitimle anlam kazanmıştır (ölçmedik).'};
+
+/* ---------- 14: softmax + seçim ---------- */
+var s14={dur:16,tag:'⑭ Softmax ve seçim',
+ draw:function(t){
+  var L=lgAll(),ts=clamp(t/0.5,0,1),sel=clamp((t-0.55)/0.25,0,1),bx=250,bw=520,y0=70,rh=34,uni=1/VOC;
+  txt('50.257 skor → softmax → olasılık.   Ekranda: en yüksek 8 aday',30,40,13,'#e8ebf2');
+  var mxp=L.P[L.top[0]];
+  for(var i=0;i<8;i++){var tok=L.top[i],pp=L.P[tok],y=y0+i*rh,bl=bw*(pp/mxp)*ts;
+    txt('token #'+tok,bx-12,y+18,13,i===0&&sel>0?'#ffc82e':'#9aa3b6','right');
+    rect(bx,y+4,bw,rh-12,'#1a1f2a');rect(bx,y+4,bl,rh-12,i===0&&sel>0?'rgba(255,200,46,.7)':'rgba(110,160,255,.7)');
+    txt((pp*100).toFixed(4).replace('.',',')+' %',bx+bw+10,y+18,12,'#e8ebf2');txt('skor '+f2(L.v[tok]),bx+bw+110,y+18,11,'#9aa3b6')}
+  if(sel>0){ctx.globalAlpha=sel;txt('→ seçilen: token #'+L.top[0]+'  (greedy: en yüksek olasılık)',250,y0+8*rh+24,14,'#ffc82e');ctx.globalAlpha=1}
+  txt('Eşit dağılım olsaydı her token %'+(uni*100).toFixed(4).replace('.',',')+' alırdı. Rastgele ağırlıklarda fark küçük.',30,y0+8*rh+56,11,'#9aa3b6');
+  txt('Gerçek GPT-2\'de olasılık birkaç adaya yığılır; bu demoda token adları ve cevap ölçülmedi.',30,y0+8*rh+74,11,'#9aa3b6');
+ },
+ live:function(t){var L=lgAll(),tk=L.top[0];return 'softmax: P(token #'+tk+') = e<sup>skor</sup> ÷ Σ e<sup>skor</sup> = e<sup>'+f2(L.v[tk])+'</sup> ÷ '+(L.sum*Math.exp(L.mx)).toExponential(2).replace('.',',')+' = <b>'+(L.P[tk]*100).toFixed(4).replace('.',',')+' %</b>'},
+ say:'Skorlar <b>softmax</b> ile olasılığa çevrilir (toplam %100). <b>Seçim</b> yöntemleri: <i>greedy</i> hep en yüksek olasılıklıyı alır; <i>sıcaklık / top-k / top-p</i> yüksek adaylar arasında zar atar (daha çeşitli cevap). Seçilen token yeni cevabın ilk token\'ıdır. Bu demoda ağırlıklar rastgele olduğundan olasılıklar neredeyse eşit; en yüksek 8 aday gerçek hesaptan çıkıyor ama anlamsız.'};
+
+/* ---------- 15: üretim döngüsü + KV önbelleği ---------- */
+var s15={dur:22,tag:'⑮ Üretim döngüsü ve önbellek',
+ draw:function(t){
+  var st=Math.min(2,Math.floor(t*3)),sub=t*3-st,steps=[[4,0],[5,1],[6,1]],lab=['1. tur: istem 7+5= (4 token)','2. tur: seçilen 1. token eklendi','3. tur: 2. token eklendi'];
+  var y0=60,rowH=70,cw=60,names=['7','+','5','=','t₁','t₂'],i,j;
+  for(var s2=0;s2<3;s2++){var y=y0+s2*rowH,vis=s2<st||(s2===st),a=s2>st?0.25:1;ctx.globalAlpha=a;
+    txt(lab[s2],30,y+16,12,s2===st?HL:'#9aa3b6');
+    for(j=0;j<steps[s2][0];j++){var isNew=s2>0&&j===steps[s2][0]-1,x=330+j*cw;
+      rect(x,y,cw-6,36,isNew?'rgba(255,200,46,.30)':(s2>0?'rgba(70,76,92,.6)':'rgba(110,160,255,.25)'),isNew?HL:'#4a5468',isNew?2:1);
+      txt(names[j],x+(cw-6)/2,y+23,14,'#e8ebf2','center')}
+    txt(s2===0?'hepsi hesaplanır':'yalnız yeni satır (eskiler önbellekte)',330+steps[s2][0]*cw+8,y+22,11,s2===0?'#6ea0ff':'#ffc82e');
+    ctx.globalAlpha=1}
+  var by=y0+3*rowH+10;
+  txt('Her turda hesaplanan satır sayısı (önbellek VAR ↔ YOK):',30,by,13,'#e8ebf2');
+  var van=[4,5,6],cac=[4,1,1],mxv=6,bw2=300;
+  for(var q=0;q<3;q++){var yy=by+16+q*26,on=q<=st;ctx.globalAlpha=on?1:0.25;
+    txt((q+1)+'. tur',30,yy+14,12,'#9aa3b6');
+    rect(100,yy+2,bw2*van[q]/mxv,10,'rgba(242,122,136,.7)');txt('önbelleksiz '+van[q],100+bw2*van[q]/mxv+8,yy+11,11,'#f27a88');
+    rect(100,yy+14,bw2*cac[q]/mxv,10,'rgba(63,199,193,.8)');txt('önbellekli '+cac[q],100+bw2*cac[q]/mxv+8,yy+23,11,'#3fc7c1');ctx.globalAlpha=1}
+  txt('t₁, t₂: seçilen token\'lar (gerçek cevabı ölçmedik). Cevap bitiş işaretine kadar sürer.',30,by+16+3*26+20,11,'#9aa3b6');
+ },
+ live:function(t){var st=Math.min(2,Math.floor(t*3));var txts=['1. tur: 4 token paralel işlenir (12 blok, her blokta K ve V satırları önbelleğe yazılır). "=" satırından 1. token seçilir.','2. tur: yalnız yeni token\'ın satırı hesaplanır. Yeni q, önbellekteki 4 eski K/V ile birlikte kendi K/V\'sine bakar (5 anahtar).','3. tur: yine tek satır; 6 anahtara bakar. Cevap bitiş işareti gelene kadar böyle sürer.'];return txts[st]},
+ say:'<b>Üretim bir döngüdür</b>: seçilen token istemin sonuna eklenir ve model tekrar çalışır. Her turda bütün tabloyu baştan hesaplamak yerine, eski token\'ların <b>K ve V satırları önbellekte (KV önbelleği) saklanır</b>; yalnız <b>yeni tek satır</b> hesaplanır. Bu mümkün çünkü maske sayesinde eski satırların sonucu sonradan gelen token\'lardan etkilenmez. Böylece 100. token bile yaklaşık 1. token kadar iş yapar (attention hariç, o önbellek uzadıkça büyür).'};
+
+var SC=[s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15],cur=0,t=0,playing=true,last=0,lastLive='';
 var tabs=document.getElementById('tabs');
 SC.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.tag;b.onclick=function(){go(i)};tabs.appendChild(b)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
