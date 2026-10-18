@@ -54,6 +54,13 @@ var WQ=mkW(2),WK=mkW(3),WV=mkW(4);
 function mul(A,W){var O=new Float32Array(T*D);for(var r=0;r<T;r++)for(var k=0;k<D;k++){var a=A[r*D+k];if(a===0)continue;var wo=k*D,oo=r*D;for(var j=0;j<D;j++)O[oo+j]+=a*W[wo+j]}return O}
 var Q=mul(X,WQ),K=mul(X,WK),V=mul(X,WV);
 var cache={};
+var WO=mkW(5),CAT=null,OUT=null;
+function wo(){
+  if(OUT)return;
+  CAT=new Float32Array(T*D);
+  for(var h=0;h<H;h++){var o=head(h).O;for(var r=0;r<T;r++)for(var j=0;j<DK;j++)CAT[r*D+h*DK+j]=o[r][j]}
+  OUT=mul(CAT,WO);
+}
 function head(h){
   if(cache[h])return cache[h];
   var S=[],A=[],O=[];
@@ -243,7 +250,43 @@ var s6={dur:16,tag:'⑥ 12 kafayı yapıştır',
  live:function(t){return '12 kafa × 64 sütun = <b>768</b> sütun. Yapıştırma hesap değildir; ardından W_O ile bir kez daha çarpılıp sonuç x\'e eklenir.'},
  say:'Her kafa 4×64\'lük kendi çıktısını verir. 12 çıktı <b>yan yana yapıştırılır</b> (toplanmaz) → 4×768. W_O ile çarpılarak kafaların bulguları harmanlanır ve sonuç, kısayoldan bekleyen x\'e eklenir (residual). Böylece her token satırı, dikkatle topladığı bilgiyi kendi satırına yazmış olur.'};
 
-var SC=[s1,s2,s3,s4,s5,s6],cur=0,t=0,playing=true,last=0,lastLive='';
+/* ---------- SAHNE 7: W_O + residual ---------- */
+var s7={dur:18,tag:'⑦ ×W_O ve residual',
+ draw:function(t){
+  wo();
+  var Cx={x:30,y:150,w:250,h:96},Wx={x:330,y:50,w:240,h:240},Ox={x:640,y:150,w:250,h:96},Rx={x:640,y:330,w:250,h:96};
+  var p1=clamp(t/0.7,0,1),cur=p1*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(p1>=1){idx=T*G;sub=0}
+  var ar=Math.floor(idx/G),ag=idx%G,pr=clamp((t-0.72)/0.28,0,1);
+  txt('12 kafa yapışık  4×768',Cx.x,Cx.y-14,13,'#e8ebf2');txt('W_O  768×768',Wx.x,Wx.y-14,13,'#e8ebf2');txt('çarpım  4×768',Ox.x,Ox.y-14,13,'#e8ebf2');
+  txt('×',300,205,30,'#e8ebf2','center');txt('=',605,205,30,'#e8ebf2','center');
+  var cw=Cx.w/G,chh=Cx.h/T,wc=Wx.w/G;
+  for(var r=0;r<T;r++){txt(TOK[r],Cx.x-8,Cx.y+r*chh+16,12,'#9aa3b6','right');txt(TOK[r],Ox.x-8,Ox.y+r*chh+16,12,'#9aa3b6','right');
+    for(var g=0;g<G;g++){var kk=Math.floor(g/2);rect(Cx.x+g*cw,Cx.y+r*chh,cw-1,chh-1,col(CAT[r*D+g*P],2));
+      var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G;
+      rect(Ox.x+g*cw,Ox.y+r*chh,cw-1,chh-1,done?col(OUT[r*D+g*P],1.2):isC?col(OUT[r*D+g*P],1.2,sub):EMPTY)}}
+  for(var a=0;a<G;a++)for(var b=0;b<G;b++)rect(Wx.x+b*wc,Wx.y+a*wc,wc-1,wc-1,col(WO[a*P*D+b*P]*20,2));
+  for(var k2=0;k2<H;k2++){var xx=Cx.x+k2*2*cw;ctx.strokeStyle='hsl('+(k2*30)+',70%,62%)';ctx.lineWidth=1.5;ctx.strokeRect(xx,Cx.y,2*cw-1,Cx.h)}
+  frame(Wx.x,Wx.y,Wx.w,Wx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);
+  if(idx<T*G){
+    rect(Cx.x-1,Cx.y+ar*chh-1,Cx.w+2,chh+1,null,HL,2);rect(Wx.x+ag*wc-1,Wx.y-1,wc+1,Wx.h+2,null,HL,2);rect(Ox.x+ag*cw-1,Ox.y+ar*chh-1,cw+1,chh+1,null,HL,2);
+    ctx.fillStyle=HL;ctx.beginPath();ctx.arc(Cx.x+sub*Cx.w,Cx.y+ar*chh+chh/2,4,0,7);ctx.fill();ctx.beginPath();ctx.arc(Wx.x+ag*wc+wc/2,Wx.y+sub*Wx.h,4,0,7);ctx.fill()}
+  txt('Renkli çerçeveler: hangi 64 sütun hangi kafadan geliyor. Her kutu 32 gerçek sütun.',30,320,11,'#9aa3b6');
+  if(pr>0){ctx.globalAlpha=pr;
+    txt('+  x (asıl x, residual)',330,345,14,'#ffc82e');
+    txt('= residual sonrası  4×768',Rx.x,Rx.y-14,13,'#e8ebf2');
+    for(var r3=0;r3<T;r3++){txt(TOK[r3],Rx.x-8,Rx.y+r3*chh+16,12,'#9aa3b6','right');
+      for(var g3=0;g3<G;g3++)rect(Rx.x+g3*cw,Rx.y+r3*chh,cw-1,chh-1,col(X[r3*D+g3*P]+OUT[r3*D+g3*P],2))}
+    frame(Rx.x,Rx.y,Rx.w,Rx.h);ctx.globalAlpha=1}
+ },
+ live:function(t){
+  wo();var p1=clamp(t/0.7,0,1),idx=Math.min(T*G-1,Math.floor(p1*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
+  var pr=[0,1,2].map(function(k){return '('+f2(CAT[r*D+k])+')('+f2(WO[k*D+j])+')'});
+  var s='çarpım['+TOK[r]+']['+(j+1)+'] = c₁·W₁ + c₂·W₂ + … + c₇₆₈·W₇₆₈ = '+pr.join(' + ')+' + … = <b>'+f2(OUT[r*D+j])+'</b>';
+  if(t>0.72)s+='<br>residual: x + çarpım = '+f2(X[r*D+j])+' + ('+f2(OUT[r*D+j])+') = <b>'+f2(X[r*D+j]+OUT[r*D+j])+'</b>';
+  return s},
+ say:'Yapıştırılmış <b>tek</b> 4×768 tablo W_O (768×768) ile bir kez çarpılır, sonuç yine <b>tek</b> bir 4×768 olur (kafa başına ayrı tablo yok). W_O, 12 kafanın bulgularını her satırın <b>içinde</b> birbirine karıştırır; satırlar (token\'lar) birbirine karışmaz. Sonra kısayolda bekleyen asıl x eklenir (residual).'};
+
+var SC=[s1,s2,s3,s4,s5,s6,s7],cur=0,t=0,playing=true,last=0,lastLive='';
 var tabs=document.getElementById('tabs');
 SC.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.tag;b.onclick=function(){go(i)};tabs.appendChild(b)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
@@ -251,7 +294,7 @@ hs.onchange=function(){head_=+hs.value;draw(true)};
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
   [].forEach.call(tabs.children,function(b,k){b.className=k===cur?'on':''});
   document.getElementById('say').innerHTML=SC[cur].say;
-  document.getElementById('hLab').style.display=cur>=2?'':'none';draw(true)}
+  document.getElementById('hLab').style.display=(cur>=2&&cur<=4)?'':'none';draw(true)}
 function draw(force){
   ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
   document.getElementById('scrub').value=Math.round(t*1000);
