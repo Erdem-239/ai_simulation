@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Matris Çarpımları — Animasyon</title>
+<style>
+:root{--bg:#12151c;--card:#1a1f2a;--ink:#e8ebf2;--mute:#9aa3b6;--line:#323a4a;--blue:#6ea0ff;--hl:#ffc82e;--teal:#3fc7c1;--red:#f27a88;
+  --mono:ui-monospace,Menlo,Consolas,"JetBrains Mono",monospace;--sans:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans)}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 2px}
+.sub{color:var(--mute);margin:0 0 12px;font-size:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+button,select{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--blue)}
+button.on{border-color:var(--hl);color:var(--hl);font-weight:700}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.bar label{color:var(--mute);font-size:13px}
+input[type=range]{accent-color:var(--hl)}
+#scrub{flex:1;min-width:160px}
+.cv{background:#0e1118;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+canvas{display:block;width:100%;height:auto}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+.live{font-family:var(--mono);font-size:13px;line-height:1.7;word-break:break-word}
+.live b{color:var(--hl)}
+.say{border-left:3px solid var(--teal)}
+.note{font-size:12.5px;color:var(--mute)}
+a{color:var(--blue)}
+</style></head><body><div class="wrap">
+<h1>🎞️ Matris çarpımları — animasyon</h1>
+<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
+<div class="tabs" id="tabs"></div>
+<div class="bar">
+  <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
+  <label>Hız <select id="spd"><option value="0.4">0,4×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+  <label id="hLab">Kafa <select id="hsel"></select></label>
+  <label><input type="checkbox" id="auto"> sonraki sahneye otomatik geç</label>
+</div>
+<div class="bar"><input type="range" id="scrub" min="0" max="1000" value="0"></div>
+<div class="cv"><canvas id="cv"></canvas></div>
+<div class="box live" id="live"></div>
+<div class="box say" id="say"></div>
+<p class="note">Dürüst not: x (LayerNorm çıkışı), W_Q/W_K/W_V tohumlu rastgele sayılardır — gerçek GPT-2'nin ağırlıkları değil. Ama şekiller, çarpmalar, ÷√64, maske, softmax, A·V ve yapıştırma <b>gerçekten hesaplanıyor</b>: Q, K, V tabloları 768 terimli toplamlarla sayfa açılırken üretildi, ekrandaki her sayı bu tablolardan okunuyor. Gerçek GPT-2'de ne öğrendiklerini ölçmedik.</p>
+<p class="note"><a href="mimari-3b.html">← 3B mimariye dön</a></p>
+</div>
+<script>
+(function(){
+var T=4,D=768,H=12,DK=64,TOK=['7','+','5','='];
+function hsh(a,b,c){var x=(Math.imul(a,374761393)+Math.imul(b,668265263)+Math.imul(c,2147483629))|0;
+  x=Math.imul(x^(x>>>15),2246822519);x=Math.imul(x^(x>>>13),3266489917);x^=x>>>16;return (x>>>0)/4294967296*2-1}
+var X=new Float32Array(T*D);
+for(var r=0;r<T;r++)for(var k=0;k<D;k++)X[r*D+k]=1.7*hsh(1,r,k);
+function mkW(seed){var W=new Float32Array(D*D);for(var k=0;k<D;k++)for(var j=0;j<D;j++)W[k*D+j]=0.05*hsh(seed,k,j);return W}
+var WQ=mkW(2),WK=mkW(3),WV=mkW(4);
+function mul(A,W){var O=new Float32Array(T*D);for(var r=0;r<T;r++)for(var k=0;k<D;k++){var a=A[r*D+k];if(a===0)continue;var wo=k*D,oo=r*D;for(var j=0;j<D;j++)O[oo+j]+=a*W[wo+j]}return O}
+var Q=mul(X,WQ),K=mul(X,WK),V=mul(X,WV);
+var cache={};
+function head(h){
+  if(cache[h])return cache[h];
+  var S=[],A=[],O=[];
+  for(var r=0;r<T;r++){S.push([]);for(var c=0;c<T;c++){var s=0;for(var k=0;k<DK;k++)s+=Q[r*D+h*DK+k]*K[c*D+h*DK+k];S[r].push(s/8)}}
+  for(var r2=0;r2<T;r2++){var e=[],sum=0;for(var c2=0;c2<T;c2++){var ev=c2<=r2?Math.exp(S[r2][c2]):0;e.push(ev);sum+=ev}
+    A.push(e.map(function(v){return v/sum}));A[r2].e=e;A[r2].sum=sum}
+  for(var r3=0;r3<T;r3++){O.push([]);for(var j=0;j<DK;j++){var o=0;for(var c3=0;c3<=r3;c3++)o+=A[r3][c3]*V[c3*D+h*DK+j];O[r3].push(o)}}
+  return cache[h]={S:S,A:A,O:O};
+}
+function f2(v){return (v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',',')}
+function pct(v){return '%'+Math.round(v*100)}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function ease(v){v=clamp(v,0,1);return v*v*(3-2*v)}
+function col(v,sc,al){var a=clamp(Math.abs(v)/(sc||2),0,1);a=0.12+0.88*a;if(al!=null)a*=al;
+  return v>=0?'rgba(86,140,255,'+a.toFixed(3)+')':'rgba(240,100,120,'+a.toFixed(3)+')'}
+var EMPTY='#1a1f2b',HL='#ffc82e';
+var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),CW=1000,CH=400;
+function fit(){var dpr=window.devicePixelRatio||1;cv.width=CW*dpr;cv.height=CH*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+fit();
+function txt(s,x,y,sz,c,al){ctx.font=(sz||12)+'px ui-monospace,Menlo,Consolas,monospace';ctx.fillStyle=c||'#9aa3b6';ctx.textAlign=al||'left';ctx.fillText(s,x,y)}
+function rect(x,y,w,h,fill,stroke,lw){if(fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h)}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw||1;ctx.strokeRect(x,y,w,h)}}
+function frame(x,y,w,h,c){rect(x,y,w,h,null,c||'#4a5468',1)}
+var head_=0;
+
+/* ---------- SAHNE 1: LN(x)·W_Q ---------- */
+var G=24,P=32;
+var s1={dur:16,tag:'① LN(x)·W_Q → Q',
+ draw:function(t){
+  var X0={x:30,y:150,w:250,h:96},W0={x:330,y:50,w:240,h:240},Q0={x:640,y:150,w:250,h:96};
+  var cur=t*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=T*G;sub=0}
+  var ar=Math.floor(idx/G),ag=idx%G;
+  txt('LN(x)  4×768',X0.x,X0.y-14,13,'#e8ebf2');txt('W_Q  768×768',W0.x,W0.y-14,13,'#e8ebf2');txt('Q  4×768',Q0.x,Q0.y-14,13,'#e8ebf2');
+  txt('×',300,205,30,'#e8ebf2','center');txt('=',605,205,30,'#e8ebf2','center');
+  var cw=X0.w/G,chh=X0.h/T;
+  for(var r=0;r<T;r++){txt(TOK[r],X0.x-8,X0.y+r*chh+16,12,'#9aa3b6','right');
+    for(var g=0;g<G;g++){rect(X0.x+g*cw,X0.y+r*chh,cw-1,chh-1,col(X[r*D+g*P],2));
+      var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G;
+      rect(Q0.x+g*cw,Q0.y+r*chh,cw-1,chh-1,done?col(Q[r*D+g*P],3):isC?col(Q[r*D+g*P],3,sub):EMPTY)}}
+  var wc=W0.w/G;
+  for(var a=0;a<G;a++)for(var b=0;b<G;b++)rect(W0.x+b*wc,W0.y+a*wc,wc-1,wc-1,col(WQ[a*P*D+b*P]*14,2));
+  frame(X0.x,X0.y,X0.w,X0.h);frame(W0.x,W0.y,W0.w,W0.h);frame(Q0.x,Q0.y,Q0.w,Q0.h);
+  if(idx<T*G){
+    rect(X0.x-1,X0.y+ar*chh-1,X0.w+2,chh+1,null,HL,2);
+    rect(W0.x+ag*wc-1,W0.y-1,wc+1,W0.h+2,null,HL,2);
+    rect(Q0.x+ag*cw-1,Q0.y+ar*chh-1,cw+1,chh+1,null,HL,2);
+    ctx.fillStyle=HL;ctx.beginPath();ctx.arc(X0.x+sub*X0.w,X0.y+ar*chh+chh/2,4,0,7);ctx.fill();
+    ctx.beginPath();ctx.arc(W0.x+ag*wc+wc/2,W0.y+sub*W0.h,4,0,7);ctx.fill()}
+  txt('Her kutu 32 gerçek sütunu temsil ediyor (768 sütun 24 kutuya sıkıştırıldı).',30,350,12,'#9aa3b6');
+  txt('Aynı W_Q dört satır için de kullanılıyor; satırlar birbirine karışmıyor.',30,370,12,'#9aa3b6');
+ },
+ live:function(t){
+  var idx=Math.min(T*G-1,Math.floor(t*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
+  var p=[0,1,2].map(function(k){return '('+f2(X[r*D+k])+')·('+f2(WQ[k*D+j])+')'});
+  return 'Q['+(r+1)+']['+(j+1)+'] = x₁·W₁ + x₂·W₂ + x₃·W₃ + … + x₇₆₈·W₇₆₈<br>= '+p.join(' + ')+' + … (768 çarpım) = <b>'+f2(Q[r*D+j])+'</b>'},
+ say:'LN(x)\'in her satırı <b>aynı</b> W_Q ile çarpılır: Q\'nun 1. satırı yalnız x\'in 1. satırından, 2. satırı yalnız 2. satırından çıkar. Bir hücre = x\'in bir satırı ile W_Q\'nun bir sütununun nokta çarpımı (768 çarpım toplanır). K ve V için aynı işlem W_K ve W_V ile yapılır.'};
+
+/* ---------- SAHNE 2: dilimleme ---------- */
+var s2={dur:12,tag:'② 12 dilime böl',
+ draw:function(t){
+  var gap=ease((t-0.12)/0.45)*10,sw=828/H,names=['Q  4×768','K  4×768','V  4×768'],arrs=[Q,K,V];
+  var hi=t>0.7?Math.min(H-1,Math.floor((t-0.7)/0.3*H)):-1;
+  for(var s=0;s<3;s++){var y=40+s*115;txt(names[s],30,y-8,13,'#e8ebf2');
+    for(var i=0;i<H;i++){var x=30+i*sw+i*gap,vc=8,cw=sw/vc,ch=62/T;
+      for(var r=0;r<T;r++)for(var m=0;m<vc;m++)rect(x+m*cw,y+r*ch,cw-0.5,ch-0.5,col(arrs[s][r*D+i*DK+m*8],3));
+      frame(x,y,sw-1,62,'hsl('+(i*30)+',70%,62%)');
+      if(i===hi||(hi>=0&&i===head_&&false))rect(x-2,y-2,sw+3,66,null,HL,2)}}
+  if(t>0.45)for(var i2=0;i2<H;i2++)txt(String(i2+1),30+i2*sw+i2*gap+sw/2,376,11,'hsl('+(i2*30)+',70%,70%)','center');
+  if(t>0.45)txt('kafa',4,376,11,'#9aa3b6','left');
+  if(hi>=0)txt('Kafa '+(hi+1)+' = Q, K, V\'nin '+(hi+1)+'. dilimleri (her biri 4×64)',500,22,13,HL,'center');
+ },
+ live:function(t){return 'Her tablo: 4×768 → 12 × (4×64). <b>Hiç hesap yok</b>, sadece sütunlardan kesme. Toplam 3 × 12 = <b>36 küçük tablo</b>.'},
+ say:'Q, K ve V\'nin 768 sütunu 12 dilime (64\'er sütun) bölünür. Dilim N\'ler bir araya gelince <b>kafa N</b> olur: Q<sub>N</sub>, K<sub>N</sub>, V<sub>N</sub>. 12 kafa birbirinden bağımsız çalışır; her biri ayrı bir "bakış açısı" kazanır.'};
+
+/* ---------- SAHNE 3: Q·K^T ---------- */
+var s3={dur:22,tag:'③ Q·Kᵀ → skor',
+ draw:function(t){
+  var h=head_,d=head(h),Qr={x:60,y:170,w:256,h:88},Kt={x:380,y:60,w:88,h:256},Sx={x:590,y:120,c:48};
+  var cur=t*16,idx=Math.min(15,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=16;sub=0}
+  var ar=Math.floor(idx/4),ac=idx%4;
+  txt('Q'+(h+1)+'  4×64',Qr.x,Qr.y-14,13,'#e8ebf2');txt('K'+(h+1)+'ᵀ  64×4',Kt.x,Kt.y-14,13,'#e8ebf2');txt('skor  4×4',Sx.x,Sx.y-14,13,'#e8ebf2');
+  txt('×',345,215,28,'#e8ebf2','center');txt('=',545,215,28,'#e8ebf2','center');
+  var cw=Qr.w/16,ch=Qr.h/T;
+  for(var r=0;r<T;r++){txt(TOK[r],Qr.x-8,Qr.y+r*ch+16,12,'#9aa3b6','right');
+    for(var m=0;m<16;m++)rect(Qr.x+m*cw,Qr.y+r*ch,cw-1,ch-1,col(Q[r*D+h*DK+m*4],3))}
+  var kw=Kt.w/T,kh=Kt.h/16;
+  for(var c=0;c<T;c++){txt(TOK[c],Kt.x+c*kw+kw/2,Kt.y+Kt.h+14,12,'#9aa3b6','center');
+    for(var m2=0;m2<16;m2++)rect(Kt.x+c*kw,Kt.y+m2*kh,kw-1,kh-1,col(K[c*D+h*DK+m2*4],3))}
+  frame(Qr.x,Qr.y,Qr.w,Qr.h);frame(Kt.x,Kt.y,Kt.w,Kt.h);
+  for(var r2=0;r2<T;r2++){txt(TOK[r2],Sx.x-8,Sx.y+r2*Sx.c+30,12,'#9aa3b6','right');
+    for(var c2=0;c2<T;c2++){var id=r2*4+c2,x=Sx.x+c2*Sx.c,y=Sx.y+r2*Sx.c,val=null;
+      if(id<idx)val=d.S[r2][c2];else if(id===idx&&idx<16){var n=Math.floor(sub*DK),ps=0;for(var k=0;k<n;k++)ps+=Q[r2*D+h*DK+k]*K[c2*D+h*DK+k];val=ps/8}
+      rect(x,y,Sx.c-2,Sx.c-2,val==null?EMPTY:col(val,2.5));
+      if(val!=null)txt(f2(val),x+Sx.c/2-1,y+Sx.c/2+4,12,'#fff','center')}}
+  frame(Sx.x,Sx.y,Sx.c*T-2,Sx.c*T-2);
+  if(idx<16){
+    var n2=sub*1;rect(Qr.x-1,Qr.y+ar*ch-1,Qr.w+2,ch+1,null,HL,2);rect(Kt.x+ac*kw-1,Kt.y-1,kw+1,Kt.h+2,null,HL,2);
+    rect(Sx.x+ac*Sx.c-1,Sx.y+ar*Sx.c-1,Sx.c,Sx.c,null,HL,2);
+    ctx.fillStyle='rgba(255,200,46,.28)';ctx.fillRect(Qr.x,Qr.y+ar*ch,Qr.w*n2,ch);ctx.fillRect(Kt.x+ac*kw,Kt.y,kw,Kt.h*n2)}
+  txt('Kutu başına 4 gerçek sütun/satır (64 → 16 kutu)',60,350,12,'#9aa3b6');
+  txt('16 hücrenin hepsi hesaplanır; maske bir sonraki sahnede uygulanır.',60,370,12,'#9aa3b6');
+ },
+ live:function(t){
+  var h=head_,idx=Math.min(15,Math.floor(t*16)),sub=t*16-idx,r=Math.floor(idx/4),c=idx%4;if(t>=1){idx=15;sub=1;r=3;c=3}
+  var n=Math.max(1,Math.floor(sub*DK)),ps=0,i;for(i=0;i<n;i++)ps+=Q[r*D+h*DK+i]*K[c*D+h*DK+i];
+  var p=[0,1,2].map(function(k){return '('+f2(Q[r*D+h*DK+k])+')('+f2(K[c*D+h*DK+k])+')'});
+  return 'skor['+TOK[r]+'→'+TOK[c]+'] = (q₁k₁ + q₂k₂ + … + q₆₄k₆₄) ÷ 8<br>= ('+p.join(' + ')+' + … ) ÷ 8<br>şu ana kadar '+n+' çarpım: toplam <b>'+f2(ps)+'</b> ÷ 8 = <b>'+f2(ps/8)+'</b>'+(n>=DK?' ✔ hücre bitti':'')},
+ say:'Kafa N: Q<sub>N</sub> (4×64) ile K<sub>N</sub>ᵀ (64×4) çarpılır → 4×4 skor. Bir hücre = <b>64 çarpımın toplamı ÷ √64 = 8</b>. Sarı çubuk 64 çarpımın ilerleyişini gösterir. Hücre = "bu token\'ın sorusu ile şu token\'ın etiketi ne kadar uyuşuyor". Q ve K\'nın <b>aynı kafa dilimleri</b> çarpılır: 12 kafa için 12 ayrı çarpım (144 değil).'};
+
+/* ---------- SAHNE 4: maske + softmax ---------- */
+var s4={dur:18,tag:'④ Maske + softmax',
+ draw:function(t){
+  var h=head_,d=head(h),C=62,Sx={x:90,y:80},Ax={x:560,y:80};
+  var tm=ease((t-0.15)/0.2),ts=clamp((t-0.4)/0.6,0,1)*T,rr=Math.min(T-1,Math.floor(ts)),sub=ts-rr;if(t>=1){rr=T;sub=0}
+  txt('skor ÷√64  (maske öncesi → sonrası)',Sx.x,Sx.y-16,13,'#e8ebf2');txt('softmax → yüzde  (satır başına)',Ax.x,Ax.y-16,13,'#e8ebf2');
+  txt('→',480,Sx.y+C*2,30,'#e8ebf2','center');
+  for(var r=0;r<T;r++){txt(TOK[r],Sx.x-8,Sx.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Ax.x-8,Ax.y+r*C+C/2+4,12,'#9aa3b6','right');
+    for(var c=0;c<T;c++){var x=Sx.x+c*C,y=Sx.y+r*C,msk=c>r;
+      rect(x,y,C-3,C-3,msk?'rgba(70,76,92,'+(0.25+0.65*tm)+')':col(d.S[r][c],2.5));
+      txt(msk&&tm>0.5?'−∞':f2(d.S[r][c]),x+C/2-1,y+C/2+4,13,msk?'#9aa3b6':'#fff','center');
+      var ax=Ax.x+c*C,done=r<rr,isC=r===rr&&rr<T;
+      var vis=done||(isC&&sub>0.05);
+      rect(ax,y,C-3,C-3,vis?col(d.A[r][c]*2.5,1.2,done?1:sub):EMPTY);
+      if(vis)txt(msk?'0':pct(d.A[r][c]),ax+C/2-1,y+C/2+4,13,'#fff','center')}}
+  frame(Sx.x,Sx.y,C*T-3,C*T-3);frame(Ax.x,Ax.y,C*T-3,C*T-3);
+  if(rr<T){rect(Sx.x-2,Sx.y+rr*C-2,C*T-1,C-1,null,HL,2);rect(Ax.x-2,Ax.y+rr*C-2,C*T-1,C-1,null,HL,2)}
+  txt('Her satır kendi başına: toplam = %100.',Ax.x,Ax.y+C*T+22,12,'#9aa3b6');
+ },
+ live:function(t){
+  var d=head(head_),r=Math.min(T-1,Math.floor(clamp((t-0.4)/0.6,0,1)*T));if(t<0.4)return 'Önce maske: sağ üst üçgen (gelecek token\'lar) <b>−∞</b> yapılır → e<sup>−∞</sup> = 0, yani o yere hiç bakılmaz.';
+  var row=d.A[r],ex=[];for(var c=0;c<=r;c++)ex.push('e<sup>'+f2(d.S[r][c])+'</sup>='+f2(d.A[r].e[c]));
+  return 'satır '+(r+1)+' ('+TOK[r]+'): '+ex.join(' · ')+'<br>toplam = '+f2(row.sum)+' → '+row.map(function(v,i){return i<=r?TOK[i]+': <b>'+pct(v)+'</b>':null}).filter(Boolean).join(' · ')},
+ say:'<b>Maske:</b> bir token yalnız kendisine ve öncesine bakabilir; sağ üst üçgen −∞ olur. <b>Softmax:</b> her satır ayrı ayrı e<sup>skor</sup> alınıp toplama bölünür → satır toplamı %100. Bu tablo yalnızca "kime ne kadar bakılacak" haritasıdır; <b>içerik taşımaz</b>, içerik V\'de.'};
+
+/* ---------- SAHNE 5: A·V ---------- */
+var s5={dur:22,tag:'⑤ A·V → çıktı',
+ draw:function(t){
+  var h=head_,d=head(h),C=44,Ax={x:50,y:110},Vx={x:290,y:110,w:256,h:176},Ox={x:640,y:110,w:256,h:176};
+  var cur=t*64,idx=Math.min(63,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=64;sub=0}
+  var ar=Math.floor(idx/16),aj=idx%16;
+  txt('A  4×4 (yüzdeler)',Ax.x,Ax.y-14,13,'#e8ebf2');txt('V'+(h+1)+'  4×64',Vx.x,Vx.y-14,13,'#e8ebf2');txt('çıktı O'+(h+1)+'  4×64',Ox.x,Ox.y-14,13,'#e8ebf2');
+  txt('×',265,200,28,'#e8ebf2','center');txt('=',600,200,28,'#e8ebf2','center');
+  for(var r=0;r<T;r++){txt(TOK[r],Ax.x-8,Ax.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Vx.x-8,Vx.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Ox.x-8,Ox.y+r*C+C/2+4,12,'#9aa3b6','right');
+    for(var c=0;c<T;c++){rect(Ax.x+c*C,Ax.y+r*C,C-2,C-2,d.A[r][c]>0?col(d.A[r][c]*2.5,1.2):EMPTY);
+      txt(c>r?'0':pct(d.A[r][c]),Ax.x+c*C+C/2-1,Ax.y+r*C+C/2+4,11,'#fff','center')}
+    for(var m=0;m<16;m++){var cw=Vx.w/16;rect(Vx.x+m*cw,Vx.y+r*C,cw-1,C-2,col(V[r*D+h*DK+m*4],3));
+      var done=r*16+m<idx,isC=r*16+m===idx&&idx<64,o=d.O[r][m*4];
+      rect(Ox.x+m*cw,Ox.y+r*C,cw-1,C-2,done?col(o,3):isC?col(o,3,sub):EMPTY)}}
+  frame(Ax.x,Ax.y,C*T-2,C*T-2);frame(Vx.x,Vx.y,Vx.w,Vx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);
+  if(idx<64){var cw2=Vx.w/16;
+    rect(Ax.x-1,Ax.y+ar*C-1,C*T,C,null,HL,2);rect(Vx.x+aj*cw2-1,Vx.y-1,cw2+1,Vx.h+2,null,HL,2);rect(Ox.x+aj*cw2-1,Ox.y+ar*C-1,cw2+1,C,null,HL,2)}
+  txt('Kutu başına 4 gerçek sütun (64 → 16 kutu). Çıktının her satırı = V satırlarının yüzdelerle karışımı.',50,340,12,'#9aa3b6');
+ },
+ live:function(t){
+  var h=head_,d=head(h),idx=Math.min(63,Math.floor(t*64)),r=Math.floor(idx/16),j=(idx%16)*4,parts=[];
+  for(var c=0;c<=r;c++)parts.push(pct(d.A[r][c])+'·('+f2(V[c*D+h*DK+j])+')');
+  return 'O['+TOK[r]+']['+(j+1)+'] = '+(r===0?'':'')+parts.join(' + ')+' = <b>'+f2(d.O[r][j])+'</b><br>'+(r===0?'(7 satırı yalnız kendine bakar: V\'sinin %100\'ü)':'= '+TOK.slice(0,r+1).map(function(x,i){return x+'\'in V\'si × '+pct(d.A[r][i])}).join(' + '))},
+ say:'Yüzde tablosu (4×4) ile V dilimi (4×64) çarpılır. Çıktının <b>her satırı</b>, V satırlarının yüzdelerle ağırlıklı toplamıdır — token\'lar ilk kez birbirinin <b>bilgisiyle</b> karışır. Sarı kutu, bir çıktı hücresinin hangi A satırı ve hangi V sütunundan oluştuğunu gösterir.'};
+
+/* ---------- SAHNE 6: birleştir ---------- */
+var s6={dur:16,tag:'⑥ 12 kafayı yapıştır',
+ draw:function(t){
+  var tt=ease(t/0.45),tw=ease((t-0.55)/0.3);
+  for(var i=0;i<H;i++){var d=head(i),gx=30+(i%6)*158,gy=30+Math.floor(i/6)*100,sx=30+i*78,sy=150;
+    var x=gx+(sx-gx)*tt,y=gy+(sy-gy)*tt,w=140+(76-140)*tt,hh=70-(70-62)*tt,vc=8;
+    for(var r=0;r<T;r++)for(var m=0;m<vc;m++)rect(x+m*w/vc,y+r*hh/T,w/vc-0.5,hh/T-0.5,col(d.O[r][m*8],3));
+    frame(x,y,w,hh,'hsl('+(i*30)+',70%,62%)');
+    if(tt<0.5)txt('kafa '+(i+1)+'  4×64',x+w/2,y-5,11,'hsl('+(i*30)+',70%,72%)','center')}
+  if(tt>0.9){txt('12 × (4×64) yan yana = 4×768   (toplanmaz, yapıştırılır)',30,236,13,'#e8ebf2')}
+  if(tw>0){ctx.globalAlpha=tw;
+    rect(30,265,250,60,'#1a1f2a','#4a5468',1);txt('× W_O   (768×768)',155,300,15,'#e8ebf2','center');
+    txt('→',305,302,26,'#e8ebf2','center');rect(330,265,250,60,'#1a1f2a','#4a5468',1);txt('4×768  (kafalar harmanlandı)',455,300,13,'#e8ebf2','center');
+    txt('+',605,302,26,'#e8ebf2','center');rect(630,265,250,60,'#1a1f2a',HL,1.5);txt('x  (residual: eski satır)',755,300,12,'#ffc82e','center');
+    ctx.globalAlpha=1}
+ },
+ live:function(t){return '12 kafa × 64 sütun = <b>768</b> sütun. Yapıştırma hesap değildir; ardından W_O ile bir kez daha çarpılıp sonuç x\'e eklenir.'},
+ say:'Her kafa 4×64\'lük kendi çıktısını verir. 12 çıktı <b>yan yana yapıştırılır</b> (toplanmaz) → 4×768. W_O ile çarpılarak kafaların bulguları harmanlanır ve sonuç, kısayoldan bekleyen x\'e eklenir (residual). Böylece her token satırı, dikkatle topladığı bilgiyi kendi satırına yazmış olur.'};
+
+var SC=[s1,s2,s3,s4,s5,s6],cur=0,t=0,playing=true,last=0,lastLive='';
+var tabs=document.getElementById('tabs');
+SC.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.tag;b.onclick=function(){go(i)};tabs.appendChild(b)});
+var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
+hs.onchange=function(){head_=+hs.value;draw(true)};
+function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
+  [].forEach.call(tabs.children,function(b,k){b.className=k===cur?'on':''});
+  document.getElementById('say').innerHTML=SC[cur].say;
+  document.getElementById('hLab').style.display=cur>=2?'':'none';draw(true)}
+function draw(force){
+  ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
+  document.getElementById('scrub').value=Math.round(t*1000);
+  var l=SC[cur].live(t);if(l!==lastLive){document.getElementById('live').innerHTML=l;lastLive=l}
+}
+document.getElementById('bPlay').onclick=function(){playing=!playing;if(playing&&t>=1)t=0;this.textContent=playing?'⏸ Duraklat':'▶ Oynat'};
+document.getElementById('bRe').onclick=function(){t=0;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'};
+document.getElementById('bPrev').onclick=function(){go(cur-1)};
+document.getElementById('bNext').onclick=function(){go(cur+1)};
+document.getElementById('scrub').oninput=function(){t=this.value/1000;playing=false;document.getElementById('bPlay').textContent='▶ Oynat'};
+function tick(ts){
+  var dt=last?(ts-last)/1000:0;last=ts;
+  if(playing){t+=dt*(+document.getElementById('spd').value)/SC[cur].dur;
+    if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
+      if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
+  draw();requestAnimationFrame(tick)}
+window.__matAnim={go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+go(0);requestAnimationFrame(tick);
+})();
+</script></body></html>
