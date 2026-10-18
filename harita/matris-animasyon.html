@@ -142,7 +142,7 @@ var s3={dur:22,tag:'③ Q·Kᵀ → skor',
   var h=head_,d=head(h),Qr={x:60,y:170,w:256,h:88},Kt={x:380,y:60,w:88,h:256},Sx={x:590,y:120,c:48};
   var cur=t*16,idx=Math.min(15,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=16;sub=0}
   var ar=Math.floor(idx/4),ac=idx%4;
-  txt('Q'+(h+1)+'  4×64',Qr.x,Qr.y-14,13,'#e8ebf2');txt('K'+(h+1)+'ᵀ  64×4',Kt.x,Kt.y-14,13,'#e8ebf2');txt('skor  4×4',Sx.x,Sx.y-14,13,'#e8ebf2');
+  txt('Q'+(h+1)+'  4×64',Qr.x,Qr.y-14,13,'#e8ebf2');txt('K'+(h+1)+'ᵀ  64×4',Kt.x,Kt.y-14,13,'#e8ebf2');txt('skor  4×4',Sx.x,Sx.y-30,13,'#e8ebf2');for(var tc=0;tc<T;tc++)txt(TOK[tc],Sx.x+tc*Sx.c+Sx.c/2-1,Sx.y-6,12,'#9aa3b6','center');txt('satır = soran, sütun = bakılan',Sx.x,Sx.y+Sx.c*T+14,11,'#9aa3b6');
   txt('×',345,215,28,'#e8ebf2','center');txt('=',545,215,28,'#e8ebf2','center');
   var cw=Qr.w/16,ch=Qr.h/T;
   for(var r=0;r<T;r++){txt(TOK[r],Qr.x-8,Qr.y+r*ch+16,12,'#9aa3b6','right');
@@ -176,7 +176,7 @@ var s4={dur:18,tag:'④ Maske + softmax',
  draw:function(t){
   var h=head_,d=head(h),C=62,Sx={x:90,y:80},Ax={x:560,y:80};
   var tm=ease((t-0.15)/0.2),ts=clamp((t-0.4)/0.6,0,1)*T,rr=Math.min(T-1,Math.floor(ts)),sub=ts-rr;if(t>=1){rr=T;sub=0}
-  txt('skor ÷√64  (maske öncesi → sonrası)',Sx.x,Sx.y-16,13,'#e8ebf2');txt('softmax → yüzde  (satır başına)',Ax.x,Ax.y-16,13,'#e8ebf2');
+  txt('skor ÷√64  (maske öncesi → sonrası)',Sx.x,Sx.y-32,13,'#e8ebf2');txt('softmax → yüzde  (satır başına)',Ax.x,Ax.y-32,13,'#e8ebf2');for(var tc=0;tc<T;tc++){txt(TOK[tc],Sx.x+tc*C+C/2-1,Sx.y-8,13,'#9aa3b6','center');txt(TOK[tc],Ax.x+tc*C+C/2-1,Ax.y-8,13,'#9aa3b6','center')}txt('satır = soran token, sütun = bakılan token',Sx.x,Sx.y+C*T+16,12,'#9aa3b6');
   txt('→',480,Sx.y+C*2,30,'#e8ebf2','center');
   for(var r=0;r<T;r++){txt(TOK[r],Sx.x-8,Sx.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Ax.x-8,Ax.y+r*C+C/2+4,12,'#9aa3b6','right');
     for(var c=0;c<T;c++){var x=Sx.x+c*C,y=Sx.y+r*C,msk=c>r;
@@ -202,7 +202,7 @@ var s5={dur:22,tag:'⑤ A·V → çıktı',
   var h=head_,d=head(h),C=44,Ax={x:50,y:110},Vx={x:290,y:110,w:256,h:176},Ox={x:640,y:110,w:256,h:176};
   var cur=t*64,idx=Math.min(63,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=64;sub=0}
   var ar=Math.floor(idx/16),aj=idx%16;
-  txt('A  4×4 (yüzdeler)',Ax.x,Ax.y-14,13,'#e8ebf2');txt('V'+(h+1)+'  4×64',Vx.x,Vx.y-14,13,'#e8ebf2');txt('çıktı O'+(h+1)+'  4×64',Ox.x,Ox.y-14,13,'#e8ebf2');
+  txt('A  4×4 (yüzdeler)',Ax.x,Ax.y-30,13,'#e8ebf2');for(var tc=0;tc<T;tc++)txt(TOK[tc],Ax.x+tc*C+C/2-1,Ax.y-6,12,'#9aa3b6','center');txt('V'+(h+1)+'  4×64',Vx.x,Vx.y-14,13,'#e8ebf2');txt('çıktı O'+(h+1)+'  4×64',Ox.x,Ox.y-14,13,'#e8ebf2');
   txt('×',265,200,28,'#e8ebf2','center');txt('=',600,200,28,'#e8ebf2','center');
   for(var r=0;r<T;r++){txt(TOK[r],Ax.x-8,Ax.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Vx.x-8,Vx.y+r*C+C/2+4,12,'#9aa3b6','right');txt(TOK[r],Ox.x-8,Ox.y+r*C+C/2+4,12,'#9aa3b6','right');
     for(var c=0;c<T;c++){rect(Ax.x+c*C,Ax.y+r*C,C-2,C-2,d.A[r][c]>0?col(d.A[r][c]*2.5,1.2):EMPTY);
