@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Güncel Mimariler</title>
+<style>
+:root{--bg:#12151c;--card:#1a1f2a;--ink:#e8ebf2;--mute:#9aa3b6;--line:#323a4a;--blue:#6ea0ff;--green:#5fcf8a;--amber:#e8a94d;--red:#f27a88;--violet:#b592f0;--hl:#ffc82e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:26px;margin:0 0 6px}h2{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+.warn{background:#2a2414;border:1px solid #6b5a1e;border-radius:10px;padding:10px 14px;margin:12px 0 22px;color:#f0dca0}
+.sec{background:var(--card);border:2px solid var(--c);border-radius:16px;padding:18px 18px 20px;margin-bottom:22px}
+.cols{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:20px;align-items:start}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+svg{width:100%;height:auto;display:block}
+svg text{font:12px system-ui,sans-serif;fill:var(--ink)}
+.bx{fill:#232a38;stroke:var(--line);stroke-width:1.5}
+.bx.hot{stroke:var(--hl);stroke-width:2.5;fill:#2c2a1c}
+.bx.norm{fill:#1f2a2c}
+ul.nt{margin:0;padding-left:18px}ul.nt li{margin:0 0 9px}
+.tag{display:inline-block;border-radius:6px;padding:0 7px;font-size:12px;font-weight:700;background:var(--c);color:#12151c}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#202737}
+.tw{overflow-x:auto}
+code{background:#232a38;border-radius:4px;padding:0 5px}
+</style></head><body><div class="wrap">
+<h1>🆕 Güncel mimariler: sandviç norm, yerel/küresel attention ve döngülü transformer</h1>
+<p class="sub">Sosyal medyada dolaşan iki mimari şemasının (Sebastian Raschka'nın çizimleri olarak paylaşılıyor) kendi çizimimizle yeniden anlatımı. Karşılaştırma tabanı: sitedeki GPT-2 bloğu.</p>
+<div class="warn">⚠️ <b>Dürüst not:</b> "Meta Muse" ve "OpenAI Astra" adlarını ve şemadaki sayıları <b>bağımsız bir kaynakta doğrulayamadık</b>; her şey paylaşılan görselde yazanlardan alındı. Çizimler şematiktir. Teknik fikirler (sliding window, GQA, QK-Norm, ağırlık paylaşımı) ise bilinen, gerçek tekniklerdir.</div>
+
+<div class="sec" style="--c:#6ea0ff">
+<h2>1) "Muse" — 52 blok, 3:1 yerel/küresel, sandviç norm</h2>
+<p class="sub">Şemada: sözlük 202k, bağlam 131k, gömme boyutu 6.656, FFN ara boyutu 19.968, 52 blok.</p>
+<div class="cols"><div id="d1"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#ffc82e">3:1 yerel/küresel</span> Her 4 katmanın 3'ünde token yalnız <b>son 2048 token'a</b> bakar (sliding window); 4.sü tüm geçmişe bakar. KV önbelleği yalnız küresel katmanlarda tam büyür → uzun bağlam ucuzlar.</li>
+<li><span class="tag" style="--c:#6ea0ff">Gated GQA</span> 32 sorgu kafası, <b>2</b> K/V kafası (16 sorgu bir K/V'yi paylaşır) + çıkışa sigmoid kapı. İki katman türünde de aynı.</li>
+<li><span class="tag" style="--c:#b592f0">RoPE / NoPE</span> Bazı katmanlarda konum bilgisi hiç verilmez (NoPE); konum yalnız RoPE'lu katmanlarda.</li>
+<li><span class="tag" style="--c:#5fcf8a">QK-Norm</span> Q ve K, nokta çarpımdan önce normalize edilir ("scaleless" = öğrenilen ölçek yok). Skorların patlamasını önler, eğitimi kararlı yapar.</li>
+<li><span class="tag" style="--c:#e8a94d">Sandviç norm</span> Her alt-bloğun hem <b>önünde</b> (Pre) hem <b>arkasında</b> (Post) RMSNorm. Bizim GPT-2 bloğunda yalnız önde vardı (pre-LN).</li>
+<li>FFN: SwiGLU (iki doğrusal katman SiLU ile çarpılıp üçüncüyle geri küçülür).</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#5fcf8a">
+<h2>2) "Astra" — 22 katman, iki tur: ağırlık paylaşımı (looped)</h2>
+<p class="sub">Şemada: sözlük 166k, bağlam 262k, gömme boyutu 3.072, FFN ara boyutu 10.752, 48 Q / 8 K/V kafa, kafa boyu 128.</p>
+<div class="cols"><div id="d2"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#5fcf8a">Looped</span> 22 katmanın çıkışı, <b>aynı 22 katmana tekrar girer</b> (turuncu ok). Derinlik 44, ama <b>ağırlık yalnız 22 katmanlık</b>.</li>
+<li>Fikir: parametre eklemeden "daha çok düşünme" (aynı hesabı iki kez uygulamak). Bedeli: hesap süresi ikiye katlanır, her turda ağırlıklar aynı olduğu için tur başına yeni bilgi öğrenilmez, mevcut bilgi yeniden işlenir.</li>
+<li>Geri kalanı klasik: pre-norm RMSNorm, GQA (6 sorgu → 1 K/V), RoPE, SwiGLU FFN.</li>
+<li>Bizim animasyonun ⑪ sahnesindeki 12 blok <b>farklı</b> ağırlıklıydı; looped'ta aynı blok yığını tekrar kullanılır.</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#e8a94d">
+<h2>3) Yan yana: GPT-2 → bu iki şema</h2>
+<div class="tw"><table>
+<tr><th></th><th>GPT-2 (sitedeki)</th><th>"Muse" (şema)</th><th>"Astra" (şema)</th></tr>
+<tr><td>Norm yeri</td><td>LayerNorm, önde</td><td>RMSNorm, önde + arkada (sandviç) + QK-Norm</td><td>RMSNorm, önde</td></tr>
+<tr><td>Attention</td><td>12 kafa, hepsi tam (MHA)</td><td>32 Q / 2 K/V, gated GQA; 3 yerel : 1 küresel</td><td>48 Q / 8 K/V (GQA), tam</td></tr>
+<tr><td>Konum</td><td>Öğrenilen wpe tablosu</td><td>RoPE / NoPE</td><td>RoPE</td></tr>
+<tr><td>FFN</td><td>768→3072→768, GELU</td><td>6.656→19.968, SwiGLU</td><td>3.072→10.752, SwiGLU</td></tr>
+<tr><td>Derinlik</td><td>12 farklı blok</td><td>52 farklı blok</td><td>22 farklı katman × 2 tur = 44</td></tr>
+<tr><td>Sözlük / bağlam</td><td>50.257 / 1.024</td><td>202k / 131k</td><td>166k / 262k</td></tr>
+</table></div>
+<p class="sub" style="margin-top:10px">İskelet aynı kalıyor: embedding → [attention + FFN + residual + norm] × N → çıkış. Yenilikler bu parçaların verimli, kararlı ya da daha çok kullanılan hâlleri.</p>
+</div>
+</div>
+<script>
+var NS='http://www.w3.org/2000/svg';
+function box(g,x,y,w,h,t,cls){return '<rect class="bx '+(cls||'')+'" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="7"/><text x="'+(x+w/2)+'" y="'+(y+h/2+4)+'" text-anchor="middle">'+t+'</text>'}
+function ar(x,y1,y2){return '<line x1="'+x+'" y1="'+y1+'" x2="'+x+'" y2="'+y2+'" stroke="#9aa3b6" stroke-width="1.6" marker-end="url(#ah)"/>'}
+var DEF='<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#9aa3b6"/></marker></defs>';
+function plus(x,y){return '<circle cx="'+x+'" cy="'+y+'" r="10" fill="#232a38" stroke="#9aa3b6" stroke-width="1.5"/><text x="'+x+'" y="'+(y+4)+'" text-anchor="middle">+</text>'}
+// 1) Muse
+(function(){
+ var s='<svg viewBox="0 0 420 640">'+DEF;
+ s+='<rect x="20" y="60" width="380" height="560" rx="14" fill="none" stroke="#323a4a" stroke-dasharray="4 4"/>';
+ s+=box(0,110,580,200,30,'Token gömme');s+=ar(210,580,556);
+ s+=box(0,110,526,200,28,'Ölçeksiz RMSNorm','norm');s+=ar(210,526,502);
+ s+='<rect x="60" y="170" width="300" height="330" rx="12" fill="#1c2640" stroke="#6ea0ff" stroke-width="2"/><text x="72" y="190" fill="#6ea0ff" style="fill:#6ea0ff;font-weight:700">× 52 blok</text>';
+ s+=box(0,110,466,200,26,'Pre-RMSNorm 1','norm');s+=ar(210,466,444);
+ s+=box(0,95,380,230,64,'','hot');s+='<text x="210" y="404" text-anchor="middle">Gated GQA · 3 yerel : 1 küresel</text>';
+ s+='<text x="210" y="424" text-anchor="middle" style="fill:#9aa3b6;font-size:11px">QK-Norm · RoPE/NoPE · 32Q/2KV</text>';
+ s+=ar(210,380,358);
+ s+=box(0,110,330,200,26,'Post-RMSNorm 1','norm');s+=ar(210,330,308);
+ s+=plus(210,296);s+=ar(210,286,264);
+ s+=box(0,110,236,200,26,'Pre-RMSNorm 2','norm');
+ s+=box(0,110,200,200,30,'FFN (SwiGLU)');
+ s+='<line x1="210" y1="236" x2="210" y2="230" stroke="#9aa3b6"/>';
+ s+='<path d="M60 466 L40 466 L40 296 L200 296" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';
+ s+='<text x="26" y="380" transform="rotate(-90 26 380)" style="fill:#5fcf8a;font-size:11px">residual</text>';
+ s+=plus(210,176);s+=ar(210,200,186);s+=ar(210,166,148);s+='<path d="M60 296 L48 296 L48 176 L200 176" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';s+=ar(210,200,186);
+ s+=box(0,110,120,200,28,'Final RMSNorm','norm');s+=ar(210,120,96);
+ s+=box(0,110,66,200,28,'Çıkış katmanı (202k)');s+=ar(210,66,40);
+ s+='<text x="210" y="30" text-anchor="middle">sonraki token olasılıkları</text></svg>';
+ document.getElementById('d1').innerHTML=s})();
+// 2) Astra
+(function(){
+ var s='<svg viewBox="0 0 420 560">'+DEF;
+ s+=box(0,110,520,200,28,'Token gömme');s+=ar(210,520,496);
+ s+='<rect x="70" y="170" width="280" height="326" rx="12" fill="#1c3226" stroke="#5fcf8a" stroke-width="2"/><text x="82" y="190" style="fill:#5fcf8a;font-weight:700">22 katman (ortak)</text>';
+ s+=box(0,110,452,200,26,'RMSNorm 1','norm');s+=ar(210,452,430);
+ s+=box(0,100,370,220,56,'GQA · 48Q / 8KV · RoPE','hot');s+=ar(210,370,348);
+ s+=plus(210,336);s+=ar(210,326,304);
+ s+=box(0,110,276,200,26,'RMSNorm 2','norm');s+=ar(210,276,254);
+ s+=box(0,110,224,200,30,'FFN (SwiGLU)');s+=ar(210,224,206);
+ s+=plus(210,196);
+ s+='<path d="M350 340 L385 340 L385 520 L320 534 L318 534" fill="none" stroke="#e8a94d" stroke-width="3" marker-end="url(#ah)"/>';
+ s+='<text x="392" y="440" transform="rotate(90 392 440)" text-anchor="middle" style="fill:#e8a94d;font-size:12px;font-weight:700">2. tur: aynı 22 katman</text>';
+ s+=ar(210,186,138);
+ s+=box(0,110,108,200,28,'Final RMSNorm','norm');s+=ar(210,108,84);
+ s+=box(0,110,54,200,28,'Çıkış katmanı (166k)');
+ s+='</svg>';
+ document.getElementById('d2').innerHTML=s})();
+</script></body></html>
