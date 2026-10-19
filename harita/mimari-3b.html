@@ -64,6 +64,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 #barShow{position:fixed;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom,0px));display:none;font:700 13px var(--sans);height:34px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;padding:0 16px}
 #barShow:hover{border-color:var(--blue)}
 body.nobar #bar{display:none}
+body.emb #top,body.emb #bar,body.emb #barShow,body.emb #info,body.emb #tour,body.emb #cmp,body.emb #hin{display:none!important}
 body.nobar #barShow{display:block}
 #cmp .hd{cursor:move;display:flex;justify-content:space-between;align-items:center;touch-action:none;user-select:none}
 #cmp .hd button{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer;line-height:1}
@@ -577,9 +578,9 @@ function frame(){
   const w=innerWidth,h=innerHeight,lop=clamp((t-0.3)/0.4,0,1);
   const proj=(v,el,op)=>{tmp.copy(v).project(camera);const vis=tmp.z<1&&Math.abs(tmp.x)<1.1&&Math.abs(tmp.y)<1.1;el.style.opacity=vis?op:0;el.style.left=((tmp.x+1)/2*w)+'px';el.style.top=((1-tmp.y)/2*h)+'px'};
   const bo=clamp((t-0.5)/0.4,0,1);
-  act.forEach(A=>{A.parts.forEach(p=>{const g=p.group.position,bot=p.ci%2===1;p.lb.classList.toggle('bot',bot);v3.set(g.x,g.y+(bot?-1:1)*(p.h*sc/2+0.15),g.z);proj(v3,p.lb,p===selected?1:lop)});
+  act.forEach(A=>{A.parts.forEach(p=>{const g=p.group.position,bot=p.ci%2===1;p.lb.classList.toggle('bot',bot);v3.set(g.x,g.y+(bot?-1:1)*(p.h*sc/2+0.15),g.z);proj(v3,p.lb,p===selected?1:(EMB?(tourParts.indexOf(p)>=0?1:0):lop))});
     const b=A._boxes;v3.set(b[0].x,b[0].y,b[0].z);proj(v3,A.blockLb,bo);if(b[1]){v3.set(b[1].x,b[1].y,b[1].z);proj(v3,A.blockLb2,bo*(A.mm>0.5?0:1))}
-    (A.groups||[]).forEach((g,gi)=>{const c=A._gb[gi],d=A.glb[gi];v3.set(c.x,c.y,c.z);proj(v3,d,bo);d.style.pointerEvents=Number(d.style.opacity)>0.5?'auto':'none'});
+    (A.groups||[]).forEach((g,gi)=>{const c=A._gb[gi],d=A.glb[gi];v3.set(c.x,c.y,c.z);proj(v3,d,(EMB&&!tourOn&&!/^(Tokenizer|Embedding|Attention|FFN alt|Çıkış)/.test(g.title))?0:bo);d.style.pointerEvents=Number(d.style.opacity)>0.5?'auto':'none'});
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position;v3.set((pa.x+pb.x)/2,(pa.y+pb.y)/2,(pa.z+pb.z)/2);proj(v3,A.contLb,bo*(1-A.mm))}
     v3.set(A.XC_A,A.yo+0.9,0);proj(v3,A.asmLb,clamp(1-t*4,0,1))});
   requestAnimationFrame(frame)}
@@ -857,6 +858,13 @@ $('bz').onclick=()=>{focusOn=!focusOn;$('bz').textContent='Tıklayınca zoom: '+
 $('bc').onclick=()=>{cmpOpen=!cmpOpen;$('bc').classList.toggle('on',cmpOpen);buildCmp()};
 $('bh').onclick=()=>{hoverOn=!hoverOn;$('bh').textContent='İmleç bilgisi: '+(hoverOn?'açık':'kapalı');$('bh').classList.toggle('on',hoverOn);hoverDirty=true};
 $('bl').textContent='Yerleşim: tek düzlem';
+/* ---- gömülü mod (matris-animasyon.html turu): ?embed=1 → yalnız GPT-2, arayüz yok, mesajla kamera ---- */
+const EMB=/[?&]embed=1/.test(location.search);
+if(EMB){document.body.classList.add('emb','nobar');ARCHS.forEach(A=>{A.on=A===GPT2});GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef;tT=1;t=1;yaw=0.22;pitch=0.55;zoom=0.8;
+  addEventListener('message',ev=>{const d=ev.data;if(!d||d.type!=='tour3d')return;
+    if(!d.cols){tourOn=false;tourParts=[];select(null);yaw=0.22;pitch=0.55;zoom=0.8;return}
+    yaw=0.32;pitch=0.2;zoom=1;
+    tourParts=GPT2.parts.filter(p=>p.ci>=d.cols[0]&&p.ci<=d.cols[1]);tourOn=true;select(null)})}
 applyArch();
 zoom=1;tgt.set(MINI.XC_A,0,0);
 camera.position.set(MINI.XC_A+5*Math.sin(yaw)*Math.cos(pitch),5*Math.sin(pitch),5*Math.cos(yaw)*Math.cos(pitch));
