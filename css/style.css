@@ -1676,3 +1676,15 @@ body.xt-full-lock{overflow:hidden}
 .hr-card ul{margin:4px 0 6px; padding-left:18px; font-size:13px; line-height:1.5}
 .hr-go{margin-top:auto; align-self:flex-start; display:inline-block; padding:8px 14px; border-radius:8px; background:rgba(90,160,224,.16); border:1px solid rgba(90,160,224,.55); color:#9fc8f0; font-weight:700; font-size:13.5px; text-decoration:none}
 .hr-go:hover{background:rgba(90,160,224,.28)}
+.hr-cat{background:#1c2238; border:1px solid var(--line); border-radius:12px; padding:14px 16px 6px; margin:14px 0}
+.hr-cat>h3{margin:0 0 4px; font-size:17px}
+.hr-cat-d{margin:0 0 8px; font-size:13.5px; line-height:1.5; color:#b8c4dc}
+.hr-entry{display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center; border-top:1px solid var(--line); padding:10px 0}
+.hr-entry .hr-et{display:flex; flex-direction:column; gap:2px}
+.hr-entry .hr-et b{font-size:14.5px}
+.hr-entry .hr-et span{font-size:13px; color:#b8c4dc; line-height:1.45}
+.hr-entry .hr-go{margin-top:0}
+.hr-entry .acc{grid-column:1/-1; margin:0}
+.hr-entry .acc-body p{font-size:13px; line-height:1.5}
+.hr-entry .acc-body ul{font-size:12.5px; line-height:1.5}
+@media(max-width:600px){.hr-entry{grid-template-columns:1fr}.hr-entry .hr-go{justify-self:start}}
