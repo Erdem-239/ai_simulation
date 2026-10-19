@@ -768,43 +768,51 @@ var ORD=['tok','emb','qkv','slice','qk','sm','av','cat','wo','ln2','w1','w2','bl
 var COLS={tok:[0,0],emb:[1,3],qkv:[4,6],slice:[7,7],qk:[8,8],sm:[9,9],av:[10,10],cat:[11,11],wo:[12,13],ln2:[14,14],w1:[15,16],w2:[17,18],blk:null,fln:[19,19],out:[20,20],sel:[21,22],loop:[22,22]};
 var SHORT={tok:"Token'lar",emb:'Embedding',qkv:'LN + Q, K, V',slice:'12 kafaya dilim',qk:'Q·Kᵀ → skor',sm:'maske + softmax',av:'A·V',cat:'12 kafayı yapıştır',wo:'×W_O + residual',ln2:'LayerNorm',w1:'×W₁ + GELU',w2:'×W₂ + residual',blk:'12 blok art arda',fln:'Son LayerNorm',out:'Çıkış katmanı',sel:'Softmax + seçim',loop:'Üretim + KV önbelleği'};
 var CRUMB={tok:"GPT-2 › Girdi › Token'lar → numaralar",emb:'GPT-2 › Girdi › Embedding (wte + wpe)',qkv:'GPT-2 › Blok × 12 › Attention › LayerNorm + W_Q, W_K, W_V → Q, K, V',slice:'GPT-2 › Blok × 12 › Attention › 12 kafaya dilimleme',qk:'GPT-2 › Blok × 12 › Attention › Q·Kᵀ → skor',sm:'GPT-2 › Blok × 12 › Attention › maske + softmax',av:'GPT-2 › Blok × 12 › Attention › A·V',cat:'GPT-2 › Blok × 12 › Attention › 12 kafayı yapıştır',wo:'GPT-2 › Blok × 12 › Attention › ×W_O + residual',ln2:'GPT-2 › Blok × 12 › FFN alt-bloğu › LayerNorm',w1:'GPT-2 › Blok × 12 › FFN alt-bloğu › ×W₁ + GELU',w2:'GPT-2 › Blok × 12 › FFN alt-bloğu › ×W₂ + residual',blk:'GPT-2 › Blok × 12 › 12 blok art arda',fln:'GPT-2 › Çıkış › Son LayerNorm',out:'GPT-2 › Çıkış › Çıkış katmanı (wteᵀ)',sel:'GPT-2 › Çıkış › Softmax + seçim',loop:'GPT-2 › Üretim döngüsü + KV önbelleği'};
+var ZI=1.6,ZO=1.2,f3=null,f3ok=false,f3pend=null,f3arch='';
+function ensure3d(a){a=a||'gpt2';if(f3&&f3arch===a)return;f3arch=a;f3ok=false;
+  if(!f3){f3=document.createElement('iframe');f3.id='f3d';f3.title='3B mimari';f3.addEventListener('load',function(){f3ok=true;if(f3pend)f3.contentWindow.postMessage(f3pend,'*')});document.getElementById('arch3d').insertBefore(f3,document.getElementById('f3dBtn'))}
+  f3.src='mimari-3b.html?embed=1&arch='+a+'&_='+Date.now()}
+function post3d(m){f3pend=m;if(f3&&f3ok)f3.contentWindow.postMessage(m,'*')}
+function mkTour(cfg){var ORD=cfg.ORD,SHORT=cfg.SHORT,CRUMB=cfg.CRUMB,COLS=cfg.COLS,SCN=cfg.SCN,TS=[],TD=0,lastSeg=-1;
 function drawRoute(cur,doneN,cap){var cols=4,cw=222,ch=44,x0=30,y0=64;
-  txt('🎬 Tur yol haritası (sol/üstteki 3B mimaride aynı sırayla ilerler)',x0,36,14,'#e8ebf2');
+  txt(cfg.title,x0,36,14,'#e8ebf2');
   ORD.forEach(function(id,i){var cx=x0+(i%cols)*(cw+12),cy=y0+Math.floor(i/cols)*(ch+10),st=i===cur?'cur':i<doneN?'done':'';
     rect(cx,cy,cw,ch,st==='cur'?'rgba(255,200,46,.14)':st==='done'?'rgba(95,207,138,.10)':'#1a1f2b',st==='cur'?HL:st==='done'?'#5fcf8a':'#4a5468',st==='cur'?3:1.5);
     txt(i+1+'. '+SHORT[id]+(st==='done'?'  ✔':''),cx+12,cy+27,12,st==='cur'?HL:'#e8ebf2')});
   if(cap)txt(cap,500,430,12,'#9aa3b6','center')}
-var ZI=1.6,ZO=1.2,TS=[],TD=0;
+
 (function(){TS.push({k:'intro',d:8,s:0});TD=8;
   SCN.forEach(function(sc,i){var ds=Math.round(sc.dur*0.7);TS.push({k:'sc',sc:sc,id:ORD[i],ds:ds,d:ZI+ds+ZO,s:TD});TD+=ZI+ds+ZO});
   TS.push({k:'out',d:6,s:TD});TD+=6})();
 function segAt(t){var tau=clamp(t,0,1)*TD,i=TS.length-1;for(var k=0;k<TS.length;k++)if(tau<TS[k].s+TS[k].d){i=k;break}return {i:i,u:tau-TS[i].s,seg:TS[i]}}
-var f3=null,f3ok=false,f3pend=null,lastSeg=-1;
-function ensure3d(){if(f3)return;f3=document.createElement('iframe');f3.id='f3d';f3.title='GPT-2 3B mimari';
-  f3.addEventListener('load',function(){f3ok=true;if(f3pend)f3.contentWindow.postMessage(f3pend,'*')});
-  f3.src='mimari-3b.html?embed=1&_='+Date.now();document.getElementById('arch3d').insertBefore(f3,document.getElementById('f3dBtn'))}
-function post3d(m){f3pend=m;if(f3&&f3ok)f3.contentWindow.postMessage(m,'*')}
-var tour={dur:TD,tour:true,tag:'🎬 3B mimari → zoom → animasyon',
- hv:function(t){var s=segAt(t);return s.seg.k==='sc'&&s.u>=ZI&&s.u<ZI+s.seg.ds&&(s.seg.sc===s3||s.seg.sc===s4||s.seg.sc===s5)},
+var tour={dur:TD,tour:true,arch:cfg.arch,tag:cfg.tag,
+ hv:function(t){var s=segAt(t);return s.seg.k==='sc'&&s.u>=ZI&&s.u<ZI+s.seg.ds&&(cfg.hvSc.indexOf(s.seg.sc)>=0)},
  draw:function(t){var a=segAt(t),sg=a.seg,u=a.u;
   if(a.i!==lastSeg){lastSeg=a.i;post3d({type:'tour3d',cols:sg.k==='sc'?(COLS[sg.id]||null):null})}
-  if(sg.k==='intro'){drawRoute(-1,0,'Üstte/solda: GPT-2 small mimarisinin 3B görünümü. Tur, girdiden çıktıya sırayla her parçaya yakınlaşır.');return}
-  if(sg.k==='out'){drawRoute(-1,ORD.length,'Tur bitti: girdiden sonraki token\'a kadar her matris işlemini gördün.');return}
+  if(sg.k==='intro'){drawRoute(-1,0,cfg.cap1);return}
+  if(sg.k==='out'){drawRoute(-1,ORD.length,cfg.capOut);return}
   var idx=a.i-1,tl=clamp((u-ZI)/sg.ds,0,1);
   if(u<ZI){var f=ease(u/ZI);ctx.save();ctx.globalAlpha=1-f;drawRoute(idx,idx,'📍 '+CRUMB[sg.id]);ctx.restore();ctx.save();ctx.globalAlpha=f;sg.sc.draw(0);ctx.restore();return}
   if(u<ZI+sg.ds){sg.sc.draw(tl);return}
   var g=ease((u-ZI-sg.ds)/ZO);ctx.save();ctx.globalAlpha=1-g;sg.sc.draw(1);ctx.restore();ctx.save();ctx.globalAlpha=g;drawRoute(idx+1,idx+1,'Sıradaki parçaya geçiliyor …');ctx.restore()},
  live:function(t){var a=segAt(t),sg=a.seg,u=a.u;
-  if(sg.k==='intro')return 'Tur: 3B mimarinin tamamı → girdiden çıktıya her parçaya zoom → o parçadaki matris işlemi → sıradaki parça. Sıra: token → embedding → Q,K,V → skor → A·V → W_O → FFN → 12 blok → çıkış → seçim → üretim.';
+  if(sg.k==='intro')return cfg.liveIntro;
   if(sg.k==='out')return 'Tur tamamlandı. Üstteki sahne listesinden istediğin sahneyi tek başına da izleyebilirsin.';
   if(u<ZI)return '3B mimaride yakınlaşılıyor: '+CRUMB[sg.id]+' …';
   if(u>=ZI+sg.ds)return 'Sıradaki parçaya geçiliyor …';
   return sg.sc.live(clamp((u-ZI)/sg.ds,0,1))},
  say:function(t){var a=segAt(t),sg=a.seg;
-  if(sg.k==='intro')return '<b>🎬 3B mimari turu.</b> Başta <b>GPT-2 small\'un 3B mimarisi</b> bütün hâliyle görünür: token\'lar → embedding → <b>12 kez tekrarlanan blok</b> (attention + FFN) → son LayerNorm → çıkış katmanı. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya <b>zoom yapılır</b> (3B görünümde kamera o parçaya gider) ve aşağıdaki/yandaki canvas\'ta o parçadaki matris işlemi canlı oynar. İlk durak: <b>token\'lar</b>. Üstteki sürgü ve ⏮ ⏭ düğmeleriyle durak durak atlayabilirsin; 🖱️ düğmesiyle 3B\'yi elle de gezebilirsin.';
-  if(sg.k==='out')return '<b>Tur bitti.</b> Girdiden sonraki token\'a kadar her adım: token → embedding → (LayerNorm → Q,K,V → skor → maske+softmax → A·V → W_O → residual → LayerNorm → FFN → residual) × 12 → son LayerNorm → çıkış katmanı → softmax → seçim → döngü.';
+  if(sg.k==='intro')return cfg.sayIntro;
+  if(sg.k==='out')return cfg.sayOut;
   return '<b>📍 '+CRUMB[sg.id]+'</b><br>'+sg.sc.say+sozHtml(sg.sc)}};
-function tourSeek(dir){var a=segAt(curT());var idx=a.i;if(dir<0)idx=a.u>1.2?idx:Math.max(0,idx-1);else idx=Math.min(TS.length-1,idx+1);setTourT(TS[idx].s/TD)}
+ tour.TS=TS;tour.TD=TD;tour.reset=function(){lastSeg=-1};
+ tour.seek=function(dir){var a=segAt(curT());var idx=a.i;if(dir<0)idx=a.u>1.2?idx:Math.max(0,idx-1);else idx=Math.min(TS.length-1,idx+1);setTourT(TS[idx].s/TD)};
+ return tour}
+var tour=mkTour({arch:'gpt2',tag:'🎬 3B mimari → zoom → animasyon',title:'🎬 Tur yol haritası (sol/üstteki 3B mimaride aynı sırayla ilerler)',ORD:ORD,SHORT:SHORT,CRUMB:CRUMB,COLS:COLS,SCN:SCN,hvSc:[s3,s4,s5],
+ cap1:'Üstte/solda: GPT-2 small mimarisinin 3B görünümü. Tur, girdiden çıktıya sırayla her parçaya yakınlaşır.',capOut:'Tur bitti: girdiden sonraki token\'a kadar her matris işlemini gördün.',
+ liveIntro:'Tur: 3B mimarinin tamamı → girdiden çıktıya her parçaya zoom → o parçadaki matris işlemi → sıradaki parça. Sıra: token → embedding → Q,K,V → skor → A·V → W_O → FFN → 12 blok → çıkış → seçim → üretim.',
+ sayIntro:'<b>🎬 3B mimari turu.</b> Başta <b>GPT-2 small\'un 3B mimarisi</b> bütün hâliyle görünür: token\'lar → embedding → <b>12 kez tekrarlanan blok</b> (attention + FFN) → son LayerNorm → çıkış katmanı. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya <b>zoom yapılır</b> (3B görünümde kamera o parçaya gider) ve aşağıdaki/yandaki canvas\'ta o parçadaki matris işlemi canlı oynar. İlk durak: <b>token\'lar</b>. Üstteki sürgü ve ⏮ ⏭ düğmeleriyle durak durak atlayabilirsin; 🖱️ düğmesiyle 3B\'yi elle de gezebilirsin.',
+ sayOut:'<b>Tur bitti.</b> Girdiden sonraki token\'a kadar her adım: token → embedding → (LayerNorm → Q,K,V → skor → maske+softmax → A·V → W_O → residual → LayerNorm → FFN → residual) × 12 → son LayerNorm → çıkış katmanı → softmax → seçim → döngü.'});
 
 
 
@@ -863,12 +871,23 @@ var o3=(function(){return {dur:18,tag:'⑱ gpt-oss: toplam ↔ aktif ağırlık,
  elde:'Hız ve bellek: bilgi kapasitesi 117 milyar, kelime başı iş ≈5 milyar, önbellek ÷8.',
  neden:'Büyük modelin bilgisini küçük modelin maliyetiyle çalıştırmak ve uzun bağlamda belleği taşırmamak için.'}})();
 var OSS=[o1,o2,o3];
-var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
+function tourSeek(dir){SC[cur].seek(dir)}
+var ORDO=['tok','win','router','moe'],SCNO=[sTok,o2,o1,o3];
+var tourO=mkTour({arch:'gptoss',tag:'🎬 gpt-oss turu: 3B MoE → zoom → animasyon',title:'🎬 gpt-oss turu — yol haritası (3B gpt-oss mimarisinde aynı sırayla ilerler)',
+ ORD:ORDO,SCN:SCNO,hvSc:[],
+ SHORT:{tok:"Token'lar",win:'Kayan pencere + çukur',router:'Router → en iyi 4 uzman',moe:'Toplam ↔ aktif ağırlık, GQA'},
+ CRUMB:{tok:"gpt-oss › Girdi › Token'lar → numaralar",win:'gpt-oss › Blok × 36 › Attention › kayan pencere ↔ tam attention + dikkat çukuru',router:'gpt-oss › Blok × 36 › MoE alt-bloğu › router → en iyi 4 uzman → karışım',moe:'gpt-oss › Blok × 36 › 128 uzman (yalnız 4\'ü çalışır) + GQA önbelleği'},
+ COLS:{tok:[0,0],win:[8,10],router:[15,16],moe:[17,20]},
+ cap1:'Üstte/solda: gpt-oss-120b mimarisinin 3B görünümü (36 blok, 128 uzman). Tur, GPT-2\'den FARKLI parçalara yakınlaşır.',capOut:'Tur bitti: gpt-oss\'u GPT-2\'den ayıran parçaları gördün.',
+ liveIntro:'gpt-oss turu: 3B mimarinin tamamı → token → kayan pencere/dikkat çukuru → router + 4 uzman → toplam/aktif ağırlık + GQA. Ortak adımlar (Q,K,V, skor, softmax, W_O, residual) için GPT-2 turuna bak; sayılar şematik.',
+ sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok, RoPE) → <b>36 blok</b> (attention + <b>MoE</b>) → son RMSNorm → çıkış tablosu. Tur yalnız <b>GPT-2\'den farklı</b> parçalara zoom yapar: <b>kayan pencere + dikkat çukuru</b>, <b>router ve en iyi 4 uzman</b>, <b>toplam ↔ aktif ağırlık ve GQA</b>. Ortak adımlar (Q,K,V, skor, softmax, W_O, residual) GPT-2 turunda ayrıntılı. Sayılar şematik; d=2880, sözlük, toplam 117 milyar gibi değerler hafızadandır (†).',
+ sayOut:'<b>Tur bitti.</b> gpt-oss\'ta fark: attention katmanları dönüşümlü yerel/tam (+ çukur), FFN yerine 128 uzman ve top-4 router, GQA ile 8 kat küçük K/V önbelleği. Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, 128\'lik pencere, ≈5,1 milyar aktif.'});
+var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
 function curT(){return t}
 function setTourT(v){t=v;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'}
 var GP0=1+OFF;
 var tabsWrap=document.getElementById('tabs'),TB=[];
-[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length]].forEach(function(gr){
+[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🎬 Mimari turu — gpt-oss (3B MoE mimarisi + zoom)',SC.length-1,SC.length],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length-1]].forEach(function(gr){
   var d=document.createElement('div');d.className='tgrp';var l=document.createElement('div');l.className='tglab';l.textContent=gr[0];d.appendChild(l);
   var row=document.createElement('div');row.className='tabs';d.appendChild(row);
   for(var i=gr[1];i<gr[2];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag;b.onclick=function(){go(i)};row.appendChild(b);TB[i]=b})(i);
@@ -885,7 +904,8 @@ function draw(force){
   var sc=SC[cur],sy=(typeof sc.say==='function'?sc.say(t):sc.say+sozHtml(sc));if(sy!==lastSay){document.getElementById('say').innerHTML=sy;lastSay=sy}
   var hv=typeof sc.hv==='function'?sc.hv(t):!!sc.hv;document.getElementById('hLab').style.display=hv?'':'none';
   document.getElementById('tNav').style.display=sc.tour?'':'none';
-  if(!!sc.tour!==document.body.classList.contains('tourmode')){document.body.classList.toggle('tourmode',!!sc.tour);if(sc.tour){ensure3d();if(f3pend)post3d(f3pend)}}
+  if(!!sc.tour!==document.body.classList.contains('tourmode')){document.body.classList.toggle('tourmode',!!sc.tour);}
+  if(sc.tour&&f3arch!==sc.arch){ensure3d(sc.arch);sc.reset();if(f3pend)post3d(f3pend)}
 }
 document.getElementById('bPlay').onclick=function(){playing=!playing;if(playing&&t>=1)t=0;this.textContent=playing?'⏸ Duraklat':'▶ Oynat'};
 document.getElementById('bRe').onclick=function(){t=0;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'};
@@ -900,7 +920,7 @@ function tick(ts){
     if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
       if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
-window.__matAnim={OFF:OFF,GP0:GP0,TD:TD,TS:TS,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
-go(/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+go(/ossturu/i.test(location.hash)?SC.length-1:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 })();
 </script></body></html>
