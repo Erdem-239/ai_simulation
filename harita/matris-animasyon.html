@@ -11,6 +11,9 @@ h1{font-size:22px;margin:4px 0 2px}
 .sub{color:var(--mute);margin:0 0 12px;font-size:14px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .tgrp{margin:12px 0 4px}
+#tabsBox{margin:10px 0}
+#tabsBox>summary{cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink)}
+#tabsBox[open]>summary{border-color:var(--hl)}
 .tglab{font-size:12.5px;font-weight:700;color:var(--mute);letter-spacing:.03em;margin:0 0 -4px}
 .tgrp .tabs{margin:6px 0}
 button,select{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -30,10 +33,11 @@ canvas{display:block;width:100%;height:auto}
 a{color:var(--blue)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Matris çarpımını <b>iki aşamada</b> izle: önce <b>küçük sayılarla temel</b> (T1–T7: satır × sütun, A·B ≠ B·A, Q·Kᵀ ve K·Qᵀ, satır softmax, maske), sonra <b>GPT-2 boyutunda tam akış</b> (①–⑮: LN(x)·W_Q/W_K/W_V, dilimleme, Q·Kᵀ, maske + softmax, A·V, birleştirme, W_O + residual, LayerNorm, FFN, 12 blok, çıkış katmanı, üretim döngüsü). T1–T7 anlaşılınca ①–⑮ aynı işlemin büyük hâli.</p>
-<div class="tabs" id="tabs"></div>
+<p class="sub">Önce <b>GPT-2 mimarisinin tamamı</b>, sonra her kutuya <b>zoom</b> yapıp içindeki matris işleminin animasyonu (🎬 tur). İstersen sahneleri tek tek de izle: <b>T1–T7</b> küçük sayılarla temel, <b>⓪–⑮</b> GPT-2 boyutunda. Sahne listesi aşağıdaki kutuda.</p>
+<details id="tabsBox"><summary id="tabsSum">📑 Sahne listesi</summary><div class="tabs" id="tabs"></div></details>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
+  <span id="tNav" style="display:none"><button id="tPrev">⏮ Önceki durak</button> <button id="tNext">Sonraki durak ⏭</button></span>
   <label>Hız <select id="spd"><option value="0.4">0,4×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
   <label id="hLab">Kafa <select id="hsel"></select></label>
   <label><input type="checkbox" id="auto"> sonraki sahneye otomatik geç</label>
@@ -656,9 +660,105 @@ return [s1,s2,s2b,s3,s4,s5,s6];
 })();
 var OFF=TEMEL.length;
 
-var SC=TEMEL.concat([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15]),cur=0,t=0,playing=true,last=0,lastLive='';
+/* ============ ⓪ EMBEDDING + 🎬 MİMARİ TURU ============ */
+var sE={dur:14,tag:'⓪ Embedding: wte + wpe → x',
+ draw:function(t){
+  var ids=[22,10,20,28],gk=24,tw=210,xs=[120,430,745],y0=120,rh=40,tt=['wte: token tablosu (50.257×768)','wpe: konum tablosu (1024×768)','x = wte + wpe  (4×768)'];
+  txt(tt[0],xs[0],y0-30,12,'#6ea0ff');txt('→ 4 satır seçilir',xs[0],y0-14,11,'#9aa3b6');
+  txt(tt[1],xs[1],y0-30,12,'#5fcf8a');txt('→ ilk 4 konum satırı',xs[1],y0-14,11,'#9aa3b6');
+  txt(tt[2],xs[2],y0-30,12,'#ffc82e');txt('→ blok girişine gider',xs[2],y0-14,11,'#9aa3b6');
+  txt('+',xs[0]+tw+22,y0+80,30,'#e8ebf2','center');txt('=',xs[1]+tw+52,y0+80,30,'#e8ebf2','center');
+  var pA=clamp(t/0.3,0,1),pB=clamp((t-0.3)/0.25,0,1),pC=clamp((t-0.55)/0.4,0,1);
+  for(var r=0;r<T;r++){
+    txt(TOK[r]+' → #'+ids[r],xs[0]-8,y0+r*rh+24,12,'#9aa3b6','right');
+    txt('konum '+(r+1),xs[1]-8,y0+r*rh+24,12,'#9aa3b6','right');
+    var cw=tw/gk,aW=r<pA*T+0.001?1:0,aP=r<pB*T+0.001?1:0,aX=r<pC*T+0.001?1:0;
+    for(var g=0;g<gk;g++){
+      var a=1.2*hsh(31,ids[r],g*32),b=0.6*hsh(32,r,g*32);
+      rect(xs[0]+g*cw,y0+r*rh,cw-1,rh-2,pA>0&&r<Math.ceil(pA*T)?col(a,1.5):EMPTY);
+      rect(xs[1]+g*cw,y0+r*rh,cw-1,rh-2,pB>0&&r<Math.ceil(pB*T)?col(b,1.5):EMPTY);
+      rect(xs[2]+g*cw,y0+r*rh,cw-1,rh-2,pC>0&&r<Math.ceil(pC*T)?col(a+b,1.8):EMPTY)}}
+  for(var q=0;q<3;q++)frame(xs[q],y0,tw,T*rh-2);
+  txt('Metin → token numaraları: "7+5=" → 22, 10, 20, 28',40,340,12,'#9aa3b6');
+  txt('50.257 satırlı tablodan yalnız 4 satır okunur (satır seçme, hesap değil).',40,360,12,'#9aa3b6');
+  txt('x blok içine bu hâliyle girer; LayerNorm\'dan geçince ①\'in girdisi LN(x) olur.',40,380,12,'#9aa3b6')},
+ live:function(t){var r=Math.min(T-1,Math.floor(clamp((t-0.55)/0.4,0,0.999)*T)),ids=[22,10,20,28],j=Math.floor(clamp(t*7,0,1)*23)*32;
+  var a=1.2*hsh(31,ids[r],j),b=0.6*hsh(32,r,j);
+  return 'x['+(r+1)+']['+(j+1)+'] = wte[#'+ids[r]+']['+(j+1)+'] + wpe['+(r+1)+']['+(j+1)+'] = '+f2(a)+' + '+f2(b)+' = <b>'+f2(a+b)+'</b>'},
+ say:'Girdi metni önce <b>token numaralarına</b> çevrilir ("7+5=" → 22, 10, 20, 28). Her numara <b>wte</b> tablosundan bir satırı seçer (<b>kim</b> olduğunu söyler), her konum numarası <b>wpe</b> tablosundan bir satırı seçer (<b>nerede</b> olduğunu söyler); ikisi <b>toplanıp</b> x olur (4×768). Sayılar tohumlu rastgele, gerçek GPT-2 ağırlıkları değil; ama tablo boyutları, satır seçme ve toplama gerçek işlem.'};
+s3.hv=s4.hv=s5.hv=true;
+var SCN=[sE,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15];
+var ORD=['emb','qkv','slice','qk','sm','av','cat','wo','ln2','w1','w2','blk','fln','out','sel','loop'];
+var BX={tok:[30,18,200,46,"Token'lar","7 + 5 ="],emb:[270,18,260,46,'wte + wpe','→ x  (4×768)'],
+ blk:[20,86,960,262,'',''],
+ qkv:[39,120,124,58,'LN(x)·W','Q, K, V'],slice:[172,120,124,58,'12 kafaya','dilimle'],qk:[305,120,124,58,'Q·Kᵀ','→ skor'],sm:[438,120,124,58,'maske +','softmax'],
+ av:[571,120,124,58,'A·V','→ çıktı'],cat:[704,120,124,58,'12 kafayı','yapıştır'],wo:[837,120,124,58,'×W_O +','residual'],
+ ln2:[39,214,124,58,'LayerNorm','(FFN öncesi)'],w1:[172,214,124,58,'×W₁ + GELU','768→3072'],w2:[305,214,124,58,'×W₂ + res.','3072→768'],
+ fln:[39,372,210,50,'Son LayerNorm',''],out:[290,372,210,50,'Çıkış katmanı','wteᵀ → 50.257'],sel:[541,372,210,50,'Softmax','+ token seçimi'],loop:[792,372,169,50,'Üretim döngüsü','+ KV önbelleği']};
+var CRUMB={emb:'GPT-2 › Girdi › Embedding (wte + wpe)',qkv:'GPT-2 › Blok × 12 › Attention › LayerNorm + W_Q, W_K, W_V → Q, K, V',slice:'GPT-2 › Blok × 12 › Attention › 12 kafaya dilimleme',qk:'GPT-2 › Blok × 12 › Attention › Q·Kᵀ → skor',sm:'GPT-2 › Blok × 12 › Attention › maske + softmax',av:'GPT-2 › Blok × 12 › Attention › A·V',cat:'GPT-2 › Blok × 12 › Attention › 12 kafayı yapıştır',wo:'GPT-2 › Blok × 12 › Attention › ×W_O + residual',ln2:'GPT-2 › Blok × 12 › FFN alt-bloğu › LayerNorm',w1:'GPT-2 › Blok × 12 › FFN alt-bloğu › ×W₁ + GELU',w2:'GPT-2 › Blok × 12 › FFN alt-bloğu › ×W₂ + residual',blk:'GPT-2 › Blok × 12 › 12 blok art arda',fln:'GPT-2 › Çıkış › Son LayerNorm',out:'GPT-2 › Çıkış › Çıkış katmanı (wteᵀ)',sel:'GPT-2 › Çıkış › Softmax + seçim',loop:'GPT-2 › Üretim döngüsü + KV önbelleği'};
+function boxPaint(id,st){var b=BX[id];if(!b||id==='blk')return;var x=b[0],y=b[1],w=b[2],h=b[3];
+  var fill=st==='cur'?'rgba(255,200,46,.14)':st==='done'?'rgba(95,207,138,.10)':'#1a1f2b',sk=st==='cur'?HL:st==='done'?'#5fcf8a':'#4a5468';
+  rect(x,y,w,h,fill,sk,st==='cur'?3:1.5);
+  txt(b[4],x+w/2,y+h/2-(b[5]?3:-4),12,st==='cur'?HL:'#e8ebf2','center');
+  if(b[5])txt(b[5],x+w/2,y+h/2+13,11,'#9aa3b6','center');
+  if(st==='done')txt('✔',x+w-12,y+14,12,'#5fcf8a','right')}
+function arrow(x1,y1,x2,y2){ctx.strokeStyle='#6b7488';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  var a=Math.atan2(y2-y1,x2-x1);ctx.fillStyle='#6b7488';ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-7*Math.cos(a-0.4),y2-7*Math.sin(a-0.4));ctx.lineTo(x2-7*Math.cos(a+0.4),y2-7*Math.sin(a+0.4));ctx.closePath();ctx.fill()}
+function drawArch(o){o=o||{};var doneN=o.doneN||0,curId=o.cur||null,sw=o.sweep;
+  var bk=BX.blk,blkSt=curId==='blk'?'cur':(ORD.indexOf('blk')<doneN?'done':'');
+  rect(bk[0],bk[1],bk[2],bk[3],blkSt==='cur'?'rgba(255,200,46,.07)':blkSt==='done'?'rgba(95,207,138,.05)':'#151a24',blkSt==='cur'?HL:blkSt==='done'?'#5fcf8a':'#323a4a',blkSt==='cur'?3:1.5);
+  txt('Blok × 12 — aynı yapı, farklı ağırlıklar, 12 kez art arda',bk[0]+bk[2]-12,bk[1]+17,12,blkSt==='cur'?HL:'#e8ebf2','right');
+  txt('Attention alt-bloğu',39,112,11,'#6b7488');txt('FFN alt-bloğu',39,206,11,'#6b7488');
+  txt('x → LN → attention → + → LN → FFN → + → sonraki blok',450,244,12,'#6b7488');
+  ['tok','emb'].forEach(function(id){boxPaint(id,id==='emb'?(curId==='emb'?'cur':ORD.indexOf('emb')<doneN?'done':''):'')});
+  ORD.forEach(function(id,i){if(id==='emb'||id==='blk')return;
+    var st=curId===id?'cur':i<doneN?'done':'';
+    if(sw!=null&&Math.floor(sw*ORD.length)===i)st='cur';
+    boxPaint(id,st)});
+  if(sw!=null&&Math.floor(sw*ORD.length)===ORD.indexOf('emb'))boxPaint('emb','cur');
+  arrow(230,41,270,41);arrow(400,64,400,86);
+  ['qkv','slice','qk','sm','av','cat'].forEach(function(id,i,a){var b=BX[id];arrow(b[0]+b[2]+1,b[1]+29,b[0]+b[2]+8,b[1]+29)});
+  ['ln2','w1'].forEach(function(id){var b=BX[id];arrow(b[0]+b[2]+1,b[1]+29,b[0]+b[2]+8,b[1]+29)});
+  ctx.strokeStyle='#6b7488';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(899,178);ctx.lineTo(899,196);ctx.lineTo(101,196);ctx.lineTo(101,208);ctx.stroke();arrow(101,200,101,213);
+  arrow(101,348,101,371);['fln','out','sel'].forEach(function(id){var b=BX[id];arrow(b[0]+b[2]+1,b[1]+25,b[0]+b[2]+39,b[1]+25)});
+  if(o.cap)txt(o.cap,500,446,12,'#9aa3b6','center')}
+var ZI=2.2,ZO=2.0,TS=[],TD=0;
+(function(){TS.push({k:'intro',d:7,s:0});TD=7;
+  SCN.forEach(function(sc,i){var ds=Math.round(sc.dur*0.7);TS.push({k:'sc',sc:sc,id:ORD[i],ds:ds,d:ZI+ds+ZO,s:TD});TD+=ZI+ds+ZO});
+  TS.push({k:'out',d:6,s:TD});TD+=6})();
+function segAt(t){var tau=clamp(t,0,1)*TD,i=TS.length-1;for(var k=0;k<TS.length;k++)if(tau<TS[k].s+TS[k].d){i=k;break}return {i:i,u:tau-TS[i].s,seg:TS[i]}}
+function zoomXform(id,z,S){var b=BX[id],bcx=b[0]+b[2]/2,bcy=b[1]+b[3]/2,cx=CW/2+(bcx-CW/2)*z,cy=CH/2+(bcy-CH/2)*z,s=Math.pow(S,z);
+  ctx.translate(CW/2,CH/2);ctx.scale(s,s);ctx.translate(-cx,-cy)}
+function zoomS(id){var b=BX[id];return id==='blk'?1.18:Math.max(1.4,Math.min(CW/(b[2]*1.7),CH/(b[3]*1.7)))}
+var tour={dur:TD,tour:true,tag:'🎬 GPT-2 mimarisi → zoom → animasyon',
+ hv:function(t){var s=segAt(t);return s.seg.k==='sc'&&s.u>=ZI&&s.u<ZI+s.seg.ds&&(s.seg.sc===s3||s.seg.sc===s4||s.seg.sc===s5)},
+ draw:function(t){var a=segAt(t),sg=a.seg,u=a.u,doneN=a.i-1;
+  if(sg.k==='intro'){drawArch({sweep:clamp(u/sg.d,0,0.999),cap:'GPT-2 small · "7+5=" · 4 token · 768 boyut · 12 kafa · 12 blok'});return}
+  if(sg.k==='out'){drawArch({doneN:ORD.length,cap:'Tur bitti: girdiden sonraki token\'a kadar her matris işlemini gördün.'});return}
+  var tl=clamp((u-ZI)/sg.ds,0,1);
+  if(u>=ZI&&u<ZI+sg.ds){sg.sc.draw(tl);return}
+  var z=u<ZI?ease(u/ZI):1-ease((u-ZI-sg.ds)/ZO),S=zoomS(sg.id),fa=clamp((z-0.82)/0.18,0,1),aa=1-clamp((z-0.62)/0.3,0,1);
+  ctx.save();ctx.globalAlpha=aa;zoomXform(sg.id,z,S);drawArch({doneN:doneN,cur:sg.id});ctx.restore();
+  if(fa>0){ctx.save();ctx.globalAlpha=fa;sg.sc.draw(u<ZI?0:1);ctx.restore()}},
+ live:function(t){var a=segAt(t),sg=a.seg,u=a.u;
+  if(sg.k==='intro')return 'Tur: mimarinin tamamı → her kutuya zoom → o kutudaki matris işlemi → geri çık → sıradaki kutu. Sıra: embedding → Q,K,V → skor → A·V → W_O → FFN → 12 blok → çıkış → seçim → üretim.';
+  if(sg.k==='out')return 'Tur tamamlandı. Aşağıdaki sekmelerden istediğin sahneyi tek başına da izleyebilirsin.';
+  if(u<ZI)return 'Yakınlaşılıyor: '+CRUMB[sg.id]+' …';
+  if(u>=ZI+sg.ds)return 'Mimariye geri dönülüyor …';
+  return sg.sc.live(clamp((u-ZI)/sg.ds,0,1))},
+ say:function(t){var a=segAt(t),sg=a.seg;
+  if(sg.k==='intro')return '<b>🎬 Mimari turu.</b> Önce <b>GPT-2 small\'un bütün mimarisi</b>: token\'lar → embedding → <b>12 kez tekrarlanan blok</b> (attention + FFN) → son LayerNorm → çıkış katmanı → softmax ve seçim → üretim döngüsü. Sonra sırayla her kutuya <b>yakınlaşıp</b> içindeki matris işlemini göreceğiz, sonra mimariye geri çıkacağız (✔ biten kutular yeşil olur). Üstteki sürgü ve düğmelerle durak durak atlayabilirsin.';
+  if(sg.k==='out')return '<b>Tur bitti.</b> Girdiden sonraki token\'a kadar her adım: embedding → (LayerNorm → Q,K,V → skor → maske+softmax → A·V → W_O → residual → LayerNorm → FFN → residual) × 12 → son LayerNorm → çıkış katmanı → softmax → seçim → döngü.';
+  return '<b>📍 '+CRUMB[sg.id]+'</b><br>'+sg.sc.say}};
+function tourSeek(dir){var a=segAt(curT());var idx=a.i;if(dir<0)idx=a.u>1.2?idx:Math.max(0,idx-1);else idx=Math.min(TS.length-1,idx+1);setTourT(TS[idx].s/TD)}
+
+
+var SC=[tour].concat(TEMEL).concat(SCN),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
+function curT(){return t}
+function setTourT(v){t=v;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'}
+var GP0=1+OFF;
 var tabsWrap=document.getElementById('tabs'),TB=[];
-[['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',0,OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',OFF,SC.length]].forEach(function(gr){
+[['🎬 Mimari turu — video (GPT-2 mimarisi + zoom)',0,1],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,SC.length]].forEach(function(gr){
   var d=document.createElement('div');d.className='tgrp';var l=document.createElement('div');l.className='tglab';l.textContent=gr[0];d.appendChild(l);
   var row=document.createElement('div');row.className='tabs';d.appendChild(row);
   for(var i=gr[1];i<gr[2];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag;b.onclick=function(){go(i)};row.appendChild(b);TB[i]=b})(i);
@@ -666,16 +766,19 @@ var tabsWrap=document.getElementById('tabs'),TB=[];
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
 hs.onchange=function(){head_=+hs.value;draw(true)};
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
-  TB.forEach(function(b,k){b.className=k===cur?'on':''});
-  document.getElementById('say').innerHTML=SC[cur].say;
-  document.getElementById('hLab').style.display=(cur>=OFF+2&&cur<=OFF+4)?'':'none';draw(true)}
+  TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi (22 sahne) — şu an: '+SC[cur].tag;
+  lastSay=null;draw(true)}
 function draw(force){
   ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
   document.getElementById('scrub').value=Math.round(t*1000);
   var l=SC[cur].live(t);if(l!==lastLive){document.getElementById('live').innerHTML=l;lastLive=l}
+  var sc=SC[cur],sy=typeof sc.say==='function'?sc.say(t):sc.say;if(sy!==lastSay){document.getElementById('say').innerHTML=sy;lastSay=sy}
+  var hv=typeof sc.hv==='function'?sc.hv(t):!!sc.hv;document.getElementById('hLab').style.display=hv?'':'none';
+  document.getElementById('tNav').style.display=sc.tour?'':'none';
 }
 document.getElementById('bPlay').onclick=function(){playing=!playing;if(playing&&t>=1)t=0;this.textContent=playing?'⏸ Duraklat':'▶ Oynat'};
 document.getElementById('bRe').onclick=function(){t=0;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'};
+document.getElementById('tPrev').onclick=function(){tourSeek(-1)};document.getElementById('tNext').onclick=function(){tourSeek(1)};
 document.getElementById('bPrev').onclick=function(){go(cur-1)};
 document.getElementById('bNext').onclick=function(){go(cur+1)};
 document.getElementById('scrub').oninput=function(){t=this.value/1000;playing=false;document.getElementById('bPlay').textContent='▶ Oynat'};
@@ -685,7 +788,7 @@ function tick(ts){
     if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
       if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
-window.__matAnim={OFF:OFF,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
-go(/gpt2/i.test(location.hash)?OFF:0);requestAnimationFrame(tick);
+window.__matAnim={OFF:OFF,GP0:GP0,TD:TD,TS:TS,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+go(/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 })();
 </script></body></html>
