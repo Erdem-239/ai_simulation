@@ -104,7 +104,28 @@ var s2={tag:'② A·B ile B·A aynı mı?',dur:16,
   var L=top?AM:BM,R=top?BM:AM,res=top?AB:BA;
   return (top?'A·B':'B·A')+' hücre ('+(i+1)+','+(j+1)+') = <b>'+L[i][0]+'·'+R[0][j]+' + '+L[i][1]+'·'+R[1][j]+' = '+res[i][j]+'</b>'},
  say:'Matris çarpımı <b>değişmeli değil</b>: A·B ile B·A genelde farklı çıkar. Sayı çarpmaya (3·5 = 5·3) alıştığımız için bu şaşırtıcı. Sebep basit: soldaki matrisin satırları, sağdakinin sütunlarıyla eşleşiyor; sıra değişince <b>kimin satır, kimin sütun olduğu</b> değişiyor.'};
-var s3={tag:'③ Q·Kᵀ ile K·Qᵀ',dur:18,
+var KQ=mm(KT,Q);
+var s2b={tag:'③ Boyutlar: (3×2)·(2×3) ≠ (2×3)·(3×2)',dur:20,
+ draw:function(t){var n=clamp(Math.floor(t*13),0,12),f=t*13-n,top=n<9,c=top?n:n-9,i=top?Math.floor(c/3):Math.floor(c/2),j=top?c%3:c%2;
+  mat(40,60,Q,48,34,{title:'Q (3×2)',cl:['d₁','d₂'],rl:TOK,hr:top?i:-1,bg:tealBg(3)});tx('×',152,115,'#9aa3b6','center',22);
+  mat(200,60,KT,48,34,{title:'Kᵀ (2×3)',cl:TOK,rl:['d₁','d₂'],hc:top?j:-1,bg:tealBg(3)});tx('=',366,115,'#9aa3b6','center',22);
+  mat(400,60,S,48,34,{title:'3×3 → token × token',tc:'#5fcf8a',cl:TOK,rl:TOK,hcell:top?[i,j]:null,show:function(a,b){var k=a*3+b;return top?(k<c||(k===c&&f>0.5)):true},bg:tealBg(6)});
+  mat(40,250,KT,48,34,{title:'Kᵀ (2×3)',cl:TOK,rl:['d₁','d₂'],hr:!top?i:-1,bg:tealBg(3)});tx('×',204,285,'#9aa3b6','center',22);
+  mat(240,250,Q,48,34,{title:'Q (3×2)',cl:['d₁','d₂'],rl:TOK,hc:!top?j:-1,bg:tealBg(3)});tx('=',384,285,'#9aa3b6','center',22);
+  mat(435,250,KQ,48,34,{title:'2×2 → özellik × özellik',tc:'#f27a88',cl:['d₁','d₂'],rl:['d₁','d₂'],hcell:!top?[i,j]:null,show:function(a,b){var k=a*2+b;return top?false:(k<c||(k===c&&f>0.5))},bg:tealBg(12)});
+  tx('Kural: (a×b)·(b×c) → a×c',640,90,'#ffc82e','left',15,true);
+  tx('içteki b eşleşmeli, sonuç dıştaki iki sayıdan.',640,114,'#9aa3b6','left',13);
+  tx('(3×2)·(2×3) → 3×3',640,170,'#5fcf8a','left',15,true);
+  tx('9 hücre: her token çifti için bir skor.',640,192,'#9aa3b6','left',13);
+  tx('(2×3)·(3×2) → 2×2',640,260,'#f27a88','left',15,true);
+  tx('4 hücre: iki özellik arası, tüm token\'lar',640,282,'#9aa3b6','left',13);
+  tx('üzerinden toplanmış. Token ilişkisi değil.',640,302,'#9aa3b6','left',13)},
+ live:function(t){var n=clamp(Math.floor(t*13),0,12),top=n<9,c=top?n:n-9;
+  if(top){var i=Math.floor(c/3),j=c%3;return 'Q·Kᵀ hücre ('+TOK[i]+','+TOK[j]+') = <b>'+Q[i][0]+'·'+KT[0][j]+' + '+Q[i][1]+'·'+KT[1][j]+' = '+S[i][j]+'</b>'}
+  var a=Math.floor(c/2),b=c%2,parts=[0,1,2].map(function(k){return KT[a][k]+'·'+Q[k][b]});
+  return 'Kᵀ·Q hücre (d'+(a+1)+',d'+(b+1)+') = <b>'+parts.join(' + ')+' = '+KQ[a][b]+'</b> (3 token toplanır)'},
+ say:'Aynı iki matrisi <b>ters sırayla</b> çarpınca yalnızca değerler değil, <b>tablonun boyutu ve anlamı</b> da değişir. (3×2)·(2×3) = 3×3: her token çifti için bir skor, bizim dikkat tablomuz. (2×3)·(3×2) = 2×2: iki <b>özellik</b> (d₁, d₂) arasında, tüm token\'lar üzerinden toplanmış bir tablo, token ilişkisi içermez. Q·Kᵀ ile K·Qᵀ aynı boyutta ve devrik ilişkideyken, Q·Kᵀ ile Kᵀ·Q tamamen farklı şeylerdir.'};
+var s3={tag:'④ Q·Kᵀ ile K·Qᵀ',dur:18,
  draw:function(t){var n=clamp(Math.floor(t*9),0,8),i=Math.floor(n/3),j=n%3;
   tx('satır = SORAN (Q), sütun = BAKILAN (K)',80,24,'#9aa3b6','left',13);
   tx('satır = BAKILAN (K), sütun = SORAN (Q)',560,24,'#9aa3b6','left',13);
@@ -119,7 +140,7 @@ var s3={tag:'③ Q·Kᵀ ile K·Qᵀ',dur:18,
  say:'İki çarpım <b>aynı sayıları</b> üretir, yalnızca yerleri değişir: Q·Kᵀ tablosunda (i, j) hücresi, K·Qᵀ tablosunda (j, i) hücresine gider. Yani K·Qᵀ = (Q·Kᵀ)ᵀ. Fark sayılarda değil, <b>satırın ne anlama geldiğinde</b>: Q·Kᵀ\'de satır "soran token", K·Qᵀ\'de satır "bakılan token".'};
 function rowHL(M,n){return clamp(Math.floor(t4(n)),0,2)}
 function t4(x){return x}
-var s4={tag:'④ Satır softmax: fark burada ortaya çıkar',dur:18,
+var s4={tag:'⑤ Satır softmax: fark burada ortaya çıkar',dur:18,
  draw:function(t){var nr=clamp(Math.floor(t*3.4),0,3),h=nr-1;
   mat(40,70,S,58,40,{title:'Q·Kᵀ',tc:'#5fcf8a',cl:TOK,rl:TOK,hr:h,bg:tealBg(6)});tx('→ satır softmax →',295,102,'#9aa3b6','center',13);
   mat(380,70,A,58,40,{title:'softmax(Q·Kᵀ)',tc:'#5fcf8a',cl:TOK,rl:TOK,hr:h,show:function(a){return a<nr},bg:blueBg,dec:true});
@@ -133,7 +154,7 @@ var s4={tag:'④ Satır softmax: fark burada ortaya çıkar',dur:18,
   function row(M){return M[h].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')}
   return TOK[h]+' satırı: softmax(Q·Kᵀ) = <b>'+row(A)+'</b> &nbsp;|&nbsp; softmax(K·Qᵀ) = <b>'+row(AT)+'</b>'},
  say:'Tablolar yalnızca devrik olsaydı sorun yoktu; ama softmax <b>satır satır</b> uygulanır. Devrik tabloda aynı softmax, "bu token kime bakıyor" yerine "bu token\'a kim bakıyor"u normalize eder. Sonuç <b>softmax(K·Qᵀ) ≠ softmax(Q·Kᵀ)ᵀ</b>: Q ile K\'nın yerini değiştirmek dikkat dağılımını bozar.'};
-var s5={tag:'⑤ Gerçek modelde: maske + softmax',dur:18,
+var s5={tag:'⑥ Gerçek modelde: maske + softmax',dur:18,
  draw:function(t){var show2=t>0.25,show3=t>0.6;
   mat(40,110,S,58,46,{title:'Q·Kᵀ',tc:'#5fcf8a',cl:TOK,rl:TOK,bg:tealBg(6)});
   tx('maske',275,130,'#ffc82e','center',13,true);tx('(j > i → −∞)',275,148,'#9aa3b6','center',12);
@@ -146,7 +167,7 @@ var s5={tag:'⑤ Gerçek modelde: maske + softmax',dur:18,
   tx('"7" satırı: yalnız kendini görür (öncesi yok) → [1,00].',60,382,'#9aa3b6','left',13)},
  live:function(t){return '"=" satırı: <b>'+Am[2].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')+'</b> (7 / 5 / =) &nbsp;·&nbsp; "7" satırı: <b>1,00</b>'},
  say:'Gerçek modelde softmax\'tan <b>önce</b> maske gelir: j > i hücreleri (gelecek) −∞ yapılır, softmax onları 0 yapar. Maskeyi uygulayabilmek için tablonun satırı "soran", sütunu "bakılan" olmak <b>zorunda</b> — yani Q·Kᵀ dizilimi mantığın parçası.'};
-var s6={tag:'⑥ Q ile K yer değiştirirse (eğitimden sonra)',dur:18,
+var s6={tag:'⑦ Q ile K yer değiştirirse (eğitimden sonra)',dur:18,
  draw:function(t){var gr=clamp((t-0.2)/0.6,0,1);
   mat(60,70,Am,52,38,{title:'Gerçek: Q·Kᵀ → maske → softmax',tc:'#5fcf8a',cl:TOK,rl:TOK,bg:blueBg,dec:true});
   mat(520,70,As,52,38,{title:'Q↔K değişti: K·Qᵀ → maske → softmax',tc:'#f27a88',cl:TOK,rl:TOK,bg:blueBg,dec:true});
@@ -159,7 +180,7 @@ var s6={tag:'⑥ Q ile K yer değiştirirse (eğitimden sonra)',dur:18,
   tx('■ gerçek',70,400,'#3fc7c1','left',13,true);tx('■ Q↔K değişmiş',150,400,'#f27a88','left',13,true)},
  live:function(t){return '"=" satırı: gerçek <b>'+Am[2].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')+'</b> &nbsp;→&nbsp; değişmiş <b>'+As[2].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')+'</b>'},
  say:'Eğitimden sonra W_Q ile W_K\'yı yer değiştirirsen skor tablosu devrik çıkar (K·Qᵀ). Maske ve satır softmax\'ı ise eskisi gibi uygulanır, ama artık <b>yanlış anlamdaki</b> satırlara. Dağılımlar değişir, model bozulur. Bu yüzden Q ve K\'nın rolü ağırlıklardan değil, çarpımdaki <b>yerinden</b> (sol/sağ) gelir. Eğitimden <b>önce</b> yer değiştirsen sorun olmazdı: ağırlıklar henüz rastgele ve anlamsız.'};
-var SC=[s1,s2,s3,s4,s5,s6];
+var SC=[s1,s2,s2b,s3,s4,s5,s6];
 var cur=0,t=0,playing=true,last=0,spd=1;
 var tabs=document.getElementById('tabs');
 SC.forEach(function(s,i){var b=document.createElement('button');b.textContent=s.tag;b.onclick=function(){go(i)};tabs.appendChild(b)});
