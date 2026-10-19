@@ -807,12 +807,68 @@ var tour={dur:TD,tour:true,tag:'🎬 3B mimari → zoom → animasyon',
 function tourSeek(dir){var a=segAt(curT());var idx=a.i;if(dir<0)idx=a.u>1.2?idx:Math.max(0,idx-1);else idx=Math.min(TS.length-1,idx+1);setTourT(TS[idx].s/TD)}
 
 
-var SC=[tour].concat(TEMEL).concat(SCN),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
+
+/* ---------- gpt-oss: MoE yönlendirme, kayan pencere, aktif/toplam ağırlık ---------- */
+var o1=(function(){var NE=128,TOP=4,sc=[],i;for(i=0;i<NE;i++)sc.push(2.2*hsh(71,i,5));
+  var ord=sc.map(function(v,i){return i}).sort(function(a,b){return sc[b]-sc[a]}),top=ord.slice(0,TOP),mx=sc[top[0]],ex=top.map(function(k){return Math.exp(sc[k]-mx)}),se=ex.reduce(function(a,b){return a+b},0),pr=ex.map(function(v){return v/se});
+  return {dur:22,tag:'⑯ gpt-oss: router → en iyi 4 uzman',
+ draw:function(t){var ph1=clamp(t/0.3,0,1),ph2=clamp((t-0.3)/0.2,0,1),ph3=clamp((t-0.5)/0.25,0,1),ph4=clamp((t-0.75)/0.25,0,1),gx=30,gy=70,cw=30,ch=22;
+  txt('"=" token\'ının kartı (2880 sayı †) × W_r  →  128 uzman puanı',gx,40,13,'#e8ebf2');
+  for(var k=0;k<NE;k++){var r=Math.floor(k/16),c=k%16,x=gx+c*cw,y=gy+r*ch,isT=top.indexOf(k)>=0,v=sc[k]*ph1;
+    var f=isT&&ph2>0?'rgba(255,200,46,'+(0.35+0.6*ph2)+')':col(v,2.2,ph2>0?1-0.65*ph2:1);rect(x,y,cw-2,ch-2,f);
+    if(isT&&ph2>0)frame(x,y,cw-2,ch-2,HL)}
+  txt('128 uzman (16×8); renk = puan (şematik, gerçek router değil)',gx,gy+8*ch+16,11,'#9aa3b6');
+  var bx=560,by=70;txt('Seçilen 4 uzman → softmax → karışım ağırlığı',bx,40,13,'#e8ebf2');
+  top.forEach(function(k,j){var y=by+j*54;txt('uzman #'+k,bx,y+16,12,'#ffc82e');txt('ham puan '+f2(sc[k]),bx+90,y+16,11,'#9aa3b6');
+    rect(bx,y+24,300,14,'#1a1f2a');rect(bx,y+24,300*pr[j]*ph3,14,'rgba(255,200,46,.8)');txt((pr[j]*100*ph3).toFixed(1).replace('.',',')+' %',bx+310,y+36,12,'#e8ebf2')});
+  var oy=by+4*54+16;txt('y = Σ pₖ · uzmanₖ(x)',bx,oy,13,'#e8ebf2');
+  for(var g=0;g<16;g++){var v=0;top.forEach(function(k,j){v+=pr[j]*1.2*hsh(72,k,g)});var a=ph4>(g/16)?col(v,1.2):EMPTY;rect(bx+g*18,oy+8,16,16,a)}
+  txt('124 uzman bu token için hiç çalışmadı: hesap yükü ≈ 4/128 (≈%3).',gx,gy+8*ch+40,12,'#5fcf8a')},
+ live:function(t){var j=Math.min(3,Math.floor(clamp((t-0.5)/0.25,0,0.999)*4));return 'p<sub>'+(j+1)+'</sub> = e<sup>'+f2(sc[top[j]]-mx)+'</sup> ÷ Σ<sub>4 uzman</sub> e<sup>puan</sup> = <b>'+(pr[j]*100).toFixed(1).replace('.',',')+' %</b> (uzman #'+top[j]+')'},
+ say:'<b>MoE yönlendirme:</b> normal FFN yerine <b>128 uzman</b> var (her biri kendi kapılı küçük FFN\'i). <b>Router</b> (W_r: 2880×128 †) her token için 128 puan çıkarır; <b>en yüksek 4</b> seçilir, yalnız o 4\'ünün puanı softmax\'tan geçip karışım yüzdesi olur; seçilen uzmanlar çalışır, çıktıları <b>yüzdelerle toplanır</b>. Puanlar ve uzman çıktıları şematik (gerçek model ağırlığı yok); sayılar: 128 uzman, token başı 4 (doğrulandı), boyut † hafızadan.',
+ soz:'«Bu kelimeyi hangi 4 uzmana gönderelim?» Router puan verir, en iyi 4 çalışır, sonuçlar güvenlerine göre karıştırılır. Aynı katmanda farklı kelimeler farklı uzmanlara gider.',
+ elde:'Her token için tek bir T×2880 vektör (karışım) — tıpkı normal FFN çıkışı gibi, ama toplam bilginin (128 uzman) yalnız %3\'ü hesaplanarak.',
+ neden:'Modelin bilgi kapasitesini (toplam ağırlık) hesap maliyetinden ayırmak için: 128 uzman bilgiyi saklar, ama her token yalnız 4\'ünü çalıştırır. Dev model, küçük model hızında çalışır.'}})();
+var o2=(function(){var N=10,W=4;
+  return {dur:20,tag:'⑰ gpt-oss: kayan pencere ↔ tam attention + dikkat çukuru',
+ draw:function(t){var row=Math.min(N-1,Math.floor(clamp(t/0.8,0,0.999)*N)),cs=26;
+  function grid(x0,title,win){txt(title,x0,52,13,'#e8ebf2');var y0=70;
+   for(var r=0;r<N;r++)for(var c=0;c<N;c++){var ok=c<=r&&(!win||c>r-W),x=x0+30+c*cs,y=y0+r*cs,hl=r===row;
+     rect(x,y,cs-2,cs-2,ok?(hl?'rgba(255,200,46,.85)':'rgba(110,160,255,.65)'):'#161a23')}
+   for(var r2=0;r2<N;r2++){var hl2=r2===row;rect(x0,y0+r2*cs,24,cs-2,hl2?'rgba(179,140,255,.8)':'#161a23');txt('çukur',x0+2,y0+r2*cs+16,8,'#e8ebf2')}
+   frame(x0+30,y0,N*cs-2,N*cs-2)}
+  grid(30,'Tam attention katmanı',false);grid(540,'Kayan pencere katmanı (şemada W=4; gerçekte 128)',true);
+  txt('satır = soran token, sütun = bakılan token; sol mor sütun = dikkat çukuru (sink)',30,350,11,'#9aa3b6');
+  var sn=row+1,wn=Math.min(sn,W);txt('Seçili token '+(row+1)+': tam katmanda '+sn+' token\'a, pencerede '+wn+' token\'a bakabilir (+ çukur).',30,380,12,'#ffc82e');
+  txt('gpt-oss\'ta katmanlar dönüşümlü: yerel, tam, yerel, tam … (36 katman); kısa istemde (T≤128) ikisi aynı görünür.',30,404,12,'#5fcf8a');
+  txt('Çukur: kafa hiçbir token\'a bakmak istemiyorsa dikkati oraya boşaltır; softmax toplamı %100 kalır.',30,426,12,'#9aa3b6')},
+ live:function(t){var row=Math.min(N-1,Math.floor(clamp(t/0.8,0,0.999)*N)),sn=row+1,wn=Math.min(sn,W);return 'token '+(row+1)+': tam = <b>'+sn+'</b> token, pencere (W='+W+') = <b>'+wn+'</b> token; uzun metinde pencere sabit 128 kalır, tam katman T büyür'},
+ say:'<b>Kayan pencere:</b> yarım katmanda her token yalnız <b>son 128 token</b>\'a bakar (üst üçgen maske + alt bant kesilir); öteki yarı katman <b>tam</b> geçmişe bakar. Böylece uzun bağlamda hesap ve KV önbelleği çoğu katmanda sabit kalır, bilgi yine de tam katmanlarla uzağa taşınır. <b>Dikkat çukuru</b>: her kafa öğrenilen ek bir «hiçbir şey» sütunu taşır. Şemadaki W=4 ve T=10 yalnız çizim kolaylığı; 128 değeri doğrulanmış.',
+ soz:'Yakındakilere ayrıntılı, uzaktakilere ara sıra bakan okuyucu: yerel katman yakın çevreye bakar, tam katman bütün sayfaya. Çukur ise «bu kafanın şu an işi yok» deme hakkı.',
+ elde:'Her token için aynı T×64 karışım; ama pencereli katmanlarda en fazla 128 satırlık skor hesabı, uzun metinde bile.',
+ neden:'Dikkat maliyeti T² büyür; uzun metinde hepsini her katmanda hesaplamak pahalı. Yerel pencere maliyeti T×128\'e indirir, araya serpiştirilen tam katmanlar uzak bilgiyi kaçırmaz.'}})();
+var o3=(function(){return {dur:18,tag:'⑱ gpt-oss: toplam ↔ aktif ağırlık, GQA',
+ draw:function(t){var a=clamp(t/0.4,0,1),b=clamp((t-0.4)/0.3,0,1),c=clamp((t-0.7)/0.3,0,1);
+  txt('MoE: bellekte 128 uzman × 36 katman = 4.608 uzman FFN\'i',30,40,13,'#e8ebf2');
+  for(var L=0;L<36;L++)for(var e=0;e<128;e+=4){var x=30+(e/4)*16,y=56+L*5,act=(hsh(73,L,e)>0.94);rect(x,y,14,4,act&&b>0?'rgba(255,200,46,'+(0.4+0.5*b)+')':'rgba(110,160,255,'+0.5*a+')')}
+  txt('her çizgi bir katman (36), her kutu 4 uzman; sarı = bu token için çalışan (şematik)',30,246,11,'#9aa3b6');
+  txt('Bir token için çalışan: 36 katman × 4 uzman = 144 uzman FFN\'i  (≈ 4608\'in %3,1\'i)',30,272,13,'#ffc82e');
+  txt('Toplam ≈117 milyar †, token başına aktif ≈5,1 milyar (doğrulandı).',30,296,12,'#5fcf8a');
+  var y0=326;txt('GQA: K/V önbelleği, token ve katman başına',30,y0,13,'#e8ebf2');
+  var full=2*64*64,gq=2*8*64;rect(30,y0+12,600*c,16,'rgba(255,120,120,.75)');txt('64 K/V kafası olsaydı: 2×64×64 = '+full+' sayı',640,y0+25,11,'#e8ebf2');
+  rect(30,y0+36,600*c*(gq/full),16,'rgba(95,207,138,.85)');txt('gpt-oss (8 K/V kafası): 2×8×64 = '+gq+' sayı  (÷8)',640,y0+49,11,'#e8ebf2')},
+ live:function(t){return 'çalışan uzman: 36×4 = <b>144</b> / 4608 = <b>%3,1</b>; K/V önbelleği: 2×8×64 = <b>1024</b> sayı/token/katman (64 kafalı olsa 8192)'},
+ say:'<b>Toplam ve aktif ağırlık:</b> uzmanların hepsi bellekte durur (≈117 milyar †) ama her token her katmanda yalnız 4 uzmanı çalıştırır (≈5,1 milyar aktif, doğrulandı). <b>GQA:</b> 64 sorgu kafası yalnız 8 K/V kafasını paylaşır; üretirken saklanan K/V önbelleği 8 kat küçülür. Sayılar kafa/uzman/katman/kafa-boyutu değerlerinden hesaplandı; boyutların kalanı † hafızadan.',
+ soz:'Kocaman kütüphane (128 uzman) var ama her soru için yalnız dört kitabı açıyorsun; ve not defterin (K/V) sekizde birine sığıyor.',
+ elde:'Hız ve bellek: bilgi kapasitesi 117 milyar, kelime başı iş ≈5 milyar, önbellek ÷8.',
+ neden:'Büyük modelin bilgisini küçük modelin maliyetiyle çalıştırmak ve uzun bağlamda belleği taşırmamak için.'}})();
+var OSS=[o1,o2,o3];
+var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
 function curT(){return t}
 function setTourT(v){t=v;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'}
 var GP0=1+OFF;
 var tabsWrap=document.getElementById('tabs'),TB=[];
-[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,SC.length]].forEach(function(gr){
+[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length]].forEach(function(gr){
   var d=document.createElement('div');d.className='tgrp';var l=document.createElement('div');l.className='tglab';l.textContent=gr[0];d.appendChild(l);
   var row=document.createElement('div');row.className='tabs';d.appendChild(row);
   for(var i=gr[1];i<gr[2];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag;b.onclick=function(){go(i)};row.appendChild(b);TB[i]=b})(i);
@@ -820,7 +876,7 @@ var tabsWrap=document.getElementById('tabs'),TB=[];
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
 hs.onchange=function(){head_=+hs.value;draw(true)};
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
-  TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi (25 sahne) — şu an: '+SC[cur].tag;
+  TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi ('+SC.length+' sahne) — şu an: '+SC[cur].tag;
   lastSay=null;draw(true)}
 function draw(force){
   ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
@@ -845,6 +901,6 @@ function tick(ts){
       if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
 window.__matAnim={OFF:OFF,GP0:GP0,TD:TD,TS:TS,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
-go(/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+go(/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 })();
 </script></body></html>
