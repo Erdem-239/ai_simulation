@@ -25,8 +25,8 @@ th{background:#202737}
 .tw{overflow-x:auto}
 code{background:#232a38;border-radius:4px;padding:0 5px}
 </style></head><body><div class="wrap">
-<h1>🧭 Örnek mimariler: Minik GPT, GPT-2 ve güncel şemalar</h1>
-<p class="sub">Aynı çizim diliyle dört mimari: sitedeki <b>Minik GPT</b> ve <b>GPT-2</b>, ardından sosyal medyada dolaşan iki güncel şema (Sebastian Raschka'nın çizimleri olarak paylaşılıyor) kendi çizimimizle. En altta hepsi yan yana. Aşağıdan yukarı okunur: girdi altta, çıkış üstte.</p>
+<h1>🧭 Örnek mimariler: Minik GPT, GPT-2, güncel şemalar ve bilinen modeller</h1>
+<p class="sub">Aynı çizim diliyle dört mimari: sitedeki <b>Minik GPT</b> ve <b>GPT-2</b>, ardından sosyal medyada dolaşan iki güncel şema (Sebastian Raschka'nın çizimleri olarak paylaşılıyor) kendi çizimimizle. Ardından bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) ve kapalı modellerin (Claude, Gemini, GPT-4) neden çizilemediği. En altta karşılaştırma tabloları. Şemalar aşağıdan yukarı okunur: girdi altta, çıkış üstte.</p>
 <div class="warn">⚠️ <b>Dürüst not:</b> Minik GPT ve GPT-2 bölümleri sitedeki derslerden: Minik GPT sayıları bizim eğittiğimiz modelden, GPT-2 şekilleri/sayıları resmî mimariden (çizimler yine şematik). "Meta Muse" ve "OpenAI Astra" adlarını ve şemadaki sayıları <b>bağımsız bir kaynakta doğrulayamadık</b>; her şey paylaşılan görselde yazanlardan alındı. Çizimler şematiktir. Teknik fikirler (sliding window, GQA, QK-Norm, ağırlık paylaşımı) ise bilinen, gerçek tekniklerdir.</div>
 
 <div class="sec" style="--c:#ffc82e">
@@ -77,8 +77,86 @@ code{background:#232a38;border-radius:4px;padding:0 5px}
 <li>Bizim animasyonun ⑪ sahnesindeki 12 blok <b>farklı</b> ağırlıklıydı; looped'ta aynı blok yığını tekrar kullanılır.</li>
 </ul></div></div></div>
 
+<div class="sec" style="--c:#5ad1e6">
+<h2>5) DeepSeek-V3 — MLA + 256 uzmanlı MoE</h2>
+<p class="sub">Açık ağırlıklı model (Aralık 2024): toplam 671 milyar ağırlık, token başına yalnız ≈37 milyar kullanılır. 61 katman.</p>
+<div class="cols"><div id="d5"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#5ad1e6">MoE</span> FFN tek blok yerine <b>256 "uzman"</b> (küçük FFN) + <b>1 paylaşılan uzman</b>. Bir <b>router</b> her token için 256'dan <b>8</b>'ini seçer; paylaşılan uzman hep çalışır. Ağırlık çok, hesap az: 671 milyar içinden yalnız ≈37 milyarı çalışır. İlk 3 katman MoE değil, normal (dense) FFN†.</li>
+<li><span class="tag" style="--c:#6ea0ff">MLA</span> <b>Multi-head Latent Attention</b>: GQA'da K/V kafa sayısı azaltılıyordu; MLA K ve V'yi küçük bir <b>gizli (latent) vektöre sıkıştırıp</b> onu önbelleğe yazar (sıkıştırma boyutu 512†), kafa başına açılımı gerektiğinde yapar. Hedef yine KV önbelleğini küçültmek.</li>
+<li><span class="tag" style="--c:#e8a94d">Yük dengesi</span> Uzmanların dengeli kullanılması için klasik ek kayıp terimi yerine her uzmana bir <b>bias</b> ekleyip yükü ayarlayan "auxiliary-loss-free" yöntem.</li>
+<li><span class="tag" style="--c:#b592f0">MTP</span> <b>Multi-Token Prediction</b>: eğitimde bir sonraki token'a ek olarak bir sonrakini de tahmin ettirir; rapor ikinci token tahmininin %85-90 kabul edildiğini, bunun ≈1,8× hızlı üretim sağlayabildiğini yazıyor.</li>
+<li>Gizli boyut 7.168†, RMSNorm ve RoPE kullanılır (hafızadan; kaynakta doğrulamadım).</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#f27a88">
+<h2>6) Mixtral 8x7B — Llama gibi, ama FFN yerine 8 uzman</h2>
+<p class="sub">Mistral AI (2023): 32 katman, gizli boyut 4.096, 32 Q / 8 K/V kafa (GQA), ≈47 milyar toplam / ≈13 milyar aktif ağırlık.</p>
+<div class="cols"><div id="d6"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#f27a88">MoE (8 uzman, 2 seçilir)</span> Her katmanın FFN'i <b>8 ayrı FFN'dir</b>; router her token için <b>2</b>'sini seçer, çıktıları ağırlıklı toplanır. Dikkat katmanı normal kalır.</li>
+<li><span class="tag" style="--c:#6ea0ff">GQA</span> 32 Q / 8 K/V kafa, kafa boyu 128; bağlam 32.768 token†.</li>
+<li>Ana fikir: <b>ağırlık sayısı ile hesap yükü ayrılır.</b> 47 milyar ağırlığın yalnız ≈13 milyarı bir token için çalışır; hız küçük modele yakın, bilgi kapasitesi büyük modele yakın.</li>
+<li>Norm, konum ve FFN türü Llama ailesiyle aynı: RMSNorm, RoPE, SwiGLU (hafızadan, kaynakta doğrulamadım).</li>
+</ul></div></div></div>
+
 <div class="sec" style="--c:#e8a94d">
-<h2>5) Yan yana: dört mimari</h2>
+<h2>7) gpt-oss-120b — OpenAI'ın açık ağırlıklı modeli</h2>
+<p class="sub">OpenAI'ın yayımladığı açık ağırlıklı model: 36 katman, 128 uzman, token başına 4 uzman, 64 Q / 8 K/V kafa (kafa boyu 64).</p>
+<div class="cols"><div id="d7"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#e8a94d">MoE (128 uzman, 4 seçilir)</span> DeepSeek ve Mixtral gibi seyrek uzman yapısı. Toplam ≈117 milyar†, token başına ≈5,1 milyar aktif (bir NVIDIA sayfası 5,7 milyar yazıyor, kaynaklar çelişiyor).</li>
+<li><span class="tag" style="--c:#5fcf8a">Dönüşümlü dikkat</span> Katmanlar dönüşümlü <b>"pencereli" (128 token)</b> ve <b>tam</b> dikkat kullanır; yerel/küresel fikrinin başka bir hali (Muse'deki 3:1 gibi).</li>
+<li><span class="tag" style="--c:#6ea0ff">GQA</span> 64 Q / 8 K/V kafa. Dikkatte <b>öğrenilen "attention sink" / öğrenilebilir softmax</b> terimi var.</li>
+<li><span class="tag" style="--c:#b592f0">MXFP4</span> MoE ağırlıkları 4 bit'lik biçimle (MXFP4) saklanır; bu, büyük modelin tek bir GPU'ya sığmasına yardım eder†.</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#b592f0">
+<h2>8) Gemma 3 — Google'ın açık modeli: 5 yerel : 1 küresel</h2>
+<p class="sub">Google (2025). Dikkat katmanlarının altıda beşi yerel pencereli, biri tam; bağlam 128K (1B model 32K).</p>
+<div class="cols"><div id="d8"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#b592f0">5:1 yerel/küresel</span> Katmanların 5'i yalnız son <b>≈1.024 token</b>†'a bakar, 6.sı tüm geçmişe. Gemma 2'de oran 1:1'di; rapora göre oranı değiştirmenin perplexity'ye etkisi küçük, ama KV önbelleği ciddi küçülür.</li>
+<li><span class="tag" style="--c:#5fcf8a">QK-Norm</span> Gemma 2'deki "soft-capping" yerine Q ve K'ya normalizasyon (Muse'deki QK-Norm ile aynı fikir).</li>
+<li><span class="tag" style="--c:#e8a94d">RoPE iki hız</span> Küresel katmanlarda RoPE tabanı 1.000.000, yerel katmanlarda 10.000: uzun mesafelerde konum ayrımı bozulmasın diye.</li>
+<li>GQA, RMSNorm ve alt-bloğun hem önünde hem arkasında norm (sandviç) kullanır (hafızadan, kaynakta doğrulamadım).</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#9aa3b6">
+<h2>9) Claude, Gemini, GPT-4/5: neden çizemiyoruz?</h2>
+<p class="sub">Bunlar <b>kapalı</b> modeller: ağırlıklar da, kesin mimari de yayımlanmadı.</p>
+<ul class="nt">
+<li><span class="tag" style="--c:#9aa3b6">GPT-4</span> OpenAI'ın teknik raporu mimari (model boyutu dahil), donanım, eğitim hesabı ve veri hakkında <b>ayrıntı vermediğini</b> açıkça yazıyor. Dolaşan "≈1,8 trilyon parametre, MoE" rakamı resmî değil, doğrulanmamış bir iddia.</li>
+<li><span class="tag" style="--c:#9aa3b6">Claude</span> Anthropic mimari türünü ve parametre sayısını yayımlamadı. Bu yüzden bu sayfada bir Claude şeması yok, uydurmak yanıltıcı olurdu.</li>
+<li><span class="tag" style="--c:#9aa3b6">Gemini</span> Google Gemini 1.5 için uzun bağlamın MoE ve başka tekniklerle mümkün olduğunu söyledi, ama parametre sayısı ve ayrıntılı şema yok. Açık kardeşi <b>Gemma</b>'nın şeması yukarıda (8).</li>
+<li>Yani kapalı modeller için bilinen tek şey <b>genel iskelet</b> (decoder-only transformer, uzun bağlam teknikleri). Katman sayısı, kafa sayısı, uzman sayısı gibi sayılar bilinmiyor. Açık modeller (DeepSeek, Mixtral, gpt-oss, Gemma, Llama) bu yüzden mimari öğrenmek için daha iyi örnek.</li>
+</ul></div>
+
+<div class="sec" style="--c:#6ea0ff">
+<h2>11) Yan yana: bilinen açık modeller</h2>
+<div class="tw"><table>
+<tr><th></th><th>DeepSeek-V3</th><th>Mixtral 8x7B</th><th>gpt-oss-120b</th><th>Gemma 3</th></tr>
+<tr><td>Toplam / aktif ağırlık</td><td>671 mlr / ≈37 mlr</td><td>≈47 mlr / ≈13 mlr</td><td>≈117 mlr† / ≈5,1 mlr</td><td>yoğun (MoE değil)†</td></tr>
+<tr><td>FFN</td><td>MoE: 1 paylaşılan + 256 uzman, 8 seçilir</td><td>MoE: 8 uzman, 2 seçilir</td><td>MoE: 128 uzman, 4 seçilir</td><td>tek yoğun FFN†</td></tr>
+<tr><td>Attention</td><td>MLA (K/V gizli vektöre sıkıştırılır)</td><td>GQA 32 Q / 8 K/V, tam</td><td>GQA 64 Q / 8 K/V, 128'lik pencere ↔ tam dönüşümlü</td><td>GQA†; 5 yerel : 1 küresel, QK-Norm</td></tr>
+<tr><td>Derinlik</td><td>61 katman</td><td>32 katman</td><td>36 katman</td><td>modele göre değişir</td></tr>
+<tr><td>Bağlam</td><td>128K†</td><td>32K†</td><td>≈131K†</td><td>128K (1B: 32K)</td></tr>
+<tr><td>Ayırt edici fikir</td><td>MLA + MTP + yük dengesi</td><td>2/8 uzman yönlendirme</td><td>MXFP4 + attention sink</td><td>5:1 yerel/küresel + iki RoPE hızı</td></tr>
+</table></div>
+<p class="sub" style="margin-top:10px">† işaretli sayılar yalnız ikincil kaynaklardan ya da hafızadan; resmî makale/model kartından doğrudan doğrulayamadım. İşaretsizler birden fazla kaynakta tutarlı.</p>
+</div>
+
+<div class="sec" style="--c:#9aa3b6">
+<h2>Kaynaklar</h2>
+<ul class="nt">
+<li><a href="https://arxiv.org/pdf/2412.19437" target="_blank" rel="noopener" style="color:var(--blue)">DeepSeek-V3 Technical Report (arXiv 2412.19437)</a></li>
+<li><a href="https://arxiv.org/pdf/2503.19786" target="_blank" rel="noopener" style="color:var(--blue)">Gemma 3 Technical Report (arXiv 2503.19786)</a></li>
+<li><a href="https://arxiv.org/pdf/2303.08774" target="_blank" rel="noopener" style="color:var(--blue)">GPT-4 Technical Report (arXiv 2303.08774)</a></li>
+<li><a href="https://notesbylex.com/mixtral-of-experts" target="_blank" rel="noopener" style="color:var(--blue)">Mixtral of Experts, özet (asıl makale: arXiv 2401.04088)</a></li>
+<li><a href="https://apxml.com/models/gpt-oss-120b" target="_blank" rel="noopener" style="color:var(--blue)">gpt-oss-120b teknik özellikleri (ApX)</a> · <a href="https://docs.nvidia.com/nemo/megatron-bridge/0.3.1/models/llm/gpt-oss.html" target="_blank" rel="noopener" style="color:var(--blue)">NVIDIA gpt-oss belgesi</a></li>
+</ul></div>
+<div class="sec" style="--c:#e8a94d">
+<h2>10) Yan yana: sitedeki ve şemadaki dört mimari</h2>
 <div class="tw"><table>
 <tr><th></th><th>Minik GPT (sitedeki)</th><th>GPT-2 (sitedeki)</th><th>"Muse" (şema)</th><th>"Astra" (şema)</th></tr>
 <tr><td>Norm yeri</td><td>yok</td><td>LayerNorm, önde</td><td>RMSNorm, önde + arkada (sandviç) + QK-Norm</td><td>RMSNorm, önde</td></tr>
@@ -180,4 +258,37 @@ function plus(x,y){return '<circle cx="'+x+'" cy="'+y+'" r="10" fill="#232a38" s
  s+=box(0,110,590,200,28,'Token numaraları (7+5= → 4 token)');s+=ar(135,590,546);s+=ar(285,590,546);
  s+='</svg>';
  document.getElementById('d4').innerHTML=s})();
+
+// genel blok çizici: bilinen modeller
+function stack(id,o){
+ var c=o.c,s='<svg viewBox="0 0 420 600">'+DEF;
+ s+='<text x="210" y="26" text-anchor="middle">sonraki token olasılıkları</text>';
+ s+=box(0,95,46,230,28,o.out||'Çıkış katmanı');s+=ar(210,46,34);
+ s+=box(0,110,96,200,26,'Final RMSNorm','norm');s+=ar(210,96,74);
+ s+='<rect x="60" y="150" width="300" height="366" rx="12" fill="'+o.bg+'" stroke="'+c+'" stroke-width="2"/><text x="72" y="170" style="fill:'+c+';font-weight:700">'+o.n+'</text>';
+ s+=ar(210,150,136);
+ s+=plus(210,190);s+=ar(210,180,150);
+ if(o.moe){
+  var m=o.moe;
+  s+='<rect x="100" y="206" width="220" height="90" rx="8" fill="none" stroke="'+c+'" stroke-dasharray="4 3"/>';
+  s+='<text x="210" y="222" text-anchor="middle" style="font-size:11px;fill:'+c+'">'+m.t+'</text>';
+  s+=box(0,150,228,120,18,'Router','norm');
+  var w=m.show>8?11:20,g=2,tot=m.show*(w+g)-g,x0=210-tot/2;
+  for(var k=0;k<m.show;k++){var on=m.act.indexOf(k)>=0;s+='<rect x="'+(x0+k*(w+g))+'" y="254" width="'+w+'" height="22" rx="3" fill="'+(on?c:'#232a38')+'" stroke="'+(on?c:'#323a4a')+'"/>'}
+  s+='<text x="210" y="292" text-anchor="middle" style="font-size:10px;fill:#9aa3b6">'+m.cap+'</text>';
+ }else{s+=box(0,110,216,200,70,o.ffn[0],'');s+='<text x="210" y="268" text-anchor="middle" style="fill:#9aa3b6;font-size:11px">'+o.ffn[1]+'</text>'}
+ s+=ar(210,212,200);
+ s+=box(0,110,312,200,26,o.norm||'RMSNorm 2','norm');s+=ar(210,312,296);
+ s+=plus(210,374);s+=ar(210,364,338);
+ s+=box(0,90,400,240,60,'','hot');s+='<text x="210" y="426" text-anchor="middle">'+o.att[0]+'</text><text x="210" y="444" text-anchor="middle" style="fill:#9aa3b6;font-size:11px">'+o.att[1]+'</text>';s+=ar(210,400,384);
+ s+=box(0,110,478,200,26,'RMSNorm 1','norm');s+=ar(210,478,460);
+ s+='<path d="M200 510 L100 510 L100 374 L200 374" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M100 378 L80 378 L80 190 L200 190" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';
+ s+='<text x="74" y="330" transform="rotate(-90 74 330)" style="fill:#5fcf8a;font-size:11px">residual</text>';
+ s+=box(0,95,548,230,28,'Token gömme');s+=ar(210,548,504);
+ s+='</svg>';
+ document.getElementById(id).innerHTML=s}
+stack('d5',{c:'#5ad1e6',bg:'#17303a',n:'× 61 katman',out:'Çıkış katmanı (+ MTP başlığı)',moe:{t:'MoE: 1 paylaşılan + 256 uzman',show:16,act:[2,5,9,13],cap:'… ×256 uzman · 8 seçilir (renkli)'},att:['MLA — Multi-head Latent Attention','K/V → 512 boyutlu gizli vektör†']});
+stack('d6',{c:'#f27a88',bg:'#331d22',n:'× 32 katman',moe:{t:'8 uzman, 2 seçilir',show:8,act:[1,5],cap:'router 2 uzman seçer (renkli)'},att:['GQA · 32 Q / 8 K/V · RoPE','tam dikkat (bağlam 32K†)']});
+stack('d7',{c:'#e8a94d',bg:'#2f2a17',n:'× 36 katman',moe:{t:'128 uzman, 4 seçilir',show:16,act:[3,7,10,14],cap:'… ×128 uzman · 4 seçilir (renkli)'},att:['GQA · 64 Q / 8 K/V','pencere 128 ↔ tam, dönüşümlü']});
+stack('d8',{c:'#b592f0',bg:'#261f3a',n:'× N katman (5 yerel : 1 küresel)',ffn:['FFN (yoğun)','tek FFN†'],att:['GQA · QK-Norm','5 katman yerel (≈1024†) : 1 küresel']});
 </script></body></html>
