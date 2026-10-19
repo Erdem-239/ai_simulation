@@ -25,12 +25,36 @@ th{background:#202737}
 .tw{overflow-x:auto}
 code{background:#232a38;border-radius:4px;padding:0 5px}
 </style></head><body><div class="wrap">
-<h1>🆕 Güncel mimariler: sandviç norm, yerel/küresel attention ve döngülü transformer</h1>
-<p class="sub">Sosyal medyada dolaşan iki mimari şemasının (Sebastian Raschka'nın çizimleri olarak paylaşılıyor) kendi çizimimizle yeniden anlatımı. Karşılaştırma tabanı: sitedeki GPT-2 bloğu.</p>
-<div class="warn">⚠️ <b>Dürüst not:</b> "Meta Muse" ve "OpenAI Astra" adlarını ve şemadaki sayıları <b>bağımsız bir kaynakta doğrulayamadık</b>; her şey paylaşılan görselde yazanlardan alındı. Çizimler şematiktir. Teknik fikirler (sliding window, GQA, QK-Norm, ağırlık paylaşımı) ise bilinen, gerçek tekniklerdir.</div>
+<h1>🧭 Örnek mimariler: Minik GPT, GPT-2 ve güncel şemalar</h1>
+<p class="sub">Aynı çizim diliyle dört mimari: sitedeki <b>Minik GPT</b> ve <b>GPT-2</b>, ardından sosyal medyada dolaşan iki güncel şema (Sebastian Raschka'nın çizimleri olarak paylaşılıyor) kendi çizimimizle. En altta hepsi yan yana. Aşağıdan yukarı okunur: girdi altta, çıkış üstte.</p>
+<div class="warn">⚠️ <b>Dürüst not:</b> Minik GPT ve GPT-2 bölümleri sitedeki derslerden: Minik GPT sayıları bizim eğittiğimiz modelden, GPT-2 şekilleri/sayıları resmî mimariden (çizimler yine şematik). "Meta Muse" ve "OpenAI Astra" adlarını ve şemadaki sayıları <b>bağımsız bir kaynakta doğrulayamadık</b>; her şey paylaşılan görselde yazanlardan alındı. Çizimler şematiktir. Teknik fikirler (sliding window, GQA, QK-Norm, ağırlık paylaşımı) ise bilinen, gerçek tekniklerdir.</div>
+
+<div class="sec" style="--c:#ffc82e">
+<h2>1) Minik GPT — 1 blok, 1 kafa, 40 karakterlik sözlük</h2>
+<p class="sub">Sitedeki GPT Test dersinde kendi eğittiğimiz model: gömme boyutu 16, bağlam 10 karakter, FFN ara boyutu 32, toplam 3.576 ağırlık.</p>
+<div class="cols"><div id="d3"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#ffc82e">Gömme</span> Her karakter için <b>E</b> tablosundan (40×16) "kim" kartı, her konum için <b>P</b> tablosundan (10×16) "kaçıncı" kartı çekilir; ikisi toplanıp x olur.</li>
+<li><span class="tag" style="--c:#6ea0ff">Tek kafa</span> Soru (q) <b>yalnız son karakterden</b> ("=") çıkar; K ve V 10 karakterin hepsinden. Eğitilmiş modelde "7+5=" için dikkat ≈%53 "7"ye, ≈%41 "5"e gider.</li>
+<li><span class="tag" style="--c:#5fcf8a">Artık yol</span> Hem dikkatten hem FFN'den sonra eski değer geri eklenir (yeşil kesikli).</li>
+<li><span class="tag" style="--c:#e8a94d">Norm yok</span> Bu küçük modelde LayerNorm kullanmadık; 1 blok olduğu için gerek kalmadı.</li>
+<li>Çıkış: 16 sayılık son kart → 40 skor → softmax → sonraki karakter. Cevap yazmak için bu döngü her karakterde tekrarlanır.</li>
+</ul></div></div></div>
+
+<div class="sec" style="--c:#b592f0">
+<h2>2) GPT-2 (small) — 12 blok, 12 kafa, pre-LayerNorm</h2>
+<p class="sub">Sitedeki mimari: sözlük 50.257, bağlam 1.024, gömme boyutu 768, FFN ara boyutu 3.072, 12 kafa × 64, toplam 124.439.808 ağırlık.</p>
+<div class="cols"><div id="d4"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#b592f0">Gömme</span> <b>wte</b> (50.257×768) token kartı + <b>wpe</b> (1.024×768) yer kartı toplanır.</li>
+<li><span class="tag" style="--c:#6ea0ff">Çok kafalı attention</span> Q, K, V üç ayrı 768 genişlikli tablo; sütunlardan 12 dilime (kafa başına 64) bölünür. Her kafa kendi T×T skor tablosunu çıkarır, nedensel maske ile gelecek kapatılır.</li>
+<li><span class="tag" style="--c:#e8a94d">Pre-LayerNorm</span> Her alt-bloğun <b>önünde</b> LayerNorm; sonda bir de son LayerNorm var.</li>
+<li><span class="tag" style="--c:#5fcf8a">12 farklı blok</span> Aynı yapı 12 kez üst üste, her birinin ağırlığı ayrı. FFN: 768 → 3.072 → 768 (GELU).</li>
+<li>Çıkış katmanı <b>wteᵀ</b>: giriş tablosunun ters çevrilmişi (ağırlık paylaşımı), 50.257 skor.</li>
+</ul></div></div></div>
 
 <div class="sec" style="--c:#6ea0ff">
-<h2>1) "Muse" — 52 blok, 3:1 yerel/küresel, sandviç norm</h2>
+<h2>3) "Muse" — 52 blok, 3:1 yerel/küresel, sandviç norm</h2>
 <p class="sub">Şemada: sözlük 202k, bağlam 131k, gömme boyutu 6.656, FFN ara boyutu 19.968, 52 blok.</p>
 <div class="cols"><div id="d1"></div><div>
 <ul class="nt">
@@ -43,7 +67,7 @@ code{background:#232a38;border-radius:4px;padding:0 5px}
 </ul></div></div></div>
 
 <div class="sec" style="--c:#5fcf8a">
-<h2>2) "Astra" — 22 katman, iki tur: ağırlık paylaşımı (looped)</h2>
+<h2>4) "Astra" — 22 katman, iki tur: ağırlık paylaşımı (looped)</h2>
 <p class="sub">Şemada: sözlük 166k, bağlam 262k, gömme boyutu 3.072, FFN ara boyutu 10.752, 48 Q / 8 K/V kafa, kafa boyu 128.</p>
 <div class="cols"><div id="d2"></div><div>
 <ul class="nt">
@@ -54,17 +78,18 @@ code{background:#232a38;border-radius:4px;padding:0 5px}
 </ul></div></div></div>
 
 <div class="sec" style="--c:#e8a94d">
-<h2>3) Yan yana: GPT-2 → bu iki şema</h2>
+<h2>5) Yan yana: dört mimari</h2>
 <div class="tw"><table>
-<tr><th></th><th>GPT-2 (sitedeki)</th><th>"Muse" (şema)</th><th>"Astra" (şema)</th></tr>
-<tr><td>Norm yeri</td><td>LayerNorm, önde</td><td>RMSNorm, önde + arkada (sandviç) + QK-Norm</td><td>RMSNorm, önde</td></tr>
-<tr><td>Attention</td><td>12 kafa, hepsi tam (MHA)</td><td>32 Q / 2 K/V, gated GQA; 3 yerel : 1 küresel</td><td>48 Q / 8 K/V (GQA), tam</td></tr>
-<tr><td>Konum</td><td>Öğrenilen wpe tablosu</td><td>RoPE / NoPE</td><td>RoPE</td></tr>
-<tr><td>FFN</td><td>768→3072→768, GELU</td><td>6.656→19.968, SwiGLU</td><td>3.072→10.752, SwiGLU</td></tr>
-<tr><td>Derinlik</td><td>12 farklı blok</td><td>52 farklı blok</td><td>22 farklı katman × 2 tur = 44</td></tr>
-<tr><td>Sözlük / bağlam</td><td>50.257 / 1.024</td><td>202k / 131k</td><td>166k / 262k</td></tr>
+<tr><th></th><th>Minik GPT (sitedeki)</th><th>GPT-2 (sitedeki)</th><th>"Muse" (şema)</th><th>"Astra" (şema)</th></tr>
+<tr><td>Norm yeri</td><td>yok</td><td>LayerNorm, önde</td><td>RMSNorm, önde + arkada (sandviç) + QK-Norm</td><td>RMSNorm, önde</td></tr>
+<tr><td>Attention</td><td>1 kafa, tam; q yalnız son karakterden</td><td>12 kafa, hepsi tam (MHA)</td><td>32 Q / 2 K/V, gated GQA; 3 yerel : 1 küresel</td><td>48 Q / 8 K/V (GQA), tam</td></tr>
+<tr><td>Konum</td><td>Öğrenilen P tablosu (10×16)</td><td>Öğrenilen wpe tablosu</td><td>RoPE / NoPE</td><td>RoPE</td></tr>
+<tr><td>FFN</td><td>16→32→16, tanh</td><td>768→3072→768, GELU</td><td>6.656→19.968, SwiGLU</td><td>3.072→10.752, SwiGLU</td></tr>
+<tr><td>Derinlik</td><td>1 blok</td><td>12 farklı blok</td><td>52 farklı blok</td><td>22 farklı katman × 2 tur = 44</td></tr>
+<tr><td>Sözlük / bağlam</td><td>40 karakter / 10</td><td>50.257 / 1.024</td><td>202k / 131k</td><td>166k / 262k</td></tr>
+<tr><td>Ağırlık sayısı</td><td>3.576</td><td>124.439.808</td><td>şemada yok</td><td>şemada yok</td></tr>
 </table></div>
-<p class="sub" style="margin-top:10px">İskelet aynı kalıyor: embedding → [attention + FFN + residual + norm] × N → çıkış. Yenilikler bu parçaların verimli, kararlı ya da daha çok kullanılan hâlleri.</p>
+<p class="sub" style="margin-top:10px">İskelet dört mimaride de aynı: embedding → [attention + FFN + residual (+ norm)] × N → çıkış. Fark, parçaların boyutunda ve verimli/kararlı hâllerinde. Yenilikler bu parçaların verimli, kararlı ya da daha çok kullanılan hâlleri.</p>
 </div>
 </div>
 <script>
@@ -114,4 +139,45 @@ function plus(x,y){return '<circle cx="'+x+'" cy="'+y+'" r="10" fill="#232a38" s
  s+=box(0,110,54,200,28,'Çıkış katmanı (166k)');
  s+='</svg>';
  document.getElementById('d2').innerHTML=s})();
+
+// 3) Minik GPT
+(function(){
+ var s='<svg viewBox="0 0 420 560">'+DEF;
+ s+='<text x="210" y="26" text-anchor="middle">sonraki karakter olasılıkları</text>';
+ s+=box(0,95,46,230,28,'W_out 16→40 + softmax');s+=ar(210,46,34);
+ s+='<rect x="60" y="100" width="300" height="260" rx="12" fill="#2a2614" stroke="#ffc82e" stroke-width="2"/><text x="72" y="120" style="fill:#ffc82e;font-weight:700">× 1 blok</text>';
+ s+=ar(210,100,74);
+ s+=plus(210,140);s+=ar(210,130,100);
+ s+=box(0,110,166,200,30,'FFN 16→32→16 (tanh)');s+=ar(210,166,150);
+ s+=plus(210,232);s+=ar(210,222,196);
+ s+=box(0,95,268,230,70,'','hot');s+='<text x="210" y="298" text-anchor="middle">Dikkat · 1 kafa</text><text x="210" y="318" text-anchor="middle" style="fill:#9aa3b6;font-size:11px">q: yalnız son karakter · K,V: 10 karakter</text>';s+=ar(210,268,242);
+ s+='<path d="M200 350 L100 350 L100 232 L200 232" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M100 236 L80 236 L80 140 L200 140" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';
+ s+='<text x="74" y="310" transform="rotate(-90 74 310)" style="fill:#5fcf8a;font-size:11px">artık yol</text>';
+ s+=box(0,95,392,230,30,'x = E[karakter] + P[konum]');s+=ar(210,392,338);
+ s+=box(0,70,446,130,30,'E tablosu 40×16');s+=box(0,220,446,130,30,'P tablosu 10×16');s+=ar(135,446,422);s+=ar(285,446,422);
+ s+=box(0,110,500,200,28,'Son 10 karakter ("7+5=")');s+=ar(150,500,476);s+=ar(270,500,476);
+ s+='</svg>';
+ document.getElementById('d3').innerHTML=s})();
+// 4) GPT-2
+(function(){
+ var s='<svg viewBox="0 0 420 640">'+DEF;
+ s+='<text x="210" y="26" text-anchor="middle">sonraki token olasılıkları</text>';
+ s+=box(0,95,46,230,28,'Çıkış katmanı (wteᵀ · 50.257)');s+=ar(210,46,34);
+ s+=box(0,110,96,200,26,'Final LayerNorm','norm');s+=ar(210,96,74);
+ s+='<rect x="60" y="150" width="300" height="340" rx="12" fill="#261f3a" stroke="#b592f0" stroke-width="2"/><text x="72" y="170" style="fill:#b592f0;font-weight:700">× 12 farklı blok</text>';
+ s+=ar(210,150,136);
+ s+=plus(210,190);s+=ar(210,180,150);
+ s+=box(0,110,212,200,30,'FFN 768→3072→768 (GELU)');s+=ar(210,212,200);
+ s+=box(0,110,262,200,26,'LayerNorm 2','norm');s+=ar(210,262,242);
+ s+=plus(210,324);s+=ar(210,314,288);
+ s+=box(0,95,350,230,60,'','hot');s+='<text x="210" y="376" text-anchor="middle">Çok kafalı attention · 12 kafa</text><text x="210" y="394" text-anchor="middle" style="fill:#9aa3b6;font-size:11px">Q,K,V 768 · kafa başına 64 · maske</text>';s+=ar(210,350,334);
+ s+=box(0,110,432,200,26,'LayerNorm 1','norm');s+=ar(210,432,410);
+ s+='<path d="M200 470 L100 470 L100 324 L200 324" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M100 328 L80 328 L80 190 L200 190" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';
+ s+='<text x="74" y="410" transform="rotate(-90 74 410)" style="fill:#5fcf8a;font-size:11px">residual</text>';
+ s+=box(0,70,516,130,30,'wte 50.257×768');s+=box(0,220,516,130,30,'wpe 1.024×768');
+ s+=plus(210,498);
+ s+=ar(135,516,508);s+=ar(285,516,508);s+=ar(210,488,458);
+ s+=box(0,110,590,200,28,'Token numaraları (7+5= → 4 token)');s+=ar(135,590,546);s+=ar(285,590,546);
+ s+='</svg>';
+ document.getElementById('d4').innerHTML=s})();
 </script></body></html>
