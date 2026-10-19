@@ -27,7 +27,7 @@ canvas{display:block;width:100%;height:auto}
 a{color:var(--blue)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme, W_O + residual, LayerNorm, FFN, 12 blok, çıkış katmanı ve üretim döngüsü. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
+<p class="sub">Transformer'ın dikkat adımındaki matris işlemlerini tek tek izle: <b>LN(x)·W_Q/W_K/W_V</b>, dilimleme, <b>Q·Kᵀ</b>, maske + softmax, <b>A·V</b>, birleştirme, W_O + residual, LayerNorm, FFN, 12 blok, çıkış katmanı ve üretim döngüsü. T=4 ("7+5="), GPT-2 small boyutları (768, 12 kafa × 64).</p>
 <div class="tabs" id="tabs"></div>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
@@ -94,37 +94,46 @@ function drawX(x0,y0,w,h,rowsTo,hh,lab){
   if(rowsTo>=0){ctx.setLineDash([4,3]);rect(x0-2,y0-2,w+4,(rowsTo+1)*ch+3,null,HL,1.5);ctx.setLineDash([])}
 }
 
-/* ---------- SAHNE 1: LN(x)·W_Q ---------- */
+/* ---------- SAHNE 1: LN(x)·W_Q, W_K, W_V ---------- */
 var G=24,P=32;
-var s1={dur:16,tag:'① LN(x)·W_Q → Q',
+var s1={dur:36,tag:'① LN(x)·W → Q, K, V',
  draw:function(t){
+  var ph=Math.min(2,Math.floor(t*3)),lt=t>=1?1:t*3-ph,nm=['Q','K','V'],Wm=[WQ,WK,WV],Om=[Q,K,V],Wc=Wm[ph],Oc=Om[ph],cl=['#6ea0ff','#5fcf8a','#e8a94d'][ph];
   var X0={x:30,y:150,w:250,h:96},W0={x:330,y:50,w:240,h:240},Q0={x:640,y:150,w:250,h:96};
-  var cur=t*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(t>=1){idx=T*G;sub=0}
+  var cur=lt*(T*G),idx=Math.min(T*G-1,Math.floor(cur)),sub=cur-idx;if(lt>=1){idx=T*G;sub=0}
   var ar=Math.floor(idx/G),ag=idx%G;
-  txt('LN(x)  4×768',X0.x,X0.y-14,13,'#e8ebf2');txt('W_Q  768×768',W0.x,W0.y-14,13,'#e8ebf2');txt('Q  4×768',Q0.x,Q0.y-14,13,'#e8ebf2');
+  txt((ph+1)+'/3 — '+nm[ph]+' = LN(x) · W_'+nm[ph],30,40,14,cl);
+  txt('Sıra: Q → K → V',30,62,12,'#9aa3b6');
+  txt('LN(x)  4×768',X0.x,X0.y-14,13,'#e8ebf2');txt('W_'+nm[ph]+'  768×768',W0.x,W0.y-14,13,cl);txt(nm[ph]+'  4×768',Q0.x,Q0.y-14,13,cl);
   txt('×',300,205,30,'#e8ebf2','center');txt('=',605,205,30,'#e8ebf2','center');
   var cw=X0.w/G,chh=X0.h/T;
   for(var r=0;r<T;r++){txt(TOK[r],X0.x-8,X0.y+r*chh+16,12,'#9aa3b6','right');
     for(var g=0;g<G;g++){rect(X0.x+g*cw,X0.y+r*chh,cw-1,chh-1,col(X[r*D+g*P],2));
       var done=r*G+g<idx,isC=r*G+g===idx&&idx<T*G;
-      rect(Q0.x+g*cw,Q0.y+r*chh,cw-1,chh-1,done?col(Q[r*D+g*P],3):isC?col(Q[r*D+g*P],3,sub):EMPTY)}}
+      rect(Q0.x+g*cw,Q0.y+r*chh,cw-1,chh-1,done?col(Oc[r*D+g*P],3):isC?col(Oc[r*D+g*P],3,sub):EMPTY)}}
   var wc=W0.w/G;
-  for(var a=0;a<G;a++)for(var b=0;b<G;b++)rect(W0.x+b*wc,W0.y+a*wc,wc-1,wc-1,col(WQ[a*P*D+b*P]*14,2));
-  frame(X0.x,X0.y,X0.w,X0.h);frame(W0.x,W0.y,W0.w,W0.h);frame(Q0.x,Q0.y,Q0.w,Q0.h);
+  for(var a=0;a<G;a++)for(var b=0;b<G;b++)rect(W0.x+b*wc,W0.y+a*wc,wc-1,wc-1,col(Wc[a*P*D+b*P]*14,2));
+  frame(X0.x,X0.y,X0.w,X0.h);frame(W0.x,W0.y,W0.w,W0.h,cl);frame(Q0.x,Q0.y,Q0.w,Q0.h,cl);
   if(idx<T*G){
     rect(X0.x-1,X0.y+ar*chh-1,X0.w+2,chh+1,null,HL,2);
     rect(W0.x+ag*wc-1,W0.y-1,wc+1,W0.h+2,null,HL,2);
     rect(Q0.x+ag*cw-1,Q0.y+ar*chh-1,cw+1,chh+1,null,HL,2);
     ctx.fillStyle=HL;ctx.beginPath();ctx.arc(X0.x+sub*X0.w,X0.y+ar*chh+chh/2,4,0,7);ctx.fill();
     ctx.beginPath();ctx.arc(W0.x+ag*wc+wc/2,W0.y+sub*W0.h,4,0,7);ctx.fill()}
-  txt('Her kutu 32 gerçek sütunu temsil ediyor (768 sütun 24 kutuya sıkıştırıldı).',30,350,12,'#9aa3b6');
-  txt('Aynı W_Q dört satır için de kullanılıyor; satırlar birbirine karışmıyor.',30,370,12,'#9aa3b6');
+  txt('Her kutu 32 gerçek sütunu temsil ediyor (768 sütun 24 kutuya sıkıştırıldı).',30,330,12,'#9aa3b6');
+  txt('Aynı LN(x) üç AYRI tablodan geçer: W_Q, W_K, W_V farklı ağırlıklar → farklı Q, K, V.',30,350,12,'#9aa3b6');
+  txt('Aynı W dört satır için de kullanılıyor; satırlar birbirine karışmıyor.',30,370,12,'#9aa3b6');
+  for(var m=0;m<3;m++){var mx=30+m*300,fin=m<ph||(m===ph&&lt>=1),c3=['#6ea0ff','#5fcf8a','#e8a94d'][m];
+    txt((fin?'✔ ':'')+nm[m]+'  (bitti)',mx,394,12,fin?c3:'#4a5468');
+    for(var rr=0;rr<T;rr++)for(var gg=0;gg<G;gg++)rect(mx+gg*8,400+rr*10,7,9,fin?col(Om[m][rr*D+gg*P],3):EMPTY);
+    frame(mx,400,G*8-1,T*10-1,fin?c3:'#323a4a')}
  },
  live:function(t){
-  var idx=Math.min(T*G-1,Math.floor(t*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
-  var p=[0,1,2].map(function(k){return '('+f2(X[r*D+k])+')·('+f2(WQ[k*D+j])+')'});
-  return 'Q['+(r+1)+']['+(j+1)+'] = x₁·W₁ + x₂·W₂ + x₃·W₃ + … + x₇₆₈·W₇₆₈<br>= '+p.join(' + ')+' + … (768 çarpım) = <b>'+f2(Q[r*D+j])+'</b>'},
- say:'LN(x)\'in her satırı <b>aynı</b> W_Q ile çarpılır: Q\'nun 1. satırı yalnız x\'in 1. satırından, 2. satırı yalnız 2. satırından çıkar. Bir hücre = x\'in bir satırı ile W_Q\'nun bir sütununun nokta çarpımı (768 çarpım toplanır). K ve V için aynı işlem W_K ve W_V ile yapılır.'};
+  var ph=Math.min(2,Math.floor(t*3)),lt=t>=1?1:t*3-ph,nm=['Q','K','V'],Wm=[WQ,WK,WV],Om=[Q,K,V];
+  var idx=Math.min(T*G-1,Math.floor(lt*T*G)),r=Math.floor(idx/G),j=(idx%G)*P;
+  var p=[0,1,2].map(function(k){return '('+f2(X[r*D+k])+')·('+f2(Wm[ph][k*D+j])+')'});
+  return nm[ph]+'['+(r+1)+']['+(j+1)+'] = x₁·W₁ + x₂·W₂ + x₃·W₃ + … + x₇₆₈·W₇₆₈<br>= '+p.join(' + ')+' + … (768 çarpım) = <b>'+f2(Om[ph][r*D+j])+'</b>'},
+ say:'Aynı LN(x), <b>üç ayrı</b> ağırlık tablosundan geçer: önce <b>W_Q → Q</b>, sonra <b>W_K → K</b>, sonra <b>W_V → V</b>. Üçü de 768×768 ama farklı sayılarla dolu, bu yüzden aynı x\'ten farklı Q, K, V çıkar. Her hücre = x\'in bir satırı ile W\'nin bir sütununun nokta çarpımı (768 çarpım toplanır). LN(x)\'in her satırı aynı W ile çarpılır: Q/K/V\'nin 1. satırı yalnız x\'in 1. satırından çıkar, satırlar birbirine karışmaz. Q "soran", K "etiket", V "taşınacak bilgi" rolünü sonraki sahnelerde (skor, A·V) kazanır; tablolarda böyle bir işaret yok, rolü formüldeki yerleri veriyor.'};
 
 /* ---------- SAHNE 2: dilimleme ---------- */
 var s2={dur:12,tag:'② 12 dilime böl',
