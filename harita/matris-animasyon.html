@@ -11,6 +11,7 @@ h1{font-size:22px;margin:4px 0 2px}
 .sub{color:var(--mute);margin:0 0 12px;font-size:14px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .soz{margin-top:8px;padding:8px 10px;border-left:3px solid var(--hl);background:#221f12;border-radius:0 8px 8px 0}
+.neden{margin-top:8px;padding:8px 10px;border-left:3px solid #b48cff;background:#1d1828;border-radius:0 8px 8px 0}
 .elde{margin-top:6px;padding:8px 10px;border-left:3px solid #5fcf8a;background:#14241b;border-radius:0 8px 8px 0}
 .stage{display:flex;flex-direction:column;gap:10px}
 #arch3d{display:none;position:relative;height:340px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b0e14}
@@ -712,32 +713,56 @@ var sE={dur:14,tag:'0b · Embedding: wte + wpe → x',
  say:'Girdi metni önce <b>token numaralarına</b> çevrilir ("7+5=" → 22, 10, 20, 28). Her numara <b>wte</b> tablosundan bir satırı seçer (<b>kim</b> olduğunu söyler), her konum numarası <b>wpe</b> tablosundan bir satırı seçer (<b>nerede</b> olduğunu söyler); ikisi <b>toplanıp</b> x olur (4×768). Sayılar tohumlu rastgele, gerçek GPT-2 ağırlıkları değil; ama tablo boyutları, satır seçme ve toplama gerçek işlem.'};
 s3.hv=s4.hv=s5.hv=true;
 /* ---- her sahneye: 🗣️ sözel karşılığı + 📦 ne elde ettik ---- */
-function sozHtml(sc){return sc.soz?'<div class="soz"><b>🗣️ Sözel karşılığı:</b> '+sc.soz+'</div><div class="elde"><b>📦 Ne elde ettik?</b> '+sc.elde+'</div>':''}
+function sozHtml(sc){return sc.soz?'<div class="neden"><b>❓ Bu adımı neden yapıyoruz?</b> '+(sc.neden||'')+'</div><div class="soz"><b>🗣️ Sözel karşılığı:</b> '+sc.soz+'</div><div class="elde"><b>📦 Ne elde ettik?</b> '+sc.elde+'</div>':''}
 function setSoz(sc,s,e){sc.soz=s;sc.elde=e}
 setSoz(TEMEL[0],'Sol matrisin bir satırını (bir token\'ın sayı listesi) sağ matrisin bir sütunuyla (başka bir token\'ın sayı listesi) yan yana koyuyorum, karşılıklı sayıları çarpıp hepsini topluyorum. Yani iki listenin ne kadar aynı yöne baktığını <b>tek bir sayıyla</b> ölçüyorum.','Bir token çifti için tek bir uyum puanı. Bunu her çift için yapınca 3×3 bir <b>skor tablosu</b> çıkıyor: kim kimle ne kadar uyuşuyor.');
+TEMEL[0].neden='Dikkat mekanizmasının tüm "kim kime ne kadar uyuyor" hesabı sonunda bu tek işlem: iki sayı listesinin nokta çarpımı. Bunu anlamadan sonraki hiçbir sahne anlaşılmaz.';
 setSoz(TEMEL[1],'Aynı iki matrisi ters sırayla çarpınca <b>hangi matrisin satırını hangisinin sütunuyla</b> eşleştirdiğim değişiyor. Bu yüzden aynı sayılardan farklı bir tablo çıkıyor.','İki farklı sonuç: A·B ile B·A aynı değil. <b>Sıra bir ayrıntı değil, sonucun kendisini belirliyor.</b>');
+TEMEL[1].neden='Çarpımın sırası sonucu değiştirdiği için Q·Kᵀ ile K·Qᵀ\'nin neden farklı yorumlandığını (soran/bakılan) bilmek gerekir; yoksa Q ve K "aynı şey" gibi görünür.';
 setSoz(TEMEL[2],'(3×2)·(2×3) çarpımı her <b>token çifti</b> için bir sayı veriyor ("kim kime"). Aynı matrisleri ters sırayla çarpınca (2×3)·(3×2) ise iki <b>özellik</b> arasında, tüm token\'lar üzerinden toplanmış bir tablo çıkıyor.','3×3 (9 token çifti) ile 2×2 (4 özellik çifti). Aynı matrisler, tamamen farklı iki bilgi. Dikkatte kullandığımız <b>ilki</b>.');
+TEMEL[2].neden='Boyut kuralı, dikkat tablosunun neden token×token (n×n) çıktığını açıklar: dikkat her token\'ın her token\'a bakmasını ölçer.';
 setSoz(TEMEL[3],'K·Qᵀ aynı skorları hesaplıyor ama tabloyu yan yatırıyor: (i, j) hücresi (j, i) konumuna gidiyor. Aynı "uyum" bilgisi, bu kez satırı bakılan, sütunu soran olarak yazılmış.','Aynı 9 sayı, devrik yerleşim: <b>K·Qᵀ = (Q·Kᵀ)ᵀ</b>. Değişen şey değerler değil, satırın anlamı.');
+TEMEL[3].neden='Aynı bilgiyi iki yönde yazabilmek, rolün (soran/bakılan) ağırlıklardan değil çarpımdaki yerden geldiğini gösterir.';
 setSoz(TEMEL[4],'Her satırı kendi içinde yüzdeye çeviriyorum: "bu token dikkatini kimlere, yüzde kaç bölüyor?" Devrik tabloda aynı işlem "bu token\'a kimler bakıyor?" dağılımını verir; o başka bir soru.','Her satırı %100\'e toplanan bir <b>dikkat dağılımı</b>. Q·Kᵀ\'den ve K·Qᵀ\'den çıkan dağılımlar farklı çıkıyor.');
+TEMEL[4].neden='Ham skorlar yorumlanamaz (büyük/küçük, eksi/artı). Yüzdeye çevirmek her token için "dikkat bütçesi = %100" dağıtımı yaratır.';
 setSoz(TEMEL[5],'Her token\'a "yalnız kendine ve öncekilere bak, sonradan gelecek token\'ı görme" diyorum: geleceğin skorlarını siliyorum, kalanları yüzdeye çeviriyorum.','Alt üçgen bir dikkat tablosu: "7" yalnız kendine %100, "=" ise dört token\'a birden bakabiliyor.');
+TEMEL[5].neden='Metin üreten modelde cevap henüz yazılmamıştır; eğitimde bile geleceği görmek kopya çekmek olur. Maske bunu engeller.';
 setSoz(TEMEL[6],'Eğitimden sonra Q ile K\'nın yerini değiştirirsem skor tablosu devrik çıkıyor ama maske ve satır yüzdesi eski mantıkla çalışıyor; yani yanlış tablonun yanlış satırlarını yüzdeye çeviriyorum.','Bozulmuş dikkat dağılımları: aynı model, <b>farklı (yanlış) bir "kim kime bakıyor"</b> sonucu.');
+TEMEL[6].neden='Q ve K\'nın rollerinin çarpımdaki yerden geldiğini ve yer değişince modelin bozulacağını görmek için.';
 setSoz(sTok,'Model "7+5=" metnini görmez. Tokenizer "bunu parçalara bölüp her parçaya sözlükteki adres numarasını veriyorum" der.','4 numara: <b>22, 10, 20, 28</b>. Sinir ağı bundan sonra yalnız bu numaralarla çalışır.');
+sTok.neden='Sinir ağı yalnızca sayıyla çalışır; metni sayıya çevirmenin ilk ve zorunlu adımı bu. Harf harf yerine sık geçen parçalar kullanılır ki dizi kısa kalsın.';
 setSoz(sE,'Her numaraya wte tablosundan "sen kimsin" kartını, her konuma wpe tablosundan "kaçıncı sıradasın" kartını çekiyorum ve ikisini <b>topluyorum</b>.','<b>x (4×768)</b>: her token için hem kimliğini hem konumunu taşıyan 768 sayılık bir kart.');
+sE.neden='Token numarası bir adres, anlam değil: 22 ile 10 arasında "yakınlık" yok. Her numaraya öğrenilebilir bir anlam kartı (wte) vermek gerekir; yer bilgisini de (wpe) eklemezsek model "7+5" ile "5+7"yi ayıramaz.';
 setSoz(s1,'Her token\'ın kartını (LN sonrası) <b>üç ayrı süzgeçten</b> geçiriyorum (W_Q, W_K, W_V). Aynı karttan üç ayrı sayı listesi çıkıyor; ilerleyen adımlarda biri "soran", biri "bakılan", biri "taşınan bilgi" olarak kullanılacak.','<b>Q, K, V</b>: her biri 4×768; her token için üç ayrı 768\'lik liste.');
+s1.neden='Aynı karttan üç farklı rol gerekir: sorum ne (Q), etiketim ne (K), taşıdığım bilgi ne (V). Tek kart hem soru hem cevap olamaz; üç ayrı süzgeç bu işi böler.';
 setSoz(s2,'Üç tabloyu sütunlardan 12 dilime kesiyorum. Hiçbir sayı değişmiyor, yalnızca gruplanıyor: her kafa kendi 64\'lük dilimiyle çalışacak.','36 küçük tablo (3 tablo × 12 dilim). Her kafanın kendi Q, K, V dilimi (4×64).');
+s2.neden='Tek bir bakış açısı yerine 12 farklı bakış istiyoruz (biri sayılara, biri sıraya, biri başka şeye…). Dilimleme, aynı hesabı 12 küçük bağımsız işe bölmenin yoludur.';
 setSoz(s3,'Bir kafada her token\'ın Q\'sunu her token\'ın K\'sıyla nokta çarpımla karşılaştırıyorum: "sen bana ne kadar uyuyorsun?" Sonucu ÷8 ile küçültüyorum.','<b>4×4 skor tablosu</b>: satır = soran token, sütun = bakılan token. 12 kafanın her biri kendi tablosunu çıkarıyor.');
+s3.neden='Hangi token\'ın bilgisine ne kadar ihtiyaç olduğunu karar vermenin tek yolu, token\'ları birbiriyle karşılaştırmak. Skor tablosu bu karşılaştırmanın sonucudur.';
 setSoz(s4,'Geleceği görmeyi yasaklıyorum (maske), sonra her satırı yüzdeye çeviriyorum: "dikkatimin yüzde kaçını kime veriyorum?"','<b>4×4 dikkat yüzdeleri</b>. Her satır %100\'e toplanıyor; "=" satırı dört token\'a da bakabiliyor.');
+s4.neden='Eğitimde geleceği görmemek için maske, karışımı kontrol etmek için yüzde (toplam %100) gerekir; yoksa sonraki adımda sayılar kontrolsüz büyür.';
 setSoz(s5,'"=" token\'ı dört token\'ın V satırlarını <b>yüzdeleri kadar karıştırıyor</b>: örneğin %27\'sini 7\'den, %26\'sını +\'dan, %24\'ünü 5\'ten, %23\'ünü kendinden alıyor. Bunu 64 sütunun her biri için ayrı ayrı yapıyor.','Her token için yeni bir 64\'lük satır = baktıklarının bilgi karışımı. <b>"=" satırı artık yalnız "=" değil, 7 ve 5\'ten gelen bilgiyi de taşıyor</b>.');
+s5.neden='Sonuçta amaç, "=" token\'ının kendi kartına <b>diğer token\'lardan gerekli bilgiyi toplamasıdır</b>. Bunu yapan adım budur; Q·K sadece "kime bakacağını" bulmuştu.';
 setSoz(s6,'12 kafa ayrı ayrı baktı, her biri 64 sayılık çıktı verdi. Hepsini <b>yan yana yapıştırıyorum</b> (toplamıyorum).','4×768 tablo: her satırda 12 farklı bakış açısının notları yan yana duruyor.');
+s6.neden='Her kafa kendi işini bitirdi; sonraki katman (W_O) bütün bakış açılarını birlikte görmek ister. Toplamak yerine yapıştırmak, hiçbir kafanın bilgisini ezmemek için.';
 setSoz(s7,'Yapıştırılmış notları W_O ile ortak bir cevaba çeviriyorum, sonra bunu token\'ın <b>eski kartına ekliyorum</b> (eskisini silmeden).','Güncellenmiş 4×768 kart: <b>eski bilgi + attention\'dan gelen yeni bilgi</b>.');
+s7.neden='W_O yapıştırılmış 12 notu ortak bir "cevap"a çevirir. Eskisini silmeden eklemek (residual), bilgi ve gradyan kaybını önlemek için: bu ağ 12 blok derin.';
 setSoz(s8,'Her token\'ın sayılarını kendi içinde dengeliyorum (ortalama 0, yayılım 1) ki sonraki hesaplar taşmasın. Bilgi eklemiyorum, yalnız ölçeği düzeltiyorum.','Aynı şekilde (4×768) ama ölçeği dengelenmiş bir tablo.');
+s8.neden='Her blokta sayılar biraz kayar/büyür; 12 blok sonra taşma ya da sönme olur. LayerNorm sayıları her adımda aynı ölçeğe çeker, eğitimi kararlı kılar.';
 setSoz(s9,'Her token\'ın kartını <b>tek başına</b> genişletiyorum (768 → 3072) ve GELU ile "hangi özellikler açık, hangisi kapalı" diye eliyorum. Token\'lar burada birbirine bakmıyor.','4×3072: geniş bir uzayda, her token için işlenmiş özellikler.');
+s9.neden='Dikkat token\'lar arası bilgi taşıdı ama "düşünme" yapmadı. FFN her token\'ın kartı üzerinde tek başına işlem yapıp bilgiyi dönüştürür; geniş ara katman (3072) bunun için alan açar.';
 setSoz(s10,'Genişlemiş özellikleri tekrar 768\'e topluyorum ve sonucu token\'ın kartına <b>ekliyorum</b>.','Bloğun çıktısı: 4×768. Bu, bir sonraki bloğun girdisi.');
+s10.neden='Genişletilen özellikleri tekrar 768\'e indirmeliyiz ki bir sonraki blok aynı şekille çalışabilsin; residual yine eski bilgiyi korur.';
 setSoz(s11,'Şimdiye kadar gördüğüm her şey <b>tek bir blokta</b> oldu. Aynı işlemleri (her blokta farklı ağırlıklarla) 12 kez art arda tekrarlıyorum; her blok öncekinin çıktısını alıyor.','Çok kez işlenmiş bir 4×768 tablo. <b>Şekil hiç değişmedi</b>, içindeki bilgi her blokta zenginleşti.');
+s11.neden='Tek blok sadece basit ilişkileri yakalar. Üst üste 12 blok, bilgiyi her seferinde biraz daha soyutlar; derinlik GPT-2\'nin gücüdür.';
 setSoz(s12,'Blokların son çıkışını bir kez daha dengeliyorum ve sıradaki token\'ı tahmin edecek <b>son satıra ("=")</b> odaklanıyorum.','Tek bir satır: "=" kartı (768 sayı). Sıradaki token bu satırdan çıkacak.');
+s12.neden='Çıktı katmanından önce sayılar tekrar dengelenmeli. Sıradaki token sadece son satırdan tahmin edilir; çünkü "=" artık bütün cümlenin özetini taşır.';
 setSoz(s13,'"=" kartını sözlükteki 50.257 token\'ın her biriyle karşılaştırıyorum (wteᵀ ile çarpım): "sıradaki sen olabilir misin?" puanı.','<b>50.257 puan (logits)</b>: sözlükteki her token için bir tane.');
+s13.neden='12 bloğun ürettiği "=" satırı 768 sayılık bir <b>tarif</b>: "sıradaki token şöyle bir anlam taşımalı". Ama bize sayı değil <b>sözlükten bir token</b> lazım. wte tablosunda her token\'ın 768 sayılık anlam kartı zaten var; "=" satırını her kartla nokta çarpmak, tarife en çok uyan token\'ı bulur. Girişte kullandığımız aynı wte\'nin tersini (wteᵀ) kullanıyoruz: bu ağırlık paylaşımı hem 38,6 milyon ağırlığı tekrar öğrenmekten kurtarır hem giriş ve çıkış anlamlarını tutarlı tutar.';
 setSoz(s14,'Puanları yüzdeye çeviriyorum ve içlerinden birini seçiyorum (en yükseği ya da olasılığa göre).','<b>Sonraki token</b>: seçilmiş bir numara. (Rastgele ağırlıkla yüzdeler neredeyse eşit; gerçek GPT-2\'nin cevabını ölçmedik.)');
+s14.neden='Skorlar (logit) olasılık değil, eksi/artı değerler olabilir. Softmax onları toplamı %100 olan olasılığa çevirir; seçim yöntemi de (en yüksek / olasılığa göre) üretilen metnin tutarlılık ↔ çeşitlilik dengesini belirler.';
 setSoz(s15,'Seçtiğim token\'ı metnin sonuna ekleyip modeli <b>tekrar çalıştırıyorum</b>. Eski token\'ların K ve V\'sini saklıyorum (önbellek), böylece yalnız yeni token\'ı hesaplıyorum.','Token token büyüyen bir metin. Önbellekle her turda yalnız <b>1 yeni satır</b> hesaplanıyor.');
+s15.neden='Model her seferinde yalnız <b>tek bir token</b> üretir. Uzun cevap = bu döngünün tekrarı. KV önbelleği, her turda eski token\'lar için aynı hesabı tekrar etmemek içindir.';
 var SCN=[sTok,sE,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15];
 var ORD=['tok','emb','qkv','slice','qk','sm','av','cat','wo','ln2','w1','w2','blk','fln','out','sel','loop'];
 var COLS={tok:[0,0],emb:[1,3],qkv:[4,6],slice:[7,7],qk:[8,8],sm:[9,9],av:[10,10],cat:[11,11],wo:[12,13],ln2:[14,14],w1:[15,16],w2:[17,18],blk:null,fln:[19,19],out:[20,20],sel:[21,22],loop:[22,22]};
