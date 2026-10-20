@@ -968,7 +968,14 @@ applyArch();
 zoom=1;tgt.set(MINI.XC_A,0,0);
 camera.position.set(MINI.XC_A+5*Math.sin(yaw)*Math.cos(pitch),5*Math.sin(pitch),5*Math.cos(yaw)*Math.cos(pitch));
 frame();
-$('pk').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),false);
-$('pa').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),true);
+const PH={renderer,
+ save(){const o={yaw,pitch,zoom,pan:panOff.clone()};return()=>{yaw=o.yaw;pitch=o.pitch;zoom=o.zoom;panOff.copy(o.pan)}},
+ step(){if(tourOn||(selected&&focusOn))return true;
+  const box=new THREE.Box3(),c=new THREE.Vector3();let any=false;ARCHS.forEach(A=>{if(A.on)A.parts.forEach(p=>{if(p.group.visible){box.expandByObject(p.group);any=true}})});if(!any)return true;
+  const m=printA4Ndc(box,camera),sh=printA4Shift(m,camera,tgt);panOff.addScaledVector(sh,0.5);
+  const f=Math.max(m.w,m.h)/0.9;zoom=clamp(zoom*(1+(f-1)*0.3),ZMIN,ZMAX);
+  return Math.abs(f-1)<0.03&&Math.abs(m.cx)<0.03&&Math.abs(m.cy)<0.05}};
+$('pk').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),false,PH);
+$('pa').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),true,PH);
 </script>
 <script src="print-a4.js?v=1"></script>
