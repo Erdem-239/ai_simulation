@@ -139,7 +139,7 @@ body.nobar #barShow{display:block}
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
   <div class="row" id="archs"><span class="lab">Mimari (birden çok seçilebilir)</span></div>
-  <div class="row" id="opts"><span class="lab" title="Birden çok mimari açıkken aralarındaki dikey boşluk">Mimariler arası boşluk</span><input id="gapy" type="range" min="1" max="40" step="0.5" value="6" style="width:110px" aria-label="Mimariler arası boşluk"><select id="plb" title="Yazdırırken etiketler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="auto">Etiket: seyrek (bloklar açık)</option><option value="all">Etiket: hepsi</option><option value="none">Etiket: yok</option></select><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin: mürekkep tasarrufu">🖨️ A4 (açık)</button><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bg" title="Bölüm çerçevelerini (Embedding, Attention alt-bloğu, FFN…) göster/gizle">🧩 Çerçeveler: açık</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
+  <div class="row" id="opts"><span class="lab" title="Birden çok mimari açıkken aralarındaki dikey boşluk">Mimariler arası boşluk</span><input id="gapy" type="range" min="1" max="40" step="0.5" value="6" style="width:110px" aria-label="Mimariler arası boşluk"><select id="lbm" title="Ekrandaki etiketler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="sparse">Ekranda etiket: seyrek (bloklar açık)</option><option value="all">Ekranda etiket: hepsi</option><option value="none">Ekranda etiket: yok</option></select><select id="plb" title="Yazdırırken etiketler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="auto">Etiket: seyrek (bloklar açık)</option><option value="all">Etiket: hepsi</option><option value="none">Etiket: yok</option></select><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin: mürekkep tasarrufu">🖨️ A4 (açık)</button><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bg" title="Bölüm çerçevelerini (Embedding, Attention alt-bloğu, FFN…) göster/gizle">🧩 Çerçeveler: açık</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
   <div class="row"><span class="lab">Birleşik</span><input id="sl" type="range" min="0" max="100" value="0" aria-label="Parçalama"><span class="lab">Parçalı</span><button id="bb" title="Birleştir">Birleştir</button><button id="bx" title="Parçala">Parçala</button><button id="bf" title="Hepsini görünür yap">Sığdır</button><button id="bz1" title="Uzaklaş">−</button><button id="bz2" title="Yakınlaş">+</button><button id="bl" title="Yerleşim: iki satır (sığdırılmış) / tek düzlem">Yerleşim: iki satır</button></div>
   <div id="hint">Tekerlek: parçala, sonra imlece yakınlaş/uzaklaş · Sürükle: döndür · Sağ tuş ya da Shift+sürükle: kaydır · Klavye: ← → ↑ ↓ kaydır, W/S yakınlaş/uzaklaş, A/D döndür, +/− parçala/birleştir · Parçaya tıkla: bilgi (kamera hareketi için "Tıklayınca zoom") · Kaybolursan: Sığdır ya da H tuşu</</div>
 </div>
@@ -589,6 +589,17 @@ function hoverTick(){if(!hoverDirty)return;hoverDirty=false;if(selected||ptr.siz
 
 /* ---------- döngü ---------- */
 const sizeOf=p=>{const s=p.group.scale.x;return {w:p.w*s,h:p.h*s,d:0.12*s}};
+let LBMODE='sparse';
+function declutter(act){
+  if(LBMODE==='all'||EMB)return;
+  const els=[];act.forEach(A=>{A.parts.forEach(p=>els.push({e:p.lb,pri:(p===selected||tourParts.indexOf(p)>=0)?1:0}));
+    [A.blockLb,A.blockLb2,A.contLb,A.asmLb].forEach(e=>{if(e)els.push({e,pri:0})});(A.glb||[]).forEach(e=>els.push({e,pri:0}))});
+  const vis=[];els.forEach(o=>{const op=parseFloat(o.e.style.opacity);if(op>0.08){if(LBMODE==='none'&&!o.pri){o.e.style.opacity=0;o.e.style.pointerEvents='none'}else vis.push(o)}});
+  if(LBMODE==='none')return;
+  vis.forEach(o=>{const r=o.e.getBoundingClientRect();o.r=r;o.n=(o.e.textContent||'').length});
+  vis.sort((a,b)=>b.pri-a.pri||a.n-b.n);const kept=[],pad=4;
+  vis.forEach(o=>{const r=o.r;const hit=!o.pri&&kept.some(k=>r.left<k.right+pad&&r.right+pad>k.left&&r.top<k.bottom+pad&&r.bottom+pad>k.top);
+    if(hit){o.e.style.opacity=0;o.e.style.pointerEvents='none'}else kept.push(r)})}
 let GAPY=6;const wt=new THREE.Vector3();let frameN=0,lostN=0;
 function frame(){
   t+=(tT-t)*0.12;if(Math.abs(tT-t)<1e-4)t=tT;$('sl').value=Math.round(tT*100);
@@ -636,6 +647,7 @@ function frame(){
     (A.groups||[]).forEach((g,gi)=>{const c=A._gb[gi],d=A.glb[gi];v3.set(c.x,c.y,c.z);proj(v3,d,(EMB&&!tourOn&&!/^(Tokenizer|Embedding|Attention|FFN alt|MoE alt|Çıkış)/.test(g.title))?0:bo);d.style.pointerEvents=Number(d.style.opacity)>0.5?'auto':'none'});
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position;v3.set((pa.x+pb.x)/2,(pa.y+pb.y)/2,(pa.z+pb.z)/2);proj(v3,A.contLb,bo*(1-A.mm))}
     v3.set(A.XC_A,A.yo+0.9,0);proj(v3,A.asmLb,clamp(1-t*4,0,1))});
+  declutter(act);
   requestAnimationFrame(frame)}
 
 /* ---------- mimari seçimi, karşılaştırma ---------- */
@@ -968,6 +980,7 @@ applyArch();
 zoom=1;tgt.set(MINI.XC_A,0,0);
 camera.position.set(MINI.XC_A+5*Math.sin(yaw)*Math.cos(pitch),5*Math.sin(pitch),5*Math.cos(yaw)*Math.cos(pitch));
 frame();
+$('lbm').onchange=()=>{LBMODE=$('lbm').value};
 $('gapy').oninput=()=>{GAPY=+$('gapy').value};
 const PH={renderer,
  save(){const o={yaw,pitch,zoom,pan:panOff.clone()};return()=>{yaw=o.yaw;pitch=o.pitch;zoom=o.zoom;panOff.copy(o.pan)}},
