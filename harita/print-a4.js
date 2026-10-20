@@ -26,7 +26,7 @@ window.printA4=function(canvas,render,light,hook){
     var cw=canvas.width,ch=canvas.height,cr=canvas.getBoundingClientRect(),k=cw/cr.width;
     var c=document.createElement('canvas');c.width=cw;c.height=ch;var g=c.getContext('2d');
     g.fillStyle='#0b0e14';g.fillRect(0,0,cw,ch);g.drawImage(canvas,0,0);
-    var mode=(document.getElementById('plb')||{}).value||'auto',SC=0.8,L=[];
+    var mode=(document.getElementById('plb')||{}).value||'auto',SC=parseFloat((document.getElementById('pls')||{}).value)||1.4,L=[];
     if(mode!=='none')document.querySelectorAll('.lb').forEach(function(el){
       var cs2=getComputedStyle(el);if(cs2.display==='none'||cs2.visibility==='hidden'||parseFloat(cs2.opacity)<0.08)return;
       var rc=el.getBoundingClientRect();if(rc.right<cr.left||rc.left>cr.right||rc.bottom<cr.top||rc.top>cr.bottom)return;

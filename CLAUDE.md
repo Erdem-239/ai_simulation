@@ -1637,3 +1637,5 @@ Kullanıcı "şu adım adım haritayı GPT-2 için yapabilir misin, hesap gücü
 **A4 yazdırma: sahne sayfayı daha çok doldurur (#458)**: kullanıcı kenarlarda boşluk kaldığını gösterdi. Doluluk hedefi 0,9→0,985, `@page` kenar boşluğu 8→4 mm, görsel max-height 192→202 mm. **Ders**: sığdırma hedefini kâğıt kenar boşluğuyla birlikte ayarla.
 
 **A4 yazdırma: kenar boşluğu sıfır (#459)**: kullanıcı görselin çevresinde hâlâ beyaz kenarlık gördü. `@page{margin:0}` + görsel 297×209,5 mm `object-fit:cover` (görselin zemini düz renk olduğu için kenarlık görünmez); PDF 1 sayfa. Not: yazıcıların donanımsal yazdırılamaz kenarı olabilir. **Ders**: 'kenar boşluğu azalt' yetmediyse sayfayı tam kaplat.
+
+**A4 yazdırma: etiket boyutu seçici (#460)**: kullanıcı yazıların/blokların küçük kaldığını söyledi. Sahne zaten genişliğe %98,5 sığıyor (3:1 oran, A4'e göre sınırlayıcı eksen yatay); blok boyutu değişmez ama etiketler `#pls` (küçük 0,9 / orta 1,4 varsayılan / büyük 2) ile büyütülebilir, çakışanlar yine ayıklanır. **Ders**: sığdırma sınırlıyken 'büyüt' isteğinin ayarlanabilir kısmı (etiket) ile ayarlanamayan kısmı (sahne oranı) ayrı söylenmeli.
