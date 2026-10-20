@@ -186,8 +186,13 @@ function frame(){
  ren.render(scene,cam);requestAnimationFrame(frame)}
 resize();build();window.__rnn3={parts:()=>parts,select,tourN:()=>STEPS.length,go:i=>{tour=i;stepFocus()},mode:m=>(m===2?document.getElementById('m2'):document.getElementById('m1')).click()};
 frame();
-document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),false);
-document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true);
+const PH={renderer:ren,
+ save(){const o={yaw,pitch,dist,t:tgt.clone(),g:tgtGoal,dg:distGoal};return()=>{yaw=o.yaw;pitch=o.pitch;dist=o.dist;tgt.copy(o.t);tgtGoal=o.g;distGoal=o.dg}},
+ step(){const box=new THREE.Box3().setFromObject(scene);tgtGoal=null;distGoal=null;
+  const m=printA4Ndc(box,cam);tgt.addScaledVector(printA4Shift(m,cam,tgt),0.5);const f=Math.max(m.w,m.h)/0.9;dist*=1+(f-1)*0.3;dist=Math.max(4,Math.min(90,dist));
+  return Math.abs(f-1)<0.03&&Math.abs(m.cx)<0.03&&Math.abs(m.cy)<0.05}};
+document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),false,PH);
+document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
 })();
 </script>
 <script src="print-a4.js?v=1"></script></body></html>
