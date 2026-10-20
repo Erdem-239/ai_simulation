@@ -139,7 +139,7 @@ body.nobar #barShow{display:block}
 <div id="bar">
   <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
   <div class="row" id="archs"><span class="lab">Mimari (birden çok seçilebilir)</span></div>
-  <div class="row" id="opts"><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bg" title="Bölüm çerçevelerini (Embedding, Attention alt-bloğu, FFN…) göster/gizle">🧩 Çerçeveler: açık</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
+  <div class="row" id="opts"><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin: mürekkep tasarrufu">🖨️ A4 (açık)</button><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bg" title="Bölüm çerçevelerini (Embedding, Attention alt-bloğu, FFN…) göster/gizle">🧩 Çerçeveler: açık</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
   <div class="row"><span class="lab">Birleşik</span><input id="sl" type="range" min="0" max="100" value="0" aria-label="Parçalama"><span class="lab">Parçalı</span><button id="bb" title="Birleştir">Birleştir</button><button id="bx" title="Parçala">Parçala</button><button id="bf" title="Hepsini görünür yap">Sığdır</button><button id="bz1" title="Uzaklaş">−</button><button id="bz2" title="Yakınlaş">+</button><button id="bl" title="Yerleşim: iki satır (sığdırılmış) / tek düzlem">Yerleşim: iki satır</button></div>
   <div id="hint">Tekerlek: parçala, sonra imlece yakınlaş/uzaklaş · Sürükle: döndür · Sağ tuş ya da Shift+sürükle: kaydır · Klavye: ← → ↑ ↓ kaydır, W/S yakınlaş/uzaklaş, A/D döndür, +/− parçala/birleştir · Parçaya tıkla: bilgi (kamera hareketi için "Tıklayınca zoom") · Kaybolursan: Sığdır ya da H tuşu</</div>
 </div>
@@ -968,4 +968,7 @@ applyArch();
 zoom=1;tgt.set(MINI.XC_A,0,0);
 camera.position.set(MINI.XC_A+5*Math.sin(yaw)*Math.cos(pitch),5*Math.sin(pitch),5*Math.cos(yaw)*Math.cos(pitch));
 frame();
+$('pk').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),false);
+$('pa').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),true);
 </script>
+<script src="print-a4.js?v=1"></script>
