@@ -37,7 +37,7 @@
 <span class="sp"></span>
 <button id="tp" disabled>◀ Geri</button><button id="tn">🎬 Adım adım ▶</button><button id="tx" style="display:none">Turu kapat</button>
 <span class="sp"></span>
-<button id="tw" class="on">Ağırlık bağları</button><button id="tbk">Geri yayılım okları</button><button id="tl" class="on">Etiketler</button><button id="rs">⟲ Görünümü sıfırla</button>
+<button id="tw" class="on">Ağırlık bağları</button><button id="tbk">Geri yayılım okları</button><button id="tl" class="on">Etiketler</button><button id="rs">⟲ Görünümü sıfırla</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin: mürekkep tasarrufu">🖨️ A4 (açık)</button>
 </div>
 <script src="../js/vendor/three-0.128.0.min.js"></script>
 <script>
@@ -186,5 +186,8 @@ function frame(){
  ren.render(scene,cam);requestAnimationFrame(frame)}
 resize();build();window.__rnn3={parts:()=>parts,select,tourN:()=>STEPS.length,go:i=>{tour=i;stepFocus()},mode:m=>(m===2?document.getElementById('m2'):document.getElementById('m1')).click()};
 frame();
+document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),false);
+document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true);
 })();
-</script></body></html>
+</script>
+<script src="print-a4.js?v=1"></script></body></html>
