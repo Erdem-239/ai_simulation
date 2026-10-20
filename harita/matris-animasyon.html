@@ -1045,20 +1045,34 @@ var gmHead=gm({tag:'17 · Çıkış tablosu (son satır)',R:1,rowLab:['='],labL:
 var oR1=oRms('3 · RMSNorm (attention öncesi)','x  →  RMSNorm',41,'Attention\'a girmeden önce her token satırı <b>RMSNorm</b> ile dengelenir: satır, kendi <b>kök-ortalama-karesine</b> bölünür. LayerNorm\'dan farkı: <b>ortalama çıkarılmaz</b>, β yok. Çıkış Q, K, V\'ye gider; asıl x residual için kenarda bekler.');
 var oR2=oRms('12 · RMSNorm (MoE öncesi)','x  →  RMSNorm',43,'MoE alt-bloğunun girişinde ikinci <b>RMSNorm</b>: aynı işlem, bu kez router ve uzmanlar için. Asıl x yine residual için bekler.');
 var oRF=oRms('16 · Son RMSNorm','h  →  RMSNorm',45,'36 bloktan sonra <b>son RMSNorm</b>: sayılar dengelenir. Bundan sonra yalnız <b>son satır</b> çıkış tablosuna gider.');
-var oGqaWhy={dur:20,tag:'5b · GQA nedir? MHA ↔ GQA ↔ MQA',
- draw:function(t){var P=[{n:'MHA (GPT-2: her Q kafasının kendi K/V\'si)',kv:8,v:8192,x:20},{n:'GQA (gpt-oss: Q kafaları gruplanır)',kv:2,v:1024,x:340},{n:'MQA (tek K/V, hepsi paylaşır)',kv:1,v:128,x:660}],ph=clamp(t/0.8,0,1);
-  txt('Çizimde 8 sorgu kafası var (gpt-oss: 64 sorgu / 8 K-V; oran aynı mantık, 8 Q kafası bir K/V\'yi paylaşır)',20,26,12,'#e8ebf2');
+function gqaReal(tt){var gc=['#6ea0ff','#5fcf8a','#e8a94d','#b592f0','#f27a88','#3fc7c1','#d6c24a','#8a93a6'],gs=Math.min(7,Math.floor(clamp(tt/0.9,0,.999)*8));
+  txt('GERÇEK gpt-oss: 64 sorgu (Q) kafası, 8 K/V kafası → her K/V kafasını 8 Q kafası paylaşır  (64 ÷ 8 = 8)',20,26,12,'#e8ebf2');
+  txt('SORGU kafaları (her birinin kendi Q\'su var: 64 ayrı soru)',20,56,11,'#9aa3b6');
+  for(var g=0;g<8;g++){var x0=20+g*122,on=g===gs;ctx.globalAlpha=on?1:.35;
+   for(var k=0;k<8;k++)rect(x0+(k%4)*25,70+Math.floor(k/4)*25,22,22,gc[g]);
+   txt('Q'+(g*8+1)+'–Q'+(g*8+8),x0+50,136,10,'#e8ebf2','center');
+   ctx.strokeStyle=on?HL:gc[g];ctx.lineWidth=on?3:1.5;ctx.beginPath();ctx.moveTo(x0+50,142);ctx.lineTo(x0+50,196);ctx.stroke();ctx.lineWidth=1;
+   rect(x0,196,100,44,gc[g],on?HL:null,3);txt('K/V kafası '+(g+1),x0+50,214,11,'#0b0e14','center');txt('(1 K + 1 V)',x0+50,230,10,'#0b0e14','center');
+   if(on)frame(x0-3,66,106,76,HL);ctx.globalAlpha=1}
+  txt('K/V kafaları (8 tane; her biri 8 Q kafasına ORTAK)',20,262,11,'#9aa3b6');
+  txt('Kural: Q kafası numarası i  →  K/V kafası = yukarı yuvarla(i ÷ 8).   Seçili: Q'+(gs*8+1)+'…Q'+(gs*8+8)+' hepsi K/V'+(gs+1)+'\'i kullanır.',20,300,12,HL);
+  txt('Örnek: Q19 → 19÷8 = 2,4 → K/V3.   Q64 → K/V8.   Q1 → K/V1.',20,322,12,'#e8ebf2');
+  txt('Her kafa K/V\'yi paylaşsa da KENDİ Q\'suyla soru sorar: 64 farklı dikkat tablosu çıkar, yalnız 8 K ve 8 V saklanır.',20,350,11,'#5fcf8a')}
+var oGqaWhy={dur:30,tag:'5b · GQA nedir? MHA ↔ GQA ↔ MQA',
+ draw:function(t){if(t>=0.5)return gqaReal((t-0.5)/0.5);t=t*2;var P=[{n:'MHA (GPT-2: her Q kafasının kendi K/V\'si)',kv:8,v:8192,x:20},{n:'GQA (çizimde 4 Q kafası = 1 K/V)',kv:2,v:1024,x:340},{n:'MQA (tek K/V, hepsi paylaşır)',kv:1,v:128,x:660}],ph=clamp(t/0.8,0,1);
+  txt('Çizim: 8 sorgu kafası. Gerçek gpt-oss (64 Q / 8 K-V) bir sonraki ekranda: orada 8 Q kafası = 1 K/V.',20,26,12,'#e8ebf2');
   P.forEach(function(p,i){var a=clamp(ph*3-i,0,1);ctx.globalAlpha=0.15+0.85*a;var x0=p.x,w=290;txt(p.n,x0,56,11,i===1?HL:'#e8ebf2');
    var qx=function(k){return x0+10+k*34},kvy=190;
-   txt('sorgu kafaları (Q)',x0,84,10,'#9aa3b6');for(var k=0;k<8;k++)rect(qx(k),92,28,26,'#6ea0ff');
+   txt('sorgu kafaları (Q)',x0,84,10,'#9aa3b6');var GC=['#6ea0ff','#5fcf8a','#e8a94d','#b592f0','#f27a88','#3fc7c1','#d6c24a','#8a93a6'];for(var k=0;k<8;k++)rect(qx(k),92,28,26,p.kv===8?'#6ea0ff':GC[Math.floor(k/(8/p.kv))]);
+   if(p.kv===8)txt('Q1→K/V1, Q2→K/V2, … (bire bir)',x0+10,134,9,'#e8ebf2');else for(var g0=0;g0<p.kv;g0++){var gw0=8/p.kv;if(p.kv>1)txt('Q'+(g0*gw0+1)+(gw0>1?'–Q'+(g0*gw0+gw0):'')+' → K/V'+(g0+1),x0+10+g0*gw0*34,134,9,'#e8ebf2');else txt('Q1–Q8 → K/V (hepsi)',x0+10,134,9,'#e8ebf2')}
    txt('K/V kafaları',x0,178,10,'#9aa3b6');var gw=8/p.kv;
    for(var g=0;g<p.kv;g++){var gx=x0+10+g*gw*34,gwid=gw*34-6;rect(gx,190,gwid,34,i===1?'#e8a94d':i===2?'#5fcf8a':'#b592f0');txt('K/V'+(p.kv>1?g+1:''),gx+gwid/2,212,10,'#0b0e14','center');
     for(var k2=0;k2<gw;k2++){var qk=g*gw+k2;ctx.strokeStyle='rgba(255,200,46,.55)';ctx.beginPath();ctx.moveTo(qx(qk)+14,118);ctx.lineTo(gx+gwid/2,190);ctx.stroke()}}
    txt('K/V önbelleği (token·katman):',x0,262,10,'#9aa3b6');txt(p.v.toLocaleString('tr-TR')+' sayı',x0,282,16,i===1?'#5fcf8a':'#e8ebf2');
    txt(i===0?'8192 = 2 (K ve V) × 64 kafa × 64':i===1?'1024 = 2 × 8 kafa × 64  (÷8)':'128 = 2 × 1 kafa × 64  (÷64)',x0,300,10,'#9aa3b6');ctx.globalAlpha=1});
   var q=clamp((t-0.8)/0.2,0,1);ctx.globalAlpha=q;txt('MHA: en iyi kalite ama en büyük önbellek.  MQA: en küçük önbellek, kalite kaybı riski (genel bilgi).  GQA: ikisinin arası — gpt-oss ÷8.',20,350,11,'#ffc82e');txt('Önemli: Q her kafada AYRI kalır (64 farklı soru); yalnız K ve V paylaşılır.',20,370,11,'#5fcf8a');ctx.globalAlpha=1},
- live:function(t){return 'K/V önbelleği (token·katman): MHA 2×64×64 = <b>8192</b>  →  GQA 2×8×64 = <b>1024</b>  →  MQA 2×1×64 = <b>128</b>'},
- say:'<b>GQA nasıl bir yapı?</b> Normal çok kafalı attention\'da (MHA, GPT-2) her kafanın kendi <b>Q, K ve V</b>\'si vardır. Üretirken her token için K ve V <b>önbellekte saklanır</b> ve bu önbellek bellek/hız darboğazıdır. <b>GQA</b>\'da Q kafaları yine ayrıdır (gpt-oss: 64), ama <b>K ve V yalnız 8 kafa</b> üretilir ve her <b>8 Q kafası bir K/V\'yi paylaşır</b>. Aşırı uçta <b>MQA</b> tek K/V kullanır. Sayılar: 2 (K,V) × kafa sayısı × 64. gpt-oss için 64 Q / 8 K-V doğrulandı.',
+ live:function(t){if(t>=0.5){var gs=Math.min(7,Math.floor(clamp((t-0.5)/0.5/0.9,0,.999)*8));return 'K/V kafası '+(gs+1)+' ← Q kafaları '+(gs*8+1)+'–'+(gs*8+8)+' (8 sorgu kafası bir K/V\'yi paylaşır)'}return 'K/V önbelleği (token·katman): MHA 2×64×64 = <b>8192</b>  →  GQA 2×8×64 = <b>1024</b>  →  MQA 2×1×64 = <b>128</b>'},
+ say:'<b>GQA nasıl bir yapı?</b> Normal çok kafalı attention\'da (MHA, GPT-2) her kafanın kendi <b>Q, K ve V</b>\'si vardır. Üretirken her token için K ve V <b>önbellekte saklanır</b> ve bu önbellek bellek/hız darboğazıdır. <b>GQA</b>\'da Q kafaları yine ayrıdır (gpt-oss: 64), ama <b>K ve V yalnız 8 kafa</b> üretilir ve her <b>8 Q kafası bir K/V\'yi paylaşır</b>. Aşırı uçta <b>MQA</b> tek K/V kullanır. <b>Dağılım kuralı:</b> gpt-oss\'ta 64 Q kafası 8\'erli gruplara ayrılır; 1–8. Q kafası 1. K/V\'yi, 9–16. Q kafası 2. K/V\'yi… 57–64. Q kafası 8. K/V\'yi kullanır (ikinci ekran). Sayılar: 2 (K,V) × kafa sayısı × 64. gpt-oss için 64 Q / 8 K-V doğrulandı.',
  soz:'64 ayrı soru soran okuyucu var, ama kütüphanede yalnız 8 raf: her 8 okuyucu aynı rafa bakıyor. Sorular farklı kaldığı için bulduklarını da farklı.',
  elde:'K/V önbelleği 8 kat küçüldü; Q hâlâ 64 ayrı kafa.',
  neden:'Uzun metinde önbelleğin okunması/saklanması maliyetin çoğudur; K/V\'yi paylaşmak bunu çok azaltır, Q ayrı kaldığı için çeşitlilik (64 farklı bakış) korunur.'};
