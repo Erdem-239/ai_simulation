@@ -48,7 +48,7 @@ window.printA4=function(canvas,render,light,hook){
     var img=document.getElementById('prImg');
     if(!img){img=document.createElement('img');img.id='prImg';document.body.appendChild(img);
       var st=document.createElement('style');
-      st.textContent='#prImg{display:none}@page{size:A4 landscape;margin:4mm;background:#fff}@media print{:root,html,body{background:#fff!important;color-scheme:light!important;margin:0!important;height:auto!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prImg){display:none!important}#prImg{display:block!important;max-width:100%;max-height:202mm;object-fit:contain;margin:0 auto}#prImg.light{filter:invert(1) hue-rotate(180deg)}}';
+      st.textContent='#prImg{display:none}@page{size:A4 landscape;margin:0}@media print{:root,html,body{background:#fff!important;color-scheme:light!important;margin:0!important;height:auto!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prImg){display:none!important}#prImg{display:block!important;width:297mm;height:209.5mm;object-fit:cover;margin:0;page-break-after:avoid}#prImg.light{filter:invert(1) hue-rotate(180deg)}}';
       document.head.appendChild(st);}
     img.className=light?'light':'';img.src=c.toDataURL('image/png');
   }
