@@ -987,9 +987,9 @@ const PH={renderer,
  step(){if(tourOn||(selected&&focusOn))return true;
   const box=new THREE.Box3(),c=new THREE.Vector3();let any=false;ARCHS.forEach(A=>{if(A.on)A.parts.forEach(p=>{if(p.group.visible){box.expandByObject(p.group);any=true}})});if(!any)return true;
   const m=printA4Ndc(box,camera),sh=printA4Shift(m,camera,tgt);panOff.addScaledVector(sh,0.5);
-  const f=Math.max(m.w,m.h)/0.9;zoom=clamp(zoom*(1+(f-1)*0.3),ZMIN,ZMAX);
+  const f=Math.max(m.w,m.h)/0.985;zoom=clamp(zoom*(1+(f-1)*0.3),ZMIN,ZMAX);
   return Math.abs(f-1)<0.03&&Math.abs(m.cx)<0.03&&Math.abs(m.cy)<0.05}};
 $('pk').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),false,PH);
 $('pa').onclick=()=>printA4(renderer.domElement,()=>renderer.render(scene,camera),true,PH);
 </script>
-<script src="print-a4.js?v=1"></script>
+<script src="print-a4.js?v=202610201753"></script>
