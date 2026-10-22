@@ -1202,6 +1202,23 @@ function tick(ts){
       if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
 window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+var SNAP=/[?&]snap=1/.test(location.search);
+if(SNAP){
+  /* A4 yazdırma için gizli kare: sahneleri sabit bir andan resme çevirir (postMessage: {type:'snapReq',id,kind:'gpt2'|'gptoss',mode:'mid'|'end'}) */
+  window.addEventListener('message',function(e){var d=e.data;if(!d||d.type!=='snapReq')return;
+    var list=d.kind==='gptoss'?SCNO:SCN,tv=d.mode==='end'?1:0.6,sc=2,out=[],W0=cv.width,H0=cv.height;
+    playing=false;
+    list.forEach(function(s){
+      cv.width=CW*sc;cv.height=CH*sc;ctx.setTransform(sc,0,0,sc,0,0);ctx.clearRect(0,0,CW,CH);
+      try{s.draw(tv)}catch(err){}
+      out.push({tag:s.tag,url:cv.toDataURL('image/png')});
+    });
+    cv.width=W0;cv.height=H0;ctx.setTransform(1,0,0,1,0,0);
+    parent.postMessage({type:'snapRes',id:d.id,list:out},'*')});
+  go(GP0);playing=false;
+  parent.postMessage({type:'snapReady'},'*');
+}else{
 go(/ossturu/i.test(location.hash)?SC.length-1:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+}
 })();
 </script></body></html>

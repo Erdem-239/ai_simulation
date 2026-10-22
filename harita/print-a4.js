@@ -1,9 +1,9 @@
 /* A4 yazdırma: tuvali A4 yatay oranına getirip bütün sahneyi sığdırır, WebGL tuvali + HTML etiketlerini tek PNG'ye birleştirip basar.
    hook = {renderer, save():restoreFn, step():true|false(bitti)} — sayfa kendi kamerasını sığdırır. */
-window.printA4=function(canvas,render,light,hook){
+window.printA4=function(canvas,render,light,hook,extra){
   var busy=window.__printBusy;if(busy)return;window.__printBusy=1;
-  var RATIO=297/210,iwD=Object.getOwnPropertyDescriptor(window,'innerWidth'),ihD=Object.getOwnPropertyDescriptor(window,'innerHeight');
-  var vw=window.innerWidth,vh=window.innerHeight,W=2000,H=Math.floor(W/RATIO),cs=canvas.style.cssText;
+  var RATIO=297/210,AR=(extra&&extra.aspect)||RATIO,iwD=Object.getOwnPropertyDescriptor(window,'innerWidth'),ihD=Object.getOwnPropertyDescriptor(window,'innerHeight');
+  var vw=window.innerWidth,vh=window.innerHeight,W=2000,H=Math.floor(W/AR),cs=canvas.style.cssText;
   var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99999;background:#0b0e14e6;color:#e7ecf5;display:flex;align-items:center;justify-content:center;font:600 16px sans-serif';
   ov.textContent='A4 için sahne sığdırılıyor…';
   var restore=hook&&hook.save?hook.save():null,r=hook&&hook.renderer,pr0=r?r.getPixelRatio():1;
@@ -45,12 +45,7 @@ window.printA4=function(canvas,render,light,hook){
       g.globalAlpha=a.o;g.fillStyle='#e7ecf5';g.font='600 '+fs+'px sans-serif';g.textBaseline='middle';
       g.fillText(a.t,a.x+7*k*0.85*SC,a.y+a.h/2,Math.max(10,a.w-12*k*0.85*SC));g.globalAlpha=1;
     });
-    var img=document.getElementById('prImg');
-    if(!img){img=document.createElement('img');img.id='prImg';document.body.appendChild(img);
-      var st=document.createElement('style');
-      st.textContent='#prImg{display:none}@page{size:A4 landscape;margin:0}@media print{:root,html,body{background:#fff!important;color-scheme:light!important;margin:0!important;height:auto!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(#prImg){display:none!important}#prImg{display:block!important;width:297mm;height:209.5mm;object-fit:cover;margin:0;page-break-after:avoid}#prImg.light{filter:invert(1) hue-rotate(180deg)}}';
-      document.head.appendChild(st);}
-    img.className=light?'light':'';img.src=c.toDataURL('image/png');
+    return c;
   }
   document.body.appendChild(ov);
   setSize();
@@ -60,8 +55,15 @@ window.printA4=function(canvas,render,light,hook){
     if(hook&&hook.step)done=hook.step();
     ok=done?ok+1:0;
     if(ok>=6||n>260){
-      capture();back();
-      setTimeout(function(){window.print()},150);return;
+      var arch=capture();back();
+      var finish=function(pages){window.printA4Pages(pages,light);window.__printBusy=0;setTimeout(function(){window.print()},150)};
+      if(extra&&extra.snaps){
+        window.__printBusy=1;
+        var ov2=document.createElement('div');ov2.style.cssText=ov.style.cssText;ov2.textContent='Adım adım görseller hazırlanıyor…';document.body.appendChild(ov2);
+        extra.snaps.then(function(list){return window.printA4Compose(arch,list,extra)}).then(function(pages){ov2.remove();finish(pages)},
+          function(){ov2.remove();finish([arch])});
+      }else finish([arch]);
+      return;
     }
     requestAnimationFrame(loop);
   })();
@@ -79,4 +81,57 @@ window.printA4Shift=function(m,camera,tgt){
   var V=camera.position.constructor,d=camera.position.distanceTo(tgt),t=Math.tan(camera.fov*Math.PI/360)*d;
   var r=new V().setFromMatrixColumn(camera.matrixWorld,0),u=new V().setFromMatrixColumn(camera.matrixWorld,1);
   return r.multiplyScalar(m.cx*t*camera.aspect).add(u.multiplyScalar(m.cy*t));
+};
+
+/* sayfaları <img class="prPg"> olarak koyar (her biri bir A4 yatay sayfa) */
+window.printA4Pages=function(pages,light){
+  [].forEach.call(document.querySelectorAll('.prPg,#prImg'),function(e){e.remove()});
+  var st=document.getElementById('prStyle');
+  if(!st){st=document.createElement('style');st.id='prStyle';
+    st.textContent='.prPg{display:none}@page{size:A4 landscape;margin:0}@media print{:root,html,body{background:#fff!important;color-scheme:light!important;margin:0!important;height:auto!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}body>*:not(.prPg){display:none!important}.prPg{display:block!important;width:297mm;height:209.5mm;object-fit:cover;margin:0;page-break-after:always;break-after:page}.prPg:last-of-type{page-break-after:avoid;break-after:avoid}.prPg.light{filter:invert(1) hue-rotate(180deg)}}';
+    document.head.appendChild(st)}
+  pages.forEach(function(c){var im=document.createElement('img');im.className='prPg'+(light?' light':'');im.src=c.toDataURL('image/png');document.body.appendChild(im)});
+  window.__prPages=pages.length;
+};
+/* animasyon sayfasındaki sahneleri gizli bir karede resme çevirir: kind 'gpt2' | 'gptoss', mode 'mid' (hesap sürerken) | 'end' (tamamlanmış) */
+window.printA4Snaps=function(kind,mode){
+  return new Promise(function(res,rej){
+    var f=document.createElement('iframe'),id=Date.now(),to;
+    f.style.cssText='position:fixed;left:-99999px;top:0;width:1100px;height:800px;border:0';
+    function done(v,err){clearTimeout(to);window.removeEventListener('message',on);f.remove();err?rej(err):res(v)}
+    function on(e){var d=e.data;if(!d)return;
+      if(d.type==='snapReady')f.contentWindow.postMessage({type:'snapReq',id:id,kind:kind,mode:mode},'*');
+      else if(d.type==='snapRes'&&d.id===id)done(d.list)}
+    window.addEventListener('message',on);
+    to=setTimeout(function(){done(null,new Error('zaman aşımı'))},90000);
+    f.src=new URL('matris-animasyon.html?snap=1&_='+id,location.href).href;
+    document.body.appendChild(f);
+  });
+};
+/* mimari görselinin altına adım görsellerini akıtır (2 sütun, sığmayan sonraki sayfaya geçer); sayfa tuvalleri döner */
+window.printA4Compose=function(arch,list,extra){
+  var PW=3000,PH=Math.round(PW*210/297),mm=PW/297,m=6*mm,gap=4*mm,cap=6*mm,per=(extra&&extra.perPage)||4;
+  var cw=(PW-2*m-gap)/2;if(per>=6)cw*=0.84;
+  var ch=cw*470/1000+cap,x0=(PW-(2*cw+gap))/2;
+  return Promise.all(list.map(function(it){return new Promise(function(r){var im=new Image();im.onload=function(){r(im)};im.onerror=function(){r(null)};im.src=it.url})})).then(function(imgs){
+    var pages=[],g,pc;
+    function newPage(){pc=document.createElement('canvas');pc.width=PW;pc.height=PH;g=pc.getContext('2d');g.fillStyle='#0b0e14';g.fillRect(0,0,PW,PH);pages.push(pc)}
+    newPage();
+    var aw=PW-2*m,ah=aw*arch.height/arch.width;g.drawImage(arch,m,m,aw,ah);
+    var y=m+ah+gap;
+    g.fillStyle='#ffc82e';g.font='700 '+Math.round(4.2*mm)+'px sans-serif';g.textBaseline='top';
+    g.fillText('Adım adım: işlemler ve görselleri',x0,y);y+=5.5*mm+gap/2;
+    list.forEach(function(it,k){
+      var col=k%2;
+      if(col===0&&k>0)y+=ch+gap;
+      if(col===0&&y+ch>PH-m){newPage();y=m}
+      var x=x0+col*(cw+gap);
+      g.fillStyle='#12151c';g.strokeStyle='#323a4a';g.lineWidth=3;
+      g.fillRect(x,y,cw,ch);g.strokeRect(x,y,cw,ch);
+      if(imgs[k])g.drawImage(imgs[k],x,y+cap,cw,cw*470/1000);
+      g.fillStyle='#e7ecf5';g.font='700 '+Math.round(3.6*mm)+'px sans-serif';g.textBaseline='middle';
+      g.fillText(it.tag,x+1.5*mm,y+cap/2,cw-3*mm);
+    });
+    return pages;
+  });
 };
