@@ -111,8 +111,10 @@ window.printA4Snaps=function(kind,mode){
 /* mimari görselinin altına adım görsellerini akıtır (2 sütun, sığmayan sonraki sayfaya geçer); sayfa tuvalleri döner */
 window.printA4Compose=function(arch,list,extra){
   var PW=3000,PH=Math.round(PW*210/297),mm=PW/297,m=6*mm,gap=4*mm,cap=6*mm,per=(extra&&extra.perPage)||4;
-  var cw=(PW-2*m-gap)/2;if(per>=6)cw*=0.84;
-  var ch=cw*470/1000+cap,x0=(PW-(2*cw+gap))/2;
+  var cols=per>=9?3:2,cw=(PW-2*m-(cols-1)*gap)/cols;
+  if(per===6)cw*=0.84;
+  if(per>=12)cw=((PH-2*m-3*gap)/4-cap)/0.47; /* 4 satır sığsın */
+  var ch=cw*470/1000+cap,x0=(PW-(cols*cw+(cols-1)*gap))/2;
   return Promise.all(list.map(function(it){return new Promise(function(r){var im=new Image();im.onload=function(){r(im)};im.onerror=function(){r(null)};im.src=it.url})})).then(function(imgs){
     var pages=[],g,pc;
     function newPage(){pc=document.createElement('canvas');pc.width=PW;pc.height=PH;g=pc.getContext('2d');g.fillStyle='#0b0e14';g.fillRect(0,0,PW,PH);pages.push(pc)}
@@ -122,7 +124,7 @@ window.printA4Compose=function(arch,list,extra){
     g.fillStyle='#ffc82e';g.font='700 '+Math.round(4.2*mm)+'px sans-serif';g.textBaseline='top';
     g.fillText('Adım adım: işlemler ve görselleri',x0,y);y+=5.5*mm+gap/2;
     list.forEach(function(it,k){
-      var col=k%2;
+      var col=k%cols;
       if(col===0&&k>0)y+=ch+gap;
       if(col===0&&y+ch>PH-m){newPage();y=m}
       var x=x0+col*(cw+gap);
