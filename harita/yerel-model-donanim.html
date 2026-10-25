@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Yerel Model Donanım Rehberi</title>
+<style>
+:root{--bg:#12151c;--card:#1a1f2a;--ink:#e8ebf2;--mute:#9aa3b6;--line:#323a4a;--blue:#6ea0ff;--green:#5fcf8a;--amber:#e8a94d;--red:#f27a88;--violet:#b592f0;--hl:#ffc82e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:26px;margin:0 0 6px}h2{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+.warn{background:#2a2414;border:1px solid #6b5a1e;border-radius:10px;padding:10px 14px;margin:12px 0 22px;color:#f0dca0}
+.sec{background:var(--card);border:2px solid var(--c);border-radius:16px;padding:18px 18px 20px;margin-bottom:22px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:#202737;white-space:nowrap}
+td.n{white-space:nowrap}
+.tw{overflow-x:auto;margin:8px 0 4px}
+.tw table{min-width:680px}
+code{background:#232a38;border-radius:4px;padding:0 5px}
+ul.nt{margin:6px 0;padding-left:18px}ul.nt li{margin:0 0 8px}
+.box{background:#202737;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+.tag{display:inline-block;border-radius:6px;padding:0 7px;font-size:12px;font-weight:700;background:var(--c);color:#12151c}
+.dag{color:var(--amber);font-weight:700}
+a{color:var(--blue)}
+.src li{margin:0 0 4px;font-size:13px}
+</style></head><body><div class="wrap">
+<h1>🖥️ Yerel model donanım rehberi: hangi model, kaç GB, kaç dolar?</h1>
+<p class="sub">Açık ağırlıklı modelleri (Gemma, Qwen, gpt-oss, DeepSeek) kendi donanımında çalıştırmak için gereken <b>VRAM / RAM</b> ve tahmini maliyet; bit oranına (4 / 8 / 16 bit) göre.</p>
+<div class="warn">⚠️ <b>Dürüst not:</b> Bu sayfadaki hiçbir model bizim tarafımızdan çalıştırılıp ölçülmedi. Bellek değerleri bir <b>formülden</b> (aşağıda) ve bir derleme PDF raporundan, maliyetler ise Ekim 2026'da yapılan web aramalarından ve tahminlerden geliyor; kaynaklar birbiriyle çelişebiliyor. <span class="dag">†</span> işaretli modeller PDF'te yok, hafızadan/önceki aramalardan geldi. Satın almadan önce modelin Hugging Face model kartındaki gerçek boyutu ve güncel fiyatı kendin doğrula.</div>
+
+<div class="sec" style="--c:#6ea0ff">
+<h2>Nasıl okunur?</h2>
+<ul class="nt">
+<li><span class="tag" style="--c:#6ea0ff">VRAM / RAM</span> Tablolardaki her hücre <b>VRAM / RAM</b> (GB). <b>VRAM</b> = ekran kartının belleği, modelin <b>hızlı</b> çalışması için gerekli. <b>RAM</b> = ekran kartı olmadan, sadece işlemciyle çalıştırırsan gerekli (çalışır ama çok daha yavaş). Örnek: <b>3 / 9</b> → ekran kartında 3 GB VRAM yeter, sadece RAM ile 9 GB RAM gerekir.</li>
+<li><span class="tag" style="--c:#5fcf8a">Bit</span> Modelin milyarlarca sayısı kaç bitle saklanıyor: <b>16 bit</b> = en yüksek kalite (2 bayt), <b>8 bit</b> = neredeyse kayıpsız (1 bayt), <b>4 bit</b> = en yaygın tercih (0,5 bayt), 2 bit ve altı kalite düşürür. Bit azaldıkça dosya küçülür.</li>
+<li><span class="tag" style="--c:#e8a94d">Formül</span> VRAM = <code>toplam parametre × bayt × 1,2</code> (%20 bağlam/ek yük). RAM = VRAM + ~6 GB (işletim sistemi ve programlar). Gerçek 4 bit dosyaları (Q4_K_M gibi) formülden %10-30 büyük çıkabilir; <b>karar verirken büyük olanı al</b>. Çok kullanıcılı sunucuda bağlam (KV cache) ayrıca eklenir.</li>
+<li><span class="tag" style="--c:#b592f0">MoE</span> MoE modellerde (gpt-oss, Gemma 26B MoE, Qwen3-30B-A3B, DeepSeek V4/R1) her adımda yalnızca küçük bir kısım çalıştığı için, ağırlıklar RAM'e taşındığında bile yoğun modellere göre daha az yavaşlarlar. Ama <b>bellek ihtiyacı toplam parametreye göre</b> belirlenir.</li>
+</ul>
+</div>
+
+<div class="sec" style="--c:#5fcf8a">
+<h2>1) PC sınıfı</h2>
+<p class="sub">Tek bir ekran kartı veya sıradan bir masaüstü. Maliyet kolonu <b>4 bit'i GPU'da çalıştırma</b> senaryosu için (USD, tahmin; tüketici kartı fiyatları güncel değil).</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>Gemma 4 E2B</td><td class="n">~5B</td><td class="n">3 / 9</td><td class="n">6 / 12</td><td class="n">12 / 18</td><td>Mevcut PC yeter (~$0)</td></tr>
+<tr><td>Gemma 4 E4B</td><td class="n">~8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Mevcut PC yeter, ya da 8 GB kart ~$300-600</td></tr>
+<tr><td>R1 Distill 7B/8B</td><td class="n">8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Aynı: ~$0-600</td></tr>
+<tr><td>Gemma 4 12B</td><td class="n">12B</td><td class="n">7 / 13</td><td class="n">14 / 20</td><td class="n">29 / 35</td><td>8-12 GB kart ~$300-600</td></tr>
+<tr><td>R1 Distill 14B</td><td class="n">14B</td><td class="n">8 / 14</td><td class="n">17 / 23</td><td class="n">34 / 40</td><td>12-16 GB kart ~$500-1.200</td></tr>
+<tr><td>gpt-oss-20b <span class="dag">†</span></td><td class="n">~21B</td><td class="n">13 / 19</td><td class="n">25 / 31</td><td class="n">50 / 56</td><td>16 GB kart ~$800-1.200, ya da MoE olduğu için 32 GB RAM ile ~$0 (yavaş)</td></tr>
+<tr><td>Gemma 4 26B MoE</td><td class="n">25B</td><td class="n">15 / 21</td><td class="n">30 / 36</td><td class="n">60 / 66</td><td>16-24 GB kart ~$1.000-2.000, ya da 32 GB RAM ile ~$0 (yavaş)</td></tr>
+<tr><td>Qwen3-30B-A3B <span class="dag">†</span></td><td class="n">~30B</td><td class="n">18 / 24</td><td class="n">36 / 42</td><td class="n">72 / 78</td><td>24 GB kart ~$1.500-2.500, ya da 32 GB RAM ile ~$0</td></tr>
+<tr><td>Gemma 4 31B</td><td class="n">31B</td><td class="n">19 / 25</td><td class="n">37 / 43</td><td class="n">74 / 80</td><td>24 GB kart ~$1.500-2.500</td></tr>
+<tr><td>QwQ-32B / Qwen 2.5 Coder 32B / R1 Distill 32B</td><td class="n">32B</td><td class="n">19-24 / 25-30</td><td class="n">38 / 44</td><td class="n">77 / 83</td><td>24 GB kart ~$1.500-2.500</td></tr>
+</table></div>
+<div class="box">💡 <b>Örnek: RTX 4080 (16 GB VRAM) + 32 GB RAM</b> — Tamamen karta sığar: Gemma 4 E2B/E4B/12B, R1 Distill 8B/14B, <b>gpt-oss-20b</b> (13 GB). MoE olduğu için küçük bir kısmı RAM'e taşarak çalışır: Gemma 4 26B MoE, Qwen3-30B-A3B. Sığmaz (RAM'e taşınırsa saniyede birkaç token): yoğun 31-32B modeller (19-24 GB). 70B ve üstü bu donanım için uygun değil. Not: masaüstü RTX 4080 16 GB'tır, laptop 4080 genelde 12 GB.</div>
+</div>
+
+<div class="sec" style="--c:#e8a94d">
+<h2>2) Sınır sınıfı</h2>
+<p class="sub">Tek tüketici kartına sığmayan ama tek veri merkezi kartına (80 GB) veya büyük birleşik bellekli Mac'e sığabilen modeller.</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>R1 Distill 70B</td><td class="n">70B</td><td class="n">42 / 48</td><td class="n">84 / 90</td><td class="n">168 / 174</td><td>2× 24 GB kart ~$3.000-5.000, veya 64 GB Mac (fiyat araştırılmadı)</td></tr>
+<tr><td>Qwen 2.5 72B</td><td class="n">72B</td><td class="n">43 / 49</td><td class="n">86 / 92</td><td class="n">173 / 179</td><td>Aynı</td></tr>
+<tr><td>gpt-oss-120b <span class="dag">†</span></td><td class="n">~117B</td><td class="n">70 / 76</td><td class="n">140 / 146</td><td class="n">281 / 287</td><td>Tek H100: ~$25.000-40.000 satın alma, ya da kiralama ~$1,5-4,3/saat (~$1.100-3.100/ay)</td></tr>
+<tr><td>DeepSeek V4-Flash (PDF)</td><td class="n">130B</td><td class="n">78 / 84</td><td class="n">156 / 162</td><td class="n">312 / 318</td><td>Aynı: tek H100 (sıkışık)</td></tr>
+</table></div>
+</div>
+
+<div class="sec" style="--c:#f27a88">
+<h2>3) Sunucu sınıfı</h2>
+<p class="sub">Parantezdeki sayı, <b>80 GB'lık GPU adedi</b>. Satın alma: 8 GPU'lu sunucu ~$200.000-320.000, tek H100 ~$25.000-40.000.</p>
+<div class="tw"><table>
+<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>DeepSeek V4.1 Flash</td><td class="n">~552B*</td><td class="n">331 / 337 (5 GPU)</td><td class="n">662 / 668 (9 GPU)</td><td class="n">1325 / 1331 (17 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, ya da kiralama ~$16/saat (~$12.000/ay)**</td></tr>
+<tr><td>DeepSeek R1</td><td class="n">671B</td><td class="n">402 / 408 (6 GPU)</td><td class="n">805 / 811 (11 GPU)</td><td class="n">1610 / 1616 (21 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$20/saat (~$14.400/ay)**</td></tr>
+<tr><td>DeepSeek-V4-Pro</td><td class="n">685B</td><td class="n">411 / 417 (6 GPU)</td><td class="n">822 / 828 (11 GPU)</td><td class="n">1644 / 1650 (21 GPU)</td><td>Aynı: ~$200.000-320.000 / ~$14.400/ay**</td></tr>
+</table></div>
+<ul class="nt">
+<li>* V4.1 Flash'ın parametre sayısı kaynaklara göre değişiyor (552B / 763B / açıklanmadı); PDF'teki "V4-Flash" 130B ise farklı bir sürüm olabilir.</li>
+<li>** Kiralama: Lambda'nın 19 Ekim 2026 tarihli H100 PCIe fiyatı $3,29/GPU-saat × GPU sayısı × 730 saat. Bütçe bulutlarında bunun yaklaşık yarısı çıkabilir.</li>
+<li><b>8 bit</b> sunucu için 9-11 GPU yani iki sunucu: ~$400.000-640.000 (kiralama ~$22.000-26.000/ay). <b>16 bit</b> için 17-21 GPU, üç sunucu: ~$600.000-960.000 (kiralama ~$41.000-50.000/ay).</li>
+</ul>
+</div>
+
+<div class="sec" style="--c:#b592f0">
+<h2>Dahil olmayanlar ve dikkat edilecekler</h2>
+<ul class="nt">
+<li><b>Maliyete dahil değil:</b> elektrik, soğutma, sunucu odası, bakım işçiliği, yedek donanım; Türkiye'de ayrıca gümrük, KDV ve distribütör marjı. Mac fiyatları ve RAM kiti araştırılmadı.</li>
+<li><b>Satın alma vs kiralama:</b> kaynaklar çoğu kurum için kiralamanın varsayılan olduğunu, satın almanın uzun süreli yoğun kullanımda anlamlı olduğunu söylüyor; sunucu tedarik süreleri 6-12 ay olabilir.</li>
+<li><b>Fiyatlar çelişkili ve eski olabilir:</b> tüketici kartı fiyatlarında güncel veri bulunamadı; H100 fiyatları vendor yayınları ve bloglardan. Gerçek karar için satıcıdan teklif al.</li>
+<li><b>Çok kullanıcı:</b> tablolar bir kullanıcı içindir; eşzamanlı kullanıcı sayısı arttıkça KV cache için ek bellek gerekir.</li>
+<li><b>Kalite ve Türkçe:</b> modellerin kodlama/Türkçe kalitesi ölçülmedi, 4 bit sıkıştırma kodlamada daha çok kalite kaybettirebilir; kendi işinden 10-20 örnekle yan yana dene.</li>
+</ul>
+</div>
+
+<div class="sec" style="--c:#6ea0ff">
+<h2>Kaynaklar</h2>
+<ul class="src">
+<li>Derleme rapor (PDF): "2026 Açık Kaynak ve Açık Ağırlıklı Yapay Zeka Modelleri: Ekosistem, Mimari ve Sistem Gereksinimleri" (VRAM/RAM, parametre sayıları, benchmark değerleri)</li>
+<li><a href="https://cloudzero.com/blog/h100-gpu-cost/" target="_blank" rel="noopener">CloudZero — H100 GPU cost</a></li>
+<li><a href="https://www.hivenet.com/post/nvidia-h100-pricing" target="_blank" rel="noopener">Hivenet — NVIDIA H100 pricing</a></li>
+<li><a href="https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison" target="_blank" rel="noopener">Intuition Labs — H100 rental prices compared</a></li>
+<li><a href="https://www.itcreations.com/product/146011" target="_blank" rel="noopener">IT Creations — H100 PCIe listesi</a></li>
+<li><a href="https://www.ntv.com.tr/teknoloji/nvidia-rtx-5000-serisini-tanitti-turkiye-fiyati-belli-oldu,w5yP2QLzG06Isy5TUqTcJg" target="_blank" rel="noopener">NTV — RTX 5000 Türkiye fiyatı</a></li>
+</ul>
+</div>
+</div></body></html>
