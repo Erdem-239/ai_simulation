@@ -25,8 +25,8 @@ a{color:var(--blue)}
 .src li{margin:0 0 4px;font-size:13px}
 </style></head><body><div class="wrap">
 <h1>🖥️ Yerel model donanım rehberi: hangi model, kaç GB, kaç dolar?</h1>
-<p class="sub">Açık ağırlıklı modelleri (Gemma, Qwen, gpt-oss, DeepSeek) kendi donanımında çalıştırmak için gereken <b>VRAM / RAM</b> ve tahmini maliyet; bit oranına (4 / 8 / 16 bit) göre.</p>
-<div class="warn">⚠️ <b>Dürüst not:</b> Bu sayfadaki hiçbir model bizim tarafımızdan çalıştırılıp ölçülmedi. Bellek değerleri bir <b>formülden</b> (aşağıda) ve bir derleme PDF raporundan, maliyetler ise Ekim 2026'da yapılan web aramalarından ve tahminlerden geliyor; kaynaklar birbiriyle çelişebiliyor. <span class="dag">†</span> işaretli modeller PDF'te yok, hafızadan/önceki aramalardan geldi. Satın almadan önce modelin Hugging Face model kartındaki gerçek boyutu ve güncel fiyatı kendin doğrula.</div>
+<p class="sub">Açık ağırlıklı modelleri (Gemma, Qwen, gpt-oss, DeepSeek, Kimi, GLM, MiMo, Hy) kendi donanımında çalıştırmak için gereken <b>VRAM / RAM</b> ve tahmini maliyet; bit oranına (4 / 8 / 16 bit) göre.</p>
+<div class="warn">⚠️ <b>Dürüst not:</b> Bu sayfadaki hiçbir model bizim tarafımızdan çalıştırılıp ölçülmedi. Bellek değerleri bir <b>formülden</b> (aşağıda) ve bir derleme PDF raporundan, maliyetler ise Ekim 2026'da yapılan web aramalarından ve tahminlerden geliyor; kaynaklar birbiriyle çelişebiliyor. <span class="dag">†</span> işaretli modeller PDF'te yok, hafızadan/önceki aramalardan geldi; <span class="dag">‡</span> işaretliler ikincil web kaynaklarından. Satın almadan önce modelin Hugging Face model kartındaki gerçek boyutu ve güncel fiyatı kendin doğrula.</div>
 
 <div class="sec" style="--c:#6ea0ff">
 <h2>Nasıl okunur?</h2>
@@ -52,6 +52,7 @@ a{color:var(--blue)}
 <tr><td>Gemma 4 26B MoE</td><td class="n">25B</td><td class="n">15 / 21</td><td class="n">30 / 36</td><td class="n">60 / 66</td><td>16-24 GB kart ~$1.000-2.000, ya da 32 GB RAM ile ~$0 (yavaş)</td></tr>
 <tr><td>Qwen3-30B-A3B <span class="dag">†</span></td><td class="n">~30B</td><td class="n">18 / 24</td><td class="n">36 / 42</td><td class="n">72 / 78</td><td>24 GB kart ~$1.500-2.500, ya da 32 GB RAM ile ~$0</td></tr>
 <tr><td>Gemma 4 31B</td><td class="n">31B</td><td class="n">19 / 25</td><td class="n">37 / 43</td><td class="n">74 / 80</td><td>24 GB kart ~$1.500-2.500</td></tr>
+<tr><td>Qwen3.8-27B <span class="dag">‡</span></td><td class="n">27,8B (yoğun, görsel kodlayıcı dahil)</td><td class="n">17 / 23</td><td class="n">33 / 39</td><td class="n">67 / 73</td><td>24 GB kart ~$1.500-2.500 (16 GB karta daha düşük bitle sığdırma iddiaları var, doğrulamadım)</td></tr>
 <tr><td>QwQ-32B / Qwen 2.5 Coder 32B / R1 Distill 32B</td><td class="n">32B</td><td class="n">19-24 / 25-30</td><td class="n">38 / 44</td><td class="n">77 / 83</td><td>24 GB kart ~$1.500-2.500</td></tr>
 </table></div>
 <div class="box">💡 <b>Örnek: RTX 4080 (16 GB VRAM) + 32 GB RAM</b> — Tamamen karta sığar: Gemma 4 E2B/E4B/12B, R1 Distill 8B/14B, <b>gpt-oss-20b</b> (13 GB). MoE olduğu için küçük bir kısmı RAM'e taşarak çalışır: Gemma 4 26B MoE, Qwen3-30B-A3B. Sığmaz (RAM'e taşınırsa saniyede birkaç token): yoğun 31-32B modeller (19-24 GB). 70B ve üstü bu donanım için uygun değil. Not: masaüstü RTX 4080 16 GB'tır, laptop 4080 genelde 12 GB.</div>
@@ -66,6 +67,7 @@ a{color:var(--blue)}
 <tr><td>Qwen 2.5 72B</td><td class="n">72B</td><td class="n">43 / 49</td><td class="n">86 / 92</td><td class="n">173 / 179</td><td>Aynı</td></tr>
 <tr><td>gpt-oss-120b <span class="dag">†</span></td><td class="n">~117B</td><td class="n">70 / 76</td><td class="n">140 / 146</td><td class="n">281 / 287</td><td>Tek H100: ~$25.000-40.000 satın alma, ya da kiralama ~$1,5-4,3/saat (~$1.100-3.100/ay)</td></tr>
 <tr><td>DeepSeek V4-Flash (PDF)</td><td class="n">130B</td><td class="n">78 / 84</td><td class="n">156 / 162</td><td class="n">312 / 318</td><td>Aynı: tek H100 (sıkışık)</td></tr>
+<tr><td>Qwen3.8-Flash-Next <span class="dag">‡</span></td><td class="n">125B + 51B n-gram gömme (6B aktif)</td><td class="n">106 / 112</td><td class="n">211 / 217</td><td class="n">422 / 428</td><td>2× H100 kartlar ~$50.000-80.000, ya da kiralama ~$6,6/saat (~$4.800/ay)**. Yalnız 125B sayılırsa 4 bit ~81 GB</td></tr>
 </table></div>
 </div>
 
@@ -74,14 +76,30 @@ a{color:var(--blue)}
 <p class="sub">Parantezdeki sayı, <b>80 GB'lık GPU adedi</b>. Satın alma: 8 GPU'lu sunucu ~$200.000-320.000, tek H100 ~$25.000-40.000.</p>
 <div class="tw"><table>
 <tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>Hy3 (Tencent) <span class="dag">‡</span></td><td class="n">295B / 21B aktif</td><td class="n">177 / 183 (3 GPU)</td><td class="n">354 / 360 (5 GPU)</td><td class="n">708 / 714 (9 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
+<tr><td>MiMo-V2.6-Flash <span class="dag">‡</span></td><td class="n">309B / 15B aktif</td><td class="n">185 / 191 (3 GPU)</td><td class="n">371 / 377 (5 GPU)</td><td class="n">742 / 748 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
+<tr><td>GLM-5.3-Flash <span class="dag">‡</span></td><td class="n">~320B / ~18B aktif</td><td class="n">192 / 198 (3 GPU)</td><td class="n">384 / 390 (5 GPU)</td><td class="n">768 / 774 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
 <tr><td>DeepSeek V4.1 Flash</td><td class="n">~552B*</td><td class="n">331 / 337 (5 GPU)</td><td class="n">662 / 668 (9 GPU)</td><td class="n">1325 / 1331 (17 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, ya da kiralama ~$16/saat (~$12.000/ay)**</td></tr>
 <tr><td>DeepSeek R1</td><td class="n">671B</td><td class="n">402 / 408 (6 GPU)</td><td class="n">805 / 811 (11 GPU)</td><td class="n">1610 / 1616 (21 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$20/saat (~$14.400/ay)**</td></tr>
 <tr><td>DeepSeek-V4-Pro</td><td class="n">685B</td><td class="n">411 / 417 (6 GPU)</td><td class="n">822 / 828 (11 GPU)</td><td class="n">1644 / 1650 (21 GPU)</td><td>Aynı: ~$200.000-320.000 / ~$14.400/ay**</td></tr>
+<tr><td>GLM-5.3 <span class="dag">‡</span></td><td class="n">753B / 40B aktif</td><td class="n">452 / 458 (6 GPU)</td><td class="n">904 / 910 (12 GPU)</td><td class="n">1807 / 1813 (23 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$19,7/saat (~$14.400/ay)**</td></tr>
+<tr><td>Kimi K3 <span class="dag">‡</span></td><td class="n">~2,8T / ~104B aktif (PDF: 36B)</td><td class="n">1680 / 1686 (21 GPU)</td><td class="n">3360 / 3366 (42 GPU)</td><td class="n">6720 / 6726 (84 GPU)</td><td>3 sunucu ~$600.000-960.000, kiralama ~$69/saat (~$50.400/ay)**</td></tr>
 </table></div>
 <ul class="nt">
 <li>* V4.1 Flash'ın parametre sayısı kaynaklara göre değişiyor (552B / 763B / açıklanmadı); PDF'teki "V4-Flash" 130B ise farklı bir sürüm olabilir.</li>
 <li>** Kiralama: Lambda'nın 19 Ekim 2026 tarihli H100 PCIe fiyatı $3,29/GPU-saat × GPU sayısı × 730 saat. Bütçe bulutlarında bunun yaklaşık yarısı çıkabilir.</li>
 <li><b>8 bit</b> sunucu için 9-11 GPU yani iki sunucu: ~$400.000-640.000 (kiralama ~$22.000-26.000/ay). <b>16 bit</b> için 17-21 GPU, üç sunucu: ~$600.000-960.000 (kiralama ~$41.000-50.000/ay).</li>
+</ul>
+</div>
+
+<div class="sec" style="--c:#ffc82e">
+<h2>Açık model sıralamasındaki yeni modeller (‡)</h2>
+<p class="sub">llm-stats.com açık model sıralamasındaki (Ekim 2026) modellerden boyutu bulunabilenleri yukarıdaki tablolara ekledik. <b>‡</b> işaretli satırların boyutları resmî model kartlarından değil, <b>ikincil kaynaklardan</b> (karşılaştırma ve haber siteleri) alındı. Sıralama sayfasının kendisine erişemedik, ekran görüntüsünden okunan ilk satırlar: 1 Kimi K3, 2 GLM-5.3, 3 Qwen3.8 Max, 4 Ling 3.1 Flash, 5 Atria Dawn Preview, 6 DeepSeek-V4.1-Flash, 7 DeepSeek-V4-Pro-0813. DeepSeek-V4.1-Flash genel sırada 6., ama Coding ve Agents sütunlarında 1. görünüyor.</p>
+<ul class="nt">
+<li><b>Qwen3.8-Max:</b> kaynaklara göre 2,4T / ~95B aktif, ama <b>açık ağırlık durumu çelişkili</b> (bir kaynak yayımlandı, bir diğeri doğrulanmış kontrol noktası/lisans yok diyor). Açık olsaydı 4 bit ~1,4 TB, yani Kimi K3 sınıfı donanım; tabloya almadık.</li>
+<li><b>Boyutu bulunamadı:</b> Ling 3.1 Flash, Atria Dawn Preview, Hy4 preview (yalnız Hy3 bulundu), Kimi K2.6, DeepSeek-V4-Pro-0813 / -Max / V4-Flash-0731 / -Vision-Exp sürümleri. Bu modeller için satır yazmadık.</li>
+<li><b>Çelişen bilgiler:</b> Kimi K3'ün aktif parametresi PDF'te 36B, diğer kaynaklarda ~104B. Qwen3.8-Flash-Next'te 51B n-gram gömme tablosu var; tablo bunu da saydı (daha tutucu), gömme tabloları RAM'e taşınabiliyorsa gereken VRAM daha düşük olabilir.</li>
+<li>Bu sıralama farklı test setlerine dayanıyor (ilk sıra 52,1 puan), PDF'teki MMLU-Pro/SWE-bench puanlarıyla kıyaslanamaz.</li>
 </ul>
 </div>
 
@@ -105,6 +123,12 @@ a{color:var(--blue)}
 <li><a href="https://intuitionlabs.ai/articles/h100-rental-prices-cloud-comparison" target="_blank" rel="noopener">Intuition Labs — H100 rental prices compared</a></li>
 <li><a href="https://www.itcreations.com/product/146011" target="_blank" rel="noopener">IT Creations — H100 PCIe listesi</a></li>
 <li><a href="https://www.ntv.com.tr/teknoloji/nvidia-rtx-5000-serisini-tanitti-turkiye-fiyati-belli-oldu,w5yP2QLzG06Isy5TUqTcJg" target="_blank" rel="noopener">NTV — RTX 5000 Türkiye fiyatı</a></li>
+<li><a href="https://www.yottalabs.ai/post/qwen-3-8-27b-specs-hardware-requirements-how-to-run-2026" target="_blank" rel="noopener">Yotta Labs — Qwen3.8-27B özellikleri</a></li>
+<li><a href="https://artificialanalysis.ai/models/comparisons/glm-5-3-vs-kimi-k3" target="_blank" rel="noopener">Artificial Analysis — GLM-5.3 vs Kimi K3</a></li>
+<li><a href="https://www.eesel.ai/blog/qwen38-max-vs-kimi-k3" target="_blank" rel="noopener">eesel — Qwen3.8 Max vs Kimi K3</a></li>
+<li><a href="https://rits.shanghai.nyu.edu/ai/tencent-releases-hy3-295b-open-moe-model-under-apache-2-0/" target="_blank" rel="noopener">NYU Shanghai — Hy3 295B</a></li>
+<li><a href="https://forums.developer.nvidia.com/t/qwen3-8-flash-next/381228/1" target="_blank" rel="noopener">NVIDIA forum — Qwen3.8-Flash-Next</a></li>
+<li><a href="https://lumichats.com/compare/mimo-v2-6-flash-vs-qwen-3-8-flash-next" target="_blank" rel="noopener">LumiChats — MiMo-V2.6-Flash vs Qwen3.8-Flash-Next</a></li>
 </ul>
 </div>
 </div></body></html>
