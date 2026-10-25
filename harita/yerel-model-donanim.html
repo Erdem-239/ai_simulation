@@ -42,18 +42,18 @@ a{color:var(--blue)}
 <h2>1) PC sınıfı</h2>
 <p class="sub">Tek bir ekran kartı veya sıradan bir masaüstü. Maliyet kolonu <b>4 bit'i GPU'da çalıştırma</b> senaryosu için (USD, tahmin; tüketici kartı fiyatları güncel değil).</p>
 <div class="tw"><table>
-<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
-<tr><td>Gemma 4 E2B</td><td class="n">~5B</td><td class="n">3 / 9</td><td class="n">6 / 12</td><td class="n">12 / 18</td><td>Mevcut PC yeter (~$0)</td></tr>
-<tr><td>Gemma 4 E4B</td><td class="n">~8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Mevcut PC yeter, ya da 8 GB kart ~$300-600</td></tr>
-<tr><td>R1 Distill 7B/8B</td><td class="n">8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Aynı: ~$0-600</td></tr>
-<tr><td>Gemma 4 12B</td><td class="n">12B</td><td class="n">7 / 13</td><td class="n">14 / 20</td><td class="n">29 / 35</td><td>8-12 GB kart ~$300-600</td></tr>
-<tr><td>R1 Distill 14B</td><td class="n">14B</td><td class="n">8 / 14</td><td class="n">17 / 23</td><td class="n">34 / 40</td><td>12-16 GB kart ~$500-1.200</td></tr>
-<tr><td>gpt-oss-20b <span class="dag">†</span></td><td class="n">~21B</td><td class="n">13 / 19</td><td class="n">25 / 31</td><td class="n">50 / 56</td><td>16 GB kart ~$800-1.200, ya da MoE olduğu için 32 GB RAM ile ~$0 (yavaş)</td></tr>
-<tr><td>Gemma 4 26B MoE</td><td class="n">25B</td><td class="n">15 / 21</td><td class="n">30 / 36</td><td class="n">60 / 66</td><td>16-24 GB kart ~$1.000-2.000, ya da 32 GB RAM ile ~$0 (yavaş)</td></tr>
-<tr><td>Qwen3-30B-A3B <span class="dag">†</span></td><td class="n">~30B</td><td class="n">18 / 24</td><td class="n">36 / 42</td><td class="n">72 / 78</td><td>24 GB kart ~$1.500-2.500, ya da 32 GB RAM ile ~$0</td></tr>
-<tr><td>Gemma 4 31B</td><td class="n">31B</td><td class="n">19 / 25</td><td class="n">37 / 43</td><td class="n">74 / 80</td><td>24 GB kart ~$1.500-2.500</td></tr>
-<tr><td>Qwen3.8-27B <span class="dag">‡</span></td><td class="n">27,8B (yoğun, görsel kodlayıcı dahil)</td><td class="n">17 / 23</td><td class="n">33 / 39</td><td class="n">67 / 73</td><td>24 GB kart ~$1.500-2.500 (16 GB karta daha düşük bitle sığdırma iddiaları var, doğrulamadım)</td></tr>
-<tr><td>QwQ-32B / Qwen 2.5 Coder 32B / R1 Distill 32B</td><td class="n">32B</td><td class="n">19-24 / 25-30</td><td class="n">38 / 44</td><td class="n">77 / 83</td><td>24 GB kart ~$1.500-2.500</td></tr>
+<tr><th>Model</th><th>Yerel indirme</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>Gemma 4 E2B</td><td class="n" title="Ağırlıklar indirilebilir; Gemma kullanım şartları (özel lisans) geçerli (PDF)">✓ Gemma lisansı</td><td class="n">~5B</td><td class="n">3 / 9</td><td class="n">6 / 12</td><td class="n">12 / 18</td><td>Mevcut PC yeter (~$0)</td></tr>
+<tr><td>Gemma 4 E4B</td><td class="n" title="Ağırlıklar indirilebilir; özel lisans (PDF)">✓ Gemma lisansı</td><td class="n">~8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Mevcut PC yeter, ya da 8 GB kart ~$300-600</td></tr>
+<tr><td>R1 Distill 7B/8B</td><td class="n" title="Ağırlıklar indirilebilir (PDF)">✓</td><td class="n">8B</td><td class="n">5 / 11</td><td class="n">10 / 16</td><td class="n">19 / 25</td><td>Aynı: ~$0-600</td></tr>
+<tr><td>Gemma 4 12B</td><td class="n" title="Ağırlıklar indirilebilir; özel lisans (PDF)">✓ Gemma lisansı</td><td class="n">12B</td><td class="n">7 / 13</td><td class="n">14 / 20</td><td class="n">29 / 35</td><td>8-12 GB kart ~$300-600</td></tr>
+<tr><td>R1 Distill 14B</td><td class="n" title="Ağırlıklar indirilebilir (PDF)">✓</td><td class="n">14B</td><td class="n">8 / 14</td><td class="n">17 / 23</td><td class="n">34 / 40</td><td>12-16 GB kart ~$500-1.200</td></tr>
+<tr><td>gpt-oss-20b <span class="dag">†</span></td><td class="n" title="Açık ağırlık; lisansı model kartından doğrula">✓ †</td><td class="n">~21B</td><td class="n">13 / 19</td><td class="n">25 / 31</td><td class="n">50 / 56</td><td>16 GB kart ~$800-1.200, ya da MoE olduğu için 32 GB RAM ile ~$0 (yavaş)</td></tr>
+<tr><td>Gemma 4 26B MoE</td><td class="n" title="Ağırlıklar indirilebilir; özel lisans (PDF)">✓ Gemma lisansı</td><td class="n">25B</td><td class="n">15 / 21</td><td class="n">30 / 36</td><td class="n">60 / 66</td><td>16-24 GB kart ~$1.000-2.000, ya da 32 GB RAM ile ~$0 (yavaş)</td></tr>
+<tr><td>Qwen3-30B-A3B <span class="dag">†</span></td><td class="n" title="Açık ağırlık; lisansı model kartından doğrula">✓ †</td><td class="n">~30B</td><td class="n">18 / 24</td><td class="n">36 / 42</td><td class="n">72 / 78</td><td>24 GB kart ~$1.500-2.500, ya da 32 GB RAM ile ~$0</td></tr>
+<tr><td>Gemma 4 31B</td><td class="n" title="Ağırlıklar indirilebilir; özel lisans (PDF)">✓ Gemma lisansı</td><td class="n">31B</td><td class="n">19 / 25</td><td class="n">37 / 43</td><td class="n">74 / 80</td><td>24 GB kart ~$1.500-2.500</td></tr>
+<tr><td>Qwen3.8-27B <span class="dag">‡</span></td><td class="n" title="İkincil kaynaklara göre resmî Qwen deposu, Apache 2.0; sahte benzer depolara dikkat">✓ Apache 2.0 ‡</td><td class="n">27,8B (yoğun, görsel kodlayıcı dahil)</td><td class="n">17 / 23</td><td class="n">33 / 39</td><td class="n">67 / 73</td><td>24 GB kart ~$1.500-2.500 (16 GB karta daha düşük bitle sığdırma iddiaları var, doğrulamadım)</td></tr>
+<tr><td>QwQ-32B / Qwen 2.5 Coder 32B / R1 Distill 32B</td><td class="n" title="Ağırlıklar indirilebilir (PDF)">✓</td><td class="n">32B</td><td class="n">19-24 / 25-30</td><td class="n">38 / 44</td><td class="n">77 / 83</td><td>24 GB kart ~$1.500-2.500</td></tr>
 </table></div>
 <div class="box">💡 <b>Örnek: RTX 4080 (16 GB VRAM) + 32 GB RAM</b> — Tamamen karta sığar: Gemma 4 E2B/E4B/12B, R1 Distill 8B/14B, <b>gpt-oss-20b</b> (13 GB). MoE olduğu için küçük bir kısmı RAM'e taşarak çalışır: Gemma 4 26B MoE, Qwen3-30B-A3B. Sığmaz (RAM'e taşınırsa saniyede birkaç token): yoğun 31-32B modeller (19-24 GB). 70B ve üstü bu donanım için uygun değil. Not: masaüstü RTX 4080 16 GB'tır, laptop 4080 genelde 12 GB.</div>
 </div>
@@ -62,12 +62,12 @@ a{color:var(--blue)}
 <h2>2) Sınır sınıfı</h2>
 <p class="sub">Tek tüketici kartına sığmayan ama tek veri merkezi kartına (80 GB) veya büyük birleşik bellekli Mac'e sığabilen modeller.</p>
 <div class="tw"><table>
-<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
-<tr><td>R1 Distill 70B</td><td class="n">70B</td><td class="n">42 / 48</td><td class="n">84 / 90</td><td class="n">168 / 174</td><td>2× 24 GB kart ~$3.000-5.000, veya 64 GB Mac (fiyat araştırılmadı)</td></tr>
-<tr><td>Qwen 2.5 72B</td><td class="n">72B</td><td class="n">43 / 49</td><td class="n">86 / 92</td><td class="n">173 / 179</td><td>Aynı</td></tr>
-<tr><td>gpt-oss-120b <span class="dag">†</span></td><td class="n">~117B</td><td class="n">70 / 76</td><td class="n">140 / 146</td><td class="n">281 / 287</td><td>Tek H100: ~$25.000-40.000 satın alma, ya da kiralama ~$1,5-4,3/saat (~$1.100-3.100/ay)</td></tr>
-<tr><td>DeepSeek V4-Flash (PDF)</td><td class="n">130B</td><td class="n">78 / 84</td><td class="n">156 / 162</td><td class="n">312 / 318</td><td>Aynı: tek H100 (sıkışık)</td></tr>
-<tr><td>Qwen3.8-Flash-Next <span class="dag">‡</span></td><td class="n">125B + 51B n-gram gömme (6B aktif)</td><td class="n">106 / 112</td><td class="n">211 / 217</td><td class="n">422 / 428</td><td>2× H100 kartlar ~$50.000-80.000, ya da kiralama ~$6,6/saat (~$4.800/ay)**. Yalnız 125B sayılırsa 4 bit ~81 GB</td></tr>
+<tr><th>Model</th><th>Yerel indirme</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>R1 Distill 70B</td><td class="n" title="Ağırlıklar indirilebilir; Llama tabanlı olduğu için taban model lisansı da geçerli olabilir">✓</td><td class="n">70B</td><td class="n">42 / 48</td><td class="n">84 / 90</td><td class="n">168 / 174</td><td>2× 24 GB kart ~$3.000-5.000, veya 64 GB Mac (fiyat araştırılmadı)</td></tr>
+<tr><td>Qwen 2.5 72B</td><td class="n" title="Ağırlıklar indirilebilir; lisansı model kartından doğrula">✓</td><td class="n">72B</td><td class="n">43 / 49</td><td class="n">86 / 92</td><td class="n">173 / 179</td><td>Aynı</td></tr>
+<tr><td>gpt-oss-120b <span class="dag">†</span></td><td class="n" title="Açık ağırlık; lisansı model kartından doğrula">✓ †</td><td class="n">~117B</td><td class="n">70 / 76</td><td class="n">140 / 146</td><td class="n">281 / 287</td><td>Tek H100: ~$25.000-40.000 satın alma, ya da kiralama ~$1,5-4,3/saat (~$1.100-3.100/ay)</td></tr>
+<tr><td>DeepSeek V4-Flash (PDF)</td><td class="n" title="PDF'e göre açık ağırlık">✓</td><td class="n">130B</td><td class="n">78 / 84</td><td class="n">156 / 162</td><td class="n">312 / 318</td><td>Aynı: tek H100 (sıkışık)</td></tr>
+<tr><td>Qwen3.8-Flash-Next <span class="dag">‡</span></td><td class="n" title="Yayın notları var ama ağırlıkların indirilebilirliğini doğrulamadık">? ‡</td><td class="n">125B + 51B n-gram gömme (6B aktif)</td><td class="n">106 / 112</td><td class="n">211 / 217</td><td class="n">422 / 428</td><td>2× H100 kartlar ~$50.000-80.000, ya da kiralama ~$6,6/saat (~$4.800/ay)**. Yalnız 125B sayılırsa 4 bit ~81 GB</td></tr>
 </table></div>
 </div>
 
@@ -75,21 +75,36 @@ a{color:var(--blue)}
 <h2>3) Sunucu sınıfı</h2>
 <p class="sub">Parantezdeki sayı, <b>80 GB'lık GPU adedi</b>. Satın alma: 8 GPU'lu sunucu ~$200.000-320.000, tek H100 ~$25.000-40.000.</p>
 <div class="tw"><table>
-<tr><th>Model</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
-<tr><td>Hy3 (Tencent) <span class="dag">‡</span></td><td class="n">295B / 21B aktif</td><td class="n">177 / 183 (3 GPU)</td><td class="n">354 / 360 (5 GPU)</td><td class="n">708 / 714 (9 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
-<tr><td>MiMo-V2.6-Flash <span class="dag">‡</span></td><td class="n">309B / 15B aktif</td><td class="n">185 / 191 (3 GPU)</td><td class="n">371 / 377 (5 GPU)</td><td class="n">742 / 748 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
-<tr><td>GLM-5.3-Flash <span class="dag">‡</span></td><td class="n">~320B / ~18B aktif</td><td class="n">192 / 198 (3 GPU)</td><td class="n">384 / 390 (5 GPU)</td><td class="n">768 / 774 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
-<tr><td>DeepSeek V4.1 Flash</td><td class="n">~552B*</td><td class="n">331 / 337 (5 GPU)</td><td class="n">662 / 668 (9 GPU)</td><td class="n">1325 / 1331 (17 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, ya da kiralama ~$16/saat (~$12.000/ay)**</td></tr>
-<tr><td>DeepSeek R1</td><td class="n">671B</td><td class="n">402 / 408 (6 GPU)</td><td class="n">805 / 811 (11 GPU)</td><td class="n">1610 / 1616 (21 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$20/saat (~$14.400/ay)**</td></tr>
-<tr><td>DeepSeek-V4-Pro</td><td class="n">685B</td><td class="n">411 / 417 (6 GPU)</td><td class="n">822 / 828 (11 GPU)</td><td class="n">1644 / 1650 (21 GPU)</td><td>Aynı: ~$200.000-320.000 / ~$14.400/ay**</td></tr>
-<tr><td>GLM-5.3 <span class="dag">‡</span></td><td class="n">753B / 40B aktif</td><td class="n">452 / 458 (6 GPU)</td><td class="n">904 / 910 (12 GPU)</td><td class="n">1807 / 1813 (23 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$19,7/saat (~$14.400/ay)**</td></tr>
-<tr><td>Kimi K3 <span class="dag">‡</span></td><td class="n">~2,8T / ~104B aktif (PDF: 36B)</td><td class="n">1680 / 1686 (21 GPU)</td><td class="n">3360 / 3366 (42 GPU)</td><td class="n">6720 / 6726 (84 GPU)</td><td>3 sunucu ~$600.000-960.000, kiralama ~$69/saat (~$50.400/ay)**</td></tr>
+<tr><th>Model</th><th>Yerel indirme</th><th>Parametre</th><th>4 bit</th><th>8 bit</th><th>16 bit</th><th>Tahmini maliyet (4 bit)</th></tr>
+<tr><td>Hy3 (Tencent) <span class="dag">‡</span></td><td class="n" title="Haber: Apache 2.0 açık MoE; preview ile üretim sürümü aynı olmayabilir">✓ Apache 2.0 ‡</td><td class="n">295B / 21B aktif</td><td class="n">177 / 183 (3 GPU)</td><td class="n">354 / 360 (5 GPU)</td><td class="n">708 / 714 (9 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
+<tr><td>MiMo-V2.6-Flash <span class="dag">‡</span></td><td class="n" title="Toplayıcı site: MIT lisanslı; model kartından doğrula">✓ MIT ‡</td><td class="n">309B / 15B aktif</td><td class="n">185 / 191 (3 GPU)</td><td class="n">371 / 377 (5 GPU)</td><td class="n">742 / 748 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
+<tr><td>GLM-5.3-Flash <span class="dag">‡</span></td><td class="n" title="Boyutu bulundu ama ağırlıkların indirilebilirliğini doğrulamadık">? ‡</td><td class="n">~320B / ~18B aktif</td><td class="n">192 / 198 (3 GPU)</td><td class="n">384 / 390 (5 GPU)</td><td class="n">768 / 774 (10 GPU)</td><td>3× H100 kartlar ~$75.000-120.000 (satın alma), ya da kiralama ~$9,9/saat (~$7.200/ay)**</td></tr>
+<tr><td>DeepSeek V4.1 Flash</td><td class="n" title="Haber: Hugging Face ve ModelScope'tan indirilebilir, MIT">✓ MIT</td><td class="n">~552B*</td><td class="n">331 / 337 (5 GPU)</td><td class="n">662 / 668 (9 GPU)</td><td class="n">1325 / 1331 (17 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, ya da kiralama ~$16/saat (~$12.000/ay)**</td></tr>
+<tr><td>DeepSeek R1</td><td class="n" title="PDF: MIT lisanslı açık ağırlık">✓ MIT</td><td class="n">671B</td><td class="n">402 / 408 (6 GPU)</td><td class="n">805 / 811 (11 GPU)</td><td class="n">1610 / 1616 (21 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$20/saat (~$14.400/ay)**</td></tr>
+<tr><td>DeepSeek-V4-Pro</td><td class="n" title="PDF: açık ağırlık">✓</td><td class="n">685B</td><td class="n">411 / 417 (6 GPU)</td><td class="n">822 / 828 (11 GPU)</td><td class="n">1644 / 1650 (21 GPU)</td><td>Aynı: ~$200.000-320.000 / ~$14.400/ay**</td></tr>
+<tr><td>GLM-5.3 <span class="dag">‡</span></td><td class="n" title="Artificial Analysis: açık ağırlık, GLM-5.3 lisansı (özel)">✓ GLM lisansı ‡</td><td class="n">753B / 40B aktif</td><td class="n">452 / 458 (6 GPU)</td><td class="n">904 / 910 (12 GPU)</td><td class="n">1807 / 1813 (23 GPU)</td><td>8 GPU'lu sunucu ~$200.000-320.000, kiralama ~$19,7/saat (~$14.400/ay)**</td></tr>
+<tr><td>Kimi K3 <span class="dag">‡</span></td><td class="n" title="Ağırlıklar 26 Temmuz'dan beri açık; özel Kimi K3 lisansı (kısıtlar olabilir)">✓ Kimi lisansı ‡</td><td class="n">~2,8T / ~104B aktif (PDF: 36B)</td><td class="n">1680 / 1686 (21 GPU)</td><td class="n">3360 / 3366 (42 GPU)</td><td class="n">6720 / 6726 (84 GPU)</td><td>3 sunucu ~$600.000-960.000, kiralama ~$69/saat (~$50.400/ay)**</td></tr>
 </table></div>
 <ul class="nt">
 <li>* V4.1 Flash'ın parametre sayısı kaynaklara göre değişiyor (552B / 763B / açıklanmadı); PDF'teki "V4-Flash" 130B ise farklı bir sürüm olabilir.</li>
 <li>** Kiralama: Lambda'nın 19 Ekim 2026 tarihli H100 PCIe fiyatı $3,29/GPU-saat × GPU sayısı × 730 saat. Bütçe bulutlarında bunun yaklaşık yarısı çıkabilir.</li>
 <li><b>8 bit</b> sunucu için 9-11 GPU yani iki sunucu: ~$400.000-640.000 (kiralama ~$22.000-26.000/ay). <b>16 bit</b> için 17-21 GPU, üç sunucu: ~$600.000-960.000 (kiralama ~$41.000-50.000/ay).</li>
 </ul>
+</div>
+
+<div class="sec" style="--c:#f27a88">
+<h2>"Açık" her zaman "indirilebilir" demek değil</h2>
+<p class="sub">Tablolardaki <b>Yerel indirme</b> kolonu: <b>✓</b> = ağırlıklar indirilebilir (yanında lisans; MIT/Apache serbest, Gemma/GLM/Kimi gibi özel lisanslarda kullanım kısıtı olabilir), <b>✗</b> = yalnız API, <b>?</b> = doğrulayamadık. Bir modelin "open" diye anılması bazen yalnızca <b>API'sinin herkese açık olması</b> demek; bu, ağırlıkları indirip kendi sunucunda çalıştırabileceğin anlamına gelmez. Kontrol yolu: modelin Hugging Face sayfasında <b>Files</b> sekmesinde ağırlık dosyaları (<code>.safetensors</code>, <code>.gguf</code>) var mı, ve lisans satırı ne diyor (bu ortamdan Hugging Face'e erişemediğimiz için bunu biz kontrol edemedik).</p>
+<div class="tw"><table>
+<tr><th>Model (sıralama ekran görüntüsünden)</th><th>Yerel indirme</th><th>Not</th></tr>
+<tr><td>Claude Opus 5.5, Sonnet 5.5, Opus 5, Fable 5 / 5.1</td><td class="n">✗</td><td>Yalnız API; mimarisi ve ağırlıkları yayımlanmadı</td></tr>
+<tr><td>Claude Mythos Preview</td><td class="n">✗</td><td>Sıralamada "yayımlanmamış" etiketli</td></tr>
+<tr><td>GPT-6 Astra, GPT-6.1 Sol, GPT-5.6 Sol</td><td class="n">✗</td><td>Yalnız API (bu adlı modellerin ağırlıkları yayımlanmadı, gpt-oss serisi ayrı bir açık model ailesi)</td></tr>
+<tr><td>Gemini 4 Argon</td><td class="n">✗</td><td>Yalnız API</td></tr>
+<tr><td>Qwen3.8-Max</td><td class="n">?</td><td>Kaynaklar çelişkili: biri yayımlandı, biri doğrulanmış ağırlık/lisans yok diyor</td></tr>
+<tr><td>Muse Spark 1.3, Ling 3.1 Flash, Atria Dawn Preview</td><td class="n">?</td><td>Ağırlık durumunu bulamadık</td></tr>
+</table></div>
+<p class="sub">Not: Bu sayfayı yazan asistan da (Claude Sonnet 5.5) yukarıdaki ✗ satırlarından birindedir.</p>
 </div>
 
 <div class="sec" style="--c:#ffc82e">
