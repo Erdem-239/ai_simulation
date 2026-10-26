@@ -382,8 +382,46 @@ function gptoss(){const L=[],K='go';
     blocks:[[3,21]],blockHtml:['BLOK × 36<small>36 blok: dönüşümlü yerel/tam attention + 128 uzmanlı MoE</small>'],
     asm:'gpt-oss-120b<small>≈117 milyar toplam, ≈5,1 milyar aktif †</small>',title:'Açık ağırlıklı MoE: gpt-oss-120b şeması',
     sub:'OpenAI\'ın açık ağırlıklı modeli. Doğrulananlar: 36 katman, 128 uzman (token başı 4), 64 sorgu / 8 K-V kafası, kafa boyutu 64, 128\'lik kayan pencere ↔ tam attention dönüşümlü, dikkat çukuru, MXFP4 uzman ağırlıkları. † ile işaretliler hafızadan. Şekiller gerçek, sayılar şematik.'}}
-const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);
-const ARCHS=[MINI,GPT2,LLAMA,GPTOSS];let ARCH=MINI;
+function qwen3moe(){const L=[],K='q3';
+  tokPart(L,"Metin BPE ile alt kelime parçalarına bölünür; Qwen3 sözlüğü yaklaşık 152 bin parçalık (151.936 †, hafızadan). Çizilen parçalar GPT-2'nin gerçek parçalaması; Qwen3'ün kendi sözlüğü metni farklı bölebilir.");
+  mkP(L,K,'Emb','Token tablosu','Emb (kim)','in',40,16,'≈151.936 × 2048 †',"Minik GPT'deki E ile aynı fikir. Boyutlar († ile işaretli) hafızadan ve ikincil kaynaklardan, resmî model kartıyla doğrulanmadı.");
+  mkP(L,K,'x','x = Emb','x','in',10,16,'T × 2048 †',"Konum tablosu YOK (Llama gibi): konum bilgisi sonradan RoPE ile Q ve K'ya katılır.");
+  mkP(L,K,'rms1','RMSNorm 1','RMSNorm','norm',10,16,'T × 2048 †',"Ortalamayı çıkarmadan yalnız ölçekler. Attention alt-bloğunun girişinde.");
+  mkP(L,K,'Wq','W_Q','W_Q','att',16,16,'2048 × 4096 †',"32 sorgu kafası × 128 sütun = 4096. Dikkat: sorgu genişliği (4096) model boyutundan (2048 †) büyük.");
+  mkP(L,K,'Wk','W_K','W_K','att',16,8,'2048 × 512 †',"Yalnız 4 anahtar kafası (GQA): 8 sorgu kafası aynı K'yı paylaşır. 4 × 128 = 512 sütun.");
+  mkP(L,K,'Wv','W_V','W_V','att',16,8,'2048 × 512 †',"4 değer kafası; 8 sorgu kafası aynı V'yi paylaşır (GQA).");
+  mkP(L,K,'qT','Q = x · W_Q','Q','att',4,16,'T × 4096',"Her token'ın sorusu (T×4096), 32 kafaya dilimlenir (kafa başına T×128).");
+  mkP(L,K,'kT','K = x · W_K','K','att',4,8,'T × 512',"Etiketler: yalnız 4 K/V kafası (4×128=512), T×512.",{w:4*U});
+  mkP(L,K,'vT','V = x · W_V','V','att',4,8,'T × 512',"İçerikler: 4 K/V kafası, T×512; her dilimi 8 sorgu kafası paylaşır.",{w:4*U});
+  mkP(L,K,'qkn','QK-Norm †','QK-Norm','norm',10,16,"Q ve K'ya (kafa başına) †","Qwen3'ün (hafızadan, † ile işaretli) ayırt edici parçası: Q ve K, skor hesaplanmadan ÖNCE kafa başına RMSNorm'dan geçer. Skorların büyüklüğünü dengeler, eğitimi kararlı tutar. Ağırlığı çok küçük (kafa boyutu kadar ölçek), yeni bilgi eklemez.");
+  mkP(L,K,'rope','RoPE','RoPE','att',10,16,"T × 4096 (Q ve K'ya)","Konum tabloyla değil, Q ve K'nın sayı çiftlerini konuma göre döndürerek eklenir (Llama ile aynı fikir). Yerel bağlam 32.768 token †; daha uzunu için RoPE ölçeklemesi (YaRN türü) kullanılabilir †. Çizim: konum × frekans açı örüntüsü.",{get:(a,b)=>Math.cos(a*Math.pow(10,-b/5)*1.6),vmax:1});
+  mkP(L,K,'qS','Q dilimleri (32 × T×128)','Q dilimleri','att',4,8,'32 × (T × 128)',"Q tablosu (T×4096) sütunlardan 32 dilime kesilir (4096 ÷ 32). Hesap yok, sadece kesme.",{multi:{n:32,cols:8,groups:8,card:'slice',lab:'Q'},w:4.0,h:1.4});
+  mkP(L,K,'kS','K dilimleri (4 × T×128)','K dilimleri','att',4,8,'4 × (T × 128)',"K tablosu (T×512) 4 dilime kesilir; her dilimi 8 sorgu kafası paylaşır (GQA).",{multi:{n:4,cols:4,card:'slice',lab:'K'},w:2.4,h:0.6});
+  mkP(L,K,'vS','V dilimleri (4 × T×128)','V dilimleri','att',4,8,'4 × (T × 128)',"V tablosu (T×512) 4 dilime kesilir; her dilimi 8 sorgu kafası paylaşır.",{multi:{n:4,cols:4,card:'slice',lab:'V'},w:2.4,h:0.6});
+  mkP(L,K,'heads','Skor tabloları: Qᵢ·Kᵢᵀ/√128 + maske (32 × T×T)','32 kafa · skor','att',8,32,'32 sorgu kafası × (T × T), 4 K/V grubu',"32 sorgu kafasının skor tabloları (k1…k32): Qᵢ·Kᵢᵀ/√128, üst üçgen maskeli. Aynı renkli çerçeveli 8 kafa AYNI K ve V diliminden beslenir (GQA). Qwen3-30B-A3B'de kayan pencere ya da dikkat çukuru yok: her katman tam nedensel attention kullanır †. Hücre = 128 çarpma + toplama = tek sayı. Renkli sayılar şematik.",{multi:{n:32,cols:8,groups:8,card:'score'},w:4.8,h:2.4});
+  mkP(L,K,'aT','Softmax sonrası yüzdeler (32 × T×T)','32 kafa · yüzde','att',8,32,'32 sorgu kafası × (T × T)',"Her kafanın her satırı ayrı softmax'tan geçer: toplam %100, maskeli hücreler %0.",{multi:{n:32,cols:8,groups:8,card:'prob'},w:4.8,h:2.4});
+  mkP(L,K,'oS','a · V çıkışları (32 × T×128)','a·V çıkışları','att',4,8,'32 × (T × 128)',"Her kafada yüzde tablosu paylaşılan V dilimiyle çarpılır → T×128.",{multi:{n:32,cols:8,groups:8,card:'slice',lab:'o'},w:4.0,h:1.4});
+  mkP(L,K,'cat','32 çıkış yan yana: T × 4096','yan yana (T×4096)','att',4,16,'T × 4096',"32 kafanın T×128 çıkışı yan yana (32 × 128 = 4096); karıştırma W_O'da.",{canvas:catCv(32),w:4.0,h:0.8});
+  mkP(L,K,'Wo','W_O','W_O','att',16,16,'4096 × 2048 †',"Kafa çıktılarını model boyutuna (2048 †) geri çevirir ve karıştırır.");
+  mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 2048 †',"Artık bağlantı: giriş + attention.");
+  mkP(L,K,'rms2','RMSNorm 2','RMSNorm','norm',10,16,'T × 2048 †',"FFN (burada uzman karışımı) öncesi ikinci normalizasyon.");
+  mkP(L,K,'Wr','Yönlendirici W_r (router)','router W_r','ffn',16,16,'2048 × 128 †',"MoE'nin yeni parçası: her token için 128 uzmanın her birine bir puan çıkarır (token × 128 tablo). Küçük bir tablo; asıl büyük ağırlık uzmanlarda.");
+  mkP(L,K,'topk','128 puan → en iyi 8 uzman','top-8 seçim','ffn',10,32,'T × 128 → T × 8',"Her token satırında 128 puandan EN YÜKSEK 8 tanesi seçilir, yalnız o 8'inin puanı softmax'tan geçip karışım ağırlığı olur (toplam %100). Kalan 120 uzman bu token için HİÇ çalışmaz. Aynı katmanda farklı token'lar farklı uzmanları seçebilir. gpt-oss'tan fark: orada token başına 4 uzman seçilir, burada 8 (ve paylaşılan, her zaman çalışan bir uzman yok †). Çizimdeki renkler şematik: hangi uzmanın seçildiğini ölçmedik.");
+  mkP(L,K,'Wgate','Uzman W_gate (128 kopya)','uzman W_gate','ffn',16,24,'128 × (2048 × 768) †',"Her uzman kendi küçük FFN'ine sahip: kapı yolu. Uzman FFN'leri küçük (ara boyut 768 †), ama 128 tane. 128 uzmanın HEPSİ bellekte durur, token başına yalnız 8'i kullanılır.");
+  mkP(L,K,'Wup','Uzman W_up (128 kopya)','uzman W_up','ffn',16,24,'128 × (2048 × 768) †',"Uzmanın değer yolu.");
+  mkP(L,K,'swi','Uzman aktivasyonu (kapılı)','kapılı aktivasyon','ffn',10,24,'8 uzman × (T × 768) †',"Seçilen 8 uzmanın HER BİRİNDE: kapı ile değer eleman eleman çarpılır (SwiGLU ailesi †). Sekiz ayrı sonuç çıkar.");
+  mkP(L,K,'Wdown','Uzman W_down (128 kopya)','uzman W_down','ffn',24,16,'128 × (768 × 2048) †',"Her uzmanın çıkış katmanı.");
+  mkP(L,K,'mix','Ağırlıklı toplam (8 uzman)','8 uzman · karışım','ffn',10,16,'T × 2048 †',"8 uzmanın çıktısı, router'ın verdiği yüzdelerle toplanır: y = Σ pₖ · uzmanₖ(x). Normal FFN'in yerini alan tek vektör bu. Aktif ağırlık böylece küçük kalır (adındaki «A3B»: yaklaşık 3 milyar †), ama toplam bilgi 128 uzmanda saklıdır (yaklaşık 30 milyar †).");
+  mkP(L,K,'add2','⊕ + MoE','⊕ artık','ffn',10,16,'T × 2048 †',"Bloğun çıktısı. Bu blok 48 kez üst üste tekrarlanır †.");
+  tail(L,K,'Son RMSNorm','≈151.936 †',false,'Son RMSNorm','Tüm bloklardan sonra bir kez daha normalizasyon.');
+  L.find(p=>p.id==='head').desc="Son vektörü sözlükteki HER token için bir skora çevirir. Qwen3-30B-A3B'de giriş tablosundan AYRI bir tablo (paylaşım yok †).";
+  return {key:'q3',btn:'Qwen3-30B-A3B (2025)',parts:L,two:false,
+    cols:[['tok'],['Emb'],['x'],['rms1'],['Wq','Wk','Wv'],['qT','kT','vT'],['qkn','rope'],['qS','kS','vS'],['heads'],['aT'],['oS'],['cat'],['Wo'],['add1'],['rms2'],['Wr'],['topk'],['Wgate','Wup'],['swi'],['Wdown'],['mix'],['add2'],['lnf'],['head'],['logits'],['next']],
+    blocks:[[3,21]],blockHtml:['BLOK × 48<small>48 blok: tam attention (32 Q / 4 K-V) + 128 uzmanlı MoE (token başı 8)</small>'],
+    asm:'Qwen3-30B-A3B<small>≈30 milyar toplam, ≈3 milyar aktif †</small>',title:'Açık ağırlıklı MoE: Qwen3-30B-A3B şeması',
+    sub:'Alibaba Qwen ailesinin küçük MoE modeli. Arama sonuçlarıyla doğrulananlar: 48 katman, 128 uzman (token başı 8), 32 sorgu / 4 K-V kafası, paylaşılan uzman yok. † ile işaretliler (model boyutu 2048, kafa boyutu 128, uzman ara boyutu 768, QK-Norm, sözlük, bağlam) hafızadan veya tek bir yan modelin sayfasından. Şekiller gerçek, sayılar şematik.'}}
+const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss(),QWEN3=qwen3moe();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);layoutArch(QWEN3);
+const ARCHS=[MINI,GPT2,LLAMA,GPTOSS,QWEN3];let ARCH=MINI;
 let COLS=MINI.cols,BLOCKS=MINI.blocks,byId=MINI.byId,LEN1=MINI.LEN1,LEN2=MINI.LEN2,XC_A=MINI.XC_A,LENc=LEN2,mm=0,mT=0,links,lgeo,bboxes;
 /* ---------- sahne ---------- */
 const stage=$('stage');
@@ -474,6 +512,20 @@ const GRPS={
   G('128 uzman (yalnız 4\'ü çalışır)',C_FFN,[17,19],'Her uzman kendi kapılı FFN\'i: W_gate, W_up, W_down. Hepsi bellekte, token başına 4\'ü kullanılır.','Uzmanlaşmış «düşünme» yolları. Hangi uzmanın neye uzmanlaştığı ölçülmedi.',{pm:.8}),
   G('Karışım',C_FFN,[20,20],'4 uzmanın çıktıları router yüzdeleriyle toplanır.','Tek bir T×2880 vektör: normal FFN\'in yerini tutar.',{pm:.8,bottom:true,lv:1}),
   G('Çıkış',C_OUT,[22,24],'Son RMSNorm, ardından son satır ayrı bir çıkış tablosuyla çarpılıp ≈201.000 token için puan çıkar †.','Her token için «bir sonraki ben olabilir miyim» puanı.')]};
+GRPS.q3=[
+  G('Tokenizer',C_TOK,[0,0],'Sinir ağının parçası DEĞİL: ağırlığı olmayan, sabit bir program (BPE). Sözlük yaklaşık 152 bin parça †.','Yalnız numaralar. Anlam ya da konum bilgisi taşımaz.',{pm:.55,lv:1}),
+  G('Embedding katmanı',C_EMB,[1,2],'Numaraları anlam taşıyan sayı listelerine çevirir. Yalnız Emb (kim) tablosu var; konum burada EKLENMEZ.','Çıkışı x: yalnız "token ne" bilgisi. Sıra bilgisi sonra RoPE ile gelir.'),
+  G('Positional (RoPE)',C_POS,[6,6],'Konum tabloyla toplanmaz: Q ve K konumlarına göre DÖNDÜRÜLÜR (RoPE). Aynı sütunda QK-Norm da durur.','Bağıl uzaklık: iki token arası kaç adım var.',{pm:.55,bottom:true,lv:1}),
+  G('Attention alt-bloğu',C_ALT,[3,13],'Bloğun 1. yarısı: RMSNorm → Q,K,V → QK-Norm → RoPE → 32 sorgu kafası (4 K/V grubu) → W_O → artık bağ. Her katmanda tam nedensel attention (pencere/çukur yok †).','Token\'ın kartına çevresinden toplanan bilgi eklenir.',{pm:1.2,lv:2}),
+  G('Q, K, V üretimi',C_ATT,[4,5],'Q 32 kafaya (T×4096), K ve V yalnız 4 gruba (T×512) çıkar: GQA, 8 sorgu kafası bir K/V grubunu paylaşır.','"Ne arıyorum" (Q), "beni böyle bul" (K), "vereceğim bilgi" (V).',{pm:.8}),
+  G('Kafalara bölme',C_ATT,[7,7],'Q 32, K ve V 4 dilime kesilir (T×128). Hesap yok, sadece kesme.','Aynı bilgi, ayrı bakış açılarına ayrılmış hâlde.',{pm:.8}),
+  G('Kafalar: skor → softmax → a·V',C_ATT,[8,10],'Her kafada Qᵢ·Kᵢᵀ/√128, maske (tam nedensel), softmax, paylaşılan V ile karışım → T×128.','Skor: ham uyum. Yüzde: kim kime ne kadar bakıyor. a·V: baktıklarından karışan bilgi.',{pm:.7}),
+  G('Birleştir + artık bağ',C_ATT,[11,13],'Kafa çıkışları yapıştırılıp W_O ile çevrilir ve ana akıma eklenir.','Token\'ın kendi bilgisi + çevresinden topladığı bilgi.',{pm:.8}),
+  G('MoE alt-bloğu',C_ALT,[14,21],'Bloğun 2. yarısı: RMSNorm → router → en iyi 8 uzman → ağırlıklı toplam → artık bağ. Token\'lar ayrı ayrı işlenir.','Token\'ın kendi kartı üzerinde "düşünme", ama her token için farklı uzmanlarla.',{pm:1.2,lv:2}),
+  G('Router + seçim',C_OUT,[15,16],'Her token için 128 uzmana puan çıkarılır, en yüksek 8\'i seçilir; yalnız onların puanı softmax\'tan geçip karışım ağırlığı olur.','«Bu token hangi uzmanlara gitsin?» kararı. Seçilmeyen 120 uzman çalışmaz.',{pm:.8}),
+  G('128 uzman (yalnız 8\'i çalışır)',C_FFN,[17,19],'Her uzman kendi kapılı FFN\'i: W_gate, W_up, W_down (küçük, ara boyut 768 †). Hepsi bellekte, token başına 8\'i kullanılır.','Uzmanlaşmış «düşünme» yolları. Hangi uzmanın neye uzmanlaştığı ölçülmedi.',{pm:.8}),
+  G('Karışım',C_FFN,[20,20],'8 uzmanın çıktıları router yüzdeleriyle toplanır.','Tek bir T×2048 vektör: normal FFN\'in yerini tutar.',{pm:.8,bottom:true,lv:1}),
+  G('Çıkış',C_OUT,[22,24],'Son RMSNorm, ardından son satır ayrı bir çıkış tablosuyla çarpılıp ≈152.000 token için puan çıkar †.','Her token için «bir sonraki ben olabilir miyim» puanı.')];
 const FAQ={
  mini:{q:'q yalnız SON kutudan çıkar (7+5= için "=" kartı + 10. kutunun konum kartı). İçinde "ben \'=\'im, son kutudayım" bilgisi var; "7" ve "5" bilgisi q\'da YOK, o K ve V\'de. Soru "="den sorulur, cevap 7 ve 5\'in içeriğinden gelir. GPT-2\'de her token kendi sorusunu sorar (T×768).',K:'K ve V 10 kutunun HEPSİ için hesaplanır; "7" ve "5" bilgisi burada. Soru (q) yalnız son kutudan, etiket ve içerik herkesten.',V:'K ve V 10 kutunun HEPSİ için hesaplanır; "7" ve "5" bilgisi burada. Soru (q) yalnız son kutudan, etiket ve içerik herkesten.'},
  gpt2:{x:'LayerNorm\'a giren wpe değil, x = wte + wpe. LayerNorm\'dan geçen kopya yalnız Q, K, V\'ye gider; dengelenmemiş asıl x kenarda bekler ve attention bitince geri eklenir.',ln1:'LayerNorm şekli değiştirmez (T×768) ve yeni bilgi eklemez, yalnız her satırın ölçeğini dengeler. Çıkışı Q, K, V\'ye gider; ASIL x residual için kenarda bekler.',WQ:'Bunlar Q, K, V değil, onları ÜRETEN ağırlıklar (768×768, eğitimle öğrenilir). Q = LayerNorm(x) · W_Q: çarpılan x, çıkan Q.',WK:'Bunlar Q, K, V değil, onları ÜRETEN ağırlıklar (768×768). K = LayerNorm(x) · W_K.',WV:'Bunlar Q, K, V değil, onları ÜRETEN ağırlıklar (768×768). V = LayerNorm(x) · W_V.',
@@ -490,8 +542,10 @@ Object.assign(CARRY.llama,{qS:'Q\'nun 32 küçük parçası (128 sayı).',kS:'K\
 Object.assign(FAQ.gpt2,{qS:'Dilimleme bir HESAP değil, kesme: Q tablosunun sayıları aynen duruyor, sadece 64\'lük sütun gruplarına ayrılıyor. 3 tablo × 12 dilim = 36 küçük tablo.',heads:'Q ve K çarpılırken ikisi de 12 dilim, ama eşleşme AYNI numaralar arasında: Q₁·K₁ᵀ … Q₁₂·K₁₂ᵀ = 12 çarpma (144 değil). Her hücre 64 çarpmanın toplamı (4×4 tabloda 16 hücre = 16 nokta çarpımı, kafa başına 1.024 çarpma). Skorlar birbirleriyle çarpılmaz; K ikinci kez W_K ile çarpılmaz, K zaten hazır.',aT:'Softmax\'ta skorlar birbirine bağlanır (toplam %100 olsun diye) ama çarpılmaz. Maske yüzünden "7"nin satırında yalnız kendi hücresi var: %100.',oS:'a·V "ağırlıklı toplama": yüzdeler V satırlarının ne kadarının alınacağını söyler. Q ve K burada artık kullanılmıyor, işleri skor tablosunu çıkarmakla bitti.',cat:'Yan yana yapıştırma TOPLAMA değil: 12 × 64 = 768, her kafanın payı kendi sütun aralığında kalır.'});
 Object.assign(CARRY,{gptoss:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',Emb:'Token\'ın "ne olduğu" (2880 sayı †). Sıra bilgisi YOK: RoPE ile Q ve K\'ya işlenir.',x:'Yalnız anlam (konum henüz yok).',rms1:'Aynı bilgi, yalnız ölçeği dengelenmiş.',Wq:'Soru üretme kuralı (64 kafa).',Wk:'Etiket üretme kuralı (8 grup).',Wv:'İçerik üretme kuralı (8 grup).',qT:'Her token\'ın SORUSU.',kT:'Her token\'ın ETİKETİ (8 grup, GQA).',vT:'Her token\'ın İÇERİĞİ (8 grup).',rope:'Konum bilgisi: Q ve K döndürülür.',qS:'Q\'nun 64 küçük parçası (64 sayı).',kS:'K\'nın 8 küçük parçası, 8 kafaca paylaşılır.',vS:'V\'nin 8 küçük parçası, 8 kafaca paylaşılır.',heads:'Ham uyum puanları. Pencereli katmanda son 128 token dışı kapalı; ayrıca öğrenilen dikkat çukuru puanı.',aT:'Yüzdeler: her satır %100 (bir kısmı çukura gidebilir).',oS:'Her token için baktıklarından karışan bilgi (kafa başına 64 sayı).',cat:'64 kafanın bilgisi yan yana, henüz karışmadı.',Wo:'Kafaların bulduklarını birleştirip model boyutuna çevirme kuralı.',add1:'Eski x + attention katkısı.',rms2:'Yalnız ölçek dengeleme.',Wr:'Yönlendirme kuralı: x\'ten 128 uzman için uygunluk puanı çıkarır.',topk:'Hangi 4 uzmanın bu token\'ı işleyeceği ve karışım yüzdeleri.',Wgate:'Her uzmanın kapı yolu.',Wup:'Her uzmanın değer yolu.',swi:'Seçilen 4 uzmanın kapılı çıktıları.',Wdown:'Her uzmanın geri toplama kuralı.',mix:'4 uzmanın bilgisi, router yüzdeleriyle tek vektörde.',add2:'Önceki + MoE katkısı.'}});
 Object.assign(FAQ,{gptoss:{topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. Aynı katmanda farklı token\'lar farklı uzmanları seçer.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'Pencereli katmanda 128\'den kısa istemde (7+5= gibi) maske fark etmez: hepsi zaten pencerenin içinde.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam ≈117 milyar, ama bir token için yalnız ≈5,1 milyarlık kısım hesaplanır (aktif).'}});
-[MINI,GPT2,LLAMA].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
-[MINI,GPT2,LLAMA,GPTOSS].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
+Object.assign(CARRY,{q3:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',Emb:'Token\'ın "ne olduğu" (2048 sayı †). Sıra bilgisi YOK: RoPE ile Q ve K\'ya işlenir.',x:'Yalnız anlam (konum henüz yok).',rms1:'Aynı bilgi, yalnız ölçeği dengelenmiş.',Wq:'Soru üretme kuralı (32 kafa).',Wk:'Etiket üretme kuralı (4 grup).',Wv:'İçerik üretme kuralı (4 grup).',qT:'Her token\'ın SORUSU.',kT:'Her token\'ın ETİKETİ (4 grup, GQA).',vT:'Her token\'ın İÇERİĞİ (4 grup).',qkn:'Q ve K\'nın ölçek dengelemesi (kafa başına): yeni bilgi yok, skorların patlamasını önler.',rope:'Konum bilgisi: Q ve K döndürülür.',qS:'Q\'nun 32 küçük parçası (128 sayı).',kS:'K\'nın 4 küçük parçası, 8 kafaca paylaşılır.',vS:'V\'nin 4 küçük parçası, 8 kafaca paylaşılır.',heads:'Ham uyum puanları (maskeli), henüz yüzde değil. Pencere/çukur yok: her katman tam geçmişe bakabilir †.',aT:'Yüzdeler: her satır %100.',oS:'Her token için baktıklarından karışan bilgi (kafa başına 128 sayı).',cat:'32 kafanın bilgisi yan yana, henüz karışmadı.',Wo:'Kafaların bulduklarını birleştirip model boyutuna çevirme kuralı.',add1:'Eski x + attention katkısı.',rms2:'Yalnız ölçek dengeleme.',Wr:'Yönlendirme kuralı: x\'ten 128 uzman için uygunluk puanı çıkarır.',topk:'Hangi 8 uzmanın bu token\'ı işleyeceği ve karışım yüzdeleri.',Wgate:'Her uzmanın kapı yolu.',Wup:'Her uzmanın değer yolu.',swi:'Seçilen 8 uzmanda kapı × değer: hangi örüntülerin açık olduğu.',Wdown:'Her uzmanın sonucu geri toplama kuralı.',mix:'8 uzmanın bulduğu bilgilerin router yüzdeleriyle karışımı: token\'ın işlenmiş hâli.',add2:'Önceki + MoE katkısı: bağlam + uzmanlarca işlenmiş bilgi.',lnf:'Son ölçek dengelemesi.',head:'Son satırı sözlükle karşılaştıran ayrı çıkış tablosu †.',logits:'Her token için ham uygunluk puanı.',next:'Yüzdeye çevrilip seçilen tek token.'}});
+Object.assign(FAQ,{q3:{qkn:'QK-Norm bir ağırlık matrisi değil, küçük bir ölçek dengelemesi (kafa başına RMSNorm). Q ve K\'nın sayıları, nokta çarpımdan önce dengelenir; yeni bilgi eklemez. Qwen3\'te var olduğunu hafızadan söylüyoruz †, arama sonuçları bunu doğrulamadı.',topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. gpt-oss\'ta token başına 4 uzman seçilir, burada 8.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'gpt-oss\'tan fark: Qwen3-30B-A3B\'de katmanlar arasında kayan pencere/tam dönüşümü ve dikkat çukuru yok †; her katman tam nedensel attention.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam yaklaşık 30 milyar †, ama bir token için yalnız yaklaşık 3 milyarlık kısım hesaplanır (aktif, adındaki «A3B»). Bu yüzden bellek ihtiyacı 30B\'lik bir modele, hız ise ~3B\'lik bir modele benzer.'}});
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
 function showGroup(A,g){select(null);const info=$('info');info.style.setProperty('--c',g.col);$('it').textContent=g.title;
   $('is').textContent=A.btn+' · bölüm (çerçeve)';$('id').textContent=g.body;
   const names=A.parts.filter(p=>p.ci>=g.cols[0]&&p.ci<=g.cols[1]).map(p=>p.name);
@@ -675,7 +729,7 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
-const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0'};
+const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0',q3:'#ff8f6b'};
 const AM=()=>CHARS[D.p.indexOf(Math.max(...D.p))],AP=()=>(Math.max(...D.p)*100).toFixed(1).replace('.',','),WIN=()=>D.ctxChars.map(dsp).join('');
 const T2=()=>D.a.map((v,i)=>[v,i]).sort((p,q)=>q[0]-p[0]).slice(0,2).sort((p,q)=>p[1]-q[1]);
 const fv=v=>typeof v==='function'?v():v;
@@ -716,6 +770,7 @@ function cmpBlock(p){const t=p.eq&&CMPTXT[p.eq];if(!t)return'';
 const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'qt',K:'kt',V:'vt',skor:'sc',a:'soft',o:'ov',WO:'oproj',r:'res1',W1:'up',u:'act',g:'act',W2:'down',f:'down',h:'res2',Wo:'head',lg:'logits',p:'logits',cevap:'next'},
  gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',qT:'qt',kT:'kt',vT:'vt',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  gptoss:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
+ q3:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',qkn:undefined,rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
 ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
@@ -771,7 +826,7 @@ const PRN0=()=>PK==='B'?{
  gpt2:'Aynı metin GPT-2\'nin BPE sözlüğüyle <b>4 token</b>\'a bölünür: <span class="mono">7 | + | 5 | =</span> (numaralar 22, 10, 20, 28 — gerçek, ölçüldü). Her rakam/işaret tek parça. <b>T = 4</b>, dolgu yok. (Genel olarak BPE: başta her harf ayrıdır, en sık yan yana gelen iki parça birleştirilip yeni parça yapılır, on binlerce kez tekrarlanır.)',
  llama:'Aynı fikir (BPE), daha büyük sözlük: <b>128.256 parça</b>; bağlam en çok 8192 token. Bu kısa istemin Llama ile kaç token olduğunu ölçmedik.',
  fark:'Karakter ↔ alt-kelime: burada ikisi de 4 parça, ama GPT-2 sözlüğü 50.257 (Llama 128.256), Minik GPT\'ninki 40. Pencere sabit 10 (6 dolgu) ↔ T = cümle kadar.'};
-const PRN=()=>{const o=PRN0();o.gptoss=o.llama.replace('128.256 parçalık sözlük','yaklaşık 201 bin parçalık sözlük †').replace('Llama ile','gpt-oss ile').replace(/bağlam en çok 8192 token\./,'bağlam çok uzun (≈131 bin token †).');return o};
+const PRN=()=>{const o=PRN0();o.gptoss=o.llama.replace('128.256 parçalık sözlük','yaklaşık 201 bin parçalık sözlük †').replace('Llama ile','gpt-oss ile').replace(/bağlam en çok 8192 token\./,'bağlam çok uzun (≈131 bin token †).');o.gptoss=o.gptoss.replace('<b>128.256 parça</b>','<b>≈201 bin parça †</b>');o.q3=o.llama.replace('128.256 parçalık sözlük','yaklaşık 152 bin parçalık sözlük †').replace('<b>128.256 parça</b>','<b>≈152 bin parça †</b>').replace('Llama ile','Qwen3 ile').replace(/bağlam en çok 8192 token\./,'yerel bağlam 32.768 token †.');return o};
 const TOUR=[
  {t:'1 · Girdi: metin nasıl sayıya hazırlanıyor?',ids:{mini:['girdi'],gpt2:['tok'],llama:['tok']},
   txt:{mini:()=>PRN().mini,gpt2:()=>PRN().gpt2,llama:()=>PRN().llama},
@@ -869,6 +924,47 @@ Object.entries({
  const sh=[null,null,null,null,null,null,null,()=>"Router: T×128 puan → T×4 seçim; her token için 4 uzmanın T×2880'lik çıktısı → ağırlıklı toplam T×2880. Hesap yükü ≈ 4/128 (≈%3)."];
  sh.forEach((f,i)=>{if(f)SHP[i].gptoss=f});
  })();
+Object.entries({
+ tok:"Metin BPE ile bölünür; sözlük yaklaşık 152 bin parça †. Çizilen parçalar GPT-2'ninki.",
+ emb:"Token tablosu ≈151.936 × 2048 †: her parça için 2048 sayılık kart.",
+ pos:"Tablo yok: RoPE, Q ve K'yı konuma göre döndürür.",
+ x:"x: T × 2048 †, yalnız kimlik; konum sonradan RoPE ile gelir.",
+ norm1:"RMSNorm (alt-bloğun girişinde); ayrıca Q ve K'ya kafa başına QK-Norm †.",
+ Wq:"W_Q 2048 × 4096 †: 32 sorgu kafası.",
+ Wk:"W_K 2048 × 512 †: yalnız 4 anahtar kafası (GQA).",
+ Wv:"W_V 2048 × 512 †: 4 değer kafası; 8 sorgu kafası paylaşır.",
+ qt:"Q: T × 4096 — her token'ın sorusu.",kt:"K: T × 512 (4 K/V kafası).",vt:"V: T × 512 (4 K/V kafası).",
+ qs:"Q 32 dilim (T×128).",ks:"K 4 dilim (T×128), her biri 8 kafaca paylaşılır.",vs:"V 4 dilim (T×128), 8 kafaca paylaşılır.",
+ sc:"32 tablo T×T; her katmanda tam nedensel maske (kayan pencere/dikkat çukuru yok †).",
+ soft:"32 tablo, satır başına softmax: toplam %100.",
+ ov:"32 tablo T×128: yüzde · paylaşılan V dilimi.",cat:"32 çıkış yan yana: 32 × 128 = T×4096.",
+ attn:"32 sorgu kafası, 4 K/V grubu (GQA); her katmanda tam attention.",
+ oproj:"W_O 4096 × 2048 †: kafaları birleştirip model boyutuna döndürür.",
+ res1:"x + attention, HER konumda.",norm2:"RMSNorm 2 (MoE öncesi).",
+ up:"128 uzmanın her birinde W_gate ve W_up (kapılı ikili yol, ara boyut 768 †); token başına yalnız 8 uzman çalışır.",
+ act:"Seçilen 8 uzmanda kapılı aktivasyon (SwiGLU ailesi †).",
+ down:"Her uzmanda W_down; 8 uzmanın çıktısı router yüzdeleriyle toplanır.",
+ res2:"Blok çıktısı bir sonrakine girer; 48 blok †.",normf:"Son RMSNorm.",
+ head:"≈152.000 sözlüğe çıkış tablosu, girişten ayrı †.",logits:"T × sözlük: her konum için skor satırı.",
+ next:"Örnek bir token seçilir ve diziye eklenir."
+}).forEach(([k,v])=>{if(CMPTXT[k])CMPTXT[k].q3=v});
+QWEN3.facts=['≈151.936 parça †','2048 †','32 sorgu / 4 K-V (GQA), kafa başına 128 †','48','MoE: 128 uzman, token başı 8 (paylaşılan uzman yok)','Kapılı (SwiGLU ailesi †)','RMSNorm (+ QK-Norm †)','RoPE (tablo yok)','32.768 token †','nedensel; her katmanda tam attention (pencere/çukur yok †)','her konumda','girişten ayrı †','≈30 milyar (aktif ≈3 milyar) †'];
+(function(){const ids=[['tok'],['Emb'],['x'],['x','rms1'],['Wq','Wk','Wv','qT','kT','vT','qkn','rope','qS','kS','vS'],['heads','aT'],['oS','cat','Wo','add1'],['rms2','Wr','topk','Wgate','Wup','swi','Wdown','mix'],['add2'],['lnf','head','logits'],['next']];
+ const txt=[()=>"Aynı fikir (BPE), yaklaşık 152 bin parçalık sözlük †. Bu istemin Qwen3 ile kaç token olduğunu ölçmedik.",
+  "<b>Emb ≈151.936 × 2048</b> †: her token için 2048 sayılık kart.",
+  "Bu adımda konum <b>eklenmez</b> (Llama gibi). Konum bilgisi 5. adımda <b>RoPE</b> ile Q ve K'ya girer.",
+  "x yalnız Emb; <b>RMSNorm</b> ile ölçeklenir.",
+  "W_Q → <b>32 sorgu kafası</b> (T×4096); W_K ve W_V → yalnız <b>4 K/V kafası</b> (T×512, kafa başına 128): GQA, 8 sorgu kafası bir K/V grubunu paylaşır. Q ve K önce <b>QK-Norm</b> †, sonra RoPE ile konum açısıyla döndürülür.",
+  "<b>32 sorgu kafası</b> × T×T, her katmanda tam nedensel maske. gpt-oss'tan fark: kayan pencere ve dikkat çukuru yok †.",
+  "32 kafa birleşir (32×128=4096), W_O ile model boyutuna döner, residual eklenir.",
+  "FFN yerine <b>uzman karışımı (MoE)</b>: RMSNorm → <b>router</b> her token için 128 uzmana puan verir → <b>en iyi 8</b> seçilir → yalnız o 8 uzman çalışır (küçük kapılı FFN'ler) → çıktılar router yüzdeleriyle toplanır. Kalan 120 uzman bu token için hiç çalışmaz.",
+  "Aynı blok <b>48 kez</b> art arda † (her biri kendi ağırlıkları ve 128 uzmanıyla).",
+  "Son RMSNorm, ardından girişten ayrı çıkış tablosu: her konum için ≈152.000 skor †.",
+  "Aynı: skor → yüzde → seç → ekle → tekrar."];
+ TOUR.forEach((st,i)=>{st.ids.q3=ids[i];st.txt.q3=txt[i]});
+ const sh=[null,null,null,null,null,null,null,()=>"Router: T×128 puan → T×8 seçim; her token için 8 uzmanın T×2048'lik çıktısı → ağırlıklı toplam T×2048. Hesap yükü ≈ 8/128 (≈%6)."];
+ sh.forEach((f,i)=>{if(f)SHP[i].q3=f});
+ })();
 const PROMPTS={A:'7+5=',B:'hayatın anlamı nedir'};
 function tourPanel(){const st=TOUR[tourIdx],act=ARCHS.filter(A=>A.on),el=$('tour');
   el.innerHTML='<div class="hd"><h3>🎬 Eş zamanlı gezi · adım '+(tourIdx+1)+'/'+TOUR.length+'</h3><button class="cx" aria-label="Kapat">×</button></div><div class="ts">'+st.t+'</div>'+
@@ -884,7 +980,7 @@ function setPrompt(k){if(PK===k)return;PK=k;D=k==='B'?DBF:DA;const nw=buildMini(
   MINI.parts.forEach(p=>{const q=by[p.id];if(!q)return;p.desc=q.desc;p.nums=q.nums;p.shape=q.shape;
     if(q.canvas){p.canvas=q.canvas;if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}
     if(p.cfm)p.cfm.forEach((fm,i)=>{const pad=D.ctxChars[i]==='.'&&i<6;fm.map.dispose();fm.map=tex(letter(D.ctxChars[i],D.ids[i],pad));fm.needsUpdate=true;p.ced[i].material.opacity=pad?0.35:0.9})});
-  [GPT2,LLAMA,GPTOSS].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
+  [GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
   if(selected)select(selected);buildCmp();if(tourOn)tourPanel()}
 let tourHadBar=true;
 function startTour(){tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
