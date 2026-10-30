@@ -79,6 +79,23 @@
       const f4=ms.find(m=>m[1]===4);
       when+= f4?' ✅ Ağ XOR\'u <b>tur '+f4[0]+'</b>\'de çözdü; sonrası kaybın küçülmesi (emin olma).':okH[0]===4?' (zaten çözülüydü).':(ep>=1500&&okOf(W)<4?' ⚠️ Kayıp düşmeyi bıraktı: bu başlangıç <b>takıldı</b> (yerel tuzak) — 🎲 #0 ya da #3 dene.':' Henüz 4/4 değil, devam et.');}
     t='<div class="nsim-when">📈 <b>Ne zaman doğruyu buldu?</b> '+when+'</div>'+t;
+    // ---- takıldıysa: neden? (gizli katmanda aynı görünen ama cevabı ters iki nokta) ----
+    const stuck=ep>=1500&&okOf(W)<4;
+    if(stuck){
+      const R=P.map(([a,b,y])=>({a,b,y,...fwd(W,a,b)}));let pair=null;
+      for(let i=0;i<4&&!pair;i++)for(let j=i+1;j<4;j++){if(R[i].y!==R[j].y&&Math.abs(R[i].h1-R[j].h1)<0.1&&Math.abs(R[i].h2-R[j].h2)<0.1){pair=[i,j];break;}}
+      const sl=r=>r.h1*(1-r.h1)+r.h2*(1-r.h2);
+      let tb='<table class="nsim-tbl nsim-stbl"><tr><th>nokta</th><th>doğru</th><th>h₁</th><th>h₂</th><th>ŷ</th></tr>'+R.map((r,i)=>'<tr'+(pair&&pair.indexOf(i)>=0?' class="hlr"':'')+'><td>('+r.a+','+r.b+')</td><td>'+r.y+'</td><td>'+fm(r.h1,3)+'</td><td>'+fm(r.h2,3)+'</td><td>'+fm(r.p,3)+((r.p>0.5)===(r.y===1)?' ✓':' ✗')+'</td></tr>').join('')+'</table>';
+      let why;
+      if(pair){const A=R[pair[0]],B=R[pair[1]],sg=Math.max(A.h1*(1-A.h1),A.h2*(1-A.h2),B.h1*(1-B.h1),B.h2*(1-B.h2));
+        why='<ol><li><b>İki gizli nöron bu iki noktayı aynı görüyor:</b> ('+A.a+','+A.b+') → h = ('+fm(A.h1,2)+', '+fm(A.h2,2)+'), ('+B.a+','+B.b+') → h = ('+fm(B.h1,2)+', '+fm(B.h2,2)+'). Ama doğru cevapları ters ('+A.y+' ve '+B.y+').</li>'+
+          '<li><b>Çıktı nöronu yalnız h₁ ve h₂\'yi görür.</b> İkisi aynıysa farklı cevap veremez; en iyi yapabileceği ikisine de ≈0,5 ("bilmiyorum") demek: ŷ = '+fm(A.p,3)+' ve '+fm(B.p,3)+'. Bu iki nokta ln 2 = 0,693\'er kayıp verir → ortalama kayıp ≈ 2·0,693/4 ≈ 0,347.</li>'+
+          '<li><b>Neden kurtulamıyor?</b> Çıkmak için bir gizli nöronun bu noktalarda açılıp ayrışması lazım. Ama nöronlar doymuş: sigmoid eğimi h(1−h) en fazla '+fm(sg,4)+' → hata sinyali gizli katmana inerken neredeyse sıfırlanıyor (Geri Adım 3\'e bak). Ağırlıklar artık hemen hiç değişmiyor: <b>yerel tuzak</b>.</li>'+
+          '<li><b>Çare:</b> başka bir rastgele başlangıç (🎲 #0, #3), daha çok gizli nöron (Örnek Çalışmalar\'da 3 nöronla 12 başlangıcın 12\'si çözüyor, 2 nöronla 10\'u) ya da momentum/Adam gibi düz bölgede hızını koruyan yöntemler.</li></ol>'+
+          '<div class="nsim-sub">Bu başlangıcın neden bu çukura düştüğünü önceden söylemek zor; tuzak, eğitim sırasında iki nöronun aynı özelliği öğrenmesiyle oluşuyor.</div>';}
+      else why='<div>Kayıp düşmeyi bıraktı ama dört nokta doğru değil. Tabloda hangi noktanın yanlış kaldığına bak; gizli nöronlar doymuşsa (h ≈ 0 ya da 1) sinyal geriye zor iner.</div>';
+      t='<div class="nsim-stuck"><div class="nsim-stuck-h">🧩 Neden takıldı?</div><div class="nsim-stuck-g">'+tb+'<div>'+why+'</div></div></div>'+t;
+    }
     $('nnUpd').innerHTML=t;
     // kayıp eğrisi
     const hs=hist.length?hist:[L],mx=Math.max(0.75,...hs),X=i=>28+262*i/Math.max(1,hs.length-1),Y=v=>110-100*v/mx;
