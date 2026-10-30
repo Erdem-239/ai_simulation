@@ -1723,3 +1723,48 @@ body.xt-full-lock{overflow:hidden}
 #rc_fwd[data-hl~="0"] .rc-eq:nth-child(1), #rc_fwd[data-hl~="1"] .rc-eq:nth-child(2),
 #rc_fwd[data-hl~="2"] .rc-eq:nth-child(3), #rc_fwd[data-hl~="3"] .rc-eq:nth-child(4){background:rgba(255,210,74,.16); outline:1.5px solid #ffd24a}
 #rnnSimTek .step.active{outline:2.5px solid #ff8a6a; box-shadow:0 0 0 4px rgba(255,138,106,.18)}
+/* RNN Simülasyon: tek ekrana sığan dizilim — solda diyagram + ileri yayılım, sağda 2×2 geri kartı + güncelle */
+#rnnSimTek #scDiagramPanel{min-height:0}
+#rnnSimTek .sc-center .rsim-phase{margin:8px 0 0; padding:0 10px 8px}
+#rnnSimTek .sc-center .rsim-banner{margin:0 -10px 6px; padding:6px 10px; font-size:13px}
+#rnnSimTek #rc_fwd .rc-eq{font-size:12.5px; margin:2px 0}
+#rnnSimTek .sc-center #scFormula{min-height:0!important; font-size:12px!important; padding:6px 8px!important}
+#rnnSimTek .sc-center #scInfo{font-size:12px; padding:5px 9px!important}
+#rnnSimTek .rsim-bgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px; margin-top:0; align-items:stretch}
+@media(max-width:1100px){ #rnnSimTek .rsim-bgrid{grid-template-columns:1fr!important} }
+#rnnSimTek .rsim-bwd .step.stepc .stepbody{padding-top:4px}
+#rnnSimTek .rsim-bwd .step-graph-row{display:flex; flex-wrap:nowrap; gap:8px; align-items:flex-start}
+#rnnSimTek .rsim-bwd .step.stepc .step-graph-formula{flex:1 1 auto!important; min-width:0}
+#rnnSimTek .rsim-bwd .step.stepc .step-graph-plot{flex:0 0 150px}
+#rnnSimTek .rsim-bwd .step-graph-plot canvas{width:150px; height:auto}
+#rnnSimTek .rsim-bwd .callout{font-size:11.5px; line-height:1.45; padding:6px 9px; margin-top:6px!important}
+#rnnSimTek .rsim-bwd .stephead h2{font-size:13px}
+#rnnSimTek .rsim-ugrid{display:grid; grid-template-columns:260px minmax(0,1fr); gap:10px; align-items:start}
+#rnnSimTek .rsim-ugrid .plotbox{max-width:none!important; margin:0}
+#rnnSimTek .rsim-ugrid .steps{margin-top:0!important}
+#rnnSimTek #rcS5Rows{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); column-gap:14px}
+@media(max-width:900px){ #rnnSimTek .rsim-ugrid{grid-template-columns:1fr} #rnnSimTek .rsim-bwd .step-graph-row{flex-wrap:wrap} }
+/* Güncelle bloğunu sıkıştır: başlık banner'da, giriş cümlesi gizli, satırlar 3 sütun */
+#rnnSimTek #rsimUpd #gAdim5 > .stephead{display:none}
+#rnnSimTek #rsimUpd #rcS5Upd > div:first-child{display:none}
+#rnnSimTek #rsimUpd #rcS5Upd .eq{margin:0 0 4px}
+#rnnSimTek #rsimUpd #rcS5Rows{grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); font-size:12.5px}
+#rnnSimTek #rsimUpd #rcS5Rows > *{margin:1px 0}
+#rnnSimTek #rsimUpd .callout{font-size:11.5px; padding:6px 9px; margin-top:6px!important}
+#rnnSimTek #rsimUpd .acc{margin-top:6px!important}
+#rnnSimTek #rsimUpd .step.stepc .stepbody{padding-top:8px}
+#rnnSimTek #rsimUpd .plotbox canvas{width:100%; height:auto}
+#rnnSimTek .rsim-bwd mjx-container{font-size:90%!important}
+#rnnSimTek #rsimUpd #rcS5Rows{grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr)); font-size:12px}
+#rnnSimTek .rsim-uleft .acc-head{font-size:12px; padding:6px 9px}
+#rnnSimTek .rsim-bwd .callout{font-size:11px; line-height:1.4; padding:5px 8px}
+#rnnSimTek .rsim-bwd .step.stepc .step-graph-plot{flex:0 0 130px}
+#rnnSimTek .rsim-bwd .step-graph-plot canvas{width:130px}
+#rnnSimTek #rsimUpd #rcS5Rows{grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr))}
+@media(min-width:561px){ #rnnSimTek #rsimUpd #rcS5Rows > *{white-space:nowrap} }
+/* "💡 Ne öğrendik" kutuları tek satıra iner, üstüne gelince/dokununca tam açılır (yer kazanmak için) */
+#rnnSimTek .rsim-bwd .step-graph-formula > .callout, #rnnSimTek #rsimUpd .stepbody > .callout{display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1; overflow:hidden; cursor:help}
+#rnnSimTek .rsim-bwd .step-graph-formula > .callout:hover, #rnnSimTek #rsimUpd .stepbody > .callout:hover{-webkit-line-clamp:unset; display:block}
+#rnnSimTek .rsim-bwd .step-graph-formula > .callout:not(:hover), #rnnSimTek #rsimUpd .stepbody > .callout:not(:hover){line-height:1.4em; max-height:calc(1.4em + 12px); white-space:nowrap; text-overflow:ellipsis; display:block}
+#rnnSimTek .sc-right, #rnnSimTek .rsim-bwd .step, #rnnSimTek .rsim-ugrid > *{min-width:0}
+@media(max-width:560px){ #rnnSimTek .sc-cols > *{width:100%; min-width:0; flex:none; padding-left:0} }
