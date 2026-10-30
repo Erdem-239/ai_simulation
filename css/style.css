@@ -218,9 +218,9 @@
   .acc-module.open > .acc-head{border-bottom:1px solid var(--line)}
   .acc-module > .acc-body{padding:13px 15px 15px; border-top:none}
 
-  .rnn-type-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; transition:.15s}
-  .rnn-type-btn:hover{border-color:var(--accent)}
-  .rnn-type-btn.active{background:var(--panel2); border-color:var(--accent); color:var(--accent); font-weight:600}
+  .rnn-type-btn,.lstm-type-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; transition:.15s}
+  .rnn-type-btn:hover,.lstm-type-btn:hover{border-color:var(--accent)}
+  .rnn-type-btn.active,.lstm-type-btn.active{background:var(--panel2); border-color:var(--accent); color:var(--accent); font-weight:600}
 
   .rnn-w-btn{background:var(--panel); border:1px solid var(--line); color:var(--text); padding:5px 12px; border-radius:6px; cursor:pointer; font-size:12px; transition:.15s}
   .rnn-w-btn:hover{border-color:var(--accent)}
