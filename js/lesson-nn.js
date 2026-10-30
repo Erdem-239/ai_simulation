@@ -66,7 +66,7 @@
   function renderMatrixChain(){
     const el = $('nnfx1'); if(!el) return;   // sayfa henuz yoksa cik
     const W = readWeights();
-    const pt = POINTS[2];                    // (1,0)
+    const pt = POINTS[window.__nnBigPt===undefined?2:window.__nnBigPt]; // Bütün Resim nokta seçici (varsayılan (1,0))
     const r = forward(pt.x1, pt.x2, W);
     const fv = (id, v, d) => { const e = $(id); if(e) e.textContent = F(v, d===undefined?4:d); };
     fv('nnfx1', pt.x1, 0);  fv('nnfx2', pt.x2, 0);
@@ -106,6 +106,7 @@
     });
     fwdTable.textContent = rows.join('\n');
     renderMatrixChain();
+    if(window.__nnBigRender) window.__nnBigRender();
     const avgLoss = totalLoss/POINTS.length;
     if(correct===4){
       fwdVerdict.innerHTML = '🎉 <b>4/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklar XOR\'u çözüyor. Sayıları oynat (örn. w₁₁\'i 5\'e indir) ve 4/4\'ün ne kadar kırılgan olduğunu gör.';
