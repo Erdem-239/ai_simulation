@@ -1910,3 +1910,125 @@ body.xt-full-lock{overflow:hidden}
 @media(max-width:700px){ #nnSim .nsim-stuck-g{grid-template-columns:1fr} }
 #nnSim .nsim-stuck ol{margin:0; padding-left:18px} #nnSim .nsim-stuck li{margin:2px 0}
 #nnSim .nsim-stbl{width:auto} #nnSim .nsim-stbl tr.hlr td{background:rgba(255,210,74,.14); color:#ffd24a}
+
+/* LSTM Simülasyon: Neural Network (#nnSim) düzeninin aynısı */
+#lstmSim .nsim-wbox{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:0 0 12px}
+#lstmSim .nsim-wtitle{font-weight:700; font-size:14px; margin-bottom:6px}
+#lstmSim .nsim-wtitle span{font-weight:400; font-size:12px; color:var(--muted)}
+#lstmSim .nsim-wbox .ptcell input{width:86px}
+#lstmSim .nsim-note{font-size:11.5px; color:var(--muted); margin-top:6px}
+#lstmSim .nsim-lab{font-size:11.5px; color:var(--muted); min-width:104px}
+#lstmSim .nsim-start{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+#lstmSim .nsim-b{padding:5px 10px; font-size:12.5px; background:var(--panel); color:var(--text); border:1px solid var(--line)}
+#lstmSim .nsim-bf{background:#2f6fd0; color:#fff; border-color:#2f6fd0}
+#lstmSim .nsim-bb{background:#c4572f; color:#fff; border-color:#c4572f}
+#lstmSim .nsim-bg{background:#2f8f55; color:#fff; border-color:#2f8f55}
+#lstmSim .nsim-cols{display:grid; grid-template-columns:minmax(0,440px) minmax(0,1fr); gap:14px; align-items:start}
+#lstmSim .nsim-left{position:sticky; top:8px; min-width:0}
+#lstmSim .nsim-right{min-width:0}
+@media(max-width:1000px){ #lstmSim .nsim-cols{grid-template-columns:1fr} #lstmSim .nsim-left{position:static} }
+#lstmSim .nsim-ctl{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 10px; display:flex; flex-direction:column; gap:6px; margin-bottom:8px}
+#lstmSim .nsim-row{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+#lstmSim .nsim-stat{font-size:11.5px; color:#ccd5e8}
+#lstmSim .nsim-diag{display:flex; gap:8px; align-items:center}
+#lstmSim .nsim-diag svg{flex:1 1 auto; min-width:0}
+#lstmSim .nsim-heat{flex:0 0 112px; font-size:11px; color:#ccd5e8; line-height:1.35}
+#lstmSim .nsim-heat canvas{width:112px; height:112px; border:1px solid var(--line); border-radius:6px; display:block; margin-bottom:3px}
+#lstmSim .nsim-heat span{color:var(--muted); font-size:10px}
+#lstmSim .nsim-msg{background:#141c30; border:1px solid var(--line); border-left:3px solid #ffd24a; border-radius:8px; padding:6px 9px; font-size:12.5px; color:#dbe2f2; margin:6px 0 8px; min-height:2.6em}
+#lstmSim .nsim-phase{border:1.5px solid; border-radius:12px; padding:0 10px 10px; margin:0 0 12px}
+#lstmSim .nsim-banner{margin:0 -10px 8px; padding:7px 12px; border-radius:10px 10px 0 0; font-size:14px; font-weight:700}
+#lstmSim .nsim-banner span{font-size:12px; font-weight:400; color:#ccd5e8; margin-left:6px}
+#lstmSim .nsim-fwd{border-color:#3d7fd0; background:rgba(61,127,208,.04)} #lstmSim .nsim-fwd .nsim-banner{background:rgba(61,127,208,.2); color:#8cc4ff}
+#lstmSim .nsim-bwd{border-color:#d0603d; background:rgba(208,96,61,.04)} #lstmSim .nsim-bwd .nsim-banner{background:rgba(208,96,61,.2); color:#ffa58a}
+#lstmSim .nsim-upd{border-color:#3a9d5f; background:rgba(58,157,95,.04)} #lstmSim .nsim-upd .nsim-banner{background:rgba(58,157,95,.2); color:#86e2a9}
+#lstmSim .nsim-eq{font-size:12.5px; color:#dbe2f2; padding:3px 6px; border-radius:6px; margin:2px 0; line-height:1.6; overflow-x:auto}
+#lstmSim .nsim-eq.hl{background:rgba(255,210,74,.16); outline:1.5px solid #ffd24a}
+#lstmSim .nsim-bgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px; margin-top:0}
+@media(max-width:1300px){ #lstmSim .nsim-bgrid{grid-template-columns:1fr!important} }
+#lstmSim .nsim-bwd .step{min-width:0}
+#lstmSim .nsim-bwd .stephead h2{font-size:13px}
+#lstmSim .nsim-bwd .eq{overflow-x:auto; font-size:12.5px}
+#lstmSim .nsim-bwd .callout{font-size:11.5px; line-height:1.45; padding:6px 9px}
+#lstmSim .step.active{outline:2.5px solid #ff8a6a; box-shadow:0 0 0 4px rgba(255,138,106,.18)}
+#lstmSim .nsim-ugrid{display:grid; grid-template-columns:minmax(0,260px) minmax(0,1fr); gap:10px; align-items:start}
+@media(max-width:700px){ #lstmSim .nsim-ugrid{grid-template-columns:1fr} }
+#lstmSim .nsim-plotlab{font-size:11.5px; color:var(--muted); margin-bottom:2px}
+#lstmSim .nsim-tbl{border-collapse:collapse; font-size:12px; width:100%}
+#lstmSim .nsim-tbl th{font-weight:600; color:var(--muted); font-size:11px; text-align:right; padding:2px 6px}
+#lstmSim .nsim-tbl td{text-align:right; padding:2px 6px; border-top:1px solid #23304e; font-variant-numeric:tabular-nums}
+#lstmSim .nsim-tbl td:first-child,#lstmSim .nsim-tbl th:first-child{text-align:left}
+#lstmSim .nsim-tbl tr.sep td{border-top:2px solid #3a4870}
+#lstmSim .nsim-loss{font-size:12.5px; margin-top:6px}
+#lstmSim #nnFwdTable{max-width:100%}
+@media(max-width:560px){ #lstmSim .nsim-diag{flex-direction:column} #lstmSim .nsim-heat{display:flex; gap:8px; flex-basis:auto} #lstmSim .nsim-wbox .ptcell input{width:64px} }
+#lstmSim .nsim-cols{grid-template-columns:minmax(0,520px) minmax(0,1fr)}
+#lstmSim .nsim-heat{flex:0 0 120px} #lstmSim .nsim-heat canvas{width:120px; height:120px}
+#lstmSim .nsim-bgrid{align-items:start}
+#lstmSim .nsim-bwd .stephead{padding:7px 10px}
+#lstmSim .nsim-bwd .stephead h2{font-size:12.5px}
+#lstmSim .nsim-bwd .stepbody{padding:0 10px 8px}
+#lstmSim .nsim-bwd .eq{font-size:12px; margin:2px 0; padding:4px 6px}
+#lstmSim .nsim-bwd mjx-container{font-size:82%!important}
+#lstmSim .nsim-bwd .callout, #lstmSim .nsim-upd .callout{font-size:11px; line-height:1.4; padding:5px 8px; margin-top:5px!important}
+  #lstmSim .nsim-bwd .callout, #lstmSim .nsim-upd .callout{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:help}
+  #lstmSim .nsim-bwd .callout:hover, #lstmSim .nsim-upd .callout:hover{white-space:normal}
+#lstmSim .nsim-ugrid{grid-template-columns:minmax(0,280px) minmax(0,520px)}
+#lstmSim .nsim-tbl{font-size:11.5px}
+#lstmSim .nsim-tbl td,#lstmSim .nsim-tbl th{padding:1px 6px}
+#lstmSim .nsim-loss{font-size:12px}
+#lstmSim .nsim-cols{grid-template-columns:minmax(0,4fr) minmax(0,6fr)}
+#lstmSim .nsim-heat{flex:0 0 160px} #lstmSim .nsim-heat canvas{width:160px; height:160px}
+@media(max-width:1000px){ #lstmSim .nsim-cols{grid-template-columns:1fr} }
+#lstmSim .nsim-cols{grid-template-columns:minmax(0,9fr) minmax(0,16fr)}
+@media(max-width:1000px){ #lstmSim .nsim-cols{grid-template-columns:1fr} }
+#lstmSim .nsim-bgrid{align-items:stretch; gap:10px}
+#lstmSim .nsim-bwd .step{display:flex; flex-direction:column}
+#lstmSim .nsim-bwd .stepbody{flex:1; padding:4px 14px 12px}
+#lstmSim .nsim-bwd .stephead{padding:9px 14px}
+#lstmSim .nsim-bwd .stephead h2{font-size:14px}
+#lstmSim .nsim-bwd .eq{font-size:14px; margin:6px 0; padding:8px 10px; line-height:2}
+#lstmSim .nsim-bwd mjx-container{font-size:112%!important}
+#lstmSim .nsim-bwd .callout, #lstmSim .nsim-upd .callout{font-size:12.5px; line-height:1.5; padding:7px 10px; margin-top:8px!important; white-space:normal!important; overflow:visible; cursor:auto}
+#lstmSim .nsim-tbl{font-size:12.5px}
+#lstmSim .nsim-tbl td,#lstmSim .nsim-tbl th{padding:2px 8px}
+#lstmSim .nsim-loss{font-size:13px}
+#lstmSim .nsim-bwd mjx-container{font-size:104%!important; display:inline-block!important; margin:3px 0!important}
+#lstmSim .nsim-bwd .eq{line-height:1.5}
+#lstmSim .nsim-what{background:rgba(74,208,224,.07); border:1px solid #2c6f7a; border-left:4px solid #4ad0e0; border-radius:10px; padding:8px 12px; font-size:13px; color:#dbe2f2; line-height:1.55; margin:0 0 10px}
+#lstmSim .nsim-when{background:#141c30; border:1px solid var(--line); border-left:3px solid #46c46a; border-radius:8px; padding:6px 10px; font-size:12.5px; color:#dbe2f2; margin:0 0 8px; line-height:1.5}
+#lstmSim .nsim-note{font-size:12px; color:#ccd5e8; line-height:1.5}
+#lstmSim .nsim-cols{grid-template-columns:minmax(0,10fr) minmax(0,17fr)}
+@media(max-width:1000px){ #lstmSim .nsim-cols{grid-template-columns:1fr} }
+#lstmSim .nsim-bwd mjx-container{font-size:94%!important; margin:1px 0!important}
+#lstmSim .nsim-bwd .eq{margin:3px 0; padding:5px 8px; line-height:1.35}
+#lstmSim .nsim-bwd .stephead{padding:7px 12px}
+#lstmSim .nsim-bwd .stephead h2{font-size:13.5px}
+#lstmSim .nsim-bwd .stepbody{padding:2px 12px 10px}
+#lstmSim .nsim-bwd .callout, #lstmSim .nsim-upd .callout{font-size:12px; padding:6px 9px; margin-top:6px!important}
+#lstmSim .bp4g{display:grid; grid-template-columns:repeat(2,max-content); column-gap:22px}
+@media(max-width:560px){ #lstmSim .bp4g{grid-template-columns:1fr} }
+#lstmSim .nsim-sub{font-size:11.5px; color:var(--muted); margin-top:4px}
+#lstmSim .nsim-tbl td,#lstmSim .nsim-tbl th{padding:1px 8px}
+#lstmSim .nsim-tbl{font-size:12px}
+#lstmSim .nsim-ugrid{grid-template-columns:minmax(0,300px) minmax(0,1fr)}
+#lstmSim .nsim-htbl th{text-align:right; font-size:12px; color:#ccd5e8}
+#lstmSim .nsim-htbl td:first-child{white-space:nowrap; color:var(--muted); font-size:11.5px}
+#lstmSim .nsim-htbl td:first-child span{font-size:10px}
+#lstmSim .nsim-htbl .sep{border-left:2px solid #3a4870}
+#lstmSim .nsim-htbl tr td{border-top:1px solid #23304e}
+#lstmSim .nsim-bwd mjx-container{font-size:90%!important}
+#lstmSim .nsim-htbl td,#lstmSim .nsim-htbl th{padding:1px 5px; font-size:11.5px}
+#lstmSim .nsim-ugrid{grid-template-columns:minmax(0,250px) minmax(0,1fr)}
+#lstmSim .nsim-stuck{background:rgba(224,106,106,.07); border:1px solid #7a3a3a; border-left:4px solid #e06a6a; border-radius:8px; padding:8px 10px; margin:0 0 8px; font-size:12.5px; color:#dbe2f2; line-height:1.5}
+#lstmSim .nsim-stuck-h{font-weight:700; color:#ffa58a; margin-bottom:4px}
+#lstmSim .nsim-stuck-g{display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:start}
+@media(max-width:700px){ #lstmSim .nsim-stuck-g{grid-template-columns:1fr} }
+#lstmSim .nsim-stuck ol{margin:0; padding-left:18px} #lstmSim .nsim-stuck li{margin:2px 0}
+#lstmSim .nsim-stbl{width:auto} #lstmSim .nsim-stbl tr.hlr td{background:rgba(255,210,74,.14); color:#ffd24a}
+#lstmSim .lv-mid{max-width:100%}
+#lstmSim #lstmPipe{min-width:0!important; width:100%; max-width:none; height:auto}
+#lstmSim .lv-cards{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+@media(max-width:700px){ #lstmSim .lv-cards{grid-template-columns:1fr} }
+#lstmSim .ls-g4 td,#lstmSim .ls-g4 th{font-size:11.5px; padding:2px 6px}
+#lstmSim .nsim-wbox label input[type=range]{accent-color:var(--accent)}

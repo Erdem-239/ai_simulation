@@ -23,5 +23,5 @@
     bar.querySelector('button').onclick=()=>{rw.value=W0;rh.value=H0;ap();};
     ap();
   }
-  mk('lstmArch','Şema'); mk('lstmPipe','Vana paneli şeması');
+  mk('lstmArch','Şema');
 })();

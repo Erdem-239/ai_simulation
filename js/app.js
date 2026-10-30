@@ -3615,7 +3615,7 @@ function setupFloatingPanel(ids){
   }));
 })();
 
-/* ---- LSTM: vana paneli + tam hücre ---- */
+/* ---- LSTM: Simülasyon hücre şeması (lstmPipe) — ağırlık/girdi kaydırıcılarından ---- */
 (function(){
   const pipe=document.getElementById('lstmPipe'); if(!pipe) return;
   const $=id=>document.getElementById(id);
@@ -3641,53 +3641,30 @@ function setupFloatingPanel(ids){
     const Wt={}, zz={};
     ['f','i','c','o'].forEach(g=>{ Wt[g]=[rv('lv_W'+g),rv('lv_U'+g),rv('lv_b'+g)]; zz[g]=Wt[g][0]*x+Wt[g][1]*hp+Wt[g][2];
       ['W','U','b'].forEach((p,k)=>{ $('lv_'+p+g+'_v').textContent=F(Wt[g][k],2); }); });
-    ['x','hp','cp'].forEach(k=>{ $('lv_'+k+'_v').textContent=F(rv('lv_'+k),2); });
+    ['x','hp','cp','y'].forEach(k=>{ const e=$('lv_'+k+'_v'); if(e&&$('lv_'+k)) e.textContent=F(rv('lv_'+k),2); });
     const f=sig(zz.f), i=sig(zz.i), o=sig(zz.o), ct=Math.tanh(zz.c);
     $('lv_f').value=f; $('lv_i').value=i; $('lv_o').value=o; $('lv_ct').value=ct;
     const c=f*cp+i*ct, h=o*Math.tanh(c);
     pipe.setAttribute('viewBox','0 0 760 390');
-    if(!pipe.dataset.sized){ pipe.style.minWidth='560px'; pipe.style.width='100%'; pipe.style.maxWidth='760px'; pipe.style.display='block'; pipe.style.margin='0 auto'; }
+    if(!pipe.dataset.sized){ pipe.style.minWidth='0'; pipe.style.width='100%'; pipe.style.maxWidth='760px'; pipe.style.display='block'; pipe.style.margin='0 auto'; }
     pipe.innerHTML=window.lstmCellSvg('lp_',{f:f,i:i,o:o,cp:cp,ct:ct,fc:f*cp,ic:i*ct,c:c,tc:Math.tanh(c),h:h,Wt:Wt,zz:zz,x:x,hp:hp},window.__lstmPipeHL||[]);
     $('lv_work').innerHTML=
       'f = σ('+F(Wt.f[0],2)+'·'+F(x,2)+' + '+F(Wt.f[1],2)+'·'+F(hp,2)+' + '+F(Wt.f[2],2)+') = σ('+F(zz.f)+') = <b>'+F(f)+'</b>   i = <b>'+F(i)+'</b>   c̃ = <b>'+F(ct)+'</b>   o = <b>'+F(o)+'</b>\n'+
       'c = f·c₋₁ + i·c̃ = ('+F(f,2)+')('+F(cp,2)+') + ('+F(i,2)+')('+F(ct,2)+')   = <b>'+F(c)+'</b>\n'+
-      'h = o·tanh(c)  = ('+F(o,2)+')·tanh('+F(c)+') = ('+F(o,2)+')('+F(Math.tanh(c))+')   = <b>'+F(h)+'</b>';
+      'h = o·tanh(c)  = ('+F(o,2)+')·tanh('+F(c)+') = ('+F(o,2)+')('+F(Math.tanh(c))+')   = <b>'+F(h)+'</b>'+
+      ($('lv_y')?'\nL = ½(h − y)² = ½('+F(h)+' − '+F(rv('lv_y'),2)+')² = <b>'+F(0.5*Math.pow(h-rv('lv_y'),2),4)+'</b>':'');
     const tv=(id,t)=>{const e=$(id); if(e) e.textContent=t;};
     tv('lvT_f',F(f,2)); tv('lvT_cp',F(cp,2)); tv('lvT_fc',F(f*cp,2)); tv('lvT_i',F(i,2)); tv('lvT_ip',Math.round(i*100));
     tv('lvT_ct',F(ct,2)); tv('lvT_ic',F(i*ct,2)); tv('lvT_o',F(o,2)); tv('lvT_c',F(c,2)); tv('lvT_h',F(h,3));
     if(window.__lstmStepRefresh) window.__lstmStepRefresh();
+    if(window.__lstmSimRender) window.__lstmSimRender();
+    if(window.__lstmBigRender) window.__lstmBigRender();
   }
-  ['lv_x','lv_hp','lv_cp'].concat(['f','i','c','o'].reduce((r,g)=>r.concat(['lv_W'+g,'lv_U'+g,'lv_b'+g]),[])).forEach(id=>$(id).addEventListener('input',drawPipe));
+  ['lv_x','lv_hp','lv_cp','lv_y'].filter(id=>$(id)).concat(['f','i','c','o'].reduce((r,g)=>r.concat(['lv_W'+g,'lv_U'+g,'lv_b'+g]),[])).forEach(id=>$(id).addEventListener('input',drawPipe));
   window.__lstmPipeRedraw=drawPipe;
   drawPipe();
 
-  /* --- 2) tam hücre --- */
-  const Wgt={ f:[0.5,0.4,0.1], i:[0.6,0.3,0.0], c:[0.8,0.5,0.0], o:[0.7,0.4,0.1] };
-  function cell(){
-    const x=parseFloat($('lc_x').value), h=parseFloat($('lc_h').value), cp=parseFloat($('lc_c').value);
-    ['x','h','c'].forEach(k=>{ $('lc_'+k+'_v').textContent=F(parseFloat($('lc_'+k).value),2); });
-    const z=w=>w[0]*x+w[1]*h+w[2];
-    const zf=z(Wgt.f), zi=z(Wgt.i), zc=z(Wgt.c), zo=z(Wgt.o);
-    const f=sig(zf), i=sig(zi), ct=Math.tanh(zc), o=sig(zo);
-    const c=f*cp+i*ct, hn=o*Math.tanh(c);
-    const ln=(g,w,zv,val,fn)=>g+' = '+fn+'('+F(w[0],1)+'·x + '+F(w[1],1)+'·h₋₁'+(w[2]?' + '+F(w[2],1):'')+') = '+fn+'('+F(zv)+')   = <b>'+F(val)+'</b>';
-    $('lc_work').innerHTML=
-      '<b style="color:var(--accent)">Kapılar açıklıklarına karar veriyor:</b>\n'+
-      ln('f',Wgt.f,zf,f,'σ')+'   <span style="color:var(--muted)">← eski hafızanın %'+Math.round(f*100)+'’i kalacak</span>\n'+
-      ln('i',Wgt.i,zi,i,'σ')+'   <span style="color:var(--muted)">← yeninin %'+Math.round(i*100)+'’i girecek</span>\n'+
-      ln('c̃',Wgt.c,zc,ct,'tanh')+'   <span style="color:var(--muted)">← yazılacak içerik</span>\n'+
-      ln('o',Wgt.o,zo,o,'σ')+'   <span style="color:var(--muted)">← hafızanın %'+Math.round(o*100)+'’i söylenecek</span>\n'+
-      '\n<b style="color:var(--accent)">Hafıza güncelleniyor (bagaj bandı):</b>\n'+
-      'c = f·c₋₁ + i·c̃ = ('+F(f)+')('+F(cp,2)+') + ('+F(i)+')('+F(ct)+')   = <b>'+F(c)+'</b>\n'+
-      'h = o·tanh(c) = ('+F(o)+')('+F(Math.tanh(c))+')   = <b>'+F(hn)+'</b>';
-    const f20=Math.pow(f,20);
-    $('lc_grad').innerHTML=
-      '<b>Gradyan sağlık raporu:</b>  ∂c/∂c₋₁ = f = <b>'+F(f)+'</b>\n'+
-      '20 adım geriye taşınırsa: f²⁰ = <b style="color:'+(f20>0.05?'#46c46a':'#e06a6a')+'">'+f20.toPrecision(3)+'</b>'+
-      (f20>0.05?'  → sinyal hayatta! 💪':'  → sinyal ölüyor (f’yi büyütmek için x veya h₋₁’i artır)');
-  }
-  ['lc_x','lc_h','lc_c'].forEach(id=>$(id).addEventListener('input',cell));
-  cell();
+  // (eski "tam hücre" oyuncağı kaldırıldı: aynı hesap artık Simülasyon'daki tek hücrede, js/lesson-lstm-sim.js)
 })();
 
 /* ---- vektör & nokta çarpım oyuncağı ---- */

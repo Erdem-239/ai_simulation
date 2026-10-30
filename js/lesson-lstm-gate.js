@@ -1,7 +1,7 @@
 // LSTM — "Bir kapının içi: RNN hücresiyle aynı iş" (Nedir aşaması).
 // RNN'de z_h = W_hh·h₋₁ + W_xh·x + b_h → tanh. LSTM'de aynı çarp-topla-bias DÖRT kez, dört ayrı ağırlık setiyle yapılır.
 // Burada tek bir kapı RNN şemasının diliyle (× W, × U, + b, aktivasyon) adım adım kurulur; altta dört kapının ağırlık/sayı tablosu var.
-// Ağırlıklar Simülasyon'daki "tam hücre" ile aynı sabitler (js/app.js Wgt): f(0.5,0.4,0.1) i(0.6,0.3,0) c(0.8,0.5,0) o(0.7,0.4,0.1).
+// Ağırlıklar sabit örnek değerler: f(0.5,0.4,0.1) i(0.6,0.3,0) c(0.8,0.5,0) o(0.7,0.4,0.1).
 (function(){
   const host=document.getElementById('lstmGate'); if(!host) return;
   const $=id=>document.getElementById(id);
