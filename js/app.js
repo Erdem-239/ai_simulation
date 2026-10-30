@@ -544,7 +544,19 @@ function scInit(P){
   ];
 
   let cstep=0, playMode=null;
-  function clr(){ if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b')); }
+  /* Simülasyon örneğinde: İleri adımı canlı ileri hesabın satırını, Geri adımı ilgili Geri Adım kartını yakar */
+  const FROW={sc_maa:'0',sc_max:'0',sc_adda:'0',sc_g1:'1',sc_mya:'2',sc_addy:'2',sc_io_y:'2 3'};
+  const BCARD={sc_io_y:'gAdim1',sc_addy:'gAdim2',sc_mya:'gAdim2',sc_g1:'gAdim3',sc_adda:'gAdim4',sc_maa:'gAdim4',sc_max:'gAdim4'};
+  function linkClr(){
+    const fr=P.fwdRows&&document.getElementById(P.fwdRows); if(fr) delete fr.dataset.hl;
+    if(P.cards) Object.values(BCARD).forEach(id=>{ const c=document.getElementById(id); if(c) c.classList.remove('active'); });
+  }
+  function link(st,cls){
+    linkClr();
+    if(cls==='cell-hl'){ const fr=P.fwdRows&&document.getElementById(P.fwdRows); if(fr&&FROW[st.hl[0]]) fr.dataset.hl=FROW[st.hl[0]]; }
+    else if(P.cards){ const c=document.getElementById(BCARD[st.hl[0]]); if(c){ c.classList.add('active'); c.scrollIntoView({block:'nearest',behavior:'smooth'}); } }
+  }
+  function clr(){ linkClr(); if(timer){clearInterval(timer);timer=null;} svg.querySelectorAll('.cell-hl,.cell-hl-b').forEach(e=>e.classList.remove('cell-hl','cell-hl-b')); document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b')); }
   function reset(){
     clr(); cstep=0; playMode=null;
     fbox.innerHTML=`<b style="color:#ffd24a">İleri ▶</b> ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; <b style="color:#f0a032">◀ BPTT</b> ile gradyanlar geriye akar.`;
@@ -552,7 +564,7 @@ function scInit(P){
   }
   function apply(st,cls){
     st.hl.forEach(id=>{ const el=svg.querySelector('[id="'+P.pre+id+'"]'); if(el) el.classList.add(cls); });
-    fbox.innerHTML=st.f; info.innerHTML=st.i;
+    fbox.innerHTML=st.f; info.innerHTML=st.i; link(st,cls);
     document.querySelectorAll('.eq-hl-f,.eq-hl-b').forEach(e=>e.classList.remove('eq-hl-f','eq-hl-b'));
     const eqs=(cls==='cell-hl'?FEQ:BEQ)[st.hl[0]];
     if(eqs && document.getElementById('tfzh')){
@@ -582,7 +594,7 @@ function scInit(P){
 
   reset();
 }
-scInit({svg:'scSvg',fbox:'scFormula',info:'scInfo',step:'scStep',back:'scBack',auto:'scAuto',backAuto:'scBackAuto',rst:'scRst',pre:''});
+scInit({svg:'scSvg',fbox:'scFormula',info:'scInfo',step:'scStep',back:'scBack',auto:'scAuto',backAuto:'scBackAuto',rst:'scRst',pre:'',fwdRows:'rc_fwd',cards:true});
 scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep',back:'bsCellBack',auto:'bsCellAuto',backAuto:'bsCellBackAuto',rst:'bsCellRst',pre:'bs_'});
 
 /* ---- Tek Hücre diyagramı sürükle-bırak ile boyutlandırılabilir ---- */
@@ -1643,7 +1655,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     updateLoss3D(p);
 
     const u=(w,g)=>F(w - p.alpha*g);
-    $('rc_upd').innerHTML =
+    if($('rc_upd')) $('rc_upd').innerHTML =
       EQ('W<sub>xh</sub> := W<sub>xh</sub> − α·∂L/∂W<sub>xh</sub>', F(p.Wxh,2)+' − ('+F(p.alpha,2)+')('+F(dWxh)+')', u(p.Wxh,dWxh))
       + EQ('W<sub>hh</sub> := W<sub>hh</sub> − α·∂L/∂W<sub>hh</sub>', F(p.Whh,2)+' − ('+F(p.alpha,2)+')('+F(dWhh)+')', u(p.Whh,dWhh))
       + EQ('b<sub>h</sub> := b<sub>h</sub> − α·∂L/∂b<sub>h</sub>', F(p.b,2)+' − ('+F(p.alpha,2)+')('+F(db)+')', u(p.b,db))
@@ -1846,11 +1858,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     const el=$(id); if(el) el.addEventListener('input', render);
   });
   const rcPlayBtn=$('rc_play'), rcFastBtn=$('rc_fast'), rcStopBtn=$('rc_stop'), rcResetBtn=$('rc_reset');
-  if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcPhaseTick(); });
+  if(rcPlayBtn) rcPlayBtn.addEventListener('click', ()=>{ rcTrainStop(); rcTrainCommit(); });
   if(rcFastBtn) rcFastBtn.addEventListener('click', ()=>{
     if(rcTimer){ rcTrainStop(); return; }
     rcFastBtn.classList.add('on');
-    rcTimer=setInterval(rcPhaseTick, 700);
+    rcTimer=setInterval(rcTrainCommit, 300);
   });
   if(rcStopBtn) rcStopBtn.addEventListener('click', ()=>{ rcTrainStop(); rcClearHighlight(); });
   if(rcResetBtn) rcResetBtn.addEventListener('click', rcTrainReset);
