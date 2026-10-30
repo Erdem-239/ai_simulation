@@ -2417,7 +2417,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       d:'Tek nörondan çok katmanlı ağa: ağırlık matrisi W, ileri yayılım ve geri yayılımın genel hali — "ağırlıklar kendi kendine nasıl öğrenir?" sorusunun cevabı. RNN\'in üzerine kurulduğu temel katman.',
       sci:'Perceptron: Rosenblatt (1958) tek katmanla başladı, XOR duvarına çarpıp donduruldu (Minsky & Papert, 1969). Çok katmanlı ağları gerçekten eğitilebilir yapan geri yayılım: Rumelhart, Hinton & Williams (1986).',
       real:[['🖼️','Görüntü sınıflandırma (CNN\'lerin atası)'],['🏦','Kredi/risk skorlama modelleri'],['🎮','Oyun AI karar ağları']],
-      sub:['1 nörondan ağa: katman + W matrisi','İleri yayılım simülasyonu (4 nokta canlı)','Geri yayılım: adım adım (4 adım)','Canlı eğitim: rastgele ağırlıklar XOR\'u kendi kendine öğreniyor','Kendini test']},
+      sub:['Tek nöron → katman → W matrisi','İleri yayılım (seçili nokta, adım adım)','Geri yayılım: 4 adım','Güncelle + eğit: ağ XOR\'u kendi buluyor','Kendini test']},
     {id:'rnn',  nm:'🔁 RNN + BPTT', tier:3, v:26, pre:['nn'], tab:'rnn',
       d:'Dizi + hafıza (gizli durum). Zincir kuralı zamana yayılır; gradyan geçmişe doğru akar.',
       sci:'Backprop: Rumelhart, Hinton & Williams (1986). Basit RNN: Elman (1990). "Ağa hafıza takma" fikrinin ilk çalışan hali.',

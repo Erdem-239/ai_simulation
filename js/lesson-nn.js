@@ -1,4 +1,4 @@
-/* Neural Network sayfası — ileri yayılım simülasyonu, geri yayılım adım adım, canlı eğitim */
+/* Neural Network sayfası — ileri yayılım tablosu ve geri yayılım kartları (Simülasyon düzeni/eğitim: lesson-nn-sim.js) */
 (function(){
   'use strict';
   const root = document.getElementById('model-neural');
@@ -21,7 +21,7 @@
   ];
 
   /* ============================================================
-     BÖLÜM 2 — İleri yayılım simülasyonu (düzenlenebilir ağırlıklar)
+     İleri yayılım: 9 ağırlık kutusu, 4 noktanın tablosu
      ============================================================ */
   const wIds = ['nnW11','nnW12','nnB1','nnW21','nnW22','nnB2','nnW31','nnW32','nnB3'];
   const DEFAULTS = {nnW11:20, nnW12:20, nnB1:-10, nnW21:20, nnW22:20, nnB2:-30, nnW31:20, nnW32:-20, nnB3:-10};
@@ -96,25 +96,21 @@
     const W = readWeights();
     let correct = 0, totalLoss = 0;
     const rows = [];
-    rows.push('nokta       z_h1     h1(σ)    z_h2     h2(σ)    z_y      p=ŷ     tahmin  gerçek  kayıp');
+    rows.push('nokta    h1      h2      ŷ       tahmin/y   kayıp');
     POINTS.forEach(pt=>{
       const r = forward(pt.x1, pt.x2, W);
       const pred = r.p>=0.5 ? 1 : 0;
       const ok = pred===pt.y; if(ok) correct++;
       const L = lossOf(r.p, pt.y); totalLoss += L;
-      rows.push(
-        '('+pt.x1+','+pt.x2+')      '+F(r.h1_raw,2).padStart(7)+'  '+F(r.a1,3).padStart(6)+'   '+
-        F(r.h2_raw,2).padStart(7)+'  '+F(r.a2,3).padStart(6)+'   '+F(r.y_raw,2).padStart(6)+'  '+
-        F(r.p,3).padStart(6)+'    '+pred+'      '+pt.y+'      '+F(L,3)+(ok?' ✓':' ✗')
-      );
+      rows.push('('+pt.x1+','+pt.x2+')    '+F(r.a1,3)+'   '+F(r.a2,3)+'   '+F(r.p,3)+'   '+pred+' / '+pt.y+'     '+F(L,3)+(ok?' ✓':' ✗'));
     });
     fwdTable.textContent = rows.join('\n');
     renderMatrixChain();
     const avgLoss = totalLoss/POINTS.length;
     if(correct===4){
-      fwdVerdict.innerHTML = '🎉 <b>4/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklar XOR\'u çözüyor. Sayıları biraz oynat (örn. w₁₁\'i 5\'e indir), 4/4\'ün ne kadar kırılgan olduğunu gör.';
+      fwdVerdict.innerHTML = '🎉 <b>4/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklar XOR\'u çözüyor. Sayıları oynat (örn. w₁₁\'i 5\'e indir) ve 4/4\'ün ne kadar kırılgan olduğunu gör.';
     } else {
-      fwdVerdict.innerHTML = '📉 <b>'+correct+'/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklarla ağ XOR\'u tam çözemiyor. "↺ Varsayılana dön" ile referans çözüme geri dönebilirsin.';
+      fwdVerdict.innerHTML = '📉 <b>'+correct+'/4 doğru</b> — ortalama kayıp = '+F(avgLoss,4)+'. Bu ağırlıklarla ağ XOR\'u tam çözemiyor. "✋ elle çözüm" ile referans çözüme dönebilir ya da ▶ 1 tur / ⏩ ile eğitebilirsin.';
     }
   }
 
@@ -192,7 +188,7 @@
     $('nnBp4Eq').innerHTML = '\\( \\dfrac{\\partial L}{\\partial w_{11}}='+F(dLdzh1,4)+'\\times x_1='+F(dLdzh1,4)+'\\times'+pt.x1+'='+F(dLdw11,4)+' \\)<br>'+
       '\\( \\dfrac{\\partial L}{\\partial w_{12}}='+F(dLdzh1,4)+'\\times x_2='+F(dLdw12,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial b_1}='+F(dLdb1,4)+' \\)<br>'+
       '\\( \\dfrac{\\partial L}{\\partial w_{21}}='+F(dLdzh2,4)+'\\times x_1='+F(dLdw21,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial w_{22}}='+F(dLdw22,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial b_2}='+F(dLdb2,4)+' \\)';
-    $('nnBp4Note').innerHTML = '✅ Artık 9 ağırlığın da gradyanına sahibiz — bu, TEK bir XOR noktası için hesaplanan gradyan. Gerçek eğitimde (Bölüm 4\'te göreceğin gibi) 4 noktanın gradyanı ORTALAMASI alınıp <code>W ← W − α·gradyan</code> ile güncellenir.';
+    $('nnBp4Note').innerHTML = '✅ Artık 9 ağırlığın da gradyanına sahibiz — bu, TEK bir XOR noktası için hesaplanan gradyan. Eğitimde (3) Güncelle) 4 noktanın gradyanı ORTALAMASI alınıp <code>W ← W − α·gradyan</code> ile güncellenir.';
     typeset($('nnBp4Eq'));
     $('nnBp4Detail').innerHTML =
       '<div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> Adım 3\'te bulduğumuz ∂L/∂z<sub>h</sub> sinyalini son halkaya, w₁₁,w₁₂,w₂₁,w₂₂,b₁,b₂\'ye taşımak.</div>'+
@@ -209,120 +205,7 @@
     });
   });
 
-  /* ============================================================
-     BÖLÜM 4 — Canlı eğitim: rastgele ağırlıklar, kendi kendine öğren
-     ============================================================ */
-  const trainBtn = $('nnTrainBtn');
-  const trainLog = $('nnTrainLog');
-  const trainCanvas = $('nnTrainCanvas');
-  const trainWeights = $('nnTrainWeights');
-  const trainTable = $('nnTrainTable');
-  const trainVerdict = $('nnTrainVerdict');
-
-  function randInit(){
-    const rnd = () => (Math.random()*2-1); // -1..1
-    return {
-      w11: rnd(), w12: rnd(), b1: 0,
-      w21: rnd(), w22: rnd(), b2: 0,
-      w31: rnd(), w32: rnd(), b3: 0
-    };
-  }
-
-  function trainRun(epochs, lr){
-    let W = randInit();
-    const lossHistory = [];
-    for(let ep=0; ep<epochs; ep++){
-      // ---- ileri yayılım + gradyan biriktir (tam-batch: 4 nokta ortalaması) ----
-      let gW11=0,gW12=0,gB1=0,gW21=0,gW22=0,gB2=0,gW31=0,gW32=0,gB3=0, epLoss=0;
-      POINTS.forEach(pt=>{
-        const r = forward(pt.x1, pt.x2, W);
-        epLoss += lossOf(r.p, pt.y);
-        const dLdzy = r.p - pt.y;
-        gW31 += dLdzy*r.a1; gW32 += dLdzy*r.a2; gB3 += dLdzy;
-        const dLdh1 = dLdzy*W.w31, dLdh2 = dLdzy*W.w32;
-        const dLdzh1 = dLdh1*r.a1*(1-r.a1), dLdzh2 = dLdh2*r.a2*(1-r.a2);
-        gW11 += dLdzh1*pt.x1; gW12 += dLdzh1*pt.x2; gB1 += dLdzh1;
-        gW21 += dLdzh2*pt.x1; gW22 += dLdzh2*pt.x2; gB2 += dLdzh2;
-      });
-      const n = POINTS.length;
-      W = {
-        w11: W.w11 - lr*gW11/n, w12: W.w12 - lr*gW12/n, b1: W.b1 - lr*gB1/n,
-        w21: W.w21 - lr*gW21/n, w22: W.w22 - lr*gW22/n, b2: W.b2 - lr*gB2/n,
-        w31: W.w31 - lr*gW31/n, w32: W.w32 - lr*gW32/n, b3: W.b3 - lr*gB3/n
-      };
-      if(ep % 40 === 0 || ep===epochs-1) lossHistory.push(epLoss/n);
-    }
-    // final değerlendirme
-    let correct = 0; const preds = POINTS.map(pt=>{
-      const r = forward(pt.x1, pt.x2, W);
-      const pred = r.p>=0.5?1:0; if(pred===pt.y) correct++;
-      return {pt, r, pred};
-    });
-    return {W, lossHistory, correct, preds};
-  }
-
-  function drawLossChart(lossHistory){
-    if(!trainCanvas) return;
-    const ctx = trainCanvas.getContext('2d');
-    const w = trainCanvas.width, h = trainCanvas.height;
-    ctx.fillStyle = '#1a1b1e'; ctx.fillRect(0,0,w,h);
-    const padL=42, padB=26, padT=12, padR=12;
-    const plotW = w-padL-padR, plotH = h-padT-padB;
-    const maxLoss = Math.max(0.05, ...lossHistory);
-    ctx.strokeStyle = '#3a3d42'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(padL,padT); ctx.lineTo(padL,padT+plotH); ctx.lineTo(padL+plotW,padT+plotH); ctx.stroke();
-    ctx.fillStyle='#9aa0a6'; ctx.font='10px Segoe UI'; ctx.textAlign='right';
-    ctx.fillText(F(maxLoss,2), padL-4, padT+8);
-    ctx.fillText('0', padL-4, padT+plotH);
-    ctx.textAlign='center';
-    ctx.fillText('epoch →', padL+plotW/2, h-6);
-    ctx.strokeStyle = '#f0a032'; ctx.lineWidth=2; ctx.beginPath();
-    lossHistory.forEach((L,i)=>{
-      const px = padL + (i/(lossHistory.length-1||1))*plotW;
-      const py = padT + plotH - Math.min(1,L/maxLoss)*plotH;
-      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
-    });
-    ctx.stroke();
-  }
-
-  function runTraining(){
-    if(!trainBtn) return;
-    trainBtn.disabled = true;
-    trainBtn.textContent = '⏳ Eğitiliyor...';
-    trainLog.textContent = '';
-    const maxAttempts = 10;
-    let attempt = 0, result = null;
-    const logLines = [];
-    while(attempt < maxAttempts){
-      attempt++;
-      result = trainRun(4000, 5.0);
-      logLines.push('Deneme '+attempt+': '+result.correct+'/4 doğru, ortalama kayıp='+F(result.lossHistory[result.lossHistory.length-1],4)+(result.correct===4?' → başarılı! ✓':' → yetersiz, yeniden deneniyor…'));
-      if(result.correct===4) break;
-    }
-    trainLog.textContent = logLines.join('\n');
-    drawLossChart(result.lossHistory);
-    const W = result.W;
-    trainWeights.textContent =
-      'W⁽¹⁾ (girdi→gizli) — w_{nöron}{girdi}:\n'+
-      '  w11='+F(W.w11,3)+'  w12='+F(W.w12,3)+'  b1='+F(W.b1,3)+'\n'+
-      '  w21='+F(W.w21,3)+'  w22='+F(W.w22,3)+'  b2='+F(W.b2,3)+'\n\n'+
-      'W⁽²⁾ (gizli→çıktı):\n'+
-      '  w31='+F(W.w31,3)+'  w32='+F(W.w32,3)+'  b3='+F(W.b3,3);
-    const rows = ['nokta      p=ŷ      tahmin  gerçek'];
-    result.preds.forEach(({pt,r,pred})=>{
-      rows.push('('+pt.x1+','+pt.x2+')      '+F(r.p,4)+'   '+pred+'      '+pt.y+'   '+(pred===pt.y?'✓':'✗'));
-    });
-    trainTable.textContent = rows.join('\n');
-    if(result.correct===4){
-      trainVerdict.innerHTML = '🎉 <b>'+attempt+'. denemede</b> ağ, XOR\'u <b>tamamen kendi kendine</b> öğrendi — rastgele başladı, hiçbir ağırlığı biz seçmedik. Bulduğu sayılar (yukarıda) bizim elle seçtiğimiz W⁽¹⁾=20,20,-10 / -10,-30 gibi TEMİZ değerlerle aynı olmak zorunda değil — önemli olan <b>işlevin</b> aynı olması: 4 noktayı da doğru sınıflandırıyor.';
-    } else {
-      trainVerdict.innerHTML = '⚠️ '+maxAttempts+' denemede de tam çözüme ulaşamadı ('+result.correct+'/4 en iyi). Bu nadir ama mümkün — butona tekrar bas, yeni rastgele başlangıçlarla dene.';
-    }
-    trainBtn.disabled = false;
-    trainBtn.textContent = '🎲 Rastgele başlat ve eğit (4000 tur)';
-  }
-
-  if(trainBtn) trainBtn.addEventListener('click', ()=> setTimeout(runTraining, 10));
+  window.__nnRender = ()=>{ renderForward(); renderBackprop(); };
 
   /* ---- ilk render ---- */
   renderForward();
