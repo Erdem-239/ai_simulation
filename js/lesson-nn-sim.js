@@ -110,6 +110,6 @@
   const loop=t=>{for(let i=0;i<10;i++)train1();drawNet();drawUpd();if(t-last>250){last=t;writeW();drawFwd();}if(ep>=4000){stop();writeW();all();return;}timer=requestAnimationFrame(loop);};
   $('nnTrRun').onclick=()=>{if(!timer){if(ep>=4000){ep=0;hist=[];}timer=requestAnimationFrame(loop);}};
   $('nnTrStop').onclick=()=>{stop();writeW();all();};
-  window.__nnSim={state:()=>({W:W.slice(),ep,L:lossOf(W),ok:okOf(W),f,g,pt}),run:(k,n)=>{stop();W=initSeed(k);ep=0;hist=[];for(let i=0;i<n;i++)train1();writeW();all();}};
+  window.__nnSim={state:()=>({W:W.slice(),ep,L:lossOf(W),ok:okOf(W),f,g,pt}),run:(k,n)=>{stop();W=initSeed(k);ep=0;hist=[];startName='🎲 #'+k;for(let i=0;i<n;i++)train1();writeW();all();}};
   all();
 })();
