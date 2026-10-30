@@ -590,7 +590,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   const root=document.documentElement;
   const rsR=document.getElementById('scResizerR');
   if(!rsR) return;
-  let w=300;
+  let w=480;
   try{ const s=parseInt(localStorage.getItem('attn_scw')||'',10); if(s>=220&&s<=900) w=s; }catch(e){}
   root.style.setProperty('--scw', w+'px');
   function bind(handle, sign){

@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610271313"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610300930"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610271313">
+<link rel="stylesheet" href="css/style.css?v=202610300930">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-27 13:13 TR · #468</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 09:30 TR · #469</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -903,15 +903,18 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
     <div class="rnn-secbody" id="rnnBody2">
 
     <div id="rnnSimTek">
-    <div style="position:relative; margin-bottom:2px">
-      <span class="dbg-badge">4</span>
-      <div class="sechead" style="font-size:14px; margin:0 0 6px">🔁 Geri Yayılım (BPTT)</div>
-      <p style="font-size:11.5px; color:var(--muted); margin:0 0 8px">Tek bir RNN hücresinin <b>içindeki işlemler</b>: <b>× = çarp</b>, <b>+ = topla</b>, <b>tanh = aktivasyon</b>. <b style="color:#ffd24a">İleri ▶</b> ile formülü kur (sarı); <b style="color:#f0a032">◀ BPTT</b> ile gradyanların geriye akışını izle (turuncu). Girdi/ağırlıkları değiştir (yukarıda) → gradyan canlı güncellensin. <span style="color:var(--muted)">(Gerçek 3 adımlı zincir ve diğer RNN türleri: 6️⃣ Bütün Resim'de.)</span></p>
+    <div class="rsim-route">
+      <a href="#rsimFwd" class="rsim-chip rsim-c-f"><b>1</b> ➡️ İleri yayılım</a><span class="rsim-arr">→</span>
+      <a href="#rsimBwd" class="rsim-chip rsim-c-b"><b>2</b> ⬅️ Geri yayılım</a><span class="rsim-arr">→</span>
+      <a href="#rsimUpd" class="rsim-chip rsim-c-u"><b>3</b> 🔧 Güncelle &amp; eğit</a>
     </div>
+
+    <div class="rsim-phase rsim-fwd" id="rsimFwd">
+      <div class="rsim-banner"><b>1) ➡️ İLERİ YAYILIM</b><span>girdiden kayba: x, h₋₁ → z<sub>h</sub> → h → z<sub>y</sub> → ŷ → L</span></div>
+      <p class="rsim-intro">Önce hücre <b>tahmin üretir</b>. Diyagramda bir düğüme tıkla ya da <b style="color:#ffd24a">İleri ▶</b> ile adım adım izle: × = çarp, + = topla, tanh = aktivasyon. Sağda aynı hesap <b>senin sayılarınla</b>. <span style="color:var(--muted)">(Gerçek 3 adımlı zincir ve diğer RNN türleri: 6️⃣ Bütün Resim'de.)</span></p>
     <div class="sc-cols">
       <div class="sc-center">
     <div class="pts" id="scDiagramPanel" style="border-left:3px solid var(--blue); position:relative">
-      <span class="dbg-badge">1</span>
       <div class="cell-btnrow" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px">
         <button class="addbtn" id="scStep" style="background:var(--blue); color:#fff; padding:5px 8px; font-size:12px">İleri ▶</button>
         <button class="addbtn" id="scRst" style="background:var(--panel); color:var(--text); border:1px solid var(--line); padding:5px 8px; font-size:12px">↺ Sıfırla</button>
@@ -942,15 +945,12 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
       <div class="cell-layout" style="gap:6px">
         <div class="cell-diagram" style="overflow-x:auto"><svg id="scSvg" role="img"></svg></div>
         <div class="cell-side">
-          <div id="scFormula" class="work" style="min-height:36px; font-size:13px; line-height:1.6; padding:8px 10px">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur; ◀ BPTT ile gradyanlar geriye akar.</div>
+          <div id="scFormula" class="work" style="min-height:36px; font-size:13px; line-height:1.6; padding:8px 10px">İleri ▶ ile z<sub>h</sub>→h→z<sub>y</sub>→ŷ kurulur. Geri yayılım aşağıda, 2. bölümde.</div>
           <div id="scInfo" class="callout" style="margin:6px 0 0; padding:6px 10px">Bir düğüme tıkla → ne yaptığı burada görünür.</div>
         </div>
       </div>
     </div>
-
-
         <div class="sc-vresizer" id="scVResizer" title="Sürükle: diyagramın yüksekliğini ayarla"></div>
-
       <div class="rnn-deriv-cards" style="margin-top:10px; display:none">
       <div class="deriv-h" style="margin:0 0 6px">İleri (Forward)</div>
 
@@ -987,15 +987,22 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
 
       </div>
       </div>
-
       <div class="sc-resizer" id="scResizerR" title="Sürükle: diyagram boyutunu ayarla"></div>
+      <div class="sc-right">
+        <div class="pts" style="margin:0 0 12px">
+          <h3 style="color:var(--blue); margin:0 0 6px">Şu anki sayılarınla ileri yayılım</h3>
+          <div id="rc_fwd" class="rc-card"></div>
+        </div>
+      </div>
+    </div>
+    </div>
 
-      <div class="sc-right" style="align-self:stretch; display:flex; flex-direction:column">
-        <div class="pts" style="border-left:3px solid var(--accent); margin:10px 0 0; flex:1 1 auto; display:flex; flex-direction:column">
-          <div class="tr-row" id="trRow" style="display:flex; gap:0; align-items:stretch; flex-wrap:wrap; flex:1 1 auto">
-            <div class="tr-resizer" id="trResizer2" title="Sürükle: genişliği ayarla" style="display:none"></div>
+    <div class="rsim-phase rsim-bwd" id="rsimBwd">
+      <div class="rsim-banner"><b>2) ⬅️ GERİ YAYILIM (BPTT)</b><span>kayıptan ağırlıklara: L → z<sub>y</sub> → W<sub>hy</sub>, b<sub>y</sub> → z<sub>h</sub> → W<sub>xh</sub>, W<sub>hh</sub>, b<sub>h</sub></span></div>
+      <p class="rsim-intro">Tahmin ŷ ile gerçek y arasındaki hata <b>geriye doğru</b> akar; her kart zincirin bir halkasını açar ve o halkada bir gradyan bulur. Sıra: <b>Geri Adım 1 → 2 → 3 → 4</b>. Bulunan gradyanlar bir sonraki bölümde (3) ağırlıkları değiştirmek için kullanılır.</p>
+      <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr)); align-items:stretch; margin-top:0">
+      <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla" style="display:none"></div>
       <div class="step stepc" id="gAdim1" style="flex:1 1 320px; position:relative; overflow:visible">
-        <span class="dbg-badge">5</span>
         <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="step-graph-row">
@@ -1010,19 +1017,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
               <div class="step-graph-cap">L(ŷ) — nokta: şu anki ŷ · sarı çizgi: teğet (eğim = ∂L/∂z<sub>y</sub>)</div>
             </div>
           </div>
-            <div id="trCol2" style="display:block; margin:6px 0 0; position:relative">
-              <span class="dbg-badge">3</span>
-              <div class="loss-valley-row">
-                <div class="loss-valley-col">
-                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
-                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
-                </div>
-                <div class="loss-valley-col">
-                  <div id="lossSurface3D" class="loss-surface-3d"></div>
-                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
-                </div>
-              </div>
-            </div>
+
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> kayıptan çıktı katmanına kadar geri-sinyali (∂L/∂z<sub>y</sub>) bulmak — W<sub>hy</sub> ve b<sub>y</sub>'ye ulaşmamızı sağlayacak ilk halka.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> önce L'nin ŷ'ye duyarlılığını bulmalıyız, zincirin ilk halkası. L'nin açık hali:</div>
@@ -1052,21 +1047,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
               <div class="step-graph-cap">L(W<sub>hy</sub>) — diğerleri sabit · sarı: teğet (eğim = ∂L/∂W<sub>hy</sub>)</div>
             </div>
           </div>
-    <div id="trCol1" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; width:100%; max-width:560px; margin:6px 0 0; position:relative">
-      <span class="dbg-badge">2</span>
-      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
-        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
-      </div>
-      <div style="flex:1 1 100px; min-width:96px">
-        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
-          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
-          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
-          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
-          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
-        </div>
-        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
-      </div>
-    </div>
+
           <div class="detail">
             <div class="deriv-why" style="margin-top:6px; color:#f0a032"><b>Amaç:</b> bir önceki adımda bulduğumuz ∂L/∂z<sub>y</sub>'yi kullanıp asıl istediğimiz W<sub>hy</sub> ve b<sub>y</sub>'nin gradyanına ulaşmak.</div>
             <div class="deriv-why" style="margin-top:6px"><b>Adım 1</b> — <i>neden:</i> z<sub>y</sub>'nin formülünde bu ağırlıklar açıkça görünüyor; onlara duyarlılığı bulmalıyız. z<sub>y</sub>'nin açık hali:</div>
@@ -1080,13 +1061,6 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
           </div>
         </div>
       </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:4px">
-    <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); align-items:stretch">
-      <div class="steps-resizer" id="gAdimStepsResizer" title="Sürükle: sütun genişliğini ayarla" style="display:none"></div>
       <div class="step stepc" id="gAdim3">
         <div class="stephead"><h2>Geri Adım 3) tanh'tan geri — ∂L/∂z<sub>h</sub>'yi bul</h2><span class="chev">▸</span></div>
         <div class="stepbody">
@@ -1164,8 +1138,44 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
           </div>
         </div>
       </div>
+      </div>
+      <div class="pts" style="border-left:3px solid var(--accent); margin:12px 0 0">
+        <h3 style="color:var(--accent); font-size:13.5px; margin:0 0 4px">📊 Beş gradyanı birlikte gör</h3>
+        <div id="trCol2" style="display:block; margin:6px 0 0; position:relative">
+              <div class="loss-valley-row">
+                <div class="loss-valley-col">
+                  <canvas id="gradRadarCanvas" width="360" height="360"></canvas>
+                  <div class="step-graph-cap">Gradyan pusulası — |∂L/∂W| büyüklükleri</div>
+                </div>
+                <div class="loss-valley-col">
+                  <div id="lossSurface3D" class="loss-surface-3d"></div>
+                  <div class="step-graph-cap">L(W<sub>xh</sub>, W<sub>hy</sub>) — gerçek yüzey</div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+
+    <div class="rsim-phase rsim-upd" id="rsimUpd">
+      <div class="rsim-banner"><b>3) 🔧 GÜNCELLE &amp; EĞİT</b><span>gradyanı uygula: W := W − α·∂L/∂W</span></div>
+      <p class="rsim-intro"><b>▶</b> her basışta yukarıdaki <b>Geri Adım 1 → 4</b> kartlarını sırayla vurgular, 4. adımda ağırlıkları <b>gerçekten günceller</b> (1 iterasyon); <b>⏩</b> bunu otomatik tekrarlar, <b>■</b> durdurur, <b>↺</b> ağırlıkları başa alır.</p>
+      <div id="trCol1" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; width:100%; max-width:560px; margin:6px 0 0; position:relative">
+      <div class="plotbox" style="max-width:230px; padding:8px; flex:0 0 auto">
+        <canvas id="rc_costCanvas" width="380" height="140"></canvas>
+      </div>
+      <div style="flex:1 1 100px; min-width:96px">
+        <div class="controls" style="margin:0 0 8px; justify-content:flex-start">
+          <button class="ctrl" id="rc_play" title="Tek adım eğit">▶</button>
+          <button class="ctrl" id="rc_fast" title="Hızlı eğit">⏩</button>
+          <button class="ctrl" id="rc_stop" title="Durdur">⏹</button>
+          <button class="ctrl" id="rc_reset" title="Ağırlıkları sıfırla">↺</button>
+        </div>
+        <div class="iter" style="text-align:left; margin-bottom:0">iterasyon: <span id="rc_iter">0</span><br>maliyet: <span id="rc_curcost">0.0000</span></div>
+      </div>
+    </div>
+      <div class="steps steps-1col" style="margin-top:10px">
       <div class="step stepc" id="gAdim5">
-        <div class="stephead"><h2>Geri Adım 5) Ağırlıkları güncelle — bulduğumuz gradyanlar ne işe yarıyor?</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Güncelle) Ağırlıkları güncelle — bulduğumuz gradyanlar ne işe yarıyor?</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div id="rcS5Upd" class="rc-card">
             <div style="font-size:12.5px; color:#ccd5e8; line-height:1.7; margin:0 0 8px">Geri Adım 1-4'te beş <b>gradyan</b> bulduk. Gradyan şunu söyler: <i>"bu ağırlığı biraz artırırsam kayıp ne kadar artar?"</i> Kaybı <b>azaltmak</b> istiyoruz, o yüzden her ağırlığı gradyanının <b>tersine</b> iteriz — adım uzunluğunu öğrenme oranı <b>α</b> belirler:</div>
@@ -1208,26 +1218,17 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
           </div>
         </div>
       </div>
-    </div>
-    </div>
-
-
-
-    <!-- ADIM ADIM — HER ADIM NEDEN? (many-to-one'a özgü — tip seçiciyle birlikte gizlenir/gösterilir) -->
+      </div>
     <div id="gAdimSection">
-    <div class="callout" style="margin-top:12px">🔻 <b>Güncelle:</b> her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \) — yokuş aşağı bir adım.</div>
-    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">↑ Yukarıdaki kaydırıcılarla oynadın mı? Aşağıda aynı hesabın <b>tam sayısal dökümü</b> var, istersen aç.</p>
+    <div class="callout" style="margin-top:12px">🔻 <b>Özet:</b> her ağırlık \( W:=W-\alpha\,\dfrac{\partial L}{\partial W} \) — yokuş aşağı bir adım.</div>
+    <p style="font-size:13px; color:var(--muted); margin:10px 0 0">Aynı güncellemenin <b>tam sayısal dökümü</b> aşağıda, istersen aç.</p>
 
     <!-- ①②③ tam sayısal döküm — tek kapalı accordion (grafiklerle bilgi tekrarı, ayrıntı isteyen açar) -->
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> 🔢 Tam sayısal hesap — ileri yayılım ve güncelleme (senin sayılarınla)</div>
+      <div class="acc-head"><span class="ac">▸</span> 🔢 Tam sayısal hesap — güncelleme (senin sayılarınla)</div>
       <div class="acc-body">
-        <div class="pts" style="margin:0 0 12px">
-          <h3 style="color:var(--accent)">① İleri yayılım — tahmini üret</h3>
-          <div id="rc_fwd" class="rc-card"></div>
-        </div>
-        <div style="font-size:12.5px; color:var(--muted); margin:0 0 12px">Geri yayılımın domino domino sayısal dökümünü yukarıdaki <b>Geri Adım 1-4</b> kartlarını açarak görebilirsin — her kart kendi canlı hesabını gösterir.</div>
-
+        
+        
         <div class="pts" style="border-left:3px solid var(--blue); margin:0">
           <h3 style="color:var(--blue)">② Güncelle — yokuş aşağı bir adım (W := W − α·∂L/∂W)</h3>
           <div id="rc_upd" class="rc-card"></div>
@@ -1235,7 +1236,8 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
         </div>
       </div>
     </div>
-    </div><!-- /gAdimSection -->
+    </div>
+    </div>
     </div>
 
     </div><!-- /rnnBody2 -->
@@ -8727,7 +8729,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı soruyu iki farklı açıdan izle: önce adım adım (karakterden cevaba), sonra zaman içinde (0’dan 800. epoch’a kadar). İkisi de sitedeki Minik GPT’nin gerçek, eğitilmiş sayılarıyla.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) Adım adım harita</b><span>Karakterin kimlik numarasından cevabın “1” çıkmasına kadar 16 adım; gerçek sayılarla tablolar ve ısı haritaları.</span></div>
-      <a class="hr-go" href="harita/adim-adim.html?v=202610271313" target="_blank" rel="noopener">Haritayı aç →</a>
+      <a class="hr-go" href="harita/adim-adim.html?v=202610300930" target="_blank" rel="noopener">Haritayı aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8742,7 +8744,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) Epoch epoch tüccar günlüğü</b><span>Aynı soru için 0’dan 800’e 12 ölçüm anı: dikkat nasıl toplandı, geri yayılım, üç tohumla doğrulama.</span></div>
-      <a class="hr-go" href="harita/epoch.html?v=202610271313" target="_blank" rel="noopener">Günlüğü aç →</a>
+      <a class="hr-go" href="harita/epoch.html?v=202610300930" target="_blank" rel="noopener">Günlüğü aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8761,7 +8763,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı iskeletin farklı boyutları ve çeşitleri: önce 3B olarak yan yana koy, sonra gerçek GPT-2 boyutlarıyla adım adım izle, en sonda güncel mimarilerin farklarına bak.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) 3B mimari</b><span>Minik GPT (gerçek sayılar), GPT-2, Llama, gpt-oss-120b ve Qwen3-30B-A3B (ikisi de MoE) mimarilerini 3B olarak parçala, yan yana koy; eş zamanlı gezi, kafanın içi, ara tablolar.</span></div>
-      <a class="hr-go" href="harita/mimari-3b.html?v=202610271313" target="_blank" rel="noopener">3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/mimari-3b.html?v=202610300930" target="_blank" rel="noopener">3B mimariyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8781,11 +8783,11 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) RNN — 3B mimari</b><span>Zamanda açılmış RNN'i üç boyutta gez: her sütun bir kelime, ortak ağırlık tabloları, h'nin bir sonraki adıma akışı, many-to-one / many-to-many, 9 adımlı tur ve geri yayılım okları.</span></div>
-      <a class="hr-go" href="harita/rnn-3b.html?v=202610271313" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/rnn-3b.html?v=202610300930" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) GPT-2 adım adım haritası</b><span>Adım adım haritanın gerçek GPT-2 small boyutlarıyla hâli: 7+5= → 4×768 → 12 blok → 50.257 puan.</span></div>
-      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610271313" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
+      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610300930" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8799,7 +8801,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) Örnek mimariler</b><span>Minik GPT, GPT-2, iki güncel şema ve bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) aynı çizim diliyle; Claude/Gemini/GPT-4 neden çizilemiyor; yan yana tablolar.</span></div>
-      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610271313" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
+      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610300930" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8812,7 +8814,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>4) Bir cümlenin yolculuğu (önizleme)</b><span>«istanbulun başkenti nereresidir» cümlesi token'lara nasıl bölünür, kartlar ne taşır, dikkat kime bakar, tahmin nasıl yapılır — adım adım.</span></div>
-      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610271313" target="_blank" rel="noopener">Önizlemeyi aç →</a>
+      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610300930" target="_blank" rel="noopener">Önizlemeyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8829,7 +8831,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Tek sayfada üç parça: <b>🎬 mimari turu</b> (GPT-2'nin <b>3B mimarisinden</b> başlayıp token'lardan çıkışa her parçaya zoom yapıp yanında o parçadaki matris işlemini izle), küçük sayılarla temel (satır × sütun, Q·Kᵀ ve K·Qᵀ farkı) ve GPT-2 boyutunda tek tek sahneler.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Mimari turu + matris animasyonları (29 sahne; gpt-oss turu 27 durak)</b><span>🎬 3B GPT-2 mimarisi → zoom → animasyon turu (~5 dk) ve 🎬 gpt-oss turu (3B MoE mimarisi → zoom → router/kayan pencere/GQA animasyonları); T1–T7 küçük sayılarla temel; her sahnede ❓ neden yapıyoruz + 🗣️ sözel karşılığı + 📦 ne elde ettik; 0a–⑮ GPT-2 boyutunda: token, embedding, Q/K/V, skor, maske, A·V, W_O, LayerNorm, FFN, 12 blok, çıkış, KV önbellekli üretim döngüsü.</span></div>
-      <a class="hr-go" href="harita/matris-animasyon.html?v=202610271313" target="_blank" rel="noopener">Animasyonu aç →</a>
+      <a class="hr-go" href="harita/matris-animasyon.html?v=202610300930" target="_blank" rel="noopener">Animasyonu aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8849,7 +8851,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Bu modelleri kendi donanımında çalıştırmak istersen: hangi model kaç GB <b>VRAM / RAM</b> ister, 4 / 8 / 16 bit'te ne değişir ve tahmini maliyeti ne (PC, sınır ve sunucu sınıfı).</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Yerel model donanım rehberi (Gemma, Qwen, gpt-oss, DeepSeek)</b><span>Üç tablo: PC / sınır / sunucu sınıfı. Her hücre VRAM / RAM (GB), bit oranına göre; son kolonda tahmini maliyet. Formül, RTX 4080 örneği ve dürüst notlar sayfada.</span></div>
-      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610271313" target="_blank" rel="noopener">Rehberi aç →</a>
+      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610300930" target="_blank" rel="noopener">Rehberi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -9885,63 +9887,63 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610271313"></script>
-<script src="js/lesson-turev.js?v=202610271313"></script>
-<script src="js/lesson-xor.js?v=202610271313"></script>
-<script src="js/lesson-xor-arch.js?v=202610271313"></script>
-<script src="js/lesson-xor-maps.js?v=202610271313"></script>
-<script src="js/lesson-xor-epoch.js?v=202610271313"></script>
-<script src="js/lesson-nn.js?v=202610271313"></script>
-<script src="js/lesson-trig.js?v=202610271313"></script>
+<script src="js/lesson-linreg.js?v=202610300930"></script>
+<script src="js/lesson-turev.js?v=202610300930"></script>
+<script src="js/lesson-xor.js?v=202610300930"></script>
+<script src="js/lesson-xor-arch.js?v=202610300930"></script>
+<script src="js/lesson-xor-maps.js?v=202610300930"></script>
+<script src="js/lesson-xor-epoch.js?v=202610300930"></script>
+<script src="js/lesson-nn.js?v=202610300930"></script>
+<script src="js/lesson-trig.js?v=202610300930"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610271313"></script>
-<script src="js/lesson-rnn-soz.js?v=202610271313"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610300930"></script>
+<script src="js/lesson-rnn-soz.js?v=202610300930"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610271313"></script>
-<script src="js/lesson-lstm-cell.js?v=202610271313"></script>
-<script src="js/app.js?v=202610271313"></script>
-<script src="js/lesson-lstm-big.js?v=202610271313"></script>
-<script src="js/lesson-lstm-step.js?v=202610271313"></script>
-<script src="js/lesson-lstm-size.js?v=202610271313"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610271313"></script>
-<script src="js/lesson-emb-kullan.js?v=202610271313"></script>
-<script src="js/lesson-emb-draco.js?v=202610271313"></script>
-<script src="js/lesson-emb-arch.js?v=202610271313"></script>
-<script src="js/lesson-emb-extra.js?v=202610271313"></script>
-<script src="js/lesson-s2s-weights.js?v=202610271313"></script>
-<script src="js/lesson-s2s-add.js?v=202610271313"></script>
-<script src="js/lesson-s2s-inside.js?v=202610271313"></script>
-<script src="js/lesson-att-train.js?v=202610271313"></script>
-<script src="js/lesson-att-extra.js?v=202610271313"></script>
-<script src="js/lesson-att-big.js?v=202610271313"></script>
-<script src="js/lesson-att-ornek.js?v=202610271313"></script>
-<script src="js/lesson-mh-big.js?v=202610271313"></script>
-<script src="js/lesson-mh-ornek.js?v=202610271313"></script>
-<script src="js/lesson-tf-big.js?v=202610271313"></script>
-<script src="js/lesson-tf-ornek.js?v=202610271313"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610271313"></script>
-<script src="js/lesson-gpt-big.js?v=202610271313"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610271313"></script>
-<script src="js/lesson-rnn-van.js?v=202610271313"></script>
-<script src="js/lesson-s2s-extra.js?v=202610271313"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610271313"></script>
-<script src="js/lesson-emb-ornek.js?v=202610271313"></script>
-<script src="js/lesson-emb-steps.js?v=202610271313"></script>
-<script src="js/lesson-emb-big.js?v=202610271313"></script>
-<script src="js/lesson-sm-ornek.js?v=202610271313"></script>
-<script src="js/lesson-sm-big.js?v=202610271313"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610271313"></script>
-<script src="js/lesson-lstm-gate.js?v=202610271313"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610271313"></script>
-<script src="js/lesson-gpt.js?v=202610271313"></script>
-<script src="js/lesson-gpt-mini.js?v=202610271313"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610271313"></script>
-<script src="js/lesson-linreg-big.js?v=202610271313"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610271313"></script>
-<script src="js/lesson-act-big.js?v=202610271313"></script>
-<script src="js/lesson-act-ornek.js?v=202610271313"></script>
-<script src="js/lesson-xor-ornek.js?v=202610271313"></script>
-<script src="js/lesson-nn-ornek.js?v=202610271313"></script>
-<script src="js/lesson-nn-net.js?v=202610271313"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610300930"></script>
+<script src="js/lesson-lstm-cell.js?v=202610300930"></script>
+<script src="js/app.js?v=202610300930"></script>
+<script src="js/lesson-lstm-big.js?v=202610300930"></script>
+<script src="js/lesson-lstm-step.js?v=202610300930"></script>
+<script src="js/lesson-lstm-size.js?v=202610300930"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610300930"></script>
+<script src="js/lesson-emb-kullan.js?v=202610300930"></script>
+<script src="js/lesson-emb-draco.js?v=202610300930"></script>
+<script src="js/lesson-emb-arch.js?v=202610300930"></script>
+<script src="js/lesson-emb-extra.js?v=202610300930"></script>
+<script src="js/lesson-s2s-weights.js?v=202610300930"></script>
+<script src="js/lesson-s2s-add.js?v=202610300930"></script>
+<script src="js/lesson-s2s-inside.js?v=202610300930"></script>
+<script src="js/lesson-att-train.js?v=202610300930"></script>
+<script src="js/lesson-att-extra.js?v=202610300930"></script>
+<script src="js/lesson-att-big.js?v=202610300930"></script>
+<script src="js/lesson-att-ornek.js?v=202610300930"></script>
+<script src="js/lesson-mh-big.js?v=202610300930"></script>
+<script src="js/lesson-mh-ornek.js?v=202610300930"></script>
+<script src="js/lesson-tf-big.js?v=202610300930"></script>
+<script src="js/lesson-tf-ornek.js?v=202610300930"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610300930"></script>
+<script src="js/lesson-gpt-big.js?v=202610300930"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610300930"></script>
+<script src="js/lesson-rnn-van.js?v=202610300930"></script>
+<script src="js/lesson-s2s-extra.js?v=202610300930"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610300930"></script>
+<script src="js/lesson-emb-ornek.js?v=202610300930"></script>
+<script src="js/lesson-emb-steps.js?v=202610300930"></script>
+<script src="js/lesson-emb-big.js?v=202610300930"></script>
+<script src="js/lesson-sm-ornek.js?v=202610300930"></script>
+<script src="js/lesson-sm-big.js?v=202610300930"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610300930"></script>
+<script src="js/lesson-lstm-gate.js?v=202610300930"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610300930"></script>
+<script src="js/lesson-gpt.js?v=202610300930"></script>
+<script src="js/lesson-gpt-mini.js?v=202610300930"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610300930"></script>
+<script src="js/lesson-linreg-big.js?v=202610300930"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610300930"></script>
+<script src="js/lesson-act-big.js?v=202610300930"></script>
+<script src="js/lesson-act-ornek.js?v=202610300930"></script>
+<script src="js/lesson-xor-ornek.js?v=202610300930"></script>
+<script src="js/lesson-nn-ornek.js?v=202610300930"></script>
+<script src="js/lesson-nn-net.js?v=202610300930"></script>
 </body>
 </html>
