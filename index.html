@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610301038"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610301051"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610301038">
+<link rel="stylesheet" href="css/style.css?v=202610301051">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 10:38 TR · #474</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 10:51 TR · #475</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -4436,7 +4436,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <div class="tpl-cl" data-stage="4">
     <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="sechead">🔬 Mimari — nörondan ağa, resimle</div>
+<div class="sechead">🔬 Nörondan ağa</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
     <h3 style="color:var(--accent)">1) Tek nöron yakından</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir nöronun yaptığı iş dört adım: girdilerini <b>ağırlıklarla çarpar</b>, hepsini <b>toplar</b>, <b>bias ekler</b> (z) ve sonucu bir <b>aktivasyon</b>dan geçirir (a). Aşağıdaki sayılar Simülasyon'daki XOR ağının h₁ nöronundan (girdi x=(1,0)):</p>
@@ -4446,59 +4446,22 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <h3 style="color:var(--blue)">2) Nöronlar katman olur, katmanlar ağ olur</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı girdiye paralel bakan nöronlar bir <b>katman</b>; bir katmanın çıktısı sonrakinin girdisi. <b>Girdi katmanı</b> sadece veridir (öğrenilmez), <b>gizli katman(lar)</b> yeni özellikler üretir (XOR'da h₁="VEYA", h₂="VE"), <b>çıktı katmanı</b> kararı verir. Katmanlar arası her çizgi bir ağırlık; hepsi bir <b>W matrisi</b>nde toplanır (şekli: sonraki katman × önceki katman).</p>
     <div style="overflow-x:auto"><svg id="nnArchSvg" role="img" aria-label="2-2-1 mimari" style="min-width:480px; width:100%; max-width:640px; display:block; margin:0 auto"></svg></div>
-    <div class="tip">Burada W⁽¹⁾ boyutu <b>2×2</b> (2 gizli nöron × 2 girdi), W⁽²⁾ boyutu <b>1×2</b>; bias'lar 2+1 → toplam <b>9</b> öğrenilebilir sayı. Tek nöron "tek bir doğru" çizerdi; yan yana iki nöron iki doğru, ardından üçüncü nöron o iki doğrunun birleşimini seçer — XOR'u mümkün kılan bu.</div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir katmandaki bütün ağırlıklar bir <b>matris</b>te toplanır; her satır bir nöronun ağırlıkları. Böylece iki gizli nöronun z'si <b>tek işlemde</b> hesaplanır:</p>
+    \[ z^{(1)}=W^{(1)}x+b^{(1)},\quad h=\sigma\!\left(z^{(1)}\right),\qquad z^{(2)}=W^{(2)}h+b^{(2)},\quad \hat y=\sigma\!\left(z^{(2)}\right) \]
+    <div class="tip">Burada W⁽¹⁾ <b>2×2</b> (2 gizli nöron × 2 girdi), W⁽²⁾ <b>1×2</b>; bias'lar 2+1 → toplam <b>9</b> öğrenilebilir sayı. Tek nöron tek bir doğru çizer; yan yana iki nöron iki doğru çizer, üçüncü nöron ikisinin birleşimini seçer — XOR'u mümkün kılan bu. Gerçek ağlarda W binlerce×binlerce olur ama işlem aynıdır; GPU'lar bu matris çarpımını paralel yapar.</div>
   </div>
-  <div class="pts" style="border-left:3px solid var(--green)">
-    <h3 style="color:var(--green)">3) 🧰 Kendi ağını kur</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Katman ve nöron sayılarını değiştir; çizim, W matris şekilleri ve parametre sayısı canlı güncellenir. Gizli katmanı sıfıra indirirsen ne olduğuna da bak.</p>
-    <div id="nnBuild"></div>
-  </div>
-  <div class="pts" style="border-left:3px solid var(--purple,#c77dff)">
-    <h3 style="color:#c77dff">4) 🌍 Gerçek ölçek: el yazısı rakam tanıyan bir ağ</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">28×28 pikselli bir rakam resmi <b>784 sayıdır</b>. Basit bir ağ: 784 → 128 → 64 → 10 (her çıktı bir rakamın olasılığı). Çizimde her katmandan yalnız birkaç nöron gösterildi (⋮); gerçekte katmanlar arası <b>784·128 + 128·64 + 64·10 = 109.184</b> ağırlık ve <b>128+64+10 = 202</b> bias, toplam <b>109.386</b> parametre var. Aynı fikir; sadece daha çok daire ve çizgi.</p>
-    <div style="overflow-x:auto"><svg id="nnReal" role="img" aria-label="784-128-64-10 ağ" style="min-width:520px; width:100%; max-width:720px; display:block; margin:0 auto"></svg></div>
-    <div class="callout">🔗 <b>Genişlik ve derinlik:</b> katman başına nöron sayısı <b>genişlik</b>, katman sayısı <b>derinlik</b>. Daha geniş katman = aynı seviyede daha çok özellik yakalar (Örnek Çalışmalar'da XOR'un daha geniş ağlarla daha güvenilir öğrenildiğini göreceksin); daha derin ağ = özellikleri üst üste kurar (kenar → şekil → nesne). GPT gibi modellerde bu sayılar yüzlerce katman ve milyarlarca parametreye çıkar.</div>
-  </div>
-
-  <!-- ===== 1) 1 nörondan ağa — katman + W matris ===== -->
-  <div class="sechead">1) 1 nörondan ağa — katman kavramı ve W matrisi</div>
-  <div class="pts" style="border-left:3px solid var(--blue)">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aktivasyon dersindeki tek nöron: <code>çıktı = g(w·x+b)</code> — girdileri ağırlıkla çarp, topla, aktivasyondan geçir. Bir <b>ağ</b>, bunun yan yana ve üst üste dizilmiş hâlidir:</p>
-    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
-      <li><b>Katman (layer)</b> = yan yana duran, aynı girdiyi paylaşan nöronlar grubu. Bizim XOR ağımızda gizli katman <b>2 nöron</b> (h1, h2) — ikisi de x1, x2'ye <i>paralel</i> bakıyor (Aktivasyon dersinde "band" için gerekli olan tam da bu paralellikti).</li>
-      <li><b>Girdi katmanı</b> — öğrenilmez, sadece veri (x1, x2).</li>
-      <li><b>Gizli katman (hidden layer)</b> — dışarıdan görünmez, kendi z=Σwx+b'sini hesaplayıp aktivasyondan geçirir (h1, h2).</li>
-      <li><b>Çıktı katmanı</b> — gizli katmanın çıktısını girdi gibi alıp son tahmini üretir (y).</li>
-    </ul>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir katmandaki <b>tüm</b> ağırlıkları tek tek yazmak yerine, Vektör dersinde ayrıntılı göreceğin fikir şu: <b>"matris = vektör rafı"</b> — üst üste dizilmiş vektörler. Girdi katmanından gizli katmana giden 4 ağırlığı (x1→h1, x2→h1, x1→h2, x2→h2) tek bir <b>W⁽¹⁾</b> matrisinde topluyoruz:</p>
-    \[ W^{(1)}=\begin{bmatrix}w_{11} & w_{12}\\ w_{21} & w_{22}\end{bmatrix},\quad b^{(1)}=\begin{bmatrix}b_1\\ b_2\end{bmatrix},\quad z^{(1)}=W^{(1)}x+b^{(1)},\quad h=g\!\left(z^{(1)}\right) \]
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aynı şekilde gizli katmandan çıktıya giden 2 ağırlık <b>W⁽²⁾</b> (bu kez 1×2, tek satır — çünkü çıktı katmanında tek nöron var):</p>
-    \[ z^{(2)}=W^{(2)}h+b^{(2)},\quad \hat y=g\!\left(z^{(2)}\right) \]
-    <div class="tip"><b>Neden matris?</b> Çünkü <code>W·x</code> (matris-vektör çarpımı), "her rafın x ile nokta çarpımı"ndan başka bir şey değil — yani h1 ve h2'nin z'lerini <b>TEK bir işlemde</b>, aynı anda hesaplar. Gerçek ağlarda W, binlerce×binlerce boyutlu olur ama işlem birebir aynı; GPU'ların bu kadar işine yaraması da tam bu yüzden — matris çarpımını paralel yapabiliyorlar.</div>
-  </div>
+  <div class="callout">🧰 Kendi ağını kurmak ve gerçek ölçekte bir ağ (784 → 128 → 64 → 10) <b>➕ Ekstra</b>'da. Ağırlıkları değiştirip ağı çalıştırmak <b>5️⃣ Simülasyon</b>'da.</div>
 
   
     </div>
     </div>
 
     <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>5️⃣ Simülasyon</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — XOR ağı: ileri, geri, güncelle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="sechead">🕸️ Ağın canlı resmi — ağırlıkları değiştirdikçe çizim değişir</div>
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki "2) İleri yayılım" kutularındaki <b>dokuz ağırlığı değiştir</b> — çizim ve karar haritası anında güncellenir. x₁, x₂'yi seçerek bir girdiyi ağdan geçir; her nöronun rengi o girdideki etkinliğidir.</p>
-    <div id="nnLive"></div>
-  </div>
-  <div class="sechead">🎞️ Eğitimi adım adım izle — ağ kendi ağırlıklarını bulurken</div>
-  <div class="pts" style="border-left:3px solid var(--green)">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Rastgele küçük ağırlıklarla başla, ▶ eğit'e bas: her turda ileri yayılım → kayıp → geri yayılım → güncelleme. <b>Çizgilerin kalınlaşıp renk değiştirmesini</b> ve sağdaki haritanın XOR desenine bükülmesini izle. Başlangıçlar Python'daki 12 rastgele tohumla aynı (#8 ve #9 takılan başlangıçlardır).</p>
-    <div id="nnTrain"></div>
-  </div>
-
-  <!-- ===== 2) İleri yayılım simülasyonu ===== -->
-  <div class="sechead">2) İleri yayılım simülasyonu — ağırlıkları oynat, 4 nokta canlı hesaplansın</div>
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Aşağıdaki 9 sayı (W⁽¹⁾'in 4 ağırlığı + 2 bias'ı, W⁽²⁾'nin 2 ağırlığı + 1 bias'ı) <b>tüm</b> ağın parametreleri. Varsayılan değerler, Aktivasyon dersindeki <code>step(x1+x2−0.5)</code> eşiklerinin <b>keskinleştirilmiş sigmoid</b> hâli (×20 büyütülmüş) — dene, XOR'u hâlâ 4/4 çözüyor. Sayıları değiştirip ağın nasıl bozulduğunu/düzeldiğini gör.</p>
+<div id="nnSim">
+  <div class="nsim-wbox" id="nnWBox">
+    <div class="nsim-wtitle">🎛️ Ağın 9 ağırlığı <span>— buradan değiştir; eğitim de bu kutulara yazar.</span></div>
     <div class="ptrow" style="margin-bottom:6px"><b style="color:var(--blue); font-size:12.5px; width:100%">W⁽¹⁾ (girdi → gizli) ve b⁽¹⁾ &nbsp;<span style="font-weight:400; color:var(--muted)">— ilk rakam NÖRON, ikinci rakam GİRDİ (XOR'daki kuralla aynı)</span></b></div>
     <div class="ptrow">
       <div class="ptcell"><label>w₁₁ (h1←x1)</label><input type="number" id="nnW11" value="20" step="0.5"></div>
@@ -4513,26 +4476,48 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
       <div class="ptcell"><label>w₃₁ (y←h1)</label><input type="number" id="nnW31" value="20" step="0.5"></div>
       <div class="ptcell"><label>w₃₂ (y←h2)</label><input type="number" id="nnW32" value="-20" step="0.5"></div>
       <div class="ptcell"><label>b₃ (y)</label><input type="number" id="nnB3" value="-10" step="0.5"></div>
-      <button class="addbtn" id="nnFwdReset" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">↺ Varsayılana dön</button>
+      
     </div>
-    <div class="work" id="nnFwdTable" style="white-space:pre; overflow-x:auto; line-height:1.9; font-size:12.5px; margin-top:12px"></div>
-    <div class="callout" id="nnFwdVerdict" style="margin-top:10px"></div>
+    <div class="ptrow nsim-start" style="margin-top:8px"><span class="nsim-lab">Başlangıç:</span>
+      <button class="addbtn nsim-b" id="nnFwdReset">✋ elle çözüm (20, −10…)</button>
+      <button class="addbtn nsim-b nsim-seed" data-k="0">🎲 #0</button><button class="addbtn nsim-b nsim-seed" data-k="3">🎲 #3</button><button class="addbtn nsim-b nsim-seed" data-k="8">🎲 #8</button><button class="addbtn nsim-b nsim-seed" data-k="9">🎲 #9</button>
+      <span class="nsim-lab" style="margin-left:6px">α (öğrenme oranı):</span><input type="number" id="nnAlpha" value="1" step="0.1" min="0.05" max="10" style="width:64px">
+    </div>
+    <div class="nsim-note">🎲 rastgele başlangıçlar Örnek Çalışmalar'daki 12 tohumla aynı: #0 ve #3 XOR'u çözer, #8 ve #9 takılır.</div>
   </div>
 
-  <!-- ===== 3) Geri yayılım — adım adım ===== -->
-  <div class="sechead" style="font-size:17px">⭐ 3) Geri yayılım — adım adım</div>
-  <div class="pts" style="border-left:3px solid var(--blue)">
-    <div class="callout" style="margin:0 0 14px">Aşağıdaki 4 adım, yukarıdaki (Bölüm 2'deki) <b>aynı ağırlıklarla</b>, TEK bir XOR noktası için gerçek zamanlı hesaplanıyor. Nokta seç, adımları aç — her adımın "neden"i ve sayısal sonucu canlı görünsün. Mantık birebir Aktivasyon dersindeki <code>dL/dz=p−y</code> ve RNN'deki zincir kuralı ("dişli") ile aynı — sadece zamanın yerine <b>katman</b> var.</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px">
-      <button class="addbtn nnbp-pt" data-pt="0" style="background:var(--blue); color:#fff">(0,0) → y=0</button>
-      <button class="addbtn nnbp-pt" data-pt="1" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(0,1) → y=1</button>
-      <button class="addbtn nnbp-pt" data-pt="2" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(1,0) → y=1</button>
-      <button class="addbtn nnbp-pt" data-pt="3" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">(1,1) → y=0</button>
+  <div class="nsim-cols">
+    <div class="nsim-left">
+      <div class="nsim-ctl">
+        <div class="nsim-row"><span class="nsim-lab">Bir noktayı izle:</span>
+          <button class="addbtn nnbp-pt nsim-b" data-pt="0" style="background:var(--blue); color:#fff">(0,0)→0</button><button class="addbtn nnbp-pt nsim-b" data-pt="1">(0,1)→1</button><button class="addbtn nnbp-pt nsim-b" data-pt="2">(1,0)→1</button><button class="addbtn nnbp-pt nsim-b" data-pt="3">(1,1)→0</button>
+        </div>
+        <div class="nsim-row"><span class="nsim-lab">Adım adım:</span>
+          <button class="addbtn nsim-b nsim-bf" id="nnStepF">➡️ İleri ▶</button><button class="addbtn nsim-b nsim-bb" id="nnStepB">◀ Geri</button><button class="addbtn nsim-b" id="nnStepR">↺</button>
+        </div>
+        <div class="nsim-row"><span class="nsim-lab">🔧 Eğit (4 nokta):</span>
+          <button class="addbtn nsim-b nsim-bg" id="nnTr1" title="bir tur: ileri → geri → güncelle">▶ 1 tur</button><button class="addbtn nsim-b" id="nnTrRun" title="sürekli eğit">⏩</button><button class="addbtn nsim-b" id="nnTrStop" title="durdur">■</button>
+          <span class="nsim-stat" id="nnTrStat"></span>
+        </div>
+      </div>
+      <div class="nsim-diag">
+        <svg id="nnSimSvg" role="img" aria-label="2-2-1 ağ, canlı" style="width:100%"></svg>
+        <div class="nsim-heat"><canvas id="nnSimHeat" width="200" height="200"></canvas><div>karar haritası<br><span>x₁ → · x₂ ↑</span><br><span>turuncu = 1, mavi = 0;<br>yeşil çerçeve = doğru</span></div></div>
+      </div>
+      <div class="nsim-msg" id="nnStepMsg"></div>
+      <div class="nsim-phase nsim-fwd" id="nnSimFwd">
+        <div class="nsim-banner">1) ➡️ İleri yayılım <span>seçili nokta, canlı sayılarla</span></div>
+        <div id="nnFwdPt"></div>
+        <div class="work" id="nnFwdTable" style="white-space:pre; overflow-x:auto; line-height:1.7; font-size:11.5px; margin-top:8px"></div>
+        <div class="callout" id="nnFwdVerdict" style="margin-top:6px"></div>
+      </div>
     </div>
-
-    <div class="steps" style="grid-template-columns:1fr">
+    <div class="nsim-right">
+      <div class="nsim-phase nsim-bwd" id="nnSimBwd">
+        <div class="nsim-banner">2) ⬅️ Geri yayılım <span>aynı nokta için zincir kuralı, çıktıdan girdiye</span></div>
+    <div class="steps nsim-bgrid">
       <div class="step" id="nnBp1">
-        <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 1) Kayıptan başla — ∂L/∂z<sub>y</sub></h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="eq" id="nnBp1Eq"></div>
           <div class="callout" id="nnBp1Note" style="margin:10px 0 0"></div>
@@ -4540,7 +4525,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
         <div class="detail" id="nnBp1Detail"></div>
       </div>
       <div class="step" id="nnBp2">
-        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanından geri — W⁽²⁾, b⁽²⁾'nin gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 2) Çıktı katmanının ağırlıkları — W⁽²⁾, b⁽²⁾</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="eq" id="nnBp2Eq"></div>
           <div class="callout" id="nnBp2Note" style="margin:10px 0 0"></div>
@@ -4548,7 +4533,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
         <div class="detail" id="nnBp2Detail"></div>
       </div>
       <div class="step" id="nnBp3">
-        <div class="stephead"><h2>Geri Adım 3) Sigmoid'ten geri — ∂L/∂z<sub>h1</sub>, ∂L/∂z<sub>h2</sub>'yi bul</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 3) Gizli katmana in — ∂L/∂z<sub>h1</sub>, ∂L/∂z<sub>h2</sub></h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="eq" id="nnBp3Eq"></div>
           <div class="callout" id="nnBp3Note" style="margin:10px 0 0"></div>
@@ -4556,7 +4541,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
         <div class="detail" id="nnBp3Detail"></div>
       </div>
       <div class="step" id="nnBp4">
-        <div class="stephead"><h2>Geri Adım 4) Gizli katman ağırlıklarına — W⁽¹⁾, b⁽¹⁾'in gradyanı</h2><span class="chev">▸</span></div>
+        <div class="stephead"><h2>Geri Adım 4) Gizli katmanın ağırlıkları — W⁽¹⁾, b⁽¹⁾</h2><span class="chev">▸</span></div>
         <div class="stepbody">
           <div class="eq" id="nnBp4Eq"></div>
           <div class="callout" id="nnBp4Note" style="margin:10px 0 0"></div>
@@ -4564,31 +4549,17 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
         <div class="detail" id="nnBp4Detail"></div>
       </div>
     </div>
-    <div class="callout" style="margin-top:12px">🔗 <b>RNN ile fark:</b> RNN'de aynı ağırlık ZAMANDA tekrar kullanıldığı için gradyanları topluyorduk (Geri Adım 5). Burada aynı ağırlık sadece bir kez kullanılıyor (zaman yok) — ama fikir birebir aynı: <b>kayıptan başla, zincir kuralıyla geriye doğru, katman katman in.</b></div>
-  </div>
-
-  <!-- ===== 4) Canlı eğitim ===== -->
-  <div class="sechead" style="font-size:17px">⭐ 4) Canlı eğitim — rastgele ağırlıklar, kendi kendine XOR öğreniyor</div>
-  <div class="pts" style="border-left:3px solid var(--green)">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Şimdi sıra bunu <b>gerçekten</b> izlemekte. Aşağıdaki buton, 9 ağırlığı <b>tamamen rastgele</b> sayılarla başlatıp 4000 tur boyunca <code>W ← W − α·∂L/∂W</code> gradyan alçalmasını çalıştırır — hiçbir ağırlığı biz seçmiyoruz. Aktivasyon dersinde kanıtladığımız <code>dL/dz=p−y</code> ve zincir kuralı, buradaki 9 parametrenin hepsi için aynı anda işliyor.</p>
-    <div class="tip" style="margin-bottom:12px">⚠️ <b>Hatırlıyor musun?</b> Sklearn ile lojistik regresyonu simetrik XOR verisinde denediğimizde <b>w=0'da saplanıp kalmıştı</b> — o global minimumdu ama işe yaramıyordu. Burada da bazı rastgele başlangıçlar benzer bir <b>yerel/sığ noktaya sıkışabilir</b>. Bu yüzden buton, XOR'u tam çözemeden takılırsa <b>otomatik olarak yeni bir rastgele başlangıçla yeniden dener</b> — pratikte gerçek eğitimde de yapılan şey tam olarak bu (farklı "seed" ile yeniden dene).</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
-      <button class="addbtn" id="nnTrainBtn" style="background:var(--green); color:#0b2a12; font-weight:700">🎲 Rastgele başlat ve eğit (4000 tur)</button>
-    </div>
-    <div class="work" id="nnTrainLog" style="white-space:pre-wrap; line-height:1.7; font-size:12.5px; min-height:24px"></div>
-    <div class="plots" style="margin-top:10px">
-      <div class="plotbox" style="flex:1 1 340px">
-        <h3>Kayıp eğrisi (epoch boyunca)</h3>
-        <canvas id="nnTrainCanvas" width="480" height="240"></canvas>
       </div>
-      <div class="plotbox" style="flex:1 1 260px">
-        <h3>Öğrenilen ağırlıklar</h3>
-        <div class="work" id="nnTrainWeights" style="white-space:pre; line-height:1.9; font-size:12.5px"></div>
+      <div class="nsim-phase nsim-upd" id="nnSimUpd">
+        <div class="nsim-banner">3) 🔧 Güncelle <span>4 noktanın gradyan ortalaması ile W := W − α·∂L/∂W</span></div>
+        <div class="nsim-ugrid">
+          <div><div class="nsim-plotlab">Kayıp eğrisi (eğitim turları)</div><svg id="nnLossSvg" viewBox="0 0 300 130" style="width:100%"></svg></div>
+          <div id="nnUpd"></div>
+        </div>
       </div>
     </div>
-    <div class="work" id="nnTrainTable" style="white-space:pre; overflow-x:auto; line-height:1.9; font-size:12.5px; margin-top:12px"></div>
-    <div class="callout" id="nnTrainVerdict" style="margin-top:10px"></div>
   </div>
+</div>
 
   <div class="callout" style="margin-top:8px">💡 <b>Özet sezgi:</b> Bir sinir ağı = katman katman dizilmiş <b>W·x+b</b> + aktivasyon. Öğrenme = kayıptan başlayıp zincir kuralıyla geriye doğru inen, her ağırlığı kendi gradyanı kadar kaydıran bir döngü. Bugün 9 parametrede elle izlediğin bu döngü, GPT'nin trilyonlarca parametresinde de <b>aynı</b> — sadece ölçek, donanım ve bazı pratik hileler (Adam optimizer, batch'ler, öğrenme oranı planları) eklenir.</div>
 
@@ -4616,8 +4587,20 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     </div>
 
       <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — NumPy karşılığı: matris çarpımıyla ileri yol</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — kendi ağını kur · gerçek ölçek · NumPy</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+  <div class="pts" style="border-left:3px solid var(--green)">
+    <h3 style="color:var(--green)">🧰 Kendi ağını kur</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Katman ve nöron sayılarını değiştir; çizim, W matris şekilleri ve parametre sayısı canlı güncellenir. Gizli katmanı sıfıra indirirsen ne olduğuna da bak.</p>
+    <div id="nnBuild"></div>
+  </div>
+  <div class="pts" style="border-left:3px solid var(--purple,#c77dff)">
+    <h3 style="color:#c77dff">🌍 Gerçek ölçek: el yazısı rakam tanıyan bir ağ</h3>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">28×28 pikselli bir rakam resmi <b>784 sayıdır</b>. Basit bir ağ: 784 → 128 → 64 → 10 (her çıktı bir rakamın olasılığı). Çizimde her katmandan yalnız birkaç nöron gösterildi (⋮); gerçekte katmanlar arası <b>784·128 + 128·64 + 64·10 = 109.184</b> ağırlık ve <b>128+64+10 = 202</b> bias, toplam <b>109.386</b> parametre var. Aynı fikir; sadece daha çok daire ve çizgi.</p>
+    <div style="overflow-x:auto"><svg id="nnReal" role="img" aria-label="784-128-64-10 ağ" style="min-width:520px; width:100%; max-width:720px; display:block; margin:0 auto"></svg></div>
+    <div class="callout">🔗 <b>Genişlik ve derinlik:</b> katman başına nöron sayısı <b>genişlik</b>, katman sayısı <b>derinlik</b>. Daha geniş katman = aynı seviyede daha çok özellik yakalar (Örnek Çalışmalar'da XOR'un daha geniş ağlarla daha güvenilir öğrenildiğini göreceksin); daha derin ağ = özellikleri üst üste kurar (kenar → şekil → nesne). GPT gibi modellerde bu sayılar yüzlerce katman ve milyarlarca parametreye çıkar.</div>
+  </div>
+<div class="sechead" style="margin-top:14px">🐍 NumPy karşılığı: matris çarpımıyla ileri yol</div>
 <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu sayfadaki matris dili (z = Wx + b) gerçek kodda <b>tek satırlık</b> bir işleme dönüşür. Aşağıda Simülasyon'daki XOR ağı (aynı W, b değerleri) NumPy ile yazılmış; <code>@</code> operatörü matris çarpımı. Dikkat: dört noktanın hepsi <b>aynı anda</b> hesaplanıyor — GPU'ların neden bu kadar işe yaradığı tam burada: matris çarpımı paralel.</p>
     <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 NumPy ile ileri yol (4 nokta, tek işlemde)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import numpy as np
@@ -4721,8 +4704,8 @@ for k in (2, 3, 4, 8):
       <div class="acc-body">Zincir kuralıyla: önce ∂L/∂ŷ, sonra ∂L/∂z<sub>y</sub> (kayıptan çıktı katmanına), sonra W⁽²⁾ üzerinden ∂L/∂h'ye (çıktıdan gizliye), sonra sigmoid'in türeviyle ∂L/∂z<sub>h</sub>'ye. Her adım, bir öncekinin sonucunu o adımın <b>yerel türeviyle</b> çarpar — RNN'deki "dişli zinciri" mantığının aynısı, sadece zaman yerine katman var.</div>
     </div>
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> 4) "Canlı eğitim" simülasyonunda bazı denemeler neden takılıp yeniden başlıyor?</div>
-      <div class="acc-body">Kayıp yüzeyi düz bir çanak değil — bazı rastgele başlangıç noktaları, XOR'u tam çözmeyen <b>sığ/yerel bir minimuma</b> (tıpkı sklearn'ün simetrik XOR'da bulduğu w=0 noktası gibi) takılabilir. Gerçek hayatta da bu yüzden ağlar genelde <b>birden fazla rastgele başlangıçla (seed)</b> ya da daha akıllı optimizasyon yöntemleriyle (momentum, Adam) eğitilir.</div>
+      <div class="acc-head"><span class="ac">▸</span> 4) Simülasyon'da 🎲 #8 ve #9 başlangıçları neden takılıyor?</div>
+      <div class="acc-body">Kayıp yüzeyi düz bir çanak değil — bazı başlangıç noktaları, XOR'u tam çözmeyen <b>sığ/yerel bir minimuma</b> (tıpkı sklearn'ün simetrik XOR'da bulduğu w=0 noktası gibi) takılabilir. Gerçek hayatta da bu yüzden ağlar genelde <b>birden fazla rastgele başlangıçla (seed)</b> ya da daha akıllı optimizasyon yöntemleriyle (momentum, Adam) eğitilir.</div>
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 5) Bu ağla GPT arasındaki fark nedir — yapı mı, fikir mi?</div>
@@ -8671,7 +8654,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı soruyu iki farklı açıdan izle: önce adım adım (karakterden cevaba), sonra zaman içinde (0’dan 800. epoch’a kadar). İkisi de sitedeki Minik GPT’nin gerçek, eğitilmiş sayılarıyla.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) Adım adım harita</b><span>Karakterin kimlik numarasından cevabın “1” çıkmasına kadar 16 adım; gerçek sayılarla tablolar ve ısı haritaları.</span></div>
-      <a class="hr-go" href="harita/adim-adim.html?v=202610301038" target="_blank" rel="noopener">Haritayı aç →</a>
+      <a class="hr-go" href="harita/adim-adim.html?v=202610301051" target="_blank" rel="noopener">Haritayı aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8686,7 +8669,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) Epoch epoch tüccar günlüğü</b><span>Aynı soru için 0’dan 800’e 12 ölçüm anı: dikkat nasıl toplandı, geri yayılım, üç tohumla doğrulama.</span></div>
-      <a class="hr-go" href="harita/epoch.html?v=202610301038" target="_blank" rel="noopener">Günlüğü aç →</a>
+      <a class="hr-go" href="harita/epoch.html?v=202610301051" target="_blank" rel="noopener">Günlüğü aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8705,7 +8688,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı iskeletin farklı boyutları ve çeşitleri: önce 3B olarak yan yana koy, sonra gerçek GPT-2 boyutlarıyla adım adım izle, en sonda güncel mimarilerin farklarına bak.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) 3B mimari</b><span>Minik GPT (gerçek sayılar), GPT-2, Llama, gpt-oss-120b ve Qwen3-30B-A3B (ikisi de MoE) mimarilerini 3B olarak parçala, yan yana koy; eş zamanlı gezi, kafanın içi, ara tablolar.</span></div>
-      <a class="hr-go" href="harita/mimari-3b.html?v=202610301038" target="_blank" rel="noopener">3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/mimari-3b.html?v=202610301051" target="_blank" rel="noopener">3B mimariyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8725,11 +8708,11 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) RNN — 3B mimari</b><span>Zamanda açılmış RNN'i üç boyutta gez: her sütun bir kelime, ortak ağırlık tabloları, h'nin bir sonraki adıma akışı, many-to-one / many-to-many, 9 adımlı tur ve geri yayılım okları.</span></div>
-      <a class="hr-go" href="harita/rnn-3b.html?v=202610301038" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/rnn-3b.html?v=202610301051" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) GPT-2 adım adım haritası</b><span>Adım adım haritanın gerçek GPT-2 small boyutlarıyla hâli: 7+5= → 4×768 → 12 blok → 50.257 puan.</span></div>
-      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301038" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
+      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301051" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8743,7 +8726,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) Örnek mimariler</b><span>Minik GPT, GPT-2, iki güncel şema ve bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) aynı çizim diliyle; Claude/Gemini/GPT-4 neden çizilemiyor; yan yana tablolar.</span></div>
-      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301038" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
+      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301051" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8756,7 +8739,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>4) Bir cümlenin yolculuğu (önizleme)</b><span>«istanbulun başkenti nereresidir» cümlesi token'lara nasıl bölünür, kartlar ne taşır, dikkat kime bakar, tahmin nasıl yapılır — adım adım.</span></div>
-      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301038" target="_blank" rel="noopener">Önizlemeyi aç →</a>
+      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301051" target="_blank" rel="noopener">Önizlemeyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8773,7 +8756,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Tek sayfada üç parça: <b>🎬 mimari turu</b> (GPT-2'nin <b>3B mimarisinden</b> başlayıp token'lardan çıkışa her parçaya zoom yapıp yanında o parçadaki matris işlemini izle), küçük sayılarla temel (satır × sütun, Q·Kᵀ ve K·Qᵀ farkı) ve GPT-2 boyutunda tek tek sahneler.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Mimari turu + matris animasyonları (29 sahne; gpt-oss turu 27 durak)</b><span>🎬 3B GPT-2 mimarisi → zoom → animasyon turu (~5 dk) ve 🎬 gpt-oss turu (3B MoE mimarisi → zoom → router/kayan pencere/GQA animasyonları); T1–T7 küçük sayılarla temel; her sahnede ❓ neden yapıyoruz + 🗣️ sözel karşılığı + 📦 ne elde ettik; 0a–⑮ GPT-2 boyutunda: token, embedding, Q/K/V, skor, maske, A·V, W_O, LayerNorm, FFN, 12 blok, çıkış, KV önbellekli üretim döngüsü.</span></div>
-      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301038" target="_blank" rel="noopener">Animasyonu aç →</a>
+      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301051" target="_blank" rel="noopener">Animasyonu aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8793,7 +8776,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Bu modelleri kendi donanımında çalıştırmak istersen: hangi model kaç GB <b>VRAM / RAM</b> ister, 4 / 8 / 16 bit'te ne değişir ve tahmini maliyeti ne (PC, sınır ve sunucu sınıfı).</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Yerel model donanım rehberi (Gemma, Qwen, gpt-oss, DeepSeek)</b><span>Üç tablo: PC / sınır / sunucu sınıfı. Her hücre VRAM / RAM (GB), bit oranına göre; son kolonda tahmini maliyet. Formül, RTX 4080 örneği ve dürüst notlar sayfada.</span></div>
-      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301038" target="_blank" rel="noopener">Rehberi aç →</a>
+      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301051" target="_blank" rel="noopener">Rehberi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -9829,64 +9812,65 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610301038"></script>
-<script src="js/lesson-turev.js?v=202610301038"></script>
-<script src="js/lesson-xor.js?v=202610301038"></script>
-<script src="js/lesson-xor-arch.js?v=202610301038"></script>
-<script src="js/lesson-xor-maps.js?v=202610301038"></script>
-<script src="js/lesson-xor-epoch.js?v=202610301038"></script>
-<script src="js/lesson-nn.js?v=202610301038"></script>
-<script src="js/lesson-trig.js?v=202610301038"></script>
+<script src="js/lesson-linreg.js?v=202610301051"></script>
+<script src="js/lesson-turev.js?v=202610301051"></script>
+<script src="js/lesson-xor.js?v=202610301051"></script>
+<script src="js/lesson-xor-arch.js?v=202610301051"></script>
+<script src="js/lesson-xor-maps.js?v=202610301051"></script>
+<script src="js/lesson-xor-epoch.js?v=202610301051"></script>
+<script src="js/lesson-nn.js?v=202610301051"></script>
+<script src="js/lesson-trig.js?v=202610301051"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610301038"></script>
-<script src="js/lesson-rnn-soz.js?v=202610301038"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610301051"></script>
+<script src="js/lesson-rnn-soz.js?v=202610301051"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610301038"></script>
-<script src="js/lesson-lstm-cell.js?v=202610301038"></script>
-<script src="js/app.js?v=202610301038"></script>
-<script src="js/lesson-rnn-wbar.js?v=202610301038"></script>
-<script src="js/lesson-lstm-big.js?v=202610301038"></script>
-<script src="js/lesson-lstm-step.js?v=202610301038"></script>
-<script src="js/lesson-lstm-size.js?v=202610301038"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610301038"></script>
-<script src="js/lesson-emb-kullan.js?v=202610301038"></script>
-<script src="js/lesson-emb-draco.js?v=202610301038"></script>
-<script src="js/lesson-emb-arch.js?v=202610301038"></script>
-<script src="js/lesson-emb-extra.js?v=202610301038"></script>
-<script src="js/lesson-s2s-weights.js?v=202610301038"></script>
-<script src="js/lesson-s2s-add.js?v=202610301038"></script>
-<script src="js/lesson-s2s-inside.js?v=202610301038"></script>
-<script src="js/lesson-att-train.js?v=202610301038"></script>
-<script src="js/lesson-att-extra.js?v=202610301038"></script>
-<script src="js/lesson-att-big.js?v=202610301038"></script>
-<script src="js/lesson-att-ornek.js?v=202610301038"></script>
-<script src="js/lesson-mh-big.js?v=202610301038"></script>
-<script src="js/lesson-mh-ornek.js?v=202610301038"></script>
-<script src="js/lesson-tf-big.js?v=202610301038"></script>
-<script src="js/lesson-tf-ornek.js?v=202610301038"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610301038"></script>
-<script src="js/lesson-gpt-big.js?v=202610301038"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610301038"></script>
-<script src="js/lesson-rnn-van.js?v=202610301038"></script>
-<script src="js/lesson-s2s-extra.js?v=202610301038"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610301038"></script>
-<script src="js/lesson-emb-ornek.js?v=202610301038"></script>
-<script src="js/lesson-emb-steps.js?v=202610301038"></script>
-<script src="js/lesson-emb-big.js?v=202610301038"></script>
-<script src="js/lesson-sm-ornek.js?v=202610301038"></script>
-<script src="js/lesson-sm-big.js?v=202610301038"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610301038"></script>
-<script src="js/lesson-lstm-gate.js?v=202610301038"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610301038"></script>
-<script src="js/lesson-gpt.js?v=202610301038"></script>
-<script src="js/lesson-gpt-mini.js?v=202610301038"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610301038"></script>
-<script src="js/lesson-linreg-big.js?v=202610301038"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610301038"></script>
-<script src="js/lesson-act-big.js?v=202610301038"></script>
-<script src="js/lesson-act-ornek.js?v=202610301038"></script>
-<script src="js/lesson-xor-ornek.js?v=202610301038"></script>
-<script src="js/lesson-nn-ornek.js?v=202610301038"></script>
-<script src="js/lesson-nn-net.js?v=202610301038"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610301051"></script>
+<script src="js/lesson-lstm-cell.js?v=202610301051"></script>
+<script src="js/app.js?v=202610301051"></script>
+<script src="js/lesson-rnn-wbar.js?v=202610301051"></script>
+<script src="js/lesson-lstm-big.js?v=202610301051"></script>
+<script src="js/lesson-lstm-step.js?v=202610301051"></script>
+<script src="js/lesson-lstm-size.js?v=202610301051"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610301051"></script>
+<script src="js/lesson-emb-kullan.js?v=202610301051"></script>
+<script src="js/lesson-emb-draco.js?v=202610301051"></script>
+<script src="js/lesson-emb-arch.js?v=202610301051"></script>
+<script src="js/lesson-emb-extra.js?v=202610301051"></script>
+<script src="js/lesson-s2s-weights.js?v=202610301051"></script>
+<script src="js/lesson-s2s-add.js?v=202610301051"></script>
+<script src="js/lesson-s2s-inside.js?v=202610301051"></script>
+<script src="js/lesson-att-train.js?v=202610301051"></script>
+<script src="js/lesson-att-extra.js?v=202610301051"></script>
+<script src="js/lesson-att-big.js?v=202610301051"></script>
+<script src="js/lesson-att-ornek.js?v=202610301051"></script>
+<script src="js/lesson-mh-big.js?v=202610301051"></script>
+<script src="js/lesson-mh-ornek.js?v=202610301051"></script>
+<script src="js/lesson-tf-big.js?v=202610301051"></script>
+<script src="js/lesson-tf-ornek.js?v=202610301051"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610301051"></script>
+<script src="js/lesson-gpt-big.js?v=202610301051"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610301051"></script>
+<script src="js/lesson-rnn-van.js?v=202610301051"></script>
+<script src="js/lesson-s2s-extra.js?v=202610301051"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610301051"></script>
+<script src="js/lesson-emb-ornek.js?v=202610301051"></script>
+<script src="js/lesson-emb-steps.js?v=202610301051"></script>
+<script src="js/lesson-emb-big.js?v=202610301051"></script>
+<script src="js/lesson-sm-ornek.js?v=202610301051"></script>
+<script src="js/lesson-sm-big.js?v=202610301051"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610301051"></script>
+<script src="js/lesson-lstm-gate.js?v=202610301051"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610301051"></script>
+<script src="js/lesson-gpt.js?v=202610301051"></script>
+<script src="js/lesson-gpt-mini.js?v=202610301051"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610301051"></script>
+<script src="js/lesson-linreg-big.js?v=202610301051"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610301051"></script>
+<script src="js/lesson-act-big.js?v=202610301051"></script>
+<script src="js/lesson-act-ornek.js?v=202610301051"></script>
+<script src="js/lesson-xor-ornek.js?v=202610301051"></script>
+<script src="js/lesson-nn-ornek.js?v=202610301051"></script>
+<script src="js/lesson-nn-net.js?v=202610301051"></script>
+<script src="js/lesson-nn-sim.js?v=202610301051"></script>
 </body>
 </html>

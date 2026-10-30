@@ -1,6 +1,6 @@
 // Neural Network — ağın RESMİ: katman/nöron/ağırlık diyagramı (window.nnNetSvg), tek nöron anatomisi,
 // "Kendi ağını kur" aracı, gerçek ölçek (784-128-64-10), Simülasyon'da canlı ağ + karar haritası,
-// ve eğitimi adım adım izleten panel (ağırlıklar çizgi kalınlığı/rengi olarak canlı değişir).
+// Simülasyon kısmı ayrı dosyada: js/lesson-nn-sim.js.
 (function(){
   const $=id=>document.getElementById(id);
   const sig=z=>1/(1+Math.exp(-z));
@@ -104,69 +104,5 @@
   /* ================= 4) Gerçek ölçek ================= */
   put('nnReal',{layers:[784,128,64,10],labels:[[],[],[],['0','1','2','3','4','5','6','7','8','9']],titles:['784 piksel (28×28)','128 nöron','64 nöron','10 rakam'],width:640,height:450,maxShow:8,showN:[8,8,8,10],edgeScale:0.2});
 
-  /* ================= 5) Simülasyon: canlı ağ + karar haritası ================= */
-  const wIds=['nnW11','nnW12','nnB1','nnW21','nnW22','nnB2','nnW31','nnW32','nnB3'];
-  const readW=()=>wIds.map(id=>parseFloat($(id)&&$(id).value)||0);
-  const fwd=(W,x1,x2)=>{const h1=sig(W[0]*x1+W[1]*x2+W[2]),h2=sig(W[3]*x1+W[4]*x2+W[5]),p=sig(W[6]*h1+W[7]*h2+W[8]);return {h1,h2,p};};
-  function heat(canvasId,W){
-    const c=$(canvasId);if(!c)return;const g=c.getContext('2d'),N=44,S=c.width/N;
-    for(let i=0;i<N;i++)for(let j=0;j<N;j++){const p=fwd(W,(i+0.5)/N,1-(j+0.5)/N).p;g.fillStyle=mix('#1c3a6e','#f0a032',p);g.fillRect(i*S,j*S,S+0.5,S+0.5);}
-    g.strokeStyle='#0d1426';g.lineWidth=1;
-    [[0,0,0],[0,1,1],[1,0,1],[1,1,0]].forEach(([a,b,y])=>{const x=8+a*(c.width-16),yy=8+(1-b)*(c.width-16),p=fwd(W,a,b).p,ok=(p>0.5)===(y===1);g.beginPath();g.arc(x,yy,9,0,7);g.fillStyle=y?'#f0a032':'#3a7afe';g.fill();g.lineWidth=3;g.strokeStyle=ok?'#46c46a':'#e06a6a';g.stroke();g.fillStyle='#fff';g.font='bold 10px Segoe UI';g.textAlign='center';g.fillText(y,x,yy+3.5);});
-  }
-  let liveX=[1,0];
-  function drawLive(){
-    const W=readW(),r=fwd(W,liveX[0],liveX[1]);
-    put('nnLiveSvg',{layers:[2,2,1],labels:[['x₁','x₂'],['h₁','h₂'],['ŷ']],W:[[[W[0],W[1]],[W[3],W[4]]],[[W[6],W[7]]]],B:[[W[2],W[5]],[W[8]]],act:[[liveX[0],liveX[1]],[r.h1,r.h2],[r.p]],titles:['girdi','gizli','çıktı'],showW:true,showB:true,width:430,height:230,edgeScale:0.12});
-    heat('nnLiveHeat',W);
-    const el=$('nnLiveNote');if(el)el.innerHTML='Girdi (<b>'+liveX[0]+', '+liveX[1]+'</b>) → h₁=<b>'+fm(r.h1,3)+'</b>, h₂=<b>'+fm(r.h2,3)+'</b> → ŷ=<b>'+fm(r.p,3)+'</b>. Düğüm rengi = etkinlik (koyu 0 → turuncu 1), çizgi kalınlığı/rengi = ağırlık (mavi +, kırmızı −). Sağdaki harita, girdi karesindeki her nokta için ağın cevabı: turuncu bölge "1", mavi bölge "0"; noktaların çerçevesi yeşilse ağ onu doğru biliyor.';
-    document.querySelectorAll('.nnlx').forEach(b=>{b.style.outline=(+b.dataset.i===0?liveX[0]:liveX[1])===+b.dataset.v&&true?'2px solid var(--accent)':'none';});
-  }
-  const liveHost=$('nnLive');
-  if(liveHost){
-    liveHost.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin-bottom:6px"><span style="font-size:13px;color:#ccd5e8">x₁:</span><button class="rex-btn nnlx" data-i="0" data-v="0">0</button><button class="rex-btn nnlx" data-i="0" data-v="1">1</button><span style="font-size:13px;color:#ccd5e8">x₂:</span><button class="rex-btn nnlx" data-i="1" data-v="0">0</button><button class="rex-btn nnlx" data-i="1" data-v="1">1</button></div><div class="rex-grid"><div><svg id="nnLiveSvg" style="width:100%;max-width:600px"></svg></div><div><canvas id="nnLiveHeat" width="220" height="220" style="width:100%;max-width:240px;border:1px solid var(--line);border-radius:8px"></canvas><div style="font-size:11px;color:var(--muted);margin-top:2px">x₂ ↑ · x₁ → (karar haritası)</div></div></div><div class="callout" id="nnLiveNote" style="margin-top:8px"></div>';
-    document.querySelectorAll('.nnlx').forEach(b=>b.onclick=()=>{liveX[+b.dataset.i]=+b.dataset.v;drawLive();});
-    wIds.forEach(id=>{const e=$(id);if(e)e.addEventListener('input',drawLive);});
-    const rs=$('nnFwdReset');if(rs)rs.addEventListener('click',()=>setTimeout(drawLive,30));
-    drawLive();
-  }
-
-  /* ================= 6) Eğitimi adım adım izle ================= */
-  const trHost=$('nnTrain');
-  if(trHost){
-    const P=[[0,0,0],[0,1,1],[1,0,1],[1,1,0]],MAX=4000,LR=1.0;
-    const lcg=seed=>{let s=seed;return ()=>{s=(s*1664525+1013904223)%4294967296;return Math.round((2*s/4294967296-1)*10)/10;};};
-    let seed=0,W,ep=0,hist=[],timer=null;
-    const init=k=>{const u=lcg(k+1),w=[];for(let j=0;j<2;j++){w.push(u(),u());}const b1=[u(),u()],w2=[u(),u()],b2=u();return [w[0],w[1],b1[0],w[2],w[3],b1[1],w2[0],w2[1],b2];};
-    // init sırası Python/nn-ornek ile aynı: W1[0][0],W1[0][1],W1[1][0],W1[1][1] → b1[0],b1[1] → W2[0],W2[1] → b2
-    function step(){
-      const g=new Array(9).fill(0);let L=0;
-      P.forEach(([x1,x2,y])=>{const h1=sig(W[0]*x1+W[1]*x2+W[2]),h2=sig(W[3]*x1+W[4]*x2+W[5]),p=sig(W[6]*h1+W[7]*h2+W[8]);L+=-(y?Math.log(p):Math.log(1-p))/4;
-        const d=p-y,d1=d*W[6]*h1*(1-h1),d2=d*W[7]*h2*(1-h2);
-        g[6]+=d*h1/4;g[7]+=d*h2/4;g[8]+=d/4;g[0]+=d1*x1/4;g[1]+=d1*x2/4;g[2]+=d1/4;g[3]+=d2*x1/4;g[4]+=d2*x2/4;g[5]+=d2/4;});
-      hist.push(L);for(let i=0;i<9;i++)W[i]-=LR*g[i];ep++;
-    }
-    trHost.innerHTML='<div style="font-size:13px;color:#ccd5e8;margin-bottom:6px">Rastgele başlangıç: '+[0,3,8,9].map(k=>'<button class="rex-btn nntk" data-k="'+k+'">#'+k+'</button>').join('')+' <button class="rex-btn" id="nntGo">▶ eğit</button><button class="rex-btn" id="nntPause">⏸</button><button class="rex-btn" id="nntReset">↺</button><button class="rex-btn" id="nntPush">↳ bu ağırlıkları yukarıdaki kutulara aktar</button></div><div class="rex-grid"><div><svg id="nntSvg" style="width:100%;max-width:600px"></svg><svg id="nntLoss" viewBox="0 0 300 100" style="width:100%;max-width:420px"></svg></div><div><canvas id="nntHeat" width="220" height="220" style="width:100%;max-width:240px;border:1px solid var(--line);border-radius:8px"></canvas><div id="nntStat" style="font-size:12.5px;color:#ccd5e8;margin-top:6px"></div></div></div><div class="callout" id="nntNote" style="margin-top:8px"></div>';
-    function draw(){
-      const r=fwd(W,1,0);
-      put('nntSvg',{layers:[2,2,1],labels:[['x₁','x₂'],['h₁','h₂'],['ŷ']],W:[[[W[0],W[1]],[W[3],W[4]]],[[W[6],W[7]]]],B:[[W[2],W[5]],[W[8]]],act:[[1,0],[r.h1,r.h2],[r.p]],titles:['girdi (1,0) için','gizli','çıktı'],showW:true,showB:true,width:430,height:230,edgeScale:0.35});
-      heat('nntHeat',W);
-      const LX=i=>20+(280)*i/MAX,LY=v=>90-80*Math.min(1,v/0.72);let l='<line x1="20" y1="90" x2="300" y2="90" stroke="#44507a"/><line x1="20" y1="'+LY(0.693)+'" x2="300" y2="'+LY(0.693)+'" stroke="#e0a030" stroke-dasharray="4 3"/><text x="298" y="'+(LY(0.693)-2)+'" text-anchor="end" font-size="8" fill="#e0a030">0,693</text>';
-      if(hist.length>1){let d='';hist.forEach((v,i)=>{if(hist.length>400&&i%Math.ceil(hist.length/400)&&i!==hist.length-1)return;d+=(d?'L':'M')+LX(i)+','+LY(v);});l+='<path d="'+d+'" fill="none" stroke="#46c46a" stroke-width="2"/>';}
-      $('nntLoss').innerHTML=l+'<text x="20" y="99" font-size="8" fill="#95a2c2">0</text><text x="300" y="99" text-anchor="end" font-size="8" fill="#95a2c2">'+MAX+' tur</text>';
-      const ok=P.filter(([a,b,y])=>(fwd(W,a,b).p>0.5)===(y===1)).length,L=hist.length?hist[hist.length-1]:null;
-      $('nntStat').innerHTML='başlangıç <b>#'+seed+'</b> · tur <b>'+ep+'</b>/'+MAX+'<br>kayıp <b>'+(L===null?'—':fm(L,4))+'</b> · doğru <b>'+ok+'/4</b>';
-      $('nntNote').innerHTML=ep===0?'▶ eğit\'e bas: çizgiler kalınlaşıp renk değiştirecek, sağdaki harita bükülecek. #8 ve #9 gibi bazı başlangıçlar takılır — yerel tuzak.':(ep>=MAX?(L<0.05?'✅ Ağ XOR\'u çözdü: iki gizli nöron girdi karesini iki şeride böldü, çıkış nöronu şeritlerin arasını seçiyor (haritada turuncu çapraz iki bölge).':'⚠️ Bu başlangıç takıldı: ağ dört noktanın üçünü (ya da ikisini) biliyor, dördüncüsü için gereken "bükülme" oluşmadı.'):'ağırlıklar öğreniliyor…');
-      document.querySelectorAll('.nntk').forEach(b=>{b.style.outline=+b.dataset.k===seed?'2px solid var(--accent)':'none';});
-      window.__nnt={seed,ep,L,ok,W:W.slice()};
-    }
-    const stop=()=>{if(timer){cancelAnimationFrame(timer);timer=null;}};
-    const loop=()=>{if(ep>=MAX){stop();draw();return;}for(let i=0;i<25&&ep<MAX;i++)step();draw();timer=requestAnimationFrame(loop);};
-    const reset=()=>{stop();W=init(seed);ep=0;hist=[];draw();};
-    document.querySelectorAll('.nntk').forEach(b=>b.onclick=()=>{seed=+b.dataset.k;reset();});
-    $('nntGo').onclick=()=>{if(!timer&&ep<MAX)timer=requestAnimationFrame(loop);};$('nntPause').onclick=stop;$('nntReset').onclick=reset;
-    $('nntPush').onclick=()=>{wIds.forEach((id,i)=>{const e=$(id);if(e){e.value=(Math.round(W[i]*1000)/1000);e.dispatchEvent(new Event('input'));}});};
-    window.__nntRun=(k,n)=>{seed=k;reset();for(let i=0;i<n;i++)step();draw();};
-    reset();
-  }
+  // 5) Simülasyon (canlı ağ, adım adım, eğitim) → js/lesson-nn-sim.js
 })();

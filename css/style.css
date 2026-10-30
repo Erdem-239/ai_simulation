@@ -1784,3 +1784,54 @@ body.xt-full-lock{overflow:hidden}
 .rc-wbar-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:4px 14px}
 .rc-wbar-cell{flex:none}
 @media(max-width:560px){ .rc-wbar-row{grid-template-columns:repeat(2,1fr)} }
+/* Neural Network 5️⃣ Simülasyon — RNN Tek Hücre düzeni: üstte ağırlıklar, solda kontrol + ağ + ileri, sağda geri 2×2 + güncelle */
+#nnSim .nsim-wbox{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:0 0 12px}
+#nnSim .nsim-wtitle{font-weight:700; font-size:14px; margin-bottom:6px}
+#nnSim .nsim-wtitle span{font-weight:400; font-size:12px; color:var(--muted)}
+#nnSim .nsim-wbox .ptcell input{width:74px}
+#nnSim .nsim-note{font-size:11.5px; color:var(--muted); margin-top:6px}
+#nnSim .nsim-lab{font-size:11.5px; color:var(--muted); min-width:104px}
+#nnSim .nsim-start{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+#nnSim .nsim-b{padding:5px 10px; font-size:12.5px; background:var(--panel); color:var(--text); border:1px solid var(--line)}
+#nnSim .nsim-bf{background:#2f6fd0; color:#fff; border-color:#2f6fd0}
+#nnSim .nsim-bb{background:#c4572f; color:#fff; border-color:#c4572f}
+#nnSim .nsim-bg{background:#2f8f55; color:#fff; border-color:#2f8f55}
+#nnSim .nsim-cols{display:grid; grid-template-columns:minmax(0,440px) minmax(0,1fr); gap:14px; align-items:start}
+#nnSim .nsim-left{position:sticky; top:8px; min-width:0}
+#nnSim .nsim-right{min-width:0}
+@media(max-width:1000px){ #nnSim .nsim-cols{grid-template-columns:1fr} #nnSim .nsim-left{position:static} }
+#nnSim .nsim-ctl{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 10px; display:flex; flex-direction:column; gap:6px; margin-bottom:8px}
+#nnSim .nsim-row{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+#nnSim .nsim-stat{font-size:11.5px; color:#ccd5e8}
+#nnSim .nsim-diag{display:flex; gap:8px; align-items:center}
+#nnSim .nsim-diag svg{flex:1 1 auto; min-width:0}
+#nnSim .nsim-heat{flex:0 0 112px; font-size:11px; color:#ccd5e8; line-height:1.35}
+#nnSim .nsim-heat canvas{width:112px; height:112px; border:1px solid var(--line); border-radius:6px; display:block; margin-bottom:3px}
+#nnSim .nsim-heat span{color:var(--muted); font-size:10px}
+#nnSim .nsim-msg{background:#141c30; border:1px solid var(--line); border-left:3px solid #ffd24a; border-radius:8px; padding:6px 9px; font-size:12.5px; color:#dbe2f2; margin:6px 0 8px; min-height:2.6em}
+#nnSim .nsim-phase{border:1.5px solid; border-radius:12px; padding:0 10px 10px; margin:0 0 12px}
+#nnSim .nsim-banner{margin:0 -10px 8px; padding:7px 12px; border-radius:10px 10px 0 0; font-size:14px; font-weight:700}
+#nnSim .nsim-banner span{font-size:12px; font-weight:400; color:#ccd5e8; margin-left:6px}
+#nnSim .nsim-fwd{border-color:#3d7fd0; background:rgba(61,127,208,.04)} #nnSim .nsim-fwd .nsim-banner{background:rgba(61,127,208,.2); color:#8cc4ff}
+#nnSim .nsim-bwd{border-color:#d0603d; background:rgba(208,96,61,.04)} #nnSim .nsim-bwd .nsim-banner{background:rgba(208,96,61,.2); color:#ffa58a}
+#nnSim .nsim-upd{border-color:#3a9d5f; background:rgba(58,157,95,.04)} #nnSim .nsim-upd .nsim-banner{background:rgba(58,157,95,.2); color:#86e2a9}
+#nnSim .nsim-eq{font-size:12.5px; color:#dbe2f2; padding:3px 6px; border-radius:6px; margin:2px 0; line-height:1.6; overflow-x:auto}
+#nnSim .nsim-eq.hl{background:rgba(255,210,74,.16); outline:1.5px solid #ffd24a}
+#nnSim .nsim-bgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px; margin-top:0}
+@media(max-width:1300px){ #nnSim .nsim-bgrid{grid-template-columns:1fr!important} }
+#nnSim .nsim-bwd .step{min-width:0}
+#nnSim .nsim-bwd .stephead h2{font-size:13px}
+#nnSim .nsim-bwd .eq{overflow-x:auto; font-size:12.5px}
+#nnSim .nsim-bwd .callout{font-size:11.5px; line-height:1.45; padding:6px 9px}
+#nnSim .step.active{outline:2.5px solid #ff8a6a; box-shadow:0 0 0 4px rgba(255,138,106,.18)}
+#nnSim .nsim-ugrid{display:grid; grid-template-columns:minmax(0,260px) minmax(0,1fr); gap:10px; align-items:start}
+@media(max-width:700px){ #nnSim .nsim-ugrid{grid-template-columns:1fr} }
+#nnSim .nsim-plotlab{font-size:11.5px; color:var(--muted); margin-bottom:2px}
+#nnSim .nsim-tbl{border-collapse:collapse; font-size:12px; width:100%}
+#nnSim .nsim-tbl th{font-weight:600; color:var(--muted); font-size:11px; text-align:right; padding:2px 6px}
+#nnSim .nsim-tbl td{text-align:right; padding:2px 6px; border-top:1px solid #23304e; font-variant-numeric:tabular-nums}
+#nnSim .nsim-tbl td:first-child,#nnSim .nsim-tbl th:first-child{text-align:left}
+#nnSim .nsim-tbl tr.sep td{border-top:2px solid #3a4870}
+#nnSim .nsim-loss{font-size:12.5px; margin-top:6px}
+#nnSim #nnFwdTable{max-width:100%}
+@media(max-width:560px){ #nnSim .nsim-diag{flex-direction:column} #nnSim .nsim-heat{display:flex; gap:8px; flex-basis:auto} #nnSim .nsim-wbox .ptcell input{width:64px} }
