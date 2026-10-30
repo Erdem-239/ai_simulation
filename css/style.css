@@ -1862,3 +1862,19 @@ body.xt-full-lock{overflow:hidden}
 #nnSim .nsim-cols{grid-template-columns:minmax(0,4fr) minmax(0,6fr)}
 #nnSim .nsim-heat{flex:0 0 160px} #nnSim .nsim-heat canvas{width:160px; height:160px}
 @media(max-width:1000px){ #nnSim .nsim-cols{grid-template-columns:1fr} }
+/* NN Simülasyon: sol sütun ~%36, geri yayılım kartları daha büyük/uzun, yazılar okunur */
+#nnSim .nsim-cols{grid-template-columns:minmax(0,9fr) minmax(0,16fr)}
+@media(max-width:1000px){ #nnSim .nsim-cols{grid-template-columns:1fr} }
+#nnSim .nsim-bgrid{align-items:stretch; gap:10px}
+#nnSim .nsim-bwd .step{display:flex; flex-direction:column}
+#nnSim .nsim-bwd .stepbody{flex:1; padding:4px 14px 12px}
+#nnSim .nsim-bwd .stephead{padding:9px 14px}
+#nnSim .nsim-bwd .stephead h2{font-size:14px}
+#nnSim .nsim-bwd .eq{font-size:14px; margin:6px 0; padding:8px 10px; line-height:2}
+#nnSim .nsim-bwd mjx-container{font-size:112%!important}
+#nnSim .nsim-bwd .callout, #nnSim .nsim-upd .callout{font-size:12.5px; line-height:1.5; padding:7px 10px; margin-top:8px!important; white-space:normal!important; overflow:visible; cursor:auto}
+#nnSim .nsim-tbl{font-size:12.5px}
+#nnSim .nsim-tbl td,#nnSim .nsim-tbl th{padding:2px 8px}
+#nnSim .nsim-loss{font-size:13px}
+#nnSim .nsim-bwd mjx-container{font-size:104%!important; display:inline-block!important; margin:3px 0!important}
+#nnSim .nsim-bwd .eq{line-height:1.5}

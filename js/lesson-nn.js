@@ -186,9 +186,9 @@
       '<div class="deriv-why"><b>2. adım:</b> h1=σ(z<sub>h1</sub>) olduğundan sigmoid\'in türevi σ(1−σ) devreye girer (Aktivasyon dersindeki kanıt): \\( \\partial L/\\partial z_{h1}=\\partial L/\\partial h_1\\times h_1(1-h_1) \\).</div>';
 
     // ---- Geri Adım 4 ----
-    $('nnBp4Eq').innerHTML = '\\( \\dfrac{\\partial L}{\\partial w_{11}}='+F(dLdzh1,4)+'\\times x_1='+F(dLdzh1,4)+'\\times'+pt.x1+'='+F(dLdw11,4)+' \\)<br>'+
-      '\\( \\dfrac{\\partial L}{\\partial w_{12}}='+F(dLdzh1,4)+'\\times x_2='+F(dLdw12,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial b_1}='+F(dLdb1,4)+' \\)<br>'+
-      '\\( \\dfrac{\\partial L}{\\partial w_{21}}='+F(dLdzh2,4)+'\\times x_1='+F(dLdw21,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial w_{22}}='+F(dLdw22,4)+' \\), &nbsp; \\( \\dfrac{\\partial L}{\\partial b_2}='+F(dLdb2,4)+' \\)';
+    const g4=(w,d,xs,xv,res)=>'\\( \\dfrac{\\partial L}{\\partial '+w+'}='+F(d,4)+'\\times '+xs+(xv===null?'':'='+F(d,4)+'\\times'+xv)+'='+F(res,4)+' \\)';
+    $('nnBp4Eq').innerHTML = [g4('w_{11}',dLdzh1,'x_1',pt.x1,dLdw11),g4('w_{12}',dLdzh1,'x_2',pt.x2,dLdw12),g4('b_1',dLdzh1,'1',null,dLdb1),
+      g4('w_{21}',dLdzh2,'x_1',pt.x1,dLdw21),g4('w_{22}',dLdzh2,'x_2',pt.x2,dLdw22),g4('b_2',dLdzh2,'1',null,dLdb2)].join('<br>');
     $('nnBp4Note').innerHTML = '✅ Artık 9 ağırlığın da gradyanına sahibiz — bu, TEK bir XOR noktası için hesaplanan gradyan. Eğitimde (3) Güncelle) 4 noktanın gradyanı ORTALAMASI alınıp <code>W ← W − α·gradyan</code> ile güncellenir.';
     typeset($('nnBp4Eq'));
     $('nnBp4Detail').innerHTML =
