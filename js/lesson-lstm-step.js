@@ -14,7 +14,7 @@
     const hist=[];
     return [
      {hl:['fbox','ibox','gbox','obox'],f:'kapılar: '+B('f='+F(v.f)+', i='+F(v.i)+', o='+F(v.o)+', c̃='+F(v.ct)),
-      i:'Dört kutu (f, i, c̃, o) hazır. Gerçek hücrede her biri <b>W·x + U·h₋₁ + b</b> ile hesaplanır; <b>bu panelde değerleri sen kaydırıcıyla veriyorsun</b>. Hesabı adım adım görmek için 4️⃣ Nedir → "Neyle ne çarpılıyor?" bölümüne bak.'},
+      i:'Dört kutu (f, i, c̃, o) hesaplandı: her biri <b>W·x + U·h₋₁ + b</b> → σ (kapılar) ya da tanh (aday). Değerler şemada kutuların altında yazıyor; bir kapının içini adım adım görmek için 4️⃣ Nedir → "Neyle ne çarpılıyor?".'},
      {hl:['c0','mulf','fbox'],f:'c = '+B('f · c₋₁'),
       i:'<b>İlk çarpma:</b> eski hafıza <b>c₋₁</b> unutma kapısı <b>f</b> ile çarpılır: '+F(v.f)+' × '+F(v.cp)+' = <b>'+F(v.fc)+'</b>. f küçükse eski hafıza silinir, 1\'e yakınsa korunur.'},
      {hl:['mului','ibox','gbox'],f:'c = f·c₋₁ + '+B('i · c̃'),
@@ -32,6 +32,7 @@
     ];
   }
   function draw(){
+    if(window.__lstmBack>0) return; // ◀ Geri modu (lesson-lstm-sim.js) şemayı ve mesajı kendisi yönetiyor
     const v=q(),S=steps(v);
     if(step===0){
       window.__lstmPipeHL=[];
@@ -42,11 +43,11 @@
       $('lvStepFormula').innerHTML=s.f;$('lvStepInfo').innerHTML='<span style="color:var(--muted);font-size:12px">Adım '+step+' / '+S.length+'</span><br>'+s.i;
     }
     if(window.__lstmPipeRedraw)window.__lstmPipeRedraw();
-    go.textContent=step>=S.length?'↺ Baştan':'İleri ▶';
+    go.textContent=step>=S.length?'↺ Baştan':'➡️ İleri ▶';
     window.__lvStep={step,total:S.length};
   }
-  go.addEventListener('click',()=>{const n=steps(q()).length;step=step>=n?0:step+1;draw();});
-  $('lvStepRst').addEventListener('click',()=>{step=0;draw();});
+  go.addEventListener('click',()=>{if(window.__lstmBack>0){window.__lstmBack=0;step=0;if(window.__lstmBackClr)window.__lstmBackClr();}const n=steps(q()).length;step=step>=n?0:step+1;draw();});
+  $('lvStepRst').addEventListener('click',()=>{window.__lstmBack=0;if(window.__lstmBackClr)window.__lstmBackClr();step=0;draw();});
   let busy=false;
   window.__lstmStepRefresh=()=>{if(step>0&&!busy){busy=true;try{draw();}finally{busy=false;}}};
   draw();

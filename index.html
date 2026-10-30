@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610301129"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610301140"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610301129">
+<link rel="stylesheet" href="css/style.css?v=202610301140">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 11:29 TR · #480</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 11:40 TR · #481</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -2280,14 +2280,9 @@ for epoch in range(101):
     <h3 style="color:var(--green)">🏗️ Mimari — tek bir LSTM hücresi</h3>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üstteki yeşil hat <b>cell state</b> (uzun süreli hafıza, cₜ), alttaki hat <b>hₜ</b> (kısa süreli durum/çıktı). Yeni girdi <b>xₜ</b> ile önceki hₜ₋₁ birlikte dört kutuya girer: üç <b>σ</b> (kapı: 0–1 vana) ve bir <b>tanh</b> (aday içerik). ⊗ elemanlı çarpma, ⊕ toplama.</p>
     <div style="overflow-x:auto"><svg id="lstmArch" role="img" aria-label="LSTM hücre mimarisi" style="min-width:560px; width:100%; max-width:660px; display:block; margin:0 auto"></svg></div>
-    <div style="font-size:12px; color:var(--muted); margin-top:6px">Okuma sırası: ① <b>fₜ</b> eski hafızayı ölçekler (unutma) → ② <b>iₜ·c̃ₜ</b> yeni içeriği ekler → ③ toplam <b>cₜ</b> olur → ④ tanh'tan geçip <b>oₜ</b> ile süzülür → <b>hₜ</b>. Aşağıdaki Simülasyon'da aynı şemayı canlı sayılarla göreceksin.</div>
+    <div style="font-size:12px; color:var(--muted); margin-top:6px">Okuma sırası: ① <b>fₜ</b> eski hafızayı ölçekler (unutma) → ② <b>iₜ·c̃ₜ</b> yeni içeriği ekler → ③ toplam <b>cₜ</b> olur → ④ tanh'tan geçip <b>oₜ</b> ile süzülür → <b>hₜ</b>. 5️⃣ Simülasyon'da aynı şemayı canlı sayılarla çalıştıracaksın.</div>
   </div>
 
-  <div class="pts" style="border-left:3px solid var(--blue)">
-    <h3 style="color:var(--blue)">🔎 Neyle ne çarpılıyor? — bir kapının içi RNN hücresiyle aynı</h3>
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">RNN'de tek bir hesap vardı: <b>z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + b<sub>h</sub></b>, sonra tanh. LSTM'de <b>aynı çarp-topla-bias</b> işi <b>dört kez</b> yapılır (f, i, c̃, o kutuları), her birinin <b>kendi ağırlık seti</b> vardır. x kendi W'siyle, h<sub>t−1</sub> kendi U'suyla çarpılır (<i>birbirleriyle değil</i>), toplanır, bias eklenir. Aşağıda bir kapıyı RNN şemasının diliyle kur (<b>İleri ▶</b>), kapıyı değiştirerek diğer üçüne bak.</p>
-    <div id="lstmGate"></div>
-  </div>
 
   <div class="sechead">1) Fikir: Cell State — bagaj bandı</div>
   <div class="pts">
@@ -2309,29 +2304,52 @@ for epoch in range(101):
     </table>
     <p style="font-size:13px; color:var(--muted)">Yeni aday içerik ise tanh ile üretilir (−1…1 aralığında "içerik"): \( \tilde{c}_t=\tanh(W_c x_t + U_c h_{t-1} + b_c) \). Kural: <b>kapılar sigmoid</b> (oran), <b>içerik tanh</b> (değer).</p>
   </div>
+  <div class="pts" style="border-left:3px solid var(--blue)">
+    <h3 class="sahne-head closed" style="color:var(--blue)"><span>3) 🔎 Neyle ne çarpılıyor? — bir kapının içi RNN hücresiyle aynı (aç)</span><span class="chev">▸</span></h3><div class="sahne-body closed">
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">RNN'de tek bir hesap vardı: <b>z<sub>h</sub> = W<sub>hh</sub>·h₋₁ + W<sub>xh</sub>·x + b<sub>h</sub></b>, sonra tanh. LSTM'de <b>aynı çarp-topla-bias</b> işi <b>dört kez</b> yapılır (f, i, c̃, o kutuları), her birinin <b>kendi ağırlık seti</b> vardır. x kendi W'siyle, h<sub>t−1</sub> kendi U'suyla çarpılır (<i>birbirleriyle değil</i>), toplanır, bias eklenir. Aşağıda bir kapıyı RNN şemasının diliyle kur (<b>İleri ▶</b>), kapıyı değiştirerek diğer üçüne bak.</p>
+    <div id="lstmGate"></div>
+  </div></div>
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>5️⃣ Simülasyon — vana paneli, tam hücre, gradyan</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — tek LSTM hücresi: ileri, geri, güncelle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<!-- İNTERAKTİF 1: VANA PANELİ -->
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <h3 style="color:var(--accent)">🎛️ Vana paneli — ağırlıkları değiştir, kapıların nasıl karar verdiğini izle</h3>
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Boruların <b>kalınlığı akan miktarı</b> gösterir. f kapısının ağırlıklarını (veya b'sini) düşür → f küçülür, eski hafıza incelir; i'nin ağırlıklarını artır → yeni bilgi gürleşir; o'yu kıs → hücre bilse de söylemez. Kapılar artık <b>x, h₋₁ ve ağırlıklardan gerçekten hesaplanıyor</b> (şemada W, U, b kendi yerlerinde yazıyor).</div>
+<div id="lstmSim">
+  <div class="nsim-what">🎯 <b>Bu simülasyon ne?</b> Tek bir LSTM hücresinin <b>bir zaman adımı</b>: girdi <b>x</b>, önceki çıktı <b>h₋₁</b> ve önceki hafıza <b>c₋₁</b> girer; dört kutu (f, i, c̃, o) hesaplanır, yeni hafıza <b>c</b> ve çıktı <b>h</b> çıkar. Bir <b>hedef y</b> veriyoruz: kayıp <b>L = ½(h − y)²</b>. Üç şey yapabilirsin: hücreyi <b>adım adım</b> çalıştır (İleri ▶ / ◀ Geri), 12 ağırlığı <b>elle değiştir</b>, ya da <b>eğit</b> ve hücrenin h'yi hedefe nasıl yaklaştırdığını izle. Birden çok adımın (cümlenin) hâli 6️⃣ Bütün Resim'de, gerçek bir eğitim görevi 7️⃣ Örnek Çalışmalar'da.</div>
+  <div class="nsim-wbox" id="lsWBox">
+    <div class="nsim-wtitle">🎛️ Girdiler, hedef ve 12 ağırlık <span>— buradan değiştir; eğitim de ağırlık kaydırıcılarına yazar.</span></div>
 <div style="display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:8px">
 <label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">x</span><input type="range" id="lv_x" min="-2" max="2" step="0.05" value="1" style="width:110px"><b id="lv_x_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
 <label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">h₋₁</span><input type="range" id="lv_hp" min="-1" max="1" step="0.05" value="0.3" style="width:110px"><b id="lv_hp_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
 <label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">c₋₁</span><input type="range" id="lv_cp" min="-2" max="2" step="0.05" value="1.2" style="width:110px"><b id="lv_cp_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
+<label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px;color:#46c46a">hedef y</span><input type="range" id="lv_y" min="-1" max="1" step="0.05" value="0.8" style="width:110px"><b id="lv_y_v" style="color:#46c46a;min-width:38px;text-align:right"></b></label>
 </div>
 <div style="font-size:12.5px;color:#ccd5e8;margin:2px 0 4px"><b>Ağırlıklar</b> — her kapının kendi <b>W</b> (x için), <b>U</b> (h₋₁ için), <b>b</b> (bias) değeri var. Kaydır → şemada yerinde değişir, kapılar kendisi hesaplanır:</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:6px 18px;margin-bottom:8px">
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">f (unutma)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wf" min="-2" max="2" step="0.05" value="0.5" style="width:70px"><b id="lv_Wf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uf" min="-2" max="2" step="0.05" value="0.4" style="width:70px"><b id="lv_Uf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bf" min="-1" max="1" step="0.05" value="0.1" style="width:70px"><b id="lv_bf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">i (giriş)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wi" min="-2" max="2" step="0.05" value="0.6" style="width:70px"><b id="lv_Wi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Ui" min="-2" max="2" step="0.05" value="0.3" style="width:70px"><b id="lv_Ui_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bi" min="-1" max="1" step="0.05" value="0" style="width:70px"><b id="lv_bi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">c̃ (aday)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wc" min="-2" max="2" step="0.05" value="0.8" style="width:70px"><b id="lv_Wc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uc" min="-2" max="2" step="0.05" value="0.5" style="width:70px"><b id="lv_Uc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bc" min="-1" max="1" step="0.05" value="0" style="width:70px"><b id="lv_bc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">o (çıkış)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wo" min="-2" max="2" step="0.05" value="0.7" style="width:70px"><b id="lv_Wo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uo" min="-2" max="2" step="0.05" value="0.4" style="width:70px"><b id="lv_Uo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bo" min="-1" max="1" step="0.05" value="0.1" style="width:70px"><b id="lv_bo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">f (unutma)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wf" min="-3" max="3" step="any" value="0.5" style="width:70px"><b id="lv_Wf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uf" min="-3" max="3" step="any" value="0.4" style="width:70px"><b id="lv_Uf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bf" min="-3" max="3" step="any" value="0.1" style="width:70px"><b id="lv_bf_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">i (giriş)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wi" min="-3" max="3" step="any" value="0.6" style="width:70px"><b id="lv_Wi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Ui" min="-3" max="3" step="any" value="0.3" style="width:70px"><b id="lv_Ui_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bi" min="-3" max="3" step="any" value="0" style="width:70px"><b id="lv_bi_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">c̃ (aday)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wc" min="-3" max="3" step="any" value="0.8" style="width:70px"><b id="lv_Wc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uc" min="-3" max="3" step="any" value="0.5" style="width:70px"><b id="lv_Uc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bc" min="-3" max="3" step="any" value="0" style="width:70px"><b id="lv_bc_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:4px 8px;border:1px solid var(--line);border-radius:8px"><b style="min-width:84px;color:#f0a032">o (çıkış)</b><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">W</span><input type="range" id="lv_Wo" min="-3" max="3" step="any" value="0.7" style="width:70px"><b id="lv_Wo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">U</span><input type="range" id="lv_Uo" min="-3" max="3" step="any" value="0.4" style="width:70px"><b id="lv_Uo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span style="min-width:34px">b</span><input type="range" id="lv_bo" min="-3" max="3" step="any" value="0.1" style="width:70px"><b id="lv_bo_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label></div>
 </div>
 <div style="display:none"><input type="range" id="lv_f" min="0" max="1" step="any" value="0.9"><span id="lv_f_v"></span><input type="range" id="lv_i" min="0" max="1" step="any" value="0.5"><span id="lv_i_v"></span><input type="range" id="lv_o" min="0" max="1" step="any" value="0.8"><span id="lv_o_v"></span><input type="range" id="lv_ct" min="-1" max="1" step="any" value="0.6"><span id="lv_ct_v"></span><span id="lv_cp_v2"></span></div>
+    <div class="ptrow nsim-start" style="margin-top:6px"><span class="nsim-lab">Ağırlıklar:</span><button class="addbtn nsim-b" id="lsReset">↺ başlangıç ağırlıklarına dön</button><span class="nsim-lab" style="margin-left:6px">α (öğrenme oranı):</span><input type="number" id="lsAlpha" value="1" step="0.1" min="0.05" max="10" style="width:64px"></div>
+  </div>
+  <div class="nsim-cols">
+    <div class="nsim-left">
+      <div class="nsim-ctl">
+        <div class="nsim-row"><span class="nsim-lab">Adım adım:</span><button class="addbtn nsim-b nsim-bf" id="lvStepGo">➡️ İleri ▶</button><button class="addbtn nsim-b nsim-bb" id="lsStepB">◀ Geri</button><button class="addbtn nsim-b" id="lvStepRst">↺</button></div>
+        <div class="nsim-row"><span class="nsim-lab">🔧 Eğit:</span><button class="addbtn nsim-b nsim-bg" id="lsTr1" title="bir tur: ileri → geri → güncelle">▶ 1 tur</button><button class="addbtn nsim-b" id="lsTrRun" title="sürekli eğit">⏩</button><button class="addbtn nsim-b" id="lsTrStop" title="durdur">■</button><span class="nsim-stat" id="lsTrStat"></span></div>
+      </div>
+      <div class="lv-mid"><svg id="lstmPipe" role="img" aria-label="LSTM hücresi, canlı"></svg></div>
+      <div class="work" id="lvStepFormula" style="margin:6px 0 0"></div>
+      <div class="nsim-msg" id="lvStepInfo"></div>
+      <div class="nsim-phase nsim-fwd">
+        <div class="nsim-banner">1) ➡️ İleri yayılım <span>girdilerden h'ye ve kayba</span></div>
+        <div class="work" id="lv_work" style="white-space:pre-wrap; line-height:1.8; font-size:12.5px"></div>
+      </div>
+      <div class="acc" style="margin:0 0 8px"><div class="acc-head"><span class="ac">▸</span> 🗣️ Kapılar sözel olarak — "defter" benzetmesi (canlı sayılarla)</div><div class="acc-body"><div class="lv-cards"><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">🧹 f — Unutma kapısı</b><p>Defterini düşün (= <b>c</b>, uzun hafıza). Yeni bir kelime gelince LSTM önce eski notlara bakıp sorar: <i>"Bunlardan hangisi hâlâ işime yarıyor?"</i></p><p><b>0</b> = hepsini sil, <b>1</b> = hepsini koru. Karar x ve h₋₁'e bakarak verilir (<code>W·x+U·h₋₁+b</code> → σ).</p><p class="lv-live">Şu an <b id="lvT_f"></b> → eski hafıza <b id="lvT_cp"></b>, kalan kısmı <b id="lvT_fc"></b>.</p></div><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">📥 i — Giriş kapısı</b><p>Yeni gelen bilginin <b>ne kadarı deftere yazılmaya değer?</b> Her kelime önemli değil: "ve", "bir" gibi gürültüyü kapı kısar, önemli kelimeyi geçirir.</p><p><b>0</b> = hiçbirini yazma, <b>1</b> = tamamını yaz.</p><p class="lv-live">Şu an <b id="lvT_i"></b> → yeni bilginin %<b id="lvT_ip"></b>'i girecek.</p></div><div class="lv-card" style="border-left:3px solid #7aa8ff"><b style="color:#7aa8ff">📝 c̃ — Aday (yeni not taslağı)</b><p>Defterine <b>yazılabilecek</b> yeni bilginin taslağı: x ve h₋₁'den üretilen, <b>−1 ile +1</b> arası bir değer (tanh). Ör. "olumlu bir şey söylendi" = +, "olumsuz" = −.</p><p><b>Henüz yazılmadı!</b> Taslak sadece teklif; deftere girip girmeyeceğini <b>i kapısı</b> belirler: yazılan = i × c̃.</p><p class="lv-live">Şu an c̃ = <b id="lvT_ct"></b>, i·c̃ = <b id="lvT_ic"></b> yazılıyor.</p></div><div class="lv-card" style="border-left:3px solid #e06a6a"><b style="color:#e06a6a">📣 o — Çıkış kapısı</b><p>Defterde bir sürü not var ama <b>şu an hepsini söylemek gerekmez.</b> Hafıza (c) ile ağzından çıkan söz (h) farklı şeyler. o kapısı: <i>"Defterin ne kadarı şimdi dışarı söylensin?"</i></p><p><b>0</b> = bilsen de sus, <b>1</b> = hepsini söyle. Çıktı h = o × tanh(c).</p><p class="lv-live">Şu an <b id="lvT_o"></b> → defter <b id="lvT_c"></b>, söylenen h = <b id="lvT_h"></b>.</p></div></div>
+    <div class="callout" style="margin:8px 0">🧠 <b>Tek cümleyle:</b> yeni defter = <b>eski defter × f</b> (unutma) <b>+ yeni not × i</b> (yazma); sonra <b>o</b> kapısı defterin ne kadarını söyleyeceğini seçer. Defterin üstüne <b>toplama</b> yapıldığı (W ile çarpılmadığı) için eski bilgi uzun süre bozulmadan kalabilir — LSTM'in vanishing gradient'i çözmesinin sırrı bu.</div></div></div>
     <div class="acc" style="margin:0 0 10px"><div class="acc-head"><span class="ac">▸</span> 📑 Notasyon — kim kim? (şemadaki her harf ne demek)</div><div class="acc-body">
       <table class="rex-tbl"><tr><th>şemada</th><th>anlamı</th><th>ne yapar</th></tr>
         <tr><td><b>c₋₁</b> (soldaki yeşil hat)</td><td>önceki adımdan gelen <b>uzun hafıza</b> (cell state)</td><td>otobanda ilerler, kapılarla ölçeklenir</td></tr>
@@ -2347,19 +2365,42 @@ for epoch in range(101):
         <tr><td><b>σ</b> kutuları, <b>tanh</b> kutusu</td><td>kapıları üreten hesap: aktivasyon</td><td>altlarındaki <code>W·x+U·h₋₁+b</code>: <b>W</b> = x'in ağırlığı, <b>U</b> = h₋₁'in ağırlığı (RNN'deki W_hh), <b>b</b> = bias; her kapının kendi W, U, b'si var</td></tr>
         <tr><td><b>x<sub>t</sub></b>, <b>h<sub>t−1</sub></b> (alttan)</td><td>yeni girdi ve önceki çıktı</td><td>dört kutuya girer; her kutu kendi W, U, b'sini kullanır</td></tr>
       </table>
-      <div class="callout" style="margin-top:8px">✅ <b>Bu panelde</b> f, i, o, c̃ artık elle verilmiyor: <b>z = W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanıyor (RNN'deki W_xh, W_hh, b_h ile aynı iş, ama dört kapı için dört ayrı set). Şemada her kutunun altında o kapının W, U, b ve z değeri yazıyor.</div></div></div>
-    <div style="display:flex;gap:8px;margin:2px 0 8px"><button class="rex-btn" id="lvStepGo">İleri ▶</button><button class="rex-btn" id="lvStepRst">↺ Sıfırla</button></div>
-    <div class="work" id="lvStepFormula" style="margin-bottom:6px"></div>
-    <div class="lv-grid"><div class="lv-side"><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">🧹 f — Unutma kapısı</b><p>Defterini düşün (= <b>c</b>, uzun hafıza). Yeni bir kelime gelince LSTM önce eski notlara bakıp sorar: <i>"Bunlardan hangisi hâlâ işime yarıyor?"</i></p><p><b>0</b> = hepsini sil, <b>1</b> = hepsini koru. Karar x ve h₋₁'e bakarak verilir (<code>W·x+U·h₋₁+b</code> → σ).</p><p class="lv-live">Şu an <b id="lvT_f"></b> → eski hafıza <b id="lvT_cp"></b>, kalan kısmı <b id="lvT_fc"></b>.</p></div><div class="lv-card" style="border-left:3px solid #f0a032"><b style="color:#f0a032">📥 i — Giriş kapısı</b><p>Yeni gelen bilginin <b>ne kadarı deftere yazılmaya değer?</b> Her kelime önemli değil: "ve", "bir" gibi gürültüyü kapı kısar, önemli kelimeyi geçirir.</p><p><b>0</b> = hiçbirini yazma, <b>1</b> = tamamını yaz.</p><p class="lv-live">Şu an <b id="lvT_i"></b> → yeni bilginin %<b id="lvT_ip"></b>'i girecek.</p></div></div><div class="lv-mid" style="overflow-x:auto"><svg id="lstmPipe" role="img"></svg></div><div class="lv-side"><div class="lv-card" style="border-left:3px solid #7aa8ff"><b style="color:#7aa8ff">📝 c̃ — Aday (yeni not taslağı)</b><p>Defterine <b>yazılabilecek</b> yeni bilginin taslağı: x ve h₋₁'den üretilen, <b>−1 ile +1</b> arası bir değer (tanh). Ör. "olumlu bir şey söylendi" = +, "olumsuz" = −.</p><p><b>Henüz yazılmadı!</b> Taslak sadece teklif; deftere girip girmeyeceğini <b>i kapısı</b> belirler: yazılan = i × c̃.</p><p class="lv-live">Şu an c̃ = <b id="lvT_ct"></b>, i·c̃ = <b id="lvT_ic"></b> yazılıyor.</p></div><div class="lv-card" style="border-left:3px solid #e06a6a"><b style="color:#e06a6a">📣 o — Çıkış kapısı</b><p>Defterde bir sürü not var ama <b>şu an hepsini söylemek gerekmez.</b> Hafıza (c) ile ağzından çıkan söz (h) farklı şeyler. o kapısı: <i>"Defterin ne kadarı şimdi dışarı söylensin?"</i></p><p><b>0</b> = bilsen de sus, <b>1</b> = hepsini söyle. Çıktı h = o × tanh(c).</p><p class="lv-live">Şu an <b id="lvT_o"></b> → defter <b id="lvT_c"></b>, söylenen h = <b id="lvT_h"></b>.</p></div></div></div>
-    <div class="callout" style="margin:8px 0">🧠 <b>Tek cümleyle:</b> yeni defter = <b>eski defter × f</b> (unutma) <b>+ yeni not × i</b> (yazma); sonra <b>o</b> kapısı defterin ne kadarını söyleyeceğini seçer. Defterin üstüne <b>toplama</b> yapıldığı (W ile çarpılmadığı) için eski bilgi uzun süre bozulmadan kalabilir — LSTM'in vanishing gradient'i çözmesinin sırrı bu.</div>
-    <div class="callout" id="lvStepInfo" style="margin:8px 0"></div>
-    <div class="work" id="lv_work" style="margin-top:10px; white-space:pre-wrap; line-height:1.9"></div>
+      <div class="callout" style="margin-top:8px">Her kapı <b>z = W·x + U·h₋₁ + b → σ/tanh</b> ile hesaplanır (RNN'deki W_xh, W_hh, b_h ile aynı iş, ama dört kapı için dört ayrı set). Şemada her kutunun altında o kapının W, U, b ve z değeri yazıyor.</div></div></div>
+    </div>
+    <div class="nsim-right">
+      <div class="nsim-phase nsim-bwd">
+        <div class="nsim-banner">2) ⬅️ Geri yayılım <span>L'den 12 ağırlığa, zincir kuralıyla</span></div>
+        <div class="steps nsim-bgrid">
+          <div class="step" id="lsBp1"><div class="stephead"><h2>Geri Adım 1) Kayıptan h'ye, h'den o ve c'ye</h2><span class="chev">▸</span></div><div class="stepbody"><div class="eq" id="lsBp1Eq"></div><div class="callout" id="lsBp1Note" style="margin:8px 0 0"></div></div></div>
+          <div class="step" id="lsBp2"><div class="stephead"><h2>Geri Adım 2) Hafızadan kapılara — c = f·c₋₁ + i·c̃</h2><span class="chev">▸</span></div><div class="stepbody"><div class="eq" id="lsBp2Eq"></div><div class="callout" id="lsBp2Note" style="margin:8px 0 0"></div></div></div>
+          <div class="step" id="lsBp3"><div class="stephead"><h2>Geri Adım 3) Aktivasyondan z'ye — σ′ ve tanh′</h2><span class="chev">▸</span></div><div class="stepbody"><div class="eq" id="lsBp3Eq"></div><div class="callout" id="lsBp3Note" style="margin:8px 0 0"></div></div></div>
+          <div class="step" id="lsBp4"><div class="stephead"><h2>Geri Adım 4) 12 ağırlığın gradyanı — δ × girdi</h2><span class="chev">▸</span></div><div class="stepbody"><div class="eq" id="lsBp4Eq"></div><div class="callout" id="lsBp4Note" style="margin:8px 0 0"></div></div></div>
+        </div>
+      </div>
+      <div class="nsim-phase nsim-upd">
+        <div class="nsim-banner">3) 🔧 Güncelle <span>W := W − α·∂L/∂W</span></div>
+        <div class="nsim-ugrid">
+          <div><div class="nsim-plotlab">Kayıp eğrisi (eğitim turları)</div><svg id="lsLossSvg" viewBox="0 0 300 130" style="width:100%"></svg></div>
+          <div id="lsUpd"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
   </div>
 
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+      <div id="lstmSrc" style="display:none"></div>
+      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Simülasyon'daki tek hücre adımının <b>bütün resmi</b>: önce ileri yol (x, h₋₁, c₋₁ → f, i, c̃, o → c → h), sonra geri yol — kayıp L'den başlayıp her ok bir türev. Ardından aynı hücrenin zamanda açılmış hâli (3 adım). Girdiler, hedef ve 12 ağırlık Simülasyon aşamasındaki kaydırıcılardan gelir; her şey canlı güncellenir (eğitim de). Kutulara/oklara gel → türevin nasıl bulunduğu.</p>
+      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Tek LSTM adımı — ileri yol + geri yayılım ağacı <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="lstmBigMap"></div><div id="lstmBigSum" style="margin-top:8px"></div></div></div>
+      <div class="callout">🔑 <b>Ağaçta tek şeye bak:</b> RNN'de geçmişe giden dal <code>W<sub>hh</sub>·(1−h²)</code> ile çarpılıyordu; burada <b>∂c/∂c₋₁ = f</b> yaprağı var — çarpan, ağın öğrenebildiği bir kapı. Simülasyon'daki kaydırıcılarla c₋₁ yaprağının değerini izle.</div>
   <!-- İNTERAKTİF: ZAMANDA AÇILMIŞ LSTM (3 hücre yan yana) -->
   <div class="pts" id="lstmUnroll" style="border-left:3px solid #46c46a">
     <h3 style="color:#46c46a">🔗 Zamanda açılmış LSTM — aynı hücre 3 kez, yan yana</h3>
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:8px">RNN'deki "tek hücre / many-to-one" ayrımının LSTM'deki karşılığı: <b>aynı hücre</b> (aynı W, U, b — yukarıdaki ağırlık kaydırıcıları) her kelimede bir kez çalışır; bir hücreden diğerine sadece iki hat geçer: <b style="color:#46c46a">c (uzun hafıza)</b> ve <b style="color:#e06a6a">h (kısa hafıza)</b>. Girdileri değiştir, hafızanın hücreden hücreye nasıl aktığını izle.</div>
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:8px">RNN'deki "tek hücre / many-to-one" ayrımının LSTM'deki karşılığı: <b>aynı hücre</b> (aynı W, U, b — 5️⃣ Simülasyon'daki 12 ağırlık) her kelimede bir kez çalışır; bir hücreden diğerine sadece iki hat geçer: <b style="color:#46c46a">c (uzun hafıza)</b> ve <b style="color:#e06a6a">h (kısa hafıza)</b>. Girdileri değiştir, hafızanın hücreden hücreye nasıl aktığını izle.</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-bottom:8px"><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span>x₁</span><input type="range" id="ul_x1" min="-2" max="2" step="0.05" value="1" style="width:110px"><b id="ul_x1_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span>x₂</span><input type="range" id="ul_x2" min="-2" max="2" step="0.05" value="0.5" style="width:110px"><b id="ul_x2_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label><label style="display:flex;align-items:center;gap:6px;font-size:12.5px"><span>x₃</span><input type="range" id="ul_x3" min="-2" max="2" step="0.05" value="-0.5" style="width:110px"><b id="ul_x3_v" style="color:var(--accent);min-width:38px;text-align:right"></b></label>
       <span style="display:flex;gap:6px"><button class="rex-btn" id="ulM2o" data-m="m2o">Many-to-one</button><button class="rex-btn" id="ulM2m" data-m="m2m">Many-to-many</button></span>
     </div>
@@ -2367,22 +2408,13 @@ for epoch in range(101):
     <div class="work" id="ulWork" style="margin-top:8px; white-space:pre-wrap; line-height:1.8"></div>
     <div class="callout" id="ulNote" style="margin-top:8px"></div>
   </div>
-
-  <!-- İNTERAKTİF 2: TAM HÜCRE -->
-  <div class="sechead">3) Tam hücre — senin sayılarınla, domino domino</div>
-  <div class="pts" style="border-left:3px solid var(--blue)">
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Bu kez kapılar kendi kararını versin: x, h₋₁, c₋₁'i sen kaydır → hücre 6 adımı gerçek sayılarla hesaplasın. (Ağırlıklar sabit ve gösteriliyor; gerçek eğitimde onları gradyan alçalma öğrenir.)</div>
-    <div style="display:flex; flex-wrap:wrap; gap:16px 26px; margin-bottom:10px">
-      <div style="display:flex; align-items:center; gap:8px"><span>x =</span><input type="range" id="lc_x" min="-2" max="2" step="0.05" value="1.0" style="width:140px"><b id="lc_x_v" style="color:var(--accent); min-width:44px; text-align:right">1.00</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span>h₋₁ =</span><input type="range" id="lc_h" min="-1" max="1" step="0.05" value="0.3" style="width:140px"><b id="lc_h_v" style="color:var(--accent); min-width:44px; text-align:right">0.30</b></div>
-      <div style="display:flex; align-items:center; gap:8px"><span>c₋₁ =</span><input type="range" id="lc_c" min="-2" max="2" step="0.05" value="0.8" style="width:140px"><b id="lc_c_v" style="color:var(--accent); min-width:44px; text-align:right">0.80</b></div>
     </div>
-    <div style="font-size:12px; color:var(--muted); margin-bottom:8px">Sabit ağırlıklar: &nbsp;f: (0.5, 0.4, +0.1) &nbsp;·&nbsp; i: (0.6, 0.3, 0) &nbsp;·&nbsp; c̃: (0.8, 0.5, 0) &nbsp;·&nbsp; o: (0.7, 0.4, +0.1) &nbsp;— sıra: (W·x, U·h₋₁, +b)</div>
-    <div class="work" id="lc_work" style="white-space:pre-wrap; line-height:1.95"></div>
-    <div class="callout" id="lc_grad" style="margin-top:10px; white-space:pre-wrap; line-height:1.8"></div>
   </div>
 
-  <div class="sechead">4) Neden gradyan hayatta kalıyor? (asıl mesele)</div>
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — f²⁰: gradyan neden hayatta kalıyor · GRU</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="sechead">1) Neden gradyan hayatta kalıyor? f²⁰ ile sayılarla</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">RNN'de \(\partial h_t/\partial h_{t-1}=W_{hh}(1-h^2)\) idi — değeri ağırlıkların <b>kaderine</b> bağlıydı. LSTM'de cell state yolunun türevi:</p>
     \[ \frac{\partial c_t}{\partial c_{t-1}} = f_t \]
@@ -2394,25 +2426,11 @@ for epoch in range(101):
       <tr><td>0.95</td><td>0.358</td><td>gayet sağlıklı</td></tr>
       <tr><td>1.00</td><td>1.000</td><td>hiç bozulmadan — sonsuz hafıza</td></tr>
     </table>
-    <div class="tip">Yukarıdaki tam hücre oyuncağında x ve h₋₁'i kaydırınca f'nin ve <b>f²⁰'nin canlı</b> değiştiğini gördün — vanishing'in kapıyla nasıl dizginlendiği tam olarak bu.</div>
-  </div>
-    </div>
+    <div class="tip">5️⃣ Simülasyon'da Geri Adım 2'nin son satırı tam bu: <b>∂L/∂c₋₁ = δ<sub>c</sub> · f</b>. Ağırlıkları kaydırıp f'yi büyütünce geçmişe giden sinyalin nasıl güçlendiğini görebilirsin — vanishing'in kapıyla dizginlenmesi bu.</div>
   </div>
 
-  <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
-    <div class="tpl-body closed">
-      <div id="lstmSrc" style="display:none"></div>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Simülasyon'daki tek hücre adımının <b>bütün resmi</b>: önce ileri yol (x, h₋₁, c₋₁ → f, i, c̃, o → c → h), sonra geri yol — h'den başlayıp her ok bir türev. Girdileri Simülasyon aşamasındaki <b>x, h₋₁, c₋₁</b> kaydırıcılarından ver; her şey canlı güncellenir. Kutulara/oklara gel → türevin nasıl bulunduğu.</p>
-      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Tek LSTM adımı — ileri yol + geri yayılım ağacı <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="lstmBigMap"></div><div id="lstmBigSum" style="margin-top:8px"></div></div></div>
-      <div class="callout">🔑 <b>Ağaçta tek şeye bak:</b> RNN'de geçmişe giden dal <code>W<sub>hh</sub>·(1−h²)</code> ile çarpılıyordu; burada <b>∂c/∂c₋₁ = f</b> yaprağı var — çarpan, ağın öğrenebildiği bir kapı. Yukarıdaki kaydırıcılarla c₋₁ yaprağının değerini izle.</div>
-    </div>
-  </div>
 
-  <div class="tpl-cl" data-stage="x">
-    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — GRU</span><span class="chev">▸</span></div>
-    <div class="tpl-body closed">
-<div class="sechead">5) GRU — sadeleştirilmiş kuzen</div>
+<div class="sechead">2) GRU — sadeleştirilmiş kuzen</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>GRU</b> (Cho ve ekibi, 2014) aynı fikrin 2 kapılı hâli: <b>update kapısı z</b> (unutma+giriş tek vanada: \(h_t=(1-z)\,h_{t-1}+z\,\tilde{h}_t\)) ve <b>reset kapısı r</b> (geçmişi ne kadar dinleyeyim?). Ayrı bir cell state yok; hafıza ile çıktı aynı damar.</p>
     <table class="calc">
@@ -2431,7 +2449,7 @@ for epoch in range(101):
     <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendini eğiten</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
     <div class="pts" style="border-left:3px solid var(--green)">
-      <h3 style="color:var(--green)">Örnek — "Kedi mi, köpek mi?" 29 boş adım sonra hatırla</h3>
+      <h3 style="color:var(--green)">Örnek 1 — "Kedi mi, köpek mi?" 29 boş adım sonra hatırla</h3>
       <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Bir cümlenin <b>ilk kelimesi</b> "kedi" ya da "köpek" ve ardından <b>29 adım boş</b> geliyor. Ağ, 30. adımda ilk kelimenin hangisi olduğunu söylemek zorunda (kedi → 1, köpek → 0). Ara adımlarda bilgi yok; tek yol, ilk kelimeyi 29 adım boyunca <b>hafızada taşımak</b>.</p>
       <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🧠 İki küçük ağ yan yana, aynı veriyle, aynı öğrenme hızıyla (0,5) eğitiliyor: tek nöronlu bir <b>RNN</b> ve tek hücreli bir <b>LSTM</b>. Ağırlıkları biz vermiyoruz: ileri yol → kayıp → geri yayılım → güncelleme döngüsünü ağ kendisi çalıştırıyor. <b>▶ eğit</b>'e bas ve iki eğriye bak.</p>
       <div id="lstmEx1"></div>
@@ -8660,7 +8678,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı soruyu iki farklı açıdan izle: önce adım adım (karakterden cevaba), sonra zaman içinde (0’dan 800. epoch’a kadar). İkisi de sitedeki Minik GPT’nin gerçek, eğitilmiş sayılarıyla.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) Adım adım harita</b><span>Karakterin kimlik numarasından cevabın “1” çıkmasına kadar 16 adım; gerçek sayılarla tablolar ve ısı haritaları.</span></div>
-      <a class="hr-go" href="harita/adim-adim.html?v=202610301129" target="_blank" rel="noopener">Haritayı aç →</a>
+      <a class="hr-go" href="harita/adim-adim.html?v=202610301140" target="_blank" rel="noopener">Haritayı aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8675,7 +8693,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) Epoch epoch tüccar günlüğü</b><span>Aynı soru için 0’dan 800’e 12 ölçüm anı: dikkat nasıl toplandı, geri yayılım, üç tohumla doğrulama.</span></div>
-      <a class="hr-go" href="harita/epoch.html?v=202610301129" target="_blank" rel="noopener">Günlüğü aç →</a>
+      <a class="hr-go" href="harita/epoch.html?v=202610301140" target="_blank" rel="noopener">Günlüğü aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8694,7 +8712,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı iskeletin farklı boyutları ve çeşitleri: önce 3B olarak yan yana koy, sonra gerçek GPT-2 boyutlarıyla adım adım izle, en sonda güncel mimarilerin farklarına bak.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) 3B mimari</b><span>Minik GPT (gerçek sayılar), GPT-2, Llama, gpt-oss-120b ve Qwen3-30B-A3B (ikisi de MoE) mimarilerini 3B olarak parçala, yan yana koy; eş zamanlı gezi, kafanın içi, ara tablolar.</span></div>
-      <a class="hr-go" href="harita/mimari-3b.html?v=202610301129" target="_blank" rel="noopener">3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/mimari-3b.html?v=202610301140" target="_blank" rel="noopener">3B mimariyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8714,11 +8732,11 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) RNN — 3B mimari</b><span>Zamanda açılmış RNN'i üç boyutta gez: her sütun bir kelime, ortak ağırlık tabloları, h'nin bir sonraki adıma akışı, many-to-one / many-to-many, 9 adımlı tur ve geri yayılım okları.</span></div>
-      <a class="hr-go" href="harita/rnn-3b.html?v=202610301129" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/rnn-3b.html?v=202610301140" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) GPT-2 adım adım haritası</b><span>Adım adım haritanın gerçek GPT-2 small boyutlarıyla hâli: 7+5= → 4×768 → 12 blok → 50.257 puan.</span></div>
-      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301129" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
+      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301140" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8732,7 +8750,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) Örnek mimariler</b><span>Minik GPT, GPT-2, iki güncel şema ve bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) aynı çizim diliyle; Claude/Gemini/GPT-4 neden çizilemiyor; yan yana tablolar.</span></div>
-      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301129" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
+      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301140" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8745,7 +8763,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>4) Bir cümlenin yolculuğu (önizleme)</b><span>«istanbulun başkenti nereresidir» cümlesi token'lara nasıl bölünür, kartlar ne taşır, dikkat kime bakar, tahmin nasıl yapılır — adım adım.</span></div>
-      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301129" target="_blank" rel="noopener">Önizlemeyi aç →</a>
+      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301140" target="_blank" rel="noopener">Önizlemeyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8762,7 +8780,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Tek sayfada üç parça: <b>🎬 mimari turu</b> (GPT-2'nin <b>3B mimarisinden</b> başlayıp token'lardan çıkışa her parçaya zoom yapıp yanında o parçadaki matris işlemini izle), küçük sayılarla temel (satır × sütun, Q·Kᵀ ve K·Qᵀ farkı) ve GPT-2 boyutunda tek tek sahneler.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Mimari turu + matris animasyonları (29 sahne; gpt-oss turu 27 durak)</b><span>🎬 3B GPT-2 mimarisi → zoom → animasyon turu (~5 dk) ve 🎬 gpt-oss turu (3B MoE mimarisi → zoom → router/kayan pencere/GQA animasyonları); T1–T7 küçük sayılarla temel; her sahnede ❓ neden yapıyoruz + 🗣️ sözel karşılığı + 📦 ne elde ettik; 0a–⑮ GPT-2 boyutunda: token, embedding, Q/K/V, skor, maske, A·V, W_O, LayerNorm, FFN, 12 blok, çıkış, KV önbellekli üretim döngüsü.</span></div>
-      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301129" target="_blank" rel="noopener">Animasyonu aç →</a>
+      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301140" target="_blank" rel="noopener">Animasyonu aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8782,7 +8800,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Bu modelleri kendi donanımında çalıştırmak istersen: hangi model kaç GB <b>VRAM / RAM</b> ister, 4 / 8 / 16 bit'te ne değişir ve tahmini maliyeti ne (PC, sınır ve sunucu sınıfı).</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Yerel model donanım rehberi (Gemma, Qwen, gpt-oss, DeepSeek)</b><span>Üç tablo: PC / sınır / sunucu sınıfı. Her hücre VRAM / RAM (GB), bit oranına göre; son kolonda tahmini maliyet. Formül, RTX 4080 örneği ve dürüst notlar sayfada.</span></div>
-      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301129" target="_blank" rel="noopener">Rehberi aç →</a>
+      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301140" target="_blank" rel="noopener">Rehberi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -9818,66 +9836,67 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610301129"></script>
-<script src="js/lesson-turev.js?v=202610301129"></script>
-<script src="js/lesson-xor.js?v=202610301129"></script>
-<script src="js/lesson-xor-arch.js?v=202610301129"></script>
-<script src="js/lesson-xor-maps.js?v=202610301129"></script>
-<script src="js/lesson-xor-epoch.js?v=202610301129"></script>
-<script src="js/lesson-nn.js?v=202610301129"></script>
-<script src="js/lesson-trig.js?v=202610301129"></script>
+<script src="js/lesson-linreg.js?v=202610301140"></script>
+<script src="js/lesson-turev.js?v=202610301140"></script>
+<script src="js/lesson-xor.js?v=202610301140"></script>
+<script src="js/lesson-xor-arch.js?v=202610301140"></script>
+<script src="js/lesson-xor-maps.js?v=202610301140"></script>
+<script src="js/lesson-xor-epoch.js?v=202610301140"></script>
+<script src="js/lesson-nn.js?v=202610301140"></script>
+<script src="js/lesson-trig.js?v=202610301140"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610301129"></script>
-<script src="js/lesson-rnn-soz.js?v=202610301129"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610301140"></script>
+<script src="js/lesson-rnn-soz.js?v=202610301140"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610301129"></script>
-<script src="js/lesson-lstm-cell.js?v=202610301129"></script>
-<script src="js/app.js?v=202610301129"></script>
-<script src="js/lesson-rnn-wbar.js?v=202610301129"></script>
-<script src="js/lesson-lstm-big.js?v=202610301129"></script>
-<script src="js/lesson-lstm-step.js?v=202610301129"></script>
-<script src="js/lesson-lstm-size.js?v=202610301129"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610301129"></script>
-<script src="js/lesson-emb-kullan.js?v=202610301129"></script>
-<script src="js/lesson-emb-draco.js?v=202610301129"></script>
-<script src="js/lesson-emb-arch.js?v=202610301129"></script>
-<script src="js/lesson-emb-extra.js?v=202610301129"></script>
-<script src="js/lesson-s2s-weights.js?v=202610301129"></script>
-<script src="js/lesson-s2s-add.js?v=202610301129"></script>
-<script src="js/lesson-s2s-inside.js?v=202610301129"></script>
-<script src="js/lesson-att-train.js?v=202610301129"></script>
-<script src="js/lesson-att-extra.js?v=202610301129"></script>
-<script src="js/lesson-att-big.js?v=202610301129"></script>
-<script src="js/lesson-att-ornek.js?v=202610301129"></script>
-<script src="js/lesson-mh-big.js?v=202610301129"></script>
-<script src="js/lesson-mh-ornek.js?v=202610301129"></script>
-<script src="js/lesson-tf-big.js?v=202610301129"></script>
-<script src="js/lesson-tf-ornek.js?v=202610301129"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610301129"></script>
-<script src="js/lesson-gpt-big.js?v=202610301129"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610301129"></script>
-<script src="js/lesson-rnn-van.js?v=202610301129"></script>
-<script src="js/lesson-s2s-extra.js?v=202610301129"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610301129"></script>
-<script src="js/lesson-emb-ornek.js?v=202610301129"></script>
-<script src="js/lesson-emb-steps.js?v=202610301129"></script>
-<script src="js/lesson-emb-big.js?v=202610301129"></script>
-<script src="js/lesson-sm-ornek.js?v=202610301129"></script>
-<script src="js/lesson-sm-big.js?v=202610301129"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610301129"></script>
-<script src="js/lesson-lstm-gate.js?v=202610301129"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610301129"></script>
-<script src="js/lesson-gpt.js?v=202610301129"></script>
-<script src="js/lesson-gpt-mini.js?v=202610301129"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610301129"></script>
-<script src="js/lesson-linreg-big.js?v=202610301129"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610301129"></script>
-<script src="js/lesson-act-big.js?v=202610301129"></script>
-<script src="js/lesson-act-ornek.js?v=202610301129"></script>
-<script src="js/lesson-xor-ornek.js?v=202610301129"></script>
-<script src="js/lesson-nn-ornek.js?v=202610301129"></script>
-<script src="js/lesson-nn-net.js?v=202610301129"></script>
-<script src="js/lesson-nn-sim.js?v=202610301129"></script>
-<script src="js/lesson-nn-big.js?v=202610301129"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610301140"></script>
+<script src="js/lesson-lstm-cell.js?v=202610301140"></script>
+<script src="js/app.js?v=202610301140"></script>
+<script src="js/lesson-rnn-wbar.js?v=202610301140"></script>
+<script src="js/lesson-lstm-big.js?v=202610301140"></script>
+<script src="js/lesson-lstm-step.js?v=202610301140"></script>
+<script src="js/lesson-lstm-sim.js?v=202610301140"></script>
+<script src="js/lesson-lstm-size.js?v=202610301140"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610301140"></script>
+<script src="js/lesson-emb-kullan.js?v=202610301140"></script>
+<script src="js/lesson-emb-draco.js?v=202610301140"></script>
+<script src="js/lesson-emb-arch.js?v=202610301140"></script>
+<script src="js/lesson-emb-extra.js?v=202610301140"></script>
+<script src="js/lesson-s2s-weights.js?v=202610301140"></script>
+<script src="js/lesson-s2s-add.js?v=202610301140"></script>
+<script src="js/lesson-s2s-inside.js?v=202610301140"></script>
+<script src="js/lesson-att-train.js?v=202610301140"></script>
+<script src="js/lesson-att-extra.js?v=202610301140"></script>
+<script src="js/lesson-att-big.js?v=202610301140"></script>
+<script src="js/lesson-att-ornek.js?v=202610301140"></script>
+<script src="js/lesson-mh-big.js?v=202610301140"></script>
+<script src="js/lesson-mh-ornek.js?v=202610301140"></script>
+<script src="js/lesson-tf-big.js?v=202610301140"></script>
+<script src="js/lesson-tf-ornek.js?v=202610301140"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610301140"></script>
+<script src="js/lesson-gpt-big.js?v=202610301140"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610301140"></script>
+<script src="js/lesson-rnn-van.js?v=202610301140"></script>
+<script src="js/lesson-s2s-extra.js?v=202610301140"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610301140"></script>
+<script src="js/lesson-emb-ornek.js?v=202610301140"></script>
+<script src="js/lesson-emb-steps.js?v=202610301140"></script>
+<script src="js/lesson-emb-big.js?v=202610301140"></script>
+<script src="js/lesson-sm-ornek.js?v=202610301140"></script>
+<script src="js/lesson-sm-big.js?v=202610301140"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610301140"></script>
+<script src="js/lesson-lstm-gate.js?v=202610301140"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610301140"></script>
+<script src="js/lesson-gpt.js?v=202610301140"></script>
+<script src="js/lesson-gpt-mini.js?v=202610301140"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610301140"></script>
+<script src="js/lesson-linreg-big.js?v=202610301140"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610301140"></script>
+<script src="js/lesson-act-big.js?v=202610301140"></script>
+<script src="js/lesson-act-ornek.js?v=202610301140"></script>
+<script src="js/lesson-xor-ornek.js?v=202610301140"></script>
+<script src="js/lesson-nn-ornek.js?v=202610301140"></script>
+<script src="js/lesson-nn-net.js?v=202610301140"></script>
+<script src="js/lesson-nn-sim.js?v=202610301140"></script>
+<script src="js/lesson-nn-big.js?v=202610301140"></script>
 </body>
 </html>
