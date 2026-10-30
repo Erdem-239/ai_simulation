@@ -28,7 +28,7 @@
   const lcg=seed=>{let s=seed;return ()=>{s=(s*1664525+1013904223)%4294967296;return Math.round((2*s/4294967296-1)*10)/10;};};
   const initSeed=k=>{const u=lcg(k+1),w=[u(),u(),u(),u()],b1=[u(),u()],w2=[u(),u()],b2=u();return [w[0],w[1],b1[0],w[2],w[3],b1[1],w2[0],w2[1],b2];};
 
-  let W=readW(), pt=0, f=0, g=0, ep=0, hist=[], timer=null, writing=false, startName='elle çözüm';
+  let W=readW(), pt=0, f=0, g=0, ep=0, hist=[], okH=[], timer=null, writing=false, startName='elle çözüm';
   const alpha=()=>{const a=parseFloat($('nnAlpha').value);return isFinite(a)&&a>0?a:1;};
 
   /* ---- ağ çizimi + adım vurgusu ---- */
@@ -66,10 +66,19 @@
   /* ---- 3) güncelle ---- */
   function drawUpd(){
     const {g:G,L}=grad(W),a=alpha(),Wn=W.map((v,i)=>v-a*G[i]),Ln=lossOf(Wn);
-    let t='<table class="nsim-tbl"><tr><th></th><th>şimdi</th><th>∂L/∂w (4 nokta ort.)</th><th>yeni = şimdi − α·grad</th></tr>';
-    W.forEach((v,i)=>{t+='<tr'+(i===6?' class="sep"':'')+'><td>'+names[i]+'</td><td>'+fm(v,3)+'</td><td>'+fm(G[i],4)+'</td><td><b>'+fm(Wn[i],3)+'</b></td></tr>';});
-    t+='</table><div class="nsim-loss">ortalama kayıp: <b>'+fm(L,4)+'</b> → bir güncellemeden sonra <b>'+fm(Ln,4)+'</b> '+(Ln<L?'<span style="color:#46c46a">↓ azalır</span>':'<span style="color:#e06a6a">↑ artar (α çok büyük olabilir)</span>')+' · doğru: '+okOf(W)+'/4 → '+okOf(Wn)+'/4</div>'+
-      '<div class="callout" style="margin-top:6px">Geri Adım kartları <b>tek noktanın</b> gradyanını gösterir; güncelleme <b>dört noktanın ortalamasını</b> kullanır. ▶ 1 tur bu tabloyu uygular: "yeni" sütunu yukarıdaki kutulara yazılır.</div>';
+    let t='<div style="overflow-x:auto"><table class="nsim-tbl nsim-htbl"><tr><th></th>'+names.map((n,i)=>'<th'+(i===6?' class="sep"':'')+'>'+n+'</th>').join('')+'</tr>'+
+      '<tr><td>şimdi</td>'+W.map((v,i)=>'<td'+(i===6?' class="sep"':'')+'>'+fm(v,3)+'</td>').join('')+'</tr>'+
+      '<tr><td>∂L/∂w</td>'+G.map((v,i)=>'<td'+(i===6?' class="sep"':'')+'>'+fm(v,4)+'</td>').join('')+'</tr>'+
+      '<tr><td>yeni</td>'+Wn.map((v,i)=>'<td'+(i===6?' class="sep"':'')+'><b>'+fm(v,3)+'</b></td>').join('')+'</tr>';
+    t+='</table></div><div class="nsim-loss">ortalama kayıp: <b>'+fm(L,4)+'</b> → bir güncellemeden sonra <b>'+fm(Ln,4)+'</b> '+(Ln<L?'<span style="color:#46c46a">↓ azalır</span>':'<span style="color:#e06a6a">↑ artar (α çok büyük olabilir)</span>')+' · doğru: '+okOf(W)+'/4 → '+okOf(Wn)+'/4</div>'+'<div class="nsim-sub">∂L/∂w = 4 noktanın ortalama gradyanı (Geri Adım kartları tek noktanınkini gösterir); yeni = şimdi − α·∂L/∂w. ▶ 1 tur "yeni" satırını kutulara yazar.</div>';
+    // ne zaman doğruyu buldu? her doğru-sayısına İLK ulaşılan tur
+    const ms=[];if(okH.length){let best=okH[0];okH.forEach((k,i)=>{if(k>best){best=k;ms.push([i,k]);}});}
+    let when;
+    if(!okH.length) when=okOf(W)===4?'Bu ağırlıklar <b>zaten 4/4</b> çözüyor (✋ elle çözüm). Ağın kendi kendine öğrenmesini görmek için yukarıdan bir <b>🎲 rastgele başlangıç</b> seç, sonra ⏩.':'Henüz eğitim yok: <b>▶ 1 tur</b> ya da <b>⏩</b> ile başlat.';
+    else{when='Başlangıçta <b>'+okH[0]+'/4</b> doğru'+ms.map(([i,k])=>' → tur <b>'+i+'</b>\'de <b>'+k+'/4</b>').join('')+'.';
+      const f4=ms.find(m=>m[1]===4);
+      when+= f4?' ✅ Ağ XOR\'u <b>tur '+f4[0]+'</b>\'de çözdü; sonrası kaybın küçülmesi (emin olma).':okH[0]===4?' (zaten çözülüydü).':(ep>=1500&&okOf(W)<4?' ⚠️ Kayıp düşmeyi bıraktı: bu başlangıç <b>takıldı</b> (yerel tuzak) — 🎲 #0 ya da #3 dene.':' Henüz 4/4 değil, devam et.');}
+    t='<div class="nsim-when">📈 <b>Ne zaman doğruyu buldu?</b> '+when+'</div>'+t;
     $('nnUpd').innerHTML=t;
     // kayıp eğrisi
     const hs=hist.length?hist:[L],mx=Math.max(0.75,...hs),X=i=>28+262*i/Math.max(1,hs.length-1),Y=v=>110-100*v/mx;
@@ -77,7 +86,11 @@
     s+='<line x1="28" y1="'+Y(0.693)+'" x2="292" y2="'+Y(0.693)+'" stroke="#e0a030" stroke-dasharray="4 3"/><text x="290" y="'+(Y(0.693)-3)+'" text-anchor="end" font-size="9" fill="#e0a030">0,693 = "bilmiyorum"</text>';
     if(hs.length>1){let d='',st=Math.ceil(hs.length/300);hs.forEach((v,i)=>{if(i%st&&i!==hs.length-1)return;d+=(d?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1);});s+='<path d="'+d+'" fill="none" stroke="#46c46a" stroke-width="2"/>';}
     else s+='<text x="160" y="70" text-anchor="middle" font-size="10" fill="#95a2c2">▶ 1 tur ya da ⏩ ile eğit</text>';
-    s+='<text x="24" y="14" text-anchor="end" font-size="9" fill="#95a2c2">'+fm(mx,2)+'</text><text x="24" y="112" text-anchor="end" font-size="9" fill="#95a2c2">0</text><text x="292" y="124" text-anchor="end" font-size="9" fill="#95a2c2">tur '+ep+'</text>';
+    if(okH.length>1){const sc=['#e06a6a','#e06a6a','#e06a6a','#e0a030','#46c46a'],n=okH.length,step=Math.max(1,Math.ceil(n/260));
+      for(let i=0;i<n;i+=step){const x=X(i),w=Math.max(1.2,262*step/Math.max(1,n-1)+0.4);s+='<rect x="'+x.toFixed(1)+'" y="114" width="'+w.toFixed(1)+'" height="5" fill="'+sc[okH[i]]+'"/>';}
+      ms.forEach(([i,k])=>{s+='<line x1="'+X(i).toFixed(1)+'" y1="10" x2="'+X(i).toFixed(1)+'" y2="119" stroke="'+sc[k]+'" stroke-dasharray="2 2"/><text x="'+(X(i)+2).toFixed(1)+'" y="'+(k===4?22:32)+'" font-size="9" fill="'+sc[k]+'">'+k+'/4 (tur '+i+')</text>';});
+      s+='<text x="28" y="128" font-size="8" fill="#95a2c2">şerit: doğru sayısı (kırmızı ≤2, turuncu 3, yeşil 4/4)</text>';}
+    s+='<text x="24" y="14" text-anchor="end" font-size="9" fill="#95a2c2">'+fm(mx,2)+'</text><text x="24" y="112" text-anchor="end" font-size="9" fill="#95a2c2">0</text><text x="292" y="109" text-anchor="end" font-size="9" fill="#95a2c2">tur '+ep+'</text>';
     $('nnLossSvg').innerHTML=s;
     $('nnTrStat').innerHTML='başlangıç: <b>'+startName+'</b> · tur <b>'+ep+'</b> · kayıp <b>'+fm(L,4)+'</b> · doğru <b>'+okOf(W)+'/4</b>';
   }
@@ -97,19 +110,19 @@
   function writeW(){writing=true;ids.forEach((id,i)=>{$(id).value=Math.round(W[i]*10000)/10000;});if(window.__nnRender)window.__nnRender();writing=false;}
   ids.forEach(id=>$(id).addEventListener('input',()=>{if(writing)return;W=readW();startName='elle';all();}));
   $('nnAlpha').addEventListener('input',drawUpd);
-  $('nnFwdReset').addEventListener('click',()=>setTimeout(()=>{stop();W=readW();ep=0;hist=[];startName='elle çözüm';all();},0));
-  document.querySelectorAll('.nsim-seed').forEach(b=>b.addEventListener('click',()=>{stop();const k=+b.dataset.k;W=initSeed(k);ep=0;hist=[];startName='🎲 #'+k;writeW();all();}));
+  $('nnFwdReset').addEventListener('click',()=>setTimeout(()=>{stop();W=readW();ep=0;hist=[];okH=[];startName='elle çözüm';all();},0));
+  document.querySelectorAll('.nsim-seed').forEach(b=>b.addEventListener('click',()=>{stop();const k=+b.dataset.k;W=initSeed(k);ep=0;hist=[];okH=[];startName='🎲 #'+k;writeW();all();}));
   document.querySelectorAll('.nnbp-pt').forEach(b=>b.addEventListener('click',()=>{pt=+b.dataset.pt;all();}));
   $('nnStepF').onclick=()=>{g=0;f=Math.min(4,f+1);all();};
   $('nnStepB').onclick=()=>{if(f<4)f=4;g=Math.min(4,g+1);all();};
   $('nnStepR').onclick=()=>{f=0;g=0;all();};
-  function train1(){const {g:G,L}=grad(W),a=alpha();if(!hist.length)hist.push(L);for(let i=0;i<9;i++)W[i]-=a*G[i];ep++;hist.push(lossOf(W));}
+  function train1(){const {g:G,L}=grad(W),a=alpha();if(!hist.length){hist.push(L);okH.push(okOf(W));}for(let i=0;i<9;i++)W[i]-=a*G[i];ep++;hist.push(lossOf(W));okH.push(okOf(W));}
   function stop(){if(timer){cancelAnimationFrame(timer);timer=null;}}
   $('nnTr1').onclick=()=>{stop();train1();writeW();all();};
   let last=0;
   const loop=t=>{for(let i=0;i<10;i++)train1();drawNet();drawUpd();if(t-last>250){last=t;writeW();drawFwd();}if(ep>=4000){stop();writeW();all();return;}timer=requestAnimationFrame(loop);};
-  $('nnTrRun').onclick=()=>{if(!timer){if(ep>=4000){ep=0;hist=[];}timer=requestAnimationFrame(loop);}};
+  $('nnTrRun').onclick=()=>{if(!timer){if(ep>=4000){ep=0;hist=[];okH=[];}timer=requestAnimationFrame(loop);}};
   $('nnTrStop').onclick=()=>{stop();writeW();all();};
-  window.__nnSim={state:()=>({W:W.slice(),ep,L:lossOf(W),ok:okOf(W),f,g,pt}),run:(k,n)=>{stop();W=initSeed(k);ep=0;hist=[];startName='🎲 #'+k;for(let i=0;i<n;i++)train1();writeW();all();}};
+  window.__nnSim={state:()=>({W:W.slice(),ep,L:lossOf(W),ok:okOf(W),f,g,pt}),run:(k,n)=>{stop();W=initSeed(k);ep=0;hist=[];okH=[];startName='🎲 #'+k;for(let i=0;i<n;i++)train1();writeW();all();}};
   all();
 })();

@@ -1878,3 +1878,29 @@ body.xt-full-lock{overflow:hidden}
 #nnSim .nsim-loss{font-size:13px}
 #nnSim .nsim-bwd mjx-container{font-size:104%!important; display:inline-block!important; margin:3px 0!important}
 #nnSim .nsim-bwd .eq{line-height:1.5}
+/* NN Simülasyon: ne olduğu kutusu, "ne zaman doğruyu buldu", kartlar bir tık küçük (ekrana sığsın) */
+#nnSim .nsim-what{background:rgba(74,208,224,.07); border:1px solid #2c6f7a; border-left:4px solid #4ad0e0; border-radius:10px; padding:8px 12px; font-size:13px; color:#dbe2f2; line-height:1.55; margin:0 0 10px}
+#nnSim .nsim-when{background:#141c30; border:1px solid var(--line); border-left:3px solid #46c46a; border-radius:8px; padding:6px 10px; font-size:12.5px; color:#dbe2f2; margin:0 0 8px; line-height:1.5}
+#nnSim .nsim-note{font-size:12px; color:#ccd5e8; line-height:1.5}
+#nnSim .nsim-cols{grid-template-columns:minmax(0,10fr) minmax(0,17fr)}
+@media(max-width:1000px){ #nnSim .nsim-cols{grid-template-columns:1fr} }
+#nnSim .nsim-bwd mjx-container{font-size:94%!important; margin:1px 0!important}
+#nnSim .nsim-bwd .eq{margin:3px 0; padding:5px 8px; line-height:1.35}
+#nnSim .nsim-bwd .stephead{padding:7px 12px}
+#nnSim .nsim-bwd .stephead h2{font-size:13.5px}
+#nnSim .nsim-bwd .stepbody{padding:2px 12px 10px}
+#nnSim .nsim-bwd .callout, #nnSim .nsim-upd .callout{font-size:12px; padding:6px 9px; margin-top:6px!important}
+#nnSim .bp4g{display:grid; grid-template-columns:repeat(2,max-content); column-gap:22px}
+@media(max-width:560px){ #nnSim .bp4g{grid-template-columns:1fr} }
+#nnSim .nsim-sub{font-size:11.5px; color:var(--muted); margin-top:4px}
+#nnSim .nsim-tbl td,#nnSim .nsim-tbl th{padding:1px 8px}
+#nnSim .nsim-tbl{font-size:12px}
+#nnSim .nsim-ugrid{grid-template-columns:minmax(0,300px) minmax(0,1fr)}
+#nnSim .nsim-htbl th{text-align:right; font-size:12px; color:#ccd5e8}
+#nnSim .nsim-htbl td:first-child{white-space:nowrap; color:var(--muted); font-size:11.5px}
+#nnSim .nsim-htbl td:first-child span{font-size:10px}
+#nnSim .nsim-htbl .sep{border-left:2px solid #3a4870}
+#nnSim .nsim-htbl tr td{border-top:1px solid #23304e}
+#nnSim .nsim-bwd mjx-container{font-size:90%!important}
+#nnSim .nsim-htbl td,#nnSim .nsim-htbl th{padding:1px 5px; font-size:11.5px}
+#nnSim .nsim-ugrid{grid-template-columns:minmax(0,250px) minmax(0,1fr)}
