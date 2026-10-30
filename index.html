@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202610301002"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202610301026"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610301002">
+<link rel="stylesheet" href="css/style.css?v=202610301026">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 10:02 TR · #472</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-10-30 10:26 TR · #473</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -1944,18 +1944,20 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
     <div class="pts" style="border-left:3px solid #f0a032">
       <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Exploding gradyan için en basit önlem: gradyanın <b>uzunluğu</b> (norm) bir eşik c'yi aşarsa, vektörü <b>yönünü değiştirmeden</b> eşiğe kısalt: \( g \leftarrow g\cdot\min\!\left(1,\ \tfrac{c}{\lVert g\rVert}\right) \). Sayıları değiştirip kısaltmayı gör. (Vanishing'e karşı işe yaramaz: sönmüş gradyanı büyütmez; onun için LSTM/GRU geliştirildi.)</p>
       <div id="rnnClip"></div>
+      <div class="callout" style="margin:10px 0 0; border-left-color:#9c4dff">🤔 <b>Neden bu konu RNN dersinde?</b> Hemen üstteki r<sup>T</sup> sezgisinde gördüğün gibi, RNN'de gradyan zamanda geri giderken her adımda <b>aynı</b> r = W<sub>hh</sub>(1−h²) ile çarpılıyor. r biraz 1'in üstündeyse bu çarpım üstel büyür (1,5²⁰ ≈ 3325). Düz bir ağda katman sayısı sabittir, RNN'de ise "derinlik" = dizinin uzunluğu; uzun cümlelerde patlama çok daha kolay olur. Bu yüzden exploding gradient özellikle RNN'in sorunudur ve clipping, RNN eğitirken neredeyse her zaman açılan ilk önlemdir. Sönme (vanishing) tarafını ise clipping değil, bir sonraki ders <b>LSTM</b> çözüyor.</div>
+      <div class="pts" style="margin:10px 0 0; border-left:3px solid #f0a032">
+        <h3 style="color:#f0a032; font-size:13.5px; margin:0 0 6px">💥 Kırpmasaydık ne olurdu?</h3>
+        <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7; margin:0">Güncelleme kuralı \( W := W-\alpha\,\dfrac{\partial L}{\partial W} \). Gradyan 3325 kat büyürse <b>adım da 3325 kat büyür</b>: ağırlık vadinin dibine inmek yerine karşı yamacın çok ötesine fırlar, kayıp birden sıçrar, birkaç adımda sayılar taşar ve <b>NaN</b> olur. Clipping adımın <b>yönüne</b> dokunmaz, yalnız <b>boyuna</b> tavan koyar.</p>
+        <h3 style="color:#f0a032; font-size:13.5px; margin:10px 0 6px">📐 Sayılarla</h3>
+        <div class="work" style="font-size:13px; line-height:1.8">
+          Gradyan \( g=(30,\ 40) \), eşik \( c=5 \).<br>
+          Uzunluk: \( \lVert g\rVert=\sqrt{30^2+40^2}=50 \) → 50 &gt; 5, kırpılacak.<br>
+          Çarpan: \( \min\!\left(1,\ \tfrac{5}{50}\right)=0{,}1 \) → \( g_{\text{yeni}}=0{,}1\cdot(30,\ 40)=(3,\ 4) \), uzunluğu 5.<br>
+          Yön aynı: \( 30/40 = 3/4 \). Değişen yalnız adımın boyu.
+        </div>
+        <p style="font-size:13px; color:var(--muted); line-height:1.6; margin:8px 0 0">🚗 <b>Sezgi:</b> hız sınırı gibi. Gidilecek yön doğru, ama yokuş birden dikleşince araba uçmasın diye hız tavana kesiliyor. Eşik küçükse hiçbir şey patlamaz ama öğrenme yavaşlar; büyükse koruma işe yaramaz — c de α gibi seçilen bir ayardır.</p>
+      </div>
     </div>
-    <div class="sechead">Lineer Regresyon ↔ RNN karşılaştırması</div>
-    <table class="calc">
-      <tr><th></th><th>Lineer Regresyon</th><th>RNN</th></tr>
-      <tr><td>Girdi</td><td>tek x</td><td>dizi x₁…x_T</td></tr>
-      <tr><td>Tahmin</td><td>h(x)=Θ₀+Θ₁x</td><td>ŷₜ = W_hy·hₜ + b_y</td></tr>
-      <tr><td>Hafıza</td><td>yok</td><td>hₜ (gizli durum)</td></tr>
-      <tr><td>Kayıp</td><td>E = (1/2m)Σ(h−y)²</td><td>L = Σₜ ½(ŷₜ−yₜ)²</td></tr>
-      <tr><td>Türev</td><td>zincir kuralı (1 kez)</td><td>zincir kuralı (zaman boyunca = BPTT)</td></tr>
-      <tr><td>Güncelleme</td><td>Θ := Θ − α·türev</td><td>W := W − α·türev</td></tr>
-      <tr><td>Tipik sorun</td><td>yavaş yakınsama</td><td>vanishing / exploding gradient</td></tr>
-    </table>
     </div>
   </div>
 
@@ -8709,7 +8711,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı soruyu iki farklı açıdan izle: önce adım adım (karakterden cevaba), sonra zaman içinde (0’dan 800. epoch’a kadar). İkisi de sitedeki Minik GPT’nin gerçek, eğitilmiş sayılarıyla.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) Adım adım harita</b><span>Karakterin kimlik numarasından cevabın “1” çıkmasına kadar 16 adım; gerçek sayılarla tablolar ve ısı haritaları.</span></div>
-      <a class="hr-go" href="harita/adim-adim.html?v=202610301002" target="_blank" rel="noopener">Haritayı aç →</a>
+      <a class="hr-go" href="harita/adim-adim.html?v=202610301026" target="_blank" rel="noopener">Haritayı aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8724,7 +8726,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) Epoch epoch tüccar günlüğü</b><span>Aynı soru için 0’dan 800’e 12 ölçüm anı: dikkat nasıl toplandı, geri yayılım, üç tohumla doğrulama.</span></div>
-      <a class="hr-go" href="harita/epoch.html?v=202610301002" target="_blank" rel="noopener">Günlüğü aç →</a>
+      <a class="hr-go" href="harita/epoch.html?v=202610301026" target="_blank" rel="noopener">Günlüğü aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8743,7 +8745,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı iskeletin farklı boyutları ve çeşitleri: önce 3B olarak yan yana koy, sonra gerçek GPT-2 boyutlarıyla adım adım izle, en sonda güncel mimarilerin farklarına bak.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) 3B mimari</b><span>Minik GPT (gerçek sayılar), GPT-2, Llama, gpt-oss-120b ve Qwen3-30B-A3B (ikisi de MoE) mimarilerini 3B olarak parçala, yan yana koy; eş zamanlı gezi, kafanın içi, ara tablolar.</span></div>
-      <a class="hr-go" href="harita/mimari-3b.html?v=202610301002" target="_blank" rel="noopener">3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/mimari-3b.html?v=202610301026" target="_blank" rel="noopener">3B mimariyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8763,11 +8765,11 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) RNN — 3B mimari</b><span>Zamanda açılmış RNN'i üç boyutta gez: her sütun bir kelime, ortak ağırlık tabloları, h'nin bir sonraki adıma akışı, many-to-one / many-to-many, 9 adımlı tur ve geri yayılım okları.</span></div>
-      <a class="hr-go" href="harita/rnn-3b.html?v=202610301002" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/rnn-3b.html?v=202610301026" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) GPT-2 adım adım haritası</b><span>Adım adım haritanın gerçek GPT-2 small boyutlarıyla hâli: 7+5= → 4×768 → 12 blok → 50.257 puan.</span></div>
-      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301002" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
+      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202610301026" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8781,7 +8783,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) Örnek mimariler</b><span>Minik GPT, GPT-2, iki güncel şema ve bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) aynı çizim diliyle; Claude/Gemini/GPT-4 neden çizilemiyor; yan yana tablolar.</span></div>
-      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301002" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
+      <a class="hr-go" href="harita/guncel-mimariler.html?v=202610301026" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8794,7 +8796,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>4) Bir cümlenin yolculuğu (önizleme)</b><span>«istanbulun başkenti nereresidir» cümlesi token'lara nasıl bölünür, kartlar ne taşır, dikkat kime bakar, tahmin nasıl yapılır — adım adım.</span></div>
-      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301002" target="_blank" rel="noopener">Önizlemeyi aç →</a>
+      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202610301026" target="_blank" rel="noopener">Önizlemeyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8811,7 +8813,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Tek sayfada üç parça: <b>🎬 mimari turu</b> (GPT-2'nin <b>3B mimarisinden</b> başlayıp token'lardan çıkışa her parçaya zoom yapıp yanında o parçadaki matris işlemini izle), küçük sayılarla temel (satır × sütun, Q·Kᵀ ve K·Qᵀ farkı) ve GPT-2 boyutunda tek tek sahneler.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Mimari turu + matris animasyonları (29 sahne; gpt-oss turu 27 durak)</b><span>🎬 3B GPT-2 mimarisi → zoom → animasyon turu (~5 dk) ve 🎬 gpt-oss turu (3B MoE mimarisi → zoom → router/kayan pencere/GQA animasyonları); T1–T7 küçük sayılarla temel; her sahnede ❓ neden yapıyoruz + 🗣️ sözel karşılığı + 📦 ne elde ettik; 0a–⑮ GPT-2 boyutunda: token, embedding, Q/K/V, skor, maske, A·V, W_O, LayerNorm, FFN, 12 blok, çıkış, KV önbellekli üretim döngüsü.</span></div>
-      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301002" target="_blank" rel="noopener">Animasyonu aç →</a>
+      <a class="hr-go" href="harita/matris-animasyon.html?v=202610301026" target="_blank" rel="noopener">Animasyonu aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8831,7 +8833,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Bu modelleri kendi donanımında çalıştırmak istersen: hangi model kaç GB <b>VRAM / RAM</b> ister, 4 / 8 / 16 bit'te ne değişir ve tahmini maliyeti ne (PC, sınır ve sunucu sınıfı).</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Yerel model donanım rehberi (Gemma, Qwen, gpt-oss, DeepSeek)</b><span>Üç tablo: PC / sınır / sunucu sınıfı. Her hücre VRAM / RAM (GB), bit oranına göre; son kolonda tahmini maliyet. Formül, RTX 4080 örneği ve dürüst notlar sayfada.</span></div>
-      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301002" target="_blank" rel="noopener">Rehberi aç →</a>
+      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202610301026" target="_blank" rel="noopener">Rehberi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -9867,64 +9869,64 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202610301002"></script>
-<script src="js/lesson-turev.js?v=202610301002"></script>
-<script src="js/lesson-xor.js?v=202610301002"></script>
-<script src="js/lesson-xor-arch.js?v=202610301002"></script>
-<script src="js/lesson-xor-maps.js?v=202610301002"></script>
-<script src="js/lesson-xor-epoch.js?v=202610301002"></script>
-<script src="js/lesson-nn.js?v=202610301002"></script>
-<script src="js/lesson-trig.js?v=202610301002"></script>
+<script src="js/lesson-linreg.js?v=202610301026"></script>
+<script src="js/lesson-turev.js?v=202610301026"></script>
+<script src="js/lesson-xor.js?v=202610301026"></script>
+<script src="js/lesson-xor-arch.js?v=202610301026"></script>
+<script src="js/lesson-xor-maps.js?v=202610301026"></script>
+<script src="js/lesson-xor-epoch.js?v=202610301026"></script>
+<script src="js/lesson-nn.js?v=202610301026"></script>
+<script src="js/lesson-trig.js?v=202610301026"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202610301002"></script>
-<script src="js/lesson-rnn-soz.js?v=202610301002"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202610301026"></script>
+<script src="js/lesson-rnn-soz.js?v=202610301026"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202610301002"></script>
-<script src="js/lesson-lstm-cell.js?v=202610301002"></script>
-<script src="js/app.js?v=202610301002"></script>
-<script src="js/lesson-rnn-wbar.js?v=202610301002"></script>
-<script src="js/lesson-lstm-big.js?v=202610301002"></script>
-<script src="js/lesson-lstm-step.js?v=202610301002"></script>
-<script src="js/lesson-lstm-size.js?v=202610301002"></script>
-<script src="js/lesson-lstm-m2o.js?v=202610301002"></script>
-<script src="js/lesson-emb-kullan.js?v=202610301002"></script>
-<script src="js/lesson-emb-draco.js?v=202610301002"></script>
-<script src="js/lesson-emb-arch.js?v=202610301002"></script>
-<script src="js/lesson-emb-extra.js?v=202610301002"></script>
-<script src="js/lesson-s2s-weights.js?v=202610301002"></script>
-<script src="js/lesson-s2s-add.js?v=202610301002"></script>
-<script src="js/lesson-s2s-inside.js?v=202610301002"></script>
-<script src="js/lesson-att-train.js?v=202610301002"></script>
-<script src="js/lesson-att-extra.js?v=202610301002"></script>
-<script src="js/lesson-att-big.js?v=202610301002"></script>
-<script src="js/lesson-att-ornek.js?v=202610301002"></script>
-<script src="js/lesson-mh-big.js?v=202610301002"></script>
-<script src="js/lesson-mh-ornek.js?v=202610301002"></script>
-<script src="js/lesson-tf-big.js?v=202610301002"></script>
-<script src="js/lesson-tf-ornek.js?v=202610301002"></script>
-<script src="js/lesson-gpt-tiny.js?v=202610301002"></script>
-<script src="js/lesson-gpt-big.js?v=202610301002"></script>
-<script src="js/lesson-gpt-ornek.js?v=202610301002"></script>
-<script src="js/lesson-rnn-van.js?v=202610301002"></script>
-<script src="js/lesson-s2s-extra.js?v=202610301002"></script>
-<script src="js/lesson-s2s-ornek.js?v=202610301002"></script>
-<script src="js/lesson-emb-ornek.js?v=202610301002"></script>
-<script src="js/lesson-emb-steps.js?v=202610301002"></script>
-<script src="js/lesson-emb-big.js?v=202610301002"></script>
-<script src="js/lesson-sm-ornek.js?v=202610301002"></script>
-<script src="js/lesson-sm-big.js?v=202610301002"></script>
-<script src="js/lesson-lstm-unroll.js?v=202610301002"></script>
-<script src="js/lesson-lstm-gate.js?v=202610301002"></script>
-<script src="js/lesson-lstm-ornek.js?v=202610301002"></script>
-<script src="js/lesson-gpt.js?v=202610301002"></script>
-<script src="js/lesson-gpt-mini.js?v=202610301002"></script>
-<script src="js/lesson-vektor-ornek.js?v=202610301002"></script>
-<script src="js/lesson-linreg-big.js?v=202610301002"></script>
-<script src="js/lesson-linreg-ornek.js?v=202610301002"></script>
-<script src="js/lesson-act-big.js?v=202610301002"></script>
-<script src="js/lesson-act-ornek.js?v=202610301002"></script>
-<script src="js/lesson-xor-ornek.js?v=202610301002"></script>
-<script src="js/lesson-nn-ornek.js?v=202610301002"></script>
-<script src="js/lesson-nn-net.js?v=202610301002"></script>
+<script src="js/lesson-rnn-ornek.js?v=202610301026"></script>
+<script src="js/lesson-lstm-cell.js?v=202610301026"></script>
+<script src="js/app.js?v=202610301026"></script>
+<script src="js/lesson-rnn-wbar.js?v=202610301026"></script>
+<script src="js/lesson-lstm-big.js?v=202610301026"></script>
+<script src="js/lesson-lstm-step.js?v=202610301026"></script>
+<script src="js/lesson-lstm-size.js?v=202610301026"></script>
+<script src="js/lesson-lstm-m2o.js?v=202610301026"></script>
+<script src="js/lesson-emb-kullan.js?v=202610301026"></script>
+<script src="js/lesson-emb-draco.js?v=202610301026"></script>
+<script src="js/lesson-emb-arch.js?v=202610301026"></script>
+<script src="js/lesson-emb-extra.js?v=202610301026"></script>
+<script src="js/lesson-s2s-weights.js?v=202610301026"></script>
+<script src="js/lesson-s2s-add.js?v=202610301026"></script>
+<script src="js/lesson-s2s-inside.js?v=202610301026"></script>
+<script src="js/lesson-att-train.js?v=202610301026"></script>
+<script src="js/lesson-att-extra.js?v=202610301026"></script>
+<script src="js/lesson-att-big.js?v=202610301026"></script>
+<script src="js/lesson-att-ornek.js?v=202610301026"></script>
+<script src="js/lesson-mh-big.js?v=202610301026"></script>
+<script src="js/lesson-mh-ornek.js?v=202610301026"></script>
+<script src="js/lesson-tf-big.js?v=202610301026"></script>
+<script src="js/lesson-tf-ornek.js?v=202610301026"></script>
+<script src="js/lesson-gpt-tiny.js?v=202610301026"></script>
+<script src="js/lesson-gpt-big.js?v=202610301026"></script>
+<script src="js/lesson-gpt-ornek.js?v=202610301026"></script>
+<script src="js/lesson-rnn-van.js?v=202610301026"></script>
+<script src="js/lesson-s2s-extra.js?v=202610301026"></script>
+<script src="js/lesson-s2s-ornek.js?v=202610301026"></script>
+<script src="js/lesson-emb-ornek.js?v=202610301026"></script>
+<script src="js/lesson-emb-steps.js?v=202610301026"></script>
+<script src="js/lesson-emb-big.js?v=202610301026"></script>
+<script src="js/lesson-sm-ornek.js?v=202610301026"></script>
+<script src="js/lesson-sm-big.js?v=202610301026"></script>
+<script src="js/lesson-lstm-unroll.js?v=202610301026"></script>
+<script src="js/lesson-lstm-gate.js?v=202610301026"></script>
+<script src="js/lesson-lstm-ornek.js?v=202610301026"></script>
+<script src="js/lesson-gpt.js?v=202610301026"></script>
+<script src="js/lesson-gpt-mini.js?v=202610301026"></script>
+<script src="js/lesson-vektor-ornek.js?v=202610301026"></script>
+<script src="js/lesson-linreg-big.js?v=202610301026"></script>
+<script src="js/lesson-linreg-ornek.js?v=202610301026"></script>
+<script src="js/lesson-act-big.js?v=202610301026"></script>
+<script src="js/lesson-act-ornek.js?v=202610301026"></script>
+<script src="js/lesson-xor-ornek.js?v=202610301026"></script>
+<script src="js/lesson-nn-ornek.js?v=202610301026"></script>
+<script src="js/lesson-nn-net.js?v=202610301026"></script>
 </body>
 </html>
