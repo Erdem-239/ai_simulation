@@ -45,7 +45,7 @@
     o+=fok('l_tc','\\tanh')+fkol(fbox('gh','tc','tanh c'),'sıkıştırılmış');
     o+=fok('l_h','o\\cdot')+fkol(fbox('gl','h','h'),'çıktı');
     o+=fok('l_L','\\tfrac12(h-y)^2')+fkol(fbox('gl','L','L')+fbox('gc','y','y'),'kayıp (hedef y)');
-    o+='</div></div>';
+    o+='</div></div><div id="lstmBpSlotTek"></div>';
     // geri yol
     const dc=
       gateBranch('f','g3','l_cf','\\tfrac{\\partial c}{\\partial f}=c_{t-1}','f','unutma')+
@@ -134,6 +134,7 @@
   }
 
   build();
+  window.__lstmBigModel=model;
   window.__lstmBigRender=fill;
   fill();
   // başlangıç typeset'i (MathJax yüklenince)
