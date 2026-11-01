@@ -774,11 +774,11 @@ function ensure3d(a){a=a||'gpt2';if(f3&&f3arch===a)return;f3arch=a;f3ok=false;
   f3.src='mimari-3b.html?embed=1&arch='+a+'&_='+Date.now()}
 function post3d(m){f3pend=m;if(f3&&f3ok)f3.contentWindow.postMessage(m,'*')}
 function mkTour(cfg){var ORD=cfg.ORD,SHORT=cfg.SHORT,CRUMB=cfg.CRUMB,COLS=cfg.COLS,SCN=cfg.SCN,TS=[],TD=0,lastSeg=-1;
-function drawRoute(cur,doneN,cap){var cols=4,cw=222,ch=44,x0=30,y0=64;
+function drawRoute(cur,doneN,cap){var cols=4,cw=222,ch=ORD.length>28?36:44,x0=30,y0=64,gp=ORD.length>28?7:10;
   txt(cfg.title,x0,36,14,'#e8ebf2');
-  ORD.forEach(function(id,i){var cx=x0+(i%cols)*(cw+12),cy=y0+Math.floor(i/cols)*(ch+10),st=i===cur?'cur':i<doneN?'done':'';
+  ORD.forEach(function(id,i){var cx=x0+(i%cols)*(cw+12),cy=y0+Math.floor(i/cols)*(ch+gp),st=i===cur?'cur':i<doneN?'done':'';
     rect(cx,cy,cw,ch,st==='cur'?'rgba(255,200,46,.14)':st==='done'?'rgba(95,207,138,.10)':'#1a1f2b',st==='cur'?HL:st==='done'?'#5fcf8a':'#4a5468',st==='cur'?3:1.5);
-    txt(i+1+'. '+SHORT[id]+(st==='done'?'  ✔':''),cx+12,cy+27,12,st==='cur'?HL:'#e8ebf2')});
+    txt(i+1+'. '+SHORT[id]+(st==='done'?'  ✔':''),cx+12,cy+ch/2+5,12,st==='cur'?HL:'#e8ebf2')});
   if(cap)txt(cap,500,458,12,'#9aa3b6','center')}
 
 (function(){TS.push({k:'intro',d:8,s:0});TD=8;
@@ -910,7 +910,8 @@ function oRms(tag,lab,seed,say){var sc=[];
   txt('RMSNorm →',440,150,13,'#ffc82e','center');
   txt('önce',50,76,11,'#9aa3b6');txt('sonra (her satır ÷ kendi RMS\'i)',480,76,11,'#9aa3b6');
   txt('RMS = √(ortalama(x²)) — ortalama ÇIKARILMAZ, β yok (yalnız öğrenilen ölçek γ)',30,330,12,'#9aa3b6');
-  txt('Yeni bilgi eklemez: her satırın boyu dengelenir.',30,350,12,'#9aa3b6')},
+  txt('Yeni bilgi eklemez: her satırın boyu dengelenir.',30,350,12,'#9aa3b6');
+  txt('Şekil DEĞİŞMEZ (girdi 4×2880 → çıktı 4×2880 †); satırlar birbirine karışmaz; γ 2880 sayı, 4 satırda da aynısı.',30,370,12,'#e8ebf2')},
  live:function(t){var p=clamp(t/0.7,0,1),r=Math.min(3,Math.floor(p*4)),rms=0,k,n=2880;for(k=0;k<n;k++)rms+=ov(seed,r,k)*ov(seed,r,k);rms=Math.sqrt(rms/n);var x1=ov(seed,r,0);
   return 'RMS['+OT[r]+'] = √((x₁²+x₂²+…+x₂₈₈₀²)/2880) = <b>'+f2(rms)+'</b>;  x₁ ÷ RMS = '+f2(x1)+' ÷ '+f2(rms)+' = <b>'+f2(x1/rms)+'</b>'},
  say:say,
@@ -975,6 +976,85 @@ var oRope={dur:18,tag:'6 · RoPE: Q ve K\'yı konumla döndür',
  soz:'Her kelime kartının «Q ve K yönünü» bulunduğu sıraya göre çeviriyoruz; iki kelimenin birbirine uzaklığı skora böyle yansıyor.',
  elde:'Konumu taşıyan Q ve K (aynı şekil). Ayrı bir konum tablosu veya toplama gerekmedi.',
  neden:'Dikkat «kim kime yakın» bilmek ister: bağıl uzaklık, mutlak sıradan daha genellenebilir ve uzun bağlama taşınması kolaydır.'};
+/* ---- RoPE ek sahneleri (konuşmadaki sorulardan): 6b ok açısı → skor → dikkat, 6c hızlı/yavaş ibreler, 6d içerik + mesafe ---- */
+function rDial(cx,cy,R,arrs){ctx.strokeStyle='#2a3140';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.stroke();
+  arrs.forEach(function(a){var x=cx+Math.cos(a.ang)*R*0.92,y=cy-Math.sin(a.ang)*R*0.92;ctx.strokeStyle=a.c;ctx.lineWidth=a.w||3;ctx.setLineDash(a.dash||[]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;
+    if(a.lab)txt(a.lab,x+(Math.cos(a.ang)<0?-6:6),y+(Math.sin(a.ang)>0?-4:14),12,a.c,Math.cos(a.ang)<0?'right':'left')})}
+function smx(a){var m=Math.max.apply(null,a),e=a.map(function(v){return Math.exp(v-m)}),s=e.reduce(function(x,y){return x+y},0);return e.map(function(v){return v/s})}
+var oRopeCases=(function(){var C=[{n:'1 · zıt bakıyor',d:180,m:'«5» bu açıdan «7»\'yle hiç ilgilenmiyor: payı ≈ 0, «7»\'nin bilgisi «5»\'e taşınmaz.'},
+  {n:'2 · dik (biraz yaklaştı)',d:90,m:'Ne ilgili ne ilgisiz: skor ≈ 0, diğerleriyle benzer ortalama bir pay alır.'},
+  {n:'3 · neredeyse üst üste',d:10,m:'«Aradığım tam bu»: payın çoğu «7»\'ye gider, «5»\'in yeni kartı büyük ölçüde «7»\'nin V bilgisiyle dolar.'}];
+  var SC=3,others=[0.3,0.5];
+  return {dur:24,tag:'6b · Ok açısı → skor → dikkat payı',
+ draw:function(t){var ci=Math.min(2,Math.floor(clamp(t,0,.999)*3)),c=C[ci],u=clamp(t*3-ci,0,1),deg=c.d,ka=-0.3,qa=ka+deg*Math.PI/180,s=Math.cos(deg*Math.PI/180);
+  txt('Senaryo '+c.n+' — «5»\'in sorusu (Q, konum 2) ile «7»\'nin etiketi (K, konum 0) arasındaki açı',30,30,13,'#e8ebf2');
+  rDial(160,200,110,[{ang:ka,c:'#5fcf8a',lab:'K «7»'},{ang:qa,c:'#6ea0ff',lab:'Q «5»'}]);
+  ctx.strokeStyle=HL;ctx.lineWidth=2;ctx.beginPath();ctx.arc(160,200,34,-qa,-ka);ctx.stroke();ctx.lineWidth=1;
+  txt('aradaki açı = '+deg+'°',90,345,14,HL);txt('cos('+deg+'°) = '+f2(s),90,365,13,'#e8ebf2');
+  // skor çubuğu
+  var bx=340,by=90;txt('① skor (Q·K, bu çift için)',bx,by-14,13,'#e8ebf2');rect(bx,by,300,26,'#1a1f2b',null);rect(bx+150,by-4,1,34,'#9aa3b6');
+  var w=150*s*ease(u*2);rect(w>=0?bx+150:bx+150+w,by,Math.abs(w),26,s>=0?'rgba(86,140,255,.85)':'rgba(240,100,120,.85)');txt('−',bx-10,by+18,13,'#9aa3b6','right');txt('+',bx+306,by+18,13,'#9aa3b6');txt(f2(s),bx+150+(s>=0?w+6:w-6),by+18,13,'#fff',s>=0?'left':'right');
+  // softmax payı «5» satırında
+  var sc=[s*SC,others[0],others[1]],p=smx(sc),lab=['«7»','«+»','«5» (kendisi)'],pv=ease((u-0.35)/0.4);
+  txt('② softmax → «5»\'in satırında kime ne kadar pay',bx,180,13,'#e8ebf2');
+  for(var i=0;i<3;i++){txt(lab[i],bx,215+i*34,12,i===0?'#5fcf8a':'#9aa3b6');rect(bx+110,200+i*34,300,22,'#1a1f2b');rect(bx+110,200+i*34,300*p[i]*pv,22,i===0?'rgba(95,207,138,.85)':'rgba(150,160,180,.6)');if(pv>0)txt('%'+Math.round(p[i]*100),bx+110+300*p[i]*pv+6,216+i*34,12,'#e8ebf2')}
+  txt('(«+» ve «5»\'in skorları sabit tutuldu: 0,3 ve 0,5; skorlar ×3 ölçeklendi, örnek)',bx,320,11,'#9aa3b6');
+  if(u>0.7){ctx.globalAlpha=clamp((u-0.7)/0.2,0,1);txt('③ anlamı:',bx,350,13,HL);var words=c.m,ln='',y=370;words.split(' ').forEach(function(wd){if((ln+wd).length>78){txt(ln,bx,y,12,'#e8ebf2');ln='';y+=17}ln+=wd+' '});txt(ln,bx,y,12,'#e8ebf2');ctx.globalAlpha=1}
+  txt('Not: bu tek bir sayı çifti, tek bir kafa. Gerçek skor 32 çiftin katkısının toplamı; karar göreli (satırdaki diğer skorlarla yarışır).',30,455,11,'#9aa3b6')},
+ live:function(t){var ci=Math.min(2,Math.floor(clamp(t,0,.999)*3)),c=C[ci],s=Math.cos(c.d*Math.PI/180),p=smx([s*SC,others[0],others[1]]);
+  return 'Senaryo '+c.n+': açı '+c.d+'° → skor cos = '+f2(s)+' → «5»\'in «7»\'ye ayırdığı pay <b>%'+Math.round(p[0]*100)+'</b>. '+c.m},
+ say:'Okların arasındaki açı, dikkat kararının ham maddesi: <b>zıt</b> (180°) → skor eksi → pay ≈ 0; <b>dik</b> (90°) → skor ≈ 0 → ortalama pay; <b>üst üste</b> (≈0°) → skor artı → payın çoğu. Skor tek başına karar değil: softmax onu aynı satırdaki diğer token\'ların skorlarıyla <b>yarıştırır</b>. Sayılar örnek.',
+ soz:'İki okun aynı yöne bakması «aradığım sensin», zıt bakması «seninle işim yok» demek.',
+ elde:'Açı → skor → yüzde zinciri: bir token\'ın bir başkasına ne kadar «kulak verdiği».',
+ neden:'RoPE\'u ve Q·K\'yı sezgisel okumanın yolu: her şey okların ne kadar hizalı olduğuna bağlı.'}})();
+var oRopeSpeed=(function(){var J=[0,8,16,31],TH=J.map(function(j){return Math.pow(10000,-2*j/64)}),NM=['çift 1 (en hızlı)','çift 9','çift 17','çift 32 (en yavaş)'];
+  return {dur:22,tag:'6c · Hızlı ve yavaş ibreler (32 çift)',
+ draw:function(t){var dd=[0,1,2,3,6,20,100],k=Math.min(dd.length-1,Math.floor(clamp(t,0,.999)*dd.length)),d=dd[k],DEG=180/Math.PI;
+  txt('Q\'nun 64 sayısı = 32 ibre; her ibre farklı hızda döner. Mesafe d = '+d+' adım',30,30,13,'#e8ebf2');
+  for(var i=0;i<4;i++){var cx=130+i*235,cy=170,a=d*TH[i],deg=(a*DEG)%360;
+    rDial(cx,cy,80,[{ang:0,c:'rgba(110,160,255,.35)',w:2,dash:[4,4]},{ang:a,c:'#6ea0ff'}]);
+    txt(NM[i],cx,cy-96,12,'#e8ebf2','center');txt('adım başı '+(TH[i]*DEG).toFixed(TH[i]*DEG<0.1?4:TH[i]*DEG<1?2:1).replace('.',',')+'°',cx,cy+102,11,'#9aa3b6','center');
+    txt('toplam dönüş '+(d*TH[i]*DEG).toFixed(d*TH[i]*DEG<1?3:0).replace('.',',')+'°',cx,cy+120,12,HL,'center')}
+  txt('Hızlı ibre: 1 adımda bile belirgin döner → «hemen yanımda mı, 2 öte mi» gibi YAKIN mesafeleri ayırt eder;',30,330,12,'#e8ebf2');
+  txt('   ama ~6 adımda tam tur atıp karışır (6 ile 0 adım neredeyse aynı görünür).',30,346,12,'#e8ebf2');
+  txt('Yavaş ibre: 100 adımda bile neredeyse dönmez → mesafeye KÖR; bu çiftlerde skor yalnız İÇERİĞE bağlı',30,366,12,'#e8ebf2');
+  txt('   → nerede olursa olsun ilgili token bulunur.',30,382,12,'#e8ebf2');
+  txt('Kesik çizgi: dönmeden önceki yön. Hızlar örnek tabanla (10000) hesaplandı; gpt-oss daha büyük taban + uzun bağlam ayarı kullanır †.',30,405,11,'#9aa3b6')},
+ live:function(t){var dd=[0,1,2,3,6,20,100],d=dd[Math.min(dd.length-1,Math.floor(clamp(t,0,.999)*dd.length))],DEG=180/Math.PI;
+  return 'd = '+d+': en hızlı ibre '+(d*TH[0]*DEG%360).toFixed(0)+'° (tur hesabıyla), en yavaş ibre '+(d*TH[3]*DEG).toFixed(3).replace('.',',')+'° döndü. Saat gibi: saniye ibresi küçük aralıkları, akrep büyük aralıkları ölçer.'},
+ say:'Bir kafanın 64 sayısı <b>32 çifte</b> ayrılır; her çift ayrı bir <b>ibre</b> gibi döner ve hızları farklıdır. <b>Hızlı ibreler</b> yakın mesafeleri ayırt eder, <b>yavaş ibreler</b> uzak mesafede bile neredeyse dönmez: onlarda skor neredeyse yalnız içeriğe bağlıdır. Model hangi çiftlere ağırlık vereceğini Q ve K\'yı öğrenerek seçer: bazı kafalar «yanımdaki token», bazıları «nerede olursa olsun şu türden token» der.',
+ soz:'Saniye ibresi «iki saniye mi beş saniye mi», akrep «sabah mı akşam mı» sorusuna cevap verir; RoPE ikisini birden taşır.',
+ elde:'Her token çifti için 32 farklı ölçekte mesafe bilgisi; yakın ve uzak ilişki aynı anda.',
+ neden:'Tek hızlı dönüş uzak mesafede karışırdı, tek yavaş dönüş yakını ayırt edemezdi; farklı hızlar ikisini de çözer.'}})();
+var oRopeMix=(function(){var DEG=Math.PI/180;
+  // 2B oyuncak: içerik yönleri (derece). Rakam K'ları ~20°, '+' K'sı ~200°, '=' Q'su rakam yönünde (20°). θ: yavaş (5°/adım) ve "öğrenilmiş uzak bakış" modu.
+  var Kd={'7':20,'+':200,'5':40,'=':-60},TOKS=['7','+','5','='];
+  function row(th,qStart){return TOKS.map(function(tk,n){var m=3,a=(qStart+m*th)-(Kd[tk]+n*th);return Math.cos(a*DEG)})}
+  return {dur:26,tag:'6d · Skor = içerik + mesafe (RoPE ≠ dikkat)',
+ draw:function(t){var ph=t<0.5?0:1,u=ph?(t-0.5)*2:t*2;
+  if(ph===0){var th=5,r=row(th,20),p=smx(r.map(function(v){return v*4}));
+   txt('A) İçerik baskın: «=» (konum 3) soruyor «rakam arıyorum»; yavaş ibre (adım başı 5°)',30,30,13,'#e8ebf2');
+   rDial(150,200,105,[{ang:(20+3*th)*DEG,c:'#6ea0ff'},{ang:(Kd['7']+0)*DEG,c:'#5fcf8a',lab:'K «7»'},{ang:(Kd['5']+2*th)*DEG,c:'#3fc7c1',lab:'K «5»'},{ang:(Kd['+']+th)*DEG,c:'#f27a88',lab:'K «+»'}]);
+   txt('mavi: Q «=» (konum 3)',40,335-20,11,'#6ea0ff');
+   var bx=340;txt('«=» satırı: skor → softmax payı',bx,80,13,'#e8ebf2');
+   TOKS.forEach(function(tk,i){var y=100+i*44,pv=ease(u*1.4-0.2);txt('K «'+tk+'»  uzaklık '+(3-i),bx,y+17,12,'#9aa3b6');txt('skor '+f2(r[i]),bx+170,y+17,12,'#e8ebf2');rect(bx+260,y,300,24,'#1a1f2b');rect(bx+260,y,300*p[i]*pv,24,tk==='7'||tk==='5'?'rgba(95,207,138,.85)':'rgba(150,160,180,.6)');if(pv>0)txt('%'+Math.round(p[i]*100),bx+266+300*p[i]*pv,y+17,12,'#e8ebf2')});
+   txt('Rakamların K okları «rakam» yönünde (içerik); «=»nin sorusu da o yönde → 3 ve 1 adım uzaktaki rakamlar kazanır.',30,350,12,'#e8ebf2');
+   txt('Yavaş ibrede mesafe okları pek çevirmiyor: karar İÇERİKTEN geliyor. «+» zıt yönde → pay ≈ 0.',30,370,12,'#e8ebf2')}
+  else{var th2=34,qs=20-103,r2=TOKS.map(function(tk,n){return Math.cos(((qs+3*th2)-(20+n*th2))*DEG)}),p2=smx(r2.map(function(v){return v*4}));
+   txt('B) Model «3 adım geriye bak»ı öğrenirse: Q baştan 103° geride başlar (hızlı ibre, adım başı 34°)',30,30,13,'#e8ebf2');
+   rDial(150,200,105,[{ang:qs*DEG,c:'rgba(110,160,255,.35)',w:2,dash:[4,4]},{ang:(qs+3*th2)*DEG,c:'#6ea0ff',w:5},{ang:20*DEG,c:'#5fcf8a',w:2}]);
+   txt('kalın mavi: Q «=» (3 adım döndü) · yeşil: K «7» · kesik: Q\'nun başlangıcı',30,325,11,'#9aa3b6');
+   var bx2=340;txt('Bu kez herkesin içeriği aynı; fark yalnız mesafe. «=» satırı:',bx2,80,13,'#e8ebf2');
+   TOKS.forEach(function(tk,i){var y=100+i*44,pv=ease(u*1.4-0.2);txt('K «'+tk+'»  uzaklık '+(3-i),bx2,y+17,12,'#9aa3b6');txt('skor '+f2(r2[i]),bx2+170,y+17,12,'#e8ebf2');rect(bx2+260,y,300,24,'#1a1f2b');rect(bx2+260,y,300*p2[i]*pv,24,i===0?'rgba(95,207,138,.85)':'rgba(150,160,180,.6)');if(pv>0)txt('%'+Math.round(p2[i]*100),bx2+266+300*p2[i]*pv,y+17,12,'#e8ebf2')});
+   txt('Q 3 adım dönünce tam K «7»nin üstüne geliyor → en yüksek skor EN UZAKTAKİ token\'a. Yakındakine bakmak zorunlu değil.',30,350,12,'#e8ebf2');
+   txt('Hangi mesafenin önemli olduğunu RoPE değil, öğrenilen Q/K (okların başlangıç yönü) belirler.',30,370,12,'#e8ebf2')}
+  txt('RoPE = yalnız MESAFE bilgisi (sabit dönüş, öğrenilmez). İçerik = W_Q, W_K (öğrenilir). DİKKAT = ikisinin birleşimi: Q·Kᵀ → softmax.',30,410,12,HL);
+  txt('V döndürülmez: konum yalnız «kime bakılacağını» etkiler, taşınan bilgiyi değil. 2B oyuncak; açılar örnek.',30,430,11,'#9aa3b6')},
+ live:function(t){return t<0.5?'A) skor = içerik uyumu (okların doğal yönü) + mesafe (dönüş). Yavaş ibrede mesafe etkisi küçük → «=» uzaktaki rakamları içerikleri yüzünden seçiyor.':'B) Aynı içerik, farklı başlangıç yönü: Q 103° geride başlayınca 3 adım (3×34°) dönüp tam «7»ye hizalanıyor → dikkat en uzaktaki token\'a gidiyor.'},
+ say:'<b>Skor = içerik + mesafe.</b> RoPE yalnız mesafeyi ekler (öğrenilmez); «ne arıyorum / ben neyim» içeriği W_Q ve W_K\'dan gelir (öğrenilir); <b>dikkat</b> ikisinin birleşimi olan Q·Kᵀ → softmax\'tan çıkar. A) Yavaş ibrede «=» uzaktaki rakamları içerikleri yüzünden seçer. B) Model Q\'yu uygun yönde başlatmayı öğrenirse en yüksek skoru tam 3 adım uzağa koyabilir. Önceki sahnedeki «aynı uzaklık = aynı skor» oyuncağında içerik bilerek eşitlenmişti.',
+ soz:'RoPE «aramızda kaç adım var» der; «aradığım sen misin» sorusunun cevabı içerikten gelir; dikkat ikisini birlikte tartar.',
+ elde:'Hem içeriğe hem mesafeye duyarlı skorlar: yakın da uzak da bakılabilir.',
+ neden:'Dil hem «bir önceki kelime» gibi konum kalıplarına hem «cümlenin başındaki özne» gibi içerik bağlarına ihtiyaç duyar.'}})();
 var oSlice={dur:14,tag:'7 · 64 sorgu / 8 K-V dilimi (GQA)',
  draw:function(t){var gsel=Math.min(7,Math.floor(clamp(t/0.9,0,.999)*8)),gc=['#6ea0ff','#5fcf8a','#e8a94d','#b592f0','#f27a88','#3fc7c1','#d6c24a','#8a93a6'];
   txt('Q: 64 sorgu dilimi (her biri T×64)',30,36,13,'#e8ebf2');
@@ -1220,16 +1300,16 @@ var oMoeTokens={dur:20,tag:'14b · Farklı token\'lar farklı uzmanlara gider',
  soz:'Her kelime kendi dört uzmanına gidiyor; aynı cümlenin kelimeleri farklı uzmanlara dağılabiliyor.',
  elde:'Her token için 4 uzman listesi ve yüzdeleri; diğer 124 uzman o token için çalışmıyor.',
  neden:'Farklı kelimeler farklı işlem ister; uzmanlar arasında iş bölümü modelin kapasitesini artırır.'};
-var ORDO=['tok','emb','rms1','q','kv','gqa','rope','slice','gqacalc','score','mask','av','wo','rms2','moewhy','routerdot','router','top4','moetok','gate','down','mix','blk','rmsf','head','sel','act'];
-var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRope,oSlice,oGqaCalc,oScoreT,o2,gmAV,gmWo,oR2,oMoeWhy,oRouterDot,gmRouter,o1,oMoeTokens,gmGate,gmDown,oMix,oLayers,oRF,gmHead,oSel,o3];
-var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope:'RoPE',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ (transpoz) → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2',moewhy:'MoE nedir?',routerdot:'Router: profil · nokta çarpım',moetok:'Token → uzmanlar',router:'Router x·W_r (gerçek şekil)',top4:'En iyi 4 uzman',gate:'Uzman: kapı ⊙ değer',down:'Uzman: ×W_down',mix:'Karışım + residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
-var CR='gpt-oss › ',CRO={tok:CR+"Girdi › Token'lar",emb:CR+'Girdi › Embedding (konum tablosu yok)',rms1:CR+'Blok × 36 › Attention › RMSNorm',q:CR+'Blok × 36 › Attention › Q = x·W_Q',kv:CR+'Blok × 36 › Attention › K, V = x·W_K, x·W_V (8 K/V kafası)',rope:CR+'Blok × 36 › Attention › RoPE',slice:CR+'Blok × 36 › Attention › 64 Q / 8 K-V dilimi (GQA)',gqa:CR+'Blok × 36 › Attention › GQA: K/V paylaşımı (MHA ↔ GQA ↔ MQA)',gqacalc:CR+'Blok × 36 › Attention › GQA: bir K/V grubunu 8 sorgu kafası paylaşır',score:CR+'Blok × 36 › Attention › Q·Kᵀ → skor',mask:CR+'Blok × 36 › Attention › kayan pencere ↔ tam + çukur + softmax',av:CR+'Blok × 36 › Attention › A·V',wo:CR+'Blok × 36 › Attention › yapıştır, ×W_O, residual',rms2:CR+'Blok × 36 › MoE alt-bloğu › RMSNorm',moewhy:CR+'Blok × 36 › MoE › MoE nedir? yoğun FFN ↔ 128 uzman',routerdot:CR+'Blok × 36 › MoE › router: uzman profili ile nokta çarpım',moetok:CR+'Blok × 36 › MoE › her token kendi uzmanlarını seçer',router:CR+'Blok × 36 › MoE › router x·W_r (gerçek şekil)',top4:CR+'Blok × 36 › MoE › en iyi 4 uzman + softmax',gate:CR+'Blok × 36 › MoE › uzman: W_gate, W_up, SwiGLU',down:CR+'Blok × 36 › MoE › uzman: W_down',mix:CR+'Blok × 36 › MoE › 4 uzmanın ağırlıklı toplamı + residual',blk:CR+'36 blok art arda',rmsf:CR+'Çıkış › Son RMSNorm',head:CR+'Çıkış › Çıkış tablosu',sel:CR+'Çıkış › Softmax + seçim',act:CR+'Toplam ↔ aktif ağırlık, GQA önbelleği'};
-var COLSO={tok:[0,0],emb:[1,2],rms1:[3,3],q:[4,5],kv:[4,5],gqa:[4,5],rope:[6,6],slice:[7,7],gqacalc:[7,8],score:[8,8],mask:[9,9],av:[10,10],wo:[11,13],rms2:[14,14],moewhy:[15,16],routerdot:[15,15],router:[15,15],top4:[16,16],moetok:[16,16],gate:[17,18],down:[19,19],mix:[20,21],blk:null,rmsf:[22,22],head:[23,24],sel:[25,25],act:null};
+var ORDO=['tok','emb','rms1','q','kv','gqa','rope','rope2','rope3','rope4','slice','gqacalc','score','mask','av','wo','rms2','moewhy','routerdot','router','top4','moetok','gate','down','mix','blk','rmsf','head','sel','act'];
+var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRope,oRopeCases,oRopeSpeed,oRopeMix,oSlice,oGqaCalc,oScoreT,o2,gmAV,gmWo,oR2,oMoeWhy,oRouterDot,gmRouter,o1,oMoeTokens,gmGate,gmDown,oMix,oLayers,oRF,gmHead,oSel,o3];
+var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope:'RoPE',rope2:'RoPE: açı → skor → pay',rope3:'RoPE: hızlı/yavaş ibreler',rope4:'Skor = içerik + mesafe',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ (transpoz) → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2',moewhy:'MoE nedir?',routerdot:'Router: nokta çarpım',moetok:'Token → uzmanlar',router:'Router x·W_r',top4:'En iyi 4 uzman',gate:'Uzman: kapı ⊙ değer',down:'Uzman: ×W_down',mix:'Karışım + residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
+var CR='gpt-oss › ',CRO={tok:CR+"Girdi › Token'lar",emb:CR+'Girdi › Embedding (konum tablosu yok)',rms1:CR+'Blok × 36 › Attention › RMSNorm',q:CR+'Blok × 36 › Attention › Q = x·W_Q',kv:CR+'Blok × 36 › Attention › K, V = x·W_K, x·W_V (8 K/V kafası)',rope:CR+'Blok × 36 › Attention › RoPE',rope2:CR+'Blok × 36 › Attention › RoPE › ok açısı → skor → dikkat payı',rope3:CR+'Blok × 36 › Attention › RoPE › 32 çift: hızlı ve yavaş ibreler',rope4:CR+'Blok × 36 › Attention › RoPE › skor = içerik + mesafe',slice:CR+'Blok × 36 › Attention › 64 Q / 8 K-V dilimi (GQA)',gqa:CR+'Blok × 36 › Attention › GQA: K/V paylaşımı (MHA ↔ GQA ↔ MQA)',gqacalc:CR+'Blok × 36 › Attention › GQA: bir K/V grubunu 8 sorgu kafası paylaşır',score:CR+'Blok × 36 › Attention › Q·Kᵀ → skor',mask:CR+'Blok × 36 › Attention › kayan pencere ↔ tam + çukur + softmax',av:CR+'Blok × 36 › Attention › A·V',wo:CR+'Blok × 36 › Attention › yapıştır, ×W_O, residual',rms2:CR+'Blok × 36 › MoE alt-bloğu › RMSNorm',moewhy:CR+'Blok × 36 › MoE › MoE nedir? yoğun FFN ↔ 128 uzman',routerdot:CR+'Blok × 36 › MoE › router: uzman profili ile nokta çarpım',moetok:CR+'Blok × 36 › MoE › her token kendi uzmanlarını seçer',router:CR+'Blok × 36 › MoE › router x·W_r (gerçek şekil)',top4:CR+'Blok × 36 › MoE › en iyi 4 uzman + softmax',gate:CR+'Blok × 36 › MoE › uzman: W_gate, W_up, SwiGLU',down:CR+'Blok × 36 › MoE › uzman: W_down',mix:CR+'Blok × 36 › MoE › 4 uzmanın ağırlıklı toplamı + residual',blk:CR+'36 blok art arda',rmsf:CR+'Çıkış › Son RMSNorm',head:CR+'Çıkış › Çıkış tablosu',sel:CR+'Çıkış › Softmax + seçim',act:CR+'Toplam ↔ aktif ağırlık, GQA önbelleği'};
+var COLSO={tok:[0,0],emb:[1,2],rms1:[3,3],q:[4,5],kv:[4,5],gqa:[4,5],rope:[6,6],rope2:[6,6],rope3:[6,6],rope4:[6,6],slice:[7,7],gqacalc:[7,8],score:[8,8],mask:[9,9],av:[10,10],wo:[11,13],rms2:[14,14],moewhy:[15,16],routerdot:[15,15],router:[15,15],top4:[16,16],moetok:[16,16],gate:[17,18],down:[19,19],mix:[20,21],blk:null,rmsf:[22,22],head:[23,24],sel:[25,25],act:null};
 var tourO=mkTour({arch:'gptoss',tag:'🎬 gpt-oss turu: 3B MoE → zoom → animasyon',title:'🎬 gpt-oss turu — yol haritası (3B gpt-oss mimarisinde aynı sırayla ilerler)',
  ORD:ORDO,SCN:SCNO,hvSc:[],SHORT:SHORTO,CRUMB:CRO,COLS:COLSO,
  cap1:'Üstte/solda: gpt-oss-120b mimarisinin 3B görünümü (36 blok, 128 uzman). Tur, girdiden çıktıya sırayla her parçaya yakınlaşır.',capOut:'Tur bitti: girdiden sonraki token\'a kadar gpt-oss\'un her matris işlemini gördün.',
  liveIntro:'gpt-oss turu: 3B mimarinin tamamı → token → embedding → RMSNorm → Q,K,V → RoPE → GQA dilimleri → skor → pencere/çukur/softmax → A·V → W_O → router → 4 uzman → karışım → 36 blok → çıkış → seçim. Sayılar şematik.',
- sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok) → <b>36 blok</b> (dönüşümlü yerel/tam attention + <b>128 uzmanlı MoE</b>) → son RMSNorm → çıkış tablosu. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya zoom yapılır ve yandaki canvas\'ta o parçadaki işlem oynar (27 durak). Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, kafa 64, 128\'lik pencere, ≈5,1 milyar aktif. Boyutlar (2880, ≈201 bin sözlük, 117 milyar toplam) ve token numaraları hafızadan/ölçülmemiş (†); sayılar şematik.',
+ sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok) → <b>36 blok</b> (dönüşümlü yerel/tam attention + <b>128 uzmanlı MoE</b>) → son RMSNorm → çıkış tablosu. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya zoom yapılır ve yandaki canvas\'ta o parçadaki işlem oynar (30 durak). Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, kafa 64, 128\'lik pencere, ≈5,1 milyar aktif. Boyutlar (2880, ≈201 bin sözlük, 117 milyar toplam) ve token numaraları hafızadan/ölçülmemiş (†); sayılar şematik.',
  sayOut:'<b>Tur bitti.</b> gpt-oss: token → embedding → (RMSNorm → Q,K,V → RoPE → GQA → skor → pencere/çukur + softmax → A·V → W_O → residual → RMSNorm → router → 4 uzman → karışım → residual) × 36 → son RMSNorm → çıkış tablosu → softmax → seçim → döngü.'});
 
 var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
