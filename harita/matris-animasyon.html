@@ -1022,6 +1022,60 @@ var gmK=gm({tag:'5 · x · W_K → K  (V de aynı)',labL:'RMSNorm(x)  4×2880 �
 var gmScore=gm({tag:'8 · Qᵢ · Kᵍᵀ → skor',labL:'Qᵢ  4×64',labW:'K_gᵀ  64×4',labO:'skor  4×4',dl:64,dO:4,sym:'q',name:'S',seed:27,note:'64 sorgu kafasının her biri kendi 4×4 skorunu çıkarır;|8 sorgu kafası aynı K diliminden beslenir (GQA).',R:4,
  say:'Bir kafada <b>Qᵢ (4×64)</b> ile paylaşılan <b>K_gᵀ (64×4)</b> çarpılır → <b>4×4</b> skor; hücre = 64 çarpımın toplamı ÷ √64. Bu 64 kafa için ayrı ayrı yapılır. Her kafanın ayrıca öğrenilen bir <b>dikkat çukuru</b> puanı vardır (sonraki sahnede).',
  soz:'Her kelime, her öteki kelimenin etiketiyle ne kadar uyuştuğunu puanlıyor.',elde:'64 tane 4×4 skor tablosu (kafa başına).',neden:'Hangi token\'ın bilgisine ne kadar ihtiyaç olduğunu karar vermenin tek yolu token\'ları birbiriyle karşılaştırmak.'});
+var oScoreT=(function(){var DK4=64,N=4;
+  // Q1..Q8 (grup 1) ve paylaşılan K₁: şematik (tohumlu) sayılar; RoPE gerçekten uygulanır.
+  function rope(v,pos){var o=v.slice();for(var j=0;j<DK4/2;j++){var th=pos*Math.pow(10000,-2*j/DK4),c=Math.cos(th),s=Math.sin(th),a=v[2*j],b=v[2*j+1];o[2*j]=a*c-b*s;o[2*j+1]=a*s+b*c}return o}
+  function mk(seed){var M=[];for(var r=0;r<N;r++){var v=[];for(var k=0;k<DK4;k++)v.push(ov(seed,r,k));M.push(rope(v,r))}return M}
+  var Kg=mk(51),Qh=[];for(var h=0;h<8;h++)Qh.push(mk(61+h));
+  function score(q){var S=[];for(var r=0;r<N;r++){S.push([]);for(var c=0;c<N;c++){var s=0;for(var k=0;k<DK4;k++)s+=q[r][k]*Kg[c][k];S[r].push(s/8)}}return S}
+  var SS=Qh.map(score),Q=Qh[0],S=SS[0];
+  function ph(t){return {a:clamp(t/0.18,0,1),b:ease((t-0.2)/0.2),c:clamp((t-0.42)/0.43,0,1),d:clamp((t-0.88)/0.12,0,1)}}
+  return {dur:32,tag:'8 · Qᵢ · K_gᵀ → skor (transpoz + RoPE)',
+ draw:function(t){var p=ph(t),Qx={x:60,y:170,w:256,h:88},cw=16,ch=22,S0={x:560,y:118,c:48};
+  // Q (RoPE'lu)
+  txt('Q₁ (RoPE\'lu)  4×64',Qx.x,Qx.y-14,13,'#e8ebf2');
+  for(var r=0;r<N;r++){txt(OT[r],Qx.x-8,Qx.y+r*ch+16,12,'#9aa3b6','right');txt(['0','θ','2θ','3θ'][r],Qx.x-24,Qx.y+r*ch+16,10,'#b592f0','right');
+    for(var m=0;m<16;m++)rect(Qx.x+m*cw,Qx.y+r*ch,cw-1,ch-1,col(Q[r][m*4],1.5))}
+  frame(Qx.x,Qx.y,Qx.w,Qx.h);txt('açı',Qx.x-24,Qx.y-3,10,'#b592f0','right');
+  // K → Kᵀ (satırlar sütuna döner)
+  var b=p.b;txt(b<0.5?'K₁ (RoPE\'lu)  4×64':'K₁ᵀ  64×4',b<0.5?500:380,48,13,'#e8ebf2');
+  for(var r2=0;r2<N;r2++){var bR=ease(b*4-r2);
+    var lx=492+(380+r2*22+11-492)*bR,ly=60+r2*22+16+(60+256+14-60-r2*22-16)*bR;txt(OT[r2],lx,ly,12,bR>0&&bR<1?HL:'#9aa3b6',bR<0.5?'right':'center');
+    for(var m2=0;m2<16;m2++){var x0=500+m2*16,y0=60+r2*22,x1=380+r2*22,y1=60+m2*16,
+      x=x0+(x1-x0)*bR,y=y0+(y1-y0)*bR,w=15+(21-15)*bR,hh=21+(15-21)*bR;rect(x,y,w,hh,col(Kg[r2][m2*4],1.5));if(bR>0&&bR<1)rect(x,y,w,hh,null,HL,1)}}
+  if(b>0&&b<1){txt('transpoz: K\'nın her SATIRI (bir token) sırayla Kᵀ\'nin bir SÜTUNU oluyor',330,400,12,HL)}
+  if(b>=1)frame(380,60,88,256);
+  txt('×',345,215,28,'#e8ebf2','center');
+  // skor
+  if(b>=1){txt('=',515,215,28,'#e8ebf2','center');txt('skor  4×4',S0.x,S0.y-30,13,'#e8ebf2');
+    var cur=p.c*16,idx=Math.min(15,Math.floor(cur)),sub=cur-idx;if(p.c>=1){idx=16;sub=0}
+    for(var tc=0;tc<N;tc++)txt(OT[tc],S0.x+tc*S0.c+S0.c/2-1,S0.y-6,12,'#9aa3b6','center');
+    for(var r3=0;r3<N;r3++){txt(OT[r3],S0.x-8,S0.y+r3*S0.c+30,12,'#9aa3b6','right');
+      for(var c3=0;c3<N;c3++){var id=r3*4+c3,x2=S0.x+c3*S0.c,y2=S0.y+r3*S0.c,val=null;
+        if(id<idx)val=S[r3][c3];else if(id===idx&&idx<16){var n=Math.floor(sub*DK4),ps=0;for(var k=0;k<n;k++)ps+=Q[r3][k]*Kg[c3][k];val=ps/8}
+        rect(x2,y2,S0.c-2,S0.c-2,val==null?EMPTY:col(val,2.5));if(val!=null)txt(f2(val),x2+S0.c/2-1,y2+S0.c/2+4,11,'#fff','center')}}
+    frame(S0.x,S0.y,S0.c*N-2,S0.c*N-2);txt('satır = soran, sütun = bakılan',S0.x,S0.y+S0.c*N+14,11,'#9aa3b6');
+    if(idx<16){var ar=Math.floor(idx/4),ac=idx%4;rect(Qx.x-1,Qx.y+ar*ch-1,Qx.w+2,ch+1,null,HL,2);rect(380+ac*22-1,59,23,258,null,HL,2);rect(S0.x+ac*S0.c-1,S0.y+ar*S0.c-1,S0.c,S0.c,null,HL,2);
+      ctx.fillStyle='rgba(255,200,46,.28)';ctx.fillRect(Qx.x,Qx.y+ar*ch,Qx.w*sub,ch);ctx.fillRect(380+ac*22,60,21,256*sub)}}
+  // aynı K₁ᵀ ile 8 sorgu kafası
+  if(p.d>0){ctx.globalAlpha=p.d;txt('aynı K₁ᵀ, 8 sorgu kafası',790,48,12,'#e8ebf2');
+    for(var h=0;h<8;h++){var gx=790+(h%2)*95,gy=62+Math.floor(h/2)*92;txt('Q'+(h+1),gx,gy+10,10,h===0?HL:'#9aa3b6');
+      for(var a=0;a<N;a++)for(var bb=0;bb<N;bb++)rect(gx+bb*17,gy+16+a*17,16,16,col(SS[h][a][bb],2.5));if(h===0)rect(gx-1,gy+15,69,69,null,HL,1.5)}
+    ctx.globalAlpha=1}
+  txt('Sayılar şematik (tohumlu); RoPE gerçekten uygulandı (θⱼ = 10000^(−2j/64), örnek taban †).',30,440,11,'#9aa3b6');
+  txt('Kutu başına 4 gerçek sütun (64 → 16 kutu).',30,458,11,'#9aa3b6')},
+ live:function(t){var p=ph(t);
+  if(p.b<=0)return 'Q₁ ve K₁ ikisi de <b>RoPE\'lu</b>: her token\'ın 64 sayısı 32 çifte ayrılıp konumuyla orantılı açıyla döndürüldü (7: 0, +: 1·θ, 5: 2·θ, =: 3·θ). V döndürülmez.';
+  if(p.b<1)return '<b>Transpoz:</b> K₁ (4×64) → K₁ᵀ (64×4). Her token\'ın 64 sayılık satırı dikey bir sütun oluyor; böylece (4×64)·(64×4) çarpımı tanımlı hâle geliyor.';
+  if(p.d>0)return 'Grup 1\'deki <b>8 sorgu kafası aynı K₁ᵀ</b> ile çarpılır → 8 farklı 4×4 skor tablosu. 8 grup × 8 = 64 tablo, ama yalnız 8 farklı K kullanıldı (GQA).';
+  var idx=Math.min(15,Math.floor(p.c*16)),sub=p.c*16-idx,r=Math.floor(idx/4),c=idx%4;if(p.c>=1){idx=15;sub=1;r=3;c=3}
+  var n=Math.max(1,Math.floor(sub*DK4)),ps=0,i;for(i=0;i<n;i++)ps+=Q[r][i]*Kg[c][i];
+  var pr=[0,1,2].map(function(k){return '('+f2(Q[r][k])+')('+f2(Kg[c][k])+')'});
+  return 'skor['+OT[r]+'→'+OT[c]+'] = Q₁\'in «'+OT[r]+'» satırı · Kᵀ\'nin «'+OT[c]+'» sütunu = (q̃₁k̃₁ + … + q̃₆₄k̃₆₄) ÷ 8<br>= ('+pr.join(' + ')+' + … ) ÷ 8<br>şu ana kadar '+n+' çarpım: <b>'+f2(ps)+'</b> ÷ 8 = <b>'+f2(ps/8)+'</b>'+(n>=DK4?' ✔':'')},
+ say:'GPT-2 turundaki ③ Q·Kᵀ sahnesiyle <b>aynı işlem</b>: bir kafanın <b>Q (4×64)</b>\'su paylaşılan <b>K\'nın transpozu (64×4)</b> ile çarpılır → <b>4×4</b> skor; hücre [satır, sütun] = Q\'nun o satırı · K\'nın o satırı (64 çarpımın toplamı) ÷ √64 = 8. <b>gpt-oss\'taki üç fark:</b> (1) Q ve K çarpılmadan önce <b>RoPE ile döndürülmüş</b>, GPT-2\'de konum en başta x\'e (wpe) eklenmişti; (2) Kᵀ <b>8 sorgu kafası tarafından paylaşılır</b> (GQA): 64 tablo, 8 K; (3) 4 token olduğu için 128\'lik kayan pencere burada fark yaratmaz.',
+ soz:'Her kelimenin sorusu, her kelimenin (konumuyla döndürülmüş) etiketiyle karşılaştırılıyor; aynı etiket takımını 8 ayrı soru kullanıyor.',
+ elde:'Kafa başına 4×4 skor tablosu; grup başına 8 tablo, toplam 64.',
+ neden:'Kimin kime ne kadar bakacağını bulmanın yolu soruyu her etiketle tek tek çarpmak; transpoz yalnız bu «satır·satır» eşleştirmesini matris çarpımı olarak yazmamızı sağlar.'}})();
 var gmAV=gm({tag:'10 · A · V → çıktı',labL:'A (yüzdeler)  4×4',labW:'V_g  4×64',labO:'a·V  4×64',dl:4,dO:64,sym:'a',name:'Z',seed:29,note:'Her token, baktığı token\'ların V\'lerinin yüzdelerle karışımını alır.|64 kafa için ayrı ayrı (V dilimleri 8 grupça paylaşılır).',
  say:'Softmax sonrası yüzde tablosu <b>A (4×4)</b>, paylaşılan <b>V dilimi (4×64)</b> ile çarpılır → <b>4×64</b>. Her token baktığı token\'ların içeriklerinin yüzdelerle karışımını alır; token\'lar arası ilk bilgi akışı burada.',
  soz:'Kimlere baktığına göre, onların içeriklerinden bir harman yapıyor.',elde:'64 kafanın her birinde T×64 karışım.',neden:'Dikkatin amacı bu: kelimenin kartına çevresinden gerekli bilgiyi toplamak.'});
@@ -1152,8 +1206,8 @@ var oMoeTokens={dur:20,tag:'14b · Farklı token\'lar farklı uzmanlara gider',
  elde:'Her token için 4 uzman listesi ve yüzdeleri; diğer 124 uzman o token için çalışmıyor.',
  neden:'Farklı kelimeler farklı işlem ister; uzmanlar arasında iş bölümü modelin kapasitesini artırır.'};
 var ORDO=['tok','emb','rms1','q','kv','gqa','rope','slice','gqacalc','score','mask','av','wo','rms2','moewhy','routerdot','router','top4','moetok','gate','down','mix','blk','rmsf','head','sel','act'];
-var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRope,oSlice,oGqaCalc,gmScore,o2,gmAV,gmWo,oR2,oMoeWhy,oRouterDot,gmRouter,o1,oMoeTokens,gmGate,gmDown,oMix,oLayers,oRF,gmHead,oSel,o3];
-var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope:'RoPE',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2',moewhy:'MoE nedir?',routerdot:'Router: profil · nokta çarpım',moetok:'Token → uzmanlar',router:'Router x·W_r (gerçek şekil)',top4:'En iyi 4 uzman',gate:'Uzman: kapı ⊙ değer',down:'Uzman: ×W_down',mix:'Karışım + residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
+var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRope,oSlice,oGqaCalc,oScoreT,o2,gmAV,gmWo,oR2,oMoeWhy,oRouterDot,gmRouter,o1,oMoeTokens,gmGate,gmDown,oMix,oLayers,oRF,gmHead,oSel,o3];
+var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope:'RoPE',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ (transpoz) → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2',moewhy:'MoE nedir?',routerdot:'Router: profil · nokta çarpım',moetok:'Token → uzmanlar',router:'Router x·W_r (gerçek şekil)',top4:'En iyi 4 uzman',gate:'Uzman: kapı ⊙ değer',down:'Uzman: ×W_down',mix:'Karışım + residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
 var CR='gpt-oss › ',CRO={tok:CR+"Girdi › Token'lar",emb:CR+'Girdi › Embedding (konum tablosu yok)',rms1:CR+'Blok × 36 › Attention › RMSNorm',q:CR+'Blok × 36 › Attention › Q = x·W_Q',kv:CR+'Blok × 36 › Attention › K, V = x·W_K, x·W_V (8 K/V kafası)',rope:CR+'Blok × 36 › Attention › RoPE',slice:CR+'Blok × 36 › Attention › 64 Q / 8 K-V dilimi (GQA)',gqa:CR+'Blok × 36 › Attention › GQA: K/V paylaşımı (MHA ↔ GQA ↔ MQA)',gqacalc:CR+'Blok × 36 › Attention › GQA: bir K/V grubunu 8 sorgu kafası paylaşır',score:CR+'Blok × 36 › Attention › Q·Kᵀ → skor',mask:CR+'Blok × 36 › Attention › kayan pencere ↔ tam + çukur + softmax',av:CR+'Blok × 36 › Attention › A·V',wo:CR+'Blok × 36 › Attention › yapıştır, ×W_O, residual',rms2:CR+'Blok × 36 › MoE alt-bloğu › RMSNorm',moewhy:CR+'Blok × 36 › MoE › MoE nedir? yoğun FFN ↔ 128 uzman',routerdot:CR+'Blok × 36 › MoE › router: uzman profili ile nokta çarpım',moetok:CR+'Blok × 36 › MoE › her token kendi uzmanlarını seçer',router:CR+'Blok × 36 › MoE › router x·W_r (gerçek şekil)',top4:CR+'Blok × 36 › MoE › en iyi 4 uzman + softmax',gate:CR+'Blok × 36 › MoE › uzman: W_gate, W_up, SwiGLU',down:CR+'Blok × 36 › MoE › uzman: W_down',mix:CR+'Blok × 36 › MoE › 4 uzmanın ağırlıklı toplamı + residual',blk:CR+'36 blok art arda',rmsf:CR+'Çıkış › Son RMSNorm',head:CR+'Çıkış › Çıkış tablosu',sel:CR+'Çıkış › Softmax + seçim',act:CR+'Toplam ↔ aktif ağırlık, GQA önbelleği'};
 var COLSO={tok:[0,0],emb:[1,2],rms1:[3,3],q:[4,5],kv:[4,5],gqa:[4,5],rope:[6,6],slice:[7,7],gqacalc:[7,8],score:[8,8],mask:[9,9],av:[10,10],wo:[11,13],rms2:[14,14],moewhy:[15,16],routerdot:[15,15],router:[15,15],top4:[16,16],moetok:[16,16],gate:[17,18],down:[19,19],mix:[20,21],blk:null,rmsf:[22,22],head:[23,24],sel:[25,25],act:null};
 var tourO=mkTour({arch:'gptoss',tag:'🎬 gpt-oss turu: 3B MoE → zoom → animasyon',title:'🎬 gpt-oss turu — yol haritası (3B gpt-oss mimarisinde aynı sırayla ilerler)',
