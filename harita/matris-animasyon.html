@@ -1353,12 +1353,340 @@ var tourO=mkTour({arch:'gptoss',tag:'🎬 gpt-oss turu: 3B MoE → zoom → anim
  sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok) → <b>36 blok</b> (dönüşümlü yerel/tam attention + <b>128 uzmanlı MoE</b>) → son RMSNorm → çıkış tablosu. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya zoom yapılır ve yandaki canvas\'ta o parçadaki işlem oynar (31 durak). Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, kafa 64, 128\'lik pencere, ≈5,1 milyar aktif. Boyutlar (2880, ≈201 bin sözlük, 117 milyar toplam) ve token numaraları hafızadan/ölçülmemiş (†); sayılar şematik.',
  sayOut:'<b>Tur bitti.</b> gpt-oss: token → embedding → (RMSNorm → Q,K,V → RoPE → GQA → skor → pencere/çukur + softmax → A·V → W_O → residual → RMSNorm → router → 4 uzman → karışım → residual) × 36 → son RMSNorm → çıkış tablosu → softmax → seçim → döngü.'});
 
-var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
+/* ================= 🌀 RoPE turu: önceki adım (Q,K) → RoPE → sonraki adımlar (Q·Kᵀ, ÷8, maske, softmax, ×V) =================
+   Tek bir kafa (Q kafa 1, K/V grubu 1), 4 token «7 + 5 =», kafa boyutu 64 = 32 çift. Sayılar ÖRNEK (tohumlu, elle tasarlanmış
+   «rakam arayan kafa»): yavaş çiftlerde «=»'nın sorusu rakamların etiketiyle aynı yöne bakıyor. RoPE formülü gerçek (θⱼ = 10000^(−2j/64)). */
+var ROPE=(function(){
+  var NP=32,TOKR=['7','+','5','='],DEG=180/Math.PI,FAST=20;
+  var TH=[];for(var j=0;j<NP;j++)TH.push(Math.pow(10000,-2*j/64));
+  var s=20251101;function rnd(){s=(s*1664525+1013904223)>>>0;return s/4294967296}
+  function pr(a,p){return {a:a,p:p}}
+  /* içerik kafası: yavaş çiftlerde (j≥20) «=» soruyor, rakamlar cevap veriyor */
+  var psi=[];for(j=0;j<NP;j++)psi.push(rnd()*2*Math.PI);
+  var Qc=[],Kc=[],Vv=[],i;
+  for(i=0;i<4;i++){Qc.push([]);Kc.push([]);
+    for(j=0;j<NP;j++){var slow=j>=FAST;
+      Qc[i].push(slow?pr(i===3?1.15:0.6,i===3?psi[j]:rnd()*6.283):pr(0.3,rnd()*6.283));
+      var off=i===0||i===2?(rnd()-0.5)*0.35:i===1?2.6+(rnd()-0.5)*0.3:1.75+(rnd()-0.5)*0.3;
+      Kc[i].push(slow?pr(1.15,psi[j]+off):pr(0.3,rnd()*6.283))}
+    Vv.push([]);for(var c=0;c<64;c++)Vv[i].push((rnd()-0.5)*2.4)}
+  /* mesafe kafası (karşılaştırma için): hızlı çiftlerde «1 adım önceki token»u arıyor */
+  var Qd=[],Kd=[];for(j=0;j<NP;j++){var ph=rnd()*6.283;Qd.push(pr(j<16?1:0.15,ph));Kd.push(pr(j<16?1:0.15,j<16?ph+TH[j]:rnd()*6.283))}
+  function vec(P,pos){var v=[];for(var j=0;j<NP;j++){var a=P[j].a,p=P[j].p+pos*TH[j];v.push(a*Math.cos(p),a*Math.sin(p))}return v}
+  function contrib(q,m,k,n){var o=[];for(var j=0;j<NP;j++)o.push(q[j].a*k[j].a*Math.cos(q[j].p-k[j].p+(m-n)*TH[j]));return o}
+  function sum(a){var t=0;for(var k=0;k<a.length;k++)t+=a[k];return t}
+  function score(qi,ki){return sum(contrib(Qc[qi],qi,Kc[ki],ki))}
+  var S=[],SD=[],A=[],A0=[];for(i=0;i<4;i++){S.push([]);for(var k=0;k<4;k++)S[i].push(score(i,k));SD.push(S[i].map(function(v){return v/8}))}
+  function smxM(row,r){var m=-1e9,e=[],t=0,k;for(k=0;k<=r;k++)m=Math.max(m,row[k]);for(k=0;k<4;k++){var v=k<=r?Math.exp(row[k]-m):0;e.push(v);t+=v}return e.map(function(v){return v/t})}
+  for(i=0;i<4;i++){A.push(smxM(SD[i],i));A0.push(smxM(S[i],i))}
+  var OUT=[];for(c=0;c<64;c++){var o=0;for(k=0;k<4;k++)o+=A[3][k]*Vv[k][c];OUT.push(o)}
+  var P3=A[3].map(function(v){return Math.round(v*100)}),P30=A0[3].map(function(v){return Math.round(v*100)});
+  function f1(v){return (v<0?'−':'')+Math.abs(v).toFixed(1).replace('.',',')}
+  function dg(v){var d=v*DEG;return (Math.abs(d)>=10?d.toFixed(1):Math.abs(d)>=0.1?d.toFixed(2):d.toFixed(4)).replace('.',',').replace('-','−')+'°'}
+  function norm(p){p=p%(2*Math.PI);if(p>Math.PI)p-=2*Math.PI;if(p<-Math.PI)p+=2*Math.PI;return p}
+  /* çizim yardımcıları */
+  function dial(cx,cy,R,arr){ctx.strokeStyle='#2a3140';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.stroke();
+    arr.forEach(function(a){var L=R*0.92*(a.l==null?1:a.l),x=cx+Math.cos(a.ang)*L,y=cy-Math.sin(a.ang)*L;ctx.strokeStyle=a.c;ctx.lineWidth=a.w||2.5;ctx.setLineDash(a.dash||[]);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1;
+      if(!a.dash&&L>6){var hd=Math.min(7,L*0.35),an=Math.atan2(cy-y,x-cx);ctx.fillStyle=a.c;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-hd*Math.cos(an-0.45),y+hd*Math.sin(an-0.45));ctx.lineTo(x-hd*Math.cos(an+0.45),y+hd*Math.sin(an+0.45));ctx.closePath();ctx.fill()}})}
+  function arc(cx,cy,r,a0,a1,c){ctx.strokeStyle=c||HL;ctx.lineWidth=2;ctx.beginPath();if(a1>=a0)ctx.arc(cx,cy,r,-a1,-a0);else ctx.arc(cx,cy,r,-a0,-a1);ctx.stroke();ctx.lineWidth=1}
+  function table(x,y,w,h,rows,lab,cl,sub){var cw=w/64,ch=h/4;txt(lab,x,y-8,12,cl||'#e8ebf2');
+    for(var r=0;r<4;r++){txt('«'+TOKR[r]+'»',x-8,y+r*ch+ch/2+4,11,'#9aa3b6','right');for(var c=0;c<64;c++)rect(x+c*cw,y+r*ch,Math.max(1,cw-0.6),ch-1,col(rows[r][c],1.2))}
+    frame(x,y,w,h);if(sub)txt(sub,x+w,y-8,10,'#9aa3b6','right')}
+  var QOR=[0,1,2,3].map(function(r){return vec(Qc[r],0)}),KOR=[0,1,2,3].map(function(r){return vec(Kc[r],0)});
+  var QRO=[0,1,2,3].map(function(r){return vec(Qc[r],r)}),KRO=[0,1,2,3].map(function(r){return vec(Kc[r],r)});
+  var MXA=0;Qc.forEach(function(r){r.forEach(function(p){MXA=Math.max(MXA,p.a)})});
+
+  /* ---- R1: önceki adım — Q ve K nereden geldi ---- */
+  var r1={dur:22,tag:'R1 · Önceki adım: Q ve K nereden geldi?',
+   draw:function(t){var a=ease(t/0.3),b=ease((t-0.3)/0.25),c=ease((t-0.58)/0.3);
+    txt('x  (RMSNorm sonrası, 4×2880 †)',30,40,12,'#e8ebf2');
+    for(var r=0;r<4;r++){txt('«'+TOKR[r]+'»',24,66+r*18,11,'#9aa3b6','right');for(var g=0;g<20;g++)rect(30+g*9,54+r*18,8,16,col(hsh(501,r,g),1.4))}
+    txt('× W_Q (2880×4096)',230,74,12,'#6ea0ff');txt('× W_K (2880×512)',230,150,12,'#5fcf8a');
+    ctx.globalAlpha=Math.max(0.15,a);txt('Q  4×4096 = 64 kafa × 64',370,40,12,'#6ea0ff');
+    for(var h=0;h<64;h++)for(r=0;r<4;r++)rect(370+h*9.4,54+r*18,8.6,16,h===0?col(QOR[r][h%64],1.2):'rgba(86,140,255,'+(0.12+0.25*Math.abs(hsh(502,h,r)))+')');
+    frame(370,54,9.4,72,HL);ctx.globalAlpha=1;
+    ctx.globalAlpha=Math.max(0.15,b);txt('K  4×512 = 8 grup × 64',370,140,12,'#5fcf8a');
+    for(h=0;h<8;h++)for(r=0;r<4;r++)rect(370+h*9.4,154+r*18,8.6,16,'rgba(95,207,138,'+(0.15+0.3*Math.abs(hsh(503,h,r)))+')');
+    txt('(V de 4×512, 8 grup — RoPE ona uygulanmaz)',470,186,11,'#9aa3b6');ctx.globalAlpha=1;
+    if(c>0){ctx.globalAlpha=c;
+      ctx.strokeStyle=HL;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(374,128);ctx.lineTo(120,250);ctx.moveTo(374,228);ctx.lineTo(560,250);ctx.stroke();ctx.setLineDash([]);
+      table(60,268,420,120,QOR,'Q kafa 1  (4×64) — RoPE ÖNCESİ','#6ea0ff','konum 0,1,2,3');table(560,268,420,120,KOR,'K grup 1  (4×64) — RoPE ÖNCESİ','#5fcf8a','Q1–Q8 bunu paylaşır');
+      txt('Satır = token, 64 sütun = bu kafanın sayıları. Bu sayıları x ve ağırlıklar (W_Q, W_K) üretti: İÇERİK. Konum bilgisi henüz YOK.',30,420,12,HL);
+      ctx.globalAlpha=1}},
+   live:function(t){return t<0.3?'Q = x·W_Q → 4×4096; sütunlar 64\'lük 64 dilime bölünür (64 Q kafası)':t<0.58?'K = x·W_K → 4×512 → 8 dilim (8 K/V grubu); her 8 Q kafası bir K/V grubunu paylaşır':'Bu turda tek kafayı izliyoruz: Q kafa 1 (4×64) ve onun K grubu 1 (4×64). Sıradaki adım RoPE.'},
+   say:'<b>RoPE\'tan bir önceki adım.</b> x (4×2880 †) W_Q ile çarpılır → <b>Q 4×4096</b>, sütunlardan 64\'lük dilimlere bölünür → <b>64 Q kafası</b>, her biri <b>4×64</b>. W_K ile → <b>K 4×512</b> → <b>8 K grubu</b>, her biri 4×64; Q1–Q8 aynı K grubunu (ve V grubunu) paylaşır (GQA). Bu turda tek bir kafayı izliyoruz: <b>Q kafa 1 + K grup 1</b>. Bu tablolardaki sayılar <b>içerik</b>: «7» ne sunuyor, «=» ne arıyor. Kaçıncı sırada oldukları henüz hiçbir yerde yok. Sayılar örnek.',
+   neden:'RoPE ağırlık değil, Q ve K tablolarına uygulanan bir işlem; önce bu tabloların nereden ve hangi şekilde geldiğini bilmek gerekiyor.',
+   soz:'Her kelime bu kafada bir soru (Q) ve bir etiket (K) yazdı; ama hepsi "sırasız" — kim önde kim arkada belli değil.',
+   elde:'Q kafa 1: 4×64, K grup 1: 4×64 (içerik var, konum yok).'};
+
+  /* ---- R2: bir satır → 32 çift → 32 ok ---- */
+  var r2={dur:22,tag:'R2 · Bir satır: 64 sayı → 32 çift → 32 ok',
+   draw:function(t){var a=ease(t/0.25),b=ease((t-0.25)/0.3),c=ease((t-0.6)/0.3),row=QOR[0],cw=28;
+    txt('«7»\'nin Q satırı (konum 0) — 64 sayı',30,30,13,'#e8ebf2');
+    for(var k=0;k<32;k++){var x=30+k*cw;rect(x,42,cw/2-1,22,col(row[2*k],1.2));rect(x+cw/2,42,cw/2-1,22,col(row[2*k+1],1.2));
+      if(a>0){ctx.globalAlpha=a;frame(x-1,40,cw-1,26,k===0?HL:'#6a7488');txt(k+1,x+cw/2-1,80,9,k===0?HL:'#9aa3b6','center');ctx.globalAlpha=1}}
+    if(a>0){ctx.globalAlpha=a;txt('ikişer ikişer: 1.–2. sayı = 1. çift, 3.–4. sayı = 2. çift, …, 63.–64. sayı = 32. çift',30,98,12,HL);ctx.globalAlpha=1}
+    if(b>0){ctx.globalAlpha=b;txt('Her çift (a ; b) → düzlemde bir OK: a = sağa, b = yukarı. Uzunluk = √(a²+b²), yön = açı.',30,122,12,'#e8ebf2');
+      for(k=0;k<32;k++){var gx=70+(k%8)*118,gy=170+Math.floor(k/8)*72,P=Qc[0][k];
+        dial(gx,gy,26,[{ang:P.p,c:k===0?HL:'#6ea0ff',l:P.a/0.6*ease(b*1.5-k/40)}]);txt('ç'+(k+1),gx+32,gy+4,10,k===0?HL:'#9aa3b6')}
+      ctx.globalAlpha=1}
+    if(c>0){var P0=Qc[0][0];ctx.globalAlpha=c;rect(30,430,940,30,'rgba(255,200,46,.08)','rgba(255,200,46,.5)');
+      txt('1. çift = ('+f2(row[0])+' ; '+f2(row[1])+') → uzunluk '+f2(P0.a)+', yön '+dg(norm(P0.p))+'.  «7» konum 0\'da: RoPE bu 32 oku 0° döndürür, yani hiç değiştirmez.',40,450,12,HL);ctx.globalAlpha=1}},
+   live:function(t){var row=QOR[0];return '1. çift = (sayı 1 ; sayı 2) = ('+f2(row[0])+' ; '+f2(row[1])+') → bir ok. 64 sayı = 32 ok. Uzunluk = bilginin gücü, yön = bilginin türü.'},
+   say:'Bir satırı (bir token\'ı) tek tek ele alıyoruz: «7»\'nin Q satırı 64 sayı. RoPE bu sayıları <b>ikişer ikişer</b> eşler → <b>32 çift</b>. Her çift düzlemde bir <b>ok</b>: birinci sayı sağa, ikinci sayı yukarı. Okun <b>uzunluğu</b> ve <b>yönü</b> şu an tamamen içerikten geliyor (x ve W_Q). Aynı şey her satırda, Q\'da ve K\'da ayrı ayrı yapılır.',
+   neden:'Döndürme ancak iki boyutta tanımlı bir işlem; 64 sayıyı 32 küçük düzleme bölmek, her birini ayrı ayrı döndürmeyi mümkün kılıyor.',
+   soz:'Bir kelimenin 64 sayılık sorusunu 32 küçük ok olarak düşün; her ok bir "bilgi kanalı".',
+   elde:'Her satır = 32 ok (şekil hâlâ 1×64).'};
+
+  /* ---- R3: ok = içerik ---- */
+  var SHOW=[0,4,8,12,20,24,28,31];
+  var r3={dur:24,tag:'R3 · Okların yönü = içerik (RoPE öncesi)',
+   draw:function(t){var a=ease(t/0.25),b=ease((t-0.25)/0.25),c=ease((t-0.5)/0.25),d=ease((t-0.78)/0.2);
+    txt('RoPE ÖNCESİ, 8 örnek çift:  mavi = «=»\'nın Q oku,  yeşil = «7»\'nin K oku,  kırmızı = «+»\'nın K oku',30,30,13,'#e8ebf2');
+    SHOW.forEach(function(j,n){var cx=70+n*120,cy=150,arr=[];
+      arr.push({ang:Qc[3][j].p,c:'#6ea0ff',l:Qc[3][j].a/1.2*a,w:3});
+      if(b>0)arr.push({ang:Kc[0][j].p,c:'#5fcf8a',l:Kc[0][j].a/1.2*b,w:2.5});
+      if(c>0)arr.push({ang:Kc[1][j].p,c:'#f27a88',l:Kc[1][j].a/1.2*c,w:2});
+      dial(cx,cy,48,arr);txt((j+1)+'. çift',cx,cy-58,12,j>=FAST?'#5fcf8a':'#e8a94d','center');
+      txt(j>=FAST?'yavaş':'hızlı',cx,cy+66,11,j>=FAST?'#5fcf8a':'#e8a94d','center');
+      if(b>0){ctx.globalAlpha=b;var df=norm(Qc[3][j].p-Kc[0][j].p);txt('Q↔«7»: '+Math.round(Math.abs(df)*DEG)+'°',cx,cy+84,11,'#5fcf8a','center');ctx.globalAlpha=1}
+      if(c>0){ctx.globalAlpha=c;var df2=norm(Qc[3][j].p-Kc[1][j].p);txt('Q↔«+»: '+Math.round(Math.abs(df2)*DEG)+'°',cx,cy+100,11,'#f27a88','center');ctx.globalAlpha=1}});
+    if(d>0){ctx.globalAlpha=d;rect(30,290,940,150,'rgba(255,200,46,.06)','rgba(255,200,46,.45)');
+      txt('Ne görüyoruz? (bu örnek kafa eğitilmiş bir «rakam arayan» kafa gibi tasarlandı)',44,314,13,HL);
+      txt('• Yavaş çiftlerde (21–32): «=»\'nın sorusu ile «7»\'nin etiketi NEREDEYSE AYNI YÖNDE (açı küçük) → içerik eşleşmesi.',44,340,12,'#e8ebf2');
+      txt('• Aynı çiftlerde «+»\'nın etiketi neredeyse ZIT yönde → «=» onunla ilgilenmeyecek.',44,362,12,'#e8ebf2');
+      txt('• Hızlı çiftlerde (1–20) oklar KISA ve rastgele yönlü → skora az katkı.',44,384,12,'#e8ebf2');
+      txt('• Bu yönleri ve uzunlukları W_Q ve W_K belirledi (eğitimle). RoPE henüz hiçbir şeyi döndürmedi.',44,406,12,'#e8ebf2');
+      txt('Okun yönü = içerik yönü + (birazdan) RoPE dönüşü.',44,428,12,HL);ctx.globalAlpha=1}},
+   live:function(t){var j=31;return 'Örnek: 32. çift — «=» Q oku '+dg(norm(Qc[3][j].p))+', «7» K oku '+dg(norm(Kc[0][j].p))+', «+» K oku '+dg(norm(Kc[1][j].p))+' (RoPE öncesi, içerik)'},
+   say:'Okların yönü şu an <b>içerik</b>: «=»\'nın Q oku "ne arıyorum", «7»\'nin K oku "ben neyim" bilgisini taşıyor. Bu örnek kafada yavaş çiftlerde «=» ile rakamların okları <b>aynı yönde</b>, «+»\'nın oku <b>zıt yönde</b>. Bu yönleri <b>W_Q ve W_K</b> belirliyor ve eğitimle ayarlanıyor; RoPE\'un bunlarla ilgisi yok. RoPE birazdan bu okların üstüne <b>konum kadar ek dönüş</b> ekleyecek. Sayılar örnek, elle tasarlanmış.',
+   neden:'"Oklar sadece konum mu taşıyor?" sorusunun cevabı: hayır. Önce içerik yönü var; RoPE onun üstüne konum dönüşü ekliyor.',
+   soz:'«=» sorusu yavaş kanallarda "rakam arıyorum" yönüne bakıyor; «7»\'nin etiketi aynı yöne, «+»\'nınki ters yöne bakıyor.',
+   elde:'İçerik yönleri: skorun "içerik" kısmı buradan gelecek.'};
+
+  /* ---- R4: konum = kaç adım döndür (1. çift, 4 token) ---- */
+  var r4={dur:26,tag:'R4 · Konum = kaç adım döndür (1. çift)',
+   draw:function(t){var u=ease(t/0.55),sel=Math.min(3,Math.floor(clamp((t-0.55)/0.42,0,0.999)*4));
+    txt('Q satırlarının 1. çifti: her token kendi oku, konum × 57,3° kadar döner (θ₁ = 1 radyan)',30,30,13,'#e8ebf2');
+    for(var r=0;r<4;r++){var cx=130+r*240,cy=150,P=Qc[r][0],rot=r*TH[0]*u;
+      dial(cx,cy,62,[{ang:P.p,c:'rgba(110,160,255,.35)',w:2,dash:[4,4],l:0.9},{ang:P.p+rot,c:r===sel&&t>0.55?HL:'#6ea0ff',w:3,l:0.9}]);
+      if(rot>0.01)arc(cx,cy,30,P.p,P.p+rot);
+      txt('«'+TOKR[r]+'»  konum '+r,cx,cy-76,13,'#e8ebf2','center');
+      txt(r+' × 57,3° = '+(r*57.3*u).toFixed(1).replace('.',',')+'°',cx,cy+82,12,HL,'center');
+      var v0=[P.a*Math.cos(P.p),P.a*Math.sin(P.p)],v1=[P.a*Math.cos(P.p+rot),P.a*Math.sin(P.p+rot)];
+      txt('('+f2(v0[0])+' ; '+f2(v0[1])+')',cx,cy+100,11,'#9aa3b6','center');txt('→ ('+f2(v1[0])+' ; '+f2(v1[1])+')',cx,cy+116,12,'#6ea0ff','center');
+      txt('uzunluk '+f2(Math.hypot(v1[0],v1[1])),cx,cy+132,11,'#9aa3b6','center')}
+    if(t>0.55){var P2=Qc[sel][0],a=P2.a*Math.cos(P2.p),b=P2.a*Math.sin(P2.p),al=sel*TH[0],cs=Math.cos(al),sn=Math.sin(al);
+      rect(30,312,940,140,'rgba(255,200,46,.06)','rgba(255,200,46,.45)');
+      txt('«'+TOKR[sel]+'»\'nın 1. çifti (a ; b) = ('+f2(a)+' ; '+f2(b)+'),  açı = '+sel+' × 57,3° = '+(sel*57.3).toFixed(1).replace('.',',')+'°,  cos = '+f2(cs)+',  sin = '+f2(sn),44,336,12,'#e8ebf2');
+      txt('yeni a = a·cos − b·sin = ('+f2(a)+')('+f2(cs)+') − ('+f2(b)+')('+f2(sn)+') = '+f2(a*cs-b*sn),44,362,13,HL);
+      txt('yeni b = a·sin + b·cos = ('+f2(a)+')('+f2(sn)+') + ('+f2(b)+')('+f2(cs)+') = '+f2(a*sn+b*cs),44,386,13,HL);
+      txt(sel===0?'Konum 0: cos = 1, sin = 0 → sayılar AYNEN kalır. «7» hiç dönmez.':'Uzunluk önce '+f2(P2.a)+', sonra '+f2(Math.hypot(a*cs-b*sn,a*sn+b*cs))+' → AYNI. Yalnız yön değişti; öğrenilen ağırlık yok, sadece formül.',44,414,12,'#e8ebf2');
+      txt('Burada token\'lar KARŞILAŞTIRILMIYOR: her satır yalnız kendi konumunu yönüne yazıyor.',44,438,12,'#9aa3b6')}},
+   live:function(t){var sel=Math.min(3,Math.floor(clamp((t-0.55)/0.42,0,0.999)*4));return t<0.55?'Her satır aynı anda döner: «7» 0°, «+» 57,3°, «5» 114,6°, «=» 171,9° (1. çift)':'«'+TOKR[sel]+'» (konum '+sel+'): döndürme matrisi [cos −sin; sin cos] ile çarp → uzunluk aynı, yön +'+(sel*57.3).toFixed(1).replace('.',',')+'°'},
+   say:'<b>RoPE\'un kendisi.</b> Her satır, <b>kendi konumu kadar</b> döndürülür: konum 0 → 0°, konum 1 → 1 adım, konum 2 → 2 adım, konum 3 → 3 adım. 1. çift için bir adım = 57,3°. Döndürme formülü: <b>yeni a = a·cos − b·sin, yeni b = a·sin + b·cos</b> (2×2 döndürme matrisi). Okun <b>uzunluğu aynı kalır</b>, yalnız yönü değişir. <b>Öğrenilen ağırlık yok</b>; konum dışında hiçbir şeye bakmaz. Bu adımda token\'lar birbirleriyle <b>karşılaştırılmıyor</b>.',
+   neden:'Konum bilgisini sayıların büyüklüğüne değil yönüne yazmak, sonraki nokta çarpımda yalnızca iki token arasındaki MESAFENİN kalmasını sağlıyor (R8).',
+   soz:'Her kelime "ben kaçıncıyım" bilgisini oklarını o kadar çevirerek yazıyor; birinci kelime hiç çevirmiyor.',
+   elde:'Döndürülmüş Q satırları (şekil aynı 4×64, sayılar değişti).'};
+
+  /* ---- R5: 32 çift, 32 hız ---- */
+  var r5={dur:26,tag:'R5 · 32 çift, 32 hız: θⱼ = 10000^(−2j/64)',
+   draw:function(t){var u=ease((t-0.3)/0.55);
+    txt('Her çiftin adım başına açısı sabit bir formülden: θⱼ = 10000^(−2j/64), j = 0…31  (eğitimle değişmez)',30,28,13,'#e8ebf2');
+    var bx=50,by=60,bh=150,lg=function(v){return (Math.log10(v*DEG)+3)/(Math.log10(57.3)+3)};
+    for(var k=0;k<NP;k++){var hgt=bh*clamp(lg(TH[k]),0,1)*ease(t/0.3);rect(bx+k*13,by+bh-hgt,10,hgt,k<FAST?'rgba(232,169,77,.85)':'rgba(95,207,138,.85)')}
+    frame(bx-4,by,NP*13+6,bh);txt('adım başı açı (log ölçek)',bx,by+bh+16,11,'#9aa3b6');
+    [[0,'1. çift 57,3°'],[8,'9. çift 5,73°'],[16,'17. çift 0,573°'],[31,'32. çift 0,0076°']].forEach(function(q){txt(q[1],bx+q[0]*13+5,by+bh+32+(q[0]%16===0?0:14),10,'#e8ebf2',q[0]===31?'right':'left')});
+    txt('saniye ibresi',bx,by-6,11,'#e8a94d');txt('akrep',bx+NP*13,by-6,11,'#5fcf8a','right');
+    txt('«=» (konum 3) satırının 32 oku: hepsi 3 adım döner ama 3 × θⱼ',500,62,12,'#e8ebf2');
+    for(k=0;k<NP;k++){var cx=530+(k%8)*58,cy=100+Math.floor(k/8)*56,P=Qc[3][k],rt=3*TH[k]*u;
+      dial(cx,cy,20,[{ang:P.p,c:'rgba(110,160,255,.3)',w:1.5,dash:[3,3],l:0.95},{ang:P.p+rt,c:k<FAST?'#e8a94d':'#5fcf8a',w:2,l:0.95}]);
+      txt(k+1,cx+22,cy-12,9,'#9aa3b6')}
+    if(t>0.85){ctx.globalAlpha=ease((t-0.85)/0.12);rect(30,330,940,120,'rgba(255,200,46,.06)','rgba(255,200,46,.45)');
+      txt('Aynı satır, aynı konum (3), farklı dönüş:  1. çift 171,9°  ·  9. çift 17,2°  ·  17. çift 1,7°  ·  32. çift 0,02°',44,354,12,HL);
+      txt('• Hızlı çift: 1 adım ile 2 adım çok farklı açı → YAKIN mesafeyi net ayırt eder; ama ≈6 adımda tur atar, uzakları karıştırır.',44,380,12,'#e8ebf2');
+      txt('• Yavaş çift: binlerce adımda tur atmaz → UZAK mesafeyi ölçer; kısa cümlede neredeyse hiç dönmez → orada skoru içerik belirler.',44,402,12,'#e8ebf2');
+      txt('• Hız yalnız çiftin SATIRDAKİ SIRASINA bağlı (baştakiler hızlı, sondakiler yavaş); model hangi çifte ne yazacağını öğrenir.',44,424,12,'#e8ebf2');ctx.globalAlpha=1}},
+   live:function(t){var u=ease((t-0.3)/0.55);return '«=» konum 3: 1. çift '+(171.9*u).toFixed(1).replace('.',',')+'°, 9. çift '+(17.19*u).toFixed(1).replace('.',',')+'°, 17. çift '+(1.72*u).toFixed(2).replace('.',',')+'°, 32. çift '+(0.0228*u).toFixed(3).replace('.',',')+'° döndü'},
+   say:'Her çiftin <b>adım başına açısı farklı</b>: θⱼ = 10000^(−2j/64). 1. çift 57,3°, 9. çift 5,73°, 17. çift 0,573°, 32. çift 0,0076°. Hızlıdan yavaşa kesintisiz bir sıra; hız yalnızca çiftin satırdaki <b>sırasına</b> bağlı, eğitimle değişmez. Saat gibi: aynı süre (konum) geçer ama saniye ibresi çok, akrep az döner. gpt-oss uzun bağlam için başka bir taban ve ek ölçekleme (YaRN) kullanır † — burada 10000 tabanı örnek.',
+   neden:'Tek hızlı ibre uzak mesafeleri karıştırır (tur atar), tek yavaş ibre yakın komşuları ayırt edemez; farklı hızlar her ölçekte mesafeyi ölçmeyi sağlıyor.',
+   soz:'32 ibre aynı anda dönüyor: biri saniye gibi hızlı, biri akrep gibi yavaş; hepsi aynı "saat"i (konumu) gösteriyor.',
+   elde:'Her çiftin dönüş miktarı = konum × θⱼ.'};
+
+  /* ---- R6: K de döner, V dönmez ---- */
+  var r6={dur:20,tag:'R6 · K de aynı şekilde döner; V hiç dönmez',
+   draw:function(t){var u=ease(t/0.7);
+    var QN=[0,1,2,3].map(function(r){return vec(Qc[r],r*u)}),KN=[0,1,2,3].map(function(r){return vec(Kc[r],r*u)});
+    table(80,60,600,96,QN,'Q kafa 1 (4×64)','#6ea0ff',u>0.98?'RoPE uygulandı':'dönüyor…');
+    table(80,200,600,96,KN,'K grup 1 (4×64)','#5fcf8a',u>0.98?'RoPE uygulandı':'dönüyor…');
+    table(80,340,600,96,Vv,'V grup 1 (4×64)','#e8a94d','RoPE YOK');
+    [60,200].forEach(function(y){for(var r=0;r<4;r++)txt('konum '+r+' → '+r+' adım',700,y+r*24+16,11,r===0?'#9aa3b6':HL)});
+    for(var r=0;r<4;r++)txt('dokunulmaz',700,340+r*24+16,11,'#9aa3b6');
+    txt('Şekil değişmez: 4×64 → 4×64.  Q ve K hücreleri renk değiştiriyor (yön değişti); «7» satırı aynı kalıyor.',30,24,12,'#e8ebf2')},
+   live:function(t){return 'Q ve K: her satır kendi konumu kadar döner (öğrenilen ağırlık yok). V: değişmez — V "taşınacak bilgi", yerine göre değişmesi gerekmiyor.'},
+   say:'Aynı işlem <b>K</b>\'ya da yapılır: her token\'ın K satırı kendi konumu kadar döner. <b>V\'ye RoPE uygulanmaz</b>: V "karıştırılacak bilgi"; konum yalnızca <b>kime bakılacağına</b> (Q·K skoruna) karışsın diye Q ve K döndürülür. Bir gruptaki 8 Q kafası aynı döndürülmüş K\'yı paylaşır. Şekiller değişmez (4×64).',
+   neden:'Mesafenin skora girmesi için iki tarafın da (soran Q ve bakılan K) kendi konumu kadar döndürülmesi gerekiyor; V\'nin döndürülmesine gerek yok.',
+   soz:'Soru ve etiket "sıra damgası" alıyor; taşınacak bilgi (V) olduğu gibi kalıyor.',
+   elde:'RoPE\'lu Q (4×64) ve K (4×64), dokunulmamış V (4×64).'};
+
+  /* ---- R7: Q·Kᵀ = 32 çiftin katkısı ---- */
+  var C7=contrib(Qc[3],3,Kc[0],0),C1=contrib(Qc[3],3,Kc[1],1);
+  var r7={dur:26,tag:'R7 · Q·Kᵀ: skor = 32 çiftin katkısının toplamı',
+   draw:function(t){var two=t>=0.5,u=two?clamp((t-0.5)/0.4,0,1):clamp(t/0.4,0,1),C=two?C1:C7,ki=two?1:0,n=two?1:0,shown=Math.floor(u*NP);
+    txt('Şimdi karşılaştırma: «=» (konum 3) sorusu · «'+TOKR[ki]+'» (konum '+n+') etiketi',30,30,14,'#e8ebf2');
+    txt('katkıⱼ = |q|·|k|·cos( içerik farkıⱼ + (3 − '+n+') × θⱼ )      ← içerik (W_Q,W_K)  +  mesafe (RoPE)',30,54,12,HL);
+    var bx=50,by=230,sc=110,acc=0;rect(bx-6,by,NP*28+8,1,'#4a5468');
+    for(var k=0;k<NP;k++){var v=k<shown?C[k]:0;if(k<shown)acc+=C[k];var h=v*sc/1.4;
+      rect(bx+k*28,h>=0?by-h:by,22,Math.abs(h),k<FAST?'rgba(232,169,77,.85)':'rgba(95,207,138,.9)');
+      if(k%4===0||k===31)txt(k+1,bx+k*28+11,by+150,10,'#9aa3b6','center')}
+    txt('hızlı çiftler (1–20): kısa oklar, katkı küçük ve karışık',bx,by+170,11,'#e8a94d');txt('yavaş çiftler (21–32)',bx+FAST*28,by+170,11,'#5fcf8a');
+    var tot=sum(C);txt('toplam (skor) = '+f2(acc),940,120,22,HL,'right');txt('bitince: '+f2(tot),940,146,12,'#9aa3b6','right');
+    txt(ki===0?'«7»: yavaş çiftlerde oklar hizalı → büyük ARTI katkılar':'«+»: yavaş çiftlerde oklar zıt → büyük EKSİ katkılar',940,172,12,'#e8ebf2','right');
+    if(t>0.92){txt('«=»·«7» = '+f2(S[3][0])+'    «=»·«+» = '+f2(S[3][1])+'    «=»·«5» = '+f2(S[3][2])+'    «=»·«=» = '+f2(S[3][3]),30,446,13,'#e8ebf2')}},
+   live:function(t){var two=t>=0.5,u=two?clamp((t-0.5)/0.4,0,1):clamp(t/0.4,0,1),C=two?C1:C7,k=Math.min(31,Math.floor(u*NP));return 'çift '+(k+1)+': katkı = '+f2(C[k])+(k>=FAST?' (yavaş: mesafe neredeyse yok, içerik belirliyor)':' (hızlı: mesafe açıyı çok değiştiriyor)')},
+   say:'<b>RoPE\'tan sonraki adım: Q·Kᵀ.</b> Karşılaştırma ancak burada olur. «=»\'nın döndürülmüş Q satırı ile «7»\'nin döndürülmüş K satırı nokta çarpılır: 64 çarpımın toplamı = <b>32 çiftin katkısının toplamı</b>. Her çiftin katkısı iki okun <b>arasındaki açının</b> kosinüsüne bağlı ve bu açı = <b>içerik farkı</b> (W_Q, W_K) + <b>konum farkı × θⱼ</b> (RoPE). Bu örnek kafada yavaş çiftler «=» ile rakamlar arasında büyük artı, «=» ile «+» arasında büyük eksi katkı veriyor.',
+   neden:'Dikkat kararının ham maddesi bu skor; RoPE\'un eklediği açı ancak bu çarpımda anlam kazanıyor.',
+   soz:'«=» her kelimeye "ne kadar işime yararsın?" diye soruyor; 32 kanaldan gelen cevaplar toplanıp tek bir puan oluyor.',
+   elde:'Her soran–bakılan çifti için tek bir skor (içerik + mesafe).'};
+
+  /* ---- R8: mutlak konum sadeleşir ---- */
+  var CASES=[[3,0],[13,10],[103,100]];
+  var r8={dur:20,tag:'R8 · Mutlak sıra sadeleşir, MESAFE kalır',
+   draw:function(t){var ci=Math.min(2,Math.floor(clamp(t,0,0.999)*3));
+    txt('Aynı iki token, cümlenin farklı yerlerinde: «7» konum n, «=» konum n+3',30,30,14,'#e8ebf2');
+    CASES.forEach(function(cs,n){var cx=160+n*330,cy=180,m=cs[0],k=cs[1],qa=Qc[3][0].p+m*TH[0],ka=Kc[0][0].p+k*TH[0];
+      ctx.globalAlpha=n<=ci?1:0.25;dial(cx,cy,80,[{ang:ka,c:'#5fcf8a',w:3},{ang:qa,c:'#6ea0ff',w:3}]);arc(cx,cy,26,ka,ka+norm(qa-ka));
+      txt('«=» konum '+m+'  ·  «7» konum '+k,cx,cy-96,12,'#e8ebf2','center');
+      txt('1. çift: Q '+Math.round(m*57.3)+'° döndü, K '+Math.round(k*57.3)+'° döndü',cx,cy+104,11,'#9aa3b6','center');
+      txt('aradaki açı = içerik farkı + 3 × 57,3°',cx,cy+122,11,HL,'center');
+      var scv=sum(contrib(Qc[3],m,Kc[0],k));txt('skor (32 çift) = '+f2(scv),cx,cy+146,14,HL,'center');ctx.globalAlpha=1});
+    if(t>0.7)txt('Üçünde de skor AYNI: Q ve K\'nın dönüşleri birbirini götürür, geriye yalnız (m − n) = 3 adımlık fark kalır.',30,440,13,'#e8ebf2')},
+   live:function(t){var ci=Math.min(2,Math.floor(clamp(t,0,0.999)*3)),cs=CASES[ci];return 'konumlar ('+cs[0]+', '+cs[1]+'): Q·K = Σ |q||k| cos(içerik farkı + ('+cs[0]+' − '+cs[1]+')·θⱼ) = '+f2(sum(contrib(Qc[3],cs[0],Kc[0],cs[1])))},
+   say:'Q·K iki okun <b>aradaki açısına</b> bakar. Q konum m kadar, K konum n kadar döndüğü için aradaki açıya yalnızca <b>(m − n)</b> girer: «7» 0 ile «=» 3, 10 ile 13 ya da 100 ile 103 olsa da skor <b>aynıdır</b>. RoPE\'un "göreli konum" denmesinin nedeni bu: model mutlak sırayı değil, <b>iki token arasındaki mesafeyi</b> görür.',
+   neden:'Aynı ilişki ("3 önceki token") cümlenin başında da sonunda da aynı skoru vermeli; aksi hâlde model her konum için ayrı ayrı öğrenmek zorunda kalırdı.',
+   soz:'"Benden 3 önceki kelime" her yerde aynı anlama geliyor; cümlenin neresinde olduğun fark etmiyor.',
+   elde:'Skor = f(içerik, mesafe); mutlak konum yok.'};
+
+  /* ---- R9: uzaktaki rakam — içerik kafası vs mesafe kafası ---- */
+  var DMAX=200,CUR_I=[],CUR_D=[];for(var d=0;d<=DMAX;d++){CUR_I.push(sum(contrib(Qc[3],d,Kc[0],0)));CUR_D.push(sum(contrib(Qd,d,Kd,0)))}
+  var r9={dur:26,tag:'R9 · Uzaktaki rakam: içerik kafası ↔ mesafe kafası',
+   draw:function(t){var dc=Math.round(ease(t/0.85)*DMAX),gx=60,gy=60,gw=600,gh=300,mn=-12,mx=18;
+    txt('Skor, «7» ile «=» arasındaki mesafeye (d) göre — iki farklı kafa (örnek)',30,30,14,'#e8ebf2');
+    rect(gx,gy,gw,gh,'#141923','#4a5468');var y0=gy+gh*(mx/(mx-mn));rect(gx,y0,gw,1,'#4a5468');txt('0',gx-6,y0+4,10,'#9aa3b6','right');
+    function plot(C,c){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();for(var d=0;d<=dc;d++){var x=gx+d/DMAX*gw,y=gy+gh*(mx-C[d])/(mx-mn);d?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();ctx.lineWidth=1}
+    plot(CUR_I,'#5fcf8a');plot(CUR_D,'#e8a94d');rect(gx+dc/DMAX*gw,gy,1,gh,HL);
+    [0,50,100,150,200].forEach(function(d){txt(d,gx+d/DMAX*gw,gy+gh+16,10,'#9aa3b6','center')});txt('mesafe d (adım)',gx+gw/2,gy+gh+34,11,'#9aa3b6','center');
+    var bx=690;txt('d = '+dc,bx,90,18,HL);
+    txt('İçerik kafası (yeşil)',bx,124,13,'#5fcf8a');txt('skor = '+f2(CUR_I[dc]),bx,144,13,'#e8ebf2');txt('bilgi yavaş çiftlerde →',bx,162,11,'#9aa3b6');txt('mesafe pek değiştirmez',bx,176,11,'#9aa3b6');
+    txt('Mesafe kafası (turuncu)',bx,210,13,'#e8a94d');txt('skor = '+f2(CUR_D[dc]),bx,230,13,'#e8ebf2');txt('bilgi hızlı çiftlerde →',bx,248,11,'#9aa3b6');txt('d ≈ 1 civarında tepe,',bx,262,11,'#9aa3b6');txt('uzakta düşük ve dalgalı',bx,276,11,'#9aa3b6');txt('("hemen önceki token\'a bak")',bx,290,11,'#9aa3b6');
+    txt('RoPE mesafeyi skora EKLER,',bx,320,12,HL);txt('ama zorunlu kılmaz: model,',bx,338,12,'#e8ebf2');txt('bilgiyi hangi çiftlere',bx,354,12,'#e8ebf2');txt('yazacağını (W_Q, W_K ile)',bx,370,12,'#e8ebf2');txt('seçerek mesafeye ne kadar',bx,386,12,'#e8ebf2');txt('önem vereceğini belirler.',bx,402,12,'#e8ebf2');
+    txt('Not: 200 adımda en yavaş olmayan çiftler de biraz döner → yeşil eğri yavaşça iner.',30,440,11,'#9aa3b6')},
+   live:function(t){var dc=Math.round(ease(t/0.85)*DMAX);return 'd = '+dc+':  içerik kafası '+f2(CUR_I[dc])+'  ·  mesafe kafası '+f2(CUR_D[dc])},
+   say:'Konuşmadaki soru: "7 ile 5 uzaksa, RoPE onları ayırmaz mı?" Cevap: <b>ayırmaz, çünkü model seçebilir.</b> Skor 32 çiftin toplamı. <b>İçerik kafası</b> (yeşil) bilgiyi <b>yavaş çiftlere</b> yazmış: rakam 1 adım da 100 adım da uzakta olsa skor neredeyse aynı. <b>Mesafe kafası</b> (turuncu) bilgiyi <b>hızlı çiftlere</b> yazmış ve "1 adım önceki token" için ayarlanmış: d ≈ 1 civarında tepe yapar, uzaklarda düşük ve dalgalı kalır. Aynı katmandaki 64 kafa farklı işler yapabilir. İki kafa da örnek; gpt-oss\'ta hangi kafanın ne yaptığını ölçmedik.',
+   neden:'RoPE\'un "yalnız mesafe mi?" ve "uzaktaki ilgili token\'ı kaçırır mı?" sorularının cevabı burada: mesafe bir bileşen, içerik diğeri; ağırlığını eğitim belirler.',
+   soz:'Bir kafa "rakam nerede olursa olsun bul" der, bir başkası "hemen yanımdakine bak" der; RoPE ikisine de izin verir.',
+   elde:'Skor eğrisi: içerik baskınsa düz, mesafe baskınsa dar bir tepe.'};
+
+  /* ---- R10: 4×4 tablo, ÷8, maske ---- */
+  var r10={dur:22,tag:'R10 · 4×4 skor tablosu → ÷8 → maske',
+   draw:function(t){var ph=t<0.33?0:t<0.66?1:2,X0=260,Y0=110,CWd=120,CHt=60;
+    txt(['① Ham skorlar (her hücre = Q satırı · K satırı)','② ÷8  (8 = √64, kafa boyutunun karekökü)','③ Nedensel maske: gelecek kapatılır'][ph],30,34,14,HL);
+    for(var b=0;b<4;b++){txt('K «'+TOKR[b]+'»',X0+b*CWd+CWd/2,Y0-24,12,'#5fcf8a','center');txt('konum '+b,X0+b*CWd+CWd/2,Y0-8,10,'#9aa3b6','center')}
+    for(var a=0;a<4;a++){txt('Q «'+TOKR[a]+'»',X0-14,Y0+a*CHt+28,12,'#6ea0ff','right');txt('konum '+a,X0-14,Y0+a*CHt+44,10,'#9aa3b6','right');
+      for(b=0;b<4;b++){var masked=ph===2&&b>a,v=ph===0?S[a][b]:SD[a][b];
+        rect(X0+b*CWd,Y0+a*CHt,CWd-4,CHt-4,masked?'#12151c':col(v,ph===0?16:2),a===3?HL:'#2a3140',a===3?2:1);
+        txt(masked?'−∞ (maske)':f2(v),X0+b*CWd+CWd/2-2,Y0+a*CHt+34,masked?11:16,masked?'#3a4252':'#fff','center')}}
+    txt('satır = soran, sütun = bakılan',X0,Y0+4*CHt+18,12,'#9aa3b6');
+    txt(ph===0?'Skorlar 64 çarpımın toplamı → büyük sayılar.':ph===1?'Bölünce makul aralığa iner; softmax tek token\'a kilitlenmez.':'«+» «5»\'e, «7» «+»\'ya bakamaz (henüz yazılmadılar). «=» son token: 4 hücresi de açık.',X0,Y0+4*CHt+40,12,'#e8ebf2');
+    txt('gpt-oss: bazı katmanlarda yalnız son 128 token (kayan pencere) — 4 token\'da etkisi yok.',X0,Y0+4*CHt+60,11,'#9aa3b6')},
+   live:function(t){return t<0.33?'«=» satırı ham: '+S[3].map(f2).join(' · '):t<0.66?'«=» satırı ÷8: '+SD[3].map(f2).join(' · '):'maske: her satır yalnız kendisini ve öncekileri görür'},
+   say:'Her soran–bakılan çifti için skor hesaplanınca kafa başına <b>4×4 tablo</b> çıkar (satır = soran, sütun = bakılan). Sonra <b>÷8</b> (√64): 64 çarpımın toplamı büyük olabildiği için ölçek düşürülür. Ardından <b>nedensel maske</b>: her token yalnızca kendisini ve öncekileri görebilir, gelecek −∞ yapılır. Bu örnek kafada «=» satırında rakamlar yüksek, «+» düşük.',
+   neden:'÷8 olmadan softmax çok sivri olur (tek token %100\'e yakın, gradyan küçülür); maske olmadan model eğitimde cevabı "geleceğe bakarak" kopyalardı.',
+   soz:'Tablo "kim kime ne kadar ilgili"nin ham puanı; ölçekleniyor ve gelecekteki kelimeler gizleniyor.',
+   elde:'Ölçeklenmiş ve maskelenmiş 4×4 skor tablosu.'};
+
+  /* ---- R11: softmax ---- */
+  var r11={dur:20,tag:'R11 · Softmax → yüzdeler (÷8\'li ve ÷8\'siz)',
+   draw:function(t){var u=ease(t/0.6);
+    txt('«=» satırı: skor → e^skor → satır toplamına böl → yüzde',30,34,14,'#e8ebf2');
+    for(var k=0;k<4;k++){var y=80+k*58;txt('«'+TOKR[k]+'»',60,y+18,14,k===0||k===2?'#5fcf8a':'#9aa3b6','right');
+      txt('÷8 skor '+f2(SD[3][k]),80,y+4,11,'#9aa3b6');rect(80,y+10,380,20,'#1a1f2b');rect(80,y+10,380*A[3][k]*u,20,k===0||k===2?'rgba(95,207,138,.85)':'rgba(150,160,180,.6)');txt('%'+Math.round(A[3][k]*100*u),470,y+26,13,'#e8ebf2');
+      if(t>0.6){ctx.globalAlpha=ease((t-0.6)/0.3);txt('÷8 OLMADAN',560,y+4,11,'#f27a88');rect(560,y+10,300,20,'#1a1f2b');rect(560,y+10,300*A0[3][k],20,'rgba(240,100,120,.7)');txt('%'+Math.round(A0[3][k]*100),870,y+26,13,'#e8ebf2');ctx.globalAlpha=1}}
+    txt('Toplam %100. Bu örnek kafada «=» dikkatinin çoğunu «7» ve «5»\'e veriyor (içerik eşleşmesi, yavaş çiftler).',30,330,12,HL);
+    if(t>0.6)txt('÷8 olmasaydı dağılım daha sivri olurdu: «+» ve «=» tam %0\'a iner; skorlar biraz daha büyük olsa tek token\'a kilitlenirdi.',30,352,12,'#e8ebf2');
+    txt('Bu işlem 4 satırın hepsinde (maskeli hâliyle) ve 64 kafanın her birinde ayrı yapılır → 64 tane 4×4 yüzde tablosu.',30,380,12,'#9aa3b6')},
+   live:function(t){return '«=» → «7» %'+P3[0]+', «+» %'+P3[1]+', «5» %'+P3[2]+', «=» %'+P3[3]+'   (÷8 olmadan: %'+P30.join(' / %')+')'},
+   say:'<b>Softmax</b> her satırın skorlarını yüzdeye çevirir: e^skor alınır, satır toplamına bölünür, satır toplamı %100 olur. Bu örnekte «=»: «7» <b>%'+P3[0]+'</b>, «+» %'+P3[1]+', «5» <b>%'+P3[2]+'</b>, «=» %'+P3[3]+'. ÷8 yapılmasaydı: %'+P30.join(' / %')+'. RoPE\'un etkisi bu yüzdelere skor üzerinden girer.',
+   neden:'Yüzdeler bir sonraki adımda V satırlarını karıştırmak için kullanılacak; ağırlıkların toplamı 1 olmalı.',
+   soz:'«=» dikkatini paylaştırıyor: en çok rakamlara, az da kendisine ve «+»\'ya.',
+   elde:'Kafa başına 4×4 yüzde tablosu (her satır %100).'};
+
+  /* ---- R12: × V ---- */
+  var r12={dur:22,tag:'R12 · × V: «=»\'nın yeni satırı',
+   draw:function(t){var cu=Math.min(63,Math.floor(ease(t/0.85)*64)),cw=11,X=150;
+    txt('A (4×4) · V (4×64) → 4×64.   «=»\'nın satırı: yüzdelerle V satırlarının ağırlıklı ortalaması',30,30,13,'#e8ebf2');
+    for(var k=0;k<4;k++){var y=60+k*40;txt('%'+P3[k]+' ×',X-10,y+20,13,k===0||k===2?'#5fcf8a':'#9aa3b6','right');txt('V«'+TOKR[k]+'»',X-60,y+20,11,'#9aa3b6','right');
+      for(var c=0;c<64;c++)rect(X+c*cw,y,cw-1,28,col(Vv[k][c],1.2),c===cu?HL:null,2)}
+    rect(X,226,64*cw,1,'#4a5468');txt('=',X-14,262,16,'#e8ebf2','right');
+    for(c=0;c<64;c++)rect(X+c*cw,240,cw-1,32,c<=cu?col(OUT[c],1.2):EMPTY,c===cu?HL:null,2);
+    txt('«=»\'nın yeni 64 sayısı (bu kafanın çıktısı)',X,292,11,'#9aa3b6');
+    var terms=[0,1,2,3].map(function(k){return f2(A[3][k])+'·('+f2(Vv[k][cu])+')'}).join(' + ');
+    txt('sütun '+(cu+1)+':  '+terms+' = '+f2(OUT[cu]),30,322,12,HL);
+    rect(30,346,940,104,'rgba(255,200,46,.06)','rgba(255,200,46,.45)');
+    txt('• V döndürülmedi: RoPE yalnız "kime bakılacağına" karıştı; "ne alınacağı" V\'den, olduğu gibi.',44,370,12,'#e8ebf2');
+    txt('• Aynı gruptaki 8 Q kafası aynı V\'yi kullanır ama yüzdeleri farklı → 8 farklı karışım.',44,392,12,'#e8ebf2');
+    txt('• Sonraki adım: 64 kafanın 4×64 çıktısı yan yana → 4×4096 → × W_O (4096×2880) → 4×2880, + x (residual).',44,414,12,'#e8ebf2');
+    txt('Tur sonu: Q,K → RoPE (konum, yön olarak) → Q·Kᵀ (içerik + mesafe) → ÷8 → maske → softmax → × V.',44,436,12,HL)},
+   live:function(t){var cu=Math.min(63,Math.floor(ease(t/0.85)*64));return 'sütun '+(cu+1)+': Σ yüzde × V = '+f2(OUT[cu])},
+   say:'Yüzde tablosu (4×4) <b>V</b> (4×64) ile çarpılır → <b>4×64</b>. «=»\'nın yeni satırı: %'+P3[0]+'·V«7» + %'+P3[1]+'·V«+» + %'+P3[2]+'·V«5» + %'+P3[3]+'·V«=». Bu hesap 64 sütunun her birinde yapılır. Artık «=»\'nın satırı büyük ölçüde rakamların bilgisini taşıyor. V\'ye RoPE uygulanmadı. Sonraki adım: 64 kafanın çıktısı yapıştırılır (4×4096), W_O ile çarpılır (4×2880), x\'e eklenir.',
+   neden:'Dikkatin amacı bilgi taşımak: skor ve yüzde "kime bakılacak", V "oradan ne alınacak".',
+   soz:'«=» kendi kartını, en çok dikkat ettiği rakamların bilgisinden bir karışımla yeniden yazıyor.',
+   elde:'Kafa 1 çıktısı 4×64; 64 kafa → 4×4096.'};
+
+  /* ---- R13: eğitim okları nasıl hizalar (oyuncak) ---- */
+  var KA=[0,80,10,125].map(function(v){return v/DEG});
+  var r13={dur:26,tag:'R13 · Eğitim okları nasıl hizalar? (oyuncak)',
+   draw:function(t){var u=ease(t/0.85),qa=(85-80*u)/DEG,cs=KA.map(function(k){return 4*Math.cos(qa-k)}),p=smx(cs),step=Math.round(u*500);
+    txt('Tek bir yavaş çift (mesafe etkisi ≈ 0): eğitim W_Q\'yu değiştirdikçe «=»\'nın Q oku döner',30,30,13,'#e8ebf2');
+    dial(190,220,140,[{ang:KA[0],c:'#5fcf8a',w:3,lab:'K «7»'},{ang:KA[2],c:'#3fc7c1',w:3},{ang:KA[1],c:'#f27a88',w:3},{ang:KA[3],c:'#9aa3b6',w:3},{ang:qa,c:'#6ea0ff',w:5}]);
+    [['K «7»',0,'#5fcf8a'],['K «+»',1,'#f27a88'],['K «5»',2,'#3fc7c1'],['K «=»',3,'#9aa3b6']].forEach(function(o){var a=KA[o[1]];txt(o[0],190+Math.cos(a)*158,220-Math.sin(a)*158+4,12,o[2],Math.cos(a)<-0.1?'right':Math.cos(a)>0.1?'left':'center')});
+    txt('Q «=»',190+Math.cos(qa)*80,220-Math.sin(qa)*80-10,12,'#6ea0ff','center');
+    txt('eğitim adımı ≈ '+step,420,70,16,HL);txt('Q «=» yönü: '+Math.round(qa*DEG)+'°',420,96,13,'#6ea0ff');
+    var lab=['«7»','«+»','«5»','«='];
+    for(var k=0;k<4;k++){var y=130+k*42;txt('«'+TOKR[k]+'»',440,y+16,13,'#e8ebf2','right');rect(450,y,360,22,'#1a1f2b');rect(450,y,360*p[k],22,k===0||k===2?'rgba(95,207,138,.85)':'rgba(150,160,180,.6)');txt('%'+Math.round(p[k]*100),820,y+16,13,'#e8ebf2');txt('skor '+f2(cs[k]),880,y+16,11,'#9aa3b6')}
+    rect(400,310,570,140,'rgba(255,200,46,.06)','rgba(255,200,46,.45)');
+    txt('1. Başta Q «=» «+»\'ya yakın → dikkat «+»\'ya → "12" yanlış.',412,334,11,'#e8ebf2');
+    txt('2. Geri yayılım: kayıp → yüzdeler → skor → Q,K → W_Q,W_K.',412,356,11,'#e8ebf2');
+    txt('3. W_Q her adımda biraz değişir → Q oku rakamlara döner.',412,378,11,'#e8ebf2');
+    txt('4. Açı küçülür → skor büyür → «7»,«5» payı artar → kayıp düşer.',412,400,11,'#e8ebf2');
+    txt('RoPE DEĞİŞMEZ (ağırlığı yok); değişen içerik yönü.',412,428,11,HL)},
+   live:function(t){var u=ease(t/0.85),qa=(85-80*u)/DEG,p=smx(KA.map(function(k){return 4*Math.cos(qa-k)}));return 'Q yönü '+Math.round(qa*DEG)+'° → «7» %'+Math.round(p[0]*100)+', «+» %'+Math.round(p[1]*100)+', «5» %'+Math.round(p[2]*100)+', «=» %'+Math.round(p[3]*100)},
+   say:'Konuşmadaki "oklar nasıl hizalanacak?" sorusu. Okun son yönü = <b>içerik yönü</b> (W_Q, W_K) + <b>RoPE dönüşü</b> (konum). Eğitim yalnızca <b>içerik yönünü</b> değiştirir: kayıp "«=» yanlış yerden bilgi aldı" der, gradyan W_Q\'yu (ve W_K\'yı) her adımda biraz iter, «=»\'nın sorusu rakamların etiketine doğru döner. Skor büyür, softmax payı artar, V\'den doğru bilgi gelir. Bu sahne bir oyuncak (tek çift, elle seçilmiş açılar); gerçek modelde milyonlarca adım ve 32 çift birlikte değişir.',
+   neden:'Q ile K\'nın "aynı yöne bakması" sihir değil; kaybı düşürdüğü için gradyan inişinin bulduğu çözüm.',
+   soz:'Model, «=»\'nın sorusunu yavaş yavaş rakamların etiketine çeviriyor; çünkü öyle yapınca doğru cevabı veriyor.',
+   elde:'Eğitilmiş içerik yönleri: RoPE\'lu skorun "içerik" kısmı.'};
+
+  var ORD=['qk','pairs','content','pos','speeds','kv','dot','shift','dist','table','soft','av','train'];
+  var SCN=[r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13];
+  var SHORT={qk:'Önceki adım: Q, K',pairs:'64 sayı → 32 ok',content:'Ok yönü = içerik',pos:'Konum = kaç adım dön',speeds:'32 çift, 32 hız',kv:'K döner, V dönmez',dot:'Q·Kᵀ = 32 katkı',shift:'Yalnız mesafe kalır',dist:'Uzaktaki rakam',table:'4×4 → ÷8 → maske',soft:'Softmax → yüzde',av:'× V → yeni satır',train:'Eğitim okları hizalar'};
+  var CR='gpt-oss › Attention › ',CRUMB={qk:CR+'önceki adım: x·W_Q, x·W_K → kafalara böl',pairs:CR+'RoPE › bir satır = 32 çift = 32 ok',content:CR+'RoPE › okların içerik yönü (W_Q, W_K)',pos:CR+'RoPE › konum kadar döndür',speeds:CR+'RoPE › 32 farklı hız',kv:CR+'RoPE › Q ve K döner, V dönmez',dot:CR+'sonraki adım: Q·Kᵀ',shift:CR+'Q·Kᵀ › göreli konum',dist:CR+'Q·Kᵀ › içerik + mesafe',table:CR+'skor tablosu › ÷8 › maske',soft:CR+'softmax',av:CR+'A·V',train:CR+'eğitim: içerik yönleri nasıl öğrenilir'};
+  var COLS={qk:[4,5],pairs:[6,6],content:[6,6],pos:[6,6],speeds:[6,6],kv:[6,6],dot:[8,8],shift:[8,8],dist:[8,8],table:[9,9],soft:[9,9],av:[10,10],train:[4,5]};
+  return {ORD:ORD,SCN:SCN,SHORT:SHORT,CRUMB:CRUMB,COLS:COLS,data:{S:S,SD:SD,A:A,A0:A0,TH:TH,CUR_I:CUR_I,CUR_D:CUR_D}};
+})();
+var tourR=mkTour({arch:'gptoss',tag:'🌀 RoPE turu: Q,K → RoPE → skor → softmax → ×V',title:'🌀 RoPE turu — yol haritası (önceki adım → RoPE → sonraki adımlar)',
+ ORD:ROPE.ORD,SCN:ROPE.SCN,hvSc:[],SHORT:ROPE.SHORT,CRUMB:ROPE.CRUMB,COLS:ROPE.COLS,
+ cap1:'Solda/üstte gpt-oss mimarisi (3B). Tur Q,K\'dan başlar, RoPE\'u açar, ×V\'ye kadar gider.',capOut:'Tur bitti: Q,K → RoPE → Q·Kᵀ → ÷8 → maske → softmax → ×V.',
+ liveIntro:'RoPE turu (13 durak): önceki adım (Q, K) → 64 sayı = 32 ok → ok yönü = içerik → konum kadar döndür → 32 hız → K döner, V dönmez → Q·Kᵀ → yalnız mesafe kalır → uzaktaki rakam → ÷8 + maske → softmax → ×V → eğitim. Sayılar örnek.',
+ sayIntro:'<b>🌀 RoPE turu.</b> Konuşmada adım adım kurduğumuz RoPE anlatısının animasyonu. Tek bir kafayı (Q kafa 1, K/V grubu 1) ve 4 token\'ı («7 + 5 =») izliyoruz. Sıra: <b>önceki adım</b> (Q ve K nereden geldi) → <b>RoPE</b> (64 sayı = 32 ok, okun yönü = içerik, konum kadar döndür, 32 farklı hız, K döner/V dönmez) → <b>sonraki adımlar</b> (Q·Kᵀ = 32 katkının toplamı, yalnız mesafe kalır, uzaktaki rakam, ÷8 + maske, softmax, ×V) → <b>eğitim</b> okları nasıl hizalıyor. RoPE formülü gerçek (θⱼ = 10000^(−2j/64)); Q/K/V sayıları <b>örnek</b>, «rakam arayan» bir kafa gibi elle tasarlandı — gpt-oss\'un gerçek ağırlıkları değil. gpt-oss\'un tabanı/YaRN ayarı † hafızadan.',
+ sayOut:'<b>Tur bitti.</b> Q ve K içerik taşır (W_Q, W_K) → RoPE her satırı kendi konumu kadar döndürür (32 çift, 32 hız, ağırlık yok, V\'ye dokunmaz) → Q·Kᵀ\'de dönüşler sadeleşir, yalnız mesafe kalır: skor = içerik + mesafe → ÷8 → maske → softmax → yüzdelerle V karıştırılır. Eğitim yalnız içerik yönlerini değiştirir.'});
+
+var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO,tourR]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
 function curT(){return t}
 function setTourT(v){t=v;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'}
 var GP0=1+OFF;
 var tabsWrap=document.getElementById('tabs'),TB=[];
-[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🎬 Mimari turu — gpt-oss (3B MoE mimarisi + zoom)',SC.length-1,SC.length],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length-1]].forEach(function(gr){
+[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🎬 Mimari turu — gpt-oss (3B MoE mimarisi + zoom)',SC.length-2,SC.length-1],['🌀 RoPE turu — önceki adım → RoPE → skor → softmax → ×V',SC.length-1,SC.length],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length-2]].forEach(function(gr){
   var d=document.createElement('div');d.className='tgrp';var l=document.createElement('div');l.className='tglab';l.textContent=gr[0];d.appendChild(l);
   var row=document.createElement('div');row.className='tabs';d.appendChild(row);
   for(var i=gr[1];i<gr[2];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag;b.onclick=function(){go(i)};row.appendChild(b);TB[i]=b})(i);
@@ -1391,7 +1719,7 @@ function tick(ts){
     if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
       if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
-window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,tourR:tourR,ROPE:ROPE,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
 var SNAP=/[?&]snap=1/.test(location.search);
 if(SNAP){
   /* A4 yazdırma için gizli kare: sahneleri sabit bir andan resme çevirir (postMessage: {type:'snapReq',id,kind:'gpt2'|'gptoss',mode:'mid'|'end'}) */
@@ -1408,7 +1736,7 @@ if(SNAP){
   go(GP0);playing=false;
   parent.postMessage({type:'snapReady'},'*');
 }else{
-go(/ossturu/i.test(location.hash)?SC.length-1:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+go(/rope/i.test(location.hash)?SC.length-1:/ossturu/i.test(location.hash)?SC.length-2:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 }
 })();
 </script></body></html>
