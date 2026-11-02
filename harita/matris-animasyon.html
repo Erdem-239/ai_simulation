@@ -1214,9 +1214,40 @@ var oScoreT=(function(){var DK4=64,N=4;
  soz:'Her kelimenin sorusu, her kelimenin (konumuyla döndürülmüş) etiketiyle karşılaştırılıyor; aynı etiket takımını 8 ayrı soru kullanıyor.',
  elde:'Kafa başına 4×4 skor tablosu; grup başına 8 tablo, toplam 64.',
  neden:'Kimin kime ne kadar bakacağını bulmanın yolu soruyu her etiketle tek tek çarpmak; transpoz yalnız bu «satır·satır» eşleştirmesini matris çarpımı olarak yazmamızı sağlar.'}})();
-var gmAV=gm({tag:'10 · A · V → çıktı',labL:'A (yüzdeler)  4×4',labW:'V_g  4×64',labO:'a·V  4×64',dl:4,dO:64,sym:'a',name:'Z',seed:29,note:'Her token, baktığı token\'ların V\'lerinin yüzdelerle karışımını alır.|64 kafa için ayrı ayrı (V dilimleri 8 grupça paylaşılır).',
- say:'Softmax sonrası yüzde tablosu <b>A (4×4)</b>, paylaşılan <b>V dilimi (4×64)</b> ile çarpılır → <b>4×64</b>. Her token baktığı token\'ların içeriklerinin yüzdelerle karışımını alır; token\'lar arası ilk bilgi akışı burada.',
- soz:'Kimlere baktığına göre, onların içeriklerinden bir harman yapıyor.',elde:'64 kafanın her birinde T×64 karışım.',neden:'Dikkatin amacı bu: kelimenin kartına çevresinden gerekli bilgiyi toplamak.'});
+var gmAV=(function(){var SEED=29,A=null,V=null,O=null,VB=null,OB=null,mx=1e-9;
+ function build(){if(A)return;A=[];V=[];O=[];VB=[];OB=[];var r,c,k,g;
+  for(r=0;r<4;r++){var sc=[],m=-1e9,s=0;for(c=0;c<=r;c++){sc.push(1.6*hsh(SEED+7,r,c)+(c===0||c===2?1.2:0));m=Math.max(m,sc[c])}
+   var row=[];for(c=0;c<4;c++){row.push(c<=r?Math.exp(sc[c]-m):0);s+=row[c]}for(c=0;c<4;c++)row[c]/=s;A.push(row)}
+  for(c=0;c<4;c++){V.push([]);for(k=0;k<64;k++)V[c].push(ov(SEED,c,k))}
+  for(r=0;r<4;r++){O.push([]);for(k=0;k<64;k++){var z=0;for(c=0;c<4;c++)z+=A[r][c]*V[c][k];O[r].push(z)}}
+  function box(M,r,g){var z=0;for(k=g*8;k<g*8+8;k++)z+=M[r][k];return z/8}
+  for(r=0;r<4;r++){VB.push([]);OB.push([]);for(g=0;g<8;g++){VB[r].push(box(V,r,g));OB[r].push(box(O,r,g));mx=Math.max(mx,Math.abs(OB[r][g]),Math.abs(VB[r][g]))}}}
+ function pc(a){return Math.round(a*100)+'%'}
+ function cur(t){var p=clamp(t/0.72,0,1),n=p*32,idx=Math.min(31,Math.floor(n));return {done:p>=1,idx:p>=1?32:idx,sub:n-idx,r:Math.floor(idx/8),g:idx%8}}
+ return {dur:24,tag:'10 · A · V → çıktı',
+ draw:function(t){build();var q=cur(t),La={x:40,y:150,w:240,h:96},Vx={x:360,y:150,w:240,h:96},Ox={x:680,y:150,w:240,h:96},ch=24,ca=La.w/4,cv=Vx.w/8,r,c,g;
+  txt('A (yüzdeler)  4×4',La.x,La.y-30,13,'#e8ebf2');txt('V_g  4×64',Vx.x,Vx.y-30,13,'#e8ebf2');txt('a·V  4×64',Ox.x,Ox.y-30,13,'#e8ebf2');
+  txt('sütun = bakılan token',La.x,La.y+La.h+16,10,'#9aa3b6');txt('satır = token, 64 sütun → 8 kutu',Vx.x,Vx.y+Vx.h+16,10,'#9aa3b6');txt('satır = soran token (yeni satırı)',Ox.x,Ox.y+Ox.h+16,10,'#9aa3b6');
+  for(c=0;c<4;c++)txt(OT[c],La.x+c*ca+ca/2,La.y-6,11,'#9aa3b6','center');
+  for(g=0;g<8;g++){txt((g*8+1)+'–'+(g*8+8),Vx.x+g*cv+cv/2,Vx.y-6,8,'#6f788a','center');txt((g*8+1)+'–'+(g*8+8),Ox.x+g*cv+cv/2,Ox.y-6,8,'#6f788a','center')}
+  txt('×',320,205,30,'#e8ebf2','center');txt('=',640,205,30,'#e8ebf2','center');
+  for(r=0;r<4;r++){txt(OT[r],La.x-8,La.y+r*ch+16,12,'#9aa3b6','right');txt(OT[r],Vx.x-8,Vx.y+r*ch+16,12,'#9aa3b6','right');txt(OT[r],Ox.x-8,Ox.y+r*ch+16,12,'#9aa3b6','right');
+   for(c=0;c<4;c++){if(c>r){rect(La.x+c*ca,La.y+r*ch,ca-1,ch-1,'#11141c');txt('maske',La.x+c*ca+ca/2,La.y+r*ch+15,9,'#4a5468','center')}
+    else{rect(La.x+c*ca,La.y+r*ch,ca-1,ch-1,col(A[r][c],0.8));txt(pc(A[r][c]),La.x+c*ca+ca/2,La.y+r*ch+16,11,'#e8ebf2','center')}}
+   for(g=0;g<8;g++){rect(Vx.x+g*cv,Vx.y+r*ch,cv-1,ch-1,col(VB[r][g],mx));var k=r*8+g,isC=k===q.idx&&!q.done;
+    rect(Ox.x+g*cv,Ox.y+r*ch,cv-1,ch-1,k<q.idx?col(OB[r][g],mx):isC?col(OB[r][g],mx,q.sub):EMPTY)}}
+  frame(La.x,La.y,La.w,La.h);frame(Vx.x,Vx.y,Vx.w,Vx.h);frame(Ox.x,Ox.y,Ox.w,Ox.h);
+  if(!q.done){rect(La.x-1,La.y+q.r*ch-1,La.w+2,ch+1,null,HL,2);rect(Vx.x+q.g*cv-1,Vx.y-1,cv+1,Vx.h+2,null,HL,2);rect(Ox.x+q.g*cv-1,Ox.y+q.r*ch-1,cv+1,ch+1,null,HL,2);
+   var cc=Math.min(q.r,Math.floor(q.sub*(q.r+1)));ctx.fillStyle=HL;ctx.beginPath();ctx.arc(La.x+cc*ca+ca/2,La.y+q.r*ch+4,3,0,7);ctx.fill();ctx.beginPath();ctx.arc(Vx.x+q.g*cv+cv/2,Vx.y+cc*ch+4,3,0,7);ctx.fill()}
+  txt('A\'nın satırındaki 4 yüzde, V\'nin 4 SATIRINI (4 token) tartar: yeni satır = %·V«7» + %·V«+» + %·V«5» + %·V«=».',40,300,11,'#9aa3b6');
+  txt('Sarı sütun: V\'nin aynı sütunu 4 token boyunca → 4 çarpım; 64 sütunun her biri için ayrı (çizimde 8\'er sütun bir kutu).',40,318,11,'#9aa3b6');
+  txt('Maskeli hücre %0: «7» yalnız kendine bakar, sonraki token\'ları göremez.  64 kafada ayrı ayrı; V dilimleri 8 grupça paylaşılır.',40,336,11,'#9aa3b6')},
+ live:function(t){build();var q=cur(t);if(q.done)q={r:3,g:7};var r=q.r,g=q.g,parts=[],c;
+  for(c=0;c<=r;c++)parts.push('('+pc(A[r][c])+')·V«'+OT[c]+'»['+(g*8+1)+'–'+(g*8+8)+']');
+  var nums=[];for(c=0;c<=r;c++)nums.push('('+f2(A[r][c])+')('+f2(VB[c][g])+')');
+  return 'yeni «'+OT[r]+'» satırı, sütun '+(g*8+1)+'–'+(g*8+8)+' (ortalaması) = '+parts.join(' + ')+(r<3?' <span style="color:#6f788a">(sonrakiler maskeli, %0)</span>':'')+'<br>= '+nums.join(' + ')+' = <b>'+f2(OB[r][g])+'</b>'},
+ say:'Softmax sonrası yüzde tablosu <b>A (4×4)</b>, paylaşılan <b>V dilimi (4×64)</b> ile çarpılır → <b>4×64</b>. A\'nın <b>satırı</b> = soran token\'ın 4 yüzdesi; V\'nin <b>satırları</b> = 4 token\'ın içeriği (64 sayı). Yeni satır, bu 4 içerik satırının yüzdelerle ağırlıklı toplamıdır. Çizimde V\'nin 64 sütunu 8 kutuya sıkıştırıldı (her kutu 8 sütunun ortalaması). Token\'lar arası ilk bilgi akışı burada.',
+ soz:'Kimlere baktığına göre, onların içeriklerinden bir harman yapıyor.',elde:'64 kafanın her birinde T×64 karışım.',neden:'Dikkatin amacı bu: kelimenin kartına çevresinden gerekli bilgiyi toplamak.'}})();
 var gmWo=gm({tag:'11a · 64 kafa yan yana × W_O + residual',labL:'yan yana  4×4096',labW:'W_O  4096×2880 †',labO:'çarpım  4×2880',dl:4096,dO:2880,sym:'z',name:'O',seed:31,note:'64 kafanın 4×64 çıktısı yan yana (64×64 = 4096).|W_O karıştırır ve model boyutuna (2880 †) çevirir.',
  post:function(f,Rx,cw,chh){txt('+ x (bekleyen)  →  yeni x  4×2880',Rx.x,Rx.y-14,13,'#e8ebf2');for(var r=0;r<4;r++){txt(OT[r],Rx.x-8,Rx.y+r*chh+16,12,'#9aa3b6','right');for(var g=0;g<8;g++)rect(Rx.x+g*cw,Rx.y+r*chh,cw-1,chh-1,col(f.O[r][g]+hsh(93,r,g),f.mx*1.6))}frame(Rx.x,Rx.y,250,96)},
  say:'64 kafanın çıktıları <b>yan yana yapıştırılır</b> (4×4096), <b>W_O</b> (4096×2880 †) ile çarpılıp model boyutuna döner ve asıl x\'e <b>eklenir (residual)</b>. Attention alt-bloğu burada biter.',
