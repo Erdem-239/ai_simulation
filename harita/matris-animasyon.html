@@ -984,22 +984,22 @@ var oRopeArrow={dur:28,tag:'6 · RoPE\'a giriş: iki sayı = bir ok',
  soz:'Sayıları ikişer ikişer ok gibi düşün; her oku token\'ın sırası kadar çevir. İki kelimenin okları arasındaki açı, aralarındaki mesafeyi söyler.',
  elde:'Konumu taşıyan Q ve K: şekil aynı (4×64), yalnız okların yönü değişti.',
  neden:'Dikkat skoru Q·K çarpımıdır; okları konum kadar çevirince bu çarpım kendiliğinden «kaç adım uzakta» bilgisini içerir, ayrı bir konum tablosu gerekmez.'};
-var oRope={dur:18,tag:'6a · RoPE: Q ve K\'yı konumla döndür',
- draw:function(t){var th=0.6,q=[1.0,0.4],k=[0.7,-0.2],act=Math.min(3,Math.floor(clamp(t/0.8,0,.999)*4)),DEG=180/Math.PI;
+var oRope={dur:48,tag:'6a · RoPE: Q ve K\'yı konumla döndür',
+ draw:function(t){var th=0.6,q=[1.0,0.4],k=[0.7,-0.2],uu=clamp(t/0.8,0,.999)*4,act=Math.min(3,Math.floor(uu)),np=4-act,pi=t>=0.8?0:Math.min(np-1,Math.floor((uu-act)*np)),DEG=180/Math.PI;
   function rot(v,a){return [v[0]*Math.cos(a)-v[1]*Math.sin(a),v[0]*Math.sin(a)+v[1]*Math.cos(a)]}
   txt('Q ve K\'nın bir sayı çifti, konum m kadar θ açısıyla döner (θ = 0,6 rad ≈ 34°, örnek)',30,30,13,'#e8ebf2');
   var cx=150,cy=180,R=90;ctx.strokeStyle='#2a3140';ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.stroke();
-  var m=act,n=0,qr=rot(q,m*th),kr=rot(k,n*th),aq=Math.atan2(qr[1],qr[0]),ak=Math.atan2(kr[1],kr[0]);
+  var n=pi,m=pi+act,qr=rot(q,m*th),kr=rot(k,n*th),aq=Math.atan2(qr[1],qr[0]),ak=Math.atan2(kr[1],kr[0]);
   function arrow(v,c,w,dash){ctx.strokeStyle=c;ctx.lineWidth=w||3;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+v[0]*R*0.9,cy-v[1]*R*0.9);ctx.stroke();ctx.setLineDash([]);ctx.lineWidth=1}
-  if(m>0)arrow(q,'rgba(110,160,255,.35)',2,[4,4]);
+  if(m>0)arrow(q,'rgba(110,160,255,.35)',2,[4,4]);if(n>0)arrow(k,'rgba(95,207,138,.35)',2,[4,4]);
   ctx.strokeStyle=HL;ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,30,-aq,-ak);ctx.stroke();ctx.lineWidth=1;
   arrow(qr,'#6ea0ff');arrow(kr,'#5fcf8a');
   txt('Q = «'+OT[m]+'» (konum '+m+')',cx,cy-R-10,12,'#6ea0ff','center');
-  txt('K = «7» (konum 0)',cx,cy+R+18,12,'#5fcf8a','center');
+  txt('K = «'+OT[n]+'» (konum '+n+')',cx,cy+R+18,12,'#5fcf8a','center');
   var phi=(aq-ak)*DEG,sc=qr[0]*kr[0]+qr[1]*kr[1];
-  txt('kesik çizgi: Q\'nun dönmeden önceki yönü',30,302,11,'rgba(110,160,255,.8)');
-  txt('Q her konumda θ kadar daha döner;',30,320,12,'#9aa3b6');txt('K («7») konum 0\'da, hiç dönmez.',30,336,12,'#9aa3b6');
-  txt('aradaki açı = 37,7° + '+m+'·34,4° = '+phi.toFixed(1).replace('.',',')+'°',30,360,13,HL);
+  txt('kesik çizgiler: okların dönmeden önceki yönü',30,302,11,'rgba(110,160,255,.8)');
+  txt('Q konum '+m+' → '+m+'×34,4° = '+(m*34.4).toFixed(1).replace('.',',')+'° döndü;',30,320,12,'#9aa3b6');txt('K konum '+n+' → '+n+'×34,4° = '+(n*34.4).toFixed(1).replace('.',',')+'° döndü.',30,336,12,'#9aa3b6');
+  txt('aradaki açı = 37,7° + ('+m+' − '+n+')·34,4° = '+phi.toFixed(1).replace('.',',')+'°',30,360,13,HL);
   txt('skor = |q|·|k|·cos(açı) = 0,78 · '+f2(Math.cos(phi/DEG))+' = '+f2(sc),30,380,13,HL);
   txt(phi<90?'açı < 90° → aynı yöne bakıyorlar → skor ARTI':'açı > 90° → zıt yönlere dönüyorlar → skor EKSİ',30,400,12,'#e8ebf2');
   // tablo: satır = soran (Q), sütun = bakılan (K)
@@ -1010,9 +1010,11 @@ var oRope={dur:18,tag:'6a · RoPE: Q ve K\'yı konumla döndür',
     for(var b2=0;b2<4;b2++){var ok=b2<=a,s2=ok?(rot(q,a*th)[0]*rot(k,b2*th)[0]+rot(q,a*th)[1]*rot(k,b2*th)[1]):0,d=a-b2,hl=ok&&d===act,me=a===m&&b2===n;
     rect(X0+b2*CWd,Y0+a*CHt,CWd-4,CHt-4,ok?(hl?'rgba(255,200,46,.25)':'#1a1f2b'):'#12151c',me?'#fff':hl?HL:'#2a3140',me?3:hl?2:1);if(ok)txt(f2(s2),X0+b2*CWd+CWd/2-2,Y0+a*CHt+30,15,hl?HL:'#e8ebf2','center');else txt('maske',X0+b2*CWd+CWd/2-2,Y0+a*CHt+29,10,'#3a4252','center')}}
   txt('sarı köşegen: uzaklık = '+act+' olan tüm çiftler → hepsi aynı skor',X0-90,Y0+4*CHt+20,12,'#ffc82e');
-  txt('beyaz çerçeve: soldaki çizimdeki çift (Q «'+OT[m]+'» · K «7»)',X0-90,Y0+4*CHt+38,12,'#e8ebf2');
-  txt('Mutlak sıra değil, aradaki MESAFE belirleyicidir. V\'ye dokunulmaz.',X0-90,Y0+4*CHt+56,12,'#9aa3b6')},
- live:function(t){var act=Math.min(3,Math.floor(clamp(t/0.8,0,.999)*4));return 'skor(m,n) = |q||k|·cos(φ + (m−n)·θ):  m−n = '+act+' için tüm hücreler aynı değer'},
+  txt('beyaz çerçeve = soldaki çizim (Q «'+OT[m]+'» · K «'+OT[n]+'»)',X0-90,Y0+4*CHt+38,12,'#e8ebf2');
+  txt('Çizim sarı hücreleri tek tek gezer: iki ok farklı',X0-90,Y0+4*CHt+56,12,'#9aa3b6');
+  txt('döner ama aradaki açı aynı → MESAFE belirler.',X0-90,Y0+4*CHt+72,12,'#9aa3b6');
+  txt('(Oyuncakta içerik okları aynı; gerçekte farklı → 6d)',X0-90,Y0+4*CHt+90,11,'#9aa3b6')},
+ live:function(t){var uu=clamp(t/0.8,0,.999)*4,act=Math.min(3,Math.floor(uu)),np=4-act,pi=t>=0.8?0:Math.min(np-1,Math.floor((uu-act)*np)),m=pi+act,n=pi;return 'çizimde Q «'+OT[m]+'» (konum '+m+') · K «'+OT[n]+'» (konum '+n+'): uzaklık '+act+' → sarı köşegendeki '+np+' çiftin hepsiyle aynı açı, aynı skor'},
  say:'<b>RoPE</b>: Q ve K\'nın sayı çiftleri, token\'ın <b>konum numarasıyla orantılı bir açıyla döndürülür</b>. Sonra Q·K yapılınca skor yalnızca iki token arasındaki <b>uzaklığa</b> bağlı olur. Tablo yok, öğrenilen ağırlık yok. V döndürülmez. Çizimdeki sayılar örnek (θ=0,6 rad, 2 boyut); gerçekte 64 boyutlu kafada 32 çift, her çiftin kendi hızı var. gpt-oss uzun bağlam için genişletilmiş RoPE kullanır †.',
  soz:'Her kelime kartının «Q ve K yönünü» bulunduğu sıraya göre çeviriyoruz; iki kelimenin birbirine uzaklığı skora böyle yansıyor.',
  elde:'Konumu taşıyan Q ve K (aynı şekil). Ayrı bir konum tablosu veya toplama gerekmedi.',
