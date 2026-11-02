@@ -43,7 +43,7 @@ canvas{display:block;width:100%;height:auto}
 a{color:var(--blue)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Önce <b>GPT-2 mimarisinin tamamı</b>, sonra her kutuya <b>zoom</b> yapıp içindeki matris işleminin animasyonu (🎬 tur). İstersen sahneleri tek tek de izle: <b>T1–T7</b> küçük sayılarla temel, <b>⓪–⑮</b> GPT-2 boyutunda. Sahne listesi aşağıdaki kutuda.</p>
+<p class="sub">Önce <b>GPT-2 mimarisinin tamamı</b>, sonra her kutuya <b>zoom</b> yapıp içindeki matris işleminin animasyonu (🎬 tur). İstersen sahneleri tek tek de izle: <b>T0–T7</b> küçük sayılarla temel, <b>⓪–⑮</b> GPT-2 boyutunda. Sahne listesi aşağıdaki kutuda.</p>
 <details id="tabsBox"><summary id="tabsSum">📑 Sahne listesi</summary><div class="tabs" id="tabs"></div></details>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
@@ -57,7 +57,7 @@ a{color:var(--blue)}
 <div class="box live" id="live"></div>
 <div class="box say" id="say"></div>
 <p class="note">Dürüst not: x (LayerNorm çıkışı), W_Q/W_K/W_V tohumlu rastgele sayılardır — gerçek GPT-2'nin ağırlıkları değil. Ama şekiller, çarpmalar, ÷√64, maske, softmax, A·V ve yapıştırma <b>gerçekten hesaplanıyor</b>: Q, K, V tabloları 768 terimli toplamlarla sayfa açılırken üretildi, ekrandaki her sayı bu tablolardan okunuyor. Gerçek GPT-2'de ne öğrendiklerini ölçmedik.</p>
-<p class="note">T1–T7: Q ve K'nın sayıları elle seçilmiş küçük bir örnek (öğrenilmiş değil); kurallar gerçek modelle aynı, ÷√d sadelik için atlandı. ①–⑮: yukarıdaki dürüst nottaki gibi tohumlu rastgele ağırlıklar.</p>
+<p class="note">T0–T7: Q ve K'nın sayıları elle seçilmiş küçük bir örnek (öğrenilmiş değil); kurallar gerçek modelle aynı, ÷√d sadelik için atlandı. ①–⑮: yukarıdaki dürüst nottaki gibi tohumlu rastgele ağırlıklar.</p>
 <p class="note"><a href="mimari-3b.html">← 3B mimariye dön</a></p>
 </div>
 <script>
@@ -529,7 +529,7 @@ var s15={dur:22,tag:'⑮ Üretim döngüsü ve önbellek',
  live:function(t){var st=Math.min(2,Math.floor(t*3));var txts=['1. tur: 4 token paralel işlenir (12 blok, her blokta K ve V satırları önbelleğe yazılır). "=" satırından 1. token seçilir.','2. tur: yalnız yeni token\'ın satırı hesaplanır. Yeni q, önbellekteki 4 eski K/V ile birlikte kendi K/V\'sine bakar (5 anahtar).','3. tur: yine tek satır; 6 anahtara bakar. Cevap bitiş işareti gelene kadar böyle sürer.'];return txts[st]},
  say:'<b>Üretim bir döngüdür</b>: seçilen token istemin sonuna eklenir ve model tekrar çalışır. Her turda bütün tabloyu baştan hesaplamak yerine, eski token\'ların <b>K ve V satırları önbellekte (KV önbelleği) saklanır</b>; yalnız <b>yeni tek satır</b> hesaplanır. Bu mümkün çünkü maske sayesinde eski satırların sonucu sonradan gelen token\'lardan etkilenmez. Böylece 100. token bile yaklaşık 1. token kadar iş yapar (attention hariç, o önbellek uzadıkça büyür).'};
 
-/* ============ TEMEL SAHNELER (küçük sayılarla, T1–T7) ============ */
+/* ============ TEMEL SAHNELER (küçük sayılarla, T0–T7) ============ */
 var TEMEL=(function(){
 var g=ctx;
 var TOK=['7','5','='];
@@ -666,7 +666,40 @@ var s6={tag:'T7 · Q ile K yer değiştirirse (eğitimden sonra)',dur:18,
   tx('■ gerçek',70,400,'#3fc7c1','left',13,true);tx('■ Q↔K değişmiş',150,400,'#f27a88','left',13,true)},
  live:function(t){return '"=" satırı: gerçek <b>'+Am[2].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')+'</b> &nbsp;→&nbsp; değişmiş <b>'+As[2].map(function(v){return v.toFixed(2).replace('.',',')}).join(' / ')+'</b>'},
  say:'Eğitimden sonra W_Q ile W_K\'yı yer değiştirirsen skor tablosu devrik çıkar (K·Qᵀ). Maske ve satır softmax\'ı ise eskisi gibi uygulanır, ama artık <b>yanlış anlamdaki</b> satırlara. Dağılımlar değişir, model bozulur. Bu yüzden Q ve K\'nın rolü ağırlıklardan değil, çarpımdaki <b>yerinden</b> (sol/sağ) gelir. Eğitimden <b>önce</b> yer değiştirsen sorun olmazdı: ağırlıklar henüz rastgele ve anlamsız.'};
-return [s1,s2,s2b,s3,s4,s5,s6];
+var sTr={tag:'T0 · Transpoz (ᵀ): satırlar sütun olur',dur:26,
+ draw:function(t){var cw=52,ch=38,kx=60,ky=90,tx0=390,ty0=90,p1=clamp(t/0.62,0,1),rowP=p1*3,cur=Math.min(2,Math.floor(rowP)),sub=rowP-cur,a,b;
+  // K ve Kᵀ çerçeveleri
+  mat(kx,ky,K,cw,ch,{title:'K (3×2)',cl:['d₁','d₂'],rl:TOK,hr:p1<1?cur:-1,bg:function(i){return i<cur||p1>=1?'rgba(63,199,193,.10)':'rgba(63,199,193,.32)'}});
+  tx('→ transpoz →',272,ky+ch*1.5+5,'#ffc82e','center',14,true);
+  mat(tx0,ty0,KT,cw,ch,{title:'Kᵀ (2×3)',cl:TOK,rl:['d₁','d₂'],hc:p1<1?cur:-1,show:function(i,j){return j<cur||p1>=1},bg:function(i,j){return j<cur||p1>=1?'rgba(63,199,193,.32)':null}});
+  // uçan hücreler: K'nın cur satırı → Kᵀ'nin cur sütunu
+  if(p1<1){var e=sub<.15?0:sub>.85?1:(sub-.15)/.7;e=e*e*(3-2*e);
+   for(b=0;b<2;b++){var x0=kx+b*cw,y0=ky+cur*ch,x1=tx0+cur*cw,y1=ty0+b*ch,x=x0+(x1-x0)*e,y=y0+(y1-y0)*e;
+    g.fillStyle='rgba(255,200,46,.85)';g.fillRect(x+3,y+3,cw-6,ch-6);tx(String(K[cur][b]),x+cw/2,y+ch/2+5,'#11141c','center',15,true)}
+   tx('«'+TOK[cur]+'» satırı ('+K[cur].join(', ')+')  →  Kᵀ\'nin «'+TOK[cur]+'» sütunu',kx,ky+3*ch+40,'#ffc82e','left',14,true)}
+  else{tx('Kural: Kᵀ[i][j] = K[j][i]',kx,ky+3*ch+30,'#ffc82e','left',14,true);tx('K\'nın satırı = Kᵀ\'nin sütunu (sayılar aynı, yalnız dizilişi döndü)',kx,ky+3*ch+50,'#ffc82e','left',13)}
+  tx('Şekil: 3×2 → 2×3 (satır ve sütun sayısı yer değiştirir)',kx,ky+3*ch+72,'#9aa3b6','left',13);
+  // 2. evre: neden lazım
+  var p2=clamp((t-0.66)/0.3,0,1);if(p2<=0)return;g.globalAlpha=p2;
+  var by=330;tx('Neden lazım?',kx,by-18,'#e8ebf2','left',14,true);
+  tx('Q (3×2) · K (3×2)  ✗  içteki 2 ≠ 3, çarpılamaz',kx,by+6,'#f27a88','left',13,true);
+  tx('Q (3×2) · Kᵀ (2×3) = 3×3  ✓  her token çifti için bir skor',kx,by+28,'#5fcf8a','left',13,true);
+  var qx=640,qy=110,cw2=40,ch2=30,hi=p2>.4?2:-1,hj=p2>.4?0:-1;
+  mat(qx,qy,Q,cw2,ch2,{title:'Q',cl:['d₁','d₂'],rl:TOK,hr:hi,bg:tealBg(3)});
+  tx('×',qx+cw2*2+22,qy+ch2*1.5+5,'#9aa3b6','center',18);
+  mat(qx+cw2*2+64,qy,KT,cw2,ch2,{title:'Kᵀ',cl:TOK,rl:['d₁','d₂'],hc:hj,bg:tealBg(3)});
+  if(hi>=0){tx('«=» satırı · «7» sütunu',qx,qy+ch2*3+30,'#ffc82e','left',13,true);
+   tx('= Q«=» · K«7» = '+Q[2][0]+'·'+K[0][0]+' + '+Q[2][1]+'·'+K[0][1]+' = '+S[2][0],qx,qy+ch2*3+52,'#e8ebf2','left',13);
+   tx('Kᵀ\'nin sütunu = K\'nın satırı: Q\'nun bir satırı,',qx,qy+ch2*3+80,'#9aa3b6','left',12);
+   tx('K\'nın bir satırıyla eşleşmiş olur.',qx,qy+ch2*3+98,'#9aa3b6','left',12)}
+  g.globalAlpha=1},
+ live:function(t){var p1=clamp(t/0.62,0,1);if(p1<1){var cur=Math.min(2,Math.floor(p1*3));return 'K\'nın «'+TOK[cur]+'» satırı ('+K[cur].join(', ')+') → Kᵀ\'nin «'+TOK[cur]+'» sütunu: <b>Kᵀ[d₁]['+TOK[cur]+'] = '+K[cur][0]+', Kᵀ[d₂]['+TOK[cur]+'] = '+K[cur][1]+'</b>'}
+  return 'Q«=»·Kᵀ«7» = <b>'+Q[2][0]+'·'+K[0][0]+' + '+Q[2][1]+'·'+K[0][1]+' = '+S[2][0]+'</b> (Q\'nun «=» satırı ile K\'nın «7» satırı)'},
+ say:'<b>Transpoz (ᵀ)</b> bir tabloyu çapraz çizgisine göre çevirir: <b>satırlar sütun, sütunlar satır olur</b>. K\'da her token bir satırdı (3×2); Kᵀ\'de her token bir sütun (2×3). Sayılar değişmez, yalnız dizilişleri döner. Neden gerekli? Matris çarpımı «sol satır × sağ sütun» kuralıyla çalışır. Q\'nun satırını K\'nın satırıyla eşleştirmek istiyoruz; K\'yı çevirince satırları sütun olur ve Q·Kᵀ tam bunu yapar.',
+ soz:'Etiket listesini yan çeviriyoruz ki her soru satırı, her etiketle tek tek karşılaştırılabilsin.',
+ elde:'Kᵀ (2×3): K\'nın aynı sayıları, token\'lar artık sütunlarda.',
+ neden:'Q·K (3×2 · 3×2) boyut uymadığı için çarpılamaz; Q·Kᵀ her token çifti için tam bir skor (3×3) verir.'};
+return [sTr,s1,s2,s2b,s3,s4,s5,s6];
 })();
 var OFF=TEMEL.length;
 
@@ -1769,7 +1802,7 @@ if(SNAP){
   go(GP0);playing=false;
   parent.postMessage({type:'snapReady'},'*');
 }else{
-go(/rope/i.test(location.hash)?SC.length-1:/ossturu/i.test(location.hash)?SC.length-2:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+go(/rope/i.test(location.hash)?SC.length-1:/ossturu/i.test(location.hash)?SC.length-2:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel|transpoz/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 }
 })();
 </script></body></html>
