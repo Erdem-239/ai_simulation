@@ -1346,6 +1346,7 @@ var oMoeWhy={dur:22,tag:'13a · MoE nedir? Yoğun FFN ↔ uzmanlar',
   OT.forEach(function(s,i){ctx.globalAlpha=i===cur&&ph>=1?1:0.3;rect(380+i*80,56,64,28,'#1a1f2b',i===cur?HL:'#4a5468',i===cur?2:1);txt(s,412+i*80,76,15,'#e8ebf2','center');ctx.globalAlpha=1});
   txt('128 küçük FFN (uzman)',380,270,11,'#9aa3b6');txt('token «'+OT[cur]+'» için yalnız 4 uzman çalışır (sarı)',380,288,12,'#5fcf8a');
   txt('hesap: ≈ 4/128 ≈ %3 (uzman başına)',380,306,12,'#ffc82e');
+  txt('Şekiller: girdi 4×2880 (RMSNorm\'dan) → router puanları 4×128 → her token 4 uzman → çıktı yine 4×2880 (residual ile eklenir).',30,390,12,'#e8ebf2');
   var q=clamp((t-0.9)/0.1,0,1);ctx.globalAlpha=q;txt('Sonuç: bilgi 128 uzmanda saklı (≈117 milyar †), ama bir token yalnız ≈5,1 milyarı çalıştırır (doğrulandı).',30,350,12,'#5fcf8a');ctx.globalAlpha=1},
  live:function(t){return 'yoğun FFN: her token → 1 büyük FFN (hepsi çalışır)   |   MoE: her token → router seçer → 128 uzmandan yalnız 4\'ü çalışır'},
  say:'<b>MoE (Mixture of Experts) nedir?</b> GPT-2\'de her blokta <b>tek bir büyük FFN</b> vardı ve <b>her token</b> onun tamamından geçerdi. MoE\'de bu FFN yerine <b>128 küçük FFN (uzman)</b> bulunur. Küçük bir <b>router</b> her token için «hangi uzmanlar uygun?» diye karar verir ve yalnız <b>seçilen 4 uzman</b> çalışır; kalan 124\'ü o token için hiç çalışmaz. Böylece <b>toplam bilgi (ağırlık) çok büyük</b>, ama <b>token başına hesap küçük</b> kalır. Doğrulandı: 128 uzman, token başına 4, ≈5,1 milyar aktif.',
@@ -1395,7 +1396,9 @@ var MOE=(function(){
  function foot(){txt(NOTE,40,458,10,'#6f788a')}
  /* ---------- sahneler ---------- */
  var mRms={dur:16,tag:'MoE 1 · RMSNorm: kartın kopyası dengelenir, asıl x bekler',
-  draw:function(t){var j=prog(t);
+  draw:function(t){var j=prog(t),r,g;
+   txt('Girdi: x_yeni 4×2880 (W_O + residual\'dan)  →  RMSNorm  →  x̂ 4×2880. Şekil DEĞİŞMEZ; satırlar karışmaz.',40,24,12,'#e8ebf2');
+   txt('4×2880',800,46,11,'#9aa3b6');for(r=0;r<4;r++){txt(OT[r],792,64+r*14,10,'#9aa3b6','right');for(g=0;g<16;g++)rect(800+g*9,54+r*14,8,12,r===3?col(X[3][g],1.5):'rgba(110,160,255,.25)')}rect(799,95,145,14,null,HL,1.5);txt('izlediğimiz satır: «=» (1×2880)',800,128,10,HL);
    strip(40,70,'x_yeni«=» (attention + residual sonrası, asıl kart)',X[3],{});
    txt('RMS = √( (x₁² + x₂² + … + x₂₈₈₀²) ÷ 2880 ) = '+f2(RMS[3])+'   →   her sayı bu değere bölünür',40,140,13,HL);
    strip(40,190,'x̂«=» = x_yeni«=» ÷ RMS  (dengelenmiş KOPYA → router ve uzmanlara gider)',XH[3],{n:j+1,hl:j});
