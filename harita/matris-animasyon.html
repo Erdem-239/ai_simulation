@@ -1409,15 +1409,15 @@ var MOE=(function(){
   elde:'x̂«=» (2880 sayı): router\'a ve uzmanlara gidecek kart.',
   neden:'Router ve uzmanlar sabit ölçekli girdiyle daha kararlı çalışır; asıl kartı silmemek için kopya üzerinde çalışırız.'};
  var R1E=[0,1,2,EQ[0]];
- var mR1={dur:22,tag:'MoE 3 · Router: kart · uzman profili = 1 puan',
+ var mR1={dur:22,tag:'MoE 3 · Router çarpımı 4×2880 · W_r = 4×128 → önce TEK hücre',
   draw:function(t){var p=clamp(t/0.88,0,.999),q=Math.floor(p*4),sub=p*4-q,e=R1E[q];
-   txt('W_r tablosu 2880×128 †: her KOLON bir uzmanın profili (2880 sayı). 2880 = kart boyu, 128 = uzman sayısı.',40,24,12,'#9aa3b6');
+   txt('Router çarpımı: 4×2880 (kartlar) · W_r (2880×128 †) = 4×128 puan tablosu. Bu sahne o tablonun TEK hücresini hesaplıyor.',40,24,12,'#e8ebf2');
    var cl=[],pr=[],z;for(z=0;z<NS;z++){cl.push(W(1,z,e));pr.push(XH[3][z]*W(1,z,e))}
    strip(40,62,'x̂«=» (RMSNorm\'dan gelen kart)',XH[3],{});
    strip(40,124,'Uzman '+ux(e)+'\'in profili = W_r\'nin '+(e+1)+'. kolonu',cl,{al:.9});
    strip(40,186,'karşılıklı çarpımlar (ilk 12 / 2880)',pr,{n:Math.floor(clamp(sub/0.6,0,1)*NS),sc:1});
    if(sub>0.62)txt('hepsini topla (2880 çarpım) → TEK sayı: puan(«=», '+ux(e)+') = '+f2(S[3][e]),40,240,13,HL);
-   txt('«=» satırının puanları (128 kolondan 4\'ü):',40,290,12,'#e8ebf2');
+   txt('4×128 tablosunun «=» satırından 4 hücre (W_r\'nin her KOLONU bir uzmanın profili):',40,290,12,'#e8ebf2');
    R1E.forEach(function(ee,i){var x=40+i*150,sh=i<q||(i===q&&sub>0.62);rect(x,302,140,40,sh?col(S[3][ee],2):EMPTY,i===q?HL:'#4a5468',i===q?2:1);txt(ux(ee),x+10,327,12,'#9aa3b6');if(sh)txt(f2(S[3][ee]),x+128,327,14,'#e8ebf2','right')});
    txt('… 124 kolon daha → «=» için 128 puan. Puan uzmanın ÇIKTISI değil: «bu uzman bu karta ne kadar uygun?»',40,372,12,'#9aa3b6');foot()},
   live:function(t){var p=clamp(t/0.88,0,.999),q=Math.floor(p*4),e=R1E[q],s=[];for(var z=0;z<3;z++)s.push('('+f2(XH[3][z])+')('+f2(W(1,z,e))+')');return 'puan(«=», '+ux(e)+') = '+s.join(' + ')+' + … (2880 çarpım) × 1/√2880 = <b>'+f2(S[3][e])+'</b>'},
@@ -1425,14 +1425,15 @@ var MOE=(function(){
   soz:'Kartı her uzmanın ilgi profiliyle karşılaştırıp uyum puanı veriyoruz.',
   elde:'«=» için 128 puan (her uzman için 1 sayı).',
   neden:'Hangi uzmanın hangi karta bakacağını elle yazamayız; router bunu eğitimle öğrenir.'};
- var mR2={dur:16,tag:'MoE 4 · Puan tablosu 4×128: satır = token, kolon = uzman',
+ var mR2={dur:16,tag:'MoE 4 · Aynı hesap 512 hücre için → 4×128 sonuç tablosu',
   draw:function(t){var x0=70,y0=70,cw=6.6,ch=40,n=Math.floor(clamp(t/0.7,0,1)*4*NE),r,e;
-   txt('4×2880 · W_r (2880×128 †)  =  4×128 puan tablosu',x0,30,14,'#e8ebf2');
+   txt('Bir önceki sahnedeki hesap 4 token × 128 uzman = 512 hücrenin hepsi için → SONUÇ tablosu (yeni çarpım yok)',x0,30,13,'#e8ebf2');
    txt('#1',x0,y0-8,10,'#9aa3b6');txt('#128',x0+NE*cw,y0-8,10,'#9aa3b6','right');
    for(r=0;r<4;r++){txt('«'+OT[r]+'»',x0-10,y0+r*ch+25,13,'#9aa3b6','right');for(e=0;e<NE;e++){var idx=r*NE+e;rect(x0+e*cw,y0+r*ch,cw-1,ch-3,idx<n?col(S[r][e],2.2):EMPTY)}}
-   var e0=EQ[0];if(n>=4*NE){rect(x0+e0*cw-1,y0-2,cw+1,4*ch,null,HL,2);txt('bu KOLON = Uzman '+ux(e0)+' (her token\'ın bu uzmana puanı)',x0+e0*cw,y0+4*ch+20,12,HL,e0>64?'right':'left')}
-   txt('• Satır = token (7, +, 5, =)   • Kolon = uzman (#1 … #128)   • Hücre = TEK sayı: o token\'ın o uzmana uyum puanı',x0,y0+4*ch+60,12,'#e8ebf2');
-   txt('Mavi = artı (yüksek) puan, kırmızı = eksi (düşük). Her hücre bir önceki sahnedeki «kart · profil» hesabının sonucu.',x0,y0+4*ch+84,12,'#9aa3b6');foot()},
+   if(n>=3*NE+1){rect(x0-2,y0+3*ch-2,cw+3,ch+1,null,'#5fcf8a',2.5);ctx.strokeStyle='#5fcf8a';ctx.beginPath();ctx.moveTo(x0+cw/2,y0+4*ch);ctx.lineTo(x0+cw/2,y0+4*ch+6);ctx.stroke();txt('[«=», #1] = '+f2(S[3][0])+'  ← bir önceki sahnede hesapladık',x0,y0+4*ch+38,12,'#5fcf8a')}
+   var e0=EQ[0];if(n>=4*NE){rect(x0+e0*cw-1,y0-2,cw+1,4*ch,null,HL,2);txt('bu KOLON = Uzman '+ux(e0)+' (her token\'ın bu uzmana puanı)',x0+e0*cw,y0+4*ch+18,12,HL,e0>64?'right':'left')}
+   txt('• Satır = token (7, +, 5, =)   • Kolon = uzman (#1 … #128)   • Hücre = TEK sayı: o token\'ın o uzmana uyum puanı',x0,y0+4*ch+70,12,'#e8ebf2');
+   txt('Mavi = artı (yüksek) puan, kırmızı = eksi (düşük). Her hücre bir önceki sahnedeki «kart · profil» hesabının sonucu.',x0,y0+4*ch+94,12,'#9aa3b6');foot()},
   live:function(t){var n=Math.floor(clamp(t/0.7,0,1)*4*NE),idx=Math.max(0,Math.min(4*NE-1,n-1)),r=Math.floor(idx/NE),e=idx%NE;return 'hücre[«'+OT[r]+'», '+ux(e)+'] = <b>'+f2(S[r][e])+'</b>  (satır = token, kolon = uzman)'},
   say:'Router\'ın çıktısı <b>4×128\'lik bir puan tablosu</b>dur. <b>Satırlar token</b> (7, +, 5, =), <b>kolonlar uzman</b> (#1…#128). Her hücre tek bir sayı: o token\'ın o uzmana uyum puanı. 2880 ile 128\'i karıştırma: 2880 kartın boyu, 128 uzman sayısı; uzmanlar yalnız bu tabloda kolon olarak görünür.',
   soz:'Her kelime 128 uzmana birer puan verdi.',
