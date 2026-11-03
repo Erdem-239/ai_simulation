@@ -1146,19 +1146,6 @@ var oSlice={dur:14,tag:'7 · 64 sorgu / 8 K-V dilimi (GQA)',
  soz:'64 ayrı soru soran okuyucu var ama yalnız 8 ayrı «kitap raflı» var: her 8 okuyucu aynı rafa bakıyor.',
  elde:'64 Q dilimi, 8 K dilimi, 8 V dilimi (hepsi T×64).',
  neden:'K ve V üretirken saklanan önbelleğin büyük kısmıdır; paylaşmak belleği ve okuma maliyetini düşürür, kalite kaybı küçüktür.'};
-var oMix={dur:16,tag:'11 · 4 uzman → ağırlıklı toplam + residual',
- draw:function(t){var p=clamp(t/0.5,0,1),q=clamp((t-0.5)/0.35,0,1),pr=[0.255,0.251,0.250,0.244],ex=[19,101,20,52];
-  txt('4 uzmanın çıktısı (her biri 1×2880 †, «=» satırı için)',30,36,13,'#e8ebf2');
-  ex.forEach(function(e,i){var y=64+i*52;txt('uzman #'+e,100,y+22,12,'#ffc82e','right');txt('× '+(pr[i]*100).toFixed(1).replace('.',',')+'%',120,y+22,12,'#9aa3b6');for(var g=0;g<24;g++){var a=clamp(p*4-i,0,1);rect(180+g*18,y+6,17,26,a>0?col(hsh(91,e,g),1.2,a):EMPTY)}});
-  txt('Σ',150,310,28,'#e8ebf2');txt('karışım y',60,310,12,'#9aa3b6','right');
-  for(var g=0;g<24;g++){var v=0;ex.forEach(function(e,i){v+=pr[i]*1.2*hsh(91,e,g)});rect(180+g*18,290,17,26,q>(g/24)?col(v,1.2):EMPTY)}
-  txt('+ x (bekleyen asıl tablo, residual)',60,350,12,'#9aa3b6');for(var g2=0;g2<24;g2++){rect(180+g2*18,336,17,20,col(hsh(92,0,g2),1.2,q))}
-  txt('→ bloğun çıktısı (yeni x)',640,350,13,'#5fcf8a')},
- live:function(t){var ex=[19,101,20,52],pr=[0.255,0.251,0.250,0.244],g=3,v=0,s=[];ex.forEach(function(e,i){var o=1.2*hsh(91,e,g);v+=pr[i]*o;s.push(f2(pr[i])+'·('+f2(o)+')')});return 'y₄ = '+s.join(' + ')+' = <b>'+f2(v)+'</b>  (4 uzman, router yüzdeleriyle)'},
- say:'Seçilen <b>4 uzmanın</b> her biri \'=\' satırı için 2880 sayılık bir çıktı üretti. Bunlar router\'ın verdiği <b>yüzdelerle</b> (toplam %100) <b>toplanır</b>: y = Σ pₖ · uzmanₖ(x). Sonra asıl x eklenir (residual) ve blok biter. Uzman çıktıları ve yüzdeler şematik; gerçek model değil.',
- soz:'Dört uzmandan gelen dört görüşü, router\'ın güvenine göre karıştırıyoruz; sonra eski kartın üstüne ekliyoruz.',
- elde:'Normal FFN\'in yerini alan tek bir T×2880 † vektör; blok çıktısı.',
- neden:'Bilgiyi tek bir dev FFN yerine uzmanlar arasında bölüp her token için yalnız 4\'ünü çalıştırmak; hesap küçük, kapasite büyük.'};
 var oLayers={dur:18,tag:'12 · 36 blok: dönüşümlü yerel/tam attention',
  draw:function(t){var p=clamp(t/0.7,0,1),n=Math.floor(p*36),w=22,h=60,x0=40,y0=70;
   txt('36 blok art arda: her bloğun attention\'ı dönüşümlü yerel (128) ↔ tam, FFN\'i hep 128 uzmanlı MoE',30,40,13,'#e8ebf2');
@@ -1285,16 +1272,6 @@ var gmWo=gm({tag:'11a · 64 kafa yan yana × W_O + residual',labL:'yan yana  4×
  post:function(f,Rx,cw,chh){txt('+ x (bekleyen)  →  yeni x  4×2880',Rx.x,Rx.y-14,13,'#e8ebf2');for(var r=0;r<4;r++){txt(OT[r],Rx.x-8,Rx.y+r*chh+16,12,'#9aa3b6','right');for(var g=0;g<8;g++)rect(Rx.x+g*cw,Rx.y+r*chh,cw-1,chh-1,col(f.O[r][g]+hsh(93,r,g),f.mx*1.6))}frame(Rx.x,Rx.y,250,96)},
  say:'64 kafanın çıktıları <b>yan yana yapıştırılır</b> (4×4096), <b>W_O</b> (4096×2880 †) ile çarpılıp model boyutuna döner ve asıl x\'e <b>eklenir (residual)</b>. Attention alt-bloğu burada biter.',
  soz:'Kafaların bulduklarını tek not hâline getirip eski kartın üstüne ekliyoruz.',elde:'Attention sonrası x (4×2880 †).',neden:'Kafaların bilgisini birleştirmek ve eski bilgiyi silmeden eklemek için.'});
-var gmRouter=gm({tag:'13 · x · W_r → 128 uzman puanı',labL:'RMSNorm(x)  4×2880 †',labW:'W_r  2880×128 †',labO:'puanlar  4×128',dl:2880,dO:128,sym:'x',name:'r',seed:33,note:'Çıktı kutusu = 16 gerçek sütun (128 uzman → 8 kutu).|Router küçük bir tablo; asıl ağırlıklar uzmanlarda.',
- say:'MoE alt-bloğu: önce RMSNorm, sonra <b>router</b> (W_r: 2880×128 †) her token için <b>128 uzmana puan</b> çıkarır. Bu puanlarla bir sonraki sahnede en iyi 4 seçilecek.',
- soz:'Her kelime 128 uzmana «sen bu kelimeye ne kadar uygunsun?» diye soruyor.',elde:'T×128 uzman puanı.',neden:'Her token\'ın hangi uzmanlara gideceğine karar vermek için.'});
-var gmGate=gm({tag:'14 · Seçilen uzman: x·W_gate ve x·W_up',labL:'RMSNorm(x)  4×2880 †',labW:'uzman #19  W_gate  2880×2880 †',labO:'kapı  4×2880',dl:2880,dO:2880,sym:'x',name:'kapı',seed:35,note:'W_up aynı şekil: değer yolu (x·W_up).|Uzman boyutu † hafızadan; çizim şematik.',
- post:function(f,Rx,cw,chh){txt('SiLU(kapı) ⊙ değer  4×2880',Rx.x,Rx.y-14,13,'#e8ebf2');for(var r=0;r<4;r++){txt(OT[r],Rx.x-8,Rx.y+r*chh+16,12,'#9aa3b6','right');for(var g=0;g<8;g++)rect(Rx.x+g*cw,Rx.y+r*chh,cw-1,chh-1,col(f.O[r][g]*hsh(94,r,g),f.mx))}frame(Rx.x,Rx.y,250,96);txt('⊙ eleman eleman çarp',600,310,13,HL,'center')},
- say:'Seçilen her uzmanın kendi küçük FFN\'i vardır. <b>W_gate</b> ile <b>kapı</b>, <b>W_up</b> ile <b>değer</b> üretilir; kapı aktivasyondan geçip değerle <b>eleman eleman çarpılır</b> (SwiGLU ailesi †). 128 uzmanın hepsi bellekte, bu token için yalnız seçilen 4\'ü çalışır.',
- soz:'Uzman, kartı iki yoldan okuyor: bir yol «hangi özellikler geçsin?» (kapı), öbürü bilginin kendisi; ikisini çarpıp geçecek olanı seçiyor.',elde:'Kapılı ara vektör (T×2880 †).',neden:'Kapı, uzmanın yalnız ilgili özellikleri geçirmesini sağlar (GPT-2\'nin tek GELU yolundan daha esnek).'});
-var gmDown=gm({tag:'15 · Uzman: ×W_down',labL:'kapılı  4×2880 †',labW:'W_down  2880×2880 †',labO:'uzman çıktısı  4×2880',dl:2880,dO:2880,sym:'g',name:'e',seed:37,note:'Her seçilen uzman için ayrı (4 uzman → 4 çıktı).|Çıktı bir sonraki sahnede router yüzdeleriyle toplanır.',
- say:'Kapılı ara vektör <b>W_down</b> ile model boyutuna geri indirilir: <b>uzmanın çıktısı</b>. Bu işlem seçilen <b>4 uzmanın her biri için</b> ayrı yapılır; sonra yüzdelerle toplanacaklar.',
- soz:'Uzman düşünüp bulduğunu kartın boyuna geri yazıyor.',elde:'4 uzman için 4 çıktı (hepsi T×2880 †).',neden:'Bir sonraki adım (toplama + residual) ve sonraki blok aynı genişlikle çalışabilsin diye.'});
 var gmHead=gm({tag:'17 · Çıkış tablosu (son satır)',R:1,rowLab:['='],labL:'\'=\' satırı  1×2880 †',labW:'çıkış tablosu  2880×≈201.000 †',labO:'skorlar  1×≈201.000',dl:2880,dO:201088,sym:'h',name:'s',seed:39,note:'Çıktı kutusu = ≈25.000 gerçek sütun (201.088 → 8 kutu).|gpt-oss\'ta çıkış tablosu giriş tablosundan AYRI †.',
  say:'Son RMSNorm\'dan sonra yalnız <b>son satır</b> (\'=\') çıkış tablosuyla (2880×≈201.000 †) çarpılır: sözlükteki <b>her token için bir skor</b>. GPT-2\'de bu tablo giriş tablosuyla paylaşımlıydı; gpt-oss\'ta ayrı bir tablo †.',
  soz:'Sözlükteki her kelimeye «sıradaki sen misin?» puanı veriyoruz.',elde:'≈201.000 skor (logit).',neden:'Sayı vektöründen sözlükteki gerçek bir token\'a dönüş yolu bu.'});
@@ -1375,48 +1352,204 @@ var oMoeWhy={dur:22,tag:'13a · MoE nedir? Yoğun FFN ↔ uzmanlar',
  soz:'Tek dev öğretmen yerine 128 küçük öğretmen var; her kelimeyi yalnız en uygun dördü okuyor. Bütün öğretmenlerin bilgisi mevcut, ama her seferinde hepsi çalışmıyor.',
  elde:'Aynı iş (kartı düşünce ile işlemek) çok daha az hesapla; model kapasitesi büyük.',
  neden:'Dil modellerinin kalitesi büyük ağırlık sayısıyla artar ama her token için hepsini çalıştırmak çok pahalı; MoE ikisini ayırır.'};
-var oRouterDot=(function(){var D6=6,E8=8;function sc(e){var s=0,x=[],w=[];for(var d=0;d<D6;d++){var a=hsh(121,0,d)*1.5,b=hsh(122,e,d)*1.5;x.push(a);w.push(b);s+=a*b}return {s:s,x:x,w:w}}
-  var all=[];for(var e=0;e<E8;e++)all.push(sc(e));var ord=all.map(function(o,i){return i}).sort(function(a,b){return all[b].s-all[a].s}),top2=ord.slice(0,2);
-  return {dur:22,tag:'13b · Router: uzman profili ile nokta çarpım',
- draw:function(t){var cur=Math.min(7,Math.floor(clamp(t/0.7,0,.999)*8)),done=clamp(t/0.7,0,1)>=1,fin=clamp((t-0.75)/0.25,0,1);
-  txt('Oyuncak: 6 boyutlu token kartı, 8 uzman (gerçekte 2880 boyut, 128 uzman †)',20,26,12,'#e8ebf2');
-  txt('x («=» token kartı)',30,66,11,'#e8ebf2');for(var d=0;d<D6;d++)rect(30+d*34,76,32,30,col(all[0].x[d],1.5),HL,0);frame(30,76,D6*34,30);
-  txt('W_r: her SÜTUN bir uzmanın «ilgi profili»',30,140,11,'#e8ebf2');
-  for(var e=0;e<E8;e++){txt('#'+(e+1),30+d*0+e*0,0,1,'#000');}
-  for(var e2=0;e2<E8;e2++){var x0=30+e2*44;txt('u'+(e2+1),x0+16,156,10,e2===cur&&!done?HL:'#9aa3b6','center');for(var d2=0;d2<D6;d2++)rect(x0,164+d2*24,40,22,col(all[e2].w[d2],1.5));if(e2===cur&&!done)rect(x0-1,163,42,D6*24+2,null,HL,2)}
-  var bx=420;txt('uygunluk puanı = x · profil (nokta çarpım)',bx,66,11,'#e8ebf2');
-  for(var e3=0;e3<E8;e3++){var y=80+e3*34,v=all[e3].s,sh=e3<=cur||done,len=clamp(v/3,-1,1)*140,tp=done&&top2.indexOf(e3)>=0;
-   txt('uzman '+(e3+1),bx+60,y+18,12,tp?HL:'#9aa3b6','right');rect(bx+70,y+4,280,18,'#1a1f2a');if(sh)rect(bx+210,y+4,len,18,tp?'rgba(255,200,46,.85)':(v>=0?'rgba(110,160,255,.7)':'rgba(242,122,136,.7)'));txt(sh?f2(v):'',bx+360,y+18,11,'#e8ebf2')}
-  if(fin>0){ctx.globalAlpha=fin;var e1=all[top2[0]].s,e2s=all[top2[1]].s,m=Math.max(e1,e2s),a1=Math.exp(e1-m),a2=Math.exp(e2s-m),sm=a1+a2;
-   txt('en yüksek 2 (gerçekte 4) seçildi → yalnız ikisi arasında softmax: uzman '+(top2[0]+1)+' = %'+(a1/sm*100).toFixed(0)+', uzman '+(top2[1]+1)+' = %'+(a2/sm*100).toFixed(0),30,390,12,HL);ctx.globalAlpha=1}},
- live:function(t){var cur=Math.min(7,Math.floor(clamp(t/0.7,0,.999)*8)),o=all[cur],pr=[];for(var d=0;d<3;d++)pr.push('('+f2(o.x[d])+')('+f2(o.w[d])+')');return 'puan(uzman '+(cur+1)+') = x₁·w₁ + x₂·w₂ + … = '+pr.join(' + ')+' + … = <b>'+f2(o.s)+'</b>'},
- say:'<b>Router tam olarak ne yapar?</b> <b>W_r</b> sadece bir ağırlık tablosudur: her <b>sütunu bir uzmanın «ilgi profilidir»</b> (eğitimle öğrenilir). Token kartı x ile her sütunun <b>nokta çarpımı</b> alınır: sayı büyükse «bu uzman bu token\'a uygun». 128 uzman için 128 puan çıkar. Sonra <b>en yüksek 4</b> seçilir ve yalnız onların puanı <b>softmax</b>\'tan geçerek karışım yüzdesi olur. Çizim 6 boyut/8 uzman/top-2 oyuncağı; sayılar gerçek hesap ama ağırlıklar rastgele (gpt-oss değil).',
- soz:'Her uzmanın bir «ilgi alanı kartı» var; token kartını her ilgi kartıyla karşılaştırıyoruz, en çok uyuşan dört uzmana gönderiyoruz.',
- elde:'Her uzman için bir uygunluk puanı; en iyi 4\'ün karışım yüzdeleri.',
- neden:'Hangi uzmanın hangi kelimeye bakacağını elle yazmak imkânsız: router bunu eğitimle kendisi öğrenir.'}})();
-var oMoeTokens={dur:20,tag:'14b · Farklı token\'lar farklı uzmanlara gider',
- draw:function(t){var cur=Math.min(3,Math.floor(clamp(t/0.85,0,.999)*4));
-  txt('Aynı katmanda 4 token\'ın seçtiği 4\'er uzman (şematik: gerçek router değil)',30,36,13,'#e8ebf2');
-  OT.forEach(function(s,i){var x=30+(i%2)*430,y=56+Math.floor(i/2)*170,on=i<=cur;ctx.globalAlpha=on?1:.25;txt('token «'+s+'» → uzman '+moeTop[i].map(function(k){return '#'+(k+1)}).join(', '),x,y+8,12,i===cur?HL:'#e8ebf2');
-   for(var k=0;k<128;k++){var r=Math.floor(k/16),c=k%16,sel=moeTop[i].indexOf(k)>=0;rect(x+c*24,y+18+r*14,22,12,sel?'rgba(255,200,46,.9)':'rgba(110,160,255,.25)')}
-   ctx.globalAlpha=1;if(i===cur)frame(x-4,y-6,16*24+4,8*14+30,HL)});
-  var uni={};moeTop.forEach(function(a){a.forEach(function(k){uni[k]=(uni[k]||0)+1})});var shared=Object.keys(uni).filter(function(k){return uni[k]>1}).length;
-  txt('4 token, toplam '+Object.keys(uni).length+' farklı uzman çalıştı; ortak seçilen: '+shared+'  (hesap: 16 uzman-çalışması, 128 değil)',30,400,12,'#5fcf8a')},
- live:function(t){var cur=Math.min(3,Math.floor(clamp(t/0.85,0,.999)*4));return 'token «'+OT[cur]+'» → uzmanlar '+moeTop[cur].map(function(k){return '#'+(k+1)}).join(', ')+' (router puanları: '+moeTop[cur].map(function(k){return f2(moeSc[cur][k])}).join('; ')+')'},
- say:'<b>Her token kendi uzmanlarını seçer.</b> Router her token satırı için ayrı çalışır: aynı katmanda «7», «+», «5», «=» farklı (bazen ortak) 4 uzmana gider. Hangi uzmanın neye uzmanlaştığı <b>eğitimle kendiliğinden</b> belirlenir; «matematik uzmanı» gibi net bir etiket olması gerekmez (ve gpt-oss için <b>ölçmedik</b>). Çizilen seçimler şematik.',
- soz:'Her kelime kendi dört uzmanına gidiyor; aynı cümlenin kelimeleri farklı uzmanlara dağılabiliyor.',
- elde:'Her token için 4 uzman listesi ve yüzdeleri; diğer 124 uzman o token için çalışmıyor.',
- neden:'Farklı kelimeler farklı işlem ister; uzmanlar arasında iş bölümü modelin kapasitesini artırır.'};
-var ORDO=['tok','emb','rms1','q','kv','gqa','rope0','rope','rope2','rope3','rope4','slice','gqacalc','score','mask','av','wo','rms2','moewhy','routerdot','router','top4','moetok','gate','down','mix','blk','rmsf','head','sel','act'];
-var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRopeArrow,oRope,oRopeCases,oRopeSpeed,oRopeMix,oSlice,oGqaCalc,oScoreT,o2,gmAV,gmWo,oR2,oMoeWhy,oRouterDot,gmRouter,o1,oMoeTokens,gmGate,gmDown,oMix,oLayers,oRF,gmHead,oSel,o3];
-var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope0:'RoPE: iki sayı = bir ok',rope:'RoPE: dönen Q, K → skor',rope2:'RoPE: açı → skor → pay',rope3:'RoPE: hızlı/yavaş ibreler',rope4:'Skor = içerik + mesafe',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ (transpoz) → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2',moewhy:'MoE nedir?',routerdot:'Router: nokta çarpım',moetok:'Token → uzmanlar',router:'Router x·W_r',top4:'En iyi 4 uzman',gate:'Uzman: kapı ⊙ değer',down:'Uzman: ×W_down',mix:'Karışım + residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
-var CR='gpt-oss › ',CRO={tok:CR+"Girdi › Token'lar",emb:CR+'Girdi › Embedding (konum tablosu yok)',rms1:CR+'Blok × 36 › Attention › RMSNorm',q:CR+'Blok × 36 › Attention › Q = x·W_Q',kv:CR+'Blok × 36 › Attention › K, V = x·W_K, x·W_V (8 K/V kafası)',rope0:CR+'Blok × 36 › Attention › RoPE › giriş: iki sayı = bir ok',rope:CR+'Blok × 36 › Attention › RoPE',rope2:CR+'Blok × 36 › Attention › RoPE › ok açısı → skor → dikkat payı',rope3:CR+'Blok × 36 › Attention › RoPE › 32 çift: hızlı ve yavaş ibreler',rope4:CR+'Blok × 36 › Attention › RoPE › skor = içerik + mesafe',slice:CR+'Blok × 36 › Attention › 64 Q / 8 K-V dilimi (GQA)',gqa:CR+'Blok × 36 › Attention › GQA: K/V paylaşımı (MHA ↔ GQA ↔ MQA)',gqacalc:CR+'Blok × 36 › Attention › GQA: bir K/V grubunu 8 sorgu kafası paylaşır',score:CR+'Blok × 36 › Attention › Q·Kᵀ → skor',mask:CR+'Blok × 36 › Attention › kayan pencere ↔ tam + çukur + softmax',av:CR+'Blok × 36 › Attention › A·V',wo:CR+'Blok × 36 › Attention › yapıştır, ×W_O, residual',rms2:CR+'Blok × 36 › MoE alt-bloğu › RMSNorm',moewhy:CR+'Blok × 36 › MoE › MoE nedir? yoğun FFN ↔ 128 uzman',routerdot:CR+'Blok × 36 › MoE › router: uzman profili ile nokta çarpım',moetok:CR+'Blok × 36 › MoE › her token kendi uzmanlarını seçer',router:CR+'Blok × 36 › MoE › router x·W_r (gerçek şekil)',top4:CR+'Blok × 36 › MoE › en iyi 4 uzman + softmax',gate:CR+'Blok × 36 › MoE › uzman: W_gate, W_up, SwiGLU',down:CR+'Blok × 36 › MoE › uzman: W_down',mix:CR+'Blok × 36 › MoE › 4 uzmanın ağırlıklı toplamı + residual',blk:CR+'36 blok art arda',rmsf:CR+'Çıkış › Son RMSNorm',head:CR+'Çıkış › Çıkış tablosu',sel:CR+'Çıkış › Softmax + seçim',act:CR+'Toplam ↔ aktif ağırlık, GQA önbelleği'};
-var COLSO={tok:[0,0],emb:[1,2],rms1:[3,3],q:[4,5],kv:[4,5],gqa:[4,5],rope0:[6,6],rope:[6,6],rope2:[6,6],rope3:[6,6],rope4:[6,6],slice:[7,7],gqacalc:[7,8],score:[8,8],mask:[9,9],av:[10,10],wo:[11,13],rms2:[14,14],moewhy:[15,16],routerdot:[15,15],router:[15,15],top4:[16,16],moetok:[16,16],gate:[17,18],down:[19,19],mix:[20,21],blk:null,rmsf:[22,22],head:[23,24],sel:[25,25],act:null};
+/* ============ MoE ADIM ADIM (zincirli): aynı «=» kartı RMSNorm → router → uzman → karışım → residual boyunca akar ============
+   Her sahne bir önceki sahnenin GERÇEKTEN hesaplanmış sayılarını kullanır (gerçek boyutlarla: kart 2880 †, 128 uzman, top-4).
+   Ağırlıklar tohumlu rastgele (gpt-oss'un değil); şekiller ve işlemler gerçek. Ekranda her vektörün ilk 12 sayısı gösterilir. */
+var MOE=(function(){
+ var D=2880,NE=128,NS=12,SC=1/Math.sqrt(D),RT=new Float32Array(65536),i,k,r,e;
+ for(i=0;i<65536;i++)RT[i]=1.732*hsh(777,i,1);
+ var KA=new Int32Array(D);for(k=0;k<D;k++)KA[k]=Math.imul(k,0x9E3779B1);
+ function W(s,k,j){var x=(KA[k]+Math.imul(j,0x85EBCA77)+Math.imul(s,0xC2B2AE3D))|0;x^=x>>>15;x=Math.imul(x,0x2C1B3C6D);x^=x>>>12;return RT[x&65535]}
+ var X=[],XH=[],RMS=[];
+ for(r=0;r<4;r++){var a=new Float64Array(D),s2=0;for(k=0;k<D;k++){a[k]=ov(201,r,k);s2+=a[k]*a[k]}var rm=Math.sqrt(s2/D),b=new Float64Array(D);for(k=0;k<D;k++)b[k]=a[k]/rm;X.push(a);XH.push(b);RMS.push(rm)}
+ var S=[];for(r=0;r<4;r++){var row=[];for(e=0;e<NE;e++){var s=0;for(k=0;k<D;k++)s+=XH[r][k]*W(1,k,e);row.push(s*SC)}S.push(row)}
+ var TOP=S.map(function(a){return a.map(function(v,i){return i}).sort(function(x,y){return a[y]-a[x]}).slice(0,4)});
+ var EQ=TOP[3],P=(function(){var m=S[3][EQ[0]],ex=EQ.map(function(e){return Math.exp(S[3][e]-m)}),z=ex.reduce(function(a,b){return a+b},0);return ex.map(function(v){return v/z})})();
+ var cache={};
+ function silu(z){return z/(1+Math.exp(-z))}
+ function ex(e){if(cache[e])return cache[e];var x=XH[3],up=new Float64Array(D),gt=new Float64Array(D),sU=10000+e*3,sG=sU+1,sD=sU+2,j,k,a,b;
+  for(j=0;j<D;j++){a=0;b=0;for(k=0;k<D;k++){a+=x[k]*W(sU,k,j);b+=x[k]*W(sG,k,j)}up[j]=a*SC;gt[j]=b*SC}
+  var ar=new Float64Array(D);for(j=0;j<D;j++)ar[j]=silu(gt[j])*up[j];
+  var out=new Float64Array(D);for(j=0;j<D;j++){a=0;for(k=0;k<D;k++)a+=ar[k]*W(sD,k,j);out[j]=a*SC}
+  return cache[e]={up:up,gt:gt,ar:ar,out:out,sU:sU,sG:sG,sD:sD}}
+ var MIX=null;function mix(){if(MIX)return MIX;var m=new Float64Array(D),j;EQ.forEach(function(e,q){var o=ex(e).out;for(j=0;j<D;j++)m[j]+=P[q]*o[j]});return MIX=m}
+ function ux(e){return '#'+(e+1)}
+ function pc(p){return '%'+(p*100).toFixed(1).replace('.',',')}
+ /* --- çizim yardımcıları --- */
+ var CWD=52,CHT=26;
+ function cell(x,y,v,o){o=o||{};var sh=o.show!==false;rect(x,y,CWD-2,CHT-2,sh?col(v,o.sc||1.5,o.al):EMPTY);if(sh)txt(f2(v),x+CWD/2-1,y+CHT/2+4,10,'#e8ebf2','center');if(o.hl)rect(x-1,y-1,CWD,CHT,null,HL,2)}
+ function strip(x,y,lab,arr,o){o=o||{};var n=o.n==null?NS:o.n;txt(lab,x,y-7,o.ls||12,o.lc||'#e8ebf2');
+  for(var j=0;j<NS;j++)cell(x+j*CWD,y,arr[j],{show:j<n,hl:o.hl===j,sc:o.sc,al:o.al});
+  txt(o.tail==null?'… (2880 sayı †)':o.tail,x+NS*CWD+6,y+CHT/2+4,11,'#9aa3b6')}
+ function prog(t,a){return Math.min(NS-1,Math.floor(clamp(t/(a||0.85),0,.999)*NS))}
+ /* «kart · sütun = bir sayı» şeridi: üstte girdi, altta tablonun sütunu, altta çarpımlar, sağda toplam */
+ function dot(y0,inLab,inArr,wLab,seed,j,outLab,outArr,n,sub){
+  strip(40,y0,inLab,inArr,{});
+  var cl=[],pr=[],q;for(q=0;q<NS;q++){cl.push(W(seed,q,j));pr.push(inArr[q]*W(seed,q,j))}
+  strip(40,y0+62,wLab,cl,{al:.9});
+  var m=Math.floor(clamp(sub,0,1)*NS);strip(40,y0+124,'karşılıklı çarpımlar (ilk 12 / 2880)',pr,{n:m,sc:1});
+  if(sub>0.95){txt('hepsini (2880 çarpım) topla → '+outLab+'['+(j+1)+']',40,y0+182,12,HL);}
+  strip(40,y0+212,outLab,outArr,{n:n,hl:j})}
+ function dotLive(sym,inArr,seed,j,res,lab){var s=[];for(var q=0;q<3;q++)s.push('('+f2(inArr[q])+')('+f2(W(seed,q,j))+')');return lab+'['+(j+1)+'] = '+s.join(' + ')+' + … (2880 çarpım) × 1/√2880 = <b>'+f2(res)+'</b>'}
+ var NOTE='Ağırlıklar tohumlu rastgele (gpt-oss değil); boyut 2880 † hafızadan. Sayılar sahneden sahneye ZİNCİRLİ: hepsi aynı «=» kartından hesaplandı.';
+ function foot(){txt(NOTE,40,458,10,'#6f788a')}
+ /* ---------- sahneler ---------- */
+ var mRms={dur:16,tag:'MoE 1 · RMSNorm: kartın kopyası dengelenir, asıl x bekler',
+  draw:function(t){var j=prog(t);
+   strip(40,70,'x_yeni«=» (attention + residual sonrası, asıl kart)',X[3],{});
+   txt('RMS = √( (x₁² + x₂² + … + x₂₈₈₀²) ÷ 2880 ) = '+f2(RMS[3])+'   →   her sayı bu değere bölünür',40,140,13,HL);
+   strip(40,190,'x̂«=» = x_yeni«=» ÷ RMS  (dengelenmiş KOPYA → router ve uzmanlara gider)',XH[3],{n:j+1,hl:j});
+   rect(40,262,700,70,'#141925','#4a5468',1);txt('BEKLER: asıl x_yeni«=» olduğu gibi kenarda durur.',56,290,13,'#5fcf8a');
+   txt('En sonda uzmanların notu ona EKLENECEK (residual). Değişen yalnız kopyanın «ses seviyesi».',56,314,12,'#9aa3b6');
+   txt('4 satırın (7, +, 5, =) her biri kendi RMS\'iyle ayrı dengelenir; burada «=» satırını izliyoruz. γ sadelik için 1.',40,362,12,'#9aa3b6');foot()},
+  live:function(t){var j=prog(t);return 'x̂«=»['+(j+1)+'] = x_yeni«=»['+(j+1)+'] ÷ RMS = '+f2(X[3][j])+' ÷ '+f2(RMS[3])+' = <b>'+f2(XH[3][j])+'</b>'},
+  say:'MoE alt-bloğu ikinci <b>RMSNorm</b> ile başlar. «=» satırının (2880 sayı †) kare ortalamasının kökü alınır (<b>RMS</b>) ve her sayı ona bölünür: <b>x̂«=»</b>. Bu bir <b>kopya</b>dır; asıl <b>x_yeni«=»</b> değişmeden bekler, çünkü en sonda uzmanların notu ona eklenecek. İşaretler ve oranlar korunur, yalnız ölçek dengelenir.',
+  soz:'Notlarla kalabalıklaşan kartın okunaklı bir kopyasını çıkarıyoruz; aslını kenara koyuyoruz.',
+  elde:'x̂«=» (2880 sayı): router\'a ve uzmanlara gidecek kart.',
+  neden:'Router ve uzmanlar sabit ölçekli girdiyle daha kararlı çalışır; asıl kartı silmemek için kopya üzerinde çalışırız.'};
+ var R1E=[0,1,2,EQ[0]];
+ var mR1={dur:22,tag:'MoE 3 · Router: kart · uzman profili = 1 puan',
+  draw:function(t){var p=clamp(t/0.88,0,.999),q=Math.floor(p*4),sub=p*4-q,e=R1E[q];
+   txt('W_r tablosu 2880×128 †: her KOLON bir uzmanın profili (2880 sayı). 2880 = kart boyu, 128 = uzman sayısı.',40,24,12,'#9aa3b6');
+   var cl=[],pr=[],z;for(z=0;z<NS;z++){cl.push(W(1,z,e));pr.push(XH[3][z]*W(1,z,e))}
+   strip(40,62,'x̂«=» (RMSNorm\'dan gelen kart)',XH[3],{});
+   strip(40,124,'Uzman '+ux(e)+'\'in profili = W_r\'nin '+(e+1)+'. kolonu',cl,{al:.9});
+   strip(40,186,'karşılıklı çarpımlar (ilk 12 / 2880)',pr,{n:Math.floor(clamp(sub/0.6,0,1)*NS),sc:1});
+   if(sub>0.62)txt('hepsini topla (2880 çarpım) → TEK sayı: puan(«=», '+ux(e)+') = '+f2(S[3][e]),40,240,13,HL);
+   txt('«=» satırının puanları (128 kolondan 4\'ü):',40,290,12,'#e8ebf2');
+   R1E.forEach(function(ee,i){var x=40+i*150,sh=i<q||(i===q&&sub>0.62);rect(x,302,140,40,sh?col(S[3][ee],2):EMPTY,i===q?HL:'#4a5468',i===q?2:1);txt(ux(ee),x+10,327,12,'#9aa3b6');if(sh)txt(f2(S[3][ee]),x+128,327,14,'#e8ebf2','right')});
+   txt('… 124 kolon daha → «=» için 128 puan. Puan uzmanın ÇIKTISI değil: «bu uzman bu karta ne kadar uygun?»',40,372,12,'#9aa3b6');foot()},
+  live:function(t){var p=clamp(t/0.88,0,.999),q=Math.floor(p*4),e=R1E[q],s=[];for(var z=0;z<3;z++)s.push('('+f2(XH[3][z])+')('+f2(W(1,z,e))+')');return 'puan(«=», '+ux(e)+') = '+s.join(' + ')+' + … (2880 çarpım) × 1/√2880 = <b>'+f2(S[3][e])+'</b>'},
+  say:'<b>Router</b> küçük bir ağırlık tablosudur: <b>W_r (2880×128 †)</b>. Her <b>kolonu bir uzmanın «profili»</b>. «=» kartı (x̂«=», 2880 sayı) ile bir profil <b>karşılıklı çarpılıp toplanır</b> → <b>tek bir sayı</b>: «bu uzman bu karta ne kadar uygun?». Bu hesap 128 kolonun her biri için yapılır. Puan, uzmanın çıktısı DEĞİLDİR; yalnız seçim içindir.',
+  soz:'Kartı her uzmanın ilgi profiliyle karşılaştırıp uyum puanı veriyoruz.',
+  elde:'«=» için 128 puan (her uzman için 1 sayı).',
+  neden:'Hangi uzmanın hangi karta bakacağını elle yazamayız; router bunu eğitimle öğrenir.'};
+ var mR2={dur:16,tag:'MoE 4 · Puan tablosu 4×128: satır = token, kolon = uzman',
+  draw:function(t){var x0=70,y0=70,cw=6.6,ch=40,n=Math.floor(clamp(t/0.7,0,1)*4*NE),r,e;
+   txt('4×2880 · W_r (2880×128 †)  =  4×128 puan tablosu',x0,30,14,'#e8ebf2');
+   txt('#1',x0,y0-8,10,'#9aa3b6');txt('#128',x0+NE*cw,y0-8,10,'#9aa3b6','right');
+   for(r=0;r<4;r++){txt('«'+OT[r]+'»',x0-10,y0+r*ch+25,13,'#9aa3b6','right');for(e=0;e<NE;e++){var idx=r*NE+e;rect(x0+e*cw,y0+r*ch,cw-1,ch-3,idx<n?col(S[r][e],2.2):EMPTY)}}
+   var e0=EQ[0];if(n>=4*NE){rect(x0+e0*cw-1,y0-2,cw+1,4*ch,null,HL,2);txt('bu KOLON = Uzman '+ux(e0)+' (her token\'ın bu uzmana puanı)',x0+e0*cw,y0+4*ch+20,12,HL,e0>64?'right':'left')}
+   txt('• Satır = token (7, +, 5, =)   • Kolon = uzman (#1 … #128)   • Hücre = TEK sayı: o token\'ın o uzmana uyum puanı',x0,y0+4*ch+60,12,'#e8ebf2');
+   txt('Mavi = artı (yüksek) puan, kırmızı = eksi (düşük). Her hücre bir önceki sahnedeki «kart · profil» hesabının sonucu.',x0,y0+4*ch+84,12,'#9aa3b6');foot()},
+  live:function(t){var n=Math.floor(clamp(t/0.7,0,1)*4*NE),idx=Math.max(0,Math.min(4*NE-1,n-1)),r=Math.floor(idx/NE),e=idx%NE;return 'hücre[«'+OT[r]+'», '+ux(e)+'] = <b>'+f2(S[r][e])+'</b>  (satır = token, kolon = uzman)'},
+  say:'Router\'ın çıktısı <b>4×128\'lik bir puan tablosu</b>dur. <b>Satırlar token</b> (7, +, 5, =), <b>kolonlar uzman</b> (#1…#128). Her hücre tek bir sayı: o token\'ın o uzmana uyum puanı. 2880 ile 128\'i karıştırma: 2880 kartın boyu, 128 uzman sayısı; uzmanlar yalnız bu tabloda kolon olarak görünür.',
+  soz:'Her kelime 128 uzmana birer puan verdi.',
+  elde:'4×128 puan tablosu.',
+  neden:'Seçim yapabilmek için her token\'ın her uzmanla uyumunu bilmeliyiz.'};
+ var mTop={dur:22,tag:'MoE 5 · Her satırdan en iyi 4 uzman → softmax → yüzde',
+  draw:function(t){var x0=70,y0=56,cw=6.6,ch=26,ph=clamp(t/0.6,0,1),rr=Math.floor(ph*4.999),r,e;
+   for(r=0;r<4;r++){txt('«'+OT[r]+'»',x0-10,y0+r*ch+18,12,'#9aa3b6','right');for(e=0;e<NE;e++){var sel=TOP[r].indexOf(e)>=0&&r<rr;rect(x0+e*cw,y0+r*ch,cw-1,ch-3,sel?'rgba(255,200,46,.95)':col(S[r][e],2.2,0.35))}}
+   for(r=0;r<4;r++){var on=r<rr;ctx.globalAlpha=on?1:.25;txt('«'+OT[r]+'» → '+TOP[r].map(function(e){return ux(e)+' ('+f2(S[r][e])+')'}).join('   '),x0,y0+4*ch+30+r*22,12,r===3?HL:'#e8ebf2');ctx.globalAlpha=1}
+   var uni={};TOP.forEach(function(a){a.forEach(function(e){uni[e]=(uni[e]||0)+1})});var sh=Object.keys(uni).filter(function(k){return uni[k]>1}).length;
+   if(rr>=4)txt('Toplam 4×4 = 16 iş, '+Object.keys(uni).length+' farklı uzman'+(sh?' ('+sh+' uzman ortak)':' (burada ortak yok)')+'. Havuz yine 128 uzman; ortak seçilen uzman satırları ayrı ayrı işler.',x0,y0+4*ch+122,12,'#9aa3b6');
+   var q=clamp((t-0.62)/0.3,0,1);if(q>0){ctx.globalAlpha=q;var by=y0+4*ch+150;rect(x0-10,by,860,92,'#141925',HL,1.5);
+    txt('«=» için puanlar: '+EQ.map(function(e){return ux(e)+' '+f2(S[3][e])}).join('   ')+'   → softmax (yalnız bu 4\'ü) →',x0,by+24,13,'#e8ebf2');
+    txt('yüzdeler: '+EQ.map(function(e,i){return ux(e)+' '+pc(P[i])}).join('   '),x0,by+46,13,HL);
+    txt('BEKLER: yüzdeler şimdi kullanılmaz; en sonda 4 uzmanın notlarını karıştırırken kullanılacak.',x0,by+72,12,'#5fcf8a');ctx.globalAlpha=1}
+   foot()},
+  live:function(t){return '«=» → '+EQ.map(function(e,i){return ux(e)+' '+f2(S[3][e])+' → '+pc(P[i])}).join('  |  ')},
+  say:'Her <b>satırda</b> en yüksek <b>4 puan</b> seçilir: her token kendi 4 uzmanını alır (4 token × 4 = 16 iş). Aynı uzman birden çok token tarafından seçilebilir; havuz yine 128. Sonra yalnız bu 4 puan <b>softmax</b>\'tan geçer ve <b>yüzde</b> olur (toplam %100). Bu yüzdeler <b>şimdi kullanılmaz</b>; en sonda uzmanların notlarını karıştırırken devreye girer.',
+  soz:'Her kelime en uygun dört uzmanı çağırıyor ve her birine ne kadar güveneceğini yüzdeyle not ediyor.',
+  elde:'«=» için 4 uzman ve 4 yüzde.',
+  neden:'Hepsini çalıştırmak pahalı; en uygun birkaçını çalıştırıp güvene göre karıştırmak yeterli.'};
+ var mTwo={dur:16,tag:'MoE 6 · İki yol: puan → yüzde (bekler), KART → uzman',
+  draw:function(t){var a=clamp(t/0.4,0,1),b=clamp((t-0.4)/0.4,0,1),c=clamp((t-0.82)/0.18,0,1),e0=EQ[0];
+   function box(x,y,w,h,s1,s2,bc,on){ctx.globalAlpha=0.2+0.8*on;rect(x,y,w,h,'#161b26',bc,2);txt(s1,x+w/2,y+h/2+(s2?-4:5),13,'#e8ebf2','center');if(s2)txt(s2,x+w/2,y+h/2+14,11,'#9aa3b6','center');ctx.globalAlpha=1}
+   function ar(x1,y1,x2,y2,c2,on){ctx.globalAlpha=0.2+0.8*on;ctx.strokeStyle=c2;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.beginPath();var an=Math.atan2(y2-y1,x2-x1);ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(an-0.4),y2-9*Math.sin(an-0.4));ctx.lineTo(x2-9*Math.cos(an+0.4),y2-9*Math.sin(an+0.4));ctx.closePath();ctx.fillStyle=c2;ctx.fill();ctx.lineWidth=1;ctx.globalAlpha=1}
+   box(30,180,160,64,'x̂«=» kart','2880 sayı †','#5fcf8a',1);
+   txt('YOL 1 · seçim',230,40,13,'#b592f0');
+   ar(190,200,240,96,'#b592f0',a);box(240,66,170,60,'Router','kart · W_r → 128 puan','#b592f0',a);
+   ar(410,96,450,96,'#b592f0',a);box(450,66,170,60,'en iyi 4 → softmax',EQ.map(function(e){return ux(e)}).join(' '),'#b592f0',a);
+   ar(620,96,660,96,'#b592f0',a);box(660,66,190,60,'yüzdeler BEKLER',P.map(pc).join(' '),'#b592f0',a);
+   txt('YOL 2 · işleme',230,262,13,'#6ea0ff');
+   ar(190,226,240,320,'#6ea0ff',b);ctx.globalAlpha=0.2+0.8*b;rect(240,290,380,92,'#161b26','#6ea0ff',2);txt('Uzman '+ux(e0)+' (ve diğer 3 uzman, ayrı ayrı)',430,312,13,'#e8ebf2','center');
+   ['W_up','W_gate','W_down'].forEach(function(s,i){rect(262+i*120,326,100,40,'#1d2433','#4a5468',1);txt(s,312+i*120,351,12,'#e8ebf2','center')});ctx.globalAlpha=1;
+   ar(620,336,660,336,'#6ea0ff',b);box(660,306,190,60,'not (2880 sayı)','uzmanın «=» kartına notu','#6ea0ff',b);
+   ar(755,126,755,306,'#ffc82e',c);ctx.globalAlpha=c;txt('en sonda: yüzde × not',765,222,12,HL);ctx.globalAlpha=1;
+   ctx.globalAlpha=b;txt('Uzmana PUAN girmez. Uzmana giren KARTIN KENDİSİ (x̂«=», 2880 sayı).',30,420,13,HL);ctx.globalAlpha=1;foot()},
+  live:function(t){return 'Yol 1: x̂«=» · W_r → puan → yüzde ('+P.map(pc).join(' / ')+', bekler)  |  Yol 2: x̂«=» → Uzman '+ux(EQ[0])+' (W_up, W_gate, W_down) → not'},
+  say:'Aynı <b>x̂«=»</b> kartından <b>iki yol</b> çıkar. <b>Yol 1 (seçim):</b> router puanları → en iyi 4 → <b>yüzdeler</b>; bunlar kenarda bekler. <b>Yol 2 (işleme):</b> kartın <b>kendisi</b> (2880 sayı) seçilen 4 uzmanın her birine ayrı ayrı girer; her uzman kendi <b>3 tablosuyla</b> (W_up, W_gate, W_down) bir <b>not</b> üretir. İki yol en sonda birleşir: <b>yüzde × not</b>.',
+  soz:'Puan «kimi çağıralım, ne kadar güvenelim» der; kart ise uzmanın üzerinde çalıştığı asıl malzemedir.',
+  elde:'Seçim (yol 1) ile işlemenin (yol 2) ayrı olduğu.',
+  neden:'Puan tek bir sayıdır, uzmana bilgi taşıyamaz; uzmanın işleyeceği bilgi kartın 2880 sayısında.'};
+ function mkUp(){var e0=EQ[0];return {dur:26,tag:'MoE 7 · Uzman '+ux(e0)+' içinde: kart × W_up = değer, kart × W_gate = kapı',
+  draw:function(t){var E=ex(e0),A=t<0.5,tt=A?t/0.5:(t-0.5)/0.5,j=Math.min(NS-1,Math.floor(clamp(tt/0.9,0,.999)*NS)),sub=clamp(tt/0.9,0,.999)*NS-j;
+   txt(A?'1) DEĞER: «=» kartı Uzman '+ux(e0)+'\'in W_up tablosuyla (2880×2880 †)':'2) KAPI: aynı kart, bu kez Uzman '+ux(e0)+'\'in W_gate tablosuyla',40,26,13,A?'#6ea0ff':'#b592f0');
+   dot(66,'x̂«=» (aynı kart)',XH[3],(A?'W_up':'W_gate')+' · '+(j+1)+'. sütun',A?E.sU:E.sG,j,A?'değer':'kapı',A?E.up:E.gt,j+(sub>0.95?1:0),sub);
+   if(!A)strip(40,380,'değer (1. aşamada hesaplandı)',E.up,{al:.6});foot()},
+  live:function(t){var E=ex(e0),A=t<0.5,tt=A?t/0.5:(t-0.5)/0.5,j=Math.min(NS-1,Math.floor(clamp(tt/0.9,0,.999)*NS));return dotLive('',XH[3],A?E.sU:E.sG,j,A?E.up[j]:E.gt[j],A?'değer':'kapı')},
+  say:'Uzman '+ux(e0)+'\'e giren <b>x̂«=»</b> kartı, uzmanın <b>kendi</b> iki tablosuyla ayrı ayrı çarpılır: <b>x̂·W_up = değer</b> (karttan hesaplanan ham bilgiler) ve <b>x̂·W_gate = kapı</b> (bu bilgilerden hangisi geçsin?). Her biri 2880 sayı †. Bir sayı = kart ile tablonun bir sütununun karşılıklı çarpımlarının toplamı (2880 çarpım).',
+  soz:'Uzman kartı iki gözle okuyor: biri «ne yazabilirim?», öbürü «bunlardan hangisi şimdi işe yarar?».',
+  elde:'değer ve kapı (her biri 1×2880 †).',
+  neden:'Tek tablo yalnız doğrusal bir karışım yapar; iki yolun çarpılması «şu varsa bunu geçir» gibi koşullu hesap sağlar.'}}
+ function mkGlu(){var e0=EQ[0];return {dur:20,tag:'MoE 8 · SiLU(kapı) × değer: aynı sıradaki sayılar çarpılır',
+  draw:function(t){var E=ex(e0),j=prog(t),sg=[],q;for(q=0;q<NS;q++)sg.push(silu(E.gt[q]));
+   strip(40,60,'kapı',E.gt,{hl:j});strip(40,130,'SiLU(kapı) = kapı ÷ (1 + e^(−kapı))',sg,{hl:j});
+   strip(40,200,'değer',E.up,{hl:j});txt('×  aynı sıradaki iki sayı (matris çarpımı YOK)',40,250,12,HL);
+   strip(40,290,'ara = SiLU(kapı) × değer',E.ar,{n:j+1,hl:j});
+   var gx=790,gy=40,gw=180,gh=150;rect(gx,gy,gw,gh,'#141925','#4a5468',1);txt('SiLU',gx+8,gy+16,11,'#9aa3b6');
+   ctx.strokeStyle='#4a5468';ctx.beginPath();ctx.moveTo(gx,gy+gh*0.7);ctx.lineTo(gx+gw,gy+gh*0.7);ctx.moveTo(gx+gw/2,gy);ctx.lineTo(gx+gw/2,gy+gh);ctx.stroke();
+   ctx.strokeStyle='#b592f0';ctx.lineWidth=2;ctx.beginPath();for(q=0;q<=60;q++){var z=-4+8*q/60,X1=gx+gw/2+z*gw/8,Y1=gy+gh*0.7-silu(z)*gh/6;if(q)ctx.lineTo(X1,Y1);else ctx.moveTo(X1,Y1)}ctx.stroke();ctx.lineWidth=1;
+   var zz=clamp(E.gt[j],-4,4);ctx.fillStyle=HL;ctx.beginPath();ctx.arc(gx+gw/2+zz*gw/8,gy+gh*0.7-silu(zz)*gh/6,5,0,7);ctx.fill();
+   txt('artı → geçer, eksi → ~0',gx+8,gy+gh+16,11,'#9aa3b6');foot()},
+  live:function(t){var E=ex(e0),j=prog(t);return 'ara['+(j+1)+'] = SiLU('+f2(E.gt[j])+') × '+f2(E.up[j])+' = '+f2(silu(E.gt[j]))+' × '+f2(E.up[j])+' = <b>'+f2(E.ar[j])+'</b>'},
+  say:'Kapı önce <b>SiLU</b>\'dan geçer: büyük artı sayılar aşağı yukarı aynen kalır, eksi sayılar sıfıra yaklaşır. Sonra <b>aynı sıradaki</b> kapı ve değer çarpılır (2880 kez, matris çarpımı yok): <b>ara = SiLU(kapı) × değer</b>. Kapısı kısık olan bilgi zayıflar, açık olan geçer.',
+  soz:'Editör her ham bilgiye «geçsin» ya da «sussun» işareti koyuyor.',
+  elde:'ara (1×2880 †): uzmanın süzülmüş bilgisi.',
+  neden:'Bu çarpım uzmana doğrusal olmayan, koşullu bir davranış kazandırır.'}}
+ function mkDown(){var e0=EQ[0];return {dur:22,tag:'MoE 9 · ara × W_down = Uzman '+ux(e0)+'\'in notu',
+  draw:function(t){var E=ex(e0),p=clamp(t/0.9,0,.999),j=Math.min(NS-1,Math.floor(p*NS)),sub=p*NS-j;
+   txt('Süzülmüş bilgi, Uzman '+ux(e0)+'\'in üçüncü tablosuyla (W_down 2880×2880 †) kart boyuna yazılır',40,26,13,'#6ea0ff');
+   dot(66,'ara (bir önceki sahneden)',E.ar,'W_down · '+(j+1)+'. sütun',E.sD,j,'not'+ux(e0),E.out,j+(sub>0.95?1:0),sub);
+   txt('Bu, Uzman '+ux(e0)+'\'in «=» kartı için yazdığı NOT (2880 sayı). Aynı işlem seçilen diğer 3 uzmanda da yapılır.',40,340,12,'#5fcf8a');foot()},
+  live:function(t){var E=ex(e0),j=Math.min(NS-1,Math.floor(clamp(t/0.9,0,.999)*NS));return dotLive('',E.ar,E.sD,j,E.out[j],'not'+ux(e0))},
+  say:'<b>ara</b> (2880 sayı †), uzmanın üçüncü tablosu <b>W_down</b> ile çarpılır ve kart boyuna geri yazılır: <b>Uzman '+ux(e0)+'\'in notu</b>. Uzmanın işi bitti: girdi kart (2880), çıktı not (2880).',
+  soz:'Uzman düşündüklerini kartın diline çevirip bir not olarak yazıyor.',
+  elde:'not (1×2880 †): bir uzmanın «=» kartına katkısı.',
+  neden:'Not, kartın üstüne eklenebilmesi için kartla aynı boyda olmalı.'}}
+ function mkFour(){return {dur:18,tag:'MoE 10 · Aynı kart, 4 uzman → 4 farklı not',
+  draw:function(t){var n=Math.floor(clamp(t/0.75,0,1)*4.999);strip(40,56,'x̂«=» (hepsine giren AYNI kart)',XH[3],{});
+   EQ.forEach(function(e,i){var y=130+i*70;ctx.globalAlpha=i<n?1:.15;strip(40,y,'Uzman '+ux(e)+' → not'+ux(e)+'   (yüzdesi '+pc(P[i])+', bekliyor)',i<n?ex(e).out:XH[3],{n:i<n?NS:0});ctx.globalAlpha=1});
+   txt('Her uzmanın W_up, W_gate, W_down tabloları farklı → aynı karta farklı not yazıyorlar.',40,420,12,'#9aa3b6');foot()},
+  live:function(t){var n=Math.min(3,Math.floor(clamp(t/0.75,0,.999)*4)),e=EQ[n],o=ex(e).out;return 'not'+ux(e)+' = '+f2(o[0])+'  '+f2(o[1])+'  '+f2(o[2])+'  … (2880 sayı)'},
+  say:'Aynı <b>x̂«=»</b> kartı seçilen <b>4 uzmanın her birine</b> ayrı ayrı girer ve her uzman kendi 3 tablosuyla bir not üretir: <b>4 not</b>, her biri 2880 sayı †. Tablolar farklı olduğu için notlar farklı.',
+  soz:'Aynı soruyu dört uzmana sorduk; dördü de kendi bakış açısıyla bir not yazdı.',
+  elde:'4 not (her biri 1×2880 †).',
+  neden:'Birden çok uzmanın görüşü tek bir uzmanınkinden daha zengin ve sağlam.'}}
+ function mkMix(){return {dur:22,tag:'MoE 11 · Yüzde × not → sütun sütun topla',
+  draw:function(t){var j=prog(t),m=mix();
+   EQ.forEach(function(e,i){var o=ex(e).out,w=[];for(var q=0;q<NS;q++)w.push(P[i]*o[q]);strip(40,56+i*66,pc(P[i])+' × not'+ux(e),w,{hl:j,sc:0.6})});
+   txt('↓ aynı sütundaki 4 sayı toplanır',40,330,12,HL);
+   strip(40,366,'MoE çıktısı«=» (2880 sayı)',m,{n:j+1,hl:j,sc:0.6});foot()},
+  live:function(t){var j=prog(t),s=EQ.map(function(e,i){return f2(P[i])+'·('+f2(ex(e).out[j])+')'});return 'MoE«=»['+(j+1)+'] = '+s.join(' + ')+' = <b>'+f2(mix()[j])+'</b>'},
+  say:'Bekleyen <b>yüzdeler</b> şimdi devreye girer: her uzmanın notu kendi yüzdesiyle çarpılır ve <b>aynı sütundaki 4 sayı toplanır</b>. Sonuç tek bir 2880 sayılık satır: <b>MoE çıktısı«=»</b>. Yüzde, karta değil <b>uzmanın notuna</b> uygulanır.',
+  soz:'Dört uzmanın notunu, onlara duyduğumuz güvene göre harmanlıyoruz.',
+  elde:'MoE çıktısı«=» (1×2880 †).',
+  neden:'Tek bir uzmana bağlı kalmadan, router\'ın güvenine göre ağırlıklı bir görüş elde etmek için.'}}
+ function mkRes(){return {dur:16,tag:'MoE 12 · Residual: x_yeni + MoE = bloğun çıktısı',
+  draw:function(t){var j=prog(t),m=mix(),o=[],q;for(q=0;q<NS;q++)o.push(X[3][q]+m[q]);
+   strip(40,70,'x_yeni«=» (MoE 1\'de kenara konan asıl kart)',X[3],{hl:j});txt('+',20,170,22,'#e8ebf2');
+   strip(40,160,'MoE çıktısı«=» (4 uzmanın karışık notu)',m,{hl:j,sc:0.6});txt('=',20,260,22,'#e8ebf2');
+   strip(40,250,'x_çıkış«=» = bloğun çıktısı',o,{n:j+1,hl:j});
+   txt('Kart silinmez, not üstüne eklenir. Blok bitti: x_çıkış bir sonraki bloğun girdisi (36 blok).',40,330,13,'#5fcf8a');foot()},
+  live:function(t){var j=prog(t),m=mix();return 'x_çıkış«=»['+(j+1)+'] = '+f2(X[3][j])+' + '+f2(m[j])+' = <b>'+f2(X[3][j]+m[j])+'</b>'},
+  say:'<b>Residual:</b> MoE çıktısı, MoE 1\'de kenarda bekleyen <b>asıl x_yeni</b> ile hücre hücre toplanır. Kart silinmez, uzmanların notu üstüne eklenir. Böylece bir blok biter; <b>x_çıkış</b> bir sonraki bloğun girdisi olur (36 kez).',
+  soz:'Uzmanların notunu kartın kenarına ekliyoruz; asıl yazı duruyor.',
+  elde:'Bloğun çıktısı (4×2880 †; burada «=» satırı).',
+  neden:'Eski bilgi korunsun ve gradyan derin ağda kestirme yoldan aksın diye.'}}
+ return {mRms:mRms,mR1:mR1,mR2:mR2,mTop:mTop,mTwo:mTwo,mUp:mkUp(),mGlu:mkGlu(),mDown:mkDown(),mFour:mkFour(),mMix:mkMix(),mRes:mkRes(),EQ:EQ,P:P,ex:ex,S:S,TOP:TOP}})();
+oMoeWhy.tag='MoE 2 · MoE nedir? Yoğun FFN ↔ 128 uzman';
+var ORDO=['tok','emb','rms1','q','kv','gqa','rope0','rope','rope2','rope3','rope4','slice','gqacalc','score','mask','av','wo','rms2','moewhy','m_r1','m_r2','m_top','m_two','m_up','m_glu','m_down','m_four','m_mix','m_res','blk','rmsf','head','sel','act'];
+var SCNO=[oTok,oEmb,oR1,gmQ,gmK,oGqaWhy,oRopeArrow,oRope,oRopeCases,oRopeSpeed,oRopeMix,oSlice,oGqaCalc,oScoreT,o2,gmAV,gmWo,MOE.mRms,oMoeWhy,MOE.mR1,MOE.mR2,MOE.mTop,MOE.mTwo,MOE.mUp,MOE.mGlu,MOE.mDown,MOE.mFour,MOE.mMix,MOE.mRes,oLayers,oRF,gmHead,oSel,o3];
+var SHORTO={tok:"Token'lar",emb:'Embedding (konumsuz)',rms1:'RMSNorm',q:'x·W_Q → Q',kv:'x·W_K → K (V)',gqa:'GQA nedir? MHA↔GQA↔MQA',gqacalc:'8 Q kafası, 1 K/V grubu',rope0:'RoPE: iki sayı = bir ok',rope:'RoPE: dönen Q, K → skor',rope2:'RoPE: açı → skor → pay',rope3:'RoPE: hızlı/yavaş ibreler',rope4:'Skor = içerik + mesafe',slice:'64/8 dilim (GQA)',score:'Q·Kᵀ (transpoz) → skor',mask:'Pencere + çukur + softmax',av:'A·V',wo:'×W_O + residual',rms2:'RMSNorm 2 (kopya)',moewhy:'MoE nedir?',m_r1:'Router: 1 puan',m_r2:'Puan tablosu 4×128',m_top:'En iyi 4 → yüzde',m_two:'İki yol: puan / kart',m_up:'Uzman: değer, kapı',m_glu:'SiLU(kapı)×değer',m_down:'×W_down → not',m_four:'4 uzman → 4 not',m_mix:'Yüzde × not',m_res:'Residual',blk:'36 blok',rmsf:'Son RMSNorm',head:'Çıkış tablosu',sel:'Softmax + seçim',act:'Toplam ↔ aktif, GQA'};
+var CR='gpt-oss › ',CRO={tok:CR+"Girdi › Token'lar",emb:CR+'Girdi › Embedding (konum tablosu yok)',rms1:CR+'Blok × 36 › Attention › RMSNorm',q:CR+'Blok × 36 › Attention › Q = x·W_Q',kv:CR+'Blok × 36 › Attention › K, V = x·W_K, x·W_V (8 K/V kafası)',rope0:CR+'Blok × 36 › Attention › RoPE › giriş: iki sayı = bir ok',rope:CR+'Blok × 36 › Attention › RoPE',rope2:CR+'Blok × 36 › Attention › RoPE › ok açısı → skor → dikkat payı',rope3:CR+'Blok × 36 › Attention › RoPE › 32 çift: hızlı ve yavaş ibreler',rope4:CR+'Blok × 36 › Attention › RoPE › skor = içerik + mesafe',slice:CR+'Blok × 36 › Attention › 64 Q / 8 K-V dilimi (GQA)',gqa:CR+'Blok × 36 › Attention › GQA: K/V paylaşımı (MHA ↔ GQA ↔ MQA)',gqacalc:CR+'Blok × 36 › Attention › GQA: bir K/V grubunu 8 sorgu kafası paylaşır',score:CR+'Blok × 36 › Attention › Q·Kᵀ → skor',mask:CR+'Blok × 36 › Attention › kayan pencere ↔ tam + çukur + softmax',av:CR+'Blok × 36 › Attention › A·V',wo:CR+'Blok × 36 › Attention › yapıştır, ×W_O, residual',rms2:CR+'Blok × 36 › MoE › RMSNorm: kartın kopyası',moewhy:CR+'Blok × 36 › MoE › MoE nedir? yoğun FFN ↔ 128 uzman',m_r1:CR+'Blok × 36 › MoE › router: kart · profil = 1 puan',m_r2:CR+'Blok × 36 › MoE › router: 4×128 puan tablosu',m_top:CR+'Blok × 36 › MoE › her satırdan en iyi 4 → yüzde',m_two:CR+'Blok × 36 › MoE › iki yol: puan → yüzde, kart → uzman',m_up:CR+'Blok × 36 › MoE › uzman: kart × W_up, W_gate',m_glu:CR+'Blok × 36 › MoE › uzman: SiLU(kapı) × değer',m_down:CR+'Blok × 36 › MoE › uzman: × W_down → not',m_four:CR+'Blok × 36 › MoE › 4 uzman → 4 not',m_mix:CR+'Blok × 36 › MoE › yüzde × not → karışım',m_res:CR+'Blok × 36 › MoE › residual → blok çıktısı',blk:CR+'36 blok art arda',rmsf:CR+'Çıkış › Son RMSNorm',head:CR+'Çıkış › Çıkış tablosu',sel:CR+'Çıkış › Softmax + seçim',act:CR+'Toplam ↔ aktif ağırlık, GQA önbelleği'};
+var COLSO={tok:[0,0],emb:[1,2],rms1:[3,3],q:[4,5],kv:[4,5],gqa:[4,5],rope0:[6,6],rope:[6,6],rope2:[6,6],rope3:[6,6],rope4:[6,6],slice:[7,7],gqacalc:[7,8],score:[8,8],mask:[9,9],av:[10,10],wo:[11,13],rms2:[14,14],moewhy:[15,16],m_r1:[15,15],m_r2:[15,15],m_top:[16,16],m_two:[15,19],m_up:[17,18],m_glu:[17,18],m_down:[19,19],m_four:[17,19],m_mix:[20,20],m_res:[20,21],blk:null,rmsf:[22,22],head:[23,24],sel:[25,25],act:null};
 var tourO=mkTour({arch:'gptoss',tag:'🎬 gpt-oss turu: 3B MoE → zoom → animasyon',title:'🎬 gpt-oss turu — yol haritası (3B gpt-oss mimarisinde aynı sırayla ilerler)',
  ORD:ORDO,SCN:SCNO,hvSc:[],SHORT:SHORTO,CRUMB:CRO,COLS:COLSO,
  cap1:'Üstte/solda: gpt-oss-120b mimarisinin 3B görünümü (36 blok, 128 uzman). Tur, girdiden çıktıya sırayla her parçaya yakınlaşır.',capOut:'Tur bitti: girdiden sonraki token\'a kadar gpt-oss\'un her matris işlemini gördün.',
  liveIntro:'gpt-oss turu: 3B mimarinin tamamı → token → embedding → RMSNorm → Q,K,V → RoPE → GQA dilimleri → skor → pencere/çukur/softmax → A·V → W_O → router → 4 uzman → karışım → 36 blok → çıkış → seçim. Sayılar şematik.',
- sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok) → <b>36 blok</b> (dönüşümlü yerel/tam attention + <b>128 uzmanlı MoE</b>) → son RMSNorm → çıkış tablosu. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya zoom yapılır ve yandaki canvas\'ta o parçadaki işlem oynar (31 durak). Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, kafa 64, 128\'lik pencere, ≈5,1 milyar aktif. Boyutlar (2880, ≈201 bin sözlük, 117 milyar toplam) ve token numaraları hafızadan/ölçülmemiş (†); sayılar şematik.',
+ sayIntro:'<b>🎬 gpt-oss turu.</b> Başta <b>gpt-oss-120b\'nin 3B mimarisi</b> görünür: token\'lar → embedding (konum tablosu yok) → <b>36 blok</b> (dönüşümlü yerel/tam attention + <b>128 uzmanlı MoE</b>) → son RMSNorm → çıkış tablosu. Sonra <b>girdiden çıktıya, sırayla</b> her parçaya zoom yapılır ve yandaki canvas\'ta o parçadaki işlem oynar (34 durak). Doğrulananlar: 36 katman, 128 uzman/top-4, 64Q/8KV, kafa 64, 128\'lik pencere, ≈5,1 milyar aktif. Boyutlar (2880, ≈201 bin sözlük, 117 milyar toplam) ve token numaraları hafızadan/ölçülmemiş (†); sayılar şematik.',
  sayOut:'<b>Tur bitti.</b> gpt-oss: token → embedding → (RMSNorm → Q,K,V → RoPE → GQA → skor → pencere/çukur + softmax → A·V → W_O → residual → RMSNorm → router → 4 uzman → karışım → residual) × 36 → son RMSNorm → çıkış tablosu → softmax → seçim → döngü.'});
 
 /* ================= 🌀 RoPE turu: önceki adım (Q,K) → RoPE → sonraki adımlar (Q·Kᵀ, ÷8, maske, softmax, ×V) =================
