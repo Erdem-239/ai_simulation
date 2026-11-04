@@ -1461,17 +1461,17 @@ var MOE=(function(){
    function ar(x1,y1,x2,y2,c2,on){ctx.globalAlpha=0.2+0.8*on;ctx.strokeStyle=c2;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.beginPath();var an=Math.atan2(y2-y1,x2-x1);ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(an-0.4),y2-9*Math.sin(an-0.4));ctx.lineTo(x2-9*Math.cos(an+0.4),y2-9*Math.sin(an+0.4));ctx.closePath();ctx.fillStyle=c2;ctx.fill();ctx.lineWidth=1;ctx.globalAlpha=1}
    box(30,180,160,64,'x̂«=» kart','2880 sayı †','#5fcf8a',1);
    txt('YOL 1 · seçim',230,40,13,'#b592f0');
-   ar(190,200,240,96,'#b592f0',a);box(240,66,170,60,'Router','kart · W_r → 128 puan','#b592f0',a);
+   ar(190,200,240,96,'#b592f0',a);box(240,66,170,60,'Router','kart · W_r → 128 puan','#b592f0',a);ctx.globalAlpha=0.2+0.8*a;txt('1×2880 · W_r (2880×128 †)',325,142,11,HL,'center');txt('= 1×128 puan',325,157,11,HL,'center');txt('1×128 → 4 uzman + 4 yüzde',535,142,11,HL,'center');ctx.globalAlpha=1;
    ar(410,96,450,96,'#b592f0',a);box(450,66,170,60,'en iyi 4 → softmax',EQ.map(function(e){return ux(e)}).join(' '),'#b592f0',a);
    ar(620,96,660,96,'#b592f0',a);box(660,66,190,60,'yüzdeler BEKLER',P.map(pc).join(' '),'#b592f0',a);
    txt('YOL 2 · işleme',230,262,13,'#6ea0ff');
    ar(190,226,240,320,'#6ea0ff',b);ctx.globalAlpha=0.2+0.8*b;rect(240,290,380,92,'#161b26','#6ea0ff',2);txt('Uzman '+ux(e0)+' (ve diğer 3 uzman, ayrı ayrı)',430,312,13,'#e8ebf2','center');
-   ['W_up','W_gate','W_down'].forEach(function(s,i){rect(262+i*120,326,100,40,'#1d2433','#4a5468',1);txt(s,312+i*120,351,12,'#e8ebf2','center')});ctx.globalAlpha=1;
+   ['W_up','W_gate','W_down'].forEach(function(s,i){rect(262+i*120,326,100,40,'#1d2433','#4a5468',1);txt(s,312+i*120,343,12,'#e8ebf2','center');txt('2880×2880 †',312+i*120,359,10,'#9aa3b6','center')});txt('giren: 1×2880 kart → çıkan: 1×2880 not',430,398,11,HL,'center');ctx.globalAlpha=1;
    ar(620,336,660,336,'#6ea0ff',b);box(660,306,190,60,'not (2880 sayı)','uzmanın «=» kartına notu','#6ea0ff',b);
    ar(755,126,755,306,'#ffc82e',c);ctx.globalAlpha=c;txt('en sonda: yüzde × not',765,222,12,HL);ctx.globalAlpha=1;
    ctx.globalAlpha=b;txt('Uzmana PUAN girmez. Uzmana giren KARTIN KENDİSİ (x̂«=», 2880 sayı).',30,420,13,HL);ctx.globalAlpha=1;foot()},
-  live:function(t){return 'Yol 1: x̂«=» · W_r → puan → yüzde ('+P.map(pc).join(' / ')+', bekler)  |  Yol 2: x̂«=» → Uzman '+ux(EQ[0])+' (W_up, W_gate, W_down) → not'},
-  say:'Aynı <b>x̂«=»</b> kartından <b>iki yol</b> çıkar. <b>Yol 1 (seçim):</b> router puanları → en iyi 4 → <b>yüzdeler</b>; bunlar kenarda bekler. <b>Yol 2 (işleme):</b> kartın <b>kendisi</b> (2880 sayı) seçilen 4 uzmanın her birine ayrı ayrı girer; her uzman kendi <b>3 tablosuyla</b> (W_up, W_gate, W_down) bir <b>not</b> üretir. İki yol en sonda birleşir: <b>yüzde × not</b>.',
+  live:function(t){return 'Yol 1: x̂«=» (1×2880) · W_r (2880×128 †) = 1×128 puan → en iyi 4 → yüzde ('+P.map(pc).join(' / ')+', bekler)  |  Yol 2: x̂«=» → Uzman '+ux(EQ[0])+' (W_up, W_gate, W_down) → not'},
+  say:'Aynı <b>x̂«=»</b> kartından <b>iki yol</b> çıkar. <b>Yol 1 (seçim):</b> kart (1×2880) router tablosu <b>W_r (2880×128 †)</b> ile çarpılır → <b>1×128</b> puan (her uzmana bir puan; 4 token birlikte 4×2880 · 2880×128 = 4×128) → en iyi 4 → <b>yüzdeler</b>; bunlar kenarda bekler. <b>Yol 2 (işleme):</b> kartın <b>kendisi</b> (2880 sayı) seçilen 4 uzmanın her birine ayrı ayrı girer; her uzman kendi <b>3 tablosuyla</b> (W_up, W_gate, W_down) bir <b>not</b> üretir. İki yol en sonda birleşir: <b>yüzde × not</b>.',
   soz:'Puan «kimi çağıralım, ne kadar güvenelim» der; kart ise uzmanın üzerinde çalıştığı asıl malzemedir.',
   elde:'Seçim (yol 1) ile işlemenin (yol 2) ayrı olduğu.',
   neden:'Puan tek bir sayıdır, uzmana bilgi taşıyamaz; uzmanın işleyeceği bilgi kartın 2880 sayısında.'};
