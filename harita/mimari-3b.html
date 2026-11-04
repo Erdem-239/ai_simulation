@@ -657,7 +657,7 @@ function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc+(p.carry?'\n\n📦 Taşıdığı bilgi: '+p.carry:'')+(p.faq?'\n\n❓ Sık karışan nokta: '+p.faq:'');
   $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
-function select(p){selected=p;focusV=null;if(p)panOff.set(0,0,0);selSet.clear();pairs=[];let extra='';
+function select(p){selected=p;focusV=null;selSet.clear();pairs=[];let extra='';
   if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
     others.forEach(A=>{const m=p.eq?A.parts.filter(q=>q.eq===p.eq):[];m.forEach(q=>{selSet.add(q);pairs.push(q)});
       lines.push('↔ '+A.btn+': '+(m.length?m.map(q=>q.name+' ('+q.shape+')').join(' + '):'karşılığı yok'))});
