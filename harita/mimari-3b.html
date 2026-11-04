@@ -33,6 +33,34 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 #cmp.on{display:block}
 #tour{position:fixed;left:max(14px,env(safe-area-inset-left,0px));top:108px;width:min(480px,calc(100vw - 28px));max-height:calc(100vh - 340px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:none;backdrop-filter:blur(6px);z-index:5}
 #tour.on{display:block}
+#story{position:fixed;left:max(14px,env(safe-area-inset-left,0px));top:96px;width:min(520px,calc(100vw - 28px));max-height:calc(100vh - 120px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 13px;display:none;backdrop-filter:blur(6px);z-index:6}
+#story.on{display:block}
+#story .hd{cursor:move;display:flex;justify-content:space-between;align-items:center;touch-action:none;user-select:none}
+#story h3{margin:0;font-size:13.5px;color:var(--hl)}
+#story .hd button{background:none;border:0;color:var(--mute);font-size:18px;cursor:pointer;line-height:1}
+#story .sec{display:flex;flex-wrap:wrap;gap:3px;align-items:center;margin:8px 0 2px;font-size:12px;color:var(--mute)}
+#story .sec span{padding:2px 8px;border-radius:10px;background:#1c2333;cursor:pointer;border:1px solid transparent}
+#story .sec span.on{background:#2b3550;color:var(--ink);border-color:var(--blue)}
+#story .sec i{font-style:normal;opacity:.5}
+#story .ts{font:700 17px var(--sans);margin:8px 0 6px}
+#story .ne{font-size:13.6px;line-height:1.6}
+#story .ne b,#story .sh b,#story .kr b{color:#ffe28a}
+#story .sh{margin:8px 0;padding:6px 9px;border-radius:7px;background:#0f1218aa;font-size:12.8px;line-height:1.5;color:#cfd6e6}
+#story .kh{font:700 12.5px var(--sans);color:#ffb37a;margin:10px 0 4px}
+#story .kr{margin:5px 0;border-radius:8px;overflow:hidden;font-size:12.8px;line-height:1.5;border:1px solid #3a3020}
+#story .kr .y{padding:5px 9px;background:#3a1d1d88;color:#f3c4c4}
+#story .kr .d{padding:5px 9px;background:#16301f88;color:#d6f3dc}
+#story .an{display:inline-block;margin:8px 0 2px;font-size:12.8px;color:#8fc2ff}
+#story .tc{display:flex;gap:8px;margin:10px 0 6px}
+#story .tc button{font:700 13px var(--sans);height:32px;border-radius:8px;border:1px solid var(--line);background:#232a3a;color:var(--ink);cursor:pointer;padding:0 14px}
+#story .tc button:disabled{opacity:.4;cursor:default}
+#story .dots{display:flex;gap:5px;flex-wrap:wrap}
+#story .dots i{width:11px;height:11px;border-radius:50%;background:#323a4a;cursor:pointer}
+#story .dots i.on{background:var(--hl)}
+#bs{background:#3a3110!important;border-color:var(--hl)!important;color:#ffe28a!important;font-weight:700}
+#bs.on{background:var(--hl)!important;color:#1b1500!important}
+body.emb #story{display:none!important}
+
 #tour .sz{margin-top:5px;padding:5px 8px;border-radius:6px;background:#2a2410aa;border-left:3px solid var(--hl);font-size:12.8px;color:#f1e8c8;line-height:1.45}
 #tour .sh{margin-top:5px;padding:4px 8px;border-radius:6px;background:#0f1218aa;font-size:12.5px;color:#cfd6e6}
 #tour .pk{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:2px 0 8px;color:var(--mute);font-size:12.5px}
@@ -124,6 +152,7 @@ body.nobar #barShow{display:block}
 #info .x{position:absolute;right:8px;top:6px;background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer;line-height:1}
 #nomod{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:24px;color:var(--mute)}
 @media (max-width:700px){#info{top:auto;bottom:150px;right:12px;max-height:38vh}#top h1{font-size:18px}}
+@media (max-width:700px){#bar{max-height:58vh;overflow:auto}#story{top:70px;max-height:56vh}}
 @media (prefers-reduced-motion:reduce){}
 </style>
 </head><body>
@@ -133,11 +162,12 @@ body.nobar #barShow{display:block}
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
 <div id="tour"></div>
+<div id="story"></div>
 <div id="hin"></div>
 <div id="info"><button class="x" id="ix" aria-label="Kapat">×</button><h2 id="it"></h2><div class="sh" id="is"></div><p id="id"></p><div class="nums" id="in"></div><div id="cx"></div><div id="hgo"></div></div>
 <button id="barShow" title="Ayar panelini aç">▴ Panel</button>
 <div id="bar">
-  <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button></div>
+  <div class="row" id="barhd"><button id="barHide" title="Ayar panelini gizle">▾ Paneli gizle</button><button id="bs" title="gpt-oss mimarisini baştan sona, bölüm bölüm anlatır: ne oluyor, tablo şekli, sık karışan noktalar">📖 Mimariyi anlat (gpt-oss, 17 bölüm)</button></div>
   <div class="row" id="archs"><span class="lab">Mimari (birden çok seçilebilir)</span></div>
   <div class="row" id="opts"><span class="lab" title="Birden çok mimari açıkken aralarındaki dikey boşluk">Mimariler arası boşluk</span><input id="gapy" type="range" min="1" max="40" step="0.5" value="6" style="width:110px" aria-label="Mimariler arası boşluk"><select id="lbm" title="Ekrandaki etiketler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="sparse">Ekranda etiket: seyrek (bloklar açık)</option><option value="all">Ekranda etiket: hepsi</option><option value="none">Ekranda etiket: yok</option></select><select id="plb" title="Yazdırırken etiketler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="auto">Etiket: seyrek (bloklar açık)</option><option value="all">Etiket: hepsi</option><option value="none">Etiket: yok</option></select><select id="pls" title="Yazdırırken etiket boyutu" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="0.9">Etiket boyutu: küçük</option><option value="1.4" selected>Etiket boyutu: orta</option><option value="2">Etiket boyutu: büyük</option></select><select id="pst" title="Yazdırırken mimarinin altına animasyondaki adım görsellerini ekler" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="none">Altına adım görselleri: yok</option><option value="gpt2">Altına: GPT-2 işlemleri (17 adım)</option><option value="gptoss">Altına: gpt-oss işlemleri (34 adım)</option></select><select id="psm" title="Adım görüntüsünün anı" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="mid">Adım anı: hesap sürerken</option><option value="end">Adım anı: tamamlanmış</option></select><select id="ppp" title="Sayfa başına adım sayısı" style="background:#161b26;color:#e7ecf5;border:1px solid #3a4458;border-radius:6px;padding:3px 4px"><option value="4">Sayfada 4 adım (büyük)</option><option value="6">Sayfada 6 adım</option><option value="9" selected>Sayfada 9 adım (küçük)</option><option value="12">Sayfada 12 adım (çok küçük)</option></select><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin: mürekkep tasarrufu">🖨️ A4 (açık)</button><button id="bt" title="İki mimariyi aynı anda, adım adım karşılaştır">🎬 Eş zamanlı gezi</button><button id="bc" title="Seçili mimarilerin farklarını listele">⚖ Farklar</button><button id="bg" title="Bölüm çerçevelerini (Embedding, Attention alt-bloğu, FFN…) göster/gizle">🧩 Çerçeveler: açık</button><button id="bz" title="Bir parçaya tıklayınca kamera o parçaya gitsin mi?">Tıklayınca zoom: kapalı</button><button id="bh" title="İmleçle üstüne gelince bilgi göster / gizle">İmleç bilgisi: kapalı</button></div>
   <div class="row"><span class="lab">Birleşik</span><input id="sl" type="range" min="0" max="100" value="0" aria-label="Parçalama"><span class="lab">Parçalı</span><button id="bb" title="Birleştir">Birleştir</button><button id="bx" title="Parçala">Parçala</button><button id="bf" title="Hepsini görünür yap">Sığdır</button><button id="bz1" title="Uzaklaş">−</button><button id="bz2" title="Yakınlaş">+</button><button id="bl" title="Yerleşim: iki satır (sığdırılmış) / tek düzlem">Yerleşim: iki satır</button></div>
@@ -776,7 +806,7 @@ ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
   b.onclick=()=>{const was=ARCHS.filter(x=>x.on).length;if(A.on&&was===1)return;A.on=!A.on;if(A.on){A._fresh=true;A.mm=A.mT=A.mDef}
-    if(ARCHS.filter(x=>x.on).length>=2&&was<2)cmpOpen=true;if(ARCHS.filter(x=>x.on).length<2)cmpOpen=false;$('bc').classList.toggle('on',cmpOpen);if(tourOn){cmpOpen=false;$('bc').classList.remove('on')}applyArch();if(tourOn)applyTour()};
+    if(ARCHS.filter(x=>x.on).length>=2&&was<2)cmpOpen=true;if(ARCHS.filter(x=>x.on).length<2)cmpOpen=false;$('bc').classList.toggle('on',cmpOpen);if(tourOn){cmpOpen=false;$('bc').classList.remove('on')}applyArch();if(tourOn)(storyOn?applyStory():applyTour())};
   $('archs').appendChild(b)});
 /* ---------- 🎬 Eş zamanlı gezi: iki (ya da üç) mimariyi aynı anda, adım adım ---------- */
 const TT=()=>PK==='B'?11:4,NF=n=>n.toLocaleString('tr-TR');
@@ -981,9 +1011,9 @@ function setPrompt(k){if(PK===k)return;PK=k;D=k==='B'?DBF:DA;const nw=buildMini(
     if(q.canvas){p.canvas=q.canvas;if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}
     if(p.cfm)p.cfm.forEach((fm,i)=>{const pad=D.ctxChars[i]==='.'&&i<6;fm.map.dispose();fm.map=tex(letter(D.ctxChars[i],D.ids[i],pad));fm.needsUpdate=true;p.ced[i].material.opacity=pad?0.35:0.9})});
   [GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
-  if(selected)select(selected);buildCmp();if(tourOn)tourPanel()}
+  if(selected)select(selected);buildCmp();if(tourOn&&!storyOn)tourPanel()}
 let tourHadBar=true;
-function startTour(){tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
+function startTour(){if(storyOn)stopStory();tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
   cmpOpen=false;$('bc').classList.remove('on');tourOn=true;tourIdx=0;tT=1;zoom=1;panOff.set(0,0,0);$('bt').classList.add('on');applyArch();applyTour()}
 function stopTour(){if(tourHadBar)document.body.classList.remove('nobar');tourOn=false;tourParts=[];if(tourTimer){clearInterval(tourTimer);tourTimer=null}$('tour').classList.remove('on');$('bt').classList.remove('on');select(null);focusV=null;setPrompt('A')}
 $('bt').onclick=()=>{tourOn?stopTour():startTour()};
@@ -1064,6 +1094,125 @@ $('bz').onclick=()=>{focusOn=!focusOn;$('bz').textContent='Tıklayınca zoom: '+
 $('bc').onclick=()=>{cmpOpen=!cmpOpen;$('bc').classList.toggle('on',cmpOpen);buildCmp()};
 $('bh').onclick=()=>{hoverOn=!hoverOn;$('bh').textContent='İmleç bilgisi: '+(hoverOn?'açık':'kapalı');$('bh').classList.toggle('on',hoverOn);hoverDirty=true};
 $('bl').textContent='Yerleşim: tek düzlem';
+/* ---------- 📖 Mimariyi anlat: gpt-oss'u baştan sona, bölüm bölüm (sohbette takılınan yerlere göre) ---------- */
+const STORY=[
+ {s:0,t:'Büyük resim: tek tablo, 36 kez işlenir',ids:[],
+  ne:"«7+5=» 4 parçaya bölünür; her parça 2880 sayılık bir <b>kart</b> olur. Bu 4 kart alt alta bir tablodur (4×2880) ve mimari baştan sona <b>bu tabloyu</b> işler. Her blokta iki alt durak var: <b>Attention</b> (token'lar birbirine bakar, bilgi satırlar arasında taşınır) ve <b>MoE</b> (her token kendi kartı üstünde «düşünür», satırlar karışmaz). Blok 36 kez tekrarlanır, sonra son satırdan (« = ») sıradaki parça tahmin edilir.",
+  sek:"Yolculuk boyunca tablo hep <b>4×2880</b> kalır. Ara tablolar büyüyüp küçülür (4×4096, 4×4, 4×128…) ama her alt duraktan çıkış yine 4×2880.",
+  kar:[["Mimari her adımda yeni bir tablo üretip eskisini atar.","Hep aynı tablo üzerinde çalışılır: her alt durak bir <b>katkı</b> hesaplar ve tabloya <b>ekler</b> (residual). Eski bilgi silinmez."],
+       ["Satır ve sütun aynı şeyi anlatır.","<b>Satır = token</b> (7, +, 5, =). <b>Sütun = kartın bir özelliği</b> (2880 tane). Bu ayrımı tutunca geri kalan her tablo okunur."]]},
+ {s:0,t:'Token: metin → parça → numara',ids:['tok'],
+  ne:"Tokenizer metni sık geçen harf gruplarına böler: «7+5=» → «7», «+», «5», «=». Her parçanın sözlükte bir <b>numarası</b> vardır. Bu adımda öğrenilen ağırlık ve hesap yoktur; sadece bölme ve numaralama.",
+  sek:"Metin → 4 numara (T = 4).",
+  kar:[["Token = harf.","Token sık geçen bir harf grubudur; kısa bir kelime tek token, uzun bir kelime birkaç token olabilir."],
+       ["Numara bir anlam taşır (büyük numara = önemli).","Numara yalnızca bir <b>adres</b>: kart tablosunun kaçıncı satırının okunacağını söyler."]]},
+ {s:0,t:'Embedding: numara → 2880 sayılık kart',ids:['Emb','x'],
+  ne:"Numara, token tablosunun (≈201.000 satır × 2880 †) o satırını okur. Çarpma yok, <b>satır seçme</b> var. Çıkan 2880 sayı token'ın «ne olduğunu» anlatan karttır. Kartlar alt alta dizilince <b>x</b> tablosu oluşur.",
+  sek:"4 numara → x: <b>4×2880</b>.",
+  kar:[["2880 = uzman sayısı.","2880 kartın <b>uzunluğu</b>, yani her token'ı anlatan özellik sayısı. Uzman sayısı 128'dir ve yalnız router tablosunda sütun olarak görünür."],
+       ["Kart konum bilgisini de taşır.","gpt-oss'ta konum tablosu yok (GPT-2'deki wpe gibi). Konum, sonra RoPE ile yalnız Q ve K'ya eklenir."]]},
+ {s:1,t:'RMSNorm 1: kopyanın ölçeği dengelenir',ids:['rms1'],
+  ne:"x'in bir <b>kopyası</b> satır satır ölçeklenir: her satır kendi büyüklüğüne bölünür, sonra öğrenilmiş bir γ ile çarpılır. Asıl x bu sırada <b>bekler</b>; attention'ın katkısı en sonda ona eklenecek.",
+  sek:"4×2880 → 4×2880 (şekil değişmez, satırlar birbirine karışmaz).",
+  kar:[["RMSNorm x'in yerine geçer.","Yalnızca attention'a giden <b>kopya</b> dengelenir. Asıl x residual toplamı için olduğu gibi saklanır."]]},
+ {s:1,t:'W_Q, W_K, W_V → Q, K, V',ids:['Wq','Wk','Wv','qT','kT','vT'],
+  ne:"Dengelenmiş kopya üç ayrı ağırlık tablosuyla çarpılır. <b>Q</b> (soru): «ben ne arıyorum?». <b>K</b> (etiket): «bende ne var?». <b>V</b> (içerik): «bakılırsam ne vereceğim?». Üçü de aynı kartlardan çıkar; farkı yaratan, çarpıldıkları tablonun farklı olmasıdır.",
+  sek:"4×2880 · W_Q (2880×4096) → Q 4×4096 · W_K / W_V (2880×512) → K, V 4×512.",
+  kar:[["Q, K, V ağırlıktır.","<b>W_Q, W_K, W_V</b> ağırlıktır: eğitimle öğrenilir, sonra sabit kalır. <b>Q, K, V</b> çıktıdır: her istemde o istemin kartlarından yeniden hesaplanır."],
+       ["Q yalnızca soru taşır, token'ın kendisi hakkında bilgi yoktur.","Q da kartın bilgisinden üretilir: «7» kartından «7 olarak neye ihtiyacım var» sorusu çıkar. Bilgi aynı, soruya çevrilmiş."]]},
+ {s:1,t:'Kafalara dilimleme + GQA',ids:['qS','kS','vS'],
+  ne:"Q sütunlardan <b>64 dilime</b> kesilir (4096 ÷ 64 = 64 sütunluk dilim): her dilim bir <b>kafa</b>. K ve V yalnız <b>8 dilim</b>. Her K/V dilimini 8 sorgu kafası ortak kullanır (GQA): kafa 1–8 → K/V 1, kafa 9–16 → K/V 2, … kafa 57–64 → K/V 8. Bu adımda hesap yok, yalnız kesme.",
+  sek:"Q 4×4096 → 64 × (4×64) · K, V 4×512 → 8 × (4×64).",
+  kar:[["Q, K ve V tablolarından her biri bir kafadır.","Bir kafa = üç tablonun birer <b>dilimi</b> (Q dilimi + paylaşılan K dilimi + paylaşılan V dilimi). Kafa, Q, K, V'nin kendisi değildir."],
+       ["8 Q kafası aynı K'yı kullanınca aynı sonucu bulur.","Q dilimleri farklıdır (farklı sorular), bu yüzden aynı etiketlere farklı puan verirler. Paylaşmanın amacı bellek: K/V önbelleği 8 kat küçülür."]]},
+ {s:1,t:'RoPE: konum, okları döndürerek eklenir',ids:['rope'],
+  ne:"Bir kafanın 64 sayısı <b>32 çift</b> olarak düşünülür; her çift düzlemde bir <b>ok</b>. Okun yönü içeriği taşır (W_Q, W_K'dan gelir). RoPE her oku token'ın konumu × θⱼ kadar <b>döndürür</b>. θ çiftten çifte değişir: ilk çiftler hızlı döner (yakın mesafeyi ayırır), son çiftler çok yavaş döner (mesafeye kör, içeriğe bakar). Yalnız <b>Q ve K</b> döner; <b>V dönmez</b>.",
+  sek:"Q, K şekli değişmez (4×64 dilimler). Okların boyu aynı kalır, yalnız açı değişir.",
+  kar:[["Döndürme açısı Q ile K'nın birleşmiş hâlidir.","Açı = <b>okun kendi içerik yönü + konum × θ</b>. Q ve K ayrı ayrı, kendi konumlarına göre döner. Buluşmaları bir sonraki adımdaki çarpımda olur."],
+       ["RoPE dikkatin nereye gideceğine karar verir.","RoPE yalnız <b>göreli mesafeyi</b> ekler (iki ok arasındaki açı farkı mesafeye bağlıdır). Nereye bakılacağını içerik (W_Q, W_K) ve mesafe <b>birlikte</b> belirler."]],
+  anim:['rope','🌀 RoPE turu']},
+ {s:1,t:'Skor tablosu: Q·Kᵀ → ÷8 → maske → yüzde',ids:['heads','aT'],
+  ne:"Her kafada Q (4×64) ile <b>Kᵀ</b> (K'nın devriği, 64×4) çarpılır: 4×4 <b>skor tablosu</b>. <b>Satır = soran</b> token, <b>sütun = bakılan</b> token. Bir hücre = 64 çarpımın toplamı («bu soru şu etikete ne kadar uyuyor»). Sonra ÷8 (√64) ile yumuşatılır, gelecekteki token'lar maskelenir (üst üçgen), her satır softmax ile <b>yüzdeye</b> çevrilir (satır toplamı %100).",
+  sek:"64 kafa × (4×4). Hücre başına 64 çarpım.",
+  kar:[["Q·Kᵀ token'ları karıştırır.","Bu adımda bilgi taşınmaz; yalnız «kim kime ne kadar bakacak» puanı çıkar. Taşıma bir sonraki adımda V ile olur."],
+       ["Kᵀ yeni bir tablodur.","Kᵀ aynı K'dır, satırları sütun olarak yazılmıştır (transpoz). Gerekli çünkü Q'nun satırı K'nın satırıyla eşleşmeli: 4×64 · 64×4."]],
+  anim:['transpoz','🔁 Transpoz animasyonu']},
+ {s:1,t:'A·V: yüzdelerle içerik karışır',ids:['oS'],
+  ne:"Soran token'ın satırındaki yüzdeler, bakılan token'ların <b>V satırlarını</b> ağırlıklandırır; sonuç sütun sütun toplanır ve <b>soranın satırına</b> yazılır. «7» yalnız kendine bakabildiği için satırı %100 V«7»'dir (kopya). «=» dört token'ın da karışımını alır. Token'lar arası bilgi <b>yalnızca burada</b> taşınır.",
+  sek:"A (4×4) · V dilimi (4×64) → 4×64 (kafa başına).",
+  kar:[["Yüzde, V'nin her sütunuyla ayrı ayrı bir kez çarpılır, sonra rakamlar ayrı kalır.","Hücre [=, j] = %a·V«7»[j] + %b·V«+»[j] + %c·V«5»[j] + %d·V«=»[j]: 4 çarpım toplanıp <b>tek hücreye</b> yazılır, 64 sütun için tekrarlanır."],
+       ["V bir ağırlık tablosudur.","V <b>çıktıdır</b> (x̂·W_V). Ağırlık olan W_V'dir."]]},
+ {s:1,t:'Kafaları yapıştır + W_O + residual',ids:['cat','Wo','add1'],
+  ne:"64 kafanın 4×64'lük çıktıları yan yana yapıştırılır (4×4096). <b>W_O</b> ile çarpılınca kafaların buldukları <b>satır içinde</b> birleşir ve 2880'e döner. Bu attention <b>katkısıdır</b>; bekleyen asıl x'e <b>eklenir</b> (residual).",
+  sek:"4×4096 · W_O (4096×2880) → 4×2880 → x + katkı = x_yeni 4×2880.",
+  kar:[["W_O token'ları birbirine karıştırır.","W_O her satırı kendi içinde çarpar: <b>kafalar karışır, token satırları karışmaz</b>."],
+       ["Residual çarpmadır.","Residual eleman eleman <b>toplamadır</b>: eski bilgi korunur, attention yalnızca üstüne ekler. Gradyan da bu yoldan doğrudan geri akar (RNN'deki vanishing'in çaresi)."]]},
+ {s:2,t:'RMSNorm 2 + router: 128 uzmana puan',ids:['rms2','Wr'],
+  ne:"x_yeni'nin bir kopyası tekrar dengelenir (x̂), asıl x yine bekler. Router x̂'i <b>W_r</b> (2880×128) ile çarpar: her token için 128 uzmana birer <b>uygunluk puanı</b>. Bir hücre = kart · uzman profili (2880 çarpımın toplamı) = tek sayı.",
+  sek:"4×2880 · W_r (2880×128) → <b>4×128</b> puan (satır = token, sütun = uzman).",
+  kar:[["4×2880 tablosunda 2880 uzman var.","2880 kart uzunluğu. 128 uzman <b>ilk kez burada</b>, puan tablosunun sütunları olarak görünür."]],
+  anim:['ossturu','🎬 gpt-oss turu (MoE bölümü)']},
+ {s:2,t:'Top-4 + softmax: iki yol ayrılır',ids:['topk'],
+  ne:"Her satırdan en yüksek 4 puan seçilir (4 token × 4 = 16 iş, 128 uzmanlık <b>ortak havuzdan</b>; iki token aynı uzmanı seçebilir). Seçilen 4 puan softmax ile <b>yüzdeye</b> çevrilir ve bu yüzdeler <b>bekler</b>. Uzmanlara giren şey puan değil, token'ın <b>kartıdır</b> (x̂ satırı).",
+  sek:"4×128 → her satırda 4 uzman + 4 yüzde.",
+  kar:[["Seçilen uzmana puan (tek sayı) girer.","İki ayrı yol var: <b>puan → yüzde</b> (en sonda karıştırmak için bekler) ve <b>kart (2880 sayı) → uzman</b> (uzman kartı işler)."],
+       ["Seçilen uzman konusunda uzmandır (sayı uzmanı, dilbilgisi uzmanı…).","Uzmanlar aynı yapıda küçük FFN'lerdir, eğitimle kendiliğinden farklılaşırlar. Hangisinin neye baktığı ölçülmedi."]]},
+ {s:2,t:'Uzmanın içi: kapı, değer, not',ids:['Wup','Wgate','swi','Wdown'],
+  ne:"Her uzmanın <b>kendi 3 tablosu</b> var (eğitime rastgele başlar). Kart iki tabloyla paralel çarpılır: <b>değer = x̂·W_up</b> ve <b>kapı = x̂·W_gate</b>. Kapı SiLU'dan geçip değerle eleman eleman çarpılır (hangi özellik ne kadar geçsin). Sonuç <b>W_down</b> ile 2880'e döner: bu, uzmanın o karta yazdığı <b>not</b> (düzeltme önerisi).",
+  sek:"1×2880 → değer, kapı (ara boyut †) → SiLU(kapı)⊙değer → ·W_down → <b>not 1×2880</b>.",
+  kar:[["W_up, W_gate, W_down bütün uzmanlarda ortak.","Her uzmanın kendi üçlüsü var (128 × 3 tablo, her blokta ayrı). Router'ın seçmesi = hangi üçlünün çalışacağı."],
+       ["Uzmanın «cevabı» doğru cevaptır (12 gibi).","Not, bu token'ın kartına eklenecek bir <b>düzeltmedir</b>: «kartın şu özellikleri şu kadar değişsin»."]]},
+ {s:2,t:'Karışım + residual 2',ids:['mix','add2'],
+  ne:"Bekleyen yüzdeler şimdi kullanılır: 4 notun her biri kendi yüzdesiyle çarpılıp sütun sütun <b>toplanır</b> (tek 1×2880). Bu MoE katkısı bekleyen asıl x'e eklenir. Satırlar arasında karışma <b>yok</b>; her token kendi uzmanlarının notunu alır.",
+  sek:"4 not × yüzde → toplam 4×2880 → x + katkı → bloğun çıkışı 4×2880.",
+  kar:[["MoE de token'ları birbirine karıştırır.","Token'lar arası taşıma yalnız attention'da (A·V) olur. MoE her satırı ayrı işler."]]},
+ {s:3,t:'36 blok: aynı yapı, ayrı ağırlıklar',ids:[],
+  ne:"Çıkan 4×2880 tablo bir sonraki bloğun girişidir. 36 bloğun yapısı aynı, ağırlıkları <b>ayrı</b> (her blokta kendi W_Q…W_O, router ve 128 uzmanı = toplam 36×128 uzman). Bloklar sırayla yalnız son 128 token'a bakan (kayan pencere) ve tam dikkat arasında dönüşümlü çalışır. Her blok tabloyu biraz daha zenginleştirir.",
+  sek:"4×2880 → (36 kez) → 4×2880. Toplam ≈117 milyar ağırlık †, token başına çalışan ≈5,1 milyar.",
+  kar:[["Bütün bloklar aynı ağırlığı kullanır (aynı blok 36 kez).","Yapı aynı, ağırlıklar farklı. Bunu her blokta ayrı eğitilmiş 36 farklı katman olarak düşün."],
+       ["7+5 gibi kısa bir istemde kayan pencere bir şeyi değiştirir.","Pencere 128 token; 4 token zaten içinde. Fark ancak uzun metinde ortaya çıkar."]]},
+ {s:4,t:'Çıkış: son satırdan sıradaki parça',ids:['lnf','head','logits','next'],
+  ne:"Son RMSNorm'dan sonra yalnız <b>son satır</b> («=») kullanılır: 1×2880 kart çıkış tablosuyla çarpılınca sözlükteki her parça için bir puan çıkar (≈201.000 †). Softmax → olasılık → bir parça seçilir (ör. «12»), metne eklenir ve her şey yeni metinle <b>baştan</b> çalışır.",
+  sek:"1×2880 · (2880 × ≈201.000 †) → 1 × ≈201.000 puan → 1 parça.",
+  kar:[["Model cevabın tamamını tek seferde yazar.","Her turda <b>tek parça</b> seçilir; uzun cevap, bu döngünün tekrarıdır (önceki K/V'ler önbellekte tutulur)."],
+       ["Diğer 3 satır boşa hesaplandı.","Tahmin için yalnız son satır gerekir ama diğer satırların K ve V'si «=»'nın dikkatinde kullanıldı ve önbellekte bir sonraki tur için duruyor."]]},
+ {s:4,t:'Neyi biliyoruz, neyi bilmiyoruz?',ids:[],
+  ne:"<b>Kesin olan</b>: işlemlerin sırası, tabloların şekilleri, hangi adımda token'ların karıştığı (yalnız A·V) ve hangi adımda karışmadığı (W_O, MoE, residual, normlar). <b>Ölçülmeyen</b>: gerçek gpt-oss'un «7+5=» için bulduğu sayılar, hangi kafanın neye baktığı, hangi uzmanın ne öğrendiği. Bu sayfadaki hücre renkleri şematiktir; † işaretli boyutlar hafızadan.",
+  sek:"Tek kural: <b>satır = token, sütun = özellik</b>; giren ve çıkan tablo hep 4×2880.",
+  kar:[["Mimariyi bilmek modelin ne düşündüğünü bilmektir.","Mimari yalnız <b>tarifi</b> verir. Ağırlıkların içine ne öğrenildiği ayrı bir ölçüm işidir (yorumlanabilirlik)."]]}
+];
+const STSEC=['Giriş','Attention','MoE','36 blok','Çıkış'];
+let storyOn=false,storyIdx=0,storySaved=null;
+function storyPanel(){const c=STORY[storyIdx],el=$('story');
+  el.innerHTML='<div class="hd"><h3>📖 Mimariyi anlat · gpt-oss · '+(storyIdx+1)+'/'+STORY.length+'</h3><button class="cx" aria-label="Kapat">×</button></div>'+
+   '<div class="sec">'+STSEC.map((s,i)=>'<span class="'+(i===c.s?'on':'')+'" data-s="'+i+'">'+s+'</span>').join('<i>›</i>')+'</div>'+
+   '<div class="ts">'+c.t+'</div><div class="ne">'+c.ne+'</div><div class="sh">📐 '+c.sek+'</div>'+
+   (c.kar.length?'<div class="kh">⚠️ Sık karışan</div>'+c.kar.map(k=>'<div class="kr"><div class="y">✗ '+k[0]+'</div><div class="d">✓ '+k[1]+'</div></div>').join(''):'')+
+   (c.anim?'<a class="an" target="_blank" href="matris-animasyon.html#'+c.anim[0]+'">'+c.anim[1]+' ile hareketli gör →</a>':'')+
+   '<div class="tc"><button id="sPrev"'+(storyIdx===0?' disabled':'')+'>◀ Geri</button><button id="sNext"'+(storyIdx===STORY.length-1?' disabled':'')+'>İleri ▶</button></div>'+
+   '<div class="dots">'+STORY.map((s,i)=>'<i class="'+(i===storyIdx?'on':'')+'" data-i="'+i+'" title="'+esc(s.t)+'"></i>').join('')+'</div>';
+  el.classList.add('on');el.scrollTop=0}
+function applyStory(){const c=STORY[storyIdx];tourParts=GPTOSS.on?c.ids.map(id=>GPTOSS.byId[id]).filter(Boolean):[];select(null);focusV=null;storyPanel()}
+function startStory(){if(tourOn&&!storyOn)stopTour();storySaved={on:ARCHS.map(A=>A.on),bar:!document.body.classList.contains('nobar'),cmp:cmpOpen};
+  document.body.classList.add('nobar');ARCHS.forEach(A=>{A.on=A===GPTOSS});GPTOSS._fresh=true;GPTOSS.mm=GPTOSS.mT=GPTOSS.mDef;
+  cmpOpen=false;$('bc').classList.remove('on');storyOn=true;tourOn=true;storyIdx=0;tT=1;zoom=1;panOff.set(0,0,0);$('bs').classList.add('on');applyArch();applyStory()}
+function stopStory(){storyOn=false;tourOn=false;tourParts=[];$('story').classList.remove('on');$('bs').classList.remove('on');select(null);focusV=null;
+  if(storySaved){ARCHS.forEach((A,i)=>{A.on=storySaved.on[i]});if(storySaved.bar)document.body.classList.remove('nobar');storySaved=null;applyArch()}}
+$('bs').onclick=()=>{storyOn?stopStory():startStory()};
+$('story').addEventListener('click',e=>{
+  if(e.target.closest('.cx')){stopStory();return}
+  if(e.target.id==='sPrev'&&storyIdx>0){storyIdx--;applyStory()}
+  else if(e.target.id==='sNext'&&storyIdx<STORY.length-1){storyIdx++;applyStory()}
+  else if(e.target.matches('.dots i')){storyIdx=+e.target.dataset.i;applyStory()}
+  else if(e.target.matches('.sec span')){storyIdx=STORY.findIndex(c=>c.s===+e.target.dataset.s);applyStory()}});
+(function(){const el=$('story');let st=null;
+  el.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');if(!hd||e.target.closest('.cx'))return;const r=el.getBoundingClientRect();st={dx:e.clientX-r.left,dy:e.clientY-r.top};el.setPointerCapture(e.pointerId);e.preventDefault()});
+  el.addEventListener('pointermove',e=>{if(!st)return;el.style.left=clamp(e.clientX-st.dx,0,innerWidth-60)+'px';el.style.top=clamp(e.clientY-st.dy,0,innerHeight-40)+'px'});
+  el.addEventListener('pointerup',()=>{st=null})})();
+addEventListener('keydown',e=>{if(!storyOn||/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||'')))return;
+  if(e.key==='Escape'&&!$('hin').classList.contains('on')){stopStory();e.preventDefault()}
+  else if(e.key==='PageDown'&&storyIdx<STORY.length-1){storyIdx++;applyStory();e.preventDefault()}
+  else if(e.key==='PageUp'&&storyIdx>0){storyIdx--;applyStory();e.preventDefault()}});
 /* ---- gömülü mod (matris-animasyon.html turu): ?embed=1 → yalnız GPT-2, arayüz yok, mesajla kamera ---- */
 const EMB=/[?&]embed=1/.test(location.search);
 const EA=(/[?&]arch=(\w+)/.exec(location.search)||[])[1],EARCH=ARCHS.find(A=>A.key===EA)||GPT2;
