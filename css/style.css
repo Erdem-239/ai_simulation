@@ -2032,3 +2032,19 @@ body.xt-full-lock{overflow:hidden}
 @media(max-width:700px){ #lstmSim .lv-cards{grid-template-columns:1fr} }
 #lstmSim .ls-g4 td,#lstmSim .ls-g4 th{font-size:11.5px; padding:2px 6px}
 #lstmSim .nsim-wbox label input[type=range]{accent-color:var(--accent)}
+
+/* Seq2Seq animasyonlu tur (3B + matris çarpımları) */
+.s2s-tour{display:none}
+#sa3d.tour .s3-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:10px;align-items:start}
+#sa3d.tour .s2s-tour{display:block;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--panel)}
+#sa3d.tour #sa3dfr{height:640px}
+.st-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.st-chips{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.st-chip{font-size:11px;padding:3px 7px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+.st-chip.on{background:#c77dff;color:#fff;border-color:#c77dff}
+.st-ttl{font-weight:700;color:#ffd54a;margin:4px 0 6px;font-size:14px}
+.st-live{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#0e131c;border-radius:6px;padding:6px 8px;margin-top:6px;color:#ccd5e8;overflow-x:auto;white-space:nowrap}
+.st-txt{font-size:13px;margin-top:6px;line-height:1.5}
+@media(max-width:1100px){#sa3d.tour .s3-grid{grid-template-columns:1fr}#sa3d.tour #sa3dfr{height:380px}}
+#sa3d.tour .s3-grid>*{min-width:0;max-width:100%}
+#sa3d .s2s-tour{overflow:hidden}
