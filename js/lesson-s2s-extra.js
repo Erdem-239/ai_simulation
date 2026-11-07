@@ -3,7 +3,7 @@
 (function(){
   const host=document.getElementById('s2sExtra'); if(!host||!window.__s2sRun||!window.__s2sBeam||!window.S2S_CK) return;
   const D=window.S2S_CK,run=window.__s2sRun,beam=window.__s2sBeam,$=id=>document.getElementById(id);
-  const EN=12,NAME=t=>t<10?String(t):(t===10?'+':(t===11?'&lt;s&gt;':'&lt;e&gt;'));
+  const EN=11,NAME=t=>t<10?String(t):(t===10?'&lt;s&gt;':'&lt;e&gt;');
   const fm=v=>v.toFixed(3).replace('.',',').replace(/^-/,'−');
   const truth=(a,b)=>{const s=a+b;return [Math.floor(s/10),s%10,EN];};
   const S={a:7,b:5,ci:3,mode:'tf',wrong:3,bw:3};
@@ -31,7 +31,7 @@
     window.__s2sTF={mode:S.mode,out:r.dec.map(d=>d.out),ok:r.dec.map((d,i)=>d.out===t[i])};
   }
   function bm(){
-    const ck=D.ck[S.ci],t=truth(S.a,S.b),code=x=>x[0]*169+x[1]*13+x[2],tc=code(t);
+    const ck=D.ck[S.ci],t=truth(S.a,S.b),code=x=>x[0]*144+x[1]*12+x[2],tc=code(t);
     const hy=beam(ck,S.a,S.b,S.bw);
     const rows=hy.map((h,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+h.seq.map(NAME).join(' ')+'</b></td><td>'+fm(h.lp)+'</td><td>%'+(h.p*100).toFixed(1).replace('.',',')+'</td><td>'+(code(h.seq)===tc?'✅ doğru':'')+'</td></tr>').join('');
     let gOK=0,bOK=0,diff=[];
