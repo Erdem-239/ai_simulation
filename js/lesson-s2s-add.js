@@ -155,7 +155,7 @@
     document.getElementById('sa_grid').innerHTML=h;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071125';
+  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071136';
   function sync3d(){const m={type:'s2s3d',a:st.a,b:st.b,ci:st.ci,step:st.step};try{fr3.contentWindow&&fr3.contentWindow.postMessage(m,'*');}catch(e){}
     document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step;}
   addEventListener('message',e=>{if(e.data&&e.data.type==='s2s3dReady'&&e.source===fr3.contentWindow)sync3d();});
