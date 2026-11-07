@@ -172,6 +172,41 @@
      txt:'Puanlar e üssüyle pozitif yapılıp toplama bölünür: toplamı 1 olan olasılıklar. En yüksek olan seçilir.'},
     {k:'D5',ch:'döngü → cevap',t:()=>'Üretim döngüsü: çıktı → sonraki girdi',dur:9,f:{step:7,ids:['dp0','do1','dp1','do2','dp2']},draw:t=>sLoop(t),
      txt:'Seçilen sembol bir sonraki adımın girdisi olur; aynı hesap tekrar edilir. «<e>» gelince durur.'}];
+
+  // ---- her durak için sözel anlatım + elde ettik (canlı sayılarla)
+  const pc=v=>'%'+Math.round(v*100);
+  const B=x=>'<b>'+x+'</b>';
+  const n=()=>'nöron '+(KN+1);
+  function cellTxt(L,first,ctxNote){const k=KN,f=L.f[k],i=L.i[k],g=L.g[k],o=L.o[k],cp=L.cp[k],c=L.c[k],h=L.h[k];
+    return 'Her nöron kendi sütununda çalışır, matris çarpımı yok. İzlediğimiz '+n()+':<br>'+
+      '• '+B('c = f·c₋₁ + i·c̃')+' = '+f2(f)+'·'+f2(cp)+' + '+f2(i)+'·'+f2(g)+' = '+B(f2(c))+(first?' — ilk adım: c₋₁ = 0, unutulacak bir şey yok, yalnız yazılıyor.':' — eski hafızadan tutulan pay '+pc(f)+', aday bilgiden eklenen pay '+pc(i)+'.')+'<br>'+
+      '• '+B('h = o·tanh(c)')+' = '+f2(o)+'·tanh('+f2(c)+') = '+B(f2(h))+' — dışarı söylenen pay '+pc(o)+'.<br>'+
+      '24 nöronun hepsi aynı hesabı kendi f, i, c̃, o\'suyla yapar → 24 sayılık c ve 24 sayılık h.'+(ctxNote||'');}
+  const SOZ={
+    E1:()=>{const e=R.enc[0];return ['«'+NE(e.tok)+'» için one-hot: encoder sözlüğündeki 11 kutudan '+(e.tok+1)+'. kutu 1, gerisi 0. Bu bir '+B('adres')+': «embE\'nin '+NE(e.tok)+' satırını oku» demek. One-hot × tablo yapınca 1\'in denk geldiği satır aynen çıkar, gerisi 0 ile çarpılıp kaybolur — yani çarpma değil, '+B('satır okuma')+'. Pratikte one-hot hiç yazılmaz, kod doğrudan embE['+e.tok+'] okur.<br>One-hot anlam taşımaz (her sembol diğerlerine eşit uzaklıkta); anlamı tablonun eğitimle öğrenilmiş 8 sayısı taşır.',
+      B('x')+' = 8 sayı ('+e.emb.slice(0,4).map(f2).join('; ')+'; …). Hücreye giren bu; one-hot hücreye girmez.'];},
+    E2:()=>{const L=R.enc[0].L[0];return ['Hücreye iki şey girer: '+B('x')+' (gömmeden 8 sayı) ve '+B('hₜ₋₁')+' (bu katmanın bir önceki adımdaki çıktısı, 24 sayı — ilk adım olduğu için hepsi 0). Yan yana konur → '+B('32 sayı')+'.<br>We1 tablosunun '+B('96 satırının')+' her biri bu 32 sayıyla tek tek çarpılıp toplanır, üstüne bias eklenir → 1 puan. Bu 96 kez tekrarlanır → 96 puan (z). Sarı çizgi o an hangi satırdaysa onu hesaplıyor; alttaki satır o hesabın ilk terimleri.<br>Neden 96? 4 kapı (f, i, c̃, o) × 24 nöron: her nöronun her kapısı için ayrı bir satır.',
+      B('z')+' = 96 ham puan (henüz kapı değil). '+n()+' için f puanı '+f2(L.z[KN])+', i '+f2(L.z[H+KN])+', c̃ '+f2(L.z[2*H+KN])+', o '+f2(L.z[3*H+KN])+'.'];},
+    E3:()=>{const L=R.enc[0].L[0],k=KN;return ['96 puan 4 parçaya bölünür: '+B('1–24 → f')+' (unut), '+B('25–48 → i')+' (giriş), '+B('49–72 → c̃')+' (aday bilgi), '+B('73–96 → o')+' (çıkış). Her nöron her parçadan kendi sırasındaki puanı alır.<br>f, i, o '+B('σ')+'dan geçer → 0…1 arası «ne kadar» (bir vana gibi); c̃ '+B('tanh')+'tan geçer → −1…1 arası «yazılacak bilgi».<br>'+n()+': f = '+f2(L.f[k])+' → eski hafızadan tutulacak pay '+pc(L.f[k])+'; i = '+f2(L.i[k])+' → aday bilgiden yazılacak pay '+pc(L.i[k])+'; c̃ = '+f2(L.g[k])+' → yazılacak bilgi bu; o = '+f2(L.o[k])+' → dışarı söylenecek pay '+pc(L.o[k])+'.',
+      '4 × 24 kapı değeri. Henüz hafıza değişmedi; bunlar «nasıl değişecek» talimatları.'];},
+    E4:()=>{const L=R.enc[0].L[0];return [cellTxt(L,true),
+      B('c¹')+' (24) ve '+B('h¹')+' (24). h yukarı çıkar → Katman 2\'nin x\'i; c ve h sağa → «+» adımının c₋₁ ve h₋₁\'i.'];},
+    E5:()=>{const L=R.enc[0].L[1];return ['Katman 2 aynı dört işi (girdi → 96 puan → 4 kapı → c, h) kendi tablosu '+B('We2')+' ile yapar. Tek fark girdi: x artık gömme değil, '+B('Katman 1\'in h\'si (24 sayı)')+'; yanına Katman 2\'nin önceki h\'si (24, ilk adımda 0) gelir → 48 sayı. We2 bu yüzden 96×48.<br>'+cellTxt(L,true)+'<br>Encoder\'da Katman 2\'nin üstünde çıkış katmanı yok: tahmin yapmaz, yalnız okur.',
+      B('c²')+' ve '+B('h²')+' (24\'er sayı) → sağa, sonraki adıma.'];},
+    E6:()=>{const e1=R.enc[1].L[0],e2=R.enc[2];return ['«+» ve «'+NE(e2.tok)+'» için aynı yol tekrarlanır: one-hot → embE satırı → Katman 1 → Katman 2, '+B('aynı We1 ve We2 ile')+'. Değişen iki şey var: girdi token\'ı ve '+B('sağdan gelen hafıza')+' (c₋₁, h₋₁ artık 0 değil).<br>Örnek ('+n()+', t=2 Katman 1): c = '+f2(e1.f[KN])+'·'+f2(e1.cp[KN])+' + '+f2(e1.i[KN])+'·'+f2(e1.g[KN])+' = '+f2(e1.c[KN])+' — önceki adımdan gelen hafıza ('+f2(e1.cp[KN])+') f ile korunup yeni bilgiyle karışıyor. Soru böyle adım adım hafızaya yazılıyor.',
+      't=3 sonunda iki katmanın c ve h\'si: sorunun tamamının özeti. '+n()+': h¹ = '+f2(e2.L[0].h[KN])+', h² = '+f2(e2.L[1].h[KN])+'.'];},
+    E7:()=>['Encoder bitti. Elinde son adımdaki '+B('c¹, h¹, c², h²')+' var: 4 × 24 = '+B('96 sayı')+'. Bunlar decoder\'ın '+B('başlangıç hafızası')+' olur: Katman 1\'inki decoder Katman 1\'e, Katman 2\'ninki decoder Katman 2\'ye.<br>Decoder soruyu («'+S.a+'+'+S.b+'») hiç görmez; bildiği her şey bu 96 sayı. Bu yüzden «darboğaz» denir.',
+      B('Bağlam')+' (96 sayı) = decoder\'ın t=1\'deki c₋₁ ve h₋₁\'i.'],
+    D1:()=>{const d=R.dec[0];return ['Decoder bir başlangıç işaretiyle başlar: '+B('&lt;s&gt;')+' («cevaba başla»). Decoder sözlüğü 12 sembol (0-9, &lt;s&gt;, &lt;e&gt;) ve '+B('kendi gömme tablosu embD')+' var (12×8) — encoder\'ınkinden ayrı. Aynı «1» rakamının encoder\'daki ve decoder\'daki gömmesi farklıdır, çünkü iki taraf farklı iş yapıyor (biri okuyor, biri yazıyor).',
+      B('x')+' = &lt;s&gt; satırı, 8 sayı ('+d.emb.slice(0,4).map(f2).join('; ')+'; …).'];},
+    D2:()=>{const L=R.dec[0].L[0],L2=R.dec[0].L[1];return ['Encoder\'la '+B('aynı LSTM hesabı')+', ama ayrı tablolar: '+B('Wd1, Wd2')+'. Asıl fark hafızada: hₜ₋₁ ve cₜ₋₁ sıfır değil, '+B('bağlam')+' (encoder\'ın son hali). Yani decoder ilk adımda soruyu «bilerek» başlıyor.<br>'+cellTxt(L,false,'<br>Katman 2 de aynı şekilde Wd2 ile çalışır; çıkan h² = '+f2(L2.h[KN])+' ('+n()+'), sıradaki adımda tam bağlı katmana gidecek.'),
+      B('h²')+' (24 sayı): «sıradaki sembol ne olmalı» tarifi.'];},
+    D3:()=>{const d=R.dec[0];return ['Katman 2\'nin h\'si (24 sayı) '+B('Wo')+' tablosunun 12 satırıyla tek tek nokta çarpılır, + bias → '+B('12 puan')+', her decoder sembolü (0-9, &lt;s&gt;, &lt;e&gt;) için bir. Puan = «sıradaki sembol bu mu?» sorusunun cevabı. Wo yalnız decoder\'da var; encoder hiç tahmin yapmadığı için onda yok.',
+      '12 puan. En yüksek: «'+ND(d.out).replace('<','&lt;').replace('>','&gt;')+'» = '+f2(d.lg[d.out])+'.'];},
+    D4:()=>{const d=R.dec[0];return ['Puanlar olasılığa çevrilir: her puanın '+B('e üssü')+' alınır (hepsi pozitif olur), toplama bölünür → toplamı 1 olan 12 olasılık. Puanlar arasındaki fark büyükse en yüksek olan neredeyse her şeyi alır. Sonra '+B('en yüksek olasılık')+' seçilir (greedy).',
+      'Seçilen sembol: «'+ND(d.out).replace('<','&lt;').replace('>','&gt;')+'» '+pc(d.p[d.out])+'.'];},
+    D5:()=>{const a=R.dec.map(d=>ND(d.out).replace('<','&lt;').replace('>','&gt;'));return ['Seçilen «'+a[0]+'» bir sonraki adımın '+B('girdisi')+' olur: embD\'den onun satırı okunur, hafıza (c, h) sağdan gelir, aynı hesap (Katman 1 → Katman 2 → Wo → softmax) tekrarlanır → «'+a[1]+'». Sonra «'+a[1]+'» girdi olur → «'+a[2]+'». '+B('&lt;e&gt;')+' (bitti işareti) gelince üretim durur.<br>Ağırlıklar her adımda aynı (Wd1, Wd2, Wo); her adımda değişen yalnız girdi sembolü ve hafıza.',
+      'Cevap: '+B(a[0]+a[1])+' ('+S.a+' + '+S.b+' = '+(S.a+S.b)+').'];}};
   let cur=0,tt=0,play=false,speed=1,last=0,raf=0,on=false;
   const TOT=()=>STOPS.reduce((s,x)=>s+x.dur,0);
   const host=document.getElementById('s2sTour'); if(!host) return;
@@ -181,7 +216,7 @@
    '<input type="range" id="st_rng" min="0" max="1000" value="0" style="width:100%">'+
    '<div id="st_chips" class="st-chips"></div>'+
    '<div id="st_ttl" class="st-ttl"></div><canvas id="st_cv" style="width:100%;display:block;background:#0e131c;border-radius:8px"></canvas>'+
-   '<div id="st_live" class="st-live"></div><div id="st_txt" class="st-txt"></div>';
+   '<div id="st_live" class="st-live"></div><div id="st_soz" class="st-soz"></div><div id="st_elde" class="st-elde"></div>';
   cv=document.getElementById('st_cv');g=cv.getContext('2d');
   const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=W0*dpr;cv.height=H0*dpr;cv.style.aspectRatio=W0+'/'+H0;
   const $=id=>document.getElementById(id);
@@ -189,7 +224,7 @@
   function stopStart(i){let s=0;for(let k=0;k<i;k++)s+=STOPS[k].dur;return s;}
   function setStop(i,keepT){cur=Math.max(0,Math.min(STOPS.length-1,i));if(!keepT)tt=0;
     [...$('st_chips').children].forEach((b,k)=>b.classList.toggle('on',k===cur));
-    const s=STOPS[cur];$('st_ttl').textContent=(cur+1)+'/'+STOPS.length+' · '+s.t();$('st_txt').innerHTML=s.txt;
+    const s=STOPS[cur];$('st_ttl').textContent=(cur+1)+'/'+STOPS.length+' · '+s.t();const sz=SOZ[s.k]();$('st_soz').innerHTML='<b>🗣️ Sözel anlatım</b><br>'+sz[0];$('st_elde').innerHTML='<b>📦 Elde ettik:</b> '+sz[1];
     if(window.__s2sSync3d)window.__s2sSync3d();render();}
   function render(){if(!R)recompute();g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W0,H0);g.fillStyle='#0e131c';g.fillRect(0,0,W0,H0);
     const s=STOPS[cur],live=s.draw(Math.min(1,tt/s.dur));$('st_live').textContent=live||'';
