@@ -55,8 +55,8 @@ body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
 <button id="tf" class="on">Kamera takip</button><button id="tw" class="on">Ağırlık bağları</button><button id="rs">⟲ Görünüm</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
 </div>
 <script src="../js/vendor/three-0.128.0.min.js"></script>
-<script src="../js/lesson-lstm-cell.js?v=202611071141"></script>
-<script src="../js/lesson-s2s-weights.js?v=202611071141"></script>
+<script src="../js/lesson-lstm-cell.js?v=202611071300"></script>
+<script src="../js/lesson-s2s-weights.js?v=202611071300"></script>
 <script>
 (function(){
 const D=window.S2S_CK,H=D.H,PLUS=10,ST=10,EN=11,VD=12;
@@ -211,7 +211,7 @@ function applyStep(noCam){const S=st.step,[h,t]=STEPS[Math.min(7,S)]();document.
 function vtxt(p){if(p.card)return 'h (24): '+p.det.h.map(fmt).join(' ')+'\nc (24): '+p.det.c.map(fmt).join(' ');if(p.big)return '('+p.rows+'×'+p.cols+' = '+(p.rows*p.cols)+' sayı; ilk satır)\n'+p.vals[0].slice(0,12).map(fmt).join('  ')+' …';return p.vals.map(r=>r.filter(v=>v!=null).map(fmt).join('  ')).join('\n')}
 function select(p){sel=p;const i=document.getElementById('info');i.style.setProperty('--c',CL[p.cl]);document.getElementById('ib').innerHTML='<h3>'+p.name+'</h3><div class="sh">'+(p.card?'LSTM hücresi (LSTM dersindeki şema), 24 nöron':'şekil: '+(p.shape||''))+' · gerçek sayılar (epoch '+D.ck[st.ci].ep+')</div><div>'+(p.card?cardInfo(p):p.info)+'</div><div class="vals">'+vtxt(p)+'</div>'+(p.carry?'<div class="cr">📦 Taşıdığı bilgi: '+p.carry+'</div>':'');i.classList.add('on');refreshSel()}
 document.getElementById('ix').onclick=()=>{sel=null;document.getElementById('info').classList.remove('on');refreshSel()};
-function refreshSel(){parts.forEach(p=>{const on=p===sel,cur=p.s===st.step&&st.step>0;p.lb.classList.toggle('sel',on);p.edge.material.color.set(on||cur?0xffc82e:CL[p.cl])})}
+function refreshSel(){parts.forEach(p=>{const on=p===sel||(typeof FOC!=='undefined'&&FOC&&FOC.has(p)),cur=!(typeof FOC!=='undefined'&&FOC)&&p.s===st.step&&st.step>0;p.lb.classList.toggle('sel',on);p.edge.material.color.set(on||cur?0xffc82e:CL[p.cl])})}
 // ---- arayüz
 const qa=document.getElementById('qa'),qb=document.getElementById('qb'),qc=document.getElementById('qc');
 for(let i=0;i<10;i++){qa.add(new Option(i,i));qb.add(new Option(i,i))}D.ck.forEach((c,i)=>qc.add(new Option('epoch '+c.ep,i)));
@@ -227,7 +227,11 @@ const reset=()=>{yaw=DEF.yaw;pitch=DEF.pitch;dist=DEF.dist;tgt.copy(DEF.t);tgtGo
 document.getElementById('rs').onclick=reset;document.getElementById('zr').onclick=reset;
 document.getElementById('zi').onclick=()=>{distGoal=Math.max(6,(distGoal||dist)*0.8)};document.getElementById('zo').onclick=()=>{distGoal=Math.min(80,(distGoal||dist)*1.25)};
 document.getElementById('zf').onclick=()=>window.open('s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v='+(Q.get('v')||Date.now()),'_blank');
-addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='s2s3d')return;const re=m.a!==st.a||m.b!==st.b||m.ci!==st.ci;st.a=m.a;st.b=m.b;st.ci=m.ci;st.step=m.step;syncSel();if(re)build();applyStep()});
+let FOC=null;
+function focusIds(ids){FOC=ids&&ids.length?new Set(ids.map(i=>byId[i]).filter(Boolean)):null;
+ if(FOC&&FOC.size){const c=new THREE.Vector3();FOC.forEach(p=>c.add(p.mesh.position));c.divideScalar(FOC.size);let mx=0;FOC.forEach(p=>mx=Math.max(mx,p.mesh.position.distanceTo(c)+p.w/2));tgtGoal=c;distGoal=Math.max(7,Math.min(40,mx*2.4+5))}
+ document.getElementById('msg').style.display=FOC?'none':'';refreshSel()}
+addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='s2s3d')return;const re=m.a!==st.a||m.b!==st.b||m.ci!==st.ci;st.a=m.a;st.b=m.b;st.ci=m.ci;st.step=m.step;syncSel();if(re)build();applyStep(!!m.focus);focusIds(m.focus||null)});
 addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&!EMB)document.getElementById('sn').click();if(e.key==='ArrowLeft'&&!EMB)document.getElementById('sp').click()});
 // ---- kamera
 let drag=null;const ray=new THREE.Raycaster(),mp=new THREE.Vector2();
@@ -247,7 +251,7 @@ function frame(){
  cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
  const w=innerWidth,h=innerHeight,S=st.step;
  parts.forEach(p=>{const on=vis(p.s),o=on?1:0.1;p.mats.forEach(m=>m.opacity=o);p.edge.material.opacity=on?1:0.15;
-  v3.copy(p.mesh.position);v3.y+=p.h/2+0.25;v3.project(cam);const show=v3.z<1&&(p===sel||(S>0&&S<7&&p.s===S)||(p.s===0&&!EMB));p.lb.style.display=show?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px'});
+  v3.copy(p.mesh.position);v3.y+=p.h/2+0.25;v3.project(cam);const show=v3.z<1&&(p===sel||(FOC?FOC.has(p):((S>0&&S<7&&p.s===S)||(p.s===0&&!EMB))));p.lb.style.display=show?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px'});
  labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=v3.z<1&&vis(l.s)?'':'none'});
  flows.forEach(f=>{const o=vis(f.s)?1:0.07;f.o.traverse(q=>{if(q.material)q.material.opacity=o})});
  ren.render(scene,cam);requestAnimationFrame(frame)}
