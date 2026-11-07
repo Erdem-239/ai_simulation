@@ -257,7 +257,7 @@ const GAP=1.2,YGAP=0.7,ROWSEP=6.6;
 function layoutArch(A){A.byId={};A.parts.forEach(p=>A.byId[p.id]=p);
   let cursor=0,len=0;
   A.cols.forEach((ids,ci)=>{if(A.split&&ci===A.split){len=cursor-GAP;cursor=0}
-    const w=Math.max(...ids.map(i=>A.byId[i].w));const cx=cursor+w/2;cursor+=w+GAP;const ry=A.split?(ci>=A.split?-ROWSEP/2:ROWSEP/2):0;
+    const w=Math.max(...ids.map(i=>A.byId[i].w));const cx=cursor+w/2;cursor+=w+GAP;const RS=A.rowsep||ROWSEP,ry=A.split?(ci>=A.split?-RS/2:RS/2):0;
     const tot=ids.reduce((s,i)=>s+A.byId[i].h,0)+YGAP*(ids.length-1);let y=tot/2;
     ids.forEach((i,k)=>{const p=A.byId[i];p.ci=ci;p.E2={x:cx,y:ry+y-p.h/2,z:Math.sin(ci*0.85)*1.8};y-=p.h+YGAP;p.A={x:ci*0.2,y:(k-(ids.length-1)/2)*0.1,z:0};});});
   A.LEN2=Math.max(len,cursor-GAP);
@@ -300,7 +300,11 @@ function catCv(H){const W=640,Hh=128,c=cv(W,Hh),g=c.getContext('2d');g.fillStyle
   for(let h=0;h<H;h++){const gc=GCOL[h%GCOL.length];for(let a=0;a<4;a++)for(let b=0;b<6;b++){const v=(r()+r()+r()-1.5)*1.6,al=Math.min(1,Math.abs(v))*.7;g.fillStyle=v>=0?'rgba(43,107,214,'+al+')':'rgba(204,56,72,'+al+')';g.fillRect(h*bw+b*(bw/6)+.5,a*32+.5,bw/6-1,31)}
     g.strokeStyle=gc;g.lineWidth=3;g.strokeRect(h*bw+1.5,1.5,bw-3,Hh-3);g.fillStyle='#fff';g.shadowColor='#000';g.shadowBlur=5;g.font='700 '+(H>16?13:20)+'px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText(String(h+1),h*bw+bw/2,24);g.shadowBlur=0}
   return c}
-function multiCard(p,i,col){const m=p.multi;if(m.card==='score')return scoreCard(i,4,col);if(m.card==='slice')return sliceCard(i,4,8,col,m.lab);return headCard(i,4,col)}
+function gridCard(i,R,C,col,seed,mask,prob){const cell=14,c=cv(C*cell,R*cell),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,c.width,c.height);const r=RNG(seed+i*43);
+  for(let a=0;a<R;a++){const row=[];let sum=0;for(let b=0;b<C;b++){const v=prob?Math.exp(2.2*r()):(r()+r()+r()-1.5)*1.6;row.push(v);if(!mask||b<=a)sum+=v}
+    for(let b=0;b<C;b++){if(mask&&b>a){g.fillStyle='#0b0e14'}else if(prob){g.fillStyle='rgba(63,199,193,'+(0.12+0.85*Math.min(1,row[b]/sum*2.2))+')'}else{const al=Math.min(1,Math.abs(row[b]))*.75;g.fillStyle=row[b]>=0?'rgba(43,107,214,'+al+')':'rgba(204,56,72,'+al+')'}g.fillRect(b*cell+.5,a*cell+.5,cell-1,cell-1)}}
+  g.strokeStyle=col;g.lineWidth=4;g.strokeRect(2,2,c.width-4,c.height-4);g.fillStyle='#e8ebf2';g.font='700 '+(R<4?20:26)+'px ui-monospace,Menlo,monospace';g.textAlign='left';g.fillText('k'+(i+1),6,R<4?22:30);return c}
+function multiCard(p,i,col){const m=p.multi;if(m.card==='grid')return gridCard(i,m.R,m.C,col,m.seed||0,m.mask,m.prob);if(m.card==='score')return scoreCard(i,4,col);if(m.card==='slice')return sliceCard(i,4,8,col,m.lab);return headCard(i,4,col)}
 const TOKS={A:{t:['7','+','5','='],id:[22,10,20,28]},B:{t:['h','ay','at','ı','n',' an','lam','ı',' n','ed','ir'],id:[71,323,265,30102,77,281,2543,30102,299,276,343]}};
 let PK='A';
 function tokCv(){const T=TOKS[PK],n=T.t.length,c=cv(640,100),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,640,100);
@@ -450,8 +454,66 @@ function qwen3moe(){const L=[],K='q3';
     blocks:[[3,21]],blockHtml:['BLOK × 48<small>48 blok: tam attention (32 Q / 4 K-V) + 128 uzmanlı MoE (token başı 8)</small>'],
     asm:'Qwen3-30B-A3B<small>≈30 milyar toplam, ≈3 milyar aktif †</small>',title:'Açık ağırlıklı MoE: Qwen3-30B-A3B şeması',
     sub:'Alibaba Qwen ailesinin küçük MoE modeli. Arama sonuçlarıyla doğrulananlar: 48 katman, 128 uzman (token başı 8), 32 sorgu / 4 K-V kafası, paylaşılan uzman yok. † ile işaretliler (model boyutu 2048, kafa boyutu 128, uzman ara boyutu 768, QK-Norm, sözlük, bağlam) hafızadan veya tek bir yan modelin sayfasından. Şekiller gerçek, sayılar şematik.'}}
-const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss(),QWEN3=qwen3moe();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);layoutArch(QWEN3);
-const ARCHS=[MINI,GPT2,LLAMA,GPTOSS,QWEN3];let ARCH=MINI;
+function decTokCv(){const T=['<s>','1','2'],S=['başla','üretildi','üretildi'],c=cv(480,100),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,480,100);
+  T.forEach((t,i)=>{const x=6+i*158,bw=150;g.fillStyle='#2c2a1c';g.fillRect(x,8,bw,84);g.strokeStyle='#f0d35a';g.lineWidth=2;g.strokeRect(x,8,bw,84);g.fillStyle='#e8ebf2';g.font='700 30px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText(t,x+bw/2,48);g.fillStyle='#c9b765';g.font='600 17px ui-monospace,Menlo,monospace';g.fillText(S[i],x+bw/2,78)});return c}
+function encdec(){const L=[],K='ed';
+  tokPart(L,"ENCODER'ın girdisi: soru («7+5=»). Bu mimaride soru ile cevap AYRI iki dizidir: soru bir kez encoder'a girer, cevap decoder'da token token üretilir. T5'in sözlüğü SentencePiece ile kurulmuş ≈32 bin parça †; çizilen parçalar GPT-2'ninki, T5'in bu istemi nasıl böldüğünü ölçmedik.");
+  L[0].nums='Çizilen parçalar GPT-2\'nin parçalaması; T5\'inkini ölçmedik';
+  mkP(L,K,'Emb','Token tablosu (paylaşımlı)','Emb (kim)','in',40,16,'≈32.128 × 768 †',"Tek bir kimlik kartı tablosu ÜÇ yerde kullanılır: encoder girdisi, decoder girdisi ve çıkış tablosu (T5'te paylaşım †). ≈32.128 × 768 ≈ 24,7 milyon ağırlık.");
+  mkP(L,K,'x','x_enc = Emb satırları','x_enc','in',10,16,'T_enc × 768',"Sorunun T_enc token'ı için Emb'den satır okunur (7+5= için 4 satır). Konum kartı EKLENMEZ: T5'te konum bilgisi dikkat skorlarına eklenen göreli yanlılıkla gelir †.");
+  mkP(L,K,'eln1','Norm 1 (encoder)','Norm','norm',10,16,'T_enc × 768',"Alt-bloğun girişinde ölçek dengeleme (T5'in normu ortalamayı çıkarmaz, RMSNorm'a benzer †).");
+  ['Q','K','V'].forEach(q=>mkP(L,K,'eW'+q,'Encoder W_'+q,'W_'+q,'att',16,16,'768 × 768',"Encoder'ın KENDİ ağırlıkları (decoder'ınkilerden ayrı). GPT-2'deki W_"+q+" ile aynı iş: her soru token'ı için "+(q==='Q'?'bir soru':q==='K'?'bir etiket':'bir içerik')+" üretir; 12 kafaya 64'lük dilimlerle bölünür."));
+  mkP(L,K,'eqT','Q_enc','Q','att',4,16,'T_enc × 768',"Her soru token'ının sorusu (7+5= için 4×768).");
+  mkP(L,K,'ekT','K_enc','K','att',4,16,'T_enc × 768',"Her soru token'ının etiketi.");
+  mkP(L,K,'evT','V_enc','V','att',4,16,'T_enc × 768',"Her soru token'ının içeriği.");
+  mkP(L,K,'erpb','Göreli konum yanlılığı','konum yanlılığı','att',10,16,'kafa × uzaklık kovası †',"T5'in konum yöntemi †: bir konum TABLOSU yok, RoPE de yok. Her kafa, iki token arasındaki UZAKLIĞA (kovalara bölünmüş) göre öğrenilen tek bir sayıyı skora EKLER. Böylece skor «ne kadar uzaktayız» bilgisini taşır. Çizim şematik.",{get:(a,b)=>Math.cos((a-b)*0.7)*Math.exp(-Math.abs(a-b)*0.08),vmax:1});
+  mkP(L,K,'eheads','Encoder skorları: MASKESİZ (12 × T_enc×T_enc)','12 kafa · maskesiz','att',8,32,'12 × (T_enc × T_enc)',"Encoder'ın farkı: MASKE YOK. Her soru token'ı sorunun HER token'ına bakar, sonrakiler dahil («7», kendinden sonraki «5»i de görür). Çünkü soru baştan tamamen elimizde; geleceği gizlemeye gerek yok. 16 hücrenin 16'sı dolu (GPT-2'de 10'u). Renkli sayılar şematik.",{multi:{n:12,cols:4,card:'grid',R:4,C:4,seed:7101},w:4.0,h:3.0});
+  mkP(L,K,'eaT','Encoder yüzdeleri (12 × T_enc×T_enc)','12 kafa · yüzde','att',8,32,'12 × (T_enc × T_enc)',"Her satır softmax'tan geçer, toplam %100; hiçbir hücre kapalı değil.",{multi:{n:12,cols:4,card:'grid',R:4,C:4,seed:7202,prob:true},w:4.0,h:3.0});
+  mkP(L,K,'eav','a·V, 12 kafa yan yana','a·V (T_enc×768)','att',4,16,'T_enc × 768',"Her kafada yüzde · V_enc → T_enc×64; 12 kafa yan yana yapıştırılır → T_enc×768.",{canvas:catCv(12),w:4.0,h:0.8});
+  mkP(L,K,'eWo','Encoder W_O','W_O','att',16,16,'768 × 768',"Kafaları birleştirip karıştırır.");
+  mkP(L,K,'eadd1','⊕ x + attention','⊕ artık','att',10,16,'T_enc × 768',"Artık bağlantı (GPT-2 ile aynı).");
+  mkP(L,K,'eln2','Norm 2 (encoder)','Norm','norm',10,16,'T_enc × 768',"FFN öncesi ölçek dengeleme.");
+  mkP(L,K,'eWi','Encoder W_i (genişlet)','W_i','ffn',16,32,'768 × 3072',"FFN'in 1. tablosu: 4 kat genişletir (GPT-2 ile aynı ölçü).");
+  mkP(L,K,'erelu','ReLU †','ReLU','ffn',10,32,'T_enc × 3072',"Özgün T5'te ReLU †; sonraki sürümler kapılı (GEGLU) kullanır.");
+  mkP(L,K,'eWff2','Encoder W_o (daralt)','W_o (FFN)','ffn',32,16,'3072 × 768',"3072'yi tekrar 768'e indirir.");
+  mkP(L,K,'eadd2','⊕ + FFN','⊕ artık','ffn',10,16,'T_enc × 768',"Encoder bloğunun çıktısı. Bu blok 12 kez üst üste †.");
+  mkP(L,K,'enc','Encoder çıktısı = BELLEK','🧠 bellek','out',10,16,'T_enc × 768',"12 encoder bloğu (+ son norm) sonrası sorunun her token'ının bağlamlı kartı: «7» artık yanındaki «+» ve «5»i biliyor. Bu tablo BİR KEZ hesaplanır ve cevap üretilirken HİÇ değişmez; decoder'ın 12 bloğunun HER BİRİNDEKİ çapraz dikkat buradan K ve V üretir. LSTM Seq2Seq'te bütün soru tek bir 🍾 bağlam vektörüne sıkıştırılıyordu; burada her token için bir kart kalır (darboğaz yok).");
+  L.push({id:'dtok',name:'Decoder girdisi: cevabın şimdiye kadarki kısmı',short:'decoder girdisi',st:'in',w:3.6,h:0.75,kind:'slab',canvas:decTokCv(),desc:"DECODER'ın girdisi soru DEĞİL, cevabın o ana kadar üretilmiş kısmıdır: başlangıç işareti «<s>» + şimdiye kadar yazılanlar (örnek: «1», «2»). Her adımda bir token eklenir. Çizim örnek: «12»nin iki token olarak üretildiği varsayıldı; T5'in gerçekte nasıl böldüğünü ve ne ürettiğini ölçmedik.",shape:'T_dec token',nums:'örnek (ölçülmedi)'});
+  mkP(L,K,'dx','x_dec = Emb satırları','x_dec','in',10,16,'T_dec × 768',"Aynı Emb tablosundan (paylaşımlı) decoder token'larının satırları okunur → T_dec×768 (örnekte 3×768).");
+  mkP(L,K,'dln1','Norm 1 (decoder)','Norm','norm',10,16,'T_dec × 768',"Maskeli self-attention öncesi ölçek dengeleme.");
+  ['Q','K','V'].forEach(q=>mkP(L,K,'dW'+q,'Decoder W_'+q+' (self)','W_'+q+' (self)','att',16,16,'768 × 768',"Decoder'ın self-attention ağırlıkları: encoder'ınkilerden AYRI tablolar. Cevap token'ları birbirine bakar."));
+  mkP(L,K,'dheads','Decoder skorları: MASKELİ (12 × T_dec×T_dec)','12 kafa · maskeli','att',8,32,'12 × (T_dec × T_dec)',"GPT-2'deki dikkatin aynısı: üst üçgen kapalı, her cevap token'ı yalnız kendinden ÖNCEKİ cevap token'larına bakar (henüz yazılmamışı göremez). Q, K, V çarpımları, softmax ve a·V bu karta katlandı (GPT-2'de ayrı ayrı çizili). Göreli konum yanlılığı burada da eklenir †.",{multi:{n:12,cols:4,card:'grid',R:3,C:3,seed:7303,mask:true},w:3.4,h:2.3});
+  mkP(L,K,'dWo','Decoder W_O (self)','W_O','att',16,16,'768 × 768',"Self-attention kafalarını birleştirip karıştırır.");
+  mkP(L,K,'dadd1','⊕ + self-attention','⊕ artık','att',10,16,'T_dec × 768',"Artık bağlantı.");
+  mkP(L,K,'dln2','Norm 2 (decoder)','Norm','norm',10,16,'T_dec × 768',"Çapraz dikkat öncesi ölçek dengeleme (yalnız decoder tarafına; bellek zaten encoder'ın son normundan geçti).");
+  mkP(L,K,'cWq','Çapraz W_Q','W_Q (çapraz)','att',16,16,'768 × 768',"ÇAPRAZ DİKKATİN sorusu DECODER'dan gelir: cevap token'ları «soruda neye bakayım?» diye sorar.");
+  mkP(L,K,'cWk','Çapraz W_K','W_K (çapraz)','att',16,16,'768 × 768',"ÇAPRAZ DİKKATİN etiketi ENCODER BELLEĞİNDEN gelir: K = bellek · W_K. Soru token'ları «beni böyle bul» der.");
+  mkP(L,K,'cWv','Çapraz W_V','W_V (çapraz)','att',16,16,'768 × 768',"ÇAPRAZ DİKKATİN içeriği de ENCODER BELLEĞİNDEN: V = bellek · W_V. Cevaba taşınacak bilgi sorudan gelir.");
+  mkP(L,K,'cQ','Q = x_dec · W_Q','Q (decoder)','att',3,16,'T_dec × 768',"Her cevap token'ının sorusu (örnekte 3×768).",{h:0.66});
+  mkP(L,K,'cK','K = bellek · W_K','K (bellekten)','att',4,16,'T_enc × 768',"Sorunun her token'ının etiketi (4×768). Bellek değişmediği için üretim boyunca aynı kalır; bir kez hesaplanıp saklanabilir.");
+  mkP(L,K,'cV','V = bellek · W_V','V (bellekten)','att',4,16,'T_enc × 768',"Sorunun her token'ının içeriği (4×768).");
+  mkP(L,K,'cheads','Çapraz skorlar (12 × T_dec×T_enc)','12 kafa · çapraz','att',8,32,'12 × (T_dec × T_enc)',"Tablo KARE DEĞİL: satır = cevap token'ı (3), sütun = soru token'ı (4). Hücre [i][j] = «i. cevap token'ı, sorunun j. token'ına ne kadar uyuyor». MASKE YOK: cevap, sorunun tamamına bakabilir (soru zaten tamamen bilinen geçmiş). Softmax satır satır; Bahdanau'nun hizalama tablosunun Transformer hâli. Renkli sayılar şematik.",{multi:{n:12,cols:4,card:'grid',R:3,C:4,seed:7404},w:4.0,h:2.4});
+  mkP(L,K,'cav','a·V, 12 kafa yan yana','a·V (T_dec×768)','att',3,16,'T_dec × 768',"Her cevap token'ı, sorunun token'larından yüzdelerle bilgi toplar: «=»dan sonra cevap yazarken «7» ve «5»in içeriği buradan gelir.",{canvas:catCv(12),w:4.0,h:0.7});
+  mkP(L,K,'cWo','Çapraz W_O','W_O (çapraz)','att',16,16,'768 × 768',"Çapraz dikkat kafalarını birleştirip karıştırır.");
+  mkP(L,K,'dadd2','⊕ + çapraz dikkat','⊕ artık','att',10,16,'T_dec × 768',"Cevap token'ının kartı artık sorudan topladığı bilgiyi de taşır.");
+  mkP(L,K,'dln3','Norm 3 (decoder)','Norm','norm',10,16,'T_dec × 768',"FFN öncesi ölçek dengeleme.");
+  mkP(L,K,'dWi','Decoder W_i (genişlet)','W_i','ffn',16,32,'768 × 3072',"Decoder FFN'i: 4 kat genişletir.");
+  mkP(L,K,'drelu','ReLU †','ReLU','ffn',10,32,'T_dec × 3072',"Aktivasyon.");
+  mkP(L,K,'dWff2','Decoder W_o (daralt)','W_o (FFN)','ffn',32,16,'3072 × 768',"3072 → 768.");
+  mkP(L,K,'dadd3','⊕ + FFN','⊕ artık','ffn',10,16,'T_dec × 768',"Decoder bloğunun çıktısı. Bu blok (3 alt-blokla) 12 kez üst üste †; her decoder bloğu aynı BELLEĞE kendi çapraz dikkatiyle tekrar bakar.");
+  tail(L,K,'Son Norm','≈32.128 †',true,'Son Norm (decoder)','Decoder bloklarından sonra son ölçek dengelemesi.');
+  L.find(p=>p.id==='head').desc="Son vektörü sözlükteki HER token için bir skora çevirir. T5'te giriş tablosuyla paylaşımlı † (aynı Emb'in devriği). Yalnız DECODER konumları tahmin üretir: soru tarafında tahmin yok.";
+  L.find(p=>p.id==='logits').desc="Her DECODER konumu için sözlük boyunda bir skor satırı (T_dec × ≈32 bin). Eğitimde cevabın her token'ı ayrı bir tahmin; soru token'ları için tahmin yapılmaz (decoder-only modellerde soru token'ları da tahmin ettirilebilir).";
+  return {key:'ed',btn:'Encoder-Decoder (T5-base)',parts:L,two:false,split:17,rowsep:10,
+    cols:[['tok'],['Emb'],['x'],['eln1'],['eWQ','eWK','eWV'],['eqT','ekT','evT'],['erpb','eheads'],['eaT'],['eav'],['eWo'],['eadd1'],['eln2'],['eWi'],['erelu'],['eWff2'],['eadd2'],['enc'],
+      ['dtok'],['dx'],['dln1'],['dWQ','dWK','dWV'],['dheads'],['dWo'],['dadd1'],['dln2'],['cWq','cWk','cWv'],['cQ','cK','cV'],['cheads'],['cav'],['cWo'],['dadd2'],['dln3'],['dWi'],['drelu'],['dWff2'],['dadd3'],['lnf'],['head'],['logits'],['next']],
+    cut:[['enc','dtok'],['dln2','cWk'],['dln2','cWv'],['cWq','cK'],['cWq','cV'],['cWk','cQ'],['cWk','cV'],['cWv','cQ'],['cWv','cK']],
+    mem:[['enc','cWk'],['enc','cWv']],
+    blocks:[[3,15],[19,35]],blockHtml:['ENCODER BLOĞU × 12<small>maskesiz self-attention + FFN · soruyu bir kez okur</small>','DECODER BLOĞU × 12<small>maskeli self-attention + ÇAPRAZ dikkat + FFN · cevabı token token yazar</small>'],
+    asm:'T5-base (encoder-decoder)<small>≈220 milyon ağırlık †</small>',title:'Encoder-decoder: T5-base şeması',
+    sub:'Decoder-only modellerle (GPT-2, Llama…) karşılaştırmak için: üst satır ENCODER (soruyu maskesiz okur → bellek), alt satır DECODER (cevabı maskeli yazar, her blokta ÇAPRAZ dikkatle belleğe bakar). Boyutlar GPT-2 small ile aynı (768, 12 kafa, 12+12 blok). † hafızadan; şekiller gerçek, sayılar şematik.'}}
+const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss(),QWEN3=qwen3moe(),ED=encdec();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);layoutArch(QWEN3);layoutArch(ED);
+const ARCHS=[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED];let ARCH=MINI;
 let COLS=MINI.cols,BLOCKS=MINI.blocks,byId=MINI.byId,LEN1=MINI.LEN1,LEN2=MINI.LEN2,XC_A=MINI.XC_A,LENc=LEN2,mm=0,mT=0,links,lgeo,bboxes;
 /* ---------- sahne ---------- */
 const stage=$('stage');
@@ -574,15 +636,40 @@ Object.assign(CARRY,{gptoss:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',
 Object.assign(FAQ,{gptoss:{topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. Aynı katmanda farklı token\'lar farklı uzmanları seçer.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'Pencereli katmanda 128\'den kısa istemde (7+5= gibi) maske fark etmez: hepsi zaten pencerenin içinde.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam ≈117 milyar, ama bir token için yalnız ≈5,1 milyarlık kısım hesaplanır (aktif).'}});
 Object.assign(CARRY,{q3:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',Emb:'Token\'ın "ne olduğu" (2048 sayı †). Sıra bilgisi YOK: RoPE ile Q ve K\'ya işlenir.',x:'Yalnız anlam (konum henüz yok).',rms1:'Aynı bilgi, yalnız ölçeği dengelenmiş.',Wq:'Soru üretme kuralı (32 kafa).',Wk:'Etiket üretme kuralı (4 grup).',Wv:'İçerik üretme kuralı (4 grup).',qT:'Her token\'ın SORUSU.',kT:'Her token\'ın ETİKETİ (4 grup, GQA).',vT:'Her token\'ın İÇERİĞİ (4 grup).',qkn:'Q ve K\'nın ölçek dengelemesi (kafa başına): yeni bilgi yok, skorların patlamasını önler.',rope:'Konum bilgisi: Q ve K döndürülür.',qS:'Q\'nun 32 küçük parçası (128 sayı).',kS:'K\'nın 4 küçük parçası, 8 kafaca paylaşılır.',vS:'V\'nin 4 küçük parçası, 8 kafaca paylaşılır.',heads:'Ham uyum puanları (maskeli), henüz yüzde değil. Pencere/çukur yok: her katman tam geçmişe bakabilir †.',aT:'Yüzdeler: her satır %100.',oS:'Her token için baktıklarından karışan bilgi (kafa başına 128 sayı).',cat:'32 kafanın bilgisi yan yana, henüz karışmadı.',Wo:'Kafaların bulduklarını birleştirip model boyutuna çevirme kuralı.',add1:'Eski x + attention katkısı.',rms2:'Yalnız ölçek dengeleme.',Wr:'Yönlendirme kuralı: x\'ten 128 uzman için uygunluk puanı çıkarır.',topk:'Hangi 8 uzmanın bu token\'ı işleyeceği ve karışım yüzdeleri.',Wgate:'Her uzmanın kapı yolu.',Wup:'Her uzmanın değer yolu.',swi:'Seçilen 8 uzmanda kapı × değer: hangi örüntülerin açık olduğu.',Wdown:'Her uzmanın sonucu geri toplama kuralı.',mix:'8 uzmanın bulduğu bilgilerin router yüzdeleriyle karışımı: token\'ın işlenmiş hâli.',add2:'Önceki + MoE katkısı: bağlam + uzmanlarca işlenmiş bilgi.',lnf:'Son ölçek dengelemesi.',head:'Son satırı sözlükle karşılaştıran ayrı çıkış tablosu †.',logits:'Her token için ham uygunluk puanı.',next:'Yüzdeye çevrilip seçilen tek token.'}});
 Object.assign(FAQ,{q3:{qkn:'QK-Norm bir ağırlık matrisi değil, küçük bir ölçek dengelemesi (kafa başına RMSNorm). Q ve K\'nın sayıları, nokta çarpımdan önce dengelenir; yeni bilgi eklemez. Qwen3\'te var olduğunu hafızadan söylüyoruz †, arama sonuçları bunu doğrulamadı.',topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. gpt-oss\'ta token başına 4 uzman seçilir, burada 8.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'gpt-oss\'tan fark: Qwen3-30B-A3B\'de katmanlar arasında kayan pencere/tam dönüşümü ve dikkat çukuru yok †; her katman tam nedensel attention.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam yaklaşık 30 milyar †, ama bir token için yalnız yaklaşık 3 milyarlık kısım hesaplanır (aktif, adındaki «A3B»). Bu yüzden bellek ihtiyacı 30B\'lik bir modele, hız ise ~3B\'lik bir modele benzer.'}});
-[MINI,GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
-[MINI,GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
+GRPS.ed=[
+  G('Tokenizer',C_TOK,[0,0],'Sabit program (SentencePiece †): soruyu parçalara böler. Ağırlığı yok.','Yalnız numaralar.',{pm:.55,lv:1}),
+  G('Embedding (paylaşımlı)',C_EMB,[1,2],'Tek Emb tablosu: soru token\'larının kartları buradan okunur. Aynı tablo decoder girdisi ve çıkış tablosu için de kullanılır †.','x_enc: her soru token\'ının "ne olduğu". Konum yok, bağlam yok.'),
+  G('Konum: göreli yanlılık',C_POS,[6,6],'T5\'te konum tablosu ya da RoPE yok †: iki token arası uzaklığa göre öğrenilen bir sayı dikkat skoruna eklenir.','"Kaç adım uzaktayız" bilgisi, yalnız skorlara.',{pm:.55,bottom:true,lv:1}),
+  G('ENCODER: maskesiz self-attention',C_ALT,[3,10],'Norm → Q,K,V → 12 kafa, MASKESİZ (herkes herkese bakar) → W_O → artık bağ. Soru token\'ları birbirini tamamen görür.','Her soru token\'ı sorunun tamamından bağlam toplar («7», kendinden sonra gelen «5»i de görür).',{pm:1.2,lv:2}),
+  G('ENCODER: FFN',C_ALT,[11,15],'Norm → 768→3072 (ReLU †) → 768 → artık bağ. Token\'lar ayrı ayrı işlenir.','Toplanan bilginin işlenmiş hâli.',{pm:1.2,lv:2}),
+  G('🧠 Bellek',C_OUT,[16,16],'12 encoder bloğunun çıktısı: soru token\'larının bağlamlı kartları (T_enc×768). Bir kez hesaplanır, cevap boyunca değişmez.','Sorunun tamamı, token başına bir kart: decoder\'ın çapraz dikkati K ve V\'yi buradan üretir.',{pm:.8}),
+  G('Decoder girdisi',C_EMB,[17,18],'Cevabın şimdiye kadarki kısmı («<s> 1 2», örnek) aynı Emb tablosundan karta çevrilir.','x_dec: yazılmış cevap token\'ları. Henüz sorudan haberi yok.'),
+  G('DECODER: maskeli self-attention',C_ALT,[19,23],'Norm → Q,K,V → 12 kafa, MASKELİ → W_O → artık bağ. GPT-2\'deki dikkatin aynısı.','Her cevap token\'ı yalnız kendinden önceki cevap token\'larına bakar.',{pm:1.2,lv:2}),
+  G('DECODER: ÇAPRAZ dikkat',C_OUT,[24,30],'Decoder-only modellerde OLMAYAN alt-blok: Q decoder\'dan, K ve V encoder belleğinden. Tablo T_dec×T_enc, maskesiz.','Cevap token\'ı, sorunun hangi token\'larından ne kadar bilgi alacağını seçer ve onları kartına ekler.',{pm:1.2,lv:2}),
+  G('DECODER: FFN',C_ALT,[31,35],'Norm → 768→3072 → 768 → artık bağ.','Cevap token\'ının kendi kartı üzerinde "düşünme".',{pm:1.2,lv:2}),
+  G('Çıkış',C_OUT,[36,38],'Son norm, ardından decoder\'ın son satırı Emb\'in devriğiyle çarpılıp ≈32 bin token için puan çıkar †.','Sıradaki cevap token\'ı için puanlar. Soru tarafı tahmin üretmez.')];
+CARRY.ed={tok:'Sorunun kimlik numaraları.',Emb:'Her token\'ın "ne olduğu" (768 sayı); encoder, decoder ve çıkış için ortak tablo †.',x:'Soru token\'larının kartları: yalnız anlam, konum ve bağlam yok.',eln1:'Aynı bilgi, ölçeği dengelenmiş.',eWQ:'Soru üretme kuralı (encoder).',eWK:'Etiket üretme kuralı (encoder).',eWV:'İçerik üretme kuralı (encoder).',eqT:'Her soru token\'ının sorusu.',ekT:'Her soru token\'ının etiketi.',evT:'Her soru token\'ının içeriği.',erpb:'Uzaklık bilgisi: skorlara eklenen sayı.',eheads:'Ham uyum puanları, MASKESİZ: her soru token\'ı her soru token\'ına.',eaT:'Yüzdeler: kim kime ne kadar bakıyor (hiçbir hücre kapalı değil).',eav:'Her soru token\'ının sorunun tamamından topladığı bilgi.',eWo:'Kafaları birleştirme kuralı.',eadd1:'Eski kart + bağlam.',eln2:'Ölçek dengeleme.',eWi:'Genişletme kuralı.',erelu:'Hangi örüntülerin açık olduğu.',eWff2:'Geri toplama kuralı.',eadd2:'Bağlam + işlenmiş bilgi (bir encoder bloğu).',enc:'Sorunun tamamının bağlamlı hâli, token başına bir kart. Decoder\'a giden TEK şey bu.',dtok:'Cevabın şimdiye kadar yazılmış token\'ları.',dx:'Cevap token\'larının kartları; sorudan habersiz.',dln1:'Ölçek dengeleme.',dWQ:'Soru üretme kuralı (decoder self).',dWK:'Etiket üretme kuralı (decoder self).',dWV:'İçerik üretme kuralı (decoder self).',dheads:'Cevap token\'larının birbirine dikkati (maskeli).',dWo:'Kafaları birleştirme kuralı.',dadd1:'Cevap token\'ı + önceki cevap token\'larından bağlam.',dln2:'Ölçek dengeleme (yalnız decoder tarafı).',cWq:'Cevap tarafından "soruda neye bakayım?" sorusunu üreten kural.',cWk:'Bellekten etiket üreten kural.',cWv:'Bellekten içerik üreten kural.',cQ:'Her cevap token\'ının soruya yönelik sorusu.',cK:'Soru token\'larının etiketleri (bellekten).',cV:'Soru token\'larının içerikleri (bellekten).',cheads:'Her cevap token\'ı için soru token\'larına uyum puanları (T_dec×T_enc).',cav:'Cevap token\'ının sorudan topladığı bilgi.',cWo:'Çapraz kafaları birleştirme kuralı.',dadd2:'Cevap token\'ı + kendi geçmişi + sorudan gelen bilgi.',dln3:'Ölçek dengeleme.',dWi:'Genişletme kuralı.',drelu:'Hangi örüntülerin açık olduğu.',dWff2:'Geri toplama kuralı.',dadd3:'Bir decoder bloğunun çıktısı.',lnf:'Son ölçek dengelemesi.',head:'Son satırı sözlükle karşılaştıran tablo (Emb\'in devriği †).',logits:'Her decoder konumu için ham puan.',next:'Seçilen tek cevap token\'ı; decoder girdisine eklenir.'};
+FAQ.ed={enc:'Encoder yalnız BİR KEZ çalışır: cevabın her token\'ı için yeniden hesaplanmaz. Decoder-only modelde soru token\'ları da aynı akıştadır ve (KV önbelleği olmadan) her adımda yeniden işlenir.',
+ eheads:'Neden maske yok? Maske, "henüz yazılmamış token\'ı görme" yasağı. Soru baştan tamamen bilindiği için encoder\'da böyle bir yasağa gerek yok. GPT-2\'de soru ve cevap aynı akışta olduğu için soru token\'ları da maskeli: «7», kendinden sonraki «5»i hiç göremez.',
+ cWk:'Çapraz dikkatin K ve V\'si soru token\'larından (bellekten), Q\'su cevap token\'larından gelir. Self-attention\'da üçü de aynı diziden gelir; tek fark bu.',cWv:'Çapraz dikkatin K ve V\'si soru token\'larından (bellekten), Q\'su cevap token\'larından gelir. Self-attention\'da üçü de aynı diziden gelir; tek fark bu.',
+ cheads:'Tablo dikdörtgen: satır sayısı = cevap token\'ı, sütun sayısı = soru token\'ı. Maske yok, çünkü sorunun tamamı zaten bilinen geçmiş. Decoder-only modelde bu iş ayrı bir katmanda değil, aynı self-attention tablosunun "cevap satırları × soru sütunları" köşesinde olur.',
+ dtok:'Decoder girdisi cevabın kendisi: eğitimde doğru cevap bir kaydırılarak verilir (teacher forcing), üretimde model kendi yazdıklarını okur.',
+ Emb:'Tek tablo, üç kullanım: soru kartları, cevap kartları ve çıkış puanları (devriği) †. Ayrı tablolar da kullanılabilirdi (sitedeki LSTM Seq2Seq\'te embE ve embD ayrı).'};
+
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
 function showGroup(A,g){select(null);const info=$('info');info.style.setProperty('--c',g.col);$('it').textContent=g.title;
   $('is').textContent=A.btn+' · bölüm (çerçeve)';$('id').textContent=g.body;
   const names=A.parts.filter(p=>p.ci>=g.cols[0]&&p.ci<=g.cols[1]).map(p=>p.name);
   $('in').textContent='İçerdiği parçalar: '+names.join(' → ')+'\n\n📦 Taşıdığı bilgi: '+g.carry;$('cx').innerHTML='';$('hgo').innerHTML='';info.classList.add('on')}
+const MEMN=24;
 function buildScene(A){
   A.parts.forEach(mkGroup);
   A.links=[];A.cols.forEach((ids,ci)=>{if(ci===A.cols.length-1)return;ids.forEach(a=>A.cols[ci+1].forEach(b=>A.links.push([A.byId[a],A.byId[b]])))});
+  if(A.cut)A.links=A.links.filter(([a,b])=>!A.cut.some(([x,y])=>a.id===x&&b.id===y));
+  if(A.mem){A.memGeo=new THREE.BufferGeometry();A.memGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(A.mem.length*MEMN*6),3));
+    A.memLine=new THREE.LineSegments(A.memGeo,new THREE.LineDashedMaterial({color:0xffb347,dashSize:0.3,gapSize:0.15,transparent:true,opacity:0}));A.memLine.frustumCulled=false;scene.add(A.memLine);
+    A.memLb=mkLb('#ffb347','🧠 bellek → çapraz dikkat<small>K ve V encoder çıktısından</small>')}
   A.lgeo=new THREE.BufferGeometry();A.lgeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(A.links.length*6),3));
   A.lines=new THREE.LineSegments(A.lgeo,lmat);A.lines.frustumCulled=false;scene.add(A.lines);
   A.bboxes=A.blocks.map(()=>{const b=new THREE.LineSegments(new THREE.EdgesGeometry(bgeo),new THREE.LineBasicMaterial({color:0x3fc7c1,transparent:true,opacity:0}));b.frustumCulled=false;scene.add(b);return b});
@@ -655,7 +742,7 @@ function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w
   const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc+(p.carry?'\n\n📦 Taşıdığı bilgi: '+p.carry:'')+(p.faq?'\n\n❓ Sık karışan nokta: '+p.faq:'');
-  $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
+  $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'&&p.arch.key!=='ed'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
 function select(p){selected=p;focusV=null;selSet.clear();pairs=[];let extra='';
   if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
@@ -677,7 +764,7 @@ let LBMODE='sparse';
 function declutter(act){
   if(LBMODE==='all'||EMB)return;
   const els=[];act.forEach(A=>{A.parts.forEach(p=>els.push({e:p.lb,pri:(p===selected||tourParts.indexOf(p)>=0)?1:0}));
-    [A.blockLb,A.blockLb2,A.contLb,A.asmLb].forEach(e=>{if(e)els.push({e,pri:0})});(A.glb||[]).forEach(e=>els.push({e,pri:0}))});
+    [A.blockLb,A.blockLb2,A.contLb,A.asmLb,A.memLb].forEach(e=>{if(e)els.push({e,pri:0})});(A.glb||[]).forEach(e=>els.push({e,pri:0}))});
   const vis=[];els.forEach(o=>{const op=parseFloat(o.e.style.opacity);if(op>0.08){if(LBMODE==='none'&&!o.pri){o.e.style.opacity=0;o.e.style.pointerEvents='none'}else vis.push(o)}});
   if(LBMODE==='none')return;
   vis.forEach(o=>{const r=o.e.getBoundingClientRect();o.r=r;o.n=(o.e.textContent||'').length});
@@ -689,7 +776,7 @@ function frame(){
   t+=(tT-t)*0.12;if(Math.abs(tT-t)<1e-4)t=tT;$('sl').value=Math.round(tT*100);
   const e=ease(t),sc=0.28+0.72*e;hoverTick();keyMove();
   const act=ARCHS.filter(A=>A.on);
-  act.forEach(A=>{A.mm+=(A.mT-A.mm)*0.12;if(Math.abs(A.mT-A.mm)<1e-4)A.mm=A.mT;A.LENc=A.LEN2+(A.LEN1-A.LEN2)*A.mm;A.hh=A.two?(13.5+(6-13.5)*A.mm):6.5});
+  act.forEach(A=>{A.mm+=(A.mT-A.mm)*0.12;if(Math.abs(A.mT-A.mm)<1e-4)A.mm=A.mT;A.LENc=A.LEN2+(A.LEN1-A.LEN2)*A.mm;A.hh=A.two?(13.5+(6-13.5)*A.mm):(A.split?6.5+(A.rowsep||ROWSEP):6.5)});
   const totH=act.reduce((s,A)=>s+A.hh,0)+GAPY*(act.length-1);let yy=totH/2;act.forEach(A=>{A.yoT=yy-A.hh/2;yy-=A.hh+GAPY});
   const v3=new THREE.Vector3();
   act.forEach(A=>{if(A._fresh){A.yo=A.yoT;A._fresh=false}A.yo+=(A.yoT-A.yo)*0.12;const mm=A.mm,P=A.parts;
@@ -698,6 +785,11 @@ function frame(){
       const dim=selected&&!selSet.has(p);p.group.traverse(o=>{if(o.material&&!Array.isArray(o.material)&&o.material.isLineBasicMaterial){o.material.opacity=dim?0.25:0.9}})});
     const pos=A.lgeo.attributes.position.array;A.links.forEach(([a,b],i)=>{const g1=a.group.position,g2=b.group.position;pos.set([g1.x+a.w*sc/2,g1.y+a.h*sc/2,g1.z,g2.x-b.w*sc/2,g2.y+b.h*sc/2,g2.z],i*6)});
     A.lgeo.attributes.position.needsUpdate=true;
+    if(A.mem){const mp=A.memGeo.attributes.position.array;let k=0;A._memMid=null;A.mem.forEach(([ai,bi])=>{const a=A.byId[ai],b=A.byId[bi],pa=a.group.position,pb=b.group.position,
+      x0=pa.x,y0=pa.y-a.h*sc/2,z0=pa.z,x2=pb.x,y2=pb.y+b.h*sc/2,z2=pb.z,x1=(x0+x2)/2,y1=(y0+y2)/2,z1=Math.max(z0,z2)+3.2*e;
+      const P=u=>[(1-u)*(1-u)*x0+2*(1-u)*u*x1+u*u*x2,(1-u)*(1-u)*y0+2*(1-u)*u*y1+u*u*y2,(1-u)*(1-u)*z0+2*(1-u)*u*z1+u*u*z2];
+      for(let j=0;j<MEMN;j++){mp.set(P(j/MEMN).concat(P((j+1)/MEMN)),k);k+=6}if(!A._memMid)A._memMid=P(0.5)});
+      A.memGeo.attributes.position.needsUpdate=true;A.memLine.computeLineDistances();A.memLine.material.opacity=e*0.95}
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position,cp=A.contGeo.attributes.position.array;
       cp.set([pa.x+r.w*sc/2,pa.y,pa.z,pb.x-w1.w*sc/2,pb.y,pb.z]);A.contGeo.attributes.position.needsUpdate=true;A.contLine.computeLineDistances();A.contLine.material.opacity=e*(1-mm);
       const one=mm>0.5;if(A.blockLb._o!==one){A.blockLb._o=one;A.blockLb.innerHTML=one?'BLOK = 1 katman<small>attention + FFN</small>':A.blockHtml[0]}}
@@ -730,6 +822,7 @@ function frame(){
     const b=A._boxes;v3.set(b[0].x,b[0].y,b[0].z);proj(v3,A.blockLb,bo);if(b[1]){v3.set(b[1].x,b[1].y,b[1].z);proj(v3,A.blockLb2,bo*(A.mm>0.5?0:1))}
     (A.groups||[]).forEach((g,gi)=>{const c=A._gb[gi],d=A.glb[gi];v3.set(c.x,c.y,c.z);proj(v3,d,(EMB&&!tourOn&&!/^(Tokenizer|Embedding|Attention|FFN alt|MoE alt|Çıkış)/.test(g.title))?0:bo);d.style.pointerEvents=Number(d.style.opacity)>0.5?'auto':'none'});
     if(A.two){const r=A.byId.r,w1=A.byId.W1,pa=r.group.position,pb=w1.group.position;v3.set((pa.x+pb.x)/2,(pa.y+pb.y)/2,(pa.z+pb.z)/2);proj(v3,A.contLb,bo*(1-A.mm))}
+    if(A.memLb&&A._memMid){v3.set(A._memMid[0],A._memMid[1],A._memMid[2]);proj(v3,A.memLb,EMB?0:bo)}
     v3.set(A.XC_A,A.yo+0.9,0);proj(v3,A.asmLb,clamp(1-t*4,0,1))});
   declutter(act);
   requestAnimationFrame(frame)}
@@ -751,7 +844,7 @@ function buildCmp(){const act=ARCHS.filter(A=>A.on),el=$('cmp');
   el.addEventListener('pointermove',e=>{if(!st)return;el.style.left=clamp(e.clientX-st.dx,0,innerWidth-60)+'px';el.style.top=clamp(e.clientY-st.dy,0,innerHeight-40)+'px'});
   el.addEventListener('pointerup',()=>{st=null});})()
 function applyArch(){const act=ARCHS.filter(A=>A.on);
-  ARCHS.forEach(A=>{const on=A.on;A.parts.forEach(p=>{p.group.visible=on;p.lb.style.display=on?'':'none'});A.lines.visible=on;A.bboxes.forEach(b=>b.visible=on);(A.gbox||[]).forEach(b=>b.visible=on&&showGrp);(A.glb||[]).forEach(d=>d.style.display=on&&showGrp?'':'none');A.contLine.visible=on&&!!A.two;
+  ARCHS.forEach(A=>{const on=A.on;A.parts.forEach(p=>{p.group.visible=on;p.lb.style.display=on?'':'none'});A.lines.visible=on;A.bboxes.forEach(b=>b.visible=on);(A.gbox||[]).forEach(b=>b.visible=on&&showGrp);(A.glb||[]).forEach(d=>d.style.display=on&&showGrp?'':'none');A.contLine.visible=on&&!!A.two;if(A.memLine){A.memLine.visible=on;A.memLb.style.display=on?'':'none'}
     A.blockLb.style.display=on?'':'none';A.blockLb2.style.display=on&&A.blockHtml[1]?'':'none';A.contLb.style.display=on&&A.two?'':'none';A.asmLb.style.display=on?'':'none'});
   if(selected&&!selected.arch.on)select(null);else if(selected)select(selected);
   $('bl').style.display=MINI.on?'':'none';
@@ -759,7 +852,7 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
-const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0',q3:'#ff8f6b'};
+const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0',q3:'#ff8f6b',ed:'#f0d35a'};
 const AM=()=>CHARS[D.p.indexOf(Math.max(...D.p))],AP=()=>(Math.max(...D.p)*100).toFixed(1).replace('.',','),WIN=()=>D.ctxChars.map(dsp).join('');
 const T2=()=>D.a.map((v,i)=>[v,i]).sort((p,q)=>q[0]-p[0]).slice(0,2).sort((p,q)=>p[1]-q[1]);
 const fv=v=>typeof v==='function'?v():v;
@@ -801,6 +894,7 @@ const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'qt'
  gpt2:{tok:'tok',Wte:'emb',Wpe:'pos',x:'x',ln1:'norm1',WQ:'Wq',WK:'Wk',WV:'Wv',qT:'qt',kT:'kt',vT:'vt',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',WO:'oproj',add1:'res1',ln2:'norm2',Wfc:'up',gelu:'act',Wproj:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  gptoss:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  q3:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',qkn:undefined,rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
+ ed:{tok:'tok',Emb:'emb',x:'x',erpb:'pos',eln1:'norm1',eWQ:'Wq',eWK:'Wk',eWV:'Wv',eqT:'qt',ekT:'kt',evT:'vt',eheads:'sc',eaT:'soft',eav:'cat',eWo:'oproj',eadd1:'res1',eln2:'norm2',eWi:'up',erelu:'act',eWff2:'down',eadd2:'res2',enc:'mem',dtok:'dtok',dx:'x',dln1:'norm1',dWQ:'Wq',dWK:'Wk',dWV:'Wv',dheads:'sc',dWo:'oproj',dadd1:'res1',dln2:'cross',cWq:'cross',cWk:'cross',cWv:'cross',cQ:'cross',cK:'cross',cV:'cross',cheads:'cross',cav:'cross',cWo:'cross',dadd2:'cross',dln3:'norm2',dWi:'up',drelu:'act',dWff2:'down',dadd3:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
 ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
@@ -995,6 +1089,54 @@ QWEN3.facts=['≈151.936 parça †','2048 †','32 sorgu / 4 K-V (GQA), kafa ba
  const sh=[null,null,null,null,null,null,null,()=>"Router: T×128 puan → T×8 seçim; her token için 8 uzmanın T×2048'lik çıktısı → ağırlıklı toplam T×2048. Hesap yükü ≈ 8/128 (≈%6)."];
  sh.forEach((f,i)=>{if(f)SHP[i].q3=f});
  })();
+Object.entries({
+ tok:"Soru SentencePiece ile bölünür (≈32 bin parça †) ve yalnız encoder'a girer; cevap ayrı bir dizi olarak decoder'a girer.",
+ emb:"Emb ≈32.128 × 768 †: tek tablo, encoder girdisi + decoder girdisi + çıkış tablosu için ortak †.",
+ pos:"Tablo da RoPE de yok: iki token arası uzaklığa göre öğrenilen bir sayı dikkat skoruna eklenir (göreli konum yanlılığı †).",
+ x:"İki ayrı x: x_enc (T_enc × 768, soru) ve x_dec (T_dec × 768, cevabın yazılmış kısmı).",
+ norm1:"Ortalamasız LayerNorm (RMSNorm benzeri †), alt-bloğun girişinde; encoder ve decoder'da ayrı ayrı.",
+ Wq:"Üç ayrı W_Q seti: encoder self, decoder self, decoder çapraz (her biri 768 × 768).",
+ Wk:"Encoder self ve decoder self W_K'ları; çapraz W_K ise encoder BELLEĞİNE uygulanır.",
+ Wv:"Encoder self ve decoder self W_V'leri; çapraz W_V encoder belleğine uygulanır.",
+ qt:"Encoder'da her soru token'ı soru sorar (T_enc×768); decoder'da her cevap token'ı hem kendi geçmişine hem soruya soru sorar.",
+ kt:"Encoder self: T_enc×768; decoder self: T_dec×768; çapraz: bellekten T_enc×768.",
+ vt:"Encoder self: T_enc×768; decoder self: T_dec×768; çapraz: bellekten T_enc×768.",
+ qs:"12 kafa × 64 (GPT-2 ile aynı bölme); çizimde ayrı dilim kartı yok.",ks:"12 kafa × 64.",vs:"12 kafa × 64.",
+ sc:"Encoder: 12 tablo T_enc×T_enc, MASKESİZ. Decoder: 12 tablo T_dec×T_dec, maskeli. Ayrıca çapraz: 12 tablo T_dec×T_enc.",
+ soft:"Her satır softmax; encoder'da kapalı hücre yok.",
+ ov:"12 kafa T×64; a·V yan yana T×768.",cat:"12 çıkış yan yana: 12 × 64 = T×768 (encoder, decoder self ve çapraz için ayrı ayrı).",
+ attn:"Üç tür: encoder maskesiz self, decoder maskeli self, decoder çapraz (Q decoder'dan, K/V bellekten).",
+ oproj:"Her dikkat türünün kendi W_O'su (768 × 768).",
+ res1:"x + attention; decoder'da çapraz dikkatten sonra bir artık bağ daha.",norm2:"FFN öncesi norm (decoder'da 3. norm).",
+ up:"W_i 768 → 3072 (4 kat), encoder ve decoder'da ayrı.",act:"ReLU † (özgün T5).",down:"W_o 3072 → 768.",
+ res2:"Encoder bloğu 12, decoder bloğu 12 kez tekrarlanır †.",normf:"Encoder ve decoder'ın sonunda ayrı son norm.",
+ head:"768 × ≈32.128, Emb ile paylaşımlı †.",logits:"Yalnız DECODER konumları: T_dec × sözlük. Soru tarafı tahmin üretmez.",
+ next:"Seçilen token DECODER girdisine eklenir; encoder (bellek) yeniden çalışmaz."
+}).forEach(([k,v])=>{if(CMPTXT[k])CMPTXT[k].ed=v});
+const NOENC="Yok: decoder-only. Ayrı bir encoder yok; soru ve cevap aynı akışta, aynı maskeli self-attention'dan geçer.";
+CMPTXT.mem={mini:NOENC,gpt2:NOENC,llama:NOENC,gptoss:NOENC,q3:NOENC,ed:"Encoder'ın çıktısı (T_enc × 768): sorunun bağlamlı kartları. Bir kez hesaplanır; decoder'ın 12 bloğundaki çapraz dikkat K ve V'yi buradan üretir."};
+const NODTOK="Ayrı bir decoder girdisi yok: üretilen token aynı diziye, sorunun arkasına eklenir («7+5=1…»).";
+CMPTXT.dtok={mini:"Ayrı decoder girdisi yok: üretilen karakter aynı pencereye eklenir, pencere kayar.",gpt2:NODTOK,llama:NODTOK,gptoss:NODTOK,q3:NODTOK,ed:"Cevabın şimdiye kadarki kısmı («<s> 1 2», örnek) AYRI bir dizi olarak decoder'a girer."};
+const NOCROSS="Çapraz dikkat yok: cevap token'ları soruya, aynı self-attention tablosunun içinden (cevap satırları × soru sütunları) bakar.";
+CMPTXT.cross={mini:"Çapraz dikkat yok: tek akış, tek dikkat (son kutu öncekilere bakar).",gpt2:NOCROSS,llama:NOCROSS,gptoss:NOCROSS,q3:NOCROSS,ed:"Her decoder bloğunda ayrı alt-blok: Q cevap token'larından, K ve V encoder belleğinden; tablo T_dec × T_enc, maskesiz."};
+ED.facts=['≈32.128 SentencePiece parça †','768','12 (her biri 64)','12 encoder + 12 decoder','768 → 3072 → 768 (4×)','ReLU †','ortalamasız LayerNorm (RMSNorm benzeri), alt-bloğun girişinde †','göreli konum yanlılığı (skora eklenir; tablo/RoPE yok) †','eğitimde 512 token †','encoder MASKESİZ; decoder maskeli + çapraz dikkat','yalnız decoder konumlarında (cevap)','Emb ile paylaşımlı †','≈220 milyon †'];
+(function(){const ids=[['tok','dtok'],['Emb','x','dx'],['erpb'],['x','eln1','dln1'],['eWQ','eWK','eWV','eqT','ekT','evT','dWQ','dWK','dWV'],['eheads','eaT','dheads','cheads'],['eav','eWo','eadd1','cav','cWo','dadd2'],['eln2','eWi','erelu','eWff2','dln3','dWi','drelu','dWff2'],['eadd2','enc','dadd3'],['lnf','head','logits'],['next']];
+ const txt=["İKİ ayrı girdi: soru («7+5=») <b>encoder</b>'a, cevabın şimdiye kadarki kısmı («&lt;s&gt; 1 2», örnek) <b>decoder</b>'a. T5'in bu istemi kaç token'a böldüğünü ölçmedik.",
+  "Tek <b>Emb ≈32.128 × 768</b> † tablosu hem soru hem cevap token'larına kart verir (ve çıkışta devriği kullanılır).",
+  "Konum kartı <b>eklenmez</b>, RoPE de yok: dikkat skorlarına <b>uzaklığa göre öğrenilen bir sayı</b> eklenir (göreli konum yanlılığı †).",
+  "x_enc ve x_dec ayrı ayrı normlanır (ortalamasız LayerNorm †).",
+  "Encoder ve decoder'ın <b>ayrı</b> W_Q, W_K, W_V tabloları (768×768): encoder'da her soru token'ı, decoder'da her cevap token'ı Q, K, V üretir.",
+  "<b>Üç dikkat:</b> encoder <b>maskesiz</b> (4×4'ün 16 hücresi dolu), decoder <b>maskeli</b> (3×3, alt üçgen), ve decoder'da <b>çapraz</b> (3×4: cevap satırı × soru sütunu, Q decoder'dan, K/V bellekten).",
+  "Her dikkatin kafaları birleşir, kendi W_O'su, artık bağ. Decoder'da iki artık bağ: self-attention'dan ve çapraz dikkatten sonra.",
+  "FFN 768 → 3072 → 768 (<b>ReLU</b> †), encoder ve decoder'da ayrı tablolar.",
+  "<b>12 encoder</b> bloğu soruyu bir kez okur → <b>bellek</b>. <b>12 decoder</b> bloğunun her biri o belleğe çapraz dikkatle bakar †.",
+  "Son norm, Emb'in devriğiyle (paylaşımlı †) çarpım: yalnız <b>decoder</b> konumları için ≈32 bin puan.",
+  "Seçilen token <b>decoder girdisine</b> eklenir; encoder yeniden çalışmaz (bellek aynı kalır)."];
+ TOUR.forEach((st,i)=>{st.ids.ed=ids[i];st.txt.ed=txt[i]});
+ TOUR[5].fark=(o=>()=>fv(o)+" T5 (encoder-decoder): encoder'da maske yok, decoder'da ayrıca çapraz dikkat var.")(TOUR[5].fark);
+ const sh=[()=>"Encoder: <b>T_enc = 4</b>; decoder: <b>T_dec = 3</b> (örnek).",null,null,null,()=>"Encoder: x_enc (4×768) · W → Q, K, V <b>4×768</b>; decoder self: <b>3×768</b>.",()=>"Kafa başına encoder <b>4×4</b> (16 skor, maskesiz), decoder <b>3×3</b> (6 geçerli), çapraz <b>3×4</b> (12 skor); hepsi × 12 kafa."];
+ sh.forEach((f,i)=>{if(f)SHP[i].ed=f});
+ })();
 const PROMPTS={A:'7+5=',B:'hayatın anlamı nedir'};
 function tourPanel(){const st=TOUR[tourIdx],act=ARCHS.filter(A=>A.on),el=$('tour');
   el.innerHTML='<div class="hd"><h3>🎬 Eş zamanlı gezi · adım '+(tourIdx+1)+'/'+TOUR.length+'</h3><button class="cx" aria-label="Kapat">×</button></div><div class="ts">'+st.t+'</div>'+
@@ -1010,7 +1152,7 @@ function setPrompt(k){if(PK===k)return;PK=k;D=k==='B'?DBF:DA;const nw=buildMini(
   MINI.parts.forEach(p=>{const q=by[p.id];if(!q)return;p.desc=q.desc;p.nums=q.nums;p.shape=q.shape;
     if(q.canvas){p.canvas=q.canvas;if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}
     if(p.cfm)p.cfm.forEach((fm,i)=>{const pad=D.ctxChars[i]==='.'&&i<6;fm.map.dispose();fm.map=tex(letter(D.ctxChars[i],D.ids[i],pad));fm.needsUpdate=true;p.ced[i].material.opacity=pad?0.35:0.9})});
-  [GPT2,LLAMA,GPTOSS,QWEN3].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
+  [GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
   if(selected)select(selected);buildCmp();if(tourOn&&!storyOn)tourPanel()}
 let tourHadBar=true;
 function startTour(){if(storyOn)stopStory();tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
