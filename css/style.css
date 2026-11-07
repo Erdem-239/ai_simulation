@@ -2051,3 +2051,6 @@ body.xt-full-lock{overflow:hidden}
 
 .st-soz{font-size:13px;line-height:1.6;margin-top:6px;padding:8px 10px;border-radius:8px;background:rgba(255,213,74,.08);border-left:3px solid #ffd54a}
 .st-elde{font-size:13px;line-height:1.5;margin-top:6px;padding:6px 10px;border-radius:8px;background:rgba(70,196,106,.1);border-left:3px solid #46c46a}
+
+/* Seq2Seq desen karşılaştırma */
+@media(max-width:720px){#s2sDesen .sd-grid{grid-template-columns:1fr !important}}

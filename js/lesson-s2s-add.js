@@ -153,14 +153,14 @@
     document.getElementById('sa_grid').innerHTML=h;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071358';
+  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071531';
   function sync3d(){const m={type:'s2s3d',a:st.a,b:st.b,ci:st.ci,step:st.step};const ts=window.__s2sTourState&&window.__s2sTourState();if(ts){m.step=ts.step;m.focus=ts.ids;}try{fr3.contentWindow&&fr3.contentWindow.postMessage(m,'*');}catch(e){}
-    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071358';}
+    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071531';}
   addEventListener('message',e=>{if(e.data&&e.data.type==='s2s3dReady'&&e.source===fr3.contentWindow)sync3d();});
   window.__s2sSync3d=sync3d;
   document.getElementById('sa3dtour').addEventListener('click',function(){const box=document.getElementById('sa3d'),on=!box.classList.contains('tour');box.classList.toggle('tour',on);
     this.textContent=on?'✕ Turu kapat':'🎬 Animasyonlu tur: 3B + matris çarpımları';if(window.__s2sTourOn)window.__s2sTourOn(on);if(on)box.scrollIntoView({behavior:'smooth',block:'start'});});
-  function all(){draw();grid();if(window.__s2sAnimSync)window.__s2sAnimSync();sync3d();if(window.__s2sInsideRender)window.__s2sInsideRender();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
+  function all(){draw();grid();if(window.__s2sAnimSync)window.__s2sAnimSync();sync3d();if(window.__s2sInsideRender)window.__s2sInsideRender();if(window.__s2sDesenSync)window.__s2sDesenSync();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
   ckb.addEventListener('click',e=>{if(e.target.dataset.i!==undefined){st.ci=+e.target.dataset.i;st.step=7;all();}});
   sa.addEventListener('change',()=>{st.a=+sa.value;st.step=0;all();});sb.addEventListener('change',()=>{st.b=+sb.value;st.step=0;all();});
   document.getElementById('sa_next').addEventListener('click',()=>{st.step=st.step>=7?1:st.step+1;all();});
