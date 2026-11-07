@@ -55,8 +55,8 @@ body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
 <button id="tf" class="on">Kamera takip</button><button id="tw" class="on">Ağırlık bağları</button><button id="rs">⟲ Görünüm</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
 </div>
 <script src="../js/vendor/three-0.128.0.min.js"></script>
-<script src="../js/lesson-lstm-cell.js?v=202611071136"></script>
-<script src="../js/lesson-s2s-weights.js?v=202611071136"></script>
+<script src="../js/lesson-lstm-cell.js?v=202611071141"></script>
+<script src="../js/lesson-s2s-weights.js?v=202611071141"></script>
 <script>
 (function(){
 const D=window.S2S_CK,H=D.H,PLUS=10,ST=10,EN=11,VD=12;
@@ -226,7 +226,7 @@ document.getElementById('tw').onclick=function(){showW=!showW;this.classList.tog
 const reset=()=>{yaw=DEF.yaw;pitch=DEF.pitch;dist=DEF.dist;tgt.copy(DEF.t);tgtGoal=null;distGoal=null};
 document.getElementById('rs').onclick=reset;document.getElementById('zr').onclick=reset;
 document.getElementById('zi').onclick=()=>{distGoal=Math.max(6,(distGoal||dist)*0.8)};document.getElementById('zo').onclick=()=>{distGoal=Math.min(80,(distGoal||dist)*1.25)};
-document.getElementById('zf').onclick=()=>window.open('s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step,'_blank');
+document.getElementById('zf').onclick=()=>window.open('s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v='+(Q.get('v')||Date.now()),'_blank');
 addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='s2s3d')return;const re=m.a!==st.a||m.b!==st.b||m.ci!==st.ci;st.a=m.a;st.b=m.b;st.ci=m.ci;st.step=m.step;syncSel();if(re)build();applyStep()});
 addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&!EMB)document.getElementById('sn').click();if(e.key==='ArrowLeft'&&!EMB)document.getElementById('sp').click()});
 // ---- kamera
