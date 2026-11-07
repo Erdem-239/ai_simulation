@@ -118,6 +118,8 @@
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="addbtn" id="sa_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="sa_all" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">⏭ Hepsini göster</button><button class="addbtn" id="sa_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
    '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:720px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="İki katmanlı encoder-decoder toplama animasyonu"></svg></div>'+
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
+   '<div id="sa3d" style="margin:12px 0 4px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><b>🧊 Aynı hesap 3B:</b><span style="font-size:12.5px;color:var(--muted,#95a2c2)">sütun = zaman adımı, satır = katman (one-hot → gömme → Katman 1 → Katman 2 → puan → softmax); her kutu gerçek sayılar, tıkla = içi. Yukarıdaki <b>İleri ▶</b> 3B görünümü de ilerletir.</span><a class="addbtn" id="sa3dfull" target="_blank" style="background:var(--panel);color:var(--text);border:1px solid var(--line);text-decoration:none">⛶ Tam sayfa</a></div>'+
+   '<iframe id="sa3dfr" loading="lazy" title="Seq2Seq 3B mimari" style="width:100%;height:600px;border:1px solid var(--line);border-radius:10px;background:#0b0e14;display:block"></iframe></div>'+
    '<div id="s2sSecC" style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>B) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
    '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
   const sa=document.getElementById('sa_a'),sb=document.getElementById('sa_b');
@@ -153,7 +155,11 @@
     document.getElementById('sa_grid').innerHTML=h;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  function all(){draw();grid();if(window.__s2sInsideRender)window.__s2sInsideRender();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
+  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071125';
+  function sync3d(){const m={type:'s2s3d',a:st.a,b:st.b,ci:st.ci,step:st.step};try{fr3.contentWindow&&fr3.contentWindow.postMessage(m,'*');}catch(e){}
+    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step;}
+  addEventListener('message',e=>{if(e.data&&e.data.type==='s2s3dReady'&&e.source===fr3.contentWindow)sync3d();});
+  function all(){draw();grid();sync3d();if(window.__s2sInsideRender)window.__s2sInsideRender();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
   ckb.addEventListener('click',e=>{if(e.target.dataset.i!==undefined){st.ci=+e.target.dataset.i;st.step=7;all();}});
   sa.addEventListener('change',()=>{st.a=+sa.value;st.step=0;all();});sb.addEventListener('change',()=>{st.b=+sb.value;st.step=0;all();});
   document.getElementById('sa_next').addEventListener('click',()=>{st.step=st.step>=7?1:st.step+1;all();});

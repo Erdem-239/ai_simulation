@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seq2Seq 3B mimari</title>
+<style>
+:root{--bg:#0b0e14;--card:#141923;--line:#2a3140;--tx:#e8ebf2;--mute:#9aa3b6;--hl:#ffc82e}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,Segoe UI,Roboto,sans-serif;overflow:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#top{position:fixed;left:14px;top:10px;right:14px;pointer-events:none;z-index:5}
+#top h1{margin:0;font-size:20px}#top p{margin:3px 0 0;font-size:12.5px;color:var(--mute);max-width:900px}
+#lb{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+.lb{position:absolute;transform:translate(-50%,-50%);padding:2px 7px;border-radius:7px;background:#10151f;border:1.5px solid var(--c,#4a5468);font-size:11px;white-space:nowrap;pointer-events:auto;cursor:pointer;color:var(--tx)}
+.lb small{color:var(--mute);margin-left:5px;font-size:10px}
+.lb.sel{background:#3a2f0b;border-color:var(--hl);color:#fff}
+.lb.tt{pointer-events:none;border:none;background:none;color:#9aa3b6;font-size:13px;font-weight:700}
+.lb.tk{pointer-events:none;font-size:17px;font-weight:800;padding:3px 10px}
+.lb.row{pointer-events:none;border:none;background:none;color:#7d879c;font-size:11.5px;font-weight:700;transform:translate(-100%,-50%)}
+#info{position:fixed;right:12px;top:86px;width:340px;max-height:calc(100vh - 190px);overflow:auto;background:rgba(20,25,35,.95);border:1px solid var(--line);border-left:4px solid var(--c,#4a5468);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;z-index:6;display:none}
+#info.on{display:block}#info h3{margin:0 0 2px;font-size:14px;padding-right:14px}#info .sh{color:var(--mute);font-size:11.5px}
+#info .vals{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#0e131c;border-radius:6px;padding:5px 7px;margin:6px 0;white-space:pre;overflow:auto}
+#info .cr{margin-top:6px;padding:6px 8px;border-radius:7px;background:#12201a;border-left:3px solid #5fcf8a}
+#info .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute)}
+#msg{position:fixed;left:12px;bottom:62px;width:470px;max-width:calc(100vw - 24px);background:rgba(20,25,35,.95);border:1px solid var(--line);border-left:4px solid var(--hl);border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.5;z-index:6}
+#msg h3{margin:0 0 3px;font-size:13.5px;color:var(--hl)}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;background:rgba(11,14,20,.92);border-top:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap;align-items:center;z-index:7;font-size:12.5px}
+#bar button,#bar select{background:#1a2030;color:var(--tx);border:1px solid #38425a;border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+#bar button.on{border-color:var(--hl);color:var(--hl)}#bar button:disabled{opacity:.4;cursor:default}#bar .sp{flex:1}
+#leg{position:fixed;left:14px;top:70px;font-size:11.5px;color:var(--mute);z-index:5;pointer-events:none;line-height:1.7}
+#leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+#hint{display:none;position:fixed;right:10px;top:8px;font-size:11px;color:var(--mute);z-index:5;pointer-events:none;text-align:right}
+#zb{display:none;position:fixed;right:10px;top:28px;z-index:7;gap:4px}
+#zb button{background:#1a2030;color:var(--tx);border:1px solid #38425a;border-radius:7px;width:30px;height:28px;font-size:15px;cursor:pointer}
+body.emb #top,body.emb #bar,body.emb #leg{display:none}
+body.emb #hint,body.emb #zb{display:flex}body.emb #hint{display:block}
+body.emb #msg{bottom:8px;left:8px;width:430px;font-size:12px}
+body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
+@media(max-width:500px){body.emb #hint{display:none}}
+@media(max-width:700px){#info{width:calc(100vw - 24px);top:auto;bottom:62px;right:12px;max-height:40vh}#leg{display:none}#msg{bottom:104px}body.emb #msg{bottom:6px;width:calc(100vw - 16px)}body.emb #info{width:calc(100vw - 16px);right:8px;bottom:auto;top:60px;max-height:45vh}}
+</style></head><body>
+<canvas id="c"></canvas><div id="lb"></div>
+<div id="top"><h1>🔁 Seq2Seq — 3B mimari (toplama: 7 + 5 → 12)</h1><p>2 katmanlı LSTM encoder + 2 katmanlı LSTM decoder, ayrı gömme tabloları. Sütun = zaman adımı; satır = katman. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır, parçaya tıkla = içindeki sayılar. Sayılar <b>gerçek</b>: sitede eğitilmiş modelin ağırlıklarıyla hesaplanır.</p></div>
+<div id="leg"><i style="background:#3a7afe"></i>girdi (one-hot)<br><i style="background:#f0a032"></i>gömme (encoder)<br><i style="background:#46b0e0"></i>gömme (decoder)<br><i style="background:#7ec8ff"></i>h (kısa hafıza)<br><i style="background:#ffd54a"></i>c (uzun hafıza)<br><i style="background:#b592f0"></i>ağırlık tablosu<br><i style="background:#f27a88"></i>çıkış: puan / olasılık</div>
+<div id="hint">sürükle = döndür · Ctrl+tekerlek = yakınlaş · parçaya tıkla</div>
+<div id="zb"><button id="zi" title="Yakınlaş">+</button><button id="zo" title="Uzaklaş">−</button><button id="zr" title="Görünümü sıfırla">⟲</button><button id="zf" title="Tam sayfada aç">⛶</button></div>
+<div id="info"><span class="x" id="ix">✕</span><div id="ib"></div></div>
+<div id="msg"></div>
+<div id="bar">
+<span>Soru:</span><select id="qa"></select><b>+</b><select id="qb"></select>
+<span>Model:</span><select id="qc"></select>
+<span class="sp"></span>
+<button id="sp">◀ Geri</button><button id="sn">İleri ▶</button><button id="sa">⏭ Hepsi</button><button id="sr">⏮ Sıfırla</button>
+<span class="sp"></span>
+<button id="tf" class="on">Kamera takip</button><button id="tw" class="on">Ağırlık bağları</button><button id="rs">⟲ Görünüm</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
+</div>
+<script src="../js/vendor/three-0.128.0.min.js"></script>
+<script src="../js/lesson-s2s-weights.js?v=202611071125"></script>
+<script>
+(function(){
+const D=window.S2S_CK,H=D.H,PLUS=10,ST=10,EN=11,VD=12;
+const Q=new URLSearchParams(location.search),EMB=Q.get('embed')==='1';
+if(EMB)document.body.classList.add('emb');
+const st={a:+(Q.get('a')||7),b:+(Q.get('b')||5),ci:+(Q.get('ck')||3),step:Q.has('step')?+Q.get('step'):7};
+const fmt=v=>(v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',',');
+const NE=t=>t<10?String(t):'+',ND=t=>t<10?String(t):(t===ST?'<s>':'<e>');
+const esc=s=>s.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ---- model (lesson-s2s-add.js ile aynı hesap)
+const sig=x=>1/(1+Math.exp(-x));
+function cell(W,b,x,h,c){const n=x.length,z=new Array(4*H);for(let r=0;r<4*H;r++){let s=b[r];const row=W[r];for(let j=0;j<n;j++)s+=row[j]*x[j];for(let j=0;j<H;j++)s+=row[n+j]*h[j];z[r]=s}
+ const c2=[],h2=[];for(let k=0;k<H;k++){const f=sig(z[k]),i=sig(z[H+k]),g=Math.tanh(z[2*H+k]),o=sig(z[3*H+k]);c2[k]=f*c[k]+i*g;h2[k]=o*Math.tanh(c2[k])}return{h:h2,c:c2}}
+function step(P,pre,x,s){const a=cell(P['W'+pre+'1'],P['b'+pre+'1'],x,s.h1,s.c1),b=cell(P['W'+pre+'2'],P['b'+pre+'2'],a.h,s.h2,s.c2);return{h1:a.h,c1:a.c,h2:b.h,c2:b.c}}
+function run(ck,a,b){const P=ck.W,z=()=>new Array(H).fill(0);let s={h1:z(),c1:z(),h2:z(),c2:z()};const enc=[];
+ for(const t of [a,PLUS,b]){const e=P.embE[t];s=step(P,'e',e,s);enc.push({tok:t,emb:e,h1:s.h1,c1:s.c1,h2:s.h2,c2:s.c2})}
+ const ctx={h1:s.h1,c1:s.c1,h2:s.h2,c2:s.c2},dec=[];let tok=ST;
+ for(let k=0;k<3;k++){const e=P.embD[tok];s=step(P,'d',e,s);const lg=P.Wo.map((row,q)=>{let v=P.bo[q];for(let j=0;j<H;j++)v+=row[j]*s.h2[j];return v});
+  const mx=Math.max(...lg),ex=lg.map(v=>Math.exp(v-mx)),sm=ex.reduce((x,y)=>x+y,0),p=ex.map(v=>v/sm);let best=0;for(let q=1;q<VD;q++)if(lg[q]>lg[best])best=q;
+  dec.push({inp:tok,emb:e,h1:s.h1,c1:s.c1,h2:s.h2,c2:s.c2,lg,p,out:best});tok=best}
+ return{enc,ctx,dec}}
+const grid=(v,r,c)=>{const M=[];for(let i=0;i<r;i++){M.push([]);for(let j=0;j<c;j++){const k=i*c+j;M[i].push(k<v.length?v[k]:null)}}return M};
+const onehot=(t,n)=>Array.from({length:n},(_,i)=>i===t?1:0);
+// ---- sahne
+const CL={x:'#3a7afe',ee:'#f0a032',ed:'#46b0e0',h:'#7ec8ff',c:'#ffd54a',w:'#b592f0',o:'#f27a88',k:'#ffd54a'};
+const cv=document.getElementById('c'),ren=new THREE.WebGLRenderer({canvas:cv,antialias:true}),scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0b0e14);const cam=new THREE.PerspectiveCamera(45,1,0.1,300);
+const DEF={yaw:0.32,pitch:0.22,dist:innerWidth<600?72:(EMB?33:36),t:new THREE.Vector3(12.6,3.6,-1.5)};
+let yaw=DEF.yaw,pitch=DEF.pitch,dist=DEF.dist,tgt=DEF.t.clone(),tgtGoal=null,distGoal=null;
+let grp=null,parts=[],byId={},wlines=[],flows=[],labels=[],showW=true,follow=true,sel=null;
+const lbEl=document.getElementById('lb');
+function tex(M,vmax,big){const rows=M.length,cols=M[0].length,cs=big?5:44,cn=document.createElement('canvas');cn.width=cols*cs;cn.height=rows*cs;const g=cn.getContext('2d');
+ g.fillStyle='#0e131c';g.fillRect(0,0,cn.width,cn.height);
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const v=M[r][c];if(v==null)continue;const a=0.15+0.85*Math.min(1,Math.abs(v)/vmax);g.fillStyle=v>=0?`rgba(70,130,255,${a})`:`rgba(240,85,105,${a})`;g.fillRect(c*cs+(big?0:1),r*cs+(big?0:1),cs-(big?0:2),cs-(big?0:2));
+  if(!big){g.fillStyle='#fff';g.font='bold 13px ui-monospace,monospace';g.textAlign='center';g.textBaseline='middle';g.fillText(fmt(v),c*cs+cs/2,r*cs+cs/2)}}
+ const t=new THREE.CanvasTexture(cn);t.minFilter=THREE.LinearFilter;return t}
+function mk(o){const M=o.vals,rows=M.length,cols=M[0].length,cs=o.cs||0.42,w=cols*cs,h=rows*cs,t=tex(M,o.vmax||1,o.big);
+ const side=new THREE.MeshBasicMaterial({color:0x1c2434,transparent:true}),f1=new THREE.MeshBasicMaterial({map:t,transparent:true}),f2=new THREE.MeshBasicMaterial({map:t,transparent:true});
+ const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.12),[side,side,side,side,f1,f2]);
+ const eg=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:new THREE.Color(CL[o.cl]),transparent:true}));mesh.add(eg);
+ mesh.position.set(o.x,o.y,o.z||0);grp.add(mesh);
+ const p=Object.assign({mesh,edge:eg,w,h,rows,cols,mats:[side,f1,f2]},o);mesh.userData.p=p;parts.push(p);byId[o.id]=p;
+ const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',CL[o.cl]);d.innerHTML=o.short+(o.shape?'<small>'+o.shape+'</small>':'');d.onclick=e=>{e.stopPropagation();select(p)};lbEl.appendChild(d);p.lb=d;return p}
+function addText(txt,x,y,z,cls,s,col){const d=document.createElement('div');d.className='lb '+(cls||'tt');d.innerHTML=txt;if(col)d.style.setProperty('--c',col);lbEl.appendChild(d);const l={d,v:new THREE.Vector3(x,y,z),s};labels.push(l);return l}
+function arrow(a,b,col,s){const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();if(len<0.05)return;dir.normalize();const ar=new THREE.ArrowHelper(dir,a,len,col,Math.min(0.32,len*0.4),0.2);grp.add(ar);ar.traverse(o=>{if(o.material)o.material.transparent=true});flows.push({o:ar,s})}
+function curve(pts,col,s,r){const c=new THREE.CatmullRomCurve3(pts),m=new THREE.Mesh(new THREE.TubeGeometry(c,30,r||0.05,6),new THREE.MeshBasicMaterial({color:col,transparent:true}));grp.add(m);
+ const e=c.getPoint(1),d=c.getTangent(1),ah=new THREE.ArrowHelper(d,e.clone().sub(d.clone().multiplyScalar(0.3)),0.32,col,0.32,0.24);ah.traverse(o=>{if(o.material)o.material.transparent=true});grp.add(ah);flows.push({o:m,s},{o:ah,s})}
+function dline(a,b,col){const g=new THREE.BufferGeometry().setFromPoints([a,b]),l=new THREE.Line(g,new THREE.LineDashedMaterial({color:col,dashSize:0.2,gapSize:0.16,transparent:true,opacity:0.45}));l.computeLineDistances();grp.add(l);wlines.push(l)}
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+const top=p=>V(p.mesh.position.x,p.mesh.position.y+p.h/2,p.mesh.position.z),bot=p=>V(p.mesh.position.x,p.mesh.position.y-p.h/2,p.mesh.position.z);
+const SX=4.3,COLX=[0,SX,2*SX,3*SX+0.6,4*SX+1.2,5*SX+1.2,6*SX+1.2];
+const LV={oh:0,emb:1.5,l1:3.5,l2:6.3,fc:8.9,p:10.4,out:11.8},CZ=-1.5,CY=0.55;
+let R=null;
+function build(){
+ if(grp)scene.remove(grp);parts=[];byId={};wlines=[];flows=[];labels=[];lbEl.innerHTML='';sel=null;document.getElementById('info').classList.remove('on');
+ grp=new THREE.Group();scene.add(grp);
+ const ck=D.ck[st.ci],P=ck.W;R=run(ck,st.a,st.b);
+ // satır etiketleri
+ const rx=-2.4;[['one-hot',LV.oh],['gömme',LV.emb],['Katman 1',LV.l1],['Katman 2',LV.l2],['tam bağlı',LV.fc],['softmax',LV.p]].forEach(([t,y])=>addText(t,rx,y,0,'row',0));
+ addText('ENCODER — soruyu okur',SX,LV.out+1.2,0,'tt',0);addText('DECODER — cevabı üretir',5*SX+1.2,LV.out+1.2,0,'tt',0);
+ // encoder sütunları
+ R.enc.forEach((e,i)=>{const x=COLX[i],s=i+1,tk=NE(e.tok);
+  addText('t='+(i+1),x,LV.out+0.2,0,'tt',s);addText(esc(tk),x,LV.oh-1.15,0,'lb tk',s,CL.x);
+  mk({id:'eo'+i,short:'one-hot «'+esc(tk)+'»',shape:'1×11',name:'One-hot «'+esc(tk)+'» (encoder sözlüğü, 11 sembol)',cl:'x',vals:grid(onehot(e.tok,11),2,6),x,y:LV.oh,s,vmax:1,
+   info:'Token sayıya çevrilir: encoder sözlüğünde (0-9 ve +) kendi sırasındaki kutu 1, diğerleri 0. Pratikte bu çarpım yapılmaz, gömme tablosundan doğrudan o satır okunur.',carry:'Yalnız «hangi sembol» bilgisi.'});
+  mk({id:'ee'+i,short:'gömme',shape:'1×8',name:'Encoder gömmesi: embE satırı «'+esc(tk)+'»',cl:'ee',vals:grid(e.emb,2,4),x,y:LV.emb,s,
+   info:'Encoder\'ın KENDİ gömme tablosundan (embE, 11×8) «'+esc(tk)+'» satırı. 8 sayı: eğitimle öğrenilmiş.',carry:'Sembolün anlamı (8 sayıda).'});
+  mk({id:'e1h'+i,short:'h¹',shape:'1×24',name:'Encoder Katman 1 — h (t='+(i+1)+')',cl:'h',vals:grid(e.h1,4,6),x,y:LV.l1,s,info:'Katman 1\'in kısa hafızası. Girdisi: bu adımın gömmesi (8) + Katman 1\'in bir önceki h\'si (24). Ağırlık: We1 (96×32 — 4 kapı × 24 nöron; 8+24 girdi).',carry:'«'+R.enc.slice(0,i+1).map(z=>NE(z.tok)).join(' ')+'» okununca alt katmanın özeti. Katman 2\'ye girdi olur.'});
+  mk({id:'e1c'+i,short:'c¹',shape:'1×24',name:'Encoder Katman 1 — c (t='+(i+1)+')',cl:'c',vals:grid(e.c1,4,6),x,y:LV.l1+CY,z:CZ,s,vmax:1.5,info:'Katman 1\'in uzun hafızası (hücre durumu): c = f·c₋₁ + i·c̃. Yalnız bir sonraki adıma (sağa) gider, yukarı gitmez.',carry:'Katman 1\'in uzun süreli notu.'});
+  mk({id:'e2h'+i,short:'h²',shape:'1×24',name:'Encoder Katman 2 — h (t='+(i+1)+')',cl:'h',vals:grid(e.h2,4,6),x,y:LV.l2,s,info:'Katman 2\'nin kısa hafızası. Girdisi: Katman 1\'in h\'si (24) + Katman 2\'nin önceki h\'si (24). Ağırlık: We2 (96×48). Encoder\'da çıkış katmanı YOK: tahmin yapmaz, yalnız okur.',carry:'Üst katmanın özeti.'});
+  mk({id:'e2c'+i,short:'c²',shape:'1×24',name:'Encoder Katman 2 — c (t='+(i+1)+')',cl:'c',vals:grid(e.c2,4,6),x,y:LV.l2+CY,z:CZ,s,vmax:1.5,info:'Katman 2\'nin uzun hafızası.',carry:'Üst katmanın uzun süreli notu.'});
+ });
+ // bağlam
+ const cx=COLX[3];addText('🍾 BAĞLAM',cx,LV.out+0.2,0,'tt',4);
+ [['h1','h¹',LV.l1,0,'h'],['c1','c¹',LV.l1+CY,CZ,'c'],['h2','h²',LV.l2,0,'h'],['c2','c²',LV.l2+CY,CZ,'c']].forEach(([k,sh,y,z,cl])=>mk({id:'x'+k,short:'bağlam '+sh,shape:'1×24',name:'Bağlam: encoder\'ın son '+sh,cl,vals:grid(R.ctx[k],4,6),x:cx,y,z,s:4,vmax:cl==='c'?1.5:1,
+  info:'Encoder 3. token\'ı okuduktan sonra kalan '+sh+'. Bağlam = iki katmanın son c ve h\'si = 4 × 24 = <b>96 sayı</b>. Decoder aynı katman numarasıyla bu değerlerden başlar; soruyu başka hiçbir yoldan görmez.',carry:'Sorunun tamamının sıkıştırılmış özeti (darboğaz).'}));
+ // decoder sütunları
+ R.dec.forEach((d,k)=>{const x=COLX[4+k],s=5+k,ti=ND(d.inp),to=ND(d.out);
+  addText('t='+(k+1),x,LV.out+0.2,0,'tt',s);addText(esc(ti),x,LV.oh-1.15,0,'lb tk',s,CL.x);addText(esc(to)+' <small>%'+Math.round(d.p[d.out]*100)+'</small>',x,LV.out,0,'lb tk',s,CL.o);
+  mk({id:'do'+k,short:'one-hot «'+esc(ti)+'»',shape:'1×12',name:'One-hot «'+esc(ti)+'» (decoder sözlüğü, 12 sembol)',cl:'x',vals:grid(onehot(d.inp,12),2,6),x,y:LV.oh,s,vmax:1,
+   info:(k===0?'İlk adımda girdi başlangıç işareti &lt;s&gt;: «cevaba başla». ':'Girdi decoder\'ın bir önceki adımdaki <b>kendi</b> çıktısı («'+esc(ti)+'»). ')+'Decoder sözlüğü 12 sembol: 0-9, &lt;s&gt;, &lt;e&gt;.',carry:'Hangi sembolden devam edildiği.'});
+  mk({id:'de'+k,short:'gömme',shape:'1×8',name:'Decoder gömmesi: embD satırı «'+esc(ti)+'»',cl:'ed',vals:grid(d.emb,2,4),x,y:LV.emb,s,info:'Decoder\'ın AYRI gömme tablosundan (embD, 12×8) satır. Aynı rakamın encoder ve decoder\'daki gömmesi farklıdır.',carry:'Girdinin anlamı (8 sayı).'});
+  mk({id:'d1h'+k,short:'h¹',shape:'1×24',name:'Decoder Katman 1 — h (t='+(k+1)+')',cl:'h',vals:grid(d.h1,4,6),x,y:LV.l1,s,info:'Ağırlık: Wd1 (encoder\'dan ayrı). '+(k===0?'Önceki h olarak bağlamın h¹\'ini kullanır.':'Önceki h: decoder\'ın bir önceki adımı.'),carry:'Cevabın şu ana kadarki alt katman özeti.'});
+  mk({id:'d1c'+k,short:'c¹',shape:'1×24',name:'Decoder Katman 1 — c (t='+(k+1)+')',cl:'c',vals:grid(d.c1,4,6),x,y:LV.l1+CY,z:CZ,s,vmax:1.5,info:(k===0?'Bağlamın c¹\'inden başlar.':'Bir önceki adımın c¹\'inden.'),carry:'Uzun süreli not.'});
+  mk({id:'d2h'+k,short:'h²',shape:'1×24',name:'Decoder Katman 2 — h (t='+(k+1)+')',cl:'h',vals:grid(d.h2,4,6),x,y:LV.l2,s,info:'Ağırlık: Wd2. Bu h hem sağa (sonraki adım) hem yukarı (tam bağlı katman) gider.',carry:'Sıradaki sembol için tarif.'});
+  mk({id:'d2c'+k,short:'c²',shape:'1×24',name:'Decoder Katman 2 — c (t='+(k+1)+')',cl:'c',vals:grid(d.c2,4,6),x,y:LV.l2+CY,z:CZ,s,vmax:1.5,info:'Katman 2\'nin uzun hafızası.',carry:'Uzun süreli not.'});
+  mk({id:'df'+k,short:'puan',shape:'1×12',name:'Tam bağlı katman: puan = h²·Woᵀ + bo',cl:'o',vals:grid(d.lg,2,6),x,y:LV.fc,s,vmax:8,info:'Katman 2\'nin h\'si (24) Wo (12×24) ile çarpılıp 12 sembolün her birine bir puan verilir. Sıra: 0 1 2 3 4 5 / 6 7 8 9 &lt;s&gt; &lt;e&gt;.',carry:'Her aday sembol için «bu mu?» puanı.'});
+  mk({id:'dp'+k,short:'olasılık',shape:'1×12',name:'Softmax: olasılıklar',cl:'o',vals:grid(d.p,2,6),x,y:LV.p,s,vmax:1,info:'Puanlar olasılığa çevrildi (toplam 1). En yüksek: <b>«'+esc(to)+'»</b> %'+Math.round(d.p[d.out]*100)+'. Bu sembol çıktı olur ve '+(k<2?'bir sonraki adımın girdisine gider (turuncu eğri).':'bitiş işareti ise üretim durur.'),carry:'Tahmin dağılımı.'});
+ });
+ // ağırlık bankası (alt)
+ const by=-6.0,bz=-3.4;
+ const bank=(id,M,x,short,name,info,cl)=>mk({id,short,shape:M.length+'×'+M[0].length,name,cl:cl||'w',vals:M,x,y:by,z:bz,s:0,cs:M.length>20?0.055:0.2,big:M.length>20,vmax:1.2,info,carry:'Eğitimle öğrenilir, her zaman adımında AYNI tablo kullanılır.'});
+ bank('embE',P.embE,-0.6,'embE','Encoder gömme tablosu (11×8)','11 encoder sembolünün her biri için 8 sayılık satır.','ee');
+ bank('We1',P.We1,2.6,'We1','Encoder Katman 1 ağırlığı (96×32)','96 satır = 4 kapı (f, i, c̃, o) × 24 nöron. 32 sütun = 8 gömme + 24 önceki h. (Bias be1 ayrı, çizilmedi.)');
+ bank('We2',P.We2,6.0,'We2','Encoder Katman 2 ağırlığı (96×48)','48 sütun = 24 (Katman 1\'in h\'si) + 24 (Katman 2\'nin önceki h\'si).');
+ bank('embD',P.embD,17.0,'embD','Decoder gömme tablosu (12×8)','12 decoder sembolü (0-9, <s>, <e>) için ayrı tablo.','ed');
+ bank('Wd1',P.Wd1,20.4,'Wd1','Decoder Katman 1 ağırlığı (96×32)','Encoder\'ın We1\'inden ayrı: decoder kendi kurallarını öğrenir.');
+ bank('Wd2',P.Wd2,23.8,'Wd2','Decoder Katman 2 ağırlığı (96×48)','Decoder üst katmanı.');
+ bank('Wo',P.Wo,28.4,'Wo','Tam bağlı (çıkış) katman ağırlığı (12×24)','Katman 2\'nin h\'sinden 12 sembole puan. Yalnız decoder\'da var.','o');
+ addText('AĞIRLIK TABLOLARI — her adımda aynı (encoder ↔ decoder ayrı)',13.8,by-3.5,bz,'tt',0);
+ // akış okları
+ const g=id=>byId[id];
+ for(let i=0;i<3;i++){const s=i+1;arrow(top(g('eo'+i)),bot(g('ee'+i)),0x3a7afe,s);arrow(top(g('ee'+i)),bot(g('e1h'+i)),0xf0a032,s);arrow(top(g('e1h'+i)),bot(g('e2h'+i)),0x7ec8ff,s);
+  dline(top(g('embE')),bot(g('ee'+i)),0xb592f0);dline(top(g('We1')),bot(g('e1c'+i)),0xb592f0);dline(top(g('We2')).add(V(0,0,0)),bot(g('e2c'+i)).add(V(0,0,0)),0xb592f0)}
+ for(let k=0;k<3;k++){const s=5+k;arrow(top(g('do'+k)),bot(g('de'+k)),0x3a7afe,s);arrow(top(g('de'+k)),bot(g('d1h'+k)),0x46b0e0,s);arrow(top(g('d1h'+k)),bot(g('d2h'+k)),0x7ec8ff,s);
+  arrow(top(g('d2h'+k)),bot(g('df'+k)),0xf27a88,s);arrow(top(g('df'+k)),bot(g('dp'+k)),0xf27a88,s);
+  dline(top(g('embD')),bot(g('de'+k)),0xb592f0);dline(top(g('Wd1')),bot(g('d1c'+k)),0xb592f0);dline(top(g('Wd2')),bot(g('d2c'+k)),0xb592f0);dline(top(g('Wo')),V(COLX[4+k]+1.3,LV.fc,0),0xb592f0)}
+ // yatay zincirler (c sarı, h mavi); i → i+1
+ const seq=[['e',0],['e',1],['e',2],['x',3],['d',0],['d',1],['d',2]];
+ const pid=(q,L,hc)=>q[0]==='x'?'x'+hc+L:(q[0]==='e'?'e':'d')+L+hc+q[1];
+ for(let j=0;j<seq.length-1;j++){const sNext=j+1<3?j+2:(j+1===3?4:5+(j+1-4));
+  [1,2].forEach(L=>['h','c'].forEach(hc=>{const a=g(pid(seq[j],L,hc)),b=g(pid(seq[j+1],L,hc));const pa=a.mesh.position,pb=b.mesh.position,z=pa.z,y=pa.y+(hc==='h'?-0.5:0.5);
+   curve([V(pa.x+a.w/2,y,z),V((pa.x+pb.x)/2,y+(hc==='h'?-0.35:0.35),z+(hc==='h'?0.5:-0.5)),V(pb.x-b.w/2-0.05,y,z)],hc==='h'?0x7ec8ff:0xffd54a,sNext,j===2||j===3?0.075:0.05)}))}
+ // çıktı → sonraki girdi
+ for(let k=0;k<2;k++){const a=g('dp'+k),b=g('do'+(k+1)),pa=a.mesh.position,pb=b.mesh.position;
+  curve([V(pa.x+a.w/2,pa.y,0.3),V(pa.x+2.15,pa.y-0.4,1.8),V(pa.x+2.15,LV.l1,2.2),V(pa.x+2.15,LV.oh+0.4,1.8),V(pb.x-b.w/2-0.05,pb.y,0.2)],0xff9a3c,6+k,0.05)}
+ applyToggles();applyStep(true);
+}
+function applyToggles(){wlines.forEach(l=>l.visible=showW)}
+// ---- adımlar
+const STEPS=[
+ ()=>['Başlangıç','Henüz hiçbir şey okunmadı. Alttaki mor kutular modelin <b>ağırlık tabloları</b>: encoder ve decoder\'ın her birinin kendi gömme tablosu ve iki LSTM katmanı var. <b>İleri ▶</b>.'],
+ ()=>['Encoder t=1: «'+st.a+'»','Token one-hot\'a çevrilir → <b>embE</b>\'den 8 sayılık satır okunur → <b>Katman 1</b> (h¹ ön, c¹ arka) → Katman 1\'in h\'si <b>Katman 2</b>\'ye girer. Encoder\'da tahmin YOK: yalnız okur.'],
+ ()=>['Encoder t=2: «+»','Her katman kendi c ve h\'sini <b>sağa</b> (bir sonraki adıma) aktarır: sarı = c (uzun hafıza), mavi = h. Aynı We1/We2 tabloları yeniden kullanılır (kesik mor çizgiler).'],
+ ()=>['Encoder t=3: «'+st.b+'»','Son token okundu. Artık iki katmanın elinde birer (c, h) var: sorunun tamamının özeti.'],
+ ()=>['🍾 Bağlam: 96 sayı','Encoder\'ın son durumu = iki katman × (c, h) × 24 = <b>96 sayı</b>. Kalın oklarla decoder\'a geçer; Katman 1 → Katman 1, Katman 2 → Katman 2. Decoder soruyu başka hiçbir yoldan görmez.'],
+ ()=>['Decoder t=1 → «'+ND(R.dec[0].out)+'»','Girdi &lt;s&gt; («başla») → decoder\'ın <b>kendi</b> gömmesi (embD) → iki katman (bağlamdan başlayarak) → Katman 2\'nin h\'si <b>tam bağlı</b> katmanda 12 sembole puanlanır → softmax → en yüksek: <b>«'+esc(ND(R.dec[0].out))+'»</b> %'+Math.round(R.dec[0].p[R.dec[0].out]*100)+'.'],
+ ()=>['Decoder t=2 → «'+esc(ND(R.dec[1].out))+'»','Turuncu eğri: önceki çıktı («'+esc(ND(R.dec[1].inp))+'») bu adımın <b>girdisi</b> olur. Aynı Wd1/Wd2/Wo tabloları, yeni durum.'],
+ ()=>{const t=st.a+st.b,ans=R.dec.map(d=>d.out),ok=ans[0]===Math.floor(t/10)&&ans[1]===t%10&&ans[2]===EN;return['Decoder t=3 → «'+esc(ND(R.dec[2].out))+'»','Bitiş işareti gelince üretim durur. Cevap: <b>'+esc(ND(ans[0])+ND(ans[1]))+'</b> '+(ok?'✅ doğru ('+st.a+' + '+st.b+' = '+t+').':'❌ yanlış — doğrusu '+t+'.')+' (epoch '+D.ck[st.ci].ep+')']}];
+function applyStep(noCam){const S=st.step,[h,t]=STEPS[Math.min(7,S)]();document.getElementById('msg').innerHTML='<h3>'+(S)+'/7 · '+h+'</h3>'+t;
+ document.getElementById('sp').disabled=S<=0;document.getElementById('sn').textContent=S>=7?'↺ Baştan':'İleri ▶';
+ if(follow&&!noCam){const ps=parts.filter(p=>p.s===S&&S>0);if(ps.length){const c=new THREE.Vector3();ps.forEach(p=>c.add(p.mesh.position));c.divideScalar(ps.length);tgtGoal=c;distGoal=innerWidth<600?34:(EMB?24:22)}else{tgtGoal=DEF.t.clone();distGoal=DEF.dist}}
+ if(S>=7&&follow&&!noCam){tgtGoal=DEF.t.clone();distGoal=DEF.dist}
+ refreshSel()}
+// ---- seçim
+function vtxt(p){if(p.big)return '('+p.rows+'×'+p.cols+' = '+(p.rows*p.cols)+' sayı; ilk satır)\n'+p.vals[0].slice(0,12).map(fmt).join('  ')+' …';return p.vals.map(r=>r.filter(v=>v!=null).map(fmt).join('  ')).join('\n')}
+function select(p){sel=p;const i=document.getElementById('info');i.style.setProperty('--c',CL[p.cl]);document.getElementById('ib').innerHTML='<h3>'+p.name+'</h3><div class="sh">şekil: '+(p.shape||'')+' · gerçek sayılar (epoch '+D.ck[st.ci].ep+')</div><div>'+p.info+'</div><div class="vals">'+vtxt(p)+'</div>'+(p.carry?'<div class="cr">📦 Taşıdığı bilgi: '+p.carry+'</div>':'');i.classList.add('on');refreshSel()}
+document.getElementById('ix').onclick=()=>{sel=null;document.getElementById('info').classList.remove('on');refreshSel()};
+function refreshSel(){parts.forEach(p=>{const on=p===sel,cur=p.s===st.step&&st.step>0;p.lb.classList.toggle('sel',on);p.edge.material.color.set(on||cur?0xffc82e:CL[p.cl])})}
+// ---- arayüz
+const qa=document.getElementById('qa'),qb=document.getElementById('qb'),qc=document.getElementById('qc');
+for(let i=0;i<10;i++){qa.add(new Option(i,i));qb.add(new Option(i,i))}D.ck.forEach((c,i)=>qc.add(new Option('epoch '+c.ep,i)));
+const syncSel=()=>{qa.value=st.a;qb.value=st.b;qc.value=st.ci};syncSel();
+qa.onchange=()=>{st.a=+qa.value;build()};qb.onchange=()=>{st.b=+qb.value;build()};qc.onchange=()=>{st.ci=+qc.value;build()};
+document.getElementById('sn').onclick=()=>{st.step=st.step>=7?1:st.step+1;applyStep()};
+document.getElementById('sp').onclick=()=>{if(st.step>0){st.step--;applyStep()}};
+document.getElementById('sa').onclick=()=>{st.step=7;applyStep()};document.getElementById('sr').onclick=()=>{st.step=0;applyStep()};
+document.getElementById('tf').onclick=function(){follow=!follow;this.classList.toggle('on',follow)};
+document.getElementById('tw').onclick=function(){showW=!showW;this.classList.toggle('on',showW);applyToggles()};
+const reset=()=>{yaw=DEF.yaw;pitch=DEF.pitch;dist=DEF.dist;tgt.copy(DEF.t);tgtGoal=null;distGoal=null};
+document.getElementById('rs').onclick=reset;document.getElementById('zr').onclick=reset;
+document.getElementById('zi').onclick=()=>{distGoal=Math.max(6,(distGoal||dist)*0.8)};document.getElementById('zo').onclick=()=>{distGoal=Math.min(80,(distGoal||dist)*1.25)};
+document.getElementById('zf').onclick=()=>window.open('s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step,'_blank');
+addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='s2s3d')return;const re=m.a!==st.a||m.b!==st.b||m.ci!==st.ci;st.a=m.a;st.b=m.b;st.ci=m.ci;st.step=m.step;syncSel();if(re)build();applyStep()});
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&!EMB)document.getElementById('sn').click();if(e.key==='ArrowLeft'&&!EMB)document.getElementById('sp').click()});
+// ---- kamera
+let drag=null;const ray=new THREE.Raycaster(),mp=new THREE.Vector2();
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag={x:e.clientX,y:e.clientY,btn:e.button,sh:e.shiftKey,mv:0};tgtGoal=null;distGoal=null});
+cv.addEventListener('pointermove',e=>{if(!drag){cv.style.cursor=pickAt(e)?'pointer':'grab';return}const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.x=e.clientX;drag.y=e.clientY;drag.mv+=Math.abs(dx)+Math.abs(dy);
+ if(drag.btn===2||drag.sh){const k=dist*0.0016,r=new THREE.Vector3().setFromMatrixColumn(cam.matrix,0),u=new THREE.Vector3().setFromMatrixColumn(cam.matrix,1);tgt.addScaledVector(r,-dx*k).addScaledVector(u,dy*k)}
+ else{yaw-=dx*0.006;pitch=Math.max(-1.3,Math.min(1.3,pitch+dy*0.006))}});
+cv.addEventListener('pointerup',e=>{const d=drag;drag=null;if(d&&d.mv<5){const p=pickAt(e);if(p)select(p)}});
+cv.addEventListener('wheel',e=>{if(EMB&&!(e.ctrlKey||e.metaKey))return;e.preventDefault();dist=Math.max(6,Math.min(80,dist*Math.exp(e.deltaY*0.0012)));distGoal=null},{passive:false});
+function pickAt(e){const r=cv.getBoundingClientRect();mp.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(mp,cam);const h=ray.intersectObjects(parts.map(p=>p.mesh),false);return h.length?h[0].object.userData.p:null}
+const v3=new THREE.Vector3();
+function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
+const vis=s=>s<=st.step;
+function frame(){
+ if(tgtGoal)tgt.lerp(tgtGoal,0.07);if(distGoal!=null)dist+=(distGoal-dist)*0.07;
+ cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
+ const w=innerWidth,h=innerHeight,S=st.step;
+ parts.forEach(p=>{const on=vis(p.s),o=on?1:0.1;p.mats.forEach(m=>m.opacity=o);p.edge.material.opacity=on?1:0.15;
+  v3.copy(p.mesh.position);v3.y+=p.h/2+0.25;v3.project(cam);const show=v3.z<1&&(p===sel||(S>0&&S<7&&p.s===S)||(p.s===0&&!EMB));p.lb.style.display=show?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px'});
+ labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=v3.z<1&&vis(l.s)?'':'none'});
+ flows.forEach(f=>{const o=vis(f.s)?1:0.07;f.o.traverse(q=>{if(q.material)q.material.opacity=o})});
+ ren.render(scene,cam);requestAnimationFrame(frame)}
+resize();build();frame();
+if(EMB&&parent!==window)parent.postMessage({type:'s2s3dReady'},'*');
+window.__s2s3={parts:()=>parts,st,R:()=>R,build,applyStep};
+const PH={renderer:ren,
+ save(){const o={yaw,pitch,dist,t:tgt.clone(),g:tgtGoal,dg:distGoal};return()=>{yaw=o.yaw;pitch=o.pitch;dist=o.dist;tgt.copy(o.t);tgtGoal=o.g;distGoal=o.dg}},
+ step(){const box=new THREE.Box3().setFromObject(scene);tgtGoal=null;distGoal=null;
+  const m=printA4Ndc(box,cam);tgt.addScaledVector(printA4Shift(m,cam,tgt),0.5);const f=Math.max(m.w,m.h)/0.95;dist*=1+(f-1)*0.3;dist=Math.max(4,Math.min(120,dist));
+  return Math.abs(f-1)<0.03&&Math.abs(m.cx)<0.03&&Math.abs(m.cy)<0.05}};
+document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),false,PH);
+document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
+})();
+</script>
+<script src="print-a4.js?v=202610220920"></script></body></html>
