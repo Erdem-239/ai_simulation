@@ -1,46 +1,110 @@
-/* Seq2Seq toplama: encoder(LSTM) → bağlam → decoder(LSTM); ağırlıklar çevrimdışı eğitilmiş (lesson-s2s-weights.js) */
+/* Seq2Seq toplama: 2 katmanlı encoder(LSTM) → bağlam → 2 katmanlı decoder(LSTM).
+   Encoder ve decoder'ın AYRI gömme tabloları var (StatQuest'teki seq2seq gibi). Ağırlıklar çevrimdışı eğitilmiş (lesson-s2s-weights.js). */
 (function(){
-  const D=window.S2S_CK; if(!D) return;
-  const H=D.H, DM=D.D, V=13, PLUS=10, ST=11, EN=12;
-  const NAME=t=>t<10?String(t):(t===PLUS?'+':(t===ST?'&lt;s&gt;':'&lt;e&gt;'));
+  const D=window.S2S_CK;
+  const H=D?D.H:24, DM=D?D.D:8, VD=12, PLUS=10, ST=10, EN=11;
+  // encoder sözlüğü: 0-9, + ; decoder sözlüğü: 0-9, <s>, <e>
+  const NE=t=>t<10?String(t):'+';
+  const ND=t=>t<10?String(t):(t===ST?'&lt;s&gt;':'&lt;e&gt;');
   const sig=x=>1/(1+Math.exp(-x));
   function cell(W,b,x,h,c){
-    const z=new Array(4*H);
-    for(let r=0;r<4*H;r++){let s=b[r];const row=W[r];for(let j=0;j<DM;j++)s+=row[j]*x[j];for(let j=0;j<H;j++)s+=row[DM+j]*h[j];z[r]=s;}
-    const f=[],i=[],g=[],o=[],c2=[],h2=[];
-    for(let k=0;k<H;k++){f[k]=sig(z[k]);i[k]=sig(z[H+k]);g[k]=Math.tanh(z[2*H+k]);o[k]=sig(z[3*H+k]);c2[k]=f[k]*c[k]+i[k]*g[k];h2[k]=o[k]*Math.tanh(c2[k]);}
-    return {h:h2,c:c2,f,i,g,o};
+    const n=x.length,z=new Array(4*H);
+    for(let r=0;r<4*H;r++){let s=b[r];const row=W[r];for(let j=0;j<n;j++)s+=row[j]*x[j];for(let j=0;j<H;j++)s+=row[n+j]*h[j];z[r]=s;}
+    const c2=[],h2=[];
+    for(let k=0;k<H;k++){const f=sig(z[k]),i=sig(z[H+k]),g=Math.tanh(z[2*H+k]),o=sig(z[3*H+k]);c2[k]=f*c[k]+i*g;h2[k]=o*Math.tanh(c2[k]);}
+    return {h:h2,c:c2};
   }
+  // bir zaman adımı, iki katman: 1. katmanın h'si 2. katmanın girdisi
+  function step(P,pre,x,s){
+    const a=cell(P['W'+pre+'1'],P['b'+pre+'1'],x,s.h1,s.c1), b=cell(P['W'+pre+'2'],P['b'+pre+'2'],a.h,s.h2,s.c2);
+    return {h1:a.h,c1:a.c,h2:b.h,c2:b.c};
+  }
+  const zero=()=>{const z=()=>new Array(H).fill(0);return {h1:z(),c1:z(),h2:z(),c2:z()};};
+  function logits(P,h){return P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*h[j];return q;});}
   function run(ck,a,b,feed){
-    const P=ck.W, src=[a,PLUS,b], enc=[]; let h=new Array(H).fill(0), c=new Array(H).fill(0);
-    for(const t of src){const r=cell(P.We,P.be,P.emb[t],h,c);h=r.h;c=r.c;enc.push({tok:t,h:r.h,c:r.c});}
-    const ctx={h:h.slice(),c:c.slice()}, dec=[]; let tok=ST;
-    for(let s=0;s<3;s++){
-      const r=cell(P.Wd,P.bd,P.emb[tok],h,c);h=r.h;c=r.c;
-      const lg=P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*h[j];return q;});
-      const mx=Math.max(...lg),ex=lg.map(v=>Math.exp(v-mx)),sm=ex.reduce((x,y)=>x+y,0),p=ex.map(v=>v/sm);
-      let best=0;for(let k=1;k<V;k++)if(lg[k]>lg[best])best=k;
-      dec.push({inp:tok,out:best,p:p[best],pv:p,h:r.h,c:r.c});tok=(feed&&feed[s]!==undefined)?feed[s]:best;
+    const P=ck.W,enc=[];let s=zero();
+    for(const t of [a,PLUS,b]){s=step(P,'e',P.embE[t],s);enc.push({tok:t,h:s.h2,c:s.c2,h1:s.h1,c1:s.c1});}
+    const ctx={h1:s.h1.slice(),c1:s.c1.slice(),h2:s.h2.slice(),c2:s.c2.slice()},dec=[];let tok=ST;
+    for(let k=0;k<3;k++){
+      s=step(P,'d',P.embD[tok],s);
+      const lg=logits(P,s.h2),mx=Math.max(...lg),ex=lg.map(v=>Math.exp(v-mx)),sm=ex.reduce((x,y)=>x+y,0),p=ex.map(v=>v/sm);
+      let best=0;for(let q=1;q<VD;q++)if(lg[q]>lg[best])best=q;
+      dec.push({inp:tok,out:best,p:p[best],pv:p,h:s.h2,c:s.c2,h1:s.h1,c1:s.c1});tok=(feed&&feed[k]!==undefined)?feed[k]:best;
     }
-    return {enc,ctx,dec,code:dec[0].out*169+dec[1].out*13+dec[2].out};
+    return {enc,ctx,dec,code:dec[0].out*144+dec[1].out*12+dec[2].out};
   }
-
   function beam(ck,a,b,width){
-    const P=ck.W;let h=new Array(H).fill(0),c=new Array(H).fill(0);
-    for(const t of [a,PLUS,b]){const r=cell(P.We,P.be,P.emb[t],h,c);h=r.h;c=r.c;}
-    let hyps=[{seq:[],lp:0,h,c,tok:ST}];
-    for(let s=0;s<3;s++){
+    const P=ck.W;let s=zero();
+    for(const t of [a,PLUS,b])s=step(P,'e',P.embE[t],s);
+    let hyps=[{seq:[],lp:0,s,tok:ST}];
+    for(let k=0;k<3;k++){
       const cand=[];
       hyps.forEach(hy=>{
-        const r=cell(P.Wd,P.bd,P.emb[hy.tok],hy.h,hy.c);
-        const lg=P.Wo.map((row,k)=>{let q=P.bo[k];for(let j=0;j<H;j++)q+=row[j]*r.h[j];return q;});
+        const s2=step(P,'d',P.embD[hy.tok],hy.s),lg=logits(P,s2.h2);
         const mx=Math.max(...lg),lse=mx+Math.log(lg.reduce((x,v)=>x+Math.exp(v-mx),0));
-        for(let k=0;k<V;k++)cand.push({seq:hy.seq.concat(k),lp:hy.lp+lg[k]-lse,h:r.h,c:r.c,tok:k});
+        for(let q=0;q<VD;q++)cand.push({seq:hy.seq.concat(q),lp:hy.lp+lg[q]-lse,s:s2,tok:q});
       });
       cand.sort((x,y)=>y.lp-x.lp);hyps=cand.slice(0,width);
     }
     return hyps.map(x=>({seq:x.seq,lp:x.lp,p:Math.exp(x.lp)}));
   }
+
+  /* ---- mimari çizimi: 2 katman, ayrı gömme tabloları. r=null → sembolik (Giriş/Nedir), r → canlı değerler ---- */
+  const hm=(vals,x,y,w,hgt)=>{let s='';const cw=w/vals.length;vals.forEach((v,k)=>{const a=Math.min(1,Math.abs(v));s+='<rect x="'+(x+k*cw)+'" y="'+y+'" width="'+(cw-0.5)+'" height="'+hgt+'" fill="'+(v>=0?'rgba(70,196,106,':'rgba(224,106,106,')+(0.12+0.88*a)+')"/>';});return s;};
+  function archSvg(r,S,id){
+    const live=!!r; S=live?S:99;
+    const mk='s2sA'+id;
+    const CW=92,GAP=28,X0=8,CTX=104;
+    const ex=i=>X0+i*(CW+GAP), bx=ex(3)-GAP+16, dx=i=>bx+CTX+22+i*(CW+GAP);
+    const Y={out:4,fc:42,l2:84,l1:162,emb:240,tok:282};
+    const encT=live?r.enc.map(e=>NE(e.tok)):['7','+','5'], decIn=live?r.dec.map(d=>ND(d.inp)):['&lt;s&gt;','1','2'], decOut=live?r.dec.map(d=>ND(d.out)):['1','2','&lt;e&gt;'];
+    let s='<defs><marker id="'+mk+'" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#95a2c2"/></marker></defs>';
+    const ar=(x1,y1,x2,y2,c,w,op)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+(c||'#95a2c2')+'" stroke-width="'+(w||1.4)+'" marker-end="url(#'+mk+')" opacity="'+(op==null?1:op)+'"/>';
+    const cellBox=(x,y,lab,col,on,cur,v)=>{
+      let t='<g opacity="'+(on?1:.22)+'"><rect x="'+x+'" y="'+y+'" width="'+CW+'" height="56" rx="9" fill="#17203a" stroke="'+(cur?'#ffd54a':col)+'" stroke-width="'+(cur?3:1.5)+'"/>'+
+        '<text x="'+(x+CW/2)+'" y="'+(y+13)+'" text-anchor="middle" font-size="9.5" fill="#95a2c2">'+lab+'</text>';
+      if(v){t+='<text x="'+(x+4)+'" y="'+(y+29)+'" font-size="9" fill="#ffd54a">c</text>'+hm(v.c,x+13,y+21,CW-18,9)+'<text x="'+(x+4)+'" y="'+(y+47)+'" font-size="9" fill="#7ec8ff">h</text>'+hm(v.h,x+13,y+39,CW-18,9);}
+      else t+='<line x1="'+(x+12)+'" y1="'+(y+26)+'" x2="'+(x+CW-8)+'" y2="'+(y+26)+'" stroke="#ffd54a" stroke-width="1.8"/><text x="'+(x+4)+'" y="'+(y+29)+'" font-size="9" fill="#ffd54a">c</text><line x1="'+(x+12)+'" y1="'+(y+44)+'" x2="'+(x+CW-8)+'" y2="'+(y+44)+'" stroke="#7ec8ff" stroke-width="1.8"/><text x="'+(x+4)+'" y="'+(y+47)+'" font-size="9" fill="#7ec8ff">h</text>';
+      return t+'</g>';};
+    const box=(x,y,w,h,txt,col,fs,fill,on)=>'<g opacity="'+(on?1:.22)+'"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="7" fill="'+(fill||'#0e1424')+'" stroke="'+col+'"/><text x="'+(x+w/2)+'" y="'+(y+h/2+fs*0.36)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="#ccd5e8">'+txt+'</text></g>';
+    s+='<text x="'+X0+'" y="-2" font-size="11" fill="#95a2c2">ENCODER — okur (2 katman)</text><text x="'+dx(0)+'" y="-2" font-size="11" fill="#95a2c2">DECODER — üretir (2 katman)</text>';
+    for(let i=0;i<3;i++){
+      const x=ex(i),on=S>=i+1,cur=S===i+1,cx=x+CW/2,e=live?r.enc[i]:null;
+      s+=box(cx-22,Y.tok,44,28,encT[i],'#3a7afe',15,null,on)+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.tok,cx,Y.emb+28)+'</g>';
+      s+=box(x+8,Y.emb,CW-16,26,'gömme (enc)','#f0a032',10,'rgba(240,160,50,.12)',on)+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.emb,cx,Y.l1+57)+'</g>';
+      s+=cellBox(x,Y.l1,'Katman 1','#3a7afe',on,cur,e&&{c:e.c1,h:e.h1})+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.l1,cx,Y.l2+57)+'</g>';
+      s+=cellBox(x,Y.l2,'Katman 2','#3a7afe',on,cur,e&&{c:e.c,h:e.h});
+      if(i<2){const op=S>=i+2?1:.22;s+=ar(x+CW,Y.l1+28,x+CW+GAP-2,Y.l1+28,null,1.6,op)+ar(x+CW,Y.l2+28,x+CW+GAP-2,Y.l2+28,null,1.6,op);}
+    }
+    // bağlam
+    const onC=S>=4,c3=ex(2)+CW;
+    s+='<g opacity="'+(onC?1:.22)+'">'+ar(c3,Y.l1+28,bx-2,Y.l1+28,'#e06a6a',2.4)+ar(c3,Y.l2+28,bx-2,Y.l2+28,'#e06a6a',2.4)+
+      '<rect x="'+bx+'" y="'+(Y.l2-6)+'" width="'+CTX+'" height="'+(Y.l1-Y.l2+68)+'" rx="12" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-width="'+(S===4?3.4:2)+'"/>'+
+      '<text x="'+(bx+CTX/2)+'" y="'+(Y.l2+8)+'" text-anchor="middle" font-size="11.5" font-weight="700" fill="#e06a6a">🍾 bağlam</text>';
+    if(live){const L=(y,lab,v)=>'<text x="'+(bx+5)+'" y="'+(y+8)+'" font-size="8.5" fill="#95a2c2">'+lab+'</text>'+hm(v,bx+24,y,CTX-30,9);
+      s+=L(Y.l2+18,'c²',r.ctx.c2)+L(Y.l2+32,'h²',r.ctx.h2)+L(Y.l1+14,'c¹',r.ctx.c1)+L(Y.l1+28,'h¹',r.ctx.h1);}
+    else s+='<text x="'+(bx+CTX/2)+'" y="'+(Y.l2+34)+'" text-anchor="middle" font-size="9.5" fill="#ccd5e8">katman 2: c, h</text><text x="'+(bx+CTX/2)+'" y="'+(Y.l1+30)+'" text-anchor="middle" font-size="9.5" fill="#ccd5e8">katman 1: c, h</text>';
+    s+='<text x="'+(bx+CTX/2)+'" y="'+(Y.l1+56)+'" text-anchor="middle" font-size="9" fill="#95a2c2">'+(4*H)+' sayı = tüm soru</text>'+
+      ar(bx+CTX,Y.l1+28,dx(0)-2,Y.l1+28,'#e06a6a',2.4)+ar(bx+CTX,Y.l2+28,dx(0)-2,Y.l2+28,'#e06a6a',2.4)+'</g>';
+    for(let i=0;i<3;i++){
+      const x=dx(i),on=S>=5+i,cur=S===5+i,cx=x+CW/2,d=live?r.dec[i]:null,g='#46c46a';
+      s+=box(cx-24,Y.tok,48,28,decIn[i],g,14,null,on)+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.tok,cx,Y.emb+28)+'</g>';
+      s+=box(x+8,Y.emb,CW-16,26,'gömme (dec)','#5aa0e0',10,'rgba(90,160,224,.12)',on)+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.emb,cx,Y.l1+57)+'</g>';
+      s+=cellBox(x,Y.l1,'Katman 1',g,on,cur,d&&{c:d.c1,h:d.h1})+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.l1,cx,Y.l2+57)+'</g>';
+      s+=cellBox(x,Y.l2,'Katman 2',g,on,cur,d&&{c:d.c,h:d.h})+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.l2,cx,Y.fc+27)+'</g>';
+      s+=box(x+4,Y.fc,CW-8,26,'tam bağlı → softmax','#c77dff',9.5,'rgba(199,125,255,.12)',on)+'<g opacity="'+(on?1:.22)+'">'+ar(cx,Y.fc,cx,Y.out+27)+'</g>';
+      s+=box(cx-26,Y.out,52,26,decOut[i],g,14,null,on);
+      if(live)s+='<text x="'+(cx+30)+'" y="'+(Y.out+17)+'" font-size="10" fill="#95a2c2" opacity="'+(on?1:.22)+'">%'+Math.round(d.p*100)+'</text>';
+      if(i<2){const op=S>=6+i?1:.22;s+=ar(x+CW,Y.l1+28,x+CW+GAP-2,Y.l1+28,null,1.6,op)+ar(x+CW,Y.l2+28,x+CW+GAP-2,Y.l2+28,null,1.6,op);}
+    }
+    const W=dx(2)+CW+40;
+    return {svg:s,vb:'0 -14 '+Math.round(W)+' 330'};
+  }
+  window.s2sArchSvg=archSvg;
+  // Giriş ve Nedir'deki sembolik şemalar
+  document.querySelectorAll('svg.s2s-arch').forEach((el,i)=>{const a=archSvg(null,99,'st'+i);el.setAttribute('viewBox',a.vb);el.innerHTML=a.svg;});
+
+  if(!D) return;
   window.__s2sBeam=beam;
   window.__s2sRun=run; window.__s2sParity=()=>{const bad=[];D.ck.forEach((ck,ci)=>{for(let a=0;a<10;a++)for(let b=0;b<10;b++)if(run(ck,a,b).code!==ck.preds[a*10+b])bad.push([ci,a,b]);});return bad;};
   const el=document.getElementById('s2sAdd'); if(!el) return;
@@ -52,120 +116,44 @@
    '<span>Soru:</span><select id="sa_a" class="rex-sel"></select><b>+</b><select id="sa_b" class="rex-sel"></select>'+
    '<span style="margin-left:10px">Model:</span><span id="sa_ck"></span></div>'+
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="addbtn" id="sa_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="sa_all" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">⏭ Hepsini göster</button><button class="addbtn" id="sa_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
-   '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:640px;width:100%;max-width:820px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder toplama animasyonu"></svg></div>'+
+   '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:720px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="İki katmanlı encoder-decoder toplama animasyonu"></svg></div>'+
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
-   '<div id="s2sSecB" style="font-size:13px;color:#ccd5e8;margin:14px 0 4px"><b>B) 🧠 Nöron/katman görünümü:</b> A\'daki aynı olay, bu kez katman katman. Her sütun bir zaman adımı; altta girdi → gömme (8 sayı) → LSTM gizli katmanı (24 nöron) → (decoder\'da) 13 çıktı nöronu (softmax). Hepsini çizmek yerine gizli katmandan en etkin 6, gömmeden ilk 4 nöron gösteriliyor; renkler gerçek değerler.</div>'+
-   '<div style="overflow-x:auto"><svg id="sa_neur" style="min-width:780px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="Encoder-decoder nöron düzeyinde şema"></svg></div>'+
-   '<div id="s2sSecC" style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>C) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
+   '<div id="s2sSecC" style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>B) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
    '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
   const sa=document.getElementById('sa_a'),sb=document.getElementById('sa_b');
   for(let i=0;i<10;i++){sa.add(new Option(i,i));sb.add(new Option(i,i));}
   sa.value=st.a;sb.value=st.b;
   const ckb=document.getElementById('sa_ck');
   D.ck.forEach((c,i)=>{const b=document.createElement('button');b.className='addbtn';b.textContent='epoch '+c.ep;b.dataset.i=i;b.style.marginRight='4px';ckb.appendChild(b);});
-  const hm=(vals,x,y,w,hgt,col)=>{ // ısı şeridi
-    let s='';const cw=w/vals.length;vals.forEach((v,k)=>{const a=Math.min(1,Math.abs(v));s+='<rect x="'+(x+k*cw)+'" y="'+y+'" width="'+(cw-0.6)+'" height="'+hgt+'" fill="'+(v>=0?'rgba(70,196,106,':'rgba(224,106,106,')+(0.12+0.88*a)+')"/>';});
-    return s;};
+  const truthCode=(a,b)=>{const t=a+b;return Math.floor(t/10)*144+(t%10)*12+EN;};
   function draw(){
-    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),S=st.step;
-    // S: 1..3 encoder adımları, 4 bağlam, 5..7 decoder adımları
-    const X0=24,CW=96,GAP=34;let s='<defs><marker id="saAr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#95a2c2"/></marker></defs>';
-    s+='<text x="'+(X0)+'" y="-2" font-size="11" fill="#95a2c2">ENCODER — okur</text>';
-    const cx=i=>X0+i*(CW+GAP);
-    r.enc.forEach((e,i)=>{
-      const on=S>=i+1,x=cx(i);
-      s+='<g opacity="'+(on?1:.25)+'"><rect x="'+x+'" y="60" width="'+CW+'" height="86" rx="10" fill="#17203a" stroke="'+(S===i+1?'#ffd54a':'#3a7afe')+'" stroke-width="'+(S===i+1?3:1.5)+'"/>'+
-        '<text x="'+(x+CW/2)+'" y="76" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM hücre</text>'+
-        '<text x="'+(x+4)+'" y="92" font-size="9" fill="#95a2c2">c</text>'+hm(e.c,x+14,84,CW-20,9)+
-        '<text x="'+(x+4)+'" y="118" font-size="9" fill="#95a2c2">h</text>'+hm(e.h,x+14,110,CW-20,9)+'</g>';
-      s+='<g opacity="'+(on?1:.25)+'"><line x1="'+(x+CW/2)+'" y1="190" x2="'+(x+CW/2)+'" y2="148" stroke="#95a2c2" marker-end="url(#saAr)"/><rect x="'+(x+CW/2-22)+'" y="190" width="44" height="30" rx="7" fill="#0e1424" stroke="#3a7afe"/><text x="'+(x+CW/2)+'" y="210" text-anchor="middle" font-size="16" font-weight="700" fill="#ccd5e8">'+NAME(e.tok)+'</text></g>';
-      if(i<2)s+='<line x1="'+(x+CW)+'" y1="103" x2="'+(x+CW+GAP-2)+'" y2="103" stroke="#95a2c2" stroke-width="2" marker-end="url(#saAr)" opacity="'+(S>=i+2?1:.25)+'"/>';
-    });
-    // bağlam
-    const bx=cx(3)+4;
-    s+='<g opacity="'+(S>=4?1:.25)+'"><line x1="'+(cx(2)+CW)+'" y1="103" x2="'+(bx-2)+'" y2="103" stroke="#e06a6a" stroke-width="3" marker-end="url(#saAr)"/>'+
-      '<rect x="'+bx+'" y="52" width="112" height="102" rx="12" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-width="'+(S===4?3.5:2)+'"/><text x="'+(bx+56)+'" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#e06a6a">🍾 bağlam</text>'+
-      '<text x="'+(bx+6)+'" y="94" font-size="9" fill="#95a2c2">c</text>'+hm(r.ctx.c,bx+16,86,90,9)+'<text x="'+(bx+6)+'" y="118" font-size="9" fill="#95a2c2">h</text>'+hm(r.ctx.h,bx+16,110,90,9)+
-      '<text x="'+(bx+56)+'" y="144" text-anchor="middle" font-size="9.5" fill="#95a2c2">'+(2*H)+' sayı = tüm soru</text></g>';
-    // decoder
-    const dx0=bx+112+GAP;
-    s+='<text x="'+dx0+'" y="-2" font-size="11" fill="#95a2c2">DECODER — üretir</text>';
-    r.dec.forEach((d,i)=>{
-      const on=S>=5+i,x=dx0+i*(CW+GAP-8);
-      s+='<g opacity="'+(on?1:.25)+'"><rect x="'+x+'" y="60" width="'+(CW-8)+'" height="86" rx="10" fill="#17203a" stroke="'+(S===5+i?'#ffd54a':'#46c46a')+'" stroke-width="'+(S===5+i?3:1.5)+'"/>'+
-        '<text x="'+(x+(CW-8)/2)+'" y="76" text-anchor="middle" font-size="10" fill="#95a2c2">LSTM hücre</text>'+
-        '<text x="'+(x+4)+'" y="92" font-size="9" fill="#95a2c2">c</text>'+hm(d.c,x+14,84,CW-28,9)+
-        '<text x="'+(x+4)+'" y="118" font-size="9" fill="#95a2c2">h</text>'+hm(d.h,x+14,110,CW-28,9)+
-        '<line x1="'+(x+(CW-8)/2)+'" y1="60" x2="'+(x+(CW-8)/2)+'" y2="30" stroke="#46c46a" stroke-width="2" marker-end="url(#saAr)"/>'+
-        '<rect x="'+(x+(CW-8)/2-26)+'" y="2" width="52" height="26" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="'+(x+(CW-8)/2)+'" y="21" text-anchor="middle" font-size="15" font-weight="700" fill="#46c46a">'+NAME(d.out)+'</text>'+
-        '<line x1="'+(x+(CW-8)/2)+'" y1="190" x2="'+(x+(CW-8)/2)+'" y2="148" stroke="#95a2c2" marker-end="url(#saAr)"/><rect x="'+(x+(CW-8)/2-24)+'" y="190" width="48" height="30" rx="7" fill="#0e1424" stroke="#46c46a"/><text x="'+(x+(CW-8)/2)+'" y="210" text-anchor="middle" font-size="14" font-weight="700" fill="#ccd5e8">'+NAME(d.inp)+'</text>'+
-        '<text x="'+(x+(CW-8)/2+31)+'" y="19" font-size="10" fill="#95a2c2"><title>decoder bu çıktıdan ne kadar emin</title>%'+Math.round(d.p*100)+'</text></g>';
-      if(i<2)s+='<line x1="'+(x+CW-8)+'" y1="103" x2="'+(x+CW-8+GAP-10)+'" y2="103" stroke="#95a2c2" stroke-width="2" marker-end="url(#saAr)" opacity="'+(S>=6+i?1:.25)+'"/>';
-    });
-    const W=dx0+3*(CW+GAP-8);
-    document.getElementById('sa_svg').setAttribute('viewBox','0 -14 '+Math.round(W+10)+' 264');
-    document.getElementById('sa_svg').innerHTML=s;
-    const ans=r.dec[0].out*10+r.dec[1].out, tgt=st.a+st.b, ok=(r.code===(Math.floor(tgt/10)*169+(tgt%10)*13+EN));
-    const out=r.dec.slice(0,2).map(d=>NAME(d.out)).join('')+(r.dec[2].out===EN?'':' …');
-    const msgs=['Henüz bir şey okunmadı. <b>İleri ▶</b>’ya bas.','Encoder 1. kelimeyi okudu: <b>'+st.a+'</b>.','Encoder 2. kelimeyi okudu: <b>+</b> (durum öncekiyle birleşti).','Encoder 3. kelimeyi okudu: <b>'+st.b+'</b>. Artık elinde <b>tek bir durum</b> var.','🍾 Bağlam: soru ('+st.a+' + '+st.b+') bu <b>'+(2*H)+' sayıya</b> sıkıştı. Decoder yalnız bunu görecek.','Decoder 1. basamağı üretti: <b>'+NAME(r.dec[0].out)+'</b> (%'+Math.round(r.dec[0].p*100)+' emin). Girdisi: başlangıç işareti.','Decoder 2. basamağı üretti: <b>'+NAME(r.dec[1].out)+'</b> (girdisi kendi önceki çıktısı).','Decoder bitiş işaretini üretti → cevap: <b>'+out+'</b>. '];
+    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),S=st.step,A=archSvg(r,S,'live'),svg=document.getElementById('sa_svg');
+    svg.setAttribute('viewBox',A.vb);svg.innerHTML=A.svg;
+    const tgt=st.a+st.b, ok=r.code===truthCode(st.a,st.b);
+    const out=r.dec.slice(0,2).map(d=>ND(d.out)).join('')+(r.dec[2].out===EN?'':' …');
+    const msgs=['Henüz bir şey okunmadı. <b>İleri ▶</b>’ya bas.',
+      'Encoder 1. token\'ı okudu: <b>'+st.a+'</b>. Önce kendi gömme tablosundan 8 sayıya çevrildi, sonra <b>Katman 1</b>, onun çıktısı (h) da <b>Katman 2</b>\'ye girdi.',
+      'Encoder 2. token\'ı okudu: <b>+</b>. Her katman kendi c, h\'sini bir sonraki adıma aktarıyor (yatay oklar).',
+      'Encoder 3. token\'ı okudu: <b>'+st.b+'</b>. Artık iki katmanın elinde birer (c, h) durumu var.',
+      '🍾 Bağlam: <b>iki katmanın</b> son c ve h\'leri, yani <b>'+(4*H)+' sayı</b>. Decoder\'ın iki katmanı bu değerlerle başlıyor; soru hakkında başka hiçbir şey görmüyor.',
+      'Decoder 1. basamağı üretti: <b>'+ND(r.dec[0].out)+'</b> (%'+Math.round(r.dec[0].p*100)+' emin). Girdisi başlangıç işareti; <b>kendi</b> gömme tablosundan geçti, Katman 2\'nin h\'si tam bağlı katman + softmax ile 12 sembole puanlandı.',
+      'Decoder 2. basamağı üretti: <b>'+ND(r.dec[1].out)+'</b>. Girdisi kendi önceki çıktısı.',
+      'Decoder bitiş işaretini üretti → cevap: <b>'+out+'</b>. '];
     let m=msgs[S]||msgs[7];
     if(S>=7)m+=(ok?'✅ Doğru ('+st.a+' + '+st.b+' = '+tgt+').':'❌ Yanlış — doğrusu '+tgt+'.')+(TEST.has(st.a*10+st.b)?' <i>Bu soru eğitimde hiç görülmemişti.</i>':'');
     document.getElementById('sa_msg').innerHTML=m;
   }
-
-  function neur(){
-    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),P=ck.W;
-    const NH=6,NE=4,NO=13,CW=118,X0=10;
-    const idx=r.ctx.h.map((v,i)=>[Math.abs(v),i]).sort((a,b)=>b[0]-a[0]).slice(0,NH).map(x=>x[1]).sort((a,b)=>a-b);
-    const col=v=>v>=0?'rgba(70,196,106,'+(0.15+0.85*Math.min(1,Math.abs(v)))+')':'rgba(224,106,106,'+(0.15+0.85*Math.min(1,Math.abs(v)))+')';
-    const yO=40,yH=190,yE=290,yT=362;
-    const nx=(t,k,n,dx)=>t.x+(k-(n-1)/2)*dx;
-    const cxs=[0,1,2,4,5,6].map(i=>X0+i*CW+CW/2);
-    const steps=[];
-    r.enc.forEach((e,i)=>steps.push({x:cxs[i],h:e.h,tok:e.tok,emb:P.emb[e.tok],dec:false}));
-    r.dec.forEach((d,i)=>steps.push({x:cxs[3+i],h:d.h,tok:d.inp,emb:P.emb[d.inp],dec:true,d}));
-    let s='<defs><marker id="sn" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#e06a6a"/></marker></defs>';
-    s+='<text x="'+((cxs[0]+cxs[2])/2)+'" y="-18" font-size="11" fill="#95a2c2" text-anchor="middle">ENCODER (okur)</text><text x="'+cxs[4]+'" y="-18" font-size="11" fill="#95a2c2" text-anchor="middle">DECODER (üretir)</text>';
-    const HD=15,ED=18,OD=8;
-    steps.forEach((t,i)=>{
-      for(let a=0;a<NE;a++)for(let b=0;b<NH;b++)s+='<line x1="'+nx(t,a,NE,ED)+'" y1="'+(yE-7)+'" x2="'+nx(t,b,NH,HD)+'" y2="'+(yH+9)+'" stroke="#3a4a74" stroke-width=".6" opacity=".6"/>';
-      if(t.dec)for(let b=0;b<NH;b++)for(let k=0;k<NO;k++){const w=k===t.d.out;s+='<line x1="'+nx(t,b,NH,HD)+'" y1="'+(yH-9)+'" x2="'+nx(t,k,NO,OD)+'" y2="'+(yO+6)+'" stroke="'+(w?'#46c46a':'#3a4a74')+'" stroke-width="'+(w?1:.4)+'" opacity="'+(w?.6:.3)+'"/>';}
-      if(i>0&&i!==3){const q=steps[i-1];for(let a=0;a<NH;a++)for(let b=0;b<NH;b++)s+='<line x1="'+(nx(q,a,NH,HD)+9)+'" y1="'+yH+'" x2="'+(nx(t,b,NH,HD)-9)+'" y2="'+yH+'" stroke="#5a6a9a" stroke-width=".4" opacity=".35"/>';}
-    });
-    // bağlam: encoder son -> decoder ilk gizli katman
-    const q=steps[2],d0=steps[3];
-    const xa=nx(q,NH-1,NH,HD)+10,xb=nx(d0,0,NH,HD)-10;
-    s+='<rect x="'+(xa+2)+'" y="'+(yH-24)+'" width="'+(xb-xa-4)+'" height="48" rx="8" fill="rgba(224,106,106,.12)" stroke="#e06a6a" stroke-dasharray="4 3"/>';
-    s+='<line x1="'+xa+'" y1="'+yH+'" x2="'+xb+'" y2="'+yH+'" stroke="#e06a6a" stroke-width="2.5" marker-end="url(#sn)"/>';
-    s+='<text x="'+((xa+xb)/2)+'" y="'+(yH-30)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e06a6a">🍾 bağlam</text><text x="'+((xa+xb)/2)+'" y="'+(yH+40)+'" text-anchor="middle" font-size="9" fill="#95a2c2">h ve c (2×24 sayı)</text>';
-    steps.forEach((t,i)=>{
-      const stroke=t.dec?'#46c46a':'#3a7afe';
-      if(t.dec){
-        for(let k=0;k<NO;k++){const p=t.d.pv[k],win=k===t.d.out,x=nx(t,k,NO,OD);
-          s+='<circle cx="'+x+'" cy="'+yO+'" r="3.6" fill="rgba(58,122,254,'+(0.1+0.9*p)+')" stroke="'+(win?'#46c46a':'#334063')+'" stroke-width="'+(win?1.8:.8)+'"/><text x="'+x+'" y="'+(yO-8)+'" text-anchor="middle" font-size="7" fill="#95a2c2" transform="rotate(-60 '+x+' '+(yO-8)+')">'+NAME(k)+'</text>';}
-        s+='<text x="'+t.x+'" y="'+(yO+22)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#46c46a">→ '+NAME(t.d.out)+' (%'+Math.round(t.d.p*100)+')</text>'+(i===3?'<text x="'+t.x+'" y="'+(yO-34)+'" text-anchor="middle" font-size="9" fill="#95a2c2">çıktı katmanı: 13 nöron</text>':'');
-      }
-      for(let k=0;k<NH;k++)s+='<circle cx="'+nx(t,k,NH,HD)+'" cy="'+yH+'" r="7" fill="'+col(t.h[idx[k]])+'" stroke="'+stroke+'" stroke-width="1.5"/>';
-      s+='<text x="'+t.x+'" y="'+(yH+24)+'" text-anchor="middle" font-size="9.5" fill="#95a2c2">LSTM gizli: 24 nöron</text>';
-      for(let k=0;k<NE;k++)s+='<circle cx="'+nx(t,k,NE,ED)+'" cy="'+yE+'" r="6" fill="'+col(t.emb[k]*2)+'" stroke="#334063"/>';
-      s+='<text x="'+t.x+'" y="'+(yE+21)+'" text-anchor="middle" font-size="9.5" fill="#95a2c2">gömme: 8 sayı</text>';
-      s+='<line x1="'+t.x+'" y1="'+(yT)+'" x2="'+t.x+'" y2="'+(yE+26)+'" stroke="#95a2c2" stroke-width=".8"/><rect x="'+(t.x-22)+'" y="'+yT+'" width="44" height="24" rx="6" fill="#0e1424" stroke="'+stroke+'"/><text x="'+t.x+'" y="'+(yT+17)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#ccd5e8">'+NAME(t.tok)+'</text>';
-    });
-    const W=X0+7*CW;
-    const svg=document.getElementById('sa_neur');svg.setAttribute('viewBox','0 -26 '+W+' 412');svg.innerHTML=s;
-  }
   function grid(){
     const ck=D.ck[st.ci];let h='<tr><th></th>';for(let b=0;b<10;b++)h+='<th style="padding:2px 6px">+'+b+'</th>';h+='</tr>';
     for(let a=0;a<10;a++){h+='<tr><th style="padding:2px 6px">'+a+'</th>';for(let b=0;b<10;b++){
-      const code=ck.preds[a*10+b],t0=Math.floor(code/169),t1=Math.floor(code/13)%13,t2=code%13,tg=a+b,ok=code===Math.floor(tg/10)*169+(tg%10)*13+EN;
-      const txt=t2===EN?(t0<10&&t1<10?''+t0+t1:'?'):'?';
+      const code=ck.preds[a*10+b],t0=Math.floor(code/144),t1=Math.floor(code/12)%12,t2=code%12,ok=code===truthCode(a,b);
+      const txt=t2===EN&&t0<10&&t1<10?''+t0+t1:'?';
       const sel=(a===st.a&&b===st.b);
       h+='<td data-a="'+a+'" data-b="'+b+'" style="cursor:pointer;padding:3px 6px;border:1px solid var(--line);background:'+(ok?'rgba(70,196,106,.25)':'rgba(224,106,106,.3)')+';'+(TEST.has(a*10+b)?'outline:2px dashed #f0a032;outline-offset:-2px;':'')+(sel?'box-shadow:inset 0 0 0 2px #ffd54a;':'')+'">'+txt+'</td>';}h+='</tr>';}
     document.getElementById('sa_grid').innerHTML=h;
-    const nT=D.test.filter(i=>ck.preds[i]===Math.floor((Math.floor(i/10)+i%10)/10)*169+((Math.floor(i/10)+i%10)%10)*13+EN).length;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  function all(){draw();neur();grid();if(window.__s2sInsideRender)window.__s2sInsideRender();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
+  function all(){draw();grid();if(window.__s2sInsideRender)window.__s2sInsideRender();[...ckb.children].forEach(b=>{const on=+b.dataset.i===st.ci;b.style.background=on?COL[st.ci]:'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});}
   ckb.addEventListener('click',e=>{if(e.target.dataset.i!==undefined){st.ci=+e.target.dataset.i;st.step=7;all();}});
   sa.addEventListener('change',()=>{st.a=+sa.value;st.step=0;all();});sb.addEventListener('change',()=>{st.b=+sb.value;st.step=0;all();});
   document.getElementById('sa_next').addEventListener('click',()=>{st.step=st.step>=7?1:st.step+1;all();});
