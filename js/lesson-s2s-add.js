@@ -116,9 +116,8 @@
    '<span>Soru:</span><select id="sa_a" class="rex-sel"></select><b>+</b><select id="sa_b" class="rex-sel"></select>'+
    '<span style="margin-left:10px">Model:</span><span id="sa_ck"></span></div>'+
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="addbtn" id="sa_next" style="background:var(--blue);color:#fff">İleri ▶</button><button class="addbtn" id="sa_all" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">⏭ Hepsini göster</button><button class="addbtn" id="sa_rst" style="background:var(--panel);color:var(--text);border:1px solid var(--line)">↺ Sıfırla</button></div>'+
-   '<div style="overflow-x:auto"><svg id="sa_svg" style="min-width:720px;width:100%;max-width:900px;display:block;margin:0 auto" role="img" aria-label="İki katmanlı encoder-decoder toplama animasyonu"></svg></div>'+
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
-   '<div id="sa3d" style="margin:12px 0 4px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><b>🧊 Aynı hesap 3B:</b><span style="font-size:12.5px;color:var(--muted,#95a2c2)">sütun = zaman adımı, satır = katman (one-hot → gömme → Katman 1 → Katman 2 → puan → softmax); her kutu gerçek sayılar, tıkla = içi. Yukarıdaki <b>İleri ▶</b> 3B görünümü de ilerletir.</span><button class="addbtn" id="sa3dtour" style="background:#c77dff;color:#fff">🎬 Animasyonlu tur: 3B + matris çarpımları</button><a class="addbtn" id="sa3dfull" target="_blank" style="background:var(--panel);color:var(--text);border:1px solid var(--line);text-decoration:none">⛶ Tam sayfa</a></div>'+
+   '<div id="sa3d" style="margin:12px 0 4px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><b>🧊 Canlı 3B mimari:</b><span style="font-size:12.5px;color:var(--muted,#95a2c2)">sütun = zaman adımı, satır = katman (gömme → Katman 1 → Katman 2 → puan → softmax); her kutu gerçek sayılar, tıkla = içi. <b>İleri ▶</b> 3B görünümü ilerletir.</span><button class="addbtn" id="sa3dtour" style="background:#c77dff;color:#fff">🎬 Animasyonlu tur: 3B + matris çarpımları</button><a class="addbtn" id="sa3dfull" target="_blank" style="background:var(--panel);color:var(--text);border:1px solid var(--line);text-decoration:none">⛶ Tam sayfa</a></div>'+
    '<div class="s3-grid"><iframe id="sa3dfr" loading="lazy" title="Seq2Seq 3B mimari" style="width:100%;height:600px;border:1px solid var(--line);border-radius:10px;background:#0b0e14;display:block"></iframe><div id="s2sTour" class="s2s-tour"></div></div></div>'+
    '<div id="s2sSecC" style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>B) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
    '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
@@ -129,8 +128,7 @@
   D.ck.forEach((c,i)=>{const b=document.createElement('button');b.className='addbtn';b.textContent='epoch '+c.ep;b.dataset.i=i;b.style.marginRight='4px';ckb.appendChild(b);});
   const truthCode=(a,b)=>{const t=a+b;return Math.floor(t/10)*144+(t%10)*12+EN;};
   function draw(){
-    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),S=st.step,A=archSvg(r,S,'live'),svg=document.getElementById('sa_svg');
-    svg.setAttribute('viewBox',A.vb);svg.innerHTML=A.svg;
+    const ck=D.ck[st.ci],r=run(ck,st.a,st.b),S=st.step;
     const tgt=st.a+st.b, ok=r.code===truthCode(st.a,st.b);
     const out=r.dec.slice(0,2).map(d=>ND(d.out)).join('')+(r.dec[2].out===EN?'':' …');
     const msgs=['Henüz bir şey okunmadı. <b>İleri ▶</b>’ya bas.',
@@ -155,9 +153,9 @@
     document.getElementById('sa_grid').innerHTML=h;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071334';
+  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071358';
   function sync3d(){const m={type:'s2s3d',a:st.a,b:st.b,ci:st.ci,step:st.step};const ts=window.__s2sTourState&&window.__s2sTourState();if(ts){m.step=ts.step;m.focus=ts.ids;}try{fr3.contentWindow&&fr3.contentWindow.postMessage(m,'*');}catch(e){}
-    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071334';}
+    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071358';}
   addEventListener('message',e=>{if(e.data&&e.data.type==='s2s3dReady'&&e.source===fr3.contentWindow)sync3d();});
   window.__s2sSync3d=sync3d;
   document.getElementById('sa3dtour').addEventListener('click',function(){const box=document.getElementById('sa3d'),on=!box.classList.contains('tour');box.classList.toggle('tour',on);
