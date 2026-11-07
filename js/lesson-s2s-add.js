@@ -119,8 +119,10 @@
    '<div id="sa_msg" class="callout" style="margin-top:8px"></div>'+
    '<div id="sa3d" style="margin:12px 0 4px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><b>🧊 Canlı 3B mimari:</b><span style="font-size:12.5px;color:var(--muted,#95a2c2)">sütun = zaman adımı, satır = katman (gömme → Katman 1 → Katman 2 → puan → softmax); her kutu gerçek sayılar, tıkla = içi. <b>İleri ▶</b> 3B görünümü ilerletir.</span><button class="addbtn" id="sa3dtour" style="background:#c77dff;color:#fff">🎬 Animasyonlu tur: 3B + matris çarpımları</button><a class="addbtn" id="sa3dfull" target="_blank" style="background:var(--panel);color:var(--text);border:1px solid var(--line);text-decoration:none">⛶ Tam sayfa</a></div>'+
    '<div class="s3-grid"><iframe id="sa3dfr" loading="lazy" title="Seq2Seq 3B mimari" style="width:100%;height:600px;border:1px solid var(--line);border-radius:10px;background:#0b0e14;display:block"></iframe><div id="s2sTour" class="s2s-tour"></div></div></div>'+
-   '<div id="s2sSecC" style="font-size:13px;color:#ccd5e8;margin:12px 0 4px"><b>B) 📝 10×10 sınav:</b> her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
-   '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div>';
+   '<div class="pts" id="s2sSecC" style="border-left:3px solid #46c46a;margin-top:12px"><h3 class="sahne-head closed"><span>B) 📝 10×10 sınav — ağ 100 toplama sorusundan kaçını bilmiş?</span><span class="chev">▸</span></h3><div class="sahne-body closed">'+
+   '<div style="font-size:13px;color:#ccd5e8;margin:0 0 4px">Her hücre modelin o toplama için verdiği cevap (yeşil doğru, kırmızı yanlış; <span style="outline:2px dashed #f0a032;padding:0 4px">kesikli çerçeve</span> = eğitimde HİÇ görmediği 10 soru). Bir hücreye tıkla.</div>'+
+   '<div style="overflow-x:auto"><table id="sa_grid" class="rex-tbl" style="border-collapse:collapse;font-size:11.5px;text-align:center"></table></div><div id="sa_score" style="font-size:13px;margin-top:6px"></div></div></div>';
+  {const h=document.querySelector('#s2sSecC .sahne-head');h.addEventListener('click',()=>{h.classList.toggle('closed');h.nextElementSibling.classList.toggle('closed');});}
   const sa=document.getElementById('sa_a'),sb=document.getElementById('sa_b');
   for(let i=0;i<10;i++){sa.add(new Option(i,i));sb.add(new Option(i,i));}
   sa.value=st.a;sb.value=st.b;
@@ -153,9 +155,9 @@
     document.getElementById('sa_grid').innerHTML=h;
     document.getElementById('sa_score').innerHTML='<b>epoch '+ck.ep+':</b> eğitim soruları <b>'+ck.train+'/90</b> doğru · eğitimde hiç görülmeyen sorular <b>'+ck.test+'/10</b> doğru · kayıp (eğitim, soru başına) <b>'+ck.loss.toFixed(3)+'</b>';
   }
-  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071531';
+  const fr3=document.getElementById('sa3dfr');fr3.src='harita/s2s-3b.html?embed=1&a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611072030';
   function sync3d(){const m={type:'s2s3d',a:st.a,b:st.b,ci:st.ci,step:st.step};const ts=window.__s2sTourState&&window.__s2sTourState();if(ts){m.step=ts.step;m.focus=ts.ids;}try{fr3.contentWindow&&fr3.contentWindow.postMessage(m,'*');}catch(e){}
-    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611071531';}
+    document.getElementById('sa3dfull').href='harita/s2s-3b.html?a='+st.a+'&b='+st.b+'&ck='+st.ci+'&step='+st.step+'&v=202611072030';}
   addEventListener('message',e=>{if(e.data&&e.data.type==='s2s3dReady'&&e.source===fr3.contentWindow)sync3d();});
   window.__s2sSync3d=sync3d;
   document.getElementById('sa3dtour').addEventListener('click',function(){const box=document.getElementById('sa3d'),on=!box.classList.contains('tour');box.classList.toggle('tour',on);
