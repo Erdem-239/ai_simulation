@@ -2048,3 +2048,6 @@ body.xt-full-lock{overflow:hidden}
 @media(max-width:1100px){#sa3d.tour .s3-grid{grid-template-columns:1fr}#sa3d.tour #sa3dfr{height:380px}}
 #sa3d.tour .s3-grid>*{min-width:0;max-width:100%}
 #sa3d .s2s-tour{overflow:hidden}
+
+.st-soz{font-size:13px;line-height:1.6;margin-top:6px;padding:8px 10px;border-radius:8px;background:rgba(255,213,74,.08);border-left:3px solid #ffd54a}
+.st-elde{font-size:13px;line-height:1.5;margin-top:6px;padding:6px 10px;border-radius:8px;background:rgba(70,196,106,.1);border-left:3px solid #46c46a}
