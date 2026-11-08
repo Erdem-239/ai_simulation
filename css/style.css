@@ -2103,3 +2103,24 @@ body.xt-full-lock{overflow:hidden}
 #model-attention .at-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 #model-attention .at-tabs .addbtn{background:var(--panel);color:var(--text);border:1px solid var(--line)}
 #model-attention .at-tabs .addbtn.on{background:var(--blue);color:#fff}
+
+/* Multi-Head: aynı tek bakışta + sekmeli düzen */
+#model-multihead .at-hap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:900px){#model-multihead .at-hap{grid-template-columns:1fr}}
+#model-multihead .at-card{background:rgba(255,255,255,.025);border:1px solid #2a3552;border-radius:10px;padding:10px 12px}
+#model-multihead .at-h{font-weight:700;color:#e9edf8;margin-bottom:6px;font-size:14.5px}
+#model-multihead .at-t{margin:0;font-size:13px;width:100%}
+#model-multihead .at-t td{padding:4px 8px}
+#model-multihead .at-n{font-size:13px;color:#b9c3dc;line-height:1.6;margin-top:6px}
+#model-multihead .at-ol,#model-multihead .at-ul{margin:0;padding-left:20px;font-size:13.5px;color:#ccd5e8;line-height:1.7}
+#model-multihead .at-f{margin-top:8px;text-align:center;font-weight:700;color:#ffd54a;font-size:14px;background:rgba(255,213,74,.06);border-radius:8px;padding:6px}
+#model-multihead .at-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+#model-multihead .at-tabs .addbtn{background:var(--panel);color:var(--text);border:1px solid var(--line)}
+#model-multihead .at-tabs .addbtn.on{background:var(--blue);color:#fff}
+#mhBlk .sd-wrap{display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:16px;align-items:center}
+@media(max-width:760px){#mhBlk .sd-wrap{grid-template-columns:1fr}}
+#mhBlk .sd-f{margin-top:10px;font-size:14.5px;text-align:center;color:#e9edf8;background:rgba(255,255,255,.03);border:1px solid #2a3552;border-radius:8px;padding:8px}
+#mhBlk .sd-f span{cursor:pointer;font-weight:700}
+#model-multihead .mh-pos{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:16px;align-items:start}
+#model-multihead .mh-pos #posSvg{width:100%;max-width:440px;display:block}
+@media(max-width:900px){#model-multihead .mh-pos{grid-template-columns:1fr}}
