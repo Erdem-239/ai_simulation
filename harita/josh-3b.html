@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transformer oyuncağı 3B</title>
+<style>
+:root{--bg:#0b0e14;--card:#141923;--line:#2a3140;--tx:#e8ebf2;--mute:#9aa3b6;--hl:#ffc82e}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,Segoe UI,Roboto,sans-serif;overflow:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#top{position:fixed;left:14px;top:10px;right:14px;pointer-events:none;z-index:5}
+#top h1{margin:0;font-size:20px}#top p{margin:3px 0 0;font-size:12.5px;color:var(--mute);max-width:980px}
+#lb{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+.lb{position:absolute;transform:translate(-50%,-50%);padding:2px 7px;border-radius:7px;background:#10151f;border:1.5px solid var(--c,#4a5468);font-size:11px;white-space:nowrap;pointer-events:auto;cursor:pointer;color:var(--tx)}
+.lb small{color:var(--mute);margin-left:5px;font-size:10px}
+.lb.sel{background:#3a2f0b;border-color:var(--hl);color:#fff}
+.lb.dim{opacity:.22}.lb.tt{pointer-events:none;border:none;background:none;color:#9aa3b6;font-size:13px;font-weight:700}
+.lb.tk{pointer-events:none;border:none;background:none;font-size:15px;font-weight:800;color:#ffd54a}
+#info{position:fixed;right:12px;top:92px;width:370px;max-height:calc(100vh - 190px);overflow:auto;background:rgba(20,25,35,.95);border:1px solid var(--line);border-left:4px solid var(--c,#4a5468);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.55;z-index:6;display:none}
+#info.on{display:block}#info h3{margin:0 0 2px;font-size:14px}#info .sh{color:var(--mute);font-size:11.5px}
+#info .calc{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#0e131c;border-radius:6px;padding:6px 8px;margin:6px 0;white-space:pre-wrap}
+#info .src{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:6px;font-size:11px}
+#info .src.v{background:#12201a;border:1px solid #5fcf8a;color:#9fe3b8}#info .src.b{background:#261a12;border:1px solid #f0a032;color:#f7c98a}
+#info .cr{margin-top:6px;padding:6px 8px;border-radius:7px;background:#12201a;border-left:3px solid #5fcf8a}
+#info .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute)}
+#tour{position:fixed;left:12px;bottom:66px;width:460px;max-width:calc(100vw - 24px);max-height:46vh;overflow:auto;background:rgba(20,25,35,.96);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.8px;line-height:1.55;z-index:6;display:none}
+#tour.on{display:block}#tour h3{margin:0 0 4px;font-size:14px;color:var(--hl)}#tour .nm{color:var(--mute);font-size:11px;margin-top:5px}
+#tour .soz{margin-top:6px;padding:6px 8px;border-radius:7px;background:rgba(255,213,74,.08);border-left:3px solid #ffd54a}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;background:rgba(11,14,20,.93);border-top:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap;align-items:center;z-index:7}
+#bar button{background:#1a2030;color:var(--tx);border:1px solid #38425a;border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+#bar button.on{border-color:var(--hl);color:var(--hl)}#bar button:disabled{opacity:.4;cursor:default}#bar .sp{flex:1}
+#leg{position:fixed;left:14px;top:84px;font-size:11.5px;color:var(--mute);z-index:5;pointer-events:none;line-height:1.7}
+#leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media(max-width:760px){#info{width:calc(100vw - 24px);top:auto;bottom:66px;right:12px;max-height:38vh}#leg{display:none}#tour{bottom:110px}#top p{display:none}}
+</style></head><body>
+<canvas id="c"></canvas><div id="lb"></div>
+<div id="top"><h1>🧸 Transformer oyuncağı — «let's go» → «vamos» (3B)</h1><p>StatQuest'te (Josh Starmer, <i>Transformer Neural Networks, Clearly Explained</i>) elle hesaplanan minik Transformer'ın <b>tamamı</b>, kendi çizimimizle: her kelime 2 sayı, tek kafa, normalizasyon ve FFN yok. Soldaki iki sütun ENCODER, sağdaki iki sütun DECODER. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır. Bir kutuya tıkla: içindeki sayılar ve <b>nasıl hesaplandığı</b>. 🟢 videoda gösterilen sayı · 🟠 videoda gösterilmeyen, bizim eğittiğimiz ağırlık.</p></div>
+<div id="leg"><i style="background:#3fc7c1"></i>girdi / gömme / konum<br><i style="background:#6ea0ff"></i>sorgu Q<br><i style="background:#e0609a"></i>anahtar K<br><i style="background:#46c46a"></i>değer V<br><i style="background:#ffd54a"></i>skor / yüzde<br><i style="background:#c77dff"></i>ağırlık tablosu<br><i style="background:#f0a032"></i>encoder çıktısı / çapraz<br><i style="background:#f27a88"></i>çıkış katmanı</div>
+<div id="info"><span class="x" id="ix">✕</span><div id="ib"></div></div>
+<div id="tour"><div id="tb"></div></div>
+<div id="bar">
+<button id="s1" class="on">«let's go» → ?</button><button id="s2">«to go» → ?</button>
+<span class="sp"></span>
+<button id="tp" disabled>◀ Geri</button><button id="tn">🎬 Adım adım ▶</button><button id="tx" style="display:none">Turu kapat</button>
+<span class="sp"></span>
+<button id="tw" class="on">Ağırlık bağları</button><button id="tl" class="on">Etiketler</button><button id="rs">⟲ Görünümü sıfırla</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
+</div>
+<script src="../js/vendor/three-0.128.0.min.js"></script>
+<script>
+(function(){
+const fmt=v=>!isFinite(v)?'maske':(Math.abs(v)<0.005?'0,00':(v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',','));
+const pc=v=>'%'+Math.round(v*100);
+// ===== MODEL =====
+// 🟢 videoda gösterilen sayılar (encoder tamamen, decoder'ın <EOS> gömmesi ve sonuçlar)
+const EW=["let's",'to','go','&lt;EOS&gt;'],DW=['ir','vamos','y','&lt;EOS&gt;'],EOS=3;
+const Eenc=[[1.87,0.09],[-1.45,1.50],[-0.78,0.27],null];          // <EOS> encoder satırı videoda gösterilmiyor, kullanılmıyor
+const PE=[[0,1],[-0.9,0.4]];
+const WQ=[[1.1,0.6],[-2.8,2.4]],WK=[[-1.7,0.5],[-1.4,0.9]],WV=[[1.5,-1.0],[-0.3,-0.2]];
+// 🟠 videoda gösterilmeyen decoder ağırlıkları: encoder'ı videodaki gibi sabit tutup iki cümleyle eğitildi
+// (let's go → vamos <EOS>, to go → ir <EOS>); <EOS> gömmesi videodaki (2,70 ; −1,34), <EOS>'un self-attention
+// çıktısı videodaki −2,8 / −2,3'e, ilk çapraz dikkat videodaki %100 «let's»'e bağlandı.
+const Edec=[[-0.66,0.51],[-0.72,0.1],[0,0],[2.70,-1.34]];
+const Qd=[[0.33,-0.47],[-0.24,0.02]],Kd=[[-0.4,0.45],[0.09,-0.1]],Vd=[[-0.98,-0.97],[0.48,-0.91]];
+const Qc=[[0.57,-0.37],[-0.84,0.53]],Kc=[[0.89,-0.56],[0.49,-0.32]],Vc=[[1.11,0.66],[0.32,-1.09]];
+const Wf=[[0.29,1.62,-0.03,-1.88],[-1.36,-0.14,-0.15,0.47]],bf=[-0.24,0.33,-0.42,0.37];
+const vm=(v,M)=>M[0].map((_,j)=>v.reduce((s,a,i)=>s+a*M[i][j],0));
+const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
+const smx=r=>{const f=r.filter(isFinite),m=Math.max(...f),e=r.map(v=>isFinite(v)?Math.exp(v-m):0),t=e.reduce((a,b)=>a+b,0);return e.map(v=>v/t)};
+const add=(a,b)=>a.map((v,i)=>v+b[i]);
+function run(src){ // src: encoder kelime indeksleri
+ const n=src.length,E={emb:[],x:[],q:[],k:[],v:[],s:[],a:[],z:[],o:[]};
+ src.forEach((t,i)=>{E.emb.push(Eenc[t]);E.x.push(add(Eenc[t],PE[i]))});
+ E.x.forEach(x=>{E.q.push(vm(x,WQ));E.k.push(vm(x,WK));E.v.push(vm(x,WV))});
+ for(let i=0;i<n;i++){const s=E.k.map(k=>dot(E.q[i],k)),a=smx(s),z=[0,0];a.forEach((w,j)=>{z[0]+=w*E.v[j][0];z[1]+=w*E.v[j][1]});E.s.push(s);E.a.push(a);E.z.push(z);E.o.push(add(E.x[i],z))}
+ const ck=E.o.map(o=>vm(o,Kc)),cv=E.o.map(o=>vm(o,Vc));
+ // decoder: <EOS> ile başla, seçilen token'ı ekle (en çok 2 adım)
+ const din=[EOS],D=[];
+ for(let st=0;st<2;st++){
+  const m=din.length,R={emb:[],x:[],q:[],k:[],v:[],s:[],a:[],z:[],y1:[],cq:[],cs:[],ca:[],cz:[],y2:[],lg:[],p:[]};
+  din.forEach((t,i)=>{R.emb.push(Edec[t]);R.x.push(add(Edec[t],PE[i]))});
+  R.x.forEach(x=>{R.q.push(vm(x,Qd));R.k.push(vm(x,Kd));R.v.push(vm(x,Vd))});
+  for(let i=0;i<m;i++){const s=R.k.map((k,j)=>j>i?-Infinity:dot(R.q[i],k)),a=smx(s),z=[0,0];a.forEach((w,j)=>{z[0]+=w*R.v[j][0];z[1]+=w*R.v[j][1]});R.s.push(s);R.a.push(a);R.z.push(z);R.y1.push(add(R.x[i],z))}
+  for(let i=0;i<m;i++){const q=vm(R.y1[i],Qc),s=ck.map(k=>dot(q,k)),a=smx(s),z=[0,0];a.forEach((w,j)=>{z[0]+=w*cv[j][0];z[1]+=w*cv[j][1]});R.cq.push(q);R.cs.push(s);R.ca.push(a);R.cz.push(z);
+   const y2=add(R.y1[i],z),lg=vm(y2,Wf).map((v,k)=>v+bf[k]);R.y2.push(y2);R.lg.push(lg);R.p.push(smx(lg))}
+  const last=R.p[m-1];let b=0;last.forEach((v,k)=>{if(v>last[b])b=k});D.push(R);if(st===1||b===EOS){R.out=b;break}R.out=b;din.push(b)}
+ const F=D[D.length-1];F.din=din.slice();return {src,E,ck,cv,D:F,outs:D.map(r=>r.out)};
+}
+window.__josh={run};
+// ===== SAHNE =====
+const CL={x:'#3fc7c1',q:'#6ea0ff',k:'#e0609a',v:'#46c46a',s:'#ffd54a',w:'#c77dff',o:'#f0a032',f:'#f27a88'};
+const cv=document.getElementById('c'),ren=new THREE.WebGLRenderer({canvas:cv,antialias:true}),scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0b0e14);const cam=new THREE.PerspectiveCamera(45,1,0.1,300);
+const DEF={yaw:0.22,pitch:0.14,dist:47,t:new THREE.Vector3(12.5,8.6,-0.5)};
+let yaw=DEF.yaw,pitch=DEF.pitch,dist=DEF.dist,tgt=DEF.t.clone(),tgtGoal=null,distGoal=null;
+let grp=null,parts=[],byId={},lines=[],wlines=[],labels=[],showW=true,showL=true,sel=null,focus=null,SENT=0,M=null;
+const lbEl=document.getElementById('lb');
+function tex(V,vmax,pct){const rows=V.length,cols=V[0].length,cs=56,cn=document.createElement('canvas');cn.width=cols*cs;cn.height=rows*cs;const g=cn.getContext('2d');
+ for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const v=V[r][c];let col;
+  if(!isFinite(v))col='rgba(80,90,110,.6)';else if(pct)col=`rgba(70,196,106,${0.12+0.85*v})`;else{const a=0.2+0.8*Math.min(1,Math.abs(v)/vmax);col=v>=0?`rgba(70,130,255,${a})`:`rgba(240,85,105,${a})`}
+  g.fillStyle=col;g.fillRect(c*cs+1,r*cs+1,cs-2,cs-2);g.fillStyle='#fff';g.font='bold 15px ui-monospace,monospace';g.textAlign='center';g.textBaseline='middle';
+  g.fillText(!isFinite(v)?'maske':pct?pc(v):fmt(v),c*cs+cs/2,r*cs+cs/2)}
+ const t=new THREE.CanvasTexture(cn);t.minFilter=THREE.LinearFilter;return t}
+const CS=0.62;
+function mk(o){const V=o.vals,rows=V.length,cols=V[0].length,w=cols*CS,h=rows*CS,t=tex(V,o.vmax||3,o.pct);
+ const side=new THREE.MeshBasicMaterial({color:0x1c2434,transparent:true}),f1=new THREE.MeshBasicMaterial({map:t,transparent:true}),f2=new THREE.MeshBasicMaterial({map:t,transparent:true});
+ const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,0.12),[side,side,side,side,f1,f2]);
+ const eg=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:new THREE.Color(CL[o.cl]),transparent:true}));mesh.add(eg);
+ mesh.position.set(o.x,o.y,o.z||0);grp.add(mesh);
+ const p=Object.assign({mesh,edge:eg,w,h,rows,cols,mats:[side,f1,f2]},o);mesh.userData.p=p;parts.push(p);byId[o.id]=p;
+ const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',CL[o.cl]);d.innerHTML=o.short+(o.dim?'<small>'+o.dim+'</small>':'');d.onclick=e=>{e.stopPropagation();select(p)};lbEl.appendChild(d);p.lb=d;return p}
+function addText(txt,x,y,z,cls){const d=document.createElement('div');d.className='lb '+(cls||'tt');d.innerHTML=txt;lbEl.appendChild(d);const l={d,v:new THREE.Vector3(x,y,z||0)};labels.push(l);return l}
+function seg(a,b,col,op,dash){let l;const g=new THREE.BufferGeometry().setFromPoints([a,b]);
+ if(dash){l=new THREE.Line(g,new THREE.LineDashedMaterial({color:col,dashSize:0.16,gapSize:0.12,transparent:true,opacity:op||0.45}));l.computeLineDistances()}
+ else l=new THREE.Line(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op||0.85}));grp.add(l);return l}
+const top=p=>p.mesh.position.clone().add(new THREE.Vector3(0,p.h/2,0)),bot=p=>p.mesh.position.clone().add(new THREE.Vector3(0,-p.h/2,0));
+function link(a,b,col,o){const A=byId[a],B=byId[b];if(!A||!B)return;const l=seg(top(A),bot(B),col,0.8);l.userData={a,b};lines.push(l);
+ const dir=new THREE.Vector3().subVectors(bot(B),top(A));const len=dir.length();dir.normalize();const ah=new THREE.ArrowHelper(dir,bot(B).clone().sub(dir.clone().multiplyScalar(0.22)),0.22,col,0.22,0.16);grp.add(ah);ah.userData={a,b};lines.push(ah)}
+function wl(w,t){const A=byId[w],B=byId[t];if(!A||!B)return;const l=seg(A.mesh.position.clone(),B.mesh.position.clone(),0xc77dff,0.35,true);l.userData={a:w,b:t};wlines.push(l)}
+function curve(pts,col,ids){const c=new THREE.CatmullRomCurve3(pts),m=new THREE.Mesh(new THREE.TubeGeometry(c,30,0.04,6),new THREE.MeshBasicMaterial({color:col,transparent:true}));grp.add(m);m.userData={a:ids[0],b:ids[1]};lines.push(m);
+ const e=c.getPoint(1),d=c.getTangent(1),ah=new THREE.ArrowHelper(d,e.clone().sub(d.clone().multiplyScalar(0.26)),0.28,col,0.26,0.18);ah.userData=m.userData;grp.add(ah);lines.push(ah)}
+// ---- metin yardımcıları (bilgi kutusu: sayılarla nasıl hesaplandı)
+const mulTxt=(x,W,j)=>fmt(x[0])+'·'+fmt(W[0][j])+' + '+fmt(x[1])+'·'+fmt(W[1][j]);
+const vmTxt=(nm,x,W,r)=>nm+'₁ = '+mulTxt(x,W,0)+' = '+fmt(r[0])+'\n'+nm+'₂ = '+mulTxt(x,W,1)+' = '+fmt(r[1]);
+const dotTxt=(a,b)=>fmt(a[0])+'·'+fmt(b[0])+' + '+fmt(a[1])+'·'+fmt(b[1]);
+const LV={oh:0,emb:1.5,x:3.0,qkv:4.7,s:6.4,a:7.7,z:9.0,o:10.6,cq:12.4,cs:13.9,ca:15.2,cz:16.5,y2:18.0,lg:19.7,p:21.1,tk:22.5};
+const ex=i=>i*5.2,dx=i=>15.8+i*5.6;
+function build(){
+ if(grp)scene.remove(grp);parts=[];byId={};lines=[];wlines=[];labels=[];lbEl.innerHTML='';sel=null;focus=null;document.getElementById('info').classList.remove('on');
+ grp=new THREE.Group();scene.add(grp);
+ const src=SENT===0?[0,2]:[1,2];M=run(src);const E=M.E,D=M.D,ws=src.map(t=>EW[t]),dn=D.din.map(t=>DW[t]);
+ addText('ENCODER (girdi: İngilizce)',ex(0.5),-2.4,0);addText('DECODER (çıktı: İspanyolca)',dx(0.5),-2.4,0);
+ // ---------- ENCODER ----------
+ src.forEach((t,i)=>{const X=ex(i),w=ws[i],oh=[0,0,0,0];oh[t]=1;
+  addText('«'+w+'»  (konum '+i+')',X,-1.1,0);
+  mk({id:'eoh'+i,short:'one-hot',dim:'1×4',cl:'x',vals:[oh],vmax:1,x:X,y:LV.oh,src:'v',name:'«'+w+'» one-hot',info:'Sözlüğün 4 girişi var ('+EW.join(', ')+'). «'+w+'» için yalnız kendi girişi 1, diğerleri 0. Ağırlıklarla çarpınca yalnız <b>bu kelimenin satırı</b> kalır: kelime → sayı çevirisi bir hesap değil, tablodan satır okumak.'});
+  mk({id:'eemb'+i,short:'gömme',dim:'1×2',cl:'x',vals:[E.emb[i]],x:X-0.75,y:LV.emb,src:'v',name:'«'+w+'» gömme (word embedding)',calc:'one-hot × E_enc = E_enc satırı «'+w+'»\n= ('+fmt(E.emb[i][0])+' ; '+fmt(E.emb[i][1])+')',info:'Video bu satırı 4 girdili, 2 aktivasyonlu (birim fonksiyon) küçük bir ağ olarak çiziyor: her bağlantı bir ağırlık. Aynı tablo her kelime için tekrar kullanılır.'});
+  mk({id:'epe'+i,short:'konum',dim:'1×2',cl:'x',vals:[PE[i]],x:X+0.75,y:LV.emb,src:'v',name:'konum '+i+' (sin / cos)',calc:'1. sayı: sinüs dalgası, 2. sayı: kosinüs dalgası\nkonum '+i+' → ('+fmt(PE[i][0])+' ; '+fmt(PE[i][1])+')',info:'Kelimenin cümledeki yerini taşıyan sabit imza. Öğrenilmez. «let\'s go» ile «go let\'s» aynı gömmeleri kullanır ama farklı konumlar alır.'});
+  mk({id:'ex'+i,short:'x = gömme + konum',dim:'1×2',cl:'x',vals:[E.x[i]],x:X,y:LV.x,src:'v',name:'«'+w+'» x (gömme + konum)',calc:'x = ('+fmt(E.emb[i][0])+' + '+fmt(PE[i][0])+' ; '+fmt(E.emb[i][1])+' + '+fmt(PE[i][1])+')\n  = ('+fmt(E.x[i][0])+' ; '+fmt(E.x[i][1])+')',info:'Kelimenin «ne» ve «nerede» bilgisi tek kartta. Q, K ve V bu karttan üretilir; residual bağlantısı da bu kartı en üste taşır.',carry:'«'+w+'» kimliği + yeri.'});
+  mk({id:'eq'+i,short:'Q',dim:'1×2',cl:'q',vals:[E.q[i]],x:X-1.55,y:LV.qkv,src:'v',name:'«'+w+'» sorgu Q = x·W_Q',calc:vmTxt('q',E.x[i],WQ,E.q[i]),info:'«Ne arıyorum?» Aynı W_Q her kelime için kullanılır.'});
+  mk({id:'ek'+i,short:'K',dim:'1×2',cl:'k',vals:[E.k[i]],x:X,y:LV.qkv,src:'v',name:'«'+w+'» anahtar K = x·W_K',calc:vmTxt('k',E.x[i],WK,E.k[i]),info:'«Beni böyle bul.» Bütün kelimelerin sorgusu bu anahtarla karşılaştırılır.'});
+  mk({id:'ev'+i,short:'V',dim:'1×2',cl:'v',vals:[E.v[i]],x:X+1.55,y:LV.qkv,src:'v',name:'«'+w+'» değer V = x·W_V',calc:vmTxt('v',E.x[i],WV,E.v[i]),info:'«Seçilirsem aktaracağım içerik.» Skora girmez; yüzdeler belli olunca karışıma girer.'});
+  mk({id:'es'+i,short:'skorlar',dim:'1×'+src.length,cl:'s',vals:[E.s[i]],vmax:15,x:X,y:LV.s,src:'v',name:'«'+w+'» sorgusu · her kelimenin anahtarı',calc:E.k.map((k,j)=>'q«'+w+'»·k«'+ws[j]+'» = '+dotTxt(E.q[i],k)+' = '+fmt(E.s[i][j])).join('\n'),info:'Nokta çarpım = benzerlik. Büyük skor: «bu kelime aradığıma uyuyor». Bu oyuncakta ÷√d yok (video onu en sonda ekliyor). Encoder\'da maske yok: her kelime cümlenin tamamını görür.'});
+  mk({id:'ea'+i,short:'softmax',dim:'1×'+src.length,cl:'s',vals:[E.a[i]],pct:1,x:X,y:LV.a,src:'v',name:'«'+w+'» softmax: kime ne kadar dikkat',calc:'softmax('+E.s[i].map(fmt).join(' ; ')+') = '+E.a[i].map(pc).join(' / '),info:'Skorlar sırasını koruyarak 0–1 arası, toplamı 1 olan paylara döner. Fark büyük olduğu için neredeyse kesin: '+E.a[i].map((v,j)=>'«'+ws[j]+'» '+pc(v)).join(', ')+'.'});
+  mk({id:'ez'+i,short:'self-attention',dim:'1×2',cl:'v',vals:[E.z[i]],x:X,y:LV.z,src:'v',name:'«'+w+'» self-attention değeri',calc:'z = '+E.a[i].map((a,j)=>pc(a)+'·V«'+ws[j]+'»').join(' + ')+'\n'+'z₁ = '+E.a[i].map((a,j)=>fmt(a)+'·'+fmt(E.v[j][0])).join(' + ')+' = '+fmt(E.z[i][0])+'\nz₂ = '+E.a[i].map((a,j)=>fmt(a)+'·'+fmt(E.v[j][1])).join(' + ')+' = '+fmt(E.z[i][1]),info:'Bütün kelimelerin değerleri yüzdelerle karıştırılır. '+(SENT===0?'Bu cümlede iki kelime de dikkatini %100 «let\'s»e verdiği için ikisinin değeri de V«let\'s»e eşit (2,48 ; −2,09): videoda iki kelimenin altında aynı 2,5 / −2,1 yazmasının nedeni bu.':'')});
+  mk({id:'eo'+i,short:'encoder çıktısı',dim:'1×2',cl:'o',vals:[E.o[i]],x:X,y:LV.o,src:'v',name:'«'+w+'» encoder çıktısı = x + z (residual)',calc:'('+fmt(E.x[i][0])+' + '+fmt(E.z[i][0])+' ; '+fmt(E.x[i][1])+' + '+fmt(E.z[i][1])+')\n= ('+fmt(E.o[i][0])+' ; '+fmt(E.o[i][1])+')',info:'Residual (atlama) bağlantısı: attention sonucu kartın yerine geçmez, kartın üstüne <b>eklenir</b>. Böylece iki kelimenin attention çıktısı aynı olsa da encoder çıktıları farklı kalır. Video ara sonuçları yuvarladığı için 4,37 / −1,01 ve 0,82 / −1,43 yazıyor.',carry:'«'+w+'» + cümledeki bağlamı. Decoder bu iki satıra çapraz dikkatle bakacak.'});
+  mk({id:'eck'+i,short:'çapraz K',dim:'1×2',cl:'k',vals:[M.ck[i]],x:X-0.85,y:LV.cq,src:'b',name:'«'+w+'» çapraz anahtar = çıktı·W_K(çapraz)',calc:vmTxt('k',E.o[i],Kc,M.ck[i]),info:'Decoder\'ın sorusu bu anahtarla karşılaştırılacak. Çapraz dikkatin ağırlıkları self-attention\'dan <b>farklıdır</b> (video da bunu söylüyor).'});
+  mk({id:'ecv'+i,short:'çapraz V',dim:'1×2',cl:'v',vals:[M.cv[i]],x:X+0.85,y:LV.cq,src:'b',name:'«'+w+'» çapraz değer = çıktı·W_V(çapraz)',calc:vmTxt('v',E.o[i],Vc,M.cv[i]),info:'Decoder bu kelimeye dikkat verirse buradan aldığı içerik.'});
+ });
+ // ---------- DECODER ----------
+ D.din.forEach((t,i)=>{const X=dx(i),w=DW[t],oh=[0,0,0,0];oh[t]=1;const R=D;
+  addText('girdi «'+w+'»  (konum '+i+')',X,-1.1,0);
+  mk({id:'doh'+i,short:'one-hot',dim:'1×4',cl:'x',vals:[oh],vmax:1,x:X,y:LV.oh,src:'v',name:'decoder girdisi «'+w+'»',info:(i===0?'Decoder her çeviriye bir başlangıç işaretiyle başlar. Video <b>&lt;EOS&gt;</b> kullanıyor («SOS da olur» diyor).':'Bir önceki adımda seçilen «'+w+'» girdiye eklendi; aynı ağırlıklarla bir sütun daha.')+' Decoder\'ın sözlüğü İspanyolca: '+DW.join(', ')+'.'});
+  mk({id:'demb'+i,short:'gömme',dim:'1×2',cl:'x',vals:[R.emb[i]],x:X-0.75,y:LV.emb,src:t===EOS?'v':'b',name:'«'+w+'» decoder gömmesi',calc:'E_dec satırı «'+w+'» = ('+fmt(R.emb[i][0])+' ; '+fmt(R.emb[i][1])+')',info:'Decoder\'ın <b>kendi</b> gömme tablosu var (encoder\'ınkinden ayrı).'});
+  mk({id:'dpe'+i,short:'konum',dim:'1×2',cl:'x',vals:[PE[i]],x:X+0.75,y:LV.emb,src:'v',name:'konum '+i,calc:'('+fmt(PE[i][0])+' ; '+fmt(PE[i][1])+')',info:'Encoder\'daki sin/cos dalgalarının aynısı.'});
+  mk({id:'dx'+i,short:'x',dim:'1×2',cl:'x',vals:[R.x[i]],x:X,y:LV.x,src:t===EOS?'v':'b',name:'«'+w+'» x (gömme + konum)',calc:'('+fmt(R.emb[i][0])+' + '+fmt(PE[i][0])+' ; '+fmt(R.emb[i][1])+' + '+fmt(PE[i][1])+') = ('+fmt(R.x[i][0])+' ; '+fmt(R.x[i][1])+')',info:t===EOS?'Videodaki değer: 2,70 / −0,34.':''});
+  mk({id:'dq'+i,short:'Q',dim:'1×2',cl:'q',vals:[R.q[i]],x:X-1.55,y:LV.qkv,src:'b',name:'«'+w+'» decoder sorgusu',calc:vmTxt('q',R.x[i],Qd,R.q[i]),info:'Decoder\'ın self-attention ağırlıkları encoder\'dakinden farklı.'});
+  mk({id:'dk'+i,short:'K',dim:'1×2',cl:'k',vals:[R.k[i]],x:X,y:LV.qkv,src:'b',name:'«'+w+'» decoder anahtarı',calc:vmTxt('k',R.x[i],Kd,R.k[i])});
+  mk({id:'dv'+i,short:'V',dim:'1×2',cl:'v',vals:[R.v[i]],x:X+1.55,y:LV.qkv,src:t===EOS?'v':'b',name:'«'+w+'» decoder değeri',calc:vmTxt('v',R.x[i],Vd,R.v[i])});
+  mk({id:'ds'+i,short:'skorlar (maskeli)',dim:'1×'+D.din.length,cl:'s',vals:[R.s[i]],vmax:3,x:X,y:LV.s,src:'b',name:'«'+w+'» decoder skorları (maskeli)',calc:R.k.map((k,j)=>j>i?'«'+DW[D.din[j]]+'»: maske (henüz yazılmadı)':'q·k«'+DW[D.din[j]]+'» = '+dotTxt(R.q[i],k)+' = '+fmt(R.s[i][j])).join('\n'),info:'Decoder yazarken sağdaki (henüz üretilmemiş) kelimeleri göremez: maskeli self-attention.'});
+  mk({id:'da'+i,short:'softmax',dim:'1×'+D.din.length,cl:'s',vals:[R.a[i]],pct:1,x:X,y:LV.a,src:'b',name:'«'+w+'» decoder softmax',calc:R.a[i].map((a,j)=>'«'+DW[D.din[j]]+'» '+pc(a)).join(' · '),info:i===0?'Tek token var, kendine %100 bakar (videoda da öyle).':''});
+  mk({id:'dz'+i,short:'self-attention',dim:'1×2',cl:'v',vals:[R.z[i]],x:X,y:LV.z,src:t===EOS?'v':'b',name:'«'+w+'» decoder self-attention değeri',calc:R.a[i].map((a,j)=>pc(a)+'·V«'+DW[D.din[j]]+'»').join(' + ')+' = ('+fmt(R.z[i][0])+' ; '+fmt(R.z[i][1])+')',info:t===EOS?'Videodaki değer: −2,8 / −2,3.':''});
+  mk({id:'dy1'+i,short:'+ residual',dim:'1×2',cl:'o',vals:[R.y1[i]],x:X,y:LV.o,src:'b',name:'«'+w+'» x + self-attention',calc:'('+fmt(R.x[i][0])+' + '+fmt(R.z[i][0])+' ; '+fmt(R.x[i][1])+' + '+fmt(R.z[i][1])+') = ('+fmt(R.y1[i][0])+' ; '+fmt(R.y1[i][1])+')',info:'Encoder\'daki gibi residual bağlantısı.'});
+  mk({id:'dcq'+i,short:'çapraz Q',dim:'1×2',cl:'q',vals:[R.cq[i]],x:X,y:LV.cq,src:'b',name:'«'+w+'» çapraz sorgu',calc:vmTxt('q',R.y1[i],Qc,R.cq[i]),info:'<b>Encoder-decoder (çapraz) attention</b>: sorgu decoder\'dan, anahtar ve değerler encoder çıktılarından gelir. «Sıradaki kelimeyi yazarken girdinin hangi kelimesine bakayım?»'});
+  mk({id:'dcs'+i,short:'çapraz skorlar',dim:'1×'+src.length,cl:'s',vals:[R.cs[i]],vmax:3,x:X,y:LV.cs,src:'b',name:'«'+w+'» çapraz skorlar',calc:M.ck.map((k,j)=>'q·k«'+ws[j]+'» = '+dotTxt(R.cq[i],k)+' = '+fmt(R.cs[i][j])).join('\n'),info:'Maske yok: girdi cümlesi baştan beri tamamen elimizde.'});
+  mk({id:'dca'+i,short:'çapraz softmax',dim:'1×'+src.length,cl:'s',vals:[R.ca[i]],pct:1,x:X,y:LV.ca,src:i===0&&SENT===0?'v':'b',name:'«'+w+'» girdinin hangi kelimesine bakıyor',calc:R.ca[i].map((a,j)=>'«'+ws[j]+'» '+pc(a)).join(' · '),info:i===0&&SENT===0?'Videodaki sonuç: ilk çeviri kelimesi için %100 birinci girdi kelimesi («let\'s»), %0 ikincisi.':''});
+  mk({id:'dcz'+i,short:'çapraz değer',dim:'1×2',cl:'o',vals:[R.cz[i]],x:X,y:LV.cz,src:'b',name:'«'+w+'» çapraz attention değeri',calc:R.ca[i].map((a,j)=>pc(a)+'·V«'+ws[j]+'»').join(' + ')+' = ('+fmt(R.cz[i][0])+' ; '+fmt(R.cz[i][1])+')'});
+  mk({id:'dy2'+i,short:'+ residual',dim:'1×2',cl:'o',vals:[R.y2[i]],x:X,y:LV.y2,src:'b',name:'«'+w+'» y₁ + çapraz değer',calc:'('+fmt(R.y1[i][0])+' + '+fmt(R.cz[i][0])+' ; '+fmt(R.y1[i][1])+' + '+fmt(R.cz[i][1])+') = ('+fmt(R.y2[i][0])+' ; '+fmt(R.y2[i][1])+')',info:'İkinci residual: çapraz dikkat yalnız «girdiyle ilişki» bilgisini ekler, önceki bilgi korunur.'});
+  mk({id:'dlg'+i,short:'tam bağlı katman',dim:'1×4',cl:'f',vals:[R.lg[i]],vmax:6,x:X,y:LV.lg,src:'b',name:'«'+w+'» 4 çıktı puanı (fully connected)',calc:DW.map((u,k)=>'«'+u+'»: '+mulTxt(R.y2[i],Wf,k)+' + '+fmt(bf[k])+' = '+fmt(R.lg[i][k])).join('\n'),info:'2 girdili, 4 çıktılı küçük bir sinir ağı: her İspanyolca token için bir puan (ağırlıklar + bias).'});
+  mk({id:'dp'+i,short:'softmax',dim:'1×4',cl:'f',vals:[R.p[i]],pct:1,x:X,y:LV.p,src:'b',name:'«'+w+'» sıradaki token olasılıkları',calc:DW.map((u,k)=>'«'+u+'» '+pc(R.p[i][k])).join(' · '),info:'En yüksek olasılık seçilir.'});
+  let b=0;R.p[i].forEach((v,k)=>{if(v>R.p[i][b])b=k});
+  addText('→ «'+DW[b]+'»',X,LV.tk,0,'tk');
+ });
+ // ---------- AĞIRLIK BANKALARI (arkada) ----------
+ const BZ=-1.2,BY=-5.6;
+ mk({id:'WE',short:'E_enc',dim:'4×2',cl:'w',vals:[Eenc[0],Eenc[1],Eenc[2],[0,0]],x:-1.2,y:BY,z:BZ,src:'v',name:'E_enc: encoder gömme tablosu',calc:EW.map((u,k)=>'«'+u+'»: '+(Eenc[k]?fmt(Eenc[k][0])+' ; '+fmt(Eenc[k][1]):'videoda gösterilmiyor (kullanılmıyor)')).join('\n'),info:'Her satır bir kelimenin 2 sayılık kartı. One-hot bu tablodan satır seçer.'});
+ mk({id:'WQ',short:'W_Q',dim:'2×2',cl:'w',vals:WQ,x:1.6,y:BY,z:BZ,src:'v',name:'W_Q (encoder sorgu ağırlıkları)',calc:'videodaki çarpanlar: ×1,1 ×−2,8 → q₁ ; ×0,6 ×2,4 → q₂',info:'İki kelimede de aynı tablo.'});
+ mk({id:'WK',short:'W_K',dim:'2×2',cl:'w',vals:WK,x:3.7,y:BY,z:BZ,src:'v',name:'W_K (encoder anahtar ağırlıkları)',calc:'×−1,7 ×−1,4 → k₁ ; ×0,5 ×0,9 → k₂'});
+ mk({id:'WV',short:'W_V',dim:'2×2',cl:'w',vals:WV,x:5.8,y:BY,z:BZ,src:'v',name:'W_V (encoder değer ağırlıkları)',calc:'×1,5 ×−0,3 → v₁ ; ×−1,0 ×−0,2 → v₂'});
+ mk({id:'WKc',short:'W_K çapraz',dim:'2×2',cl:'w',vals:Kc,x:7.9,y:BY,z:BZ,src:'b',name:'Çapraz attention anahtar ağırlıkları',info:'Encoder çıktılarından çapraz anahtar üretir.'});
+ mk({id:'WVc',short:'W_V çapraz',dim:'2×2',cl:'w',vals:Vc,x:10.0,y:BY,z:BZ,src:'b',name:'Çapraz attention değer ağırlıkları'});
+ mk({id:'WD',short:'E_dec',dim:'4×2',cl:'w',vals:Edec,x:13.6,y:BY,z:BZ,src:'b',name:'E_dec: decoder gömme tablosu',calc:DW.map((u,k)=>'«'+u+'»: '+fmt(Edec[k][0])+' ; '+fmt(Edec[k][1])+(k===EOS?'  (videodaki)':'')).join('\n'),info:'«y» satırı bu oyuncakta hiç kullanılmadığı için eğitimde değişmedi (0 ; 0).'});
+ mk({id:'WQd',short:'W_Q dec',dim:'2×2',cl:'w',vals:Qd,x:16.0,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_Q'});
+ mk({id:'WKd',short:'W_K dec',dim:'2×2',cl:'w',vals:Kd,x:18.1,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_K'});
+ mk({id:'WVd',short:'W_V dec',dim:'2×2',cl:'w',vals:Vd,x:20.2,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_V',info:'<EOS>\'un değerini videodaki (−2,8 ; −2,3)\'e götürecek şekilde eğitildi.'});
+ mk({id:'WQc',short:'W_Q çapraz',dim:'2×2',cl:'w',vals:Qc,x:22.3,y:BY,z:BZ,src:'b',name:'Çapraz attention sorgu ağırlıkları'});
+ mk({id:'WF',short:'W_out + b',dim:'3×4',cl:'w',vals:[Wf[0],Wf[1],bf],x:25.0,y:BY,z:BZ,src:'b',name:'Tam bağlı katman ağırlıkları (2 satır) + bias (son satır)',info:'2 sayıyı 4 İspanyolca token puanına çevirir.'});
+ addText('AĞIRLIK TABLOLARI (mor kesikli çizgiler: hangi kutuda kullanıldığı)',12,BY-1.6,BZ);
+ // ---------- BAĞLAR ----------
+ const n=src.length,m=D.din.length;
+ for(let i=0;i<n;i++){link('eoh'+i,'eemb'+i,0x3fc7c1);link('eemb'+i,'ex'+i,0x3fc7c1);link('epe'+i,'ex'+i,0x3fc7c1);['eq','ek','ev'].forEach(k=>link('ex'+i,k+i,0x6ea0ff));
+  link('eq'+i,'es'+i,0x6ea0ff);for(let j=0;j<n;j++){link('ek'+j,'es'+i,0xe0609a);link('ev'+j,'ez'+i,0x46c46a)}link('es'+i,'ea'+i,0xffd54a);link('ea'+i,'ez'+i,0xffd54a);link('ez'+i,'eo'+i,0x46c46a);
+  link('eo'+i,'eck'+i,0xf0a032);link('eo'+i,'ecv'+i,0xf0a032);
+  const X=ex(i);curve([new THREE.Vector3(X+0.7,LV.x,0),new THREE.Vector3(X+2.35,LV.x+1.2,0.6),new THREE.Vector3(X+2.35,LV.o-1.2,0.6),new THREE.Vector3(X+0.7,LV.o,0)],0x5fcf8a,['ex'+i,'eo'+i]);
+  wl('WE','eemb'+i);wl('WQ','eq'+i);wl('WK','ek'+i);wl('WV','ev'+i);wl('WKc','eck'+i);wl('WVc','ecv'+i)}
+ for(let i=0;i<m;i++){link('doh'+i,'demb'+i,0x3fc7c1);link('demb'+i,'dx'+i,0x3fc7c1);link('dpe'+i,'dx'+i,0x3fc7c1);['dq','dk','dv'].forEach(k=>link('dx'+i,k+i,0x6ea0ff));
+  link('dq'+i,'ds'+i,0x6ea0ff);for(let j=0;j<=i;j++){link('dk'+j,'ds'+i,0xe0609a);link('dv'+j,'dz'+i,0x46c46a)}link('ds'+i,'da'+i,0xffd54a);link('da'+i,'dz'+i,0xffd54a);link('dz'+i,'dy1'+i,0x46c46a);
+  link('dy1'+i,'dcq'+i,0x6ea0ff);link('dcq'+i,'dcs'+i,0x6ea0ff);for(let j=0;j<n;j++){link('eck'+j,'dcs'+i,0xf0a032);link('ecv'+j,'dcz'+i,0xf0a032)}
+  link('dcs'+i,'dca'+i,0xffd54a);link('dca'+i,'dcz'+i,0xffd54a);link('dcz'+i,'dy2'+i,0xf0a032);link('dy2'+i,'dlg'+i,0xf27a88);link('dlg'+i,'dp'+i,0xf27a88);
+  const X=dx(i);curve([new THREE.Vector3(X+0.7,LV.x,0),new THREE.Vector3(X+2.4,LV.x+1.2,0.6),new THREE.Vector3(X+2.4,LV.o-1.2,0.6),new THREE.Vector3(X+0.7,LV.o,0)],0x5fcf8a,['dx'+i,'dy1'+i]);
+  curve([new THREE.Vector3(X+0.7,LV.o,0),new THREE.Vector3(X+2.4,LV.o+1.2,0.6),new THREE.Vector3(X+2.4,LV.y2-1.2,0.6),new THREE.Vector3(X+0.7,LV.y2,0)],0x5fcf8a,['dy1'+i,'dy2'+i]);
+  wl('WD','demb'+i);wl('WQd','dq'+i);wl('WKd','dk'+i);wl('WVd','dv'+i);wl('WQc','dcq'+i);wl('WF','dlg'+i)}
+ // seçilen token bir sonraki sütunun girdisi
+ for(let i=0;i+1<m;i++){const a=dx(i),b=dx(i+1);curve([new THREE.Vector3(a,LV.p+0.5,0),new THREE.Vector3((a+b)/2,LV.p+1.8,1.2),new THREE.Vector3(b+2.9,LV.s,1.6),new THREE.Vector3(b+0.9,LV.oh,0.3)],0xffd54a,['dp'+i,'doh'+(i+1)])}
+ applyToggles();
+}
+function applyToggles(){wlines.forEach(l=>l.visible=showW);lbEl.style.display=showL?'':'none'}
+// ===== SEÇİM =====
+function select(p){sel=p;const i=document.getElementById('info');i.style.setProperty('--c',CL[p.cl]);
+ document.getElementById('ib').innerHTML='<h3>'+p.name+'</h3><div class="sh">şekil: '+p.rows+' × '+p.cols+'</div>'+(p.calc?'<div class="calc">'+p.calc+'</div>':'')+(p.info?'<div>'+p.info+'</div>':'')+(p.carry?'<div class="cr">📦 Taşıdığı bilgi: '+p.carry+'</div>':'')+
+  '<span class="src '+p.src+'">'+(p.src==='v'?'🟢 videoda gösterilen sayılar':'🟠 videoda gösterilmiyor: bizim eğittiğimiz ağırlıklarla')+'</span>';
+ i.classList.add('on');refresh()}
+document.getElementById('ix').onclick=()=>{sel=null;document.getElementById('info').classList.remove('on');refresh()};
+function refresh(){parts.forEach(p=>{const on=p===sel;p.lb.classList.toggle('sel',on);p.edge.material.color.set(on?0xffc82e:CL[p.cl])})}
+// ===== TUR =====
+const ids=(pre,n)=>Array.from({length:n},(_,i)=>pre+i);
+const ST=()=>{const E=M.E,D=M.D,w=M.src.map(t=>EW[t]),s0=SENT===0,o0=DW[M.outs[0]],o1=DW[M.outs[1]];return [
+ {t:'Büyük resim',ids:[],tx:'Görev: İngilizce «'+w.join(' ')+'» → İspanyolca. <b>Solda ENCODER</b> (girdi kelimeleri, her biri bir sütun), <b>sağda DECODER</b> (çevirinin her adımı bir sütun). Aşağıdan yukarı okunur. Her sütun <b>aynı birimin kopyası</b>: ağırlıklar ortak, yalnız girdi farklı. En alttaki mor tablolar ağırlıklar; kesikli çizgiler hangi kutuda kullanıldıklarını gösterir.',soz:'Video bunları ekrana sığdırmak için katlayıp küçültüyordu; burada hepsi aynı anda açık.'},
+ {t:'1 · Kelime → sayı (word embedding)',ids:[...ids('eoh',2),...ids('eemb',2),'WE'],tx:'One-hot (1 0 0 0) ağırlıklarla çarpılınca yalnız o kelimenin satırı kalır: «'+w[0]+'» → ('+fmt(E.emb[0][0])+' ; '+fmt(E.emb[0][1])+'), «'+w[1]+'» → ('+fmt(E.emb[1][0])+' ; '+fmt(E.emb[1][1])+'). Gerçek modellerde yüzlerce/binlerce sayı olur; burada 2.'},
+ {t:'2 · Konum: sin/cos imzası eklenir',ids:[...ids('epe',2),...ids('ex',2)],tx:'Sıra önemli («Squatch eats pizza» ≠ «pizza eats Squatch»). Konum 0 → (0 ; 1), konum 1 → (−0,9 ; 0,4). Toplam: «'+w[0]+'» ('+fmt(E.x[0][0])+' ; '+fmt(E.x[0][1])+'), «'+w[1]+'» ('+fmt(E.x[1][0])+' ; '+fmt(E.x[1][1])+').'},
+ {t:'3 · Sorgu Q',ids:[...ids('eq',2),'WQ'],tx:'Kart W_Q ile çarpılır: q«'+w[0]+'» = ('+fmt(E.q[0][0])+' ; '+fmt(E.q[0][1])+'). Squatch\'ın sorusu: «neden kartın kendisini kullanmıyoruz?» Çünkü «ne arıyorum» (Q) ile «neyim» (K) farklı roller; bunları ayrı ağırlıklar öğrenir.'},
+ {t:'4 · Anahtar K ve değer V',ids:[...ids('ek',2),...ids('ev',2),'WK','WV'],tx:'Aynı kart iki tablo daha ile çarpılır: K («beni böyle bul») ve V («aktaracağım içerik»). İki kelimede <b>aynı W_K ve W_V</b>; videoda iki pembe Key kutusu olması iki ayrı tablo demek değil.'},
+ {t:'5 · Skorlar: Q · K',ids:[...ids('es',2),...ids('eq',2),...ids('ek',2)],tx:'Her kelimenin sorgusu her kelimenin anahtarıyla nokta çarpılır. «'+w[0]+'» satırı: '+E.s[0].map(fmt).join(' / ')+'; «'+w[1]+'» satırı: '+E.s[1].map(fmt).join(' / ')+'. Büyük = benzer.'},
+ {t:'6 · Softmax: yüzdeler',ids:ids('ea',2),tx:'Her satır kendi içinde %100\'e tamamlanır: «'+w[0]+'» → '+E.a[0].map(pc).join(' / ')+', «'+w[1]+'» → '+E.a[1].map(pc).join(' / ')+'.'},
+ {t:'7 · Değerleri yüzdelerle karıştır',ids:[...ids('ez',2),...ids('ev',2)],tx:'Self-attention değeri = Σ yüzde × V. '+(s0?'Burada iki kelime de %100 «let\'s»e baktığı için ikisinin sonucu da V«let\'s» = (2,48 ; −2,09). Videoda iki sütunun da 2,5 / −2,1 göstermesinin nedeni bu.':'«to» → ('+fmt(E.z[0][0])+' ; '+fmt(E.z[0][1])+'), «go» → ('+fmt(E.z[1][0])+' ; '+fmt(E.z[1][1])+').'),soz:'Bütün V\'ler toplama girer; payı %0 olan kelimenin katkısı sıfırlanır.'},
+ {t:'8 · Residual → encoder çıktısı',ids:[...ids('eo',2),...ids('ex',2)],tx:'Yeşil yay: kartın kendisi attention sonucuna <b>eklenir</b>. «'+w[0]+'» → ('+fmt(E.o[0][0])+' ; '+fmt(E.o[0][1])+'), «'+w[1]+'» → ('+fmt(E.o[1][0])+' ; '+fmt(E.o[1][1])+'). İki kelimenin attention değeri aynı olsa da çıktıları farklı. Encoder bitti: girdi cümlesi 2 satırlık bir tabloya kodlandı.'},
+ {t:'9 · Decoder başlar: <EOS>',ids:['doh0','demb0','dpe0','dx0','WD'],tx:'Decoder\'ın kendi gömme tablosu var. Başlangıç işareti &lt;EOS&gt; → (2,70 ; −1,34) + konum 0 → <b>(2,70 ; −0,34)</b> (videodaki sayılar).'},
+ {t:'10 · Decoder self-attention (maskeli)',ids:['dq0','dk0','dv0','ds0','da0','dz0','dy1'+0],tx:'Şimdilik tek token var: kendine %100 bakar, sonuç kendi değeri ('+fmt(D.z[0][0])+' ; '+fmt(D.z[0][1])+') (videoda −2,8 / −2,3). Residual ile ('+fmt(D.y1[0][0])+' ; '+fmt(D.y1[0][1])+'). Bu katman, çeviri uzadıkça «şimdiye kadar ne yazdım» bilgisini taşır.'},
+ {t:'11 · Çapraz attention: girdiye bak',ids:['dcq0','dcs0','dca0','eck0','eck1','ecv0','ecv1'],tx:'Sorgu decoder\'dan, anahtar ve değer <b>encoder çıktılarından</b>. Skorlar '+D.cs[0].map(fmt).join(' / ')+' → <b>'+D.ca[0].map((a,j)=>'«'+w[j]+'» '+pc(a)).join(', ')+'</b>. Video: «don\'t eat the pizza» çevrilirken «don\'t» kaybolmasın diye bu katman var.'},
+ {t:'12 · Çapraz değer + residual',ids:['dcz0','dy20'],tx:'Yüzdelerle encoder değerleri karıştırılır, ikinci residual ile eklenir: ('+fmt(D.y2[0][0])+' ; '+fmt(D.y2[0][1])+').'},
+ {t:'13 · Tam bağlı katman + softmax → «'+o0+'»',ids:['dlg0','dp0','WF'],tx:'2 sayı, 4 çıktılı küçük bir ağa girer: her İspanyolca token için bir puan. Softmax: '+DW.map((u,k)=>'«'+u+'» '+pc(D.p[0][k])).join(', ')+'. Seçilen: <b>«'+o0+'»</b>.'},
+ {t:'14 · Seçilen token girdiye eklenir',ids:['doh1','demb1','dx1','ds1','da1'],tx:'«'+o0+'» decoder\'ın ikinci girdisi olur (sarı ok). <b>Aynı ağırlıklarla</b> ikinci sütun hesaplanır. Maskeli self-attention: «'+o0+'» kendine ve &lt;EOS&gt;\'a bakabilir (%'+Math.round(D.a[1][0]*100)+' / %'+Math.round(D.a[1][1]*100)+'). Birinci sütun aynen kalır (maske sayesinde değişmez).'},
+ {t:'15 · İkinci adım: çapraz attention',ids:['dcq1','dcs1','dca1','dcz1','dy21'],tx:'Bu kez girdinin '+D.ca[1].map((a,j)=>'«'+w[j]+'» '+pc(a)).join(', ')+' payına bakıyor.'},
+ {t:'16 · Çıkış: «'+o1+'» → bitti',ids:['dlg1','dp1'],tx:'Softmax: '+DW.map((u,k)=>'«'+u+'» '+pc(D.p[1][k])).join(', ')+'. '+(M.outs[1]===EOS?'&lt;EOS&gt; seçildi: decoder durur. Çeviri: <b>«'+o0+'»</b>.':'')},
+ {t:'Özet ve videonun en sonda ekledikleri',ids:[],tx:'Gömme (kelime → sayı), konum (sıra), self-attention (cümle içi ilişki), çapraz attention (girdi ↔ çıktı), residual (her parça kendi işine odaklansın). Gerçek Transformer\'da ayrıca: her adımdan sonra <b>normalizasyon</b>, skorlar <b>÷√d</b>, her blokta <b>FFN</b> (gizli katmanlı ağ), çok kafa ve 37 bin token\'lık sözlük. Bu oyuncakta hiçbiri yok.',soz:'Sitede: Self-Attention (dikkat laboratuvarı), Multi-Head (kafalar), Transformer Bloğu (Add & Norm, FFN ve 7+5 toplama turu).'}]};
+let tour=-1;
+function stepFocus(){const s=ST()[tour],ps=s.ids.map(i=>byId[i]).filter(Boolean);focus=ps.length?new Set(ps):null;
+ if(ps.length){const c=new THREE.Vector3();ps.forEach(p=>c.add(p.mesh.position));c.divideScalar(ps.length);tgtGoal=c;let mx=0;ps.forEach(p=>mx=Math.max(mx,p.mesh.position.distanceTo(c)));distGoal=Math.max(10,Math.min(34,mx*2.4+8))}
+ else{tgtGoal=DEF.t.clone();distGoal=DEF.dist}
+ document.getElementById('tb').innerHTML='<h3>'+(tour+1)+'/'+ST().length+' · '+s.t.replace(/^[0-9]+ · /,'')+'</h3>'+s.tx+(s.soz?'<div class="soz">'+s.soz+'</div>':'');
+ document.getElementById('tour').classList.add('on');document.getElementById('tp').disabled=tour===0;document.getElementById('tn').textContent=tour===ST().length-1?'↺ Baştan':'İleri ▶';document.getElementById('tx').style.display=''}
+function tourOff(){tour=-1;focus=null;tgtGoal=null;distGoal=null;document.getElementById('tour').classList.remove('on');document.getElementById('tx').style.display='none';document.getElementById('tp').disabled=true;document.getElementById('tn').textContent='🎬 Adım adım ▶'}
+document.getElementById('tn').onclick=()=>{tour=tour<0?0:tour===ST().length-1?0:tour+1;stepFocus()};
+document.getElementById('tp').onclick=()=>{if(tour>0){tour--;stepFocus()}};document.getElementById('tx').onclick=tourOff;
+const setS=k=>{SENT=k;document.getElementById('s1').classList.toggle('on',k===0);document.getElementById('s2').classList.toggle('on',k===1);const t=tour;build();if(t>=0){tour=t;stepFocus()}};
+document.getElementById('s1').onclick=()=>setS(0);document.getElementById('s2').onclick=()=>setS(1);
+document.getElementById('tw').onclick=function(){showW=!showW;this.classList.toggle('on',showW);applyToggles()};
+document.getElementById('tl').onclick=function(){showL=!showL;this.classList.toggle('on',showL);applyToggles()};
+document.getElementById('rs').onclick=()=>{yaw=DEF.yaw;pitch=DEF.pitch;dist=DEF.dist;tgt.copy(DEF.t);tgtGoal=null;distGoal=null};
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('info').classList.contains('on'))document.getElementById('ix').click();else tourOff()}if(e.key==='ArrowRight'&&tour>=0)document.getElementById('tn').click();if(e.key==='ArrowLeft'&&tour>0)document.getElementById('tp').click()});
+// ===== KAMERA =====
+let drag=null;const ray=new THREE.Raycaster(),mp=new THREE.Vector2();
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);drag={x:e.clientX,y:e.clientY,btn:e.button,sh:e.shiftKey,mv:0};tgtGoal=null;distGoal=null});
+cv.addEventListener('pointermove',e=>{if(!drag){cv.style.cursor=pickAt(e)?'pointer':'grab';return}const dxx=e.clientX-drag.x,dyy=e.clientY-drag.y;drag.x=e.clientX;drag.y=e.clientY;drag.mv+=Math.abs(dxx)+Math.abs(dyy);
+ if(drag.btn===2||drag.sh){const k=dist*0.0016,r=new THREE.Vector3().setFromMatrixColumn(cam.matrix,0),u=new THREE.Vector3().setFromMatrixColumn(cam.matrix,1);tgt.addScaledVector(r,-dxx*k).addScaledVector(u,dyy*k)}
+ else{yaw-=dxx*0.006;pitch=Math.max(-1.3,Math.min(1.3,pitch+dyy*0.006))}});
+cv.addEventListener('pointerup',e=>{const d=drag;drag=null;if(d&&d.mv<5){const p=pickAt(e);if(p)select(p)}});
+cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(4,Math.min(80,dist*Math.exp(e.deltaY*0.0012)));distGoal=null},{passive:false});
+function pickAt(e){const r=cv.getBoundingClientRect();mp.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(mp,cam);const h=ray.intersectObjects(parts.map(p=>p.mesh),false);return h.length?h[0].object.userData.p:null}
+const v3=new THREE.Vector3();
+function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
+function frame(){
+ if(tgtGoal)tgt.lerp(tgtGoal,0.07);if(distGoal!=null)dist+=(distGoal-dist)*0.07;
+ cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
+ const w=innerWidth,h=innerHeight,fid=focus?new Set([...focus].map(p=>p.id)):null;
+ parts.forEach(p=>{const on=!focus||focus.has(p),o=on?1:0.15;p.mats.forEach(m=>m.opacity=o);p.edge.material.opacity=o;
+  v3.copy(p.mesh.position);v3.y+=p.h/2+0.3;v3.project(cam);const vis=v3.z<1&&showL;p.lb.style.display=vis?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px';p.lb.classList.toggle('dim',!on)});
+ lines.forEach(l=>{const u=l.userData,on=!fid||(fid.has(u.a)||fid.has(u.b)),o=on?0.9:0.07;if(l.material){l.material.opacity=o}else if(l.line){l.line.material.transparent=true;l.line.material.opacity=o;l.cone.material.transparent=true;l.cone.material.opacity=o}});
+ wlines.forEach(l=>{const u=l.userData,on=!fid||(fid.has(u.a)||fid.has(u.b));l.material.opacity=on?0.45:0.04});
+ labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=v3.z<1&&showL?'':'none'});
+ ren.render(scene,cam);requestAnimationFrame(frame)}
+resize();build();frame();
+window.__josh.ui={parts:()=>parts,steps:()=>ST(),go:i=>{tour=i;stepFocus()},sent:setS,M:()=>M};
+const PH={renderer:ren,
+ save(){const o={yaw,pitch,dist,t:tgt.clone(),g:tgtGoal,dg:distGoal};return()=>{yaw=o.yaw;pitch=o.pitch;dist=o.dist;tgt.copy(o.t);tgtGoal=o.g;distGoal=o.dg}},
+ step(){const box=new THREE.Box3().setFromObject(scene);tgtGoal=null;distGoal=null;
+  const m=printA4Ndc(box,cam);tgt.addScaledVector(printA4Shift(m,cam,tgt),0.5);const f=Math.max(m.w,m.h)/0.95;dist*=1+(f-1)*0.3;dist=Math.max(4,Math.min(120,dist));
+  return Math.abs(f-1)<0.03&&Math.abs(m.cx)<0.03&&Math.abs(m.cy)<0.05}};
+document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),false,PH);
+document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
+})();
+</script>
+<script src="print-a4.js?v=202611081204"></script></body></html>
