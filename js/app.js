@@ -2464,9 +2464,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       real:[['🏗️','Yüzlerce katman derinlik mümkün'],['📦','Kopyala-yapıştır ölçeklenen mimari']],
       sub:['Residual bağlantı','LayerNorm','FFN katmanı','Encoder/decoder yığını']},
     {id:'paper',nm:'📜 Attention Is All You Need', tier:9, v:50, pre:['blk'], crown:true,
-      d:'2017, Vaswani vd. Bütün çarklar dönünce bu makale ana dilin gibi okunur. BÜYÜK HEDEF.',
+      d:'2017, Vaswani vd. Önceki derslerin bütün parçaları bu 15 sayfalık makalede tek bir mimaride birleşti.',
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
-      real:[['🎓','HEDEF: makaleyi okuyabilmek'],['🌍','Modern YZ çağının kurucu metni']],
+      real:[['📜','Modern yapay zekânın temel makalesi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Makaleyi baştan sona oku','Şekil 1 mimarisini kendi cümlelerinle anlat','Sonuç tablolarını yorumla']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
@@ -2480,7 +2480,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true},
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
-    {t0:9,t1:10,nm:'🎓 HEDEF: MAKALE', newStyle:true}
+    {t0:9,t1:10,nm:'📜 MAKALE VE SONRASI', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -2511,7 +2511,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
      geldiğini yeniden tanımlıyor. render() her çağrıldığında güncel pencere
      genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
   const BP_VERT=720;
-  let VERT=window.innerWidth<=BP_VERT;
+  let TT_MODE='auto', TT_Z=1;
+  const ttVert=()=> TT_MODE==='auto' ? window.innerWidth<=BP_VERT : TT_MODE==='v';
+  let VERT=ttVert();
   // Yeni-stil (madalyon) kartlar eskisinden daha zengin içerik taşıdığı için
   // daha geniş/uzun — masaüstünde tam boy, dikey/mobil modda VERT slot
   // matematiği (mX=100 marjı, bkz. layout()) eski 184-birimlik kartlara göre
@@ -2643,7 +2645,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   }
 
   function render(){
-    VERT=window.innerWidth<=BP_VERT;
+    VERT=ttVert();
     layout();
     const svgWrap=svg.parentElement;
     svg.classList.toggle('techSvg-vert', VERT);
@@ -2651,8 +2653,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     // W artık sabit değil (newStyle kartların gerçek genişliğine göre kümülatif
     // hesaplanıyor, bkz. layout()) — CSS'teki sabit min-width yerine gerçek
     // içerik genişliğini JS'ten uyguluyoruz (1 SVG birimi ≈ 1 CSS px).
-    svg.style.minWidth = VERT ? '' : (W+'px');
-    if(svgWrap) svgWrap.style.overflowX = VERT ? 'visible' : 'auto';
+    // boyut: yatayda gerçek genişlik × yakınlık, dikeyde kap genişliğinin yüzdesi × yakınlık
+    if(VERT){ svg.style.minWidth=''; svg.style.maxWidth=TT_Z===1?'':'none'; svg.style.width=TT_Z===1?'':(100*TT_Z)+'%'; }
+    else { svg.style.minWidth=(W*TT_Z)+'px'; svg.style.width=TT_Z===1?'':(W*TT_Z)+'px'; svg.style.maxWidth=TT_Z===1?'':'none'; }
+    if(svgWrap) svgWrap.style.overflowX = (VERT&&TT_Z<=1) ? 'visible' : 'auto';
+    ttToolSync();
     const hint=document.getElementById('ttHint');
     if(hint) hint.textContent = VERT ? '⬇️ aşağı kaydırarak aşamalarda ilerle' : '➡️ sağa kaydırarak aşamalarda ilerle';
     const dir=document.getElementById('ttDir');
@@ -2666,7 +2671,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const lblCls='era-lbl'+(e.newStyle?' era-lbl-new':'');
       if(VERT){
         // üst boşluk 96px: normal düğümler için fazlasıyla yeterli, AMA asıl amacı
-        // "kraliyet" (crown) kartının (★ HEDEF ★ etiketi) çağın ilk satırında
+        // "kraliyet" (crown) kartının (★ 2017 ★ etiketi) çağın ilk satırında
         // olduğunda ribbon/etiketle çakışmasını önlemek — o yüzden alttan büyük
         const y0=Y({tier:e.t0})-96, y1=Y({tier:e.t1})+58;
         s+='<rect class="'+bandCls+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
@@ -2729,7 +2734,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const w=NW(n), h=NH(n), x=X(n)-w/2, y=Y(n)-h/2;
       const sp=n.nm.indexOf(' ');
       const icon=sp>0?n.nm.slice(0,sp):n.nm, label=sp>0?n.nm.slice(sp+1):n.nm;
-      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ HEDEF ★</text>';
+      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ 2017 ★</text>';
       if(isNewStyle(n)){
         s+=newCardSvg(n, st, k, N, icon, label, x, y, w, h);
         return;
@@ -2887,8 +2892,28 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   let _ttRt;
   window.addEventListener('resize', ()=>{
     clearTimeout(_ttRt);
-    _ttRt=setTimeout(()=>{ if((window.innerWidth<=BP_VERT)!==VERT) render(); }, 150);
+    _ttRt=setTimeout(()=>{ if(ttVert()!==VERT) render(); }, 150);
   });
+
+  // ---- araç çubuğu: tam ekran, yatay/dikey, büyüt/küçült ----
+  function ttToolSync(){
+    const q=id=>document.getElementById(id);
+    if(!q('ttTools')) return;
+    ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.classList.toggle('on',TT_MODE===m)});
+    const z=q('ttZv'); if(z) z.textContent='%'+Math.round(TT_Z*100);
+    const f=q('ttFs'); if(f) f.textContent=document.body.classList.contains('tt-full')?'✕ Tam ekrandan çık':'⛶ Tam ekran';
+  }
+  (function(){
+    const q=id=>document.getElementById(id);
+    if(!q('ttTools')) return;
+    ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.onclick=()=>{TT_MODE=m; render();}});
+    const zoom=f=>{TT_Z=Math.max(0.4,Math.min(2.5,Math.round(TT_Z*f*10)/10)); render();};
+    q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=1; render();};
+    const fs=on=>{document.body.classList.toggle('tt-full',on); render();};
+    q('ttFs').onclick=()=>fs(!document.body.classList.contains('tt-full'));
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.body.classList.contains('tt-full')) fs(false); });
+    ttToolSync();
+  })();
   window.__ttShow=show;
   window.__ttAPI={ NODES:NODES, stateOf:stateOf };
   window.__ttGet=function(){ return { done:[...done], subs:[...subs] }; };
@@ -3376,7 +3401,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL AĞLAR'},
       {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
-      {t0:9,  t1:10, c:'255,201,60',  nm:'🎓 HEDEF: MAKALE'}
+      {t0:9,  t1:10, c:'255,201,60',  nm:'📜 MAKALE VE SONRASI'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era').forEach(e=>e.remove());
