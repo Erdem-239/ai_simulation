@@ -646,3 +646,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Bir ajanın başarısı neyle ölçülür?',['Son cevap + adım sayısı, token maliyeti, hatalar','Yalnız hız','Yalnız parametre sayısı','Ölçülemez'],'Değerlendirme dersi.'),
  R('Araç çıktıları nasıl ele alınmalı?',['Veri olarak; içindeki talimatlar kullanıcı talimatı sayılmamalı','Talimat olarak','Silinmeli','Ağırlıklara yazılmalı'],'Güvenlik ilkesi.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.ev=[
+ R('Benchmark nedir?',['Sabit bir soru seti ve puanlama kuralı','Bir model türü','Bir optimizer','Bir tokenizer'],'Ortak sınav.'),
+ R('Doğruluk nasıl hesaplanır?',['Doğru sayısı ÷ soru sayısı','Soru × doğru','Kayıp ÷ 2','Parametre sayısı'],'Oran.'),
+ R('%95 güven aralığının yaklaşık formülü?',['o ± 1,96·√(o(1−o)/n)','o ± n','o × 1,96','o ÷ n'],'Normal yaklaşım.'),
+ R('Soru sayısı 4 katına çıkarsa aralık genişliği?',['Yarıya iner','4 kat küçülür','Değişmez','İki katına çıkar'],'1/√n.'),
+ R('50 soruda %72 ölçülen modelin aralığı yaklaşık?',['±12 puan','±1 puan','±50 puan','±0,1 puan'],'%60–%84.'),
+ R('İki modelin aralıkları üst üste biniyorsa?',['Bu sınav onları güvenle ayıramıyor','Kesin aynılar','Yüksek olan kesin daha iyi','Hata var'],'Daha çok soru gerekir.'),
+ R('Örnek 2\'de 50 soruda B\'nin A\'dan yüksek ölçülme oranı?',['%60','%100','%0','%94'],'Şans sıralamayı değiştiriyor.'),
+ R('Örnek 2\'de kaç soruda B > A oranı %94\'e çıktı?',['1.000','50','200','10'],'5.000\'de %100.'),
+ R('Örnek 1\'de 1000 tekrarda aralığın gerçeği içerme oranı?',['%93–96 civarı','%50','%100','%10'],'≈ %95.'),
+ R('Sızıntı (contamination) nedir?',['Test sorularının eğitim verisine karışması','Modelin bellek taşması','Tokenizer hatası','Gradyan patlaması'],'Ezber ölçülür.'),
+ R('Örnek 3\'te gerçek beceri %60 iken sınav kaç gösterdi?',['%71','%60','%98','%30'],'Sızan sorular ezberlendi.'),
+ R('Sızıntıyı kontrol etmenin yolu hangisi DEĞİLDİR?',['Aynı soruları daha çok kez sormak','Eğitim verisinde aynı metni aramak','Soruları yeniden yazmak','Eğitimden sonra yazılmış sorular kullanmak'],'Tekrar sormak sızıntıyı göstermez.'),
+ R('Benchmark doygunluğu nedir?',['Modellerin bir sınavda tavana yaklaşıp onu ayırt edici olmaktan çıkarması','Sınavın silinmesi','Modelin yorulması','Sözlüğün dolması'],'Yeni sınav gerekir.'),
+ R('pass@k neyi ölçer?',['k denemede en az birinin doğru olma olasılığını','k soruluk doğruluğu','k katmanlı modeli','k parametreyi'],'Kod sınavları.'),
+ R('10 denemenin 3\'ü doğruysa pass@1?',['0,3','0,9167','1','0'],'c/n.'),
+ R('Aynı durumda pass@5?',['≈ 0,9167','0,3','0,5','0,05'],'1 − C(7,5)/C(10,5).'),
+ R('pass@k yansız tahmin formülünü tanıtan çalışma?',['HumanEval (Chen ve arkadaşları, 2021)','MMLU','GLUE','BERT'],'OpenAI.'),
+ R('MMLU nedir?',['57 konudan çoktan seçmeli sorular içeren sınav','Kod sınavı','Görüntü sınavı','Bir model'],'Hendrycks 2020.'),
+ R('Modelle hakemliğin bilinen bir eğilimi?',['Sıra ve uzunluk kayırması','Her zaman kısa cevabı seçmek','Rastgele puanlamak','Hiç eğilimi yok'],'Ekstra.'),
+ R('Sıra kayırmasına karşı yaygın önlem?',['Cevapların sırasını değiştirip iki kez sormak','Daha uzun cevap yazmak','Sıcaklığı artırmak','Hakemi büyütmek'],'Ekstra.'),
+ R('Açık uçlu sohbet için yaygın ölçü?',['İnsanların iki cevaptan iyisini seçmesi (Elo benzeri)','Tam eşleşme','pass@k','BLEU tek başına'],'Chatbot Arena.'),
+ R('Elo puanında beklenmedik bir zafer?',['Daha çok puan getirir','Puan getirmez','Puan kaybettirir','Hesaba katılmaz'],'Satrançtaki gibi.'),
+ R('Güven aralığı hangi varsayıma dayanır?',['Soruların rastgele seçildiği','Modelin büyük olduğu','Sızıntı olduğu','Sorunun kolay olduğu'],'Taraflı sorular dışında.'),
+ R('Aynı sınavda çok deneme yapıp en iyisini raporlamak?',['Bir tür aşırı uyum; puanı şişirir','Daha dürüst','Zorunlu','Belirsizliği azaltır'],'Seçim yanlılığı.'),
+ R('Bir şirket model seçerken ne yapmalı?',['Kendi işine benzeyen örneklerle ölçmeli','Yalnız genel tabloya bakmalı','En büyük modeli seçmeli','Ölçmemeli'],'Genel tablo temsil etmeyebilir.')
+]})();

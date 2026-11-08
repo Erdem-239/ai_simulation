@@ -2508,6 +2508,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'ReAct (düşün + eyle): Yao ve arkadaşları (2022). Toolformer: Schick ve arkadaşları (2023). İstem enjeksiyonu kavramı 2022\'de yaygınlaştı.',
       real:[['🔎','"Web\'de arıyor…" adımları'],['💻','Kod yazıp çalıştıran asistanlar'],['🛡️','Riskli adımda insan onayı']],
       sub:['Döngü: model → araç çağrısı → harness → sonuç','Sistem talimatı ve araç tanımları','Bağlam büyümesi ve yönetimi','Adım sınırı ve hata yönetimi','İstem enjeksiyonu ve en az yetki']},
+    {id:'ev',   nm:'📏 Değerlendirme', tier:13, v:50, pre:['agent'], tab:'ev',
+      d:'Bir modelin iyi olduğunu nasıl biliriz? Benchmark, örneklem büyüklüğü ve güven aralığı, iki modelin şansla yer değiştirmesi, eğitime sızan sorular, modelle hakemlik ve pass@k.',
+      sci:'Güven aralığı: Neyman (1937). MMLU: Hendrycks ve arkadaşları (2020). HumanEval ve pass@k: Chen ve arkadaşları (2021). Chatbot Arena: Zheng ve arkadaşları (2023).',
+      real:[['🏆','Puan tabloları ve sıralamalar'],['🕳️','Eğitime sızan test soruları'],['⚖️','Modelin modeli puanlaması']],
+      sub:['Benchmark ve doğruluk','Güven aralığı (±1,96·√(o(1−o)/n))','İki model: sıralama şansla döner mi?','Sızıntı (contamination)','pass@k, insan tercihi, modelle hakemlik']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
@@ -2521,7 +2526,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
     {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
-    {t0:11,t1:12,nm:'🛠️ UYGULAMADA LLM', newStyle:true}
+    {t0:11,t1:13,nm:'🛠️ UYGULAMADA LLM', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3447,7 +3452,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
-      {t0:11, t1:12, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'}
+      {t0:11, t1:13, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
