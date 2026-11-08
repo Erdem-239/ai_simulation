@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Transformer oyuncağı 3B</title>
+<title>Mini çevirmen 3B</title>
 <style>
 :root{--bg:#0b0e14;--card:#141923;--line:#2a3140;--tx:#e8ebf2;--mute:#9aa3b6;--hl:#ffc82e}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,Segoe UI,Roboto,sans-serif;overflow:hidden}
@@ -36,9 +36,31 @@ body.touring #leg{display:none}
 #leg{position:fixed;left:14px;top:84px;font-size:11.5px;color:var(--mute);z-index:5;pointer-events:none;line-height:1.7}
 #leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 @media(max-width:760px){#info{width:calc(100vw - 24px);top:auto;bottom:66px;right:12px;max-height:38vh}#leg{display:none}#tour{top:auto;bottom:110px;width:calc(100vw - 24px);max-height:46vh}#top p{display:none}}
+#top{right:auto;max-width:min(760px,calc(100vw - 28px))}
+#top h1{font-size:19px}#top p{font-size:12.8px;max-width:none}
+#top a{color:#9fc8f0;pointer-events:auto}
+#leg{top:auto;bottom:66px}
+#welcome{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(8,10,16,.72);backdrop-filter:blur(3px)}
+#welcome.off{display:none}
+#welcome .wc{width:min(560px,calc(100vw - 28px));background:#141923;border:1px solid #38425a;border-radius:14px;padding:18px 20px;line-height:1.55;font-size:14px}
+#welcome h2{margin:0 0 6px;font-size:20px}
+#welcome .wcol{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+#welcome .wcol div{background:#10151f;border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:3px}
+#welcome .wcol span{font-size:12.8px;color:var(--mute)}
+#welcome .wsm{font-size:12px;color:var(--mute)}
+#welcome .wbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#welcome button{font:700 14px system-ui,sans-serif;padding:9px 14px;border-radius:9px;border:1px solid #38425a;background:#1a2030;color:var(--tx);cursor:pointer}
+#welcome #wGo{border-color:var(--hl);color:#111;background:var(--hl)}
+.lb.hid{visibility:hidden}
+@media(max-width:560px){#welcome .wcol{grid-template-columns:1fr}}
 </style></head><body>
 <canvas id="c"></canvas><div id="lb"></div>
-<div id="top"><h1>🧸 Transformer oyuncağı — «let's go» → «vamos» (3B)</h1><p>StatQuest'te (Josh Starmer, <i>Transformer Neural Networks, Clearly Explained</i>) elle hesaplanan minik Transformer'ın <b>tamamı</b>, kendi çizimimizle: her kelime 2 sayı, tek kafa, normalizasyon ve FFN yok. Soldaki iki sütun ENCODER, sağdaki iki sütun DECODER. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır; klavye: <b>oklar</b> kaydırır, <b>A/D</b> döndürür, <b>W/S</b> yakınlaşır, <b>Q/E</b> eğer, <b>H</b> sıfırlar, <b>PageUp/PageDown</b> tur adımı. Bir kutuya tıkla: içindeki sayılar ve <b>nasıl hesaplandığı</b>. 🟢 videoda gösterilen sayı · 🟠 videoda gösterilmeyen, bizim eğittiğimiz ağırlık.</p></div>
+<div id="top"><h1>🔤 Mini çevirmen: «let's go» → «vamos»</h1><p>İngilizceyi İspanyolcaya çeviren en küçük Transformer. Solda <b>okuma</b> (encoder), sağda <b>yazma</b> (decoder); aşağıdan yukarı okunur. Bir kutuya tıkla: içindeki sayılar ve nasıl hesaplandığı. <a href="#" id="helpBtn">Nasıl gezilir?</a></p></div>
+<div id="welcome"><div class="wc"><h2>🔤 Mini çevirmen</h2><p>Bu sayfada, İngilizce <b>«let's go»</b> cümlesini İspanyolca <b>«vamos»</b>a çeviren minik bir modelin <b>bütün parçaları</b> tek ekranda duruyor. Her kelime yalnız <b>2 sayı</b>, böylece her hesabı elle takip edebilirsin.</p>
+<div class="wcol"><div><b>⬅ Sol: okuma (encoder)</b><span>İngilizce kelimeleri sayıya çevirir, birbirine baktırır.</span></div><div><b>Sağ: yazma (decoder) ➡</b><span>İspanyolca kelimeleri tek tek üretir, okuduğuna bakarak.</span></div></div>
+<p class="wsm">Sayılar StatQuest'in (Josh Starmer) Transformer videosundan; videoda olmayan kısım bizim eğittiğimiz ağırlıklarla (🟢 video · 🟠 bizim).</p>
+<div class="wbtn"><button id="wGo">▶ Adım adım anlat (18 adım)</button><button id="wFree">Kendim gezeceğim</button></div></div></div>
+
 <div id="leg"><i style="background:#3fc7c1"></i>girdi / gömme / konum<br><i style="background:#6ea0ff"></i>sorgu Q<br><i style="background:#e0609a"></i>anahtar K<br><i style="background:#46c46a"></i>değer V<br><i style="background:#ffd54a"></i>skor / yüzde<br><i style="background:#c77dff"></i>ağırlık tablosu<br><i style="background:#f0a032"></i>encoder çıktısı / çapraz<br><i style="background:#f27a88"></i>çıkış katmanı</div>
 <div id="info"><span class="x" id="ix">✕</span><div id="ib"></div></div>
 <div id="tour"><div id="tb"></div></div>
@@ -143,7 +165,7 @@ function build(){
   mk({id:'eq'+i,short:'Q',dim:'1×2',cl:'q',vals:[E.q[i]],x:X-1.55,y:LV.qkv,src:'v',name:'«'+w+'» sorgu Q = x·W_Q',calc:vmTxt('q',E.x[i],WQ,E.q[i]),info:'«Ne arıyorum?» Aynı W_Q her kelime için kullanılır.'});
   mk({id:'ek'+i,short:'K',dim:'1×2',cl:'k',vals:[E.k[i]],x:X,y:LV.qkv,src:'v',name:'«'+w+'» anahtar K = x·W_K',calc:vmTxt('k',E.x[i],WK,E.k[i]),info:'«Beni böyle bul.» Bütün kelimelerin sorgusu bu anahtarla karşılaştırılır.'});
   mk({id:'ev'+i,short:'V',dim:'1×2',cl:'v',vals:[E.v[i]],x:X+1.55,y:LV.qkv,src:'v',name:'«'+w+'» değer V = x·W_V',calc:vmTxt('v',E.x[i],WV,E.v[i]),info:'«Seçilirsem aktaracağım içerik.» Skora girmez; yüzdeler belli olunca karışıma girer.'});
-  mk({id:'es'+i,short:'skorlar',dim:'1×'+src.length,cl:'s',vals:[E.s[i]],vmax:15,x:X,y:LV.s,src:'v',name:'«'+w+'» sorgusu · her kelimenin anahtarı',calc:E.k.map((k,j)=>'q«'+w+'»·k«'+ws[j]+'» = '+dotTxt(E.q[i],k)+' = '+fmt(E.s[i][j])).join('\n'),info:'Nokta çarpım = benzerlik. Büyük skor: «bu kelime aradığıma uyuyor». Bu oyuncakta ÷√d yok (video onu en sonda ekliyor). Encoder\'da maske yok: her kelime cümlenin tamamını görür.'});
+  mk({id:'es'+i,short:'skorlar',dim:'1×'+src.length,cl:'s',vals:[E.s[i]],vmax:15,x:X,y:LV.s,src:'v',name:'«'+w+'» sorgusu · her kelimenin anahtarı',calc:E.k.map((k,j)=>'q«'+w+'»·k«'+ws[j]+'» = '+dotTxt(E.q[i],k)+' = '+fmt(E.s[i][j])).join('\n'),info:'Nokta çarpım = benzerlik. Büyük skor: «bu kelime aradığıma uyuyor». Bu minik modelde ÷√d yok (video onu en sonda ekliyor). Encoder\'da maske yok: her kelime cümlenin tamamını görür.'});
   mk({id:'ea'+i,short:'softmax',dim:'1×'+src.length,cl:'s',vals:[E.a[i]],pct:1,x:X,y:LV.a,src:'v',name:'«'+w+'» softmax: kime ne kadar dikkat',calc:'softmax('+E.s[i].map(fmt).join(' ; ')+') = '+E.a[i].map(pc).join(' / '),info:'Skorlar sırasını koruyarak 0–1 arası, toplamı 1 olan paylara döner. Fark büyük olduğu için neredeyse kesin: '+E.a[i].map((v,j)=>'«'+ws[j]+'» '+pc(v)).join(', ')+'.'});
   mk({id:'ez'+i,short:'self-attention',dim:'1×2',cl:'v',vals:[E.z[i]],x:X,y:LV.z,src:'v',name:'«'+w+'» self-attention değeri',calc:'z = '+E.a[i].map((a,j)=>pc(a)+'·V«'+ws[j]+'»').join(' + ')+'\n'+'z₁ = '+E.a[i].map((a,j)=>fmt(a)+'·'+fmt(E.v[j][0])).join(' + ')+' = '+fmt(E.z[i][0])+'\nz₂ = '+E.a[i].map((a,j)=>fmt(a)+'·'+fmt(E.v[j][1])).join(' + ')+' = '+fmt(E.z[i][1]),info:'Bütün kelimelerin değerleri yüzdelerle karıştırılır. '+(SENT===0?'Bu cümlede iki kelime de dikkatini %100 «let\'s»e verdiği için ikisinin değeri de V«let\'s»e eşit (2,48 ; −2,09): videoda iki kelimenin altında aynı 2,5 / −2,1 yazmasının nedeni bu.':'')});
   mk({id:'eo'+i,short:'encoder çıktısı',dim:'1×2',cl:'o',vals:[E.o[i]],x:X,y:LV.o,src:'v',name:'«'+w+'» encoder çıktısı = x + z (residual)',calc:'('+fmt(E.x[i][0])+' + '+fmt(E.z[i][0])+' ; '+fmt(E.x[i][1])+' + '+fmt(E.z[i][1])+')\n= ('+fmt(E.o[i][0])+' ; '+fmt(E.o[i][1])+')',info:'Residual (atlama) bağlantısı: attention sonucu kartın yerine geçmez, kartın üstüne <b>eklenir</b>. Böylece iki kelimenin attention çıktısı aynı olsa da encoder çıktıları farklı kalır. Video ara sonuçları yuvarladığı için 4,37 / −1,01 ve 0,82 / −1,43 yazıyor.',carry:'«'+w+'» + cümledeki bağlamı. Decoder bu iki satıra çapraz dikkatle bakacak.'});
@@ -182,7 +204,7 @@ function build(){
  mk({id:'WV',short:'W_V',dim:'2×2',cl:'w',vals:WV,x:5.8,y:BY,z:BZ,src:'v',name:'W_V (encoder değer ağırlıkları)',calc:'×1,5 ×−0,3 → v₁ ; ×−1,0 ×−0,2 → v₂'});
  mk({id:'WKc',short:'W_K çapraz',dim:'2×2',cl:'w',vals:Kc,x:7.9,y:BY,z:BZ,src:'b',name:'Çapraz attention anahtar ağırlıkları',info:'Encoder çıktılarından çapraz anahtar üretir.'});
  mk({id:'WVc',short:'W_V çapraz',dim:'2×2',cl:'w',vals:Vc,x:10.0,y:BY,z:BZ,src:'b',name:'Çapraz attention değer ağırlıkları'});
- mk({id:'WD',short:'E_dec',dim:'4×2',cl:'w',vals:Edec,x:13.6,y:BY,z:BZ,src:'b',name:'E_dec: decoder gömme tablosu',calc:DW.map((u,k)=>'«'+u+'»: '+fmt(Edec[k][0])+' ; '+fmt(Edec[k][1])+(k===EOS?'  (videodaki)':'')).join('\n'),info:'«y» satırı bu oyuncakta hiç kullanılmadığı için eğitimde değişmedi (0 ; 0).'});
+ mk({id:'WD',short:'E_dec',dim:'4×2',cl:'w',vals:Edec,x:13.6,y:BY,z:BZ,src:'b',name:'E_dec: decoder gömme tablosu',calc:DW.map((u,k)=>'«'+u+'»: '+fmt(Edec[k][0])+' ; '+fmt(Edec[k][1])+(k===EOS?'  (videodaki)':'')).join('\n'),info:'«y» satırı bu minik modelde hiç kullanılmadığı için eğitimde değişmedi (0 ; 0).'});
  mk({id:'WQd',short:'W_Q dec',dim:'2×2',cl:'w',vals:Qd,x:16.0,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_Q'});
  mk({id:'WKd',short:'W_K dec',dim:'2×2',cl:'w',vals:Kd,x:18.1,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_K'});
  mk({id:'WVd',short:'W_V dec',dim:'2×2',cl:'w',vals:Vd,x:20.2,y:BY,z:BZ,src:'b',name:'Decoder self-attention W_V',info:'<EOS>\'un değerini videodaki (−2,8 ; −2,3)\'e götürecek şekilde eğitildi.'});
@@ -241,7 +263,7 @@ const ST=()=>{const E=M.E,D=M.D,w=M.src.map(t=>EW[t]),s0=SENT===0,o0=DW[M.outs[0
   bak:`<b>Sol iki sütun = ENCODER</b>: her sütun bir girdi kelimesi (${lb.join(', ')}). <b>Sağ iki sütun = DECODER</b>: her sütun çevirinin bir adımı. Her sütunu <b>aşağıdan yukarı</b> oku: en altta kelime, en üstte sonuç. En alttaki <b>mor tablolar ağırlıklar</b>; mor kesikli çizgi "bu tablo şu kutuda kullanıldı" demek. Yeşil yaylar residual (kısayol), sarı ok "seçilen kelime bir sonraki adımın girdisi".`,
   coz:`Geometri sorusu çözer gibi gideceğiz: önce şekli tanıdık, şimdi aşağıdan yukarı <b>her kutuyu sırayla</b> hesaplayacağız. Her adımda: 1) hangi kutuya bakıyoruz, 2) içindeki sayılar nereden geldi (işlemle), 3) bu sayılar ne demek.`,
   anlam:`Her kutu bir ara sonuç. Kutunun içindeki sayıların rengi işaretini gösterir: <b>mavi = artı</b>, <b>kırmızı = eksi</b>, renk koyulaştıkça sayı büyür.`,
-  dikkat:['İki encoder sütunu ayrı ağlar değil: <b>aynı birim, aynı ağırlıklar</b>, yalnız girdi kelime farklı. Decoder sütunları için de aynısı.','Bu oyuncakta her kelime yalnız <b>2 sayı</b>. Gerçek modellerde yüzlerce/binlerce sayı olur ama işlem aynıdır.'],
+  dikkat:['İki encoder sütunu ayrı ağlar değil: <b>aynı birim, aynı ağırlıklar</b>, yalnız girdi kelime farklı. Decoder sütunları için de aynısı.','Bu minik modelde her kelime yalnız <b>2 sayı</b>. Gerçek modellerde yüzlerce/binlerce sayı olur ama işlem aynıdır.'],
   sonra:`En alttan başlıyoruz: kelime nasıl sayıya çevrilir?`},
 
  {t:'1 · Kelime → sayı (gömme)',ids:[...ids('eoh',2),...ids('eemb',2),'WE'],
@@ -299,7 +321,7 @@ ${lb[1]} soruyor (q = ${V2(E.q[1])})
   · k${lb[0]} = ${dt(E.q[1],E.k[0])}
   · k${lb[1]} = ${dt(E.q[1],E.k[1])}</div>`,
   anlam:`Skor = <b>uyum puanı</b>. Büyük artı: "aradığım sende var"; sıfıra yakın: ilgisiz; eksi: "sende hiç yok". Burada ${lb[0]} en çok ${look(0)}'e, ${lb[1]} en çok ${look(1)}'e uyum buluyor${same?' (ikisi de aynı kelimeye)':''}.`,
-  dikkat:['K\'ler <b>ortak</b>: bir kez hesaplanır, iki skor kutusu da aynı iki K\'yi kullanır. Q ise kişiye özel.','Skorun birimi yok; tek başına "18 büyük mü" sorusu anlamsız, yalnız <b>aynı satırdaki diğer skorla</b> kıyaslanır.','Gerçek Transformer skorları √d\'ye böler; bu oyuncakta bölme yok.'],
+  dikkat:['K\'ler <b>ortak</b>: bir kez hesaplanır, iki skor kutusu da aynı iki K\'yi kullanır. Q ise kişiye özel.','Skorun birimi yok; tek başına "18 büyük mü" sorusu anlamsız, yalnız <b>aynı satırdaki diğer skorla</b> kıyaslanır.','Gerçek Transformer skorları √d\'ye böler; bu minik modelde bölme yok.'],
   sonra:`Puanları "dikkatimin yüzde kaçı kime" yüzdelerine çevireceğiz: softmax.`},
 
  {t:'6 · Softmax: puanlar yüzdeye',ids:ids('ea',2),
@@ -385,7 +407,7 @@ residual = ${V2(D.y1[0])} + ${V2(D.cz[0])} = <b>${V2(D.y2[0])}</b></div>`,
 
  {t:'13 · Tam bağlı katman + softmax → «'+o0+'»',ids:['dlg0','dp0','WF'],
   hedef:`2 sayıyı, İspanyolca sözlüğün <b>her kelimesi için bir puana</b> çevirmek ve en olasıyı seçmek.`,
-  bak:`Kırmızı <b>puan</b> kutusu (1×4: ir, vamos, y, &lt;EOS&gt;) ve üstünde <b>olasılık</b> kutusu. Kesikli çizgi W_F (2×4) tablosuna.`,
+  bak:`Kırmızı <b>puan</b> kutusu (1×4: ir, vamos, y, &lt;EOS&gt;) ve üstünde <b>olasılık</b> kutusu. Kesikli çizgi «W_out + b» (3×4) tablosuna.`,
   coz:`Her kelime için: 2 sayı × tablonun o sütunu + sabit (b).<div class="calc">${DW.map((u,k)=>u.padEnd(6,' ')+' = '+pm(D.y2[0][0])+'·'+pm(Wf[0][k])+' + '+pm(D.y2[0][1])+'·'+pm(Wf[1][k])+' + '+pm(bf[k])+' = <b>'+fmt(D.lg[0][k])+'</b>').join('\n')}
 softmax → ${DW.map((u,k)=>u+' '+pc(D.p[0][k])).join(' ; ')}</div>`,
   anlam:`En yüksek olasılık <b>«${o0}»</b>: decoder'ın ilk yazdığı kelime bu. «${w.join(' ')}» → «${o0}»: model girdide ${look(0)}'e bakarak bu çeviriyi seçti.`,
@@ -431,7 +453,7 @@ softmax → ${DW.map((u,k)=>u+' '+pc(D.p[1][k])).join(' ; ')}</div>`,
   bak:`Bütün mimari açık. İstediğin kutuya tıklayıp hesabını yeniden görebilirsin.`,
   coz:`<b>Gömme</b> (kelime → sayı), <b>konum</b> (sıra), <b>self-attention</b> (cümle içi ilişki), <b>çapraz attention</b> (girdi ↔ çıktı), <b>residual</b> (kendi bilgisini koru), <b>tam bağlı + softmax</b> (kelime seç).`,
   anlam:`Hiçbir adımda kural yok: hepsi çarpma, toplama, e üzeri ve bölme. Ne yapılacağını <b>ağırlıklar</b> belirler ve onlar eğitimle öğrenilir.`,
-  dikkat:['Gerçek Transformer\'da ayrıca: her adımdan sonra <b>normalizasyon</b>, skorlar <b>÷√d</b>, her blokta <b>FFN</b>, çok kafa, çok blok ve on binlerce kelimelik sözlük. Bu oyuncakta hiçbiri yok.'],
+  dikkat:['Gerçek Transformer\'da ayrıca: her adımdan sonra <b>normalizasyon</b>, skorlar <b>÷√d</b>, her blokta <b>FFN</b>, çok kafa, çok blok ve on binlerce kelimelik sözlük. Bu minik modelde hiçbiri yok.'],
   sonra:`Sitede: Self-Attention (dikkat laboratuvarı), Multi-Head (kafalar), Transformer Bloğu (Add & Norm, FFN, 7+5 toplama turu).`}]};
 let tour=-1;
 function stepFocus(){const s=ST()[tour],ps=s.ids.map(i=>byId[i]).filter(Boolean);focus=ps.length?new Set(ps):null;
@@ -474,6 +496,15 @@ function keyMove(){if(!KEYS.size)return;const sp=dist*0.012,r=new THREE.Vector3(
  if(mx||my)tgt.addScaledVector(r,mx*sp).addScaledVector(u,my*sp);
  if(KEYS.has('a'))yaw+=0.025;if(KEYS.has('d'))yaw-=0.025;if(KEYS.has('q'))pitch=Math.min(1.3,pitch+0.02);if(KEYS.has('e'))pitch=Math.max(-1.3,pitch-0.02);
  if(KEYS.has('w'))dist=Math.max(4,dist*0.975);if(KEYS.has('s'))dist=Math.min(120,dist*1.025)}
+
+// üst üste binen etiketleri ayıkla: başlıklar ve odaktakiler önce, sonra kısa etiketler
+let dcN=0;function declutter(){if((dcN++)%3)return;const L=[];
+ labels.forEach(l=>{if(l.d.style.display!=='none')L.push({d:l.d,p:0})});
+ parts.forEach(q=>{const d=q.lb;if(d.style.display==='none')return;const pr=(q===sel?1:(focus&&focus.has(q))?2:(!focus?3:5))+d.textContent.length/100;L.push({d,p:pr})});
+ L.sort((a,b)=>a.p-b.p);const R=[];
+ L.forEach(o=>{o.d.classList.remove('hid');const r=o.d.getBoundingClientRect();if(!r.width){return}
+  const hit=R.some(q=>r.left<q.right+2&&r.right>q.left-2&&r.top<q.bottom+1&&r.bottom>q.top-1);
+  if(hit&&o.p>=3){o.d.classList.add('hid')}else R.push(r)})}
 function frame(){
  keyMove();
  if(tgtGoal)tgt.lerp(tgtGoal,0.07);if(distGoal!=null)dist+=(distGoal-dist)*0.07;
@@ -484,6 +515,7 @@ function frame(){
  lines.forEach(l=>{const u=l.userData,on=!fid||(fid.has(u.a)||fid.has(u.b)),o=on?0.9:0.07;if(l.material){l.material.opacity=o}else if(l.line){l.line.material.transparent=true;l.line.material.opacity=o;l.cone.material.transparent=true;l.cone.material.opacity=o}});
  wlines.forEach(l=>{const u=l.userData,on=!fid||(fid.has(u.a)||fid.has(u.b));l.material.opacity=on?0.45:0.04});
  labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=v3.z<1&&showL?'':'none'});
+ declutter();
  ren.render(scene,cam);requestAnimationFrame(frame)}
 resize();build();frame();
 window.__josh.ui={parts:()=>parts,steps:()=>ST(),go:i=>{tour=i;stepFocus()},sent:setS,M:()=>M};
@@ -496,4 +528,11 @@ document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),f
 document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
 })();
 </script>
-<script src="print-a4.js?v=202611081556"></script></body></html>
+<script src="print-a4.js?v=202611081559"></script>
+<script>
+(function(){const w=document.getElementById('welcome');let seen=false;try{seen=sessionStorage.getItem('joshSeen')==='1'}catch(e){}
+ const close=()=>{w.classList.add('off');try{sessionStorage.setItem('joshSeen','1')}catch(e){}};
+ if(seen)w.classList.add('off');
+ document.getElementById('wFree').onclick=close;document.getElementById('wGo').onclick=()=>{close();document.getElementById('tn').click()};
+ document.getElementById('helpBtn').onclick=e=>{e.preventDefault();alert('Sürükle: döndür · Tekerlek: yakınlaş · Sağ tuş ya da Shift+sürükle: kaydır\nKlavye: oklar kaydır, A/D döndür, W/S yakınlaş, Q/E eğ, H sıfırla\nPageUp/PageDown: anlatımda önceki/sonraki adım\nAlttaki «Etiketler» düğmesi yazıları gizler/gösterir.')}})();
+</script></body></html>

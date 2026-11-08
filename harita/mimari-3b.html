@@ -185,7 +185,7 @@ body.emb #fam{display:none!important}
 
 <div id="stage"></div>
 <div id="labels"></div>
-<div id="fam"><span class="fl">Mimari ailesi:</span><button data-fam="tr" class="on" title="Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5">🧠 Transformer</button><button data-fam="oyuncak" title="StatQuest: «let's go» → «vamos», her kelime 2 sayı">🧸 Oyuncak</button><button data-fam="rnn" title="Zamanda açılmış RNN">🔁 RNN</button><button data-fam="s2s" title="2 katmanlı LSTM encoder-decoder, 7 + 5 → 12">➡️ Seq2Seq (LSTM)</button></div>
+<div id="fam"><span class="fl">Mimari ailesi:</span><button data-fam="tr" class="on" title="Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5">🧠 Transformer</button><button data-fam="oyuncak" title="En küçük Transformer: «let's go» → «vamos», her kelime 2 sayı">🔤 Mini çevirmen</button><button data-fam="rnn" title="Zamanda açılmış RNN">🔁 RNN</button><button data-fam="s2s" title="2 katmanlı LSTM encoder-decoder, 7 + 5 → 12">➡️ Seq2Seq (LSTM)</button></div>
 <iframe id="famView" title="Mimari"></iframe>
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
@@ -1420,9 +1420,9 @@ $('pa').onclick=()=>doPrint(true);
 <script src="print-a4.js?v=202610220920"></script>
 <script>
 /* ---------- mimari ailesi: RNN / Seq2Seq / oyuncak aynı sayfada ---------- */
-(function(){const FAM={oyuncak:'josh-3b.html',rnn:'rnn-3b.html',s2s:'s2s-3b.html'};
+(function(){const FAM={oyuncak:'josh-3b.html',cevirmen:'josh-3b.html',rnn:'rnn-3b.html',s2s:'s2s-3b.html'};
  const vm=location.search.match(/[?&]v=(\d+)/),vq=vm?'?v='+vm[1]:'';const fv=document.getElementById('famView');
- function setFam(k){if(!FAM[k])k='tr';document.querySelectorAll('#fam button').forEach(b=>b.classList.toggle('on',b.dataset.fam===k));
+ function setFam(k){if(!FAM[k])k='tr';document.querySelectorAll('#fam button').forEach(b=>b.classList.toggle('on',b.dataset.fam===(k==='cevirmen'?'oyuncak':k)));
   if(k==='tr'){document.body.classList.remove('famon');fv.src='about:blank';if(location.hash)history.replaceState(null,'',location.pathname+location.search)}
   else{document.body.classList.add('famon');const u=FAM[k]+vq;if(!fv.src.includes(FAM[k]))fv.src=u;history.replaceState(null,'',location.pathname+location.search+'#'+k);setTimeout(()=>{try{fv.focus()}catch(e){}},300)}}
  document.querySelectorAll('#fam button').forEach(b=>b.onclick=()=>setFam(b.dataset.fam));

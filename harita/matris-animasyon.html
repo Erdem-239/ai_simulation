@@ -46,17 +46,23 @@ a{color:var(--blue)}
 #pick button small{font-weight:400;font-size:11.5px;color:var(--mute,#9aa3b6)}
 #pick button:hover{border-color:#5aa0e0}
 #pick button.on{border-color:var(--hl,#ffc82e);background:#2a2410;color:var(--hl,#ffc82e)}
+#steps{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+#steps b{font-size:12px;color:var(--mute,#9aa3b6);align-self:center;margin-right:4px}
+#steps button{font:12px system-ui,sans-serif;padding:4px 9px;border-radius:14px;border:1px solid var(--line,#2a3140);background:#161b26;color:#cdd4e4;cursor:pointer}
+#steps button:hover{border-color:#5aa0e0}
+#steps button.on{border-color:var(--hl,#ffc82e);color:var(--hl,#ffc82e);background:#2a2410}
+#steps button.done{color:#7fd18b}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
 <p class="sub">Dört animasyon tek sayfada. Üstten seç; her biri video gibi oynar, ⏮ ⏭ ile durak durak gidilir.</p>
 <div id="pick"><button data-pk="gpt2">🎬 GPT-2 turu<small>3B mimari + matris işlemleri, ~5 dk</small></button><button data-pk="oss">🟢 gpt-oss turu<small>MoE, GQA, kayan pencere, RoPE</small></button><button data-pk="rope">🌀 RoPE turu<small>konum = okların dönmesi, 13 durak</small></button><button data-pk="temel">🧱 Matris temelleri<small>transpoz, satır × sütun, Q·Kᵀ, maske</small></button></div>
-<details id="tabsBox"><summary id="tabsSum">📑 Bütün sahneler (tek tek)</summary><div class="tabs" id="tabs"></div></details>
+<div id="steps"></div><details id="tabsBox" style="display:none"><summary id="tabsSum"></summary><div class="tabs" id="tabs"></div></details>
 <div class="bar">
-  <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
-  <span id="tNav" style="display:none"><button id="tPrev">⏮ Önceki durak</button> <button id="tNext">Sonraki durak ⏭</button></span>
+  <button id="bPrev">◀ Geri</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">İleri ▶</button>
+  <span id="tNav" style="display:none!important"><button id="tPrev">⏮ Önceki durak</button> <button id="tNext">Sonraki durak ⏭</button></span>
   <label>Hız <select id="spd"><option value="0.4">0,4×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
   <label id="hLab">Kafa <select id="hsel"></select></label>
-  <label><input type="checkbox" id="auto"> sonraki sahneye otomatik geç</label>
+  <label id="autoLab"><input type="checkbox" id="auto"> bitince sonrakine geç</label>
 </div>
 <div class="bar"><input type="range" id="scrub" min="0" max="1000" value="0"></div>
 <div class="stage"><div id="arch3d"><button id="f3dBtn" title="3B görünümü elle gezmek için etkinleştir">🖱️ 3B'yi elle gez</button></div><div class="cv"><canvas id="cv"></canvas></div></div>
@@ -836,7 +842,7 @@ var tour={dur:TD,tour:true,arch:cfg.arch,tag:cfg.tag,
   var g=ease((u-ZI-sg.ds)/ZO);ctx.save();ctx.globalAlpha=1-g;sg.sc.draw(1);ctx.restore();ctx.save();ctx.globalAlpha=g;drawRoute(idx+1,idx+1,'Sıradaki parçaya geçiliyor …');ctx.restore()},
  live:function(t){var a=segAt(t),sg=a.seg,u=a.u;
   if(sg.k==='intro')return cfg.liveIntro;
-  if(sg.k==='out')return 'Tur tamamlandı. Üstteki sahne listesinden istediğin sahneyi tek başına da izleyebilirsin.';
+  if(sg.k==='out')return 'Tur tamamlandı. Üstteki durak düğmeleriyle istediğin yere dönebilirsin.';
   if(u<ZI)return '3B mimaride yakınlaşılıyor: '+CRUMB[sg.id]+' …';
   if(u>=ZI+sg.ds)return 'Sıradaki parçaya geçiliyor …';
   return sg.sc.live(clamp((u-ZI)/sg.ds,0,1))},
@@ -845,6 +851,7 @@ var tour={dur:TD,tour:true,arch:cfg.arch,tag:cfg.tag,
   if(sg.k==='out')return cfg.sayOut;
   return '<b>📍 '+CRUMB[sg.id]+'</b><br>'+sg.sc.say+sozHtml(sg.sc)}};
  tour.TS=TS;tour.TD=TD;tour.reset=function(){lastSeg=-1};
+ tour.stops=function(){return TS.map(function(sg){return sg.k==='intro'?'Giriş':sg.k==='out'?'Son':SHORT[sg.id]})};tour.jump=function(i){setTourT(TS[i].s/TD)};tour.curIdx=function(){return segAt(curT()).i};
  tour.seek=function(dir){var a=segAt(curT());var idx=a.i;if(dir<0)idx=a.u>1.2?idx:Math.max(0,idx-1);else idx=Math.min(TS.length-1,idx+1);setTourT(TS[idx].s/TD)};
  return tour}
 var tour=mkTour({arch:'gpt2',tag:'🎬 3B mimari → zoom → animasyon',title:'🎬 Tur yol haritası (sol/üstteki 3B mimaride aynı sırayla ilerler)',ORD:ORD,SHORT:SHORT,CRUMB:CRUMB,COLS:COLS,SCN:SCN,hvSc:[s3,s4,s5],
@@ -1900,20 +1907,28 @@ var tabsWrap=document.getElementById('tabs'),TB=[];
   tabsWrap.appendChild(d)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
 hs.onchange=function(){head_=+hs.value;draw(true)};
+function grpRange(i){if(i===0||i>=SC.length-2)return [i,i+1];if(i>=1&&i<=TEMEL.length)return [1,1+TEMEL.length];if(i>=GP0&&i<GP0+SCN.length)return [GP0,GP0+SCN.length];return [GP0+SCN.length,SC.length-2]}
+var stepsKey='',stepsIdx=-1;
+function stepsBuild(){var el=document.getElementById('steps'),sc=SC[cur];var key=sc.tour?'t'+cur:'g'+grpRange(cur)[0];if(key===stepsKey)return;stepsKey=key;stepsIdx=-2;el.innerHTML='';
+  var lab=document.createElement('b');lab.textContent=sc.tour?'Duraklar:':'Sahneler:';el.appendChild(lab);
+  if(sc.tour){sc.stops().forEach(function(n,i){var b=document.createElement('button');b.textContent=(i===0||n==='Son'?'':i+'. ')+n;b.onclick=function(){sc.jump(i);playing=true};el.appendChild(b)})}
+  else{var r=grpRange(cur);for(var i=r[0];i<r[1];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag.replace(/^(T\d|[0-9]+[ab]?|[①-⑳⓪]) · /,'$1 · ');b.onclick=function(){go(i)};el.appendChild(b)})(i)}}
+function stepsSync(){var sc=SC[cur],k=sc.tour?sc.curIdx():cur-grpRange(cur)[0];if(k===stepsIdx)return;stepsIdx=k;
+  [].forEach.call(document.querySelectorAll('#steps button'),function(b,j){b.classList.toggle('on',j===k);b.classList.toggle('done',!!sc.tour&&j<k)})}
 function pickKey(i){return i===0?'gpt2':i===SC.length-2?'oss':i===SC.length-1?'rope':(i>=1&&i<=TEMEL.length)?'temel':''}
 function pickSync(){var k=pickKey(cur);document.querySelectorAll('#pick button').forEach(function(b){b.classList.toggle('on',b.dataset.pk===k)})}
 document.querySelectorAll('#pick button').forEach(function(b){b.onclick=function(){var k=b.dataset.pk;go(k==='gpt2'?0:k==='oss'?SC.length-2:k==='rope'?SC.length-1:1);
   if(!SNAP)history.replaceState(null,'',location.pathname+location.search+(k==='gpt2'?'':'#'+(k==='oss'?'ossturu':k)))}});
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
   TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi ('+SC.length+' sahne) — şu an: '+SC[cur].tag;
-  lastSay=null;pickSync();draw(true)}
+  lastSay=null;pickSync();stepsBuild();draw(true)}
 function draw(force){
   ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
   document.getElementById('scrub').value=Math.round(t*1000);
   var l=SC[cur].live(t);if(l!==lastLive){document.getElementById('live').innerHTML=l;lastLive=l}
   var sc=SC[cur],sy=(typeof sc.say==='function'?sc.say(t):sc.say+sozHtml(sc));if(sy!==lastSay){document.getElementById('say').innerHTML=sy;lastSay=sy}
   var hv=typeof sc.hv==='function'?sc.hv(t):!!sc.hv;document.getElementById('hLab').style.display=hv?'':'none';
-  document.getElementById('tNav').style.display=sc.tour?'':'none';
+  stepsSync();document.getElementById('autoLab').style.display=sc.tour?'none':'';
   if(!!sc.tour!==document.body.classList.contains('tourmode')){document.body.classList.toggle('tourmode',!!sc.tour);}
   if(sc.tour&&f3arch!==sc.arch){ensure3d(sc.arch);sc.reset();if(f3pend)post3d(f3pend)}
 }
@@ -1921,14 +1936,14 @@ document.getElementById('bPlay').onclick=function(){playing=!playing;if(playing&
 document.getElementById('bRe').onclick=function(){t=0;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'};
 document.getElementById('f3dBtn').onclick=function(){var d=document.getElementById('arch3d');d.classList.toggle('live');this.textContent=d.classList.contains('live')?'🔒 3B\'yi kilitle':'🖱️ 3B\'yi elle gez'};
 document.getElementById('tPrev').onclick=function(){tourSeek(-1)};document.getElementById('tNext').onclick=function(){tourSeek(1)};
-document.getElementById('bPrev').onclick=function(){go(cur-1)};
-document.getElementById('bNext').onclick=function(){go(cur+1)};
+document.getElementById('bPrev').onclick=function(){if(SC[cur].tour){tourSeek(-1);return}var r=grpRange(cur);if(cur>r[0])go(cur-1)};
+document.getElementById('bNext').onclick=function(){if(SC[cur].tour){tourSeek(1);return}var r=grpRange(cur);if(cur<r[1]-1)go(cur+1)};
 document.getElementById('scrub').oninput=function(){t=this.value/1000;playing=false;document.getElementById('bPlay').textContent='▶ Oynat'};
 function tick(ts){
   var dt=last?(ts-last)/1000:0;last=ts;
   if(playing){t+=dt*(+document.getElementById('spd').value)/SC[cur].dur;
     if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
-      if(document.getElementById('auto').checked&&cur<SC.length-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
+      if(document.getElementById('auto').checked&&!SC[cur].tour&&cur<grpRange(cur)[1]-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
 window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,tourR:tourR,ROPE:ROPE,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
 var SNAP=/[?&]snap=1/.test(location.search);
