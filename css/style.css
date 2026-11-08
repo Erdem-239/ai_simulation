@@ -2054,3 +2054,30 @@ body.xt-full-lock{overflow:hidden}
 
 /* Seq2Seq desen karşılaştırma */
 @media(max-width:720px){#s2sDesen .sd-grid{grid-template-columns:1fr !important}}
+
+/* Self-Attention 🔬 dikkat laboratuvarı (js/lesson-att-sim.js) */
+#attSim .as-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+#attSim .as-l{font-size:12.5px;color:var(--muted);margin-left:6px}
+#attSim .as-shape{font-size:12.5px;color:#ccd5e8;background:rgba(122,168,255,.07);border:1px solid #2a3552;border-radius:8px;padding:6px 10px;margin-bottom:10px}
+#attSim .as-grid{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:860px){#attSim .as-grid{grid-template-columns:1fr}}
+#attSim .as-tb{border-collapse:separate;border-spacing:3px;font-size:12.5px}
+#attSim .as-tb td{text-align:center;padding:0}
+#attSim .as-c{width:54px;height:38px;border-radius:6px;color:#e8ebf2;font-weight:600}
+#attSim .as-c.off{background:#0b0e14;color:#5c6684;font-size:10.5px;font-weight:400}
+#attSim .as-ch{color:#ccd5e8;font-weight:600;padding:0 2px 4px}
+#attSim .as-ax{font-size:10.5px;color:var(--muted);text-align:right!important;padding-right:6px!important}
+#attSim .as-rh{color:#ccd5e8;font-weight:600;text-align:right!important;padding-right:8px!important}
+#attSim .as-row{cursor:pointer}
+#attSim .as-row.on .as-rh{color:#ffd54a}
+#attSim .as-row.on .as-c:not(.off){outline:2px solid #ffd54a;outline-offset:-2px}
+#attSim .as-note{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+#attSim .as-calc{background:rgba(255,255,255,.02);border:1px solid #2a3552;border-radius:10px;padding:10px 12px;font-size:13px;color:#ccd5e8;line-height:1.7;min-width:0}
+#attSim .as-h{font-weight:700;color:#ffd54a;margin-bottom:4px}
+#attSim .as-step{margin:4px 0;overflow-wrap:anywhere}
+#attSim .as-list{padding-left:12px;font-size:12.5px}
+#attSim .as-list .off{color:#5c6684}
+#attSim .as-cmp{margin-top:12px;border:1px solid #2a3552;border-radius:10px;padding:10px 12px;font-size:13px;color:#ccd5e8}
+#attSim .as-tb2{border-collapse:collapse;font-size:12.5px;margin-top:6px}
+#attSim .as-tb2 td{padding:3px 10px;border-bottom:1px solid #1e2742}
+#attSim .as-tb2 tr.on td{color:#ffd54a}

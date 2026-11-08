@@ -1,4 +1,4 @@
-// Self-Attention dersi ek bölümler: (4) veri akışı + boyutlar (oyuncağın gerçek sayılarıyla), (5) self vs çapraz dikkat, (6) Transformer'da yeri.
+// Self-Attention dersi ➕ Ekstra bölümleri: self vs çapraz dikkat, Transformer'da yeri.
 // Hepsi kendi çizimimiz; oyuncakla (js/app.js, "self-attention: dikkat ısı haritası") AYNI iki cümle ve AYNI gömmeler.
 (function(){
   const $=id=>document.getElementById(id);
@@ -19,41 +19,6 @@
     return h+'</table>';};
   const card=(title,shape,body,col)=>'<div style="flex:1 1 150px;min-width:140px;border:1px solid '+(col||'#334063')+';border-radius:10px;padding:8px 8px 6px;background:rgba(255,255,255,.02)"><div style="font-size:12.5px;text-align:center"><b>'+title+'</b></div><div style="font-size:10.5px;color:var(--muted);text-align:center;margin-bottom:3px">'+shape+'</div>'+body+'</div>';
   const arrow=t=>'<div style="text-align:center;color:#95a2c2;font-size:12px;margin:5px 0">⬇ '+t+'</div>';
-
-  // ============ 4) VERİ AKIŞI ============
-  const flow=$('atFlow');
-  if(flow){
-    const st={s:0,w:'id'};
-    flow.innerHTML=
-     '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;font-size:13px"><span>Cümle:</span><button class="addbtn atfS" data-s="0">"kedi · sütü · çünkü · açtı"</button><button class="addbtn atfS" data-s="1">"banka · para · nehir · kıyı"</button>'+
-     '<span style="margin-left:8px">W matrisleri:</span><button class="addbtn atfW" data-w="id">birim (oyuncak)</button><button class="addbtn atfW" data-w="ex">örnek W (elle seçilmiş)</button></div>'+
-     '<div id="atfOut"></div>';
-    const draw=()=>{
-      const S=SENT[st.s],X=S.emb,n=X.length,d=2,W=WS[st.w];
-      const Q=mm(X,W.q),K=mm(X,W.k),V=mm(X,W.v),raw=mm(Q,tr(K)),sc=raw.map(r=>r.map(v=>v/Math.sqrt(d))),A=smx(sc),Z=mm(A,V);
-      const rl=S.toks,dl=['d₁','d₂'],tl=S.toks;
-      const wcard=(t,M)=>'<div style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">'+t+'</div>'+mat(M,['','']);
-      const html=
-       '<div style="display:flex;justify-content:center">'+card('X — kelime vektörleri','(n×d) = ('+n+'×'+d+')',mat(X,rl,dl),'#4ad0e0')+'</div>'+
-       arrow('üç ayrı matrisle çarp: Q = X·W_Q , K = X·W_K , V = X·W_V  (her biri d×d)')+
-       '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-         card('Q — sorgu','(n×d)',wcard('W_Q (d×d)',W.q)+mat(Q,rl,dl),'#7aa8ff')+
-         card('K — anahtar','(n×d)',wcard('W_K (d×d)',W.k)+mat(K,rl,dl),'#ffd54a')+
-         card('V — içerik','(n×d)',wcard('W_V (d×d)',W.v)+mat(V,rl,dl),'#46c46a')+'</div>'+
-       arrow('Q · Kᵀ → her kelime her kelimeyle ne kadar uyuşuyor, sonra ÷ √d (= ÷ '+fm(Math.sqrt(d))+')')+
-       '<div style="display:flex;justify-content:center">'+card('S — skor tablosu','(n×n) = ('+n+'×'+n+')',mat(sc,rl,tl))+'</div>'+
-       arrow('her SATIRA softmax → yüzde (satır toplamı %100)')+
-       '<div style="display:flex;justify-content:center">'+card('A — dikkat yüzdeleri','(n×n)',mat(A,rl,tl,true),'#46c46a')+'</div>'+
-       arrow('A · V → yüzdelerle içeriklerin karışımı')+
-       '<div style="display:flex;justify-content:center">'+card('Z — yeni, bağlamlı vektörler','(n×d) = girdiyle aynı şekil',mat(Z,rl,dl),'#e06a9a')+'</div>';
-      $('atfOut').innerHTML=html;
-      flow.querySelectorAll('.atfS').forEach(b=>{const on=+b.dataset.s===st.s;b.style.background=on?'var(--blue)':'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});
-      flow.querySelectorAll('.atfW').forEach(b=>{const on=b.dataset.w===st.w;b.style.background=on?'var(--blue)':'var(--panel)';b.style.color=on?'#fff':'var(--text)';b.style.border='1px solid var(--line)';});
-      window.__attFlow={Q,K,V,A,Z};
-    };
-    flow.addEventListener('click',e=>{const s=e.target.closest('.atfS'),w=e.target.closest('.atfW');if(s){st.s=+s.dataset.s;draw();}if(w){st.w=w.dataset.w;draw();}});
-    draw();
-  }
 
   // ============ 5) SELF mi ÇAPRAZ MI ============
   const cross=$('atCross');

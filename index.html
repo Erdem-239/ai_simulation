@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202611072130"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202611080339"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202611072130">
+<link rel="stylesheet" href="css/style.css?v=202611080339">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-07 21:30 TR · #508</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 03:39 TR · #509</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5858,7 +5858,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   </div>
 
   <div class="tpl-cl" data-stage="4">
-    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — Q/K/V, adım adım, mimari</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — Q/K/V, adım adım, maske</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <div class="sechead">Q, K, V — bir kütüphane benzetmesi</div>
   <div class="pts">
@@ -5870,126 +5870,53 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
       <tr><td><b style="color:#46c46a">V</b> — Value (değer)</td><td>"İçeriğim" (asıl bilgi)</td><td>kitabın içindeki metin</td></tr>
     </table>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir kelimenin <b>Q</b>'su, bütün kelimelerin <b>K</b>'sıyla karşılaştırılır (nokta çarpım = ne kadar uyuyor). Uyum yüzdesine göre kelimelerin <b>V</b>'lerinden karışım alınır. "Aramam ile senin etiketin uyuyorsa, senin içeriğinden çok alırım."</p>
-    <div class="tip">Bu oyuncakta sadeleştirme: Q=K=V=embedding (aynı vektör üç rolde). Gerçek transformer'da her rol için ayrı bir öğrenilen ağırlık matrisi (W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>) var — ama mantık birebir bu.</p></div>
+    <div class="tip">Q, K, V üçü de aynı kelime vektöründen (x) çıkar ama <b>üç ayrı öğrenilen matrisle</b>: Q = x·W<sub>Q</sub>, K = x·W<sub>K</sub>, V = x·W<sub>V</sub>. Katmanın öğrendiği tek şey bu üç matristir.</div>
   </div>
 
   <div class="sechead">Ne oluyor — adım adım</div>
   <div class="pts">
     <ol style="font-size:14px; color:#ccd5e8; line-height:1.9">
       <li><b>Skor:</b> her kelimenin Q'su, her kelimenin K'sıyla nokta çarpım → ham benzerlik matrisi (n×n).</li>
-      <li><b>Ölçek:</b> her skoru √d'ye böl → dev sayılar softmax'i doyurmasın (üstteki kutuyu kapatıp farkı gör: dağılım keskinleşir).</li>
+      <li><b>Ölçek:</b> her skoru √d'ye böl → dev sayılar softmax'i doyurmasın (Simülasyon'da ÷√d kutusunu kapatıp farkı gör).</li>
       <li><b>Softmax:</b> her satırı yüzdeye çevir → "bu kelime dikkatinin %kaçını nereye veriyor".</li>
       <li><b>Topla:</b> bu yüzdelerle bütün kelimelerin V'lerini karıştır → kelimenin <b>yeni, bağlamla zenginleşmiş</b> temsili.</li>
     </ol>
     <div class="callout">🎯 <b>İşin özü:</b> "kedi" kelimesi tek başına anlamsızdır; "açtı"ya bakıp "bu bir eylemin öznesi", "sütü"ye bakıp "içmekle ilgili" bilgisini <b>kendine katar</b>. Her kelime, cümledeki komşularından yüzdeli bilgi çekerek <b>bağlam kazanır</b>. Recurrence yok — hepsi tek hamlede, paralel.</div>
   </div>
 
-  <div class="sechead">🧱 Mimari: veri akışı ve boyutlar</div>
+  <div class="sechead">🎭 Maske: sağdakini görmek ya da görmemek</div>
   <div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Yukarıdaki oyuncağın arkasındaki <b>bütün hesabı</b> tek akışta, gerçek sayılarla görelim. Girdi ve çıktı <b>aynı şekilde</b> (n kelime × d sayı): katman her kelimenin vektörünü, diğer kelimelerden gelen bilgiyle zenginleştirip geri veriyor. Aşağıdaki "birim" seçeneği oyuncaktaki sadeleştirme (Q=K=V=X); "örnek W" ise Q, K, V'nin <b>üç ayrı matrisle</b> üretildiğinde nasıl farklılaştığını gösterir (matrisleri elle seçtim, <b>öğrenilmiş değiller</b>: gerçek modelde eğitimle bulunurlar).</p>
-    <div id="atFlow"></div>
-    <div class="callout" style="margin-top:8px">🧮 <b>Öğrenilen tek şey:</b> W_Q, W_K, W_V (her biri d×d). Başka ağırlık yok. Skor tablosu ve softmax'in kendi ağırlığı yok, sadece bu üç matristen çıkan Q, K, V üzerinde çalışır. Boyut notu: skor tablosu <b>n×n</b> olduğu için cümle uzayınca maliyet <b>karesel</b> büyür (LSTM'de doğrusaldı, ama sıralıydı).</div>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Skor tablosunda her kelime <b>her kelimeye</b> bakabilir. Bazen bunu istemeyiz: metin <b>soldan sağa üretiliyorsa</b>, bir kelime henüz yazılmamış sağdaki kelimeleri göremez. O zaman tablonun üst üçgeni <b>kapatılır</b> (maske): kapalı hücrelere softmax'ten önce −∞ yazılır, yüzdeleri %0 olur.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Örnek: «yüz kişi».</b> «yüz» tek başına belirsiz (surat mı, 100 mü, yüzmek mi); anlamını sağdaki «kişi» söyler.</p>
+    <div style="display:flex; gap:14px; flex-wrap:wrap">
+      <table class="calc" style="flex:1 1 220px"><tr><th colspan="3">Maskesiz (encoder, BERT)</th></tr><tr><th>bakan ↓</th><th>yüz</th><th>kişi</th></tr><tr><td><b>yüz</b></td><td>%40</td><td><b>%60</b></td></tr><tr><td><b>kişi</b></td><td>%30</td><td>%70</td></tr></table>
+      <table class="calc" style="flex:1 1 220px"><tr><th colspan="3">Maskeli (GPT)</th></tr><tr><th>bakan ↓</th><th>yüz</th><th>kişi</th></tr><tr><td><b>yüz</b></td><td>%100</td><td style="color:#7d88a6">kapalı</td></tr><tr><td><b>kişi</b></td><td>%30</td><td>%70</td></tr></table>
+    </div>
+    <ul style="font-size:14px; color:#ccd5e8; line-height:1.8">
+      <li><b>Maskesiz:</b> «yüz»ün yeni kartı «kişi»den bilgi alır → kartın kendisi "sayı olan yüz" olur.</li>
+      <li><b>Maskeli:</b> «yüz» sağa bakamaz, kartı belirsiz kalır. Anlam <b>«kişi»nin kartında</b> netleşir: «kişi» soldaki «yüz»ü görür. Bilgi kaybolmaz, <b>sondaki karta</b> toplanır.</li>
+      <li>Tablodaki yüzdeler örnek (anlatım için seçildi).</li>
+    </ul>
+    <div class="callout">⚡ <b>Maskenin asıl kazancı: tek geçişte N soru.</b> Maskeli okumada bir kelimenin kartı sağına ne eklenirse eklensin <b>değişmez</b>. Bu yüzden «Kedi dün akşam fareyi kovaladı» bir kez işlenir ve "«Kedi» → sıradaki?", "«Kedi dün» → sıradaki?"… sorularının <b>hepsi aynı hesaptan</b> eğitilir. Maskesizde her bölme noktası kartları değiştirir, her soru ayrı hesap ister. Üretirken de aynı özellik işe yarar: önceki kartlar saklanıp tekrar kullanılır (KV önbelleği).</div>
+    <div class="callout" style="margin-top:8px">🧭 <b>Kim hangisini kullanıyor?</b> BERT (yalnız encoder): maskesiz, metni anlamak için. GPT, Llama (yalnız decoder): maskeli, metin üretmek için. T5 (encoder-decoder): soruyu maskesiz okur, cevabı maskeli yazar; ikisini ➕ Ekstra'daki <b>çapraz dikkat</b> bağlar. Simülasyon'da aynı cümleyi iki maskeyle karşılaştırabilirsin.</div>
   </div>
+  <div class="callout" style="margin-top:8px">🧮 <b>Öğrenilen tek şey:</b> W_Q, W_K, W_V. Skor tablosunun, maskenin ve softmax'in kendi ağırlığı yok. Skor tablosu <b>n×n</b> olduğu için cümle uzayınca maliyet <b>karesel</b> büyür (LSTM'de doğrusaldı ama sıralıydı).</div>
 
   
     </div>
   </div>
 
   <div class="tpl-cl" data-stage="6">
-    <div class="tpl-head closed"><span>5️⃣ Simülasyon — dikkat ısı haritası</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — dikkat laboratuvarı</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<!-- İNTERAKTİF: attention ısı haritası -->
-  <div class="sechead">🔥 Oyuncak: dikkat ısı haritası</div>
-  <div class="pts" style="border-left:3px solid var(--accent)">
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">4 kelimelik cümle. Aşağıdaki matris = <b>kim kime ne kadar bakıyor</b>. Her <b>satır</b> bir kelimenin dikkat dağılımı (softmax'ten geçmiş, toplamı %100). Bir <b>kelimeye tıkla</b> → sadece onun baktığı yerleri ve ağırlıklı çıktısını gör. Cümleyi değiştir, √d kutusunu aç/kapa — ısı haritası canlı değişsin.</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px">
-      <button class="addbtn atSent" data-s="0" style="background:var(--blue); color:#fff">"kedi · sütü · çünkü · açtı"</button>
-      <button class="addbtn atSent" data-s="1" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">"banka · para · nehir · kıyı"</button>
-    </div>
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; font-size:13px">
-      <span>🌡️ ölçek √d:</span>
-      <label style="cursor:pointer"><input type="checkbox" id="atScale" checked> √d ile böl (açık = kararlı)</label>
-    </div>
-    <div style="overflow-x:auto"><svg id="attSvg" role="img"></svg></div>
-    <div class="work" id="attWork" style="margin-top:12px; white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div>
+<div class="sechead">🔬 Dikkat laboratuvarı</div>
+  <div class="pts">
+    <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">4 kelimelik oyuncak cümle (her kelime 2 sayı). Maskeyi değiştir, W'yi değiştir, ÷√d'yi kapat; tabloda bir satıra tıklayıp o kelimenin <b>yeni kartının</b> nasıl hesaplandığını adım adım gör. En altta: maske hangi kartları değiştiriyor?</p>
+    <div id="attSim"></div>
+    <div class="callout" style="margin-top:10px">🎬 Aynı hesabın gerçek boyutlu hâli (GPT-2: 4×768, 12 kafa, Q·Kᵀ, maske, A·V): <a href="harita/matris-animasyon.html?v=202611080339#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · mimari içindeki yeri: <a href="harita/mimari-3b.html?v=202611080339" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari →</a></div>
   </div>
 
   
-    </div>
-  </div>
-
-  <div class="tpl-cl" data-stage="5">
-    <div class="tpl-head closed"><span>6️⃣ Bütün Resim — ileri yol + geri yayılım ağacı</span><span class="chev">▸</span></div>
-    <div class="tpl-body closed">
-      <div id="attSrc" style="display:none"></div>
-      <p style="font-size:13px; color:#ccd5e8; line-height:1.7; margin:4px 0 8px">Self-Attention'ın <b>bütün resmi</b>: <b>ileri yol</b> (girdi → Q,K,V → skor → yüzde → karışım → çıktı → kayıp) ve <b>geri yol</b> (kayıptan dört ağırlık grubuna). 3 kelime, 2 sayılık vektörler; W matrisleri sabit, girdileri ve hedefi değiştirebilirsin. Kutulara/oklara gel → türev nasıl bulunuyor. Çıktı katmanı yalnız <b>son kelimeyi</b> kullanıyor (🤖 GPT Test'teki minik GPT ile aynı kurgu).</p>
-      <div class="acc xt-wrap open" style="margin:8px 0"><div class="acc-head"><span class="ac">▸</span> 🗺️ Self-Attention'ın bütün resmi <span class="xt-basalt">kutulara / oklara gel</span><button type="button" class="xt-full-btn" title="Tam ekran" aria-label="Tam ekran">⛶</button></div><div class="acc-body"><div id="attBigMap"></div></div></div>
-      <div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı hesap Python'da (elle geri yayılım + sonlu fark doğrulaması)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
-
-# 3 kelime (&quot;kedi&quot;, &quot;süt&quot;, &quot;içti&quot;), her biri 2 sayılık vektör
-X  = [[1.0, 0.2], [0.1, 0.9], [0.8, 0.7]]
-# öğrenilecek ağırlıklar (burada elle seçilmiş başlangıç değerleri)
-WQ = [[1.5, -0.8], [0.5, 2.0]]      # sorgu matrisi
-WK = [[1.3, 1.0], [-1.0, 1.8]]      # etiket matrisi
-WV = [[0.9, 0.1], [-0.2, 0.6]]      # içerik matrisi
-w  = [0.7, -0.5]                    # çıktı katmanı: son kelimenin z&#x27;sini tek sayıya çevirir
-t  = 0.9                            # hedef
-
-def matmul(A, B):                   # A (n×k) · B (k×m)
-    return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
-
-def ileri(WQ, WK, WV, w):
-    Q, K, V = matmul(X, WQ), matmul(X, WK), matmul(X, WV)
-    S = [[sum(Q[i][k] * K[j][k] for k in range(2)) / math.sqrt(2) for j in range(3)] for i in range(3)]   # skor tablosu (3×3)
-    A = []
-    for satir in S:                                   # her SATIR ayrı softmax
-        m = max(satir); e = [math.exp(v - m) for v in satir]; s = sum(e)
-        A.append([v / s for v in e])
-    Z = matmul(A, V)                                  # yüzdelerle içerik karışımı
-    y = Z[2][0] * w[0] + Z[2][1] * w[1]               # yalnız SON kelime çıktıya girer
-    return Q, K, V, S, A, Z, y, 0.5 * (y - t) ** 2
-
-Q, K, V, S, A, Z, y, L = ileri(WQ, WK, WV, w)
-print(&quot;A[son satır] =&quot;, [round(v, 3) for v in A[2]])
-print(&quot;y =&quot;, round(y, 3), &quot; L =&quot;, round(L, 4))
-
-# ---------- GERİ YAYILIM (elle, zincir kuralıyla) ----------
-e  = y - t                                            # ∂L/∂y
-dw = [e * Z[2][0], e * Z[2][1]]                       # ∂L/∂w
-dz = [e * w[0], e * w[1]]                             # ∂L/∂z₃
-dV = [[A[2][j] * dz[0], A[2][j] * dz[1]] for j in range(3)]               # ∂L/∂V (her satır: yüzde × dz)
-dA = [dz[0] * V[j][0] + dz[1] * V[j][1] for j in range(3)]                # ∂L/∂A₃
-ort = sum(A[2][j] * dA[j] for j in range(3))                              # satırın ağırlıklı ortalaması
-dS = [A[2][j] * (dA[j] - ort) for j in range(3)]                          # softmax türevi
-dq = [sum(dS[j] * K[j][k] for j in range(3)) / math.sqrt(2) for k in range(2)]      # ∂L/∂q₃
-dK = [[dS[j] * Q[2][k] / math.sqrt(2) for k in range(2)] for j in range(3)]         # ∂L/∂K
-Xt = [list(r) for r in zip(*X)]
-dWV = matmul(Xt, dV)                                  # üç kelimeden TOPLANIR
-dWK = matmul(Xt, dK)
-dWQ = [[X[2][a] * dq[b] for b in range(2)] for a in range(2)]   # yalnız SON kelime (q₁, q₂ kullanılmadı)
-print(&quot;dW_V =&quot;, [[round(v, 4) for v in r] for r in dWV])
-print(&quot;dW_Q =&quot;, [[round(v, 4) for v in r] for r in dWQ])
-print(&quot;dW_K =&quot;, [[round(v, 4) for v in r] for r in dWK])
-
-# ---------- DOĞRULAMA: sonlu fark (her ağırlığı azıcık oynat, kayıp ne kadar değişiyor) ----------
-def sonlu_fark(M, a, b, h=1e-6):
-    eski = M[a][b]
-    M[a][b] = eski + h; Lp = ileri(WQ, WK, WV, w)[7]
-    M[a][b] = eski - h; Lm = ileri(WQ, WK, WV, w)[7]
-    M[a][b] = eski
-    return (Lp - Lm) / (2 * h)
-fark = max(abs(sonlu_fark(M, a, b) - G[a][b]) for M, G in ((WQ, dWQ), (WK, dWK), (WV, dWV)) for a in range(2) for b in range(2))
-print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; % fark)
-
-# ---- ÇIKTI ----
-# A[son satır] = [0.559, 0.087, 0.354]
-# y = 0.301  L = 0.1796
-# dW_V = [[-0.3569, 0.2549], [-0.1838, 0.1313]]
-# dW_Q = [[-0.0485, 0.019], [-0.0425, 0.0166]]
-# dW_K = [[-0.0397, -0.0195], [0.0425, 0.0208]]
-# en büyük |sonlu fark − elle gradyan| = 4.3e-11</pre></div></div>
-      <p style="font-size:12.5px;color:var(--mute);margin-top:6px">Sayfadaki sayılar varsayılan girdilerle bu kodun çıktısıyla aynıdır (ileri yol: y=0,301, kayıp 0,1796).</p>
-
     </div>
   </div>
 
@@ -6024,11 +5951,11 @@ print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; %
   </div>
 
   <div class="tpl-cl" data-stage="3">
-    <div class="tpl-head closed"><span>7️⃣ Örnek Çalışmalar — kendi kendine öğren / ölçerek gör</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>6️⃣ Örnek Çalışmalar — kendi kendine öğren / ölçerek gör</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7">İki örnek. Birincisinde W_Q, W_K, W_V'yi <b>rastgeleden kendin eğitirsin</b> (elle seçilmiş değerler yok); ikincisinde "neden √d'ye bölüyoruz?" sorusunu <b>ölçerek</b> görürsün. İkincisinin altında aynı hesabın Python kodu var (çıktısı yorum olarak gömülü).</p>
 <div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — W'leri kim buluyor? Eğitimle (rastgeleden başla)</span><span class="chev">▸</span></h3><div class="sahne-body closed"><div class="pts">
-    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Önceki bölümlerde W matrisleri elle seçilmişti. Gerçekte <b>rastgele başlar</b> ve hata sinyaliyle ayarlanır. Aşağıda minik bir görevde W_Q, W_K, W_V'yi (ve küçük bir çıktı katmanını) gerçekten eğitiyoruz. Python ile aynı kodun JS karşılığı, ikisi 300 epoch sonunda aynı sayıları veriyor.</p>
+    <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Simülasyon'da W matrisleri elle seçilmişti. Gerçekte <b>rastgele başlar</b> ve hata sinyaliyle ayarlanır. Aşağıda minik bir görevde W_Q, W_K, W_V'yi (ve küçük bir çıktı katmanını) gerçekten eğitiyoruz. Python ile aynı kodun JS karşılığı, ikisi 300 epoch sonunda aynı sayıları veriyor.</p>
     <div id="atTrain"></div>
     <div class="callout" style="margin-top:8px">⚠️ <b>Dürüst sınırlar:</b> kelime vektörleri sabit rastgele (öğrenilmiyor), görev çok basit, ağ tek katman ve tek kafa. Gerçek modellerde vektörler de W'ler de birlikte, milyarlarca örnekten öğrenilir; ama "dikkat kime verilecek"in <b>kendiliğinden öğrenildiği</b> mekanizma aynıdır.</div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Aynı eğitim Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre style="background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:10px; overflow-x:auto; font-size:12.5px; line-height:1.55">import math
 
@@ -6211,7 +6138,7 @@ for d in (4, 16, 64, 256):
   </div>
 
   <div class="tpl-cl" data-stage="7">
-    <div class="tpl-head closed"><span>8️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
 <div class="sechead">🧠 Kendini Test Et — Self-Attention</div>
   <div class="pts">
@@ -6226,7 +6153,7 @@ for d in (4, 16, 64, 256):
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 3) √d bölmesini kaldırırsak ne olur?</div>
-      <div class="acc-body">Boyut büyükken nokta çarpımlar büyür → softmax'e dev sayılar girer → dağılım <b>aşırı keskinleşir</b> (tek kelimeye %99), gradyan ölür. √d skorları ılık tutar. Oyuncakta kutuyu kapatıp ısı haritasının sertleştiğini gör.</div>
+      <div class="acc-body">Boyut büyükken nokta çarpımlar büyür → softmax'e dev sayılar girer → dağılım <b>aşırı keskinleşir</b> (tek kelimeye %99), gradyan ölür. √d skorları ılık tutar. Simülasyon'da ÷√d kutusunu kapatıp yüzdelerin sertleştiğini gör.</div>
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 4) "·V" adımı ne yapar?</div>
@@ -6238,18 +6165,22 @@ for d in (4, 16, 64, 256):
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 6) Q, K ve V neden üç AYRI matrisle üretilir (X'in kendisi yetmez mi)?</div>
-      <div class="acc-body">Aynı kelimenin üç <b>farklı rolü</b> var: "ne arıyorum" (Q), "ben neyim" (K), "içeriğim" (V). X'i üçüne birden kullanırsak bir kelime en çok <b>kendine</b> benzer (kendi nokta çarpımı en büyük) ve rol ayrımı olmaz. Üç ayrı öğrenilen matris ağa şunu söyleme özgürlüğü verir: "arama" ile "tanım" ile "içerik" aynı vektörün farklı projeksiyonları olsun. Yukarıdaki "örnek W" seçeneğinde Q, K, V'nin aynı X'ten farklı çıktığını gör.</div>
+      <div class="acc-body">Aynı kelimenin üç <b>farklı rolü</b> var: "ne arıyorum" (Q), "ben neyim" (K), "içeriğim" (V). X'i üçüne birden kullanırsak bir kelime en çok <b>kendine</b> benzer (kendi nokta çarpımı en büyük) ve rol ayrımı olmaz. Üç ayrı öğrenilen matris ağa şunu söyleme özgürlüğü verir: "arama" ile "tanım" ile "içerik" aynı vektörün farklı projeksiyonları olsun. Simülasyon'daki "örnek W" seçeneğinde Q, K, V'nin aynı X'ten farklı çıktığını gör.</div>
     </div>
     <div class="acc">
       <div class="acc-head"><span class="ac">▸</span> 7) Self-attention ile çapraz (cross) attention arasındaki fark nedir?</div>
       <div class="acc-body">Mekanizma aynı, <b>K ve V'nin kaynağı</b> farklı. Self-attention'da Q, K, V aynı cümleden gelir (skor tablosu n×n, kare). Çapraz attention'da Q hedef cümleden (decoder), K ve V kaynak cümleden (encoder) gelir (skor tablosu m×n). Çapraz attention, Bahdanau'nun attention'ının Q/K/V diliyle yazılmış hâlidir.</div>
     </div>
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> 8) Bütün Resim'de q₁ ve q₂ neden hiç gradyan almadı?</div>
-      <div class="acc-body">Çıktı katmanı yalnız <b>son kelimenin</b> z<sub>3</sub>'ünü kullanıyor, dolayısıyla kayıp yalnız A'nın son satırına (yani yalnız q<sub>3</sub>'e) bağlı. Diğer kelimelerin sorguları kayba hiç girmedi. K ve V ise <b>üç kelimeden de</b> katkı alır, çünkü son kelime hepsine bakıyor. (Gerçek dil modellerinde her konum bir tahmin yaptığı için her q gradyan alır.)</div>
+      <div class="acc-head"><span class="ac">▸</span> 8) Maskeli okumada «yüz kişi» cümlesinin anlamı nerede netleşir, neden?</div>
+      <div class="acc-body"><b>«kişi»nin kartında.</b> Maskeli okumada «yüz» sağındaki «kişi»ye bakamaz, kartı belirsiz kalır; «kişi» ise soldaki «yüz»ü görür ve "100 kişi" bilgisini kendi kartına yazar. Maskesizde (BERT) «yüz»ün kendi kartı da «kişi»den bilgi alıp netleşir. Bilgi kaybolmaz, yalnız hangi kartta toplandığı değişir.</div>
     </div>
     <div class="acc">
-      <div class="acc-head"><span class="ac">▸</span> 9) d = 256 iken √d'ye bölmezsek softmax'e ne olur?</div>
+      <div class="acc-head"><span class="ac">▸</span> 9) GPT neden maskeli okur? (yalnız "geleceği görmesin" değil)</div>
+      <div class="acc-body">İki neden: (1) metni soldan sağa ürettiği için henüz yazılmamışı göremez. (2) <b>Verimlilik:</b> maskeli kartlar sağa eklenen kelimelerle değişmediği için bir cümle tek geçişte işlenir ve her konumdaki "sıradaki ne?" sorusu aynı hesaptan eğitilir; üretirken de önceki kartlar saklanıp tekrar kullanılır (KV önbelleği).</div>
+    </div>
+    <div class="acc">
+      <div class="acc-head"><span class="ac">▸</span> 10) d = 256 iken √d'ye bölmezsek softmax'e ne olur?</div>
       <div class="acc-body">Ölçeksiz skorların yayılımı √d ile büyür (örnekte d=256'da ≈13,4). Softmax denemelerin yaklaşık <b>%69'unda</b> tek anahtara %99'dan fazla kilitlenir: dikkat aşırı keskin, gradyan neredeyse sıfır. √d ile bölünce yayılım d'den bağımsız ≈0,84 kalır ve dikkat ılık (entropi ≈1,31) olur.</div>
     </div>
   </div>
@@ -6258,7 +6189,7 @@ for d in (4, 16, 64, 256):
     </div>
   </div>
 
-  <p class="footer">Self-Attention • Q/K/V · QKᵀ/√d ısı haritası · softmax dikkat · ağırlıklı V — makalenin kalbi ✅</p>
+  <p class="footer">Self-Attention • Q/K/V · QKᵀ/√d · maske · softmax dikkat · ağırlıklı V — makalenin kalbi ✅</p>
   </div><!-- /model-attention -->
 
 
@@ -6291,7 +6222,7 @@ for d in (4, 16, 64, 256):
     </svg>
   <h1>🧩 Multi-Head Attention — Aynı Anda Birçok Bakış (+ Positional Encoding)</h1>
   <p class="sub">Tek bir attention "ortalama bir bakış" öğrenir — her şeye biraz, hiçbir şeye tam. Çözüm zarif: temsili parçalara böl, her parçada <b>bağımsız bir dikkat kafası</b> çalıştır, sonra birleştir. Sekiz göz, bir çift gözden iyidir. Sayfanın sonunda, Self-Attention'ın kaybettiği sıra bilgisini geri kazandıran <b>Positional Encoding</b>'i de göreceksin.</p>
-  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🎯 Self-Attention'da tek bir ısı haritası gördün. Multi-head, o haritanın <b>h tane paralel kopyası</b>. Her kafa, embedding'i farklı bir "mercek"ten (öğrenilen W matrisi) geçirir → farklı ilişkileri yakalar. Sonra hepsi birleşir.</p></div>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> 🎯 Self-Attention'da tek bir dikkat tablosu gördün. Multi-head, o haritanın <b>h tane paralel kopyası</b>. Her kafa, embedding'i farklı bir "mercek"ten (öğrenilen W matrisi) geçirir → farklı ilişkileri yakalar. Sonra hepsi birleşir.</p></div>
     </div>
   </div>
 
@@ -8720,7 +8651,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı soruyu iki farklı açıdan izle: önce adım adım (karakterden cevaba), sonra zaman içinde (0’dan 800. epoch’a kadar). İkisi de sitedeki Minik GPT’nin gerçek, eğitilmiş sayılarıyla.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) Adım adım harita</b><span>Karakterin kimlik numarasından cevabın “1” çıkmasına kadar 16 adım; gerçek sayılarla tablolar ve ısı haritaları.</span></div>
-      <a class="hr-go" href="harita/adim-adim.html?v=202611072130" target="_blank" rel="noopener">Haritayı aç →</a>
+      <a class="hr-go" href="harita/adim-adim.html?v=202611080339" target="_blank" rel="noopener">Haritayı aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8735,7 +8666,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) Epoch epoch tüccar günlüğü</b><span>Aynı soru için 0’dan 800’e 12 ölçüm anı: dikkat nasıl toplandı, geri yayılım, üç tohumla doğrulama.</span></div>
-      <a class="hr-go" href="harita/epoch.html?v=202611072130" target="_blank" rel="noopener">Günlüğü aç →</a>
+      <a class="hr-go" href="harita/epoch.html?v=202611080339" target="_blank" rel="noopener">Günlüğü aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8754,7 +8685,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Aynı iskeletin farklı boyutları ve çeşitleri: önce 3B olarak yan yana koy, sonra gerçek GPT-2 boyutlarıyla adım adım izle, en sonda güncel mimarilerin farklarına bak.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>1) 3B mimari</b><span>Minik GPT (gerçek sayılar), GPT-2, Llama, gpt-oss-120b ve Qwen3-30B-A3B (ikisi de MoE) mimarilerini 3B olarak parçala; karşılaştırma için <b>encoder-decoder (T5-base)</b>: üst satır encoder, alt satır decoder, aradaki çapraz dikkat, yan yana koy; eş zamanlı gezi, kafanın içi, ara tablolar. Yeni: <b>📖 Mimariyi anlat</b> — gpt-oss'u 17 bölümde, her bölümde «ne oluyor / tablo şekli / sık karışan» ile.</span></div>
-      <a class="hr-go" href="harita/mimari-3b.html?v=202611072130" target="_blank" rel="noopener">3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/mimari-3b.html?v=202611080339" target="_blank" rel="noopener">3B mimariyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8774,15 +8705,15 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2) RNN — 3B mimari</b><span>Zamanda açılmış RNN'i üç boyutta gez: her sütun bir kelime, ortak ağırlık tabloları, h'nin bir sonraki adıma akışı, many-to-one / many-to-many, 9 adımlı tur ve geri yayılım okları.</span></div>
-      <a class="hr-go" href="harita/rnn-3b.html?v=202611072130" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/rnn-3b.html?v=202611080339" target="_blank" rel="noopener">RNN 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>2b) Seq2Seq — 3B mimari</b><span>Toplama modelinin (7 + 5 → 12) 2 katmanlı encoder-decoder'ı üç boyutta: one-hot → ayrı gömme tabloları → Katman 1 → Katman 2 → 96 sayılık bağlam → decoder → puan → softmax. Sayılar sitede eğitilmiş modelin gerçek ağırlıklarından; soru ve epoch seçilebilir, adım adım ilerler.</span></div>
-      <a class="hr-go" href="harita/s2s-3b.html?v=202611072130" target="_blank" rel="noopener">Seq2Seq 3B mimariyi aç →</a>
+      <a class="hr-go" href="harita/s2s-3b.html?v=202611080339" target="_blank" rel="noopener">Seq2Seq 3B mimariyi aç →</a>
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) GPT-2 adım adım haritası</b><span>Adım adım haritanın gerçek GPT-2 small boyutlarıyla hâli: 7+5= → 4×768 → 12 blok → 50.257 puan.</span></div>
-      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202611072130" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
+      <a class="hr-go" href="harita/gpt2-adim-adim.html?v=202611080339" target="_blank" rel="noopener">GPT-2 haritasını aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8796,7 +8727,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>3) Örnek mimariler</b><span>Minik GPT, GPT-2, iki güncel şema ve bilinen açık modeller (DeepSeek-V3, Mixtral, gpt-oss, Gemma 3) aynı çizim diliyle; Claude/Gemini/GPT-4 neden çizilemiyor; yan yana tablolar.</span></div>
-      <a class="hr-go" href="harita/guncel-mimariler.html?v=202611072130" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
+      <a class="hr-go" href="harita/guncel-mimariler.html?v=202611080339" target="_blank" rel="noopener">Örnek mimarileri aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8809,7 +8740,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     </div>
     <div class="hr-entry">
       <div class="hr-et"><b>4) Bir cümlenin yolculuğu (önizleme)</b><span>«istanbulun başkenti nereresidir» cümlesi token'lara nasıl bölünür, kartlar ne taşır, dikkat kime bakar, tahmin nasıl yapılır — adım adım.</span></div>
-      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202611072130" target="_blank" rel="noopener">Önizlemeyi aç →</a>
+      <a class="hr-go" href="harita/istanbul-onizleme.html?v=202611080339" target="_blank" rel="noopener">Önizlemeyi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8826,7 +8757,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Tek sayfada üç parça: <b>🎬 mimari turu</b> (GPT-2'nin <b>3B mimarisinden</b> başlayıp token'lardan çıkışa her parçaya zoom yapıp yanında o parçadaki matris işlemini izle), küçük sayılarla temel (satır × sütun, Q·Kᵀ ve K·Qᵀ farkı) ve GPT-2 boyutunda tek tek sahneler.</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Mimari turu + matris animasyonları (30 sahne; gpt-oss turu 34 durak; 🌀 RoPE turu 13 durak)</b><span>🌀 <b>RoPE turu</b>: Q,K nereden geldi → 64 sayı = 32 ok → ok yönü = içerik → konum kadar döndür → 32 farklı hız → K döner, V dönmez → Q·Kᵀ = 32 çiftin katkısı → yalnız mesafe kalır → uzaktaki rakam (içerik kafası ↔ mesafe kafası) → ÷8 + maske → softmax → ×V → eğitim okları nasıl hizalar. 🎬 3B GPT-2 mimarisi → zoom → animasyon turu (~5 dk) ve 🎬 gpt-oss turu (3B MoE mimarisi → zoom → router/kayan pencere/GQA animasyonları); T0–T7 küçük sayılarla temel; her sahnede ❓ neden yapıyoruz + 🗣️ sözel karşılığı + 📦 ne elde ettik; 0a–⑮ GPT-2 boyutunda: token, embedding, Q/K/V, skor, maske, A·V, W_O, LayerNorm, FFN, 12 blok, çıkış, KV önbellekli üretim döngüsü.</span></div>
-      <a class="hr-go" href="harita/matris-animasyon.html?v=202611072130" target="_blank" rel="noopener">Animasyonu aç →</a> <a class="hr-go" href="harita/matris-animasyon.html?v=202611072130#rope" target="_blank" rel="noopener">🌀 RoPE turunu aç →</a> <a class="hr-go" href="harita/matris-animasyon.html?v=202611072130#transpoz" target="_blank" rel="noopener">🔁 Transpoz animasyonu →</a>
+      <a class="hr-go" href="harita/matris-animasyon.html?v=202611080339" target="_blank" rel="noopener">Animasyonu aç →</a> <a class="hr-go" href="harita/matris-animasyon.html?v=202611080339#rope" target="_blank" rel="noopener">🌀 RoPE turunu aç →</a> <a class="hr-go" href="harita/matris-animasyon.html?v=202611080339#transpoz" target="_blank" rel="noopener">🔁 Transpoz animasyonu →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -8846,7 +8777,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <p class="hr-cat-d">Bu modelleri kendi donanımında çalıştırmak istersen: hangi model kaç GB <b>VRAM / RAM</b> ister, 4 / 8 / 16 bit'te ne değişir ve tahmini maliyeti ne (PC, sınır ve sunucu sınıfı).</p>
     <div class="hr-entry">
       <div class="hr-et"><b>Yerel model donanım rehberi (Gemma, Qwen, gpt-oss, DeepSeek)</b><span>Üç tablo: PC / sınır / sunucu sınıfı. Her hücre VRAM / RAM (GB), bit oranına göre; son kolonda tahmini maliyet. Formül, RTX 4080 örneği ve dürüst notlar sayfada.</span></div>
-      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202611072130" target="_blank" rel="noopener">Rehberi aç →</a>
+      <a class="hr-go" href="harita/yerel-model-donanim.html?v=202611080339" target="_blank" rel="noopener">Rehberi aç →</a>
       <div class="acc">
         <div class="acc-head"><span class="ac">▸</span> Neler var? (ayrıntı)</div>
         <div class="acc-body">
@@ -9882,71 +9813,71 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202611072130"></script>
-<script src="js/lesson-turev.js?v=202611072130"></script>
-<script src="js/lesson-xor.js?v=202611072130"></script>
-<script src="js/lesson-xor-arch.js?v=202611072130"></script>
-<script src="js/lesson-xor-maps.js?v=202611072130"></script>
-<script src="js/lesson-xor-epoch.js?v=202611072130"></script>
-<script src="js/lesson-nn.js?v=202611072130"></script>
-<script src="js/lesson-trig.js?v=202611072130"></script>
+<script src="js/lesson-linreg.js?v=202611080339"></script>
+<script src="js/lesson-turev.js?v=202611080339"></script>
+<script src="js/lesson-xor.js?v=202611080339"></script>
+<script src="js/lesson-xor-arch.js?v=202611080339"></script>
+<script src="js/lesson-xor-maps.js?v=202611080339"></script>
+<script src="js/lesson-xor-epoch.js?v=202611080339"></script>
+<script src="js/lesson-nn.js?v=202611080339"></script>
+<script src="js/lesson-trig.js?v=202611080339"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202611072130"></script>
-<script src="js/lesson-rnn-soz.js?v=202611072130"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202611080339"></script>
+<script src="js/lesson-rnn-soz.js?v=202611080339"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202611072130"></script>
-<script src="js/lesson-lstm-cell.js?v=202611072130"></script>
-<script src="js/app.js?v=202611072130"></script>
-<script src="js/lesson-rnn-wbar.js?v=202611072130"></script>
-<script src="js/lesson-lstm-big.js?v=202611072130"></script>
-<script src="js/lesson-lstm-step.js?v=202611072130"></script>
-<script src="js/lesson-lstm-sim.js?v=202611072130"></script>
-<script src="js/lesson-lstm-size.js?v=202611072130"></script>
-<script src="js/lesson-lstm-m2o.js?v=202611072130"></script>
-<script src="js/lesson-emb-kullan.js?v=202611072130"></script>
-<script src="js/lesson-emb-draco.js?v=202611072130"></script>
-<script src="js/lesson-emb-arch.js?v=202611072130"></script>
-<script src="js/lesson-emb-extra.js?v=202611072130"></script>
-<script src="js/lesson-s2s-weights.js?v=202611072130"></script>
-<script src="js/lesson-s2s-add.js?v=202611072130"></script>
-<script src="js/lesson-s2s-inside.js?v=202611072130"></script>
-<script src="js/lesson-s2s-desen.js?v=202611072130"></script>
-<script src="js/lesson-s2s-anim.js?v=202611072130"></script>
-<script src="js/lesson-att-train.js?v=202611072130"></script>
-<script src="js/lesson-att-extra.js?v=202611072130"></script>
-<script src="js/lesson-att-big.js?v=202611072130"></script>
-<script src="js/lesson-att-ornek.js?v=202611072130"></script>
-<script src="js/lesson-mh-big.js?v=202611072130"></script>
-<script src="js/lesson-mh-ornek.js?v=202611072130"></script>
-<script src="js/lesson-tf-big.js?v=202611072130"></script>
-<script src="js/lesson-tf-ornek.js?v=202611072130"></script>
-<script src="js/lesson-gpt-tiny.js?v=202611072130"></script>
-<script src="js/lesson-gpt-big.js?v=202611072130"></script>
-<script src="js/lesson-gpt-ornek.js?v=202611072130"></script>
-<script src="js/lesson-rnn-van.js?v=202611072130"></script>
-<script src="js/lesson-s2s-extra.js?v=202611072130"></script>
-<script src="js/lesson-s2s-ornek.js?v=202611072130"></script>
-<script src="js/lesson-emb-ornek.js?v=202611072130"></script>
-<script src="js/lesson-emb-steps.js?v=202611072130"></script>
-<script src="js/lesson-emb-big.js?v=202611072130"></script>
-<script src="js/lesson-sm-ornek.js?v=202611072130"></script>
-<script src="js/lesson-sm-big.js?v=202611072130"></script>
-<script src="js/lesson-sm-akt.js?v=202611072130"></script>
-<script src="js/lesson-lstm-unroll.js?v=202611072130"></script>
-<script src="js/lesson-lstm-seq.js?v=202611072130"></script>
-<script src="js/lesson-lstm-gate.js?v=202611072130"></script>
-<script src="js/lesson-lstm-ornek.js?v=202611072130"></script>
-<script src="js/lesson-gpt.js?v=202611072130"></script>
-<script src="js/lesson-gpt-mini.js?v=202611072130"></script>
-<script src="js/lesson-vektor-ornek.js?v=202611072130"></script>
-<script src="js/lesson-linreg-big.js?v=202611072130"></script>
-<script src="js/lesson-linreg-ornek.js?v=202611072130"></script>
-<script src="js/lesson-act-big.js?v=202611072130"></script>
-<script src="js/lesson-act-ornek.js?v=202611072130"></script>
-<script src="js/lesson-xor-ornek.js?v=202611072130"></script>
-<script src="js/lesson-nn-ornek.js?v=202611072130"></script>
-<script src="js/lesson-nn-net.js?v=202611072130"></script>
-<script src="js/lesson-nn-sim.js?v=202611072130"></script>
-<script src="js/lesson-nn-big.js?v=202611072130"></script>
+<script src="js/lesson-rnn-ornek.js?v=202611080339"></script>
+<script src="js/lesson-lstm-cell.js?v=202611080339"></script>
+<script src="js/app.js?v=202611080339"></script>
+<script src="js/lesson-rnn-wbar.js?v=202611080339"></script>
+<script src="js/lesson-lstm-big.js?v=202611080339"></script>
+<script src="js/lesson-lstm-step.js?v=202611080339"></script>
+<script src="js/lesson-lstm-sim.js?v=202611080339"></script>
+<script src="js/lesson-lstm-size.js?v=202611080339"></script>
+<script src="js/lesson-lstm-m2o.js?v=202611080339"></script>
+<script src="js/lesson-emb-kullan.js?v=202611080339"></script>
+<script src="js/lesson-emb-draco.js?v=202611080339"></script>
+<script src="js/lesson-emb-arch.js?v=202611080339"></script>
+<script src="js/lesson-emb-extra.js?v=202611080339"></script>
+<script src="js/lesson-s2s-weights.js?v=202611080339"></script>
+<script src="js/lesson-s2s-add.js?v=202611080339"></script>
+<script src="js/lesson-s2s-inside.js?v=202611080339"></script>
+<script src="js/lesson-s2s-desen.js?v=202611080339"></script>
+<script src="js/lesson-s2s-anim.js?v=202611080339"></script>
+<script src="js/lesson-att-train.js?v=202611080339"></script>
+<script src="js/lesson-att-extra.js?v=202611080339"></script>
+<script src="js/lesson-att-sim.js?v=202611080339"></script>
+<script src="js/lesson-att-ornek.js?v=202611080339"></script>
+<script src="js/lesson-mh-big.js?v=202611080339"></script>
+<script src="js/lesson-mh-ornek.js?v=202611080339"></script>
+<script src="js/lesson-tf-big.js?v=202611080339"></script>
+<script src="js/lesson-tf-ornek.js?v=202611080339"></script>
+<script src="js/lesson-gpt-tiny.js?v=202611080339"></script>
+<script src="js/lesson-gpt-big.js?v=202611080339"></script>
+<script src="js/lesson-gpt-ornek.js?v=202611080339"></script>
+<script src="js/lesson-rnn-van.js?v=202611080339"></script>
+<script src="js/lesson-s2s-extra.js?v=202611080339"></script>
+<script src="js/lesson-s2s-ornek.js?v=202611080339"></script>
+<script src="js/lesson-emb-ornek.js?v=202611080339"></script>
+<script src="js/lesson-emb-steps.js?v=202611080339"></script>
+<script src="js/lesson-emb-big.js?v=202611080339"></script>
+<script src="js/lesson-sm-ornek.js?v=202611080339"></script>
+<script src="js/lesson-sm-big.js?v=202611080339"></script>
+<script src="js/lesson-sm-akt.js?v=202611080339"></script>
+<script src="js/lesson-lstm-unroll.js?v=202611080339"></script>
+<script src="js/lesson-lstm-seq.js?v=202611080339"></script>
+<script src="js/lesson-lstm-gate.js?v=202611080339"></script>
+<script src="js/lesson-lstm-ornek.js?v=202611080339"></script>
+<script src="js/lesson-gpt.js?v=202611080339"></script>
+<script src="js/lesson-gpt-mini.js?v=202611080339"></script>
+<script src="js/lesson-vektor-ornek.js?v=202611080339"></script>
+<script src="js/lesson-linreg-big.js?v=202611080339"></script>
+<script src="js/lesson-linreg-ornek.js?v=202611080339"></script>
+<script src="js/lesson-act-big.js?v=202611080339"></script>
+<script src="js/lesson-act-ornek.js?v=202611080339"></script>
+<script src="js/lesson-xor-ornek.js?v=202611080339"></script>
+<script src="js/lesson-nn-ornek.js?v=202611080339"></script>
+<script src="js/lesson-nn-net.js?v=202611080339"></script>
+<script src="js/lesson-nn-sim.js?v=202611080339"></script>
+<script src="js/lesson-nn-big.js?v=202611080339"></script>
 </body>
 </html>
