@@ -457,3 +457,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('"Çift iniş" (double descent) gözlemi neyi söyler?',['Çok büyük modellerde kapasite arttıkça doğrulama hatası yeniden düşebilir','U eğrisi her zaman geçerlidir','Veri miktarı önemsizdir','Dropout gereksizdir'],'Bilgi notu; sayfada ölçülmedi.'),
  R('λ cezası neden bias terimine (sabit) uygulanmadı?',['Sabit eğrinin seviyesidir, kıvrım değil; cezalamak gereksizce kaydırır','Uygulanamaz','Daha hızlı olsun diye','Bias yoktur'],'Kodda k ≥ 1 için.')
 ];})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.tok=[
+ R('Bir dil modeli metni hangi birimde görür?',['Token: sık geçen harf gruplarından oluşan parçaların numaraları','Tek tek harfler','Bütün kelimeler','Cümleler'],'Model yalnız numara görür.'),
+ R('BPE\'nin bir adımında ne yapılır?',['Metindeki en sık yan yana parça çifti tek parça yapılır','En nadir harf silinir','Kelimeler alfabetik sıralanır','Rastgele iki harf birleştirilir'],'Ve bir kural olarak kaydedilir.'),
+ R('BPE başlangıçta sözlüğe neleri koyar (bu sayfadaki harf düzeyli sürüm)?',['Metindeki farklı harfler ve kelime başı işareti ▁','Bütün kelimeler','Hiçbir şey','Yalnız ekler'],'Türkçe metinde 22 parça.'),
+ R('Örnek 1\'de ilk öğrenilen kurallar neydi?',['Ekler: da, ar, lar, ler, larda','Kökler: kitap, okul','Noktalama işaretleri','Rastgele harfler'],'Ekler en sık geçen parçalar.'),
+ R('BPE "lar" parçasını neden öğrenir?',['Metinde çok sık geçtiği için','Türkçe dil bilgisi kuralı verildiği için','Hece olduğu için','Sözlükte önceden yazılı olduğu için'],'Yalnız sayar.'),
+ R('Kural sayısı arttıkça ne olur?',['Sözlük büyür, metin daha az parçayla yazılır','Sözlük küçülür','Metin uzar','Hiçbir şey değişmez'],'Örnek 2: iki çizgi zıt yönde.'),
+ R('Örnek 2\'de 73 kuraldan sonra ne oldu?',['Her kelime tek parça oldu; sözlük kelime listesine döndü','Metin harflere geri döndü','Sözlük 22\'ye indi','Kurallar silindi'],'30 kelime = 30 parça, sözlük 95.'),
+ R('Hiç görmediği bir kelimeyle karşılaşan BPE ne yapar?',['Bildiği parçaları kullanır, kalanı harflere (baytlara) böler','"Bilinmeyen" işareti verir','Kelimeyi atlar','Hata verir'],'Örnek 3.'),
+ R('Yeni bir kelime parçalanırken kurallar hangi sırayla uygulanır?',['Öğrenildikleri sırayla','Rastgele','En uzun parça önce','Alfabetik'],'Kural sırası önemlidir.'),
+ R('Kelime başı işareti ▁ ne işe yarar?',['Kelimenin başındaki parçayı kelime ortasındaki aynı harflerden ayırır','Boşluk karakterini siler','Cümle sonunu gösterir','Büyük harfi gösterir'],'"▁ev" ≠ ortadaki "ev".'),
+ R('Harf düzeyinde tokenizasyonun en büyük sorunu nedir?',['Diziler çok uzun olur (attention maliyeti, uzun bağlam)','Sözlük çok büyür','Bilinmeyen harfler','Hiç sorunu yok'],'Küçük sözlük, uzun dizi.'),
+ R('Kelime düzeyinde tokenizasyonun sorunu nedir?',['Sözlük devasa olur, görülmemiş kelimeler bilinmeyen kalır','Diziler çok uzar','Harfler kaybolur','Sayılar yazılamaz'],'Türkçe ekleri yüzünden özellikle.'),
+ R('BPE ilk olarak hangi amaçla icat edildi (1994)?',['Dosya sıkıştırma','Makine çevirisi','Ses tanıma','Görüntü işleme'],'Philip Gage.'),
+ R('BPE\'yi alt-kelime çeviriye taşıyan 2016 makalesi kimin?',['Sennrich, Haddow ve Birch','Vaswani ve arkadaşları','Hochreiter ve Schmidhuber','Rumelhart ve Hinton'],'Edinburgh.'),
+ R('GPT-2\'nin sözlüğü kaç parça?',['50.257','256','1.000','1 milyon'],'256 bayt + 50.000 kural + 1 özel.'),
+ R('Bayt düzeyi BPE\'nin avantajı nedir?',['Her metin (emoji, her alfabe) en kötü ihtimalle bayt bayt yazılabilir','Sözlük çok küçük olur','Model daha hızlı eğitilir','Türkçe hiç bölünmez'],'"Bilinmeyen" kalmaz.'),
+ R('GPT-2\'de "Ç" harfi neden iki parçaya bölündü?',['UTF-8\'de 2 bayt tutuyor ve o bayt çifti sözlükte tek parça değil','Büyük harf olduğu için','Hata olduğu için','Noktalama sayıldığı için'],'Ekstra: ölçüm tablosu.'),
+ R('"12345+67890=80235" GPT-2\'de nasıl bölünüyor?',['123|45|+|678|90|=|80|235','Her rakam ayrı','Tek parça','12345|+|67890|=|80235'],'Basamaklar hizalı değil.'),
+ R('Aynı anlamdaki cümle neden Türkçede çoğu zaman daha çok token tutar?',['Sözlük çoğunlukla İngilizce metinden öğrenildiği için Türkçe parçalar daha az birleşmiş','Türkçe harfler daha uzun olduğu için','Türkçe yasak olduğu için','Model Türkçe bilmediği için'],'Sözlük eğitim metnini yansıtır.'),
+ R('Tokenizer model eğitilirken birlikte güncellenir mi?',['Hayır; önce ayrı öğrenilir, sonra donar','Evet, her adımda','Yalnız son katmanda','Yalnız ince ayarda'],'Model numaraları öğrenir.'),
+ R('Sözlüğü büyütmenin model tarafındaki bedeli nedir?',['Gömme tablosu ve çıkış (softmax) katmanı büyür','Attention kaybolur','Konum bilgisi kaybolur','Hiç bedeli yok'],'Her parça için bir satır.'),
+ R('WordPiece BPE\'den nasıl farklıdır?',['Çifti ham sıklıkla değil, metnin olasılığına katkısıyla seçer','Baytla başlar','Hiç birleştirmez','Yalnız Japonca için çalışır'],'BERT kullanır; ## işareti.'),
+ R('Unigram (SentencePiece) nasıl çalışır?',['Büyük bir aday sözlükle başlar, en az katkı veren parçaları atar','Harflerden birleştirerek büyür','Kelimeleri olduğu gibi alır','Rastgele parçalar'],'Tersinden gider.'),
+ R('Özel token\'lara örnek hangisi?',['<|endoftext|> (metin sonu)','"lar"','"ev"','"123"'],'Metinden gelmeyen işaretler.'),
+ R('Dil modeli API\'lerinde fiyat ve bağlam penceresi neyle ölçülür?',['Token sayısıyla','Kelime sayısıyla','Harf sayısıyla','Saniyeyle'],'Gerçek Hayatta Nerede.')
+]})();

@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202611081927"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202611081934"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202611081927">
+<link rel="stylesheet" href="css/style.css?v=202611081934">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">📚 DERSLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 19:27 TR · #530</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 19:34 TR · #531</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -38,6 +38,7 @@
       <button class="navbtn" data-model="ovf">🎯 Aşırı Öğrenme & Düzenlileştirme</button>
       <button class="navbtn" data-model="rnn">🔁 RNN (BPTT)</button>
       <button class="navbtn" data-model="vektor">🧮 Vektör & Nokta Çarpım</button>
+      <button class="navbtn" data-model="tok">✂️ Tokenizasyon (BPE)</button>
       <button class="navbtn" data-model="lstm">🚪 LSTM / GRU</button>
       <button class="navbtn" data-model="embedding">🔤 Kelime Temsili (Embedding)</button>
       <button class="navbtn" data-model="seq2seq">🌉 Seq2Seq + Klasik Attention</button>
@@ -859,7 +860,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — Tek Hücre</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081927#rnn" target="_blank" rel="noopener">🔁 RNN 3B mimari</a> <span>— zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081934#rnn" target="_blank" rel="noopener">🔁 RNN 3B mimari</a> <span>— zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları</span></div>
     <div class="rsim-weights" id="rcWeightsBox">
     <div id="rcSliderAnchor"></div>
     <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin:0">
@@ -2328,7 +2329,7 @@ for epoch in range(101):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — tek LSTM hücresi: ileri, geri, güncelle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081927#s2s" target="_blank" rel="noopener">➡️ Seq2Seq 3B</a> <span>— bu dersteki LSTM hücresi, 2 katmanlı bir çevirmenin içinde, gerçek ağırlıklarla</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081934#s2s" target="_blank" rel="noopener">➡️ Seq2Seq 3B</a> <span>— bu dersteki LSTM hücresi, 2 katmanlı bir çevirmenin içinde, gerçek ağırlıklarla</span></div>
 <div id="lstmSim">
   <div class="nsim-what">🎯 <b>Bu simülasyon ne?</b> Tek bir LSTM hücresinin <b>bir zaman adımı</b>: girdi <b>x</b>, önceki çıktı <b>h₋₁</b> ve önceki hafıza <b>c₋₁</b> girer; dört kutu (f, i, c̃, o) hesaplanır, yeni hafıza <b>c</b> ve çıktı <b>h</b> çıkar. Bir <b>hedef y</b> veriyoruz: kayıp <b>L = ½(h − y)²</b>. Üç şey yapabilirsin: hücreyi <b>adım adım</b> çalıştır (İleri ▶ / ◀ Geri), 12 ağırlığı <b>elle değiştir</b>, ya da <b>eğit</b> ve hücrenin h'yi hedefe nasıl yaklaştırdığını izle. Birden çok adımın (cümlenin) hâli 6️⃣ Bütün Resim'de, gerçek bir eğitim görevi 7️⃣ Örnek Çalışmalar'da.</div>
   <div class="nsim-wbox" id="lsWBox">
@@ -5952,7 +5953,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — dikkat laboratuvarı</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081927#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a> · <a href="harita/matris-animasyon.html?v=202611081927#temel" target="_blank" rel="noopener">🧱 Matris temelleri</a> <span>— aynı dört adım her kelime 2 sayıyla, elle takip edilir</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081934#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a> · <a href="harita/matris-animasyon.html?v=202611081934#temel" target="_blank" rel="noopener">🧱 Matris temelleri</a> <span>— aynı dört adım her kelime 2 sayıyla, elle takip edilir</span></div>
 <div class="at-tabs" id="atTabs">
   <button class="addbtn on" data-t="lab">🔬 Dikkat laboratuvarı</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -5971,7 +5972,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div id="atBig"></div>
   <div class="sd-chips"><span>N = 6 encoder + 6 decoder</span><span>d<sub>model</sub> = 512</span><span>h = 8 kafa, d<sub>k</sub> = 64</span><span>FFN 512 → 2048 → 512</span><span>konum: sinüs/kosinüs</span><span>Add &amp; Norm çıkışta</span><span>≈65 milyon ağırlık</span></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081927#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081934#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
 
     </div>
   </div>
@@ -6356,7 +6357,7 @@ for d in (4, 16, 64, 256):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — kafalar, blok, konum imzası</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081927#rope" target="_blank" rel="noopener">🌀 RoPE turu</a> · <a href="harita/matris-animasyon.html?v=202611081927#ossturu" target="_blank" rel="noopener">🟢 gpt-oss turu (GQA)</a> · <a href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener">🧩 3B mimari: kafanın içi</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081934#rope" target="_blank" rel="noopener">🌀 RoPE turu</a> · <a href="harita/matris-animasyon.html?v=202611081934#ossturu" target="_blank" rel="noopener">🟢 gpt-oss turu (GQA)</a> · <a href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener">🧩 3B mimari: kafanın içi</a></div>
 <div class="at-tabs" id="mhTabs">
   <button class="addbtn on" data-t="heads">🔬 Üç kafa</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -6377,7 +6378,7 @@ for d in (4, 16, 64, 256):
   <div class="mh-pos"><div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
   <div class="work" id="posWork" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081927#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081934#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
 
     </div>
   </div>
@@ -6749,14 +6750,14 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — toplama turu, residual, LayerNorm</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081927" target="_blank" rel="noopener">🎬 GPT-2 turu</a> · <a href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/mimari-3b.html?v=202611081927#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081934" target="_blank" rel="noopener">🎬 GPT-2 turu</a> · <a href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/mimari-3b.html?v=202611081934#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a></div>
 <div class="at-tabs" id="tfTabs">
   <button class="addbtn on" data-t="tour">🎬 Toplama turu: 7 + 5 → 12</button>
   <button class="addbtn" data-t="res">🎚️ Residual derinliği</button>
   <button class="addbtn" data-t="ln">🧮 LayerNorm hesap makinesi</button>
 </div>
 <div class="at-pane" data-p="tour">
-  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081927" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
+  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081934" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
   <div id="tfTour"></div>
 </div>
 <div class="at-pane" data-p="res" style="display:none">
@@ -8588,7 +8589,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — okları döndür, benzerliği izle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081927#temel" target="_blank" rel="noopener">🧱 Matris temelleri animasyonu</a> <span>— transpoz, satır × sütun, Q·Kᵀ küçük sayılarla</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081934#temel" target="_blank" rel="noopener">🧱 Matris temelleri animasyonu</a> <span>— transpoz, satır × sütun, Q·Kᵀ küçük sayılarla</span></div>
 <!-- İNTERAKTİF: nokta çarpım oyuncağı -->
   <div class="sechead">1) 🎯 Oyuncak: okları döndür, benzerliği izle</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
@@ -8749,27 +8750,27 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <h3>🗣️ 1 · Oku</h3>
     <p class="hr-cat-d">Adım adım, sayılarla ve düz dille.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611081927" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611081927" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611081927" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611081927" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611081934" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611081934" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611081934" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611081934" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g2">
     <h3>🏛️ 2 · Gez</h3>
     <p class="hr-cat-d">Mimarileri parçala, kutulara tıkla.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081927#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081927#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081927#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611081927" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081934#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081934#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081934#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611081934" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g3">
     <h3>🎬 3 · İzle</h3>
     <p class="hr-cat-d">Video gibi oynayan turlar.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081927" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081927#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081927#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081927#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081934" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081934#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081934#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081934#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
     </div>
   </div>
   </div>
-  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081927" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
+  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081934" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
   <p class="hr-note">⚠️ Minik GPT sayfalarındaki sayılar sabit bir kayıttır (tohum 1, «7+5=»); GPT-2, gpt-oss ve diğer büyük modellerde şekiller gerçek, renkli hücreler şematiktir.</p>
 
   </div>
@@ -8854,7 +8855,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — üç modeli aynı metinle eğit, üret; minik GPT'nin şeması</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/adim-adim.html?v=202611081927" target="_blank" rel="noopener">🔦 Minik GPT adım adım</a> · <a href="harita/epoch.html?v=202611081927" target="_blank" rel="noopener">📒 Eğitim günlüğü</a> · <a href="harita/mimari-3b.html?v=202611081927" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/gpt2-adim-adim.html?v=202611081927" target="_blank" rel="noopener">🧠 GPT-2 adım adım</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/adim-adim.html?v=202611081934" target="_blank" rel="noopener">🔦 Minik GPT adım adım</a> · <a href="harita/epoch.html?v=202611081934" target="_blank" rel="noopener">📒 Eğitim günlüğü</a> · <a href="harita/mimari-3b.html?v=202611081934" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/gpt2-adim-adim.html?v=202611081934" target="_blank" rel="noopener">🧠 GPT-2 adım adım</a></div>
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🔬 Aşağıda üç model <b>aynı metinden</b> öğreniyor. Önce yukarıdaki başlangıç kutusuna bir şey yaz ya da düğmelerden seç. Denenecekler: (1) sayma modelinde bağlam uzunluğunu 1'den 10'a çıkar, çıktıların nasıl düzeldiğini izle; (2) sinir ağını eğit ve kaybın düşmesiyle çıktıların <b>rastgele harflerden</b> cevaplara dönüşmesini gör; (3) <b>görmediği toplamları</b> ve <b>hiç görmediği soruları</b> (selam&gt;, nasılsınız&gt;) dene (4) <b>Minik GPT</b>'yi eğit (≈30 sn, ▶ eğit) ve altındaki <b>mimari şemasında</b> "7+5=" için dikkatin iki rakama kaymasını izle; <b>İleri ▶</b> ile adım adım ilerle.</p>
   <div id="gtApp"></div>
   <div class="callout" style="margin-top:10px">📉 <b>Kayıp neden sıfıra inmiyor (≈0,56)?</b> Modele her karakteri tahmin ettiriyoruz, soruların kendisini de. Hangi sorunun hangi sırayla geleceği metinde rastgele; bunu kimse tahmin edemez. Cevap kısımları ve toplamlar ise tamamen belirli, onlar kayıp 0'a yaklaşır. Kalan 0,56 "tahmin edilemeyen" kısımdan geliyor, yani ağ bozuk değil.</div>
@@ -9860,6 +9861,243 @@ for n in (12, 24, 48, 96):
   <p class="footer">Aşırı öğrenme • eğitim / doğrulama / test · weight decay · dropout · erken durdurma</p>
   </div><!-- /model-ovf -->
 
+  <!-- ===================== ✂️ TOKENİZASYON ===================== -->
+  <div class="model" id="model-tok">
+
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 200" role="img" aria-label="Bir cümlenin parçalara ve numaralara dönüşmesi">
+    <rect width="760" height="200" fill="#0d1426"/>
+    <text x="380" y="36" text-anchor="middle" font-size="20" fill="#fff" font-family="Consolas,monospace">Kitaplarımızdan birini okudum.</text>
+    <text x="380" y="62" text-anchor="middle" font-size="12" fill="#95a2c2">↓ tokenizer (GPT-4o'nun o200k sözlüğü, ölçüldü)</text>
+    <g font-family="Consolas,monospace" font-size="15" text-anchor="middle">
+      <g transform="translate(44,78)"><rect width="62" height="34" rx="6" fill="#203a5e" stroke="#5aa0ff"/><text x="31" y="22" fill="#fff">Kit</text></g>
+      <g transform="translate(112,78)"><rect width="52" height="34" rx="6" fill="#203a5e" stroke="#5aa0ff"/><text x="26" y="22" fill="#fff">ap</text></g>
+      <g transform="translate(170,78)"><rect width="118" height="34" rx="6" fill="#3a2a10" stroke="#f0a032"/><text x="59" y="22" fill="#fff">larımız</text></g>
+      <g transform="translate(294,78)"><rect width="62" height="34" rx="6" fill="#3a2a10" stroke="#f0a032"/><text x="31" y="22" fill="#fff">dan</text></g>
+      <g transform="translate(362,78)"><rect width="66" height="34" rx="6" fill="#1f3a26" stroke="#46c46a"/><text x="33" y="22" fill="#fff">␣bir</text></g>
+      <g transform="translate(434,78)"><rect width="56" height="34" rx="6" fill="#1f3a26" stroke="#46c46a"/><text x="28" y="22" fill="#fff">ini</text></g>
+      <g transform="translate(496,78)"><rect width="56" height="34" rx="6" fill="#33224a" stroke="#a34ad1"/><text x="28" y="22" fill="#fff">␣ok</text></g>
+      <g transform="translate(558,78)"><rect width="48" height="34" rx="6" fill="#33224a" stroke="#a34ad1"/><text x="24" y="22" fill="#fff">ud</text></g>
+      <g transform="translate(612,78)"><rect width="48" height="34" rx="6" fill="#33224a" stroke="#a34ad1"/><text x="24" y="22" fill="#fff">um</text></g>
+      <g transform="translate(666,78)"><rect width="40" height="34" rx="6" fill="#2a2f3e" stroke="#95a2c2"/><text x="20" y="22" fill="#fff">.</text></g>
+    </g>
+    <text x="380" y="140" text-anchor="middle" font-size="12" fill="#95a2c2">↓ her parçanın sözlükte bir numarası var → model yalnız bu numaraları görür</text>
+    <text x="380" y="168" text-anchor="middle" font-size="14" fill="#ffd77a" font-family="Consolas,monospace">30 harf → 10 token</text>
+  </svg>
+  <h1>✂️ Tokenizasyon — metin modele nasıl girer?</h1>
+  <p class="sub">Model harf de kelime de görmez: <b>token</b> görür — sık geçen harf gruplarından oluşan parçalar. Bu ders o parçaların <b>nereden geldiğini</b> anlatıyor: <b>BPE</b> (Byte Pair Encoding) algoritması bir metinde en sık yan yana duran iki parçayı birleştirip tekrarlar; Türkçenin ekleri (<i>lar, ler, dan, den</i>) kendiliğinden ortaya çıkar.</p>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> Softmax dersinde model "sözlükteki her parça" için bir olasılık veriyordu; Kelime Temsili'nde her parçanın bir vektörü vardı. Peki o sözlük nereden geliyor? Bu ders cevabı veriyor — ve neden "kelime" değil "parça" dediğimizi.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Bir sıkıştırma hilesinin ikinci hayatı</div>
+      <p>1994'te <b>Philip Gage</b>, bir bilgisayar dergisinde dosya sıkıştırmak için basit bir yöntem yayımladı: dosyada en sık yan yana gelen iki baytı bul, onları kullanılmayan tek bir baytla değiştir, tekrarla. Adı <b>Byte Pair Encoding</b>.</p>
+      <p>Yirmi yıl sonra makine çevirisi bir duvara çarpmıştı: sözlükte olmayan her kelime (özel adlar, bileşik kelimeler, ekli hâller) "bilinmeyen" işaretine dönüşüyordu. 2016'da <b>Rico Sennrich, Barry Haddow ve Alexandra Birch</b> Gage'in hilesini harflere uyguladı: kelimeler sık parçalarına ayrılsın, nadir kelime parçalarından yazılsın. Google aynı fikri 2012'de <b>WordPiece</b> adıyla Japonca/Korece sesli arama için kullanmıştı (Schuster &amp; Nakajima).</p>
+      <p>2019'da <b>GPT-2</b> son adımı attı: harfle değil <b>256 bayt</b>la başla. Böylece emoji, Çince, kod — yazılabilen her şey parçalanabilir; "bilinmeyen kelime" kavramı tamamen ortadan kalktı.</p>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-tok" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Keşif Defteri'nde genişlet</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">💰</span><b>Fiyat token'la ölçülür</b> — dil modeli API'leri "1 milyon token başına" ücret alır; bağlam penceresi de (ör. 128 bin) token cinsindendir, kelime değil.</div>
+        <div class="ex-card"><span class="ex-ico">🇹🇷</span><b>Türkçe daha pahalı</b> — "The cat is sleeping on the sofa." 8 token, "Kedi kanepede uyuyor." de 8 token (o200k); GPT-2 sözlüğünde Türkçe cümle 10 token. Sözlük çoğunlukla İngilizce metinden öğrenildiği için Türkçe kelimeler daha çok parçaya bölünür.</div>
+        <div class="ex-card"><span class="ex-ico">🔢</span><b>Sayılar tuhaf bölünür</b> — "12345+67890=80235" GPT-2'de <code>123|45|+|678|90|=|80|235</code>. Basamaklar aynı hizada değil; bu, dil modellerinin uzun toplamada zorlanma nedenlerinden biri sayılır.</div>
+        <div class="ex-card"><span class="ex-ico">🧩</span><b>"Bilinmeyen kelime" yok</b> — "Çekoslovakyalılaştıramadıklarımızdanmışsınız" (44 harf) o200k'de 18 token; GPT-2'de "Ç" harfi bile iki <b>bayt</b> parçasına bölünüyor.</div>
+        <div class="ex-card"><span class="ex-ico">🔤</span><b>Harf sayma soruları</b> — model "strawberry"yi harf harf değil birkaç parça olarak görür; "kaç tane r var" gibi sorularda zorlanmasının bilinen bir nedeni budur.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — tek bakışta</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="nl-hap">
+      <div class="nl-card"><h4>🤔 1) Neden harf de kelime de değil?</h4><ul><li><b>Harf</b>: sözlük küçük (≈100) ama cümleler çok uzun → attention n² maliyeti, model her şeyi baştan birleştirmek zorunda</li><li><b>Kelime</b>: diziler kısa ama sözlük devasa (Türkçede bir köke yüzlerce ek), hiç görülmemiş kelime "bilinmeyen" olur</li><li><b>Alt-kelime (token)</b>: sık kelimeler tek parça, nadir kelimeler birkaç parça — ikisinin ortası</li></ul></div>
+      <div class="nl-card"><h4>⚙️ 2) BPE algoritması</h4><ol style="margin:4px 0 0 18px;padding:0"><li>Her kelimeyi harflerine böl (başına kelime başı işareti ▁)</li><li>Bütün metinde yan yana duran çiftleri say</li><li>En sık çifti tek parça yap → <b>bir kural</b></li><li>İstenen sözlük boyuna kadar tekrarla</li></ol>Yeni metni parçalarken kurallar <b>öğrenildiği sırayla</b> uygulanır.</div>
+      <div class="nl-card"><h4>🔢 3) Parçadan numaraya</h4>Her token'ın sözlükte bir numarası var (GPT-2'de 0…50.256). Model yalnız numaraları görür; Kelime Temsili dersindeki tablo <b>numara → vektör</b> çevirir. Çıkışta softmax <b>sözlüğün tamamına</b> olasılık dağıtır, seçilen numara yeniden metne çevrilir.</div>
+      <div class="nl-card"><h4>📌 Akılda kalsın</h4><ul><li>Tokenizer <b>eğitimden önce</b> ve ayrı öğrenilir, sonra donar.</li><li>Sözlük büyüdükçe diziler kısalır ama gömme ve çıkış tabloları büyür.</li><li>Bayt düzeyi BPE'de her metin yazılabilir: en kötü ihtimalle bayt bayt.</li><li>Aynı cümle farklı dilde farklı sayıda token tutar.</li></ul></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — BPE'yi adım adım öğret</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div id="tokSim">
+      <div class="nl-ctl">Metin: <button class="rex-btn tok-pre on" data-p="tr">🇹🇷 Türkçe ekler (30 kelime)</button><button class="rex-btn tok-pre" data-p="en">🇬🇧 low / lower / newest / widest</button><button class="rex-btn tok-pre" data-p="own">✍️ kendi metnin</button></div>
+      <div class="nl-ctl" id="tokOwnBox" style="display:none"><textarea id="tokOwn" rows="2" style="width:100%;max-width:640px;background:#0e1424;color:#fff;border:1px solid var(--line);border-radius:6px;padding:6px">gel geldi geliyor gelecek git gitti gidiyor gidecek</textarea></div>
+      <div class="nl-ctl"><button class="rex-btn" id="tokNext">▶ 1 birleştirme</button><button class="rex-btn" id="tokNext5">+5</button><button class="rex-btn" id="tokNext20">+20</button><button class="rex-btn" id="tokReset">↺ başa dön</button>
+        <span>kural: <b id="tokStepN">0</b> · sözlük: <b id="tokVocab">0</b> parça · metin: <b id="tokTotal">0</b> parça (başta <span id="tokT0">0</span>)</span></div>
+      <div class="nl-grid">
+        <div>
+          <div class="tk-h">📄 Metin şu an (her kutu bir token; ×n = o kelime kaç kez geçiyor)</div>
+          <div id="tokWords" class="tk-words"></div>
+          <div class="tk-h">🔍 En sık yan yana çiftler</div>
+          <div id="tokPairs"></div>
+          <div class="tk-h">📜 Öğrenilen kurallar (sırayla)</div>
+          <div id="tokRules" class="tk-rules"></div>
+        </div>
+        <div class="nl-teach">
+          <div class="t-goal"><b class="h">🎯 Ne yapıyoruz?</b>Elimizde küçük bir metin var. Hiçbir dil bilgisi vermeden, yalnız <b>sayarak</b> bir sözlük öğreneceğiz: her basışta metinde en sık yan yana duran iki parça tek parça olur. Sonra öğrenilen kurallarla hiç görmediği bir kelimeyi parçalayacağız.</div>
+          <div class="t-step" id="tokStep"></div>
+          <div class="t-soz" id="tokSoz"></div>
+          <div class="t-goal"><b class="h">🧪 Yeni kelime dene (öğrenilen kurallarla)</b><input id="tokTry" value="kitaplarımızdan masalarda" style="width:100%;background:#0e1424;color:#fff;border:1px solid var(--line);border-radius:6px;padding:5px;margin:4px 0"><div id="tokTryOut"></div></div>
+          <div class="t-warn"><b class="h">⚠️ Sık karışan</b>
+            • Token ≠ hece ≠ kelime: parça yalnız <b>sıklıktan</b> doğar ("lar" Türkçede ek olduğu için değil, çok geçtiği için parça olur).<br>
+            • ▁ boşluk değil "kelime başı" işareti: "▁ev" ile kelime ortasındaki "ev" farklı token'dır.<br>
+            • Kurallar sırayla uygulanır; aynı kelime farklı kural sayısında farklı parçalanır.<br>
+            • Tokenizer modelin geri kalanıyla <b>birlikte eğitilmez</b>; önce öğrenilir, sonra donar.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — gerçek tokenizer'lar, bayt düzeyi, WordPiece/Unigram</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts">
+      <h3>📏 Gerçek tokenizer'larla ölçtük</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">GPT-2 sözlüğü (50.257 parça) ve GPT-4o'nun <b>o200k</b> sözlüğü (≈200 bin parça) ile, <code>gpt-3-encoder</code> ve <code>gpt-tokenizer</code> paketleriyle ölçüldü. Dikey çizgi = token sınırı, ␣ = boşluk.</p>
+      <div style="overflow-x:auto"><table class="tk-tbl">
+        <tr><th>metin</th><th>harf</th><th>GPT-2</th><th>o200k</th></tr>
+        <tr><td>The cat is sleeping on the sofa.</td><td>32</td><td>8</td><td>8</td></tr>
+        <tr><td>Kedi kanepede uyuyor.</td><td>21</td><td>10 <small>K|edi|␣kan|ep|ede|␣u|y|uy|or|.</small></td><td>8 <small>K|edi|␣kan|ep|ede|␣uy|uyor|.</small></td></tr>
+        <tr><td>Kitaplarımızdan birini okudum.</td><td>30</td><td>15 <small>K|ita|pl|ar|ı|m|ı|z|dan|␣bir|ini|␣ok|ud|um|.</small></td><td>10 <small>Kit|ap|larımız|dan|␣bir|ini|␣ok|ud|um|.</small></td></tr>
+        <tr><td>I read one of our books.</td><td>24</td><td>7</td><td>7</td></tr>
+        <tr><td>12345+67890=80235</td><td>17</td><td>8 <small>123|45|+|678|90|=|80|235</small></td><td>8 <small>123|45|+|678|90|=|802|35</small></td></tr>
+        <tr><td>tokenization</td><td>12</td><td>2 <small>token|ization</small></td><td>2</td></tr>
+        <tr><td>Çekoslovakyalılaştıramadıklarımızdanmışsınız</td><td>44</td><td>29 <small>(Ç iki bayt parçası)</small></td><td>18 <small>…|larımız|dan|mış|s|ınız</small></td></tr>
+      </table></div>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Aynı anlam: İngilizce 8 token, Türkçe 8–10; "kitaplarımızdan…" İngilizcesi 7, Türkçesi 10–15. Büyük sözlük (o200k) Türkçeyi daha iyi yakalıyor: <code>larımız</code>, <code>mış</code>, <code>ınız</code> tek parça.</p>
+      <h3>🧱 Bayt düzeyi BPE</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Bilgisayarda her harf UTF-8 ile 1–4 bayt tutar ("a" 1 bayt, "ç" 2 bayt, çoğu emoji 4 bayt). GPT-2 sözlüğü 256 baytın hepsiyle başlar, üstüne 50.000 birleştirme kuralı ekler (+1 özel "metin sonu" işareti = 50.257). Bu yüzden hiçbir metin "yazılamaz" değil; nadir harfler en kötü ihtimalle bayt bayt yazılır (tabloda "Ç").</p>
+      <h3>🔀 WordPiece ve Unigram</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7"><b>WordPiece</b> (BERT): BPE'ye çok benzer, ama birleştireceği çifti ham sıklıkla değil "bu çifti birleştirmek metnin olasılığını ne kadar artırır" ölçüsüyle seçer; kelime içi parçalar <code>##</code> ile işaretlenir (<code>token ##ization</code>). <b>Unigram</b> (SentencePiece, T5, Llama 1-2): tersinden gider — büyük bir aday sözlükle başlar, metnin olasılığına en az katkı veren parçaları atarak küçültür. <b>SentencePiece</b> boşluğu da bir karakter (▁) gibi ele alır, böylece boşluksuz diller (Japonca, Çince) de aynı yolla parçalanır — bu sayfadaki ▁ işareti oradan.</p>
+      <h3>🎫 Özel token'lar</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Sözlükte metinden gelmeyen işaretler de vardır: metin sonu (<code>&lt;|endoftext|&gt;</code>), sohbet modellerinde "kullanıcı / asistan" sınırları, dolgu (padding). Seq2Seq dersindeki <code>&lt;s&gt;</code> ve <code>&lt;e&gt;</code> bunun minik örnekleri.</p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>6️⃣ Örnek Çalışmalar — ölçerek gör</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç örnek, aynı 30 kelimelik Türkçe metin (Simülasyon'daki ilk metin). Kurallar tarayıcıda gerçekten öğreniliyor; en alttaki Python kodu aynı sayıları üretir.</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — İlk 10 kural ne öğreniyor?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Metne hiçbir dil bilgisi vermeden 10 birleştirme yapalım. Hangi parçalar önce oluşuyor?</p><div id="tokEx1"></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — Sözlük boyu ↔ dizi uzunluğu</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Kural sayısını 0'dan "her kelime tek parça" olana kadar artır. Sözlük ne kadar büyüyor, metin ne kadar kısalıyor?</p><div id="tokEx2"></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Hiç görmediği kelimeler</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 25 kural öğrenildi. Metinde hiç geçmeyen kelimeleri (kendi kelimelerini de yazabilirsin) nasıl parçalıyor?</p><div id="tokEx3"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Üç örnek Python'da (kütüphanesiz, yorumlu)</div><div class="acc-body"><pre class="nl-code"># ---- BPE (Byte Pair Encoding) — kütüphanesiz, 25 satır ----
+METIN = (&quot;evler evlerde evden kitaplar kitaplarda kitaptan okullar okullarda okuldan gözler gözlerde gözden &quot;
+         &quot;yollar yollarda yoldan elmalar elmalarda elmadan kediler kedilerde kediden kuşlar kuşlarda kuştan &quot;
+         &quot;dağlar dağlarda dağdan şehirler şehirlerde şehirden&quot;)
+def sayac(metin):                         # kelime → kaç kez geçti; her kelime &quot;▁&quot; + harfler
+    S = {}
+    for k in metin.split(): t = tuple(&quot;▁&quot; + k); S[t] = S.get(t, 0) + 1
+    return S
+def ciftler(S):                           # yan yana iki parçanın kaç kez geçtiği
+    C = {}
+    for w, n in S.items():
+        for a, b in zip(w, w[1:]): C[(a, b)] = C.get((a, b), 0) + n
+    return C
+def birlestir(w, a, b):                   # w içindeki her (a,b)yi tek parça yap (soldan sağa)
+    o, i = [], 0
+    while i &lt; len(w):
+        if i + 1 &lt; len(w) and w[i] == a and w[i + 1] == b: o.append(a + b); i += 2
+        else: o.append(w[i]); i += 1
+    return tuple(o)
+def ogren(metin, adim):
+    S = sayac(metin); kurallar = []
+    for _ in range(adim):
+        C = ciftler(S)
+        if not C: break
+        (a, b), n = min(C.items(), key=lambda kv: (-kv[1], kv[0]))   # en sık; eşitlikte alfabetik
+        kurallar.append((a, b, n)); S = {birlestir(w, a, b): c for w, c in S.items()}
+    return kurallar, S
+def kodla(kelime, kurallar):              # yeni kelimeyi öğrenilen kurallarla SIRAYLA parçala
+    w = tuple(&quot;▁&quot; + kelime)
+    for a, b, _ in kurallar: w = birlestir(w, a, b)
+    return list(w)
+def toplam(S):                            # bütün metin kaç parça tutuyor
+    t = 0
+    for w, n in S.items(): t += len(w) * n
+    return t
+
+ALFABE = len(set(&quot;▁&quot; + METIN.replace(&quot; &quot;, &quot;&quot;)))      # başlangıç sözlüğü: tek tek harfler + ▁
+print(&quot;Örnek 1 — ilk 10 birleştirme kuralı:&quot;)
+K, S = ogren(METIN, 10)
+for i, (a, b, n) in enumerate(K, 1): print(f&quot;  {i:2d}. {a} + {b} → {a+b}   ({n} kez)&quot;)
+print(&quot;Örnek 2 — sözlük büyüdükçe metin kaç parça?&quot;)
+for m in (0, 5, 10, 20, 40, 60, 73):
+    K, S = ogren(METIN, m); print(f&quot;  {m:2d} kural: sözlük {ALFABE + m:3d}, metin {toplam(S):3d} parça&quot;)
+print(&quot;Örnek 3 — 25 kuralla hiç görmediği kelimeler:&quot;)
+K, S = ogren(METIN, 25)
+for k in (&quot;kitaplarımızdan&quot;, &quot;evlerimizde&quot;, &quot;masalarda&quot;, &quot;çiçeklerden&quot;, &quot;araba&quot;):
+    print(f&quot;  {k:16s} →&quot;, &quot; | &quot;.join(kodla(k, K)))
+
+# ---- çıktı ----
+# Örnek 1 — ilk 10 birleştirme kuralı:
+#    1. d + a → da   (13 kez)
+#    2. a + r → ar   (12 kez)
+#    3. l + ar → lar   (12 kez)
+#    4. ▁ + k → ▁k   (9 kez)
+#    5. d + e → de   (8 kez)
+#    6. e + r → er   (8 kez)
+#    7. l + er → ler   (8 kez)
+#    8. lar + da → larda   (6 kez)
+#    9. ▁ + e → ▁e   (6 kez)
+#   10. t + a → ta   (5 kez)
+# Örnek 2 — sözlük büyüdükçe metin kaç parça?
+#    0 kural: sözlük  22, metin 248 parça
+#    5 kural: sözlük  27, metin 194 parça
+#   10 kural: sözlük  32, metin 161 parça
+#   20 kural: sözlük  42, metin 128 parça
+#   40 kural: sözlük  62, metin  68 parça
+#   60 kural: sözlük  82, metin  43 parça
+#   73 kural: sözlük  95, metin  30 parça
+# Örnek 3 — 25 kuralla hiç görmediği kelimeler:
+#   kitaplarımızdan  → ▁k | itap | lar | ı | m | ı | z | dan
+#   evlerimizde      → ▁e | v | ler | i | m | i | z | de
+#   masalarda        → ▁ | m | a | s | a | larda
+#   çiçeklerden      → ▁ | ç | i | ç | e | k | ler | den
+#   araba            → ▁ | ar | a | b | a
+</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="pts">
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 1: Neden kelime düzeyinde sözlük Türkçe için özellikle kötü?</div><div class="acc-body">Bir köke çok sayıda ek gelebilir (kitap, kitaplar, kitaplarımızdan…); her biri ayrı kelime olursa sözlük devasa olur ve görülmemiş ekli hâller "bilinmeyen" kalır. Alt-kelimede kök ve ekler ayrı parçalar olarak paylaşılır.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 2: BPE'nin bir adımında tam olarak ne olur?</div><div class="acc-body">Metindeki bütün yan yana parça çiftleri sayılır, en sık çift tek parça yapılır ve bu bir kural olarak kaydedilir. Sözlük 1 büyür, metin o çiftin geçtiği sayı kadar kısalır.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 3: Örnek 1'de ilk kurallar neden ekler oldu?</div><div class="acc-body">Çünkü metinde ekler (da, lar, ler) köklerden çok daha sık geçiyor; BPE yalnız sayar. "Ek" kavramını kimse öğretmedi.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 4: Sözlüğü çok büyütmenin bedeli nedir?</div><div class="acc-body">Diziler kısalır ama gömme tablosu ve çıkış (softmax) katmanı sözlük boyunca satır ister; nadir parçalar az görüldüğü için iyi öğrenilemez. Örnek 2'de en uçta sözlük bir kelime listesine döner.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 5: Bayt düzeyi BPE "bilinmeyen kelime" sorununu nasıl ortadan kaldırır?</div><div class="acc-body">Sözlük 256 baytın hepsini içerir; her metin baytlardan oluştuğu için en kötü ihtimalle bayt bayt yazılabilir (GPT-2'de "Ç" iki bayt parçası).</div></div>
+  </div>
+    </div>
+  </div>
+<div class="tpl-cl" data-stage="q">
+    <div class="tpl-head closed"><span>8️⃣ 🏁 Bitirme Testi</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed"><div class="quiz-mount" data-quiz="tok"></div></div>
+</div>
+
+  <p class="footer">Tokenizasyon • BPE · alt-kelime · bayt düzeyi · WordPiece · Unigram</p>
+  </div><!-- /model-tok -->
+
   <div class="model active" id="model-yol">
 
   <h1>🗺️ Yol Haritası — sayılardan Transformer'a</h1>
@@ -10110,6 +10348,28 @@ for n in (12, 24, 48, 96):
     <div class="ped-h">📄 Ateşlediği çalışmalar</div>
     <p>Elman (1990) → LSTM (1997) → seq2seq (2014) → attention (2017). Geri yayılımın kendisi ise istisnasız her modern modelin eğitim motoru.</p>
     <div class="ped-links"><button class="addbtn" data-ped-tree="rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="rnn" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
+  </div>
+
+    <div class="sechead" id="pedia-tok">✂️ Tokenizasyon — Metnin Parçalara Bölünmesi</div>
+  <div class="pts pedia-art">
+    <p class="ped-hook">📦 Bir dosya sıkıştırma hilesi, yirmi yıl sonra bütün dil modellerinin kapısı oldu: <b>en sık yan yana duran iki parçayı birleştir, tekrarla</b>.</p>
+    <div class="ped-h">👤 Kâşifler</div>
+    <div class="ped-people">
+      <div class="ped-card"><div class="ped-ava">PG</div><div><b>Philip Gage</b><br><span>Amerikalı yazılımcı</span><br><i>Byte Pair Encoding (1994)</i></div></div>
+      <div class="ped-card"><div class="ped-ava">RS</div><div><b>Rico Sennrich</b><br><span>İsviçreli · Edinburgh</span><br><i>BPE ile alt-kelime çeviri (2016)</i></div></div>
+      <div class="ped-card"><div class="ped-ava">TK</div><div><b>Taku Kudo</b><br><span>Japon · Google</span><br><i>SentencePiece, Unigram (2018)</i></div></div>
+    </div>
+    <div class="ped-h">💡 Keşif hikâyesi</div>
+    <p>Gage'in 1994'teki makalesi baytları sıkıştırıyordu. Sennrich, Haddow ve Birch 2016'da aynı fikri harflere uygulayıp çeviride "bilinmeyen kelime" sorununu büyük ölçüde çözdü. Google'ın WordPiece'i (2012) ve Kudo'nun Unigram/SentencePiece'i (2018) farklı ölçütlerle aynı ortaya ulaştı. GPT-2 (2019) baytlardan başlayarak her metni yazılabilir kıldı.</p>
+    <div class="ped-h">🌍 Gerçek dünyada</div>
+    <ul>
+      <li><b>💰 Ücret ve sınırlar:</b> API fiyatı ve bağlam penceresi token sayılır.</li>
+      <li><b>🌐 Diller arası adalet:</b> İngilizce ağırlıklı sözlüklerde diğer diller daha çok token tutar.</li>
+      <li><b>🔢 Aritmetik:</b> sayıların tutarsız bölünmesi, rakam rakam bölen tokenizer'ları doğurdu.</li>
+    </ul>
+    <div class="ped-h">📄 Ateşlediği çalışmalar</div>
+    <p>WordPiece (BERT), SentencePiece (T5, Llama), tiktoken (GPT-4), çok dilli sözlükler, tokenizer'sız (bayt/karakter) modeller.</p>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="tok" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="tok" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
   <div class="sechead" id="pedia-emb">🔤 Kelime Temsili — Anlamın Vektöre Gömülmesi</div>
@@ -10374,78 +10634,79 @@ for n in (12, 24, 48, 96):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202611081927"></script>
-<script src="js/lesson-turev.js?v=202611081927"></script>
-<script src="js/lesson-xor.js?v=202611081927"></script>
-<script src="js/lesson-xor-arch.js?v=202611081927"></script>
-<script src="js/lesson-xor-maps.js?v=202611081927"></script>
-<script src="js/lesson-xor-epoch.js?v=202611081927"></script>
-<script src="js/lesson-nn.js?v=202611081927"></script>
-<script src="js/lesson-trig.js?v=202611081927"></script>
+<script src="js/lesson-linreg.js?v=202611081934"></script>
+<script src="js/lesson-turev.js?v=202611081934"></script>
+<script src="js/lesson-xor.js?v=202611081934"></script>
+<script src="js/lesson-xor-arch.js?v=202611081934"></script>
+<script src="js/lesson-xor-maps.js?v=202611081934"></script>
+<script src="js/lesson-xor-epoch.js?v=202611081934"></script>
+<script src="js/lesson-nn.js?v=202611081934"></script>
+<script src="js/lesson-trig.js?v=202611081934"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202611081927"></script>
-<script src="js/lesson-rnn-soz.js?v=202611081927"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202611081934"></script>
+<script src="js/lesson-rnn-soz.js?v=202611081934"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202611081927"></script>
-<script src="js/lesson-lstm-cell.js?v=202611081927"></script>
-<script src="js/app.js?v=202611081927"></script>
-<script src="js/lesson-opt.js?v=202611081927"></script>
-<script src="js/lesson-ovf.js?v=202611081927"></script>
-<script src="js/quiz-data.js?v=202611081927"></script>
-<script src="js/quiz.js?v=202611081927"></script>
-<script src="js/lesson-rnn-wbar.js?v=202611081927"></script>
-<script src="js/lesson-lstm-big.js?v=202611081927"></script>
-<script src="js/lesson-lstm-step.js?v=202611081927"></script>
-<script src="js/lesson-lstm-sim.js?v=202611081927"></script>
-<script src="js/lesson-lstm-size.js?v=202611081927"></script>
-<script src="js/lesson-lstm-m2o.js?v=202611081927"></script>
-<script src="js/lesson-emb-kullan.js?v=202611081927"></script>
-<script src="js/lesson-emb-draco.js?v=202611081927"></script>
-<script src="js/lesson-emb-arch.js?v=202611081927"></script>
-<script src="js/lesson-emb-extra.js?v=202611081927"></script>
-<script src="js/lesson-s2s-weights.js?v=202611081927"></script>
-<script src="js/lesson-s2s-add.js?v=202611081927"></script>
-<script src="js/lesson-s2s-inside.js?v=202611081927"></script>
-<script src="js/lesson-s2s-desen.js?v=202611081927"></script>
-<script src="js/lesson-s2s-anim.js?v=202611081927"></script>
-<script src="js/lesson-att-train.js?v=202611081927"></script>
-<script src="js/lesson-att-extra.js?v=202611081927"></script>
-<script src="js/lesson-att-sim.js?v=202611081927"></script>
-<script src="js/lesson-att-ornek.js?v=202611081927"></script>
-<script src="js/lesson-mh-big.js?v=202611081927"></script>
-<script src="js/lesson-mh-blk.js?v=202611081927"></script>
-<script src="js/lesson-mh-ornek.js?v=202611081927"></script>
-<script src="js/lesson-tf-big.js?v=202611081927"></script>
-<script src="js/lesson-tf-weights.js?v=202611081927"></script>
-<script src="js/lesson-tf-tour.js?v=202611081927"></script>
-<script src="js/lesson-tf-ornek.js?v=202611081927"></script>
-<script src="js/lesson-gpt-tiny.js?v=202611081927"></script>
-<script src="js/lesson-gpt-big.js?v=202611081927"></script>
-<script src="js/lesson-gpt-ornek.js?v=202611081927"></script>
-<script src="js/lesson-rnn-van.js?v=202611081927"></script>
-<script src="js/lesson-s2s-extra.js?v=202611081927"></script>
-<script src="js/lesson-s2s-ornek.js?v=202611081927"></script>
-<script src="js/lesson-emb-ornek.js?v=202611081927"></script>
-<script src="js/lesson-emb-steps.js?v=202611081927"></script>
-<script src="js/lesson-emb-big.js?v=202611081927"></script>
-<script src="js/lesson-sm-ornek.js?v=202611081927"></script>
-<script src="js/lesson-sm-big.js?v=202611081927"></script>
-<script src="js/lesson-sm-akt.js?v=202611081927"></script>
-<script src="js/lesson-lstm-unroll.js?v=202611081927"></script>
-<script src="js/lesson-lstm-seq.js?v=202611081927"></script>
-<script src="js/lesson-lstm-gate.js?v=202611081927"></script>
-<script src="js/lesson-lstm-ornek.js?v=202611081927"></script>
-<script src="js/lesson-gpt.js?v=202611081927"></script>
-<script src="js/lesson-gpt-mini.js?v=202611081927"></script>
-<script src="js/lesson-vektor-ornek.js?v=202611081927"></script>
-<script src="js/lesson-linreg-big.js?v=202611081927"></script>
-<script src="js/lesson-linreg-ornek.js?v=202611081927"></script>
-<script src="js/lesson-act-big.js?v=202611081927"></script>
-<script src="js/lesson-act-ornek.js?v=202611081927"></script>
-<script src="js/lesson-xor-ornek.js?v=202611081927"></script>
-<script src="js/lesson-nn-ornek.js?v=202611081927"></script>
-<script src="js/lesson-nn-net.js?v=202611081927"></script>
-<script src="js/lesson-nn-sim.js?v=202611081927"></script>
-<script src="js/lesson-nn-big.js?v=202611081927"></script>
+<script src="js/lesson-rnn-ornek.js?v=202611081934"></script>
+<script src="js/lesson-lstm-cell.js?v=202611081934"></script>
+<script src="js/app.js?v=202611081934"></script>
+<script src="js/lesson-opt.js?v=202611081934"></script>
+<script src="js/lesson-ovf.js?v=202611081934"></script>
+<script src="js/lesson-tok.js?v=202611081934"></script>
+<script src="js/quiz-data.js?v=202611081934"></script>
+<script src="js/quiz.js?v=202611081934"></script>
+<script src="js/lesson-rnn-wbar.js?v=202611081934"></script>
+<script src="js/lesson-lstm-big.js?v=202611081934"></script>
+<script src="js/lesson-lstm-step.js?v=202611081934"></script>
+<script src="js/lesson-lstm-sim.js?v=202611081934"></script>
+<script src="js/lesson-lstm-size.js?v=202611081934"></script>
+<script src="js/lesson-lstm-m2o.js?v=202611081934"></script>
+<script src="js/lesson-emb-kullan.js?v=202611081934"></script>
+<script src="js/lesson-emb-draco.js?v=202611081934"></script>
+<script src="js/lesson-emb-arch.js?v=202611081934"></script>
+<script src="js/lesson-emb-extra.js?v=202611081934"></script>
+<script src="js/lesson-s2s-weights.js?v=202611081934"></script>
+<script src="js/lesson-s2s-add.js?v=202611081934"></script>
+<script src="js/lesson-s2s-inside.js?v=202611081934"></script>
+<script src="js/lesson-s2s-desen.js?v=202611081934"></script>
+<script src="js/lesson-s2s-anim.js?v=202611081934"></script>
+<script src="js/lesson-att-train.js?v=202611081934"></script>
+<script src="js/lesson-att-extra.js?v=202611081934"></script>
+<script src="js/lesson-att-sim.js?v=202611081934"></script>
+<script src="js/lesson-att-ornek.js?v=202611081934"></script>
+<script src="js/lesson-mh-big.js?v=202611081934"></script>
+<script src="js/lesson-mh-blk.js?v=202611081934"></script>
+<script src="js/lesson-mh-ornek.js?v=202611081934"></script>
+<script src="js/lesson-tf-big.js?v=202611081934"></script>
+<script src="js/lesson-tf-weights.js?v=202611081934"></script>
+<script src="js/lesson-tf-tour.js?v=202611081934"></script>
+<script src="js/lesson-tf-ornek.js?v=202611081934"></script>
+<script src="js/lesson-gpt-tiny.js?v=202611081934"></script>
+<script src="js/lesson-gpt-big.js?v=202611081934"></script>
+<script src="js/lesson-gpt-ornek.js?v=202611081934"></script>
+<script src="js/lesson-rnn-van.js?v=202611081934"></script>
+<script src="js/lesson-s2s-extra.js?v=202611081934"></script>
+<script src="js/lesson-s2s-ornek.js?v=202611081934"></script>
+<script src="js/lesson-emb-ornek.js?v=202611081934"></script>
+<script src="js/lesson-emb-steps.js?v=202611081934"></script>
+<script src="js/lesson-emb-big.js?v=202611081934"></script>
+<script src="js/lesson-sm-ornek.js?v=202611081934"></script>
+<script src="js/lesson-sm-big.js?v=202611081934"></script>
+<script src="js/lesson-sm-akt.js?v=202611081934"></script>
+<script src="js/lesson-lstm-unroll.js?v=202611081934"></script>
+<script src="js/lesson-lstm-seq.js?v=202611081934"></script>
+<script src="js/lesson-lstm-gate.js?v=202611081934"></script>
+<script src="js/lesson-lstm-ornek.js?v=202611081934"></script>
+<script src="js/lesson-gpt.js?v=202611081934"></script>
+<script src="js/lesson-gpt-mini.js?v=202611081934"></script>
+<script src="js/lesson-vektor-ornek.js?v=202611081934"></script>
+<script src="js/lesson-linreg-big.js?v=202611081934"></script>
+<script src="js/lesson-linreg-ornek.js?v=202611081934"></script>
+<script src="js/lesson-act-big.js?v=202611081934"></script>
+<script src="js/lesson-act-ornek.js?v=202611081934"></script>
+<script src="js/lesson-xor-ornek.js?v=202611081934"></script>
+<script src="js/lesson-nn-ornek.js?v=202611081934"></script>
+<script src="js/lesson-nn-net.js?v=202611081934"></script>
+<script src="js/lesson-nn-sim.js?v=202611081934"></script>
+<script src="js/lesson-nn-big.js?v=202611081934"></script>
 </body>
 </html>
