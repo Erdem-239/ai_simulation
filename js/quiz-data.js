@@ -430,3 +430,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Mini-batch gürültüsünün olası bir faydası nedir?',['Sığ çukurlardan ve platolardan çıkmaya yardım edebilir','Kaybı her zaman artırır','Eğitimi durdurur','Hiçbir faydası yoktur'],'Simülasyonda dene.'),
  R('Momentum ile α=0,1 (β=0,9), GD\'de yaklaşık hangi α\'ya denk gelir?',['α ≈ 1','α ≈ 0,01','α ≈ 0,1','α ≈ 10'],'v ≈ 10g olduğu için.')
 ];})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.ovf=[
+ R('Aşırı öğrenme (overfitting) nedir?',['Modelin eğitim verisindeki gürültüyü de ezberleyip yeni veride kötüleşmesi','Modelin eğitimde bile kötü olması','Eğitimin çok uzun sürmesi','Verinin çok büyük olması'],'Eğitim iyi, doğrulama kötü.'),
+ R('Eksik öğrenme (underfitting) nedir?',['Modelin çok basit olup eğitim verisinde bile kötü kalması','Modelin ezberlemesi','Doğrulama hatasının sıfır olması','Çok fazla parametre'],'Simülasyon: derece 1.'),
+ R('Doğrulama setinin görevi nedir?',['Ayarları (derece, λ, durma anı) seçmek için modelin görmediği veride ölçmek','Ağırlıkları eğitmek','Son raporu yazmak','Veriyi çoğaltmak'],'Test ise en sonda bir kez.'),
+ R('Test seti neden en sona saklanır?',['Hiçbir karara karışmadığı için gerçek başarıyı dürüstçe ölçer','Daha küçük olduğu için','Daha kolay olduğu için','Eğitimi hızlandırdığı için'],'Teste bakıp ayar yapmak onu da ezberlemektir.'),
+ R('Eğitim hatası 0, doğrulama hatası çok yüksekse?',['Aşırı öğrenme','Eksik öğrenme','Mükemmel model','Veri yok'],'d11, 12 nokta: 0 / 376.'),
+ R('Kapasite arttıkça doğrulama hatası tipik olarak nasıl değişir?',['Önce düşer sonra yükselir (U eğrisi)','Hep düşer','Hep yükselir','Sabit kalır'],'Simülasyondaki alt grafik.'),
+ R('Gürültülü veride doğrulama hatasının sürekli altına inemeyeceği taban nedir?',['Gürültünün varyansı (burada 0,25² = 0,0625)','Sıfır','Bir','Eğitim hatası'],'Gürültü öğrenilemez.'),
+ R('Ağırlık küçültme (weight decay) kayba ne ekler?',['λ·|w|² (ağırlık büyüklüğü cezası)','Gürültü','Yeni veri','Daha fazla katman'],'Ridge / L2.'),
+ R('Örnek 2\'de λ = 0 iken ağırlık büyüklüğü |w| yaklaşık kaçtı?',['130','4','1','0'],'Gürültüyü kopyalamak dev ağırlık ister.'),
+ R('Çok büyük λ ne yapar?',['Modeli düzleştirip eksik öğrenmeye iter','Ezberi artırır','Hiçbir şey','Eğitimi durdurur'],'λ = 0,1: eğitim 0,235.'),
+ R('Dropout eğitimde ne yapar?',['Her adımda nöronların bir kısmını rastgele kapatır','Ağırlıkları sıfırlar','Veriyi siler','Öğrenme hızını artırır'],'Tek nörona yaslanmayı engeller.'),
+ R('Tahmin (çıkarım) sırasında dropout?',['Kapalıdır, bütün nöronlar çalışır','Açıktır','Yarısı açıktır','Rastgeledir'],'Yalnız eğitimde.'),
+ R('Erken durdurma nedir?',['Doğrulama hatası yükselmeye başlayınca eğitimi kesip en iyi ağırlıkları saklamak','Eğitime hiç başlamamak','Her 10 turda bir durmak','Öğrenme hızını sıfırlamak'],'Örnek 1: 228. tur.'),
+ R('Örnek 1\'de doğrulama hatası en düşük hangi turdaydı?',['228','20.000','1','3000'],'0,0787.'),
+ R('Daha çok veri hangi soruna çaredir?',['Aşırı öğrenmeye','Eksik öğrenmeye','Kod hatasına','Yavaş GPU\'ya'],'d11: 376 → 0,088.'),
+ R('Veri artırma (augmentation) ne demektir?',['Mevcut örneklerden döndürme/kırpma gibi dönüşümlerle yeni örnekler üretmek','Veriyi silmek','Etiketleri değiştirmek','Testi eğitime katmak'],'Görüntü modellerinde yaygın.'),
+ R('Veri sızıntısı (leakage) neye yol açar?',['Skorun yapay olarak yüksek çıkmasına','Daha düşük skora','Daha hızlı eğitime','Hiçbir şeye'],'Test örneği eğitime karışmış olur.'),
+ R('Dil modellerinde "contamination" nedir?',['Değerlendirme sorularının eğitim verisine sızmış olması','Kötü yazım','Çok uzun cümle','Az parametre'],'Ezber yüksek skor gibi görünür.'),
+ R('Aşırı öğrenmenin bir işareti hangisidir?',['Şişmiş ağırlıklar ve eğitim–doğrulama arasında açılan fark','Eğitim hatasının yüksek olması','Kayıp eğrisinin düz olması','Az parametre'],'Simülasyonda |w|.'),
+ R('Ridge regresyonu kimler önerdi?',['Hoerl ve Kennard (1970)','Cauchy','Kingma','Vaswani'],'Tikhonov 1943\'ün regresyondaki karşılığı.'),
+ R('Dropout\'u 2012\'de yayımlayan ekip kimin öğrencileriydi?',['Geoffrey Hinton','Yann LeCun','Andrew Ng','Ilya Sutskever'],'Srivastava ve arkadaşları 2014 dergi makalesi.'),
+ R('Ockham\'ın usturası ne söyler?',['Açıklamayı gereğinden fazla karmaşıklaştırma','Her zaman en büyük modeli seç','Veriyi çoğalt','Eğitimi uzat'],'Basit açıklamayı tercih et.'),
+ R('Eğitim noktası 12\'den 24\'e çıkınca derece 11 modelin doğrulama hatası?',['376\'dan 0,088\'e indi','Arttı','Değişmedi','Sıfır oldu'],'Örnek 3.'),
+ R('"Çift iniş" (double descent) gözlemi neyi söyler?',['Çok büyük modellerde kapasite arttıkça doğrulama hatası yeniden düşebilir','U eğrisi her zaman geçerlidir','Veri miktarı önemsizdir','Dropout gereksizdir'],'Bilgi notu; sayfada ölçülmedi.'),
+ R('λ cezası neden bias terimine (sabit) uygulanmadı?',['Sabit eğrinin seviyesidir, kıvrım değil; cezalamak gereksizce kaydırır','Uygulanamaz','Daha hızlı olsun diye','Bias yoktur'],'Kodda k ≥ 1 için.')
+];})();
