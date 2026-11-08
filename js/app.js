@@ -3832,6 +3832,13 @@ function setupFloatingPanel(ids){
     else if(r.T<=1.3) v='🙂 <b>Dengeli bölge:</b> güçlü aday öne çıkıyor ama alternatiflere de şans var. Sohbet modellerinin tipik ayarı.';
     else v='🥵 <b>Yüksek sıcaklık:</b> dağılım düzleşti — "mor" bile şans buluyor. Yaratıcı… ya da saçma. LLM "halüsinasyonlarının" bir kaynağı.';
     $('smVerdict').innerHTML=v;
+    // sözel anlatım: en güçlü iki aday arasındaki fark → oran
+    const ord=r.logits.map((z,i)=>i).sort((a,b)=>r.logits[b]-r.logits[a]),i0=ord[0],i1=ord[1];
+    const tr=x=>F(x,2).replace('.',','),pc=x=>'%'+(x*100).toFixed(0);
+    const dz=r.logits[i0]-r.logits[i1],dT=dz/r.T,ratio=Math.exp(dT);
+    const dHalf=Math.exp(dz/(r.T/2)),dDouble=Math.exp(dz/(r.T*2));
+    $('smSoz').innerHTML='«<b>'+WORDS[i0].w+'</b>» adayının puanı, «'+WORDS[i1].w+'» adayınınkinden <b>'+tr(dz)+'</b> fazla. T = '+tr(r.T)+'\'e bölünce fark <b>'+tr(dT)+'</b> olur; e üzeri bu farkı <b>'+tr(ratio)+' kata</b> çevirir. Yani «'+WORDS[i0].w+'», «'+WORDS[i1].w+'» adayından '+tr(ratio)+' kat daha olası ('+pc(r.ps[i0])+' / '+pc(r.ps[i1])+').'
+      +'<br>Sıcaklığı yarıya indirsen aynı fark <b>'+tr(dHalf)+' kat</b>, iki katına çıkarsan <b>'+tr(dDouble)+' kat</b> olurdu: <b>T küçüldükçe güçlü aday daha da güçlenir</b>, T büyüdükçe adaylar birbirine yaklaşır.';
   }
   let hist=[];
   $('smSample').addEventListener('click',()=>{
