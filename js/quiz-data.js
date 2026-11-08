@@ -700,3 +700,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Vision Transformer (ViT) resmi nasıl işler?',['Parçalara bölüp her parçayı bir token gibi Transformer\'a verir','Piksel piksel RNN\'e verir','Yalnız max-pool kullanır','Resmi metne çevirir'],'2020.'),
  R('Görüntü üretiminde (VAE, GAN, Diffusion) konvolüsyon?',['Yapı taşıdır; büyütme katmanlarıyla küçük koddan resme çıkılır','Kullanılmaz','Yalnız metin için','Yalnız sınıflandırmada'],'Sıradaki dersler.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.vae=[
+ R('Autoencoder ne öğrenir?',['Resmi kısa bir koda sıkıştırıp geri açmayı','Resmi sınıflandırmayı','Metin üretmeyi','Sıradaki kelimeyi'],'Encoder + decoder.'),
+ R('Encoder\'ın çıktısı nedir?',['Kısa bir kod (gizli vektör)','Etiket','Yeni resim','Olasılık tablosu'],'Burada 2 sayı.'),
+ R('Decoder ne yapar?',['Koddan resmi geri çizer','Resmi koda çevirir','Etiket verir','Sıcaklık ayarlar'],'2 → 36 piksel.'),
+ R('Darboğaz (küçük kod) neden önemli?',['Ağı resmin özünü bulmaya zorlar','Hızlandırmak için','Zorunlu değil','Renk ekler'],'Konum öğrenildi.'),
+ R('Gizli uzay nedir?',['Bütün kodların yaşadığı uzay','Görünmeyen pikseller','Bir veri seti','Tokenizer'],'Haritadaki noktalar.'),
+ R('AE neden iyi bir üretici değildir?',['Kodlar düzensiz saçılır; rastgele kod anlamsız resim verir','Çok bulanık geri kurar','Eğitilemez','KL kullanır'],'Örnek 1: 5,46.'),
+ R('VAE\'de encoder ne verir?',['Bir dağılım: ortalama μ ve genişlik σ','Tek bir etiket','Yeni resim','Hiçbir şey'],'z = μ + σ·ε.'),
+ R('Yeniden parametreleme hilesi nedir?',['z = μ + σ·ε yazıp rastgeleliği ε\'ye taşımak, böylece geri yayılım yapmak','Ağırlıkları yeniden başlatmak','Kodu sıfırlamak','Resmi döndürmek'],'Ekstra.'),
+ R('VAE kaybının iki terimi?',['Geri kurma hatası + β · KL','Yalnız KL','Yalnız doğruluk','BLEU + KL'],'ELBO.'),
+ R('KL terimi kodları nereye çeker?',['Standart normal dağılıma, N(0,1) etrafına','Sonsuza','Rastgele yerlere','Eğitim resimlerine'],'Düzenli bulut.'),
+ R('VAE ile yeni resim nasıl üretilir?',['N(0,1)\'den z çekip decoder\'a vermek','Encoder\'a gürültü vermek','Pikselleri ortalamak','Etiket vermek'],'Üretim.'),
+ R('Örnek 1\'de en iyi geri kuran model?',['AE (0,014)','VAE β = 1','VAE β = 0,3','Hepsi eşit'],'Ama üretemiyor.'),
+ R('Örnek 1\'de rastgele koddan en gerçekçi resmi üreten?',['VAE β = 0,3','AE','VAE β = 1','Hiçbiri'],'0,17.'),
+ R('β = 1\'de bu örnekte ne oldu?',['Bütün kodlar 0\'a çöktü, model hep aynı resmi çizdi (posterior çöküşü)','Mükemmel sonuç','AE ile aynı','Eğitim durdu'],'KL baskın.'),
+ R('β küçüldükçe VAE neye benzer?',['AE\'ye','Rastgele gürültüye','GAN\'a','Tokenizer\'a'],'KL zayıflar.'),
+ R('VAE resimleri neden biraz bulanıktır?',['Kayıp ortalamayı ödüllendirir; belirsizlikte ortalama resim çizer','Piksel az olduğu için','KL yüzünden hiç öğrenmez','Hata'],'GAN/Diffusion motivasyonu.'),
+ R('Örnek 2\'de piksel ortalaması ne verdi?',['İki yarım leke (veride olmayan resim)','Ortada tek leke','Boş resim','Aynı resim'],'Gerçeğe uzaklık 0,49.'),
+ R('Örnek 2\'de kodların ortası ne verdi?',['Lekeyi iki konumun arasına taşıdı','İki yarım leke','Siyah resim','Rastgele'],'0,14.'),
+ R('Gizli uzayda yürümek ne demek?',['Anlamlı bir özellikte (burada konum) değişim','Pikselleri karıştırmak','Ağırlıkları değiştirmek','Eğitimi tekrarlamak'],'Örnek 2.'),
+ R('Anormallik tespitinde autoencoder nasıl kullanılır?',['Normal örneklerle eğitilir; geri kuramadığı örnek şüphelidir','Anormal örnekleri üretir','Sınıflandırır','Kullanılmaz'],'Gerçek hayat.'),
+ R('Latent diffusion\'da autoencoder\'ın rolü?',['Resmi küçük koda çevirmek ve sonda koddan resme açmak','Metni token\'a çevirmek','Gürültü eklemek','Hiç rolü yok'],'Sonraki ders.'),
+ R('VQ-VAE\'nin farkı?',['Kodlar bir kod kitabından seçilen kesikli parçalardır','Kod yoktur','Encoder yoktur','KL iki katıdır'],'Resmi token\'a çevirmek.'),
+ R('VAE\'yi kim önerdi (2013)?',['Kingma ve Welling','Goodfellow','Vaswani','LeCun'],'Rezende ve arkadaşları da bağımsız.'),
+ R('Derin autoencoder\'ın 2006 Science makalesi kimin?',['Hinton ve Salakhutdinov','Kingma ve Ba','Hochreiter','Sennrich'],'PCA\'dan iyi.'),
+ R('Bu sayfadaki gizli uzayın iki ekseni neye yaklaştı?',['Lekenin x ve y konumuna','Rengine','Boyutuna','Rastgele'],'Kimse söylemedi.')
+]})();

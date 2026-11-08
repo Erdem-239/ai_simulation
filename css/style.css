@@ -2365,3 +2365,8 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .cn-f td{width:46px; text-align:center; font-family:Consolas,monospace}
 .cn-f.sm td{width:30px; font-size:10.5px; padding:1px}
 .cn-data{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0; font-size:11px; color:#95a2c2; text-align:center}
+/* 🌀 VAE dersi */
+.va-img{display:grid; grid-template-columns:repeat(6,1fr); gap:0; border:1px solid #2c3550; display:inline-grid}
+.va-data{display:flex; flex-wrap:wrap; gap:4px}
+.va-data>div{border:2px solid; border-radius:3px; line-height:0}
+.va-path{display:flex; gap:4px; flex-wrap:wrap; margin:2px 0 8px}
