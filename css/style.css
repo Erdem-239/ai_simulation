@@ -2189,3 +2189,18 @@ body.xt-full-lock{overflow:hidden}
 #model-harita .hr-extra{margin:12px 0 4px;padding:10px 14px;border-radius:10px;border:1px dashed var(--line);font-size:13.5px}
 #model-harita .hr-extra a{color:#9fc8f0;font-weight:700}
 #model-harita .hr-note{font-size:12px;color:#9aa3b6;margin:8px 0 0}
+
+/* kart içinde birden çok sayfa */
+.hr-tiles{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.hr-tile .hr-tt{font-size:15.5px}
+.hr-subs{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.hr-sub{display:grid;grid-template-columns:1fr auto;column-gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);color:inherit;text-decoration:none;transition:border-color .15s,background .15s}
+.hr-sub:hover{border-color:var(--gc,#5aa0e0);background:rgba(255,255,255,.07)}
+.hr-sub b{font-size:13.8px;grid-column:1}
+.hr-sub span{font-size:12.3px;color:#b8c4dc;grid-column:1;line-height:1.4}
+.hr-sub i{font-style:normal;font-weight:700;font-size:12.5px;color:var(--gc,#9fc8f0);grid-column:2;grid-row:1/3;white-space:nowrap}
+.hr-tile:hover{transform:none}
+.hr-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;align-items:start;margin-top:12px}
+.hr-cols .hr-cat{margin:0}
+.hr-cols .hr-tiles{grid-template-columns:1fr}
+@media(max-width:420px){.hr-cols{grid-template-columns:1fr}}
