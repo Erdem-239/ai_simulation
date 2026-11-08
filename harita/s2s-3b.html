@@ -39,7 +39,7 @@ body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
 @media(max-width:700px){#info{width:calc(100vw - 24px);top:auto;bottom:62px;right:12px;max-height:40vh}#leg{display:none}#msg{bottom:104px}body.emb #msg{bottom:6px;width:calc(100vw - 16px)}body.emb #info{width:calc(100vw - 16px);right:8px;bottom:auto;top:60px;max-height:45vh}}
 </style></head><body>
 <canvas id="c"></canvas><div id="lb"></div>
-<div id="top"><h1>🔁 Seq2Seq — 3B mimari (toplama: 7 + 5 → 12)</h1><p>2 katmanlı LSTM encoder + 2 katmanlı LSTM decoder, ayrı gömme tabloları. Sütun = zaman adımı; satır = katman. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır, parçaya tıkla = içindeki sayılar. Sayılar <b>gerçek</b>: sitede eğitilmiş modelin ağırlıklarıyla hesaplanır.</p></div>
+<div id="top"><h1>🔁 Seq2Seq — 3B mimari (toplama: 7 + 5 → 12)</h1><p>2 katmanlı LSTM encoder + 2 katmanlı LSTM decoder, ayrı gömme tabloları. Sütun = zaman adımı; satır = katman. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır; klavye: oklar kaydırır, A/D döndürür, W/S yakınlaşır, Q/E eğer, H sıfırlar, PageUp/PageDown adım; parçaya tıkla = içindeki sayılar. Sayılar <b>gerçek</b>: sitede eğitilmiş modelin ağırlıklarıyla hesaplanır.</p></div>
 <div id="leg"><i style="background:#3a7afe"></i>girdi (one-hot)<br><i style="background:#f0a032"></i>gömme (encoder)<br><i style="background:#46b0e0"></i>gömme (decoder)<br><i style="background:#46c46a"></i>c hattı (uzun hafıza, üstte)<br><i style="background:#e06a6a"></i>h hattı (kısa hafıza, altta)<br><i style="background:#b592f0"></i>ağırlık tablosu<br><i style="background:#f27a88"></i>çıkış: puan / olasılık</div>
 <div id="hint">sürükle = döndür · Ctrl+tekerlek = yakınlaş · parçaya tıkla</div>
 <div id="zb"><button id="zi" title="Yakınlaş">+</button><button id="zo" title="Uzaklaş">−</button><button id="zr" title="Görünümü sıfırla">⟲</button><button id="zf" title="Tam sayfada aç">⛶</button></div>
@@ -55,8 +55,8 @@ body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
 <button id="tf" class="on">Kamera takip</button><button id="tw" class="on">Ağırlık bağları</button><button id="rs">⟲ Görünüm</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
 </div>
 <script src="../js/vendor/three-0.128.0.min.js"></script>
-<script src="../js/lesson-lstm-cell.js?v=202611081204"></script>
-<script src="../js/lesson-s2s-weights.js?v=202611081204"></script>
+<script src="../js/lesson-lstm-cell.js?v=202611081207"></script>
+<script src="../js/lesson-s2s-weights.js?v=202611081207"></script>
 <script>
 (function(){
 const D=window.S2S_CK,H=D.H,PLUS=10,ST=10,EN=11,VD=12;
@@ -232,7 +232,7 @@ function focusIds(ids){FOC=ids&&ids.length?new Set(ids.map(i=>byId[i]).filter(Bo
  if(FOC&&FOC.size){const c=new THREE.Vector3();FOC.forEach(p=>c.add(p.mesh.position));c.divideScalar(FOC.size);let mx=0;FOC.forEach(p=>mx=Math.max(mx,p.mesh.position.distanceTo(c)+p.w/2));tgtGoal=c;distGoal=Math.max(7,Math.min(40,mx*2.4+5))}
  document.getElementById('msg').style.display=FOC?'none':'';refreshSel()}
 addEventListener('message',e=>{const m=e.data;if(!m||m.type!=='s2s3d')return;const re=m.a!==st.a||m.b!==st.b||m.ci!==st.ci;st.a=m.a;st.b=m.b;st.ci=m.ci;st.step=m.step;syncSel();if(re)build();applyStep(!!m.focus);focusIds(m.focus||null)});
-addEventListener('keydown',e=>{if(e.key==='ArrowRight'&&!EMB)document.getElementById('sn').click();if(e.key==='ArrowLeft'&&!EMB)document.getElementById('sp').click()});
+addEventListener('keydown',e=>{if(e.key==='PageDown'&&!EMB){e.preventDefault();document.getElementById('sn').click()}if(e.key==='PageUp'&&!EMB){e.preventDefault();document.getElementById('sp').click()}});
 // ---- kamera
 let drag=null;const ray=new THREE.Raycaster(),mp=new THREE.Vector2();
 cv.addEventListener('contextmenu',e=>e.preventDefault());
@@ -246,7 +246,20 @@ function pickAt(e){const r=cv.getBoundingClientRect();mp.set((e.clientX-r.left)/
 const v3=new THREE.Vector3();
 function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
 const vis=s=>s<=st.step;
+
+// ---- klavye: oklar = kaydır, A/D = döndür, Q/E = eğ, W/S = yakınlaş, H/Home = sıfırla (3B mimari sayfasıyla aynı)
+const KEYS=new Set(),kNorm=k=>k.length===1?k.toLowerCase():k;
+addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test((e.target&&e.target.tagName)||''))return;const k=kNorm(e.key);
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','q','e'].includes(k)){KEYS.add(k);e.preventDefault();tgtGoal=null;distGoal=null;if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
+ else if(k==='h'||k==='Home'){reset()}});
+addEventListener('keyup',e=>KEYS.delete(kNorm(e.key)));addEventListener('blur',()=>KEYS.clear());
+function keyMove(){if(!KEYS.size)return;const sp=dist*0.012,r=new THREE.Vector3().setFromMatrixColumn(cam.matrix,0),u=new THREE.Vector3().setFromMatrixColumn(cam.matrix,1);
+ let mx=0,my=0;if(KEYS.has('ArrowLeft'))mx--;if(KEYS.has('ArrowRight'))mx++;if(KEYS.has('ArrowUp'))my++;if(KEYS.has('ArrowDown'))my--;
+ if(mx||my)tgt.addScaledVector(r,mx*sp).addScaledVector(u,my*sp);
+ if(KEYS.has('a'))yaw+=0.025;if(KEYS.has('d'))yaw-=0.025;if(KEYS.has('q'))pitch=Math.min(1.3,pitch+0.02);if(KEYS.has('e'))pitch=Math.max(-1.3,pitch-0.02);
+ if(KEYS.has('w'))dist=Math.max(4,dist*0.975);if(KEYS.has('s'))dist=Math.min(120,dist*1.025)}
 function frame(){
+ keyMove();
  if(tgtGoal)tgt.lerp(tgtGoal,0.07);if(distGoal!=null)dist+=(distGoal-dist)*0.07;
  cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
  const w=innerWidth,h=innerHeight,S=st.step;
@@ -267,4 +280,4 @@ document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),f
 document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
 })();
 </script>
-<script src="print-a4.js?v=202611081204"></script></body></html>
+<script src="print-a4.js?v=202611081207"></script></body></html>

@@ -28,7 +28,7 @@
 @media(max-width:700px){#info{width:calc(100vw - 24px);top:auto;bottom:70px;right:12px;max-height:40vh}#leg{display:none}#tour{bottom:112px}}
 </style></head><body>
 <canvas id="c"></canvas><div id="lb"></div>
-<div id="top"><h1>🧬 RNN — 3B mimari</h1><p>Zamanda açılmış RNN: her sütun bir kelime/adım. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş (ya da Shift+sürükle) = kaydır. Parçaya tıkla: ne olduğu ve içindeki sayılar. Sayılar ve ağırlıklar <b>şematik</b> (tohumlu rastgele); şekiller ve işlemler gerçek.</p></div>
+<div id="top"><h1>🧬 RNN — 3B mimari</h1><p>Zamanda açılmış RNN: her sütun bir kelime/adım. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş (ya da Shift+sürükle) = kaydır; klavye: oklar kaydırır, A/D döndürür, W/S yakınlaşır, Q/E eğer, H sıfırlar. Parçaya tıkla: ne olduğu ve içindeki sayılar. Sayılar ve ağırlıklar <b>şematik</b> (tohumlu rastgele); şekiller ve işlemler gerçek.</p></div>
 <div id="leg"><i style="background:#3fc7c1"></i>girdi x<br><i style="background:#b592f0"></i>ağırlık (paylaşımlı)<br><i style="background:#6ea0ff"></i>ara hesap<br><i style="background:#e8a94d"></i>hafıza h<br><i style="background:#f27a88"></i>çıkış / kayıp<br><i style="background:#ff9a3c"></i>zincir (h → sonraki adım)</div>
 <div id="info"><span class="x" id="ix">✕</span><div id="ib"></div></div>
 <div id="tour"><div id="tb"></div></div>
@@ -173,7 +173,20 @@ function hover(e){cv.style.cursor=pickAt(e)?'pointer':'grab'}
 // ---- döngü
 const v3=new THREE.Vector3();
 function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
+
+// ---- klavye: oklar = kaydır, A/D = döndür, Q/E = eğ, W/S = yakınlaş, H/Home = sıfırla (3B mimari sayfasıyla aynı)
+const KEYS=new Set(),kNorm=k=>k.length===1?k.toLowerCase():k;
+addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test((e.target&&e.target.tagName)||''))return;const k=kNorm(e.key);
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','q','e'].includes(k)){KEYS.add(k);e.preventDefault();tgtGoal=null;distGoal=null;if(document.activeElement&&document.activeElement.blur)document.activeElement.blur()}
+ else if(k==='h'||k==='Home'){document.getElementById('rs').click()}});
+addEventListener('keyup',e=>KEYS.delete(kNorm(e.key)));addEventListener('blur',()=>KEYS.clear());
+function keyMove(){if(!KEYS.size)return;const sp=dist*0.012,r=new THREE.Vector3().setFromMatrixColumn(cam.matrix,0),u=new THREE.Vector3().setFromMatrixColumn(cam.matrix,1);
+ let mx=0,my=0;if(KEYS.has('ArrowLeft'))mx--;if(KEYS.has('ArrowRight'))mx++;if(KEYS.has('ArrowUp'))my++;if(KEYS.has('ArrowDown'))my--;
+ if(mx||my)tgt.addScaledVector(r,mx*sp).addScaledVector(u,my*sp);
+ if(KEYS.has('a'))yaw+=0.025;if(KEYS.has('d'))yaw-=0.025;if(KEYS.has('q'))pitch=Math.min(1.3,pitch+0.02);if(KEYS.has('e'))pitch=Math.max(-1.3,pitch-0.02);
+ if(KEYS.has('w'))dist=Math.max(4,dist*0.975);if(KEYS.has('s'))dist=Math.min(120,dist*1.025)}
 function frame(){
+ keyMove();
  if(tgtGoal)tgt.lerp(tgtGoal,0.07);if(distGoal!=null)dist+=(distGoal-dist)*0.07;
  cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
  const w=innerWidth,h=innerHeight;
