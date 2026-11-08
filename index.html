@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202611081544"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202611081549"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202611081544">
+<link rel="stylesheet" href="css/style.css?v=202611081549">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 15:44 TR · #517</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 15:49 TR · #518</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -5916,7 +5916,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div id="atBig"></div>
   <div class="sd-chips"><span>N = 6 encoder + 6 decoder</span><span>d<sub>model</sub> = 512</span><span>h = 8 kafa, d<sub>k</sub> = 64</span><span>FFN 512 → 2048 → 512</span><span>konum: sinüs/kosinüs</span><span>Add &amp; Norm çıkışta</span><span>≈65 milyon ağırlık</span></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081544#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081544" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081549#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081549" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
 
     </div>
   </div>
@@ -6316,7 +6316,7 @@ for d in (4, 16, 64, 256):
   <div class="mh-pos"><div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
   <div class="work" id="posWork" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081544#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081544" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081549#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081549" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
 
     </div>
   </div>
@@ -6689,7 +6689,7 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <button class="addbtn" data-t="ln">🧮 LayerNorm hesap makinesi</button>
 </div>
 <div class="at-pane" data-p="tour">
-  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081544" target="_blank" rel="noopener" style="color:#7aa8ff">🧸 «let's go» → «vamos» oyuncağı (StatQuest'in elle hesapladığı minik Transformer, 3B) →</a></div>
+  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081549" target="_blank" rel="noopener" style="color:#7aa8ff">🧸 «let's go» → «vamos» oyuncağı (StatQuest'in elle hesapladığı minik Transformer, 3B) →</a></div>
   <div id="tfTour"></div>
 </div>
 <div class="at-pane" data-p="res" style="display:none">
@@ -8664,40 +8664,35 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
 
   <h1>🧭 Transformer Haritası — Ekstra</h1>
   <p class="sub">Derslerde kurduğumuz modellerin içini üç yoldan gez: <b>oku</b>, <b>gez</b>, <b>izle</b>. Her kart kendi sekmesinde açılır.</p>
-  <div class="hr-start">🧭 <b>Nereden başlamalı?</b> Önce 🔦 <b>Minik GPT, adım adım</b> (oku) → sonra 🧸 <b>Transformer oyuncağı</b> (gez) → sonra 🎬 <b>GPT-2 turu</b> (izle). <span class="hr-ram">💡 3B ve animasyon sayfaları bilgisayarı yorar; işin bitince sekmeyi kapat.</span></div>
+  <div class="hr-start">🧭 <b>Nereden başlamalı?</b> Önce 🔦 <b>Minik GPT → Adım adım</b> (oku) → sonra 🧠 <b>Transformer mimarileri → Oyuncak</b> (gez) → sonra 🎬 <b>Mimari turları → GPT-2 turu</b> (izle). <span class="hr-ram">💡 3B ve animasyon sayfaları bilgisayarı yorar; işin bitince sekmeyi kapat.</span></div>
 
+  <div class="hr-cols">
   <div class="hr-cat hr-g1">
     <h3>🗣️ 1 · Sözel anlatımlar — oku</h3>
     <p class="hr-cat-d">Adım adım, sayılarla ve düz dille: bir sorunun modelde nasıl cevaba dönüştüğü.</p>
     <div class="hr-tiles">
-      <a class="hr-tile" href="harita/adim-adim.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🔦</span><b>Minik GPT, adım adım</b><span class="hr-l">«7+5=» → «1»: karakterden cevaba 16 adım, tablolar ve ısı haritaları.</span><span class="hr-tags"><span class="hr-tag">gerçek sayılar</span><span class="hr-tag">başlangıç</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/epoch.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">📒</span><b>Eğitim günlüğü</b><span class="hr-l">Aynı soru 0’dan 800. epoch’a: dikkat nasıl toplandı, tablolar nasıl değişti.</span><span class="hr-tags"><span class="hr-tag">gerçek sayılar</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/gpt2-adim-adim.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🧠</span><b>GPT-2, adım adım</b><span class="hr-l">Aynı yol gerçek GPT-2 boyutlarıyla: 4×768 → 12 kafa → 12 blok → 50.257 puan.</span><span class="hr-tags"><span class="hr-tag">gerçek şekiller</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/istanbul-onizleme.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🏙️</span><b>Bir cümlenin yolculuğu</b><span class="hr-l">«istanbulun başkenti nereresidir»: token’lar, kartlar, dikkat, tahmin.</span><span class="hr-tags"><span class="hr-tag">önizleme</span></span><span class="hr-btn">Aç →</span></a>
+      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla, aynı soru iki açıdan.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611081549" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611081549" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611081549" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611081549" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>«istanbulun başkenti nereresidir»: token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g2">
     <h3>🏛️ 2 · Mimariler — gez</h3>
     <p class="hr-cat-d">Üç boyutta parçala, kutulara tıkla, mimarileri yan yana koy.</p>
     <div class="hr-tiles">
-      <a class="hr-tile" href="harita/mimari-3b.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🧩</span><b>3B mimari</b><span class="hr-l">Minik GPT, GPT-2, Llama, gpt-oss, Qwen3 ve T5 yan yana; parçala, karşılaştır. İçinde 📖 «Mimariyi anlat».</span><span class="hr-tags"><span class="hr-tag">3B</span><span class="hr-tag">6 mimari</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/josh-3b.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🧸</span><b>Transformer oyuncağı</b><span class="hr-l">«let’s go» → «vamos»: encoder-decoder’ın tamamı, her kelime 2 sayı, 18 adımlık öğretmen turu.</span><span class="hr-tags"><span class="hr-tag">3B</span><span class="hr-tag">StatQuest</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/rnn-3b.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🔁</span><b>RNN 3B</b><span class="hr-l">Zamanda açılmış RNN: ortak ağırlıklar, h’nin akışı, geri yayılım okları.</span><span class="hr-tags"><span class="hr-tag">3B</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/s2s-3b.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">➡️</span><b>Seq2Seq 3B</b><span class="hr-l">«7 + 5 → 12»: 2 katmanlı LSTM encoder-decoder, gerçek eğitilmiş ağırlıklar.</span><span class="hr-tags"><span class="hr-tag">3B</span><span class="hr-tag">gerçek sayılar</span></span><span class="hr-btn">Aç →</span></a>
-      <a class="hr-tile" href="harita/guncel-mimariler.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🗂️</span><b>Örnek mimariler (şema)</b><span class="hr-l">Minik GPT, GPT-2, DeepSeek-V3, Mixtral, gpt-oss, Gemma 3 aynı çizim diliyle; yan yana tablo.</span><span class="hr-tags"><span class="hr-tag">2B şema</span></span><span class="hr-btn">Aç →</span></a>
+      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Transformer mimarileri</b><span class="hr-l">Küçük oyuncaktan gerçek modellere.</span><div class="hr-subs"><a class="hr-sub" href="harita/josh-3b.html?v=202611081549" target="_blank" rel="noopener"><b>Oyuncak: «let’s go» → «vamos» (3B)</b><span>Encoder-decoder’ın tamamı, her kelime 2 sayı, 18 adımlık tur.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081549" target="_blank" rel="noopener"><b>Büyük modeller (3B)</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; içinde 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611081549" target="_blank" rel="noopener"><b>Örnek mimariler (2B şema)</b><span>DeepSeek-V3, Mixtral, Gemma 3… aynı çizim diliyle, yan yana tablo.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🔁</span><b class="hr-tt">RNN ailesi (3B)</b><span class="hr-l">Transformer’dan önceki sıralı modeller.</span><div class="hr-subs"><a class="hr-sub" href="harita/rnn-3b.html?v=202611081549" target="_blank" rel="noopener"><b>RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları.</span><i>Aç →</i></a><a class="hr-sub" href="harita/s2s-3b.html?v=202611081549" target="_blank" rel="noopener"><b>Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek eğitilmiş ağırlıklar.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g3">
     <h3>🎬 3 · Animasyonlu anlatım — izle</h3>
-    <p class="hr-cat-d">Video gibi oynayan turlar: mimarinin bir parçasına yakınlaşır, oradaki matris işlemini oynatır.</p>
+    <p class="hr-cat-d">Video gibi oynayan turlar.</p>
     <div class="hr-tiles">
-      <a class="hr-tile" href="harita/matris-animasyon.html?v=202611081544" target="_blank" rel="noopener"><span class="hr-ic">🎬</span><b>GPT-2 turu</b><span class="hr-l">3B mimariden başlar, her parçaya yakınlaşıp oradaki matris işlemini oynatır (~5 dk).</span><span class="hr-tags"><span class="hr-tag">3B + animasyon</span></span><span class="hr-btn">Oynat →</span></a>
-      <a class="hr-tile" href="harita/matris-animasyon.html?v=202611081544#ossturu" target="_blank" rel="noopener"><span class="hr-ic">🟢</span><b>gpt-oss turu</b><span class="hr-l">MoE ve GQA’lı modern mimari: router, uzmanlar, kayan pencere, RoPE (34 durak).</span><span class="hr-tags"><span class="hr-tag">3B + animasyon</span></span><span class="hr-btn">Oynat →</span></a>
-      <a class="hr-tile" href="harita/matris-animasyon.html?v=202611081544#rope" target="_blank" rel="noopener"><span class="hr-ic">🌀</span><b>RoPE turu</b><span class="hr-l">Konum bilgisinin okların dönmesiyle nasıl verildiği, baştan sona 13 durak.</span><span class="hr-tags"><span class="hr-tag">animasyon</span></span><span class="hr-btn">Oynat →</span></a>
-      <a class="hr-tile" href="harita/matris-animasyon.html?v=202611081544#temel" target="_blank" rel="noopener"><span class="hr-ic">🧱</span><b>Matris temelleri</b><span class="hr-l">Küçük sayılarla: transpoz, satır × sütun, A·B ≠ B·A, Q·Kᵀ, maske, softmax.</span><span class="hr-tags"><span class="hr-tag">animasyon</span><span class="hr-tag">başlangıç</span></span><span class="hr-btn">Oynat →</span></a>
+      <div class="hr-tile"><span class="hr-ic">🎬</span><b class="hr-tt">Mimari turları</b><span class="hr-l">3B mimariden başlar, her parçaya yakınlaşıp oradaki matris işlemini oynatır.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081549" target="_blank" rel="noopener"><b>GPT-2 turu</b><span>Token’dan çıkışa, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081549#ossturu" target="_blank" rel="noopener"><b>gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE (34 durak).</span><i>Oynat →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧱</span><b class="hr-tt">Kavram animasyonları</b><span class="hr-l">Tek bir fikri küçük sayılarla, baştan sona.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081549#temel" target="_blank" rel="noopener"><b>Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081549#rope" target="_blank" rel="noopener"><b>RoPE turu</b><span>Konum bilgisi okların dönmesiyle (13 durak).</span><i>Oynat →</i></a></div></div>
     </div>
   </div>
-  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081544" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
+  </div>
+  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081549" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
   <p class="hr-note">⚠️ Minik GPT sayfalarındaki sayılar sabit bir kayıttır (tohum 1, «7+5=»); GPT-2, gpt-oss ve diğer büyük modellerde şekiller gerçek, renkli hücreler şematiktir.</p>
 
   </div>
@@ -9720,74 +9715,74 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202611081544"></script>
-<script src="js/lesson-turev.js?v=202611081544"></script>
-<script src="js/lesson-xor.js?v=202611081544"></script>
-<script src="js/lesson-xor-arch.js?v=202611081544"></script>
-<script src="js/lesson-xor-maps.js?v=202611081544"></script>
-<script src="js/lesson-xor-epoch.js?v=202611081544"></script>
-<script src="js/lesson-nn.js?v=202611081544"></script>
-<script src="js/lesson-trig.js?v=202611081544"></script>
+<script src="js/lesson-linreg.js?v=202611081549"></script>
+<script src="js/lesson-turev.js?v=202611081549"></script>
+<script src="js/lesson-xor.js?v=202611081549"></script>
+<script src="js/lesson-xor-arch.js?v=202611081549"></script>
+<script src="js/lesson-xor-maps.js?v=202611081549"></script>
+<script src="js/lesson-xor-epoch.js?v=202611081549"></script>
+<script src="js/lesson-nn.js?v=202611081549"></script>
+<script src="js/lesson-trig.js?v=202611081549"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202611081544"></script>
-<script src="js/lesson-rnn-soz.js?v=202611081544"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202611081549"></script>
+<script src="js/lesson-rnn-soz.js?v=202611081549"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202611081544"></script>
-<script src="js/lesson-lstm-cell.js?v=202611081544"></script>
-<script src="js/app.js?v=202611081544"></script>
-<script src="js/lesson-rnn-wbar.js?v=202611081544"></script>
-<script src="js/lesson-lstm-big.js?v=202611081544"></script>
-<script src="js/lesson-lstm-step.js?v=202611081544"></script>
-<script src="js/lesson-lstm-sim.js?v=202611081544"></script>
-<script src="js/lesson-lstm-size.js?v=202611081544"></script>
-<script src="js/lesson-lstm-m2o.js?v=202611081544"></script>
-<script src="js/lesson-emb-kullan.js?v=202611081544"></script>
-<script src="js/lesson-emb-draco.js?v=202611081544"></script>
-<script src="js/lesson-emb-arch.js?v=202611081544"></script>
-<script src="js/lesson-emb-extra.js?v=202611081544"></script>
-<script src="js/lesson-s2s-weights.js?v=202611081544"></script>
-<script src="js/lesson-s2s-add.js?v=202611081544"></script>
-<script src="js/lesson-s2s-inside.js?v=202611081544"></script>
-<script src="js/lesson-s2s-desen.js?v=202611081544"></script>
-<script src="js/lesson-s2s-anim.js?v=202611081544"></script>
-<script src="js/lesson-att-train.js?v=202611081544"></script>
-<script src="js/lesson-att-extra.js?v=202611081544"></script>
-<script src="js/lesson-att-sim.js?v=202611081544"></script>
-<script src="js/lesson-att-ornek.js?v=202611081544"></script>
-<script src="js/lesson-mh-big.js?v=202611081544"></script>
-<script src="js/lesson-mh-blk.js?v=202611081544"></script>
-<script src="js/lesson-mh-ornek.js?v=202611081544"></script>
-<script src="js/lesson-tf-big.js?v=202611081544"></script>
-<script src="js/lesson-tf-weights.js?v=202611081544"></script>
-<script src="js/lesson-tf-tour.js?v=202611081544"></script>
-<script src="js/lesson-tf-ornek.js?v=202611081544"></script>
-<script src="js/lesson-gpt-tiny.js?v=202611081544"></script>
-<script src="js/lesson-gpt-big.js?v=202611081544"></script>
-<script src="js/lesson-gpt-ornek.js?v=202611081544"></script>
-<script src="js/lesson-rnn-van.js?v=202611081544"></script>
-<script src="js/lesson-s2s-extra.js?v=202611081544"></script>
-<script src="js/lesson-s2s-ornek.js?v=202611081544"></script>
-<script src="js/lesson-emb-ornek.js?v=202611081544"></script>
-<script src="js/lesson-emb-steps.js?v=202611081544"></script>
-<script src="js/lesson-emb-big.js?v=202611081544"></script>
-<script src="js/lesson-sm-ornek.js?v=202611081544"></script>
-<script src="js/lesson-sm-big.js?v=202611081544"></script>
-<script src="js/lesson-sm-akt.js?v=202611081544"></script>
-<script src="js/lesson-lstm-unroll.js?v=202611081544"></script>
-<script src="js/lesson-lstm-seq.js?v=202611081544"></script>
-<script src="js/lesson-lstm-gate.js?v=202611081544"></script>
-<script src="js/lesson-lstm-ornek.js?v=202611081544"></script>
-<script src="js/lesson-gpt.js?v=202611081544"></script>
-<script src="js/lesson-gpt-mini.js?v=202611081544"></script>
-<script src="js/lesson-vektor-ornek.js?v=202611081544"></script>
-<script src="js/lesson-linreg-big.js?v=202611081544"></script>
-<script src="js/lesson-linreg-ornek.js?v=202611081544"></script>
-<script src="js/lesson-act-big.js?v=202611081544"></script>
-<script src="js/lesson-act-ornek.js?v=202611081544"></script>
-<script src="js/lesson-xor-ornek.js?v=202611081544"></script>
-<script src="js/lesson-nn-ornek.js?v=202611081544"></script>
-<script src="js/lesson-nn-net.js?v=202611081544"></script>
-<script src="js/lesson-nn-sim.js?v=202611081544"></script>
-<script src="js/lesson-nn-big.js?v=202611081544"></script>
+<script src="js/lesson-rnn-ornek.js?v=202611081549"></script>
+<script src="js/lesson-lstm-cell.js?v=202611081549"></script>
+<script src="js/app.js?v=202611081549"></script>
+<script src="js/lesson-rnn-wbar.js?v=202611081549"></script>
+<script src="js/lesson-lstm-big.js?v=202611081549"></script>
+<script src="js/lesson-lstm-step.js?v=202611081549"></script>
+<script src="js/lesson-lstm-sim.js?v=202611081549"></script>
+<script src="js/lesson-lstm-size.js?v=202611081549"></script>
+<script src="js/lesson-lstm-m2o.js?v=202611081549"></script>
+<script src="js/lesson-emb-kullan.js?v=202611081549"></script>
+<script src="js/lesson-emb-draco.js?v=202611081549"></script>
+<script src="js/lesson-emb-arch.js?v=202611081549"></script>
+<script src="js/lesson-emb-extra.js?v=202611081549"></script>
+<script src="js/lesson-s2s-weights.js?v=202611081549"></script>
+<script src="js/lesson-s2s-add.js?v=202611081549"></script>
+<script src="js/lesson-s2s-inside.js?v=202611081549"></script>
+<script src="js/lesson-s2s-desen.js?v=202611081549"></script>
+<script src="js/lesson-s2s-anim.js?v=202611081549"></script>
+<script src="js/lesson-att-train.js?v=202611081549"></script>
+<script src="js/lesson-att-extra.js?v=202611081549"></script>
+<script src="js/lesson-att-sim.js?v=202611081549"></script>
+<script src="js/lesson-att-ornek.js?v=202611081549"></script>
+<script src="js/lesson-mh-big.js?v=202611081549"></script>
+<script src="js/lesson-mh-blk.js?v=202611081549"></script>
+<script src="js/lesson-mh-ornek.js?v=202611081549"></script>
+<script src="js/lesson-tf-big.js?v=202611081549"></script>
+<script src="js/lesson-tf-weights.js?v=202611081549"></script>
+<script src="js/lesson-tf-tour.js?v=202611081549"></script>
+<script src="js/lesson-tf-ornek.js?v=202611081549"></script>
+<script src="js/lesson-gpt-tiny.js?v=202611081549"></script>
+<script src="js/lesson-gpt-big.js?v=202611081549"></script>
+<script src="js/lesson-gpt-ornek.js?v=202611081549"></script>
+<script src="js/lesson-rnn-van.js?v=202611081549"></script>
+<script src="js/lesson-s2s-extra.js?v=202611081549"></script>
+<script src="js/lesson-s2s-ornek.js?v=202611081549"></script>
+<script src="js/lesson-emb-ornek.js?v=202611081549"></script>
+<script src="js/lesson-emb-steps.js?v=202611081549"></script>
+<script src="js/lesson-emb-big.js?v=202611081549"></script>
+<script src="js/lesson-sm-ornek.js?v=202611081549"></script>
+<script src="js/lesson-sm-big.js?v=202611081549"></script>
+<script src="js/lesson-sm-akt.js?v=202611081549"></script>
+<script src="js/lesson-lstm-unroll.js?v=202611081549"></script>
+<script src="js/lesson-lstm-seq.js?v=202611081549"></script>
+<script src="js/lesson-lstm-gate.js?v=202611081549"></script>
+<script src="js/lesson-lstm-ornek.js?v=202611081549"></script>
+<script src="js/lesson-gpt.js?v=202611081549"></script>
+<script src="js/lesson-gpt-mini.js?v=202611081549"></script>
+<script src="js/lesson-vektor-ornek.js?v=202611081549"></script>
+<script src="js/lesson-linreg-big.js?v=202611081549"></script>
+<script src="js/lesson-linreg-ornek.js?v=202611081549"></script>
+<script src="js/lesson-act-big.js?v=202611081549"></script>
+<script src="js/lesson-act-ornek.js?v=202611081549"></script>
+<script src="js/lesson-xor-ornek.js?v=202611081549"></script>
+<script src="js/lesson-nn-ornek.js?v=202611081549"></script>
+<script src="js/lesson-nn-net.js?v=202611081549"></script>
+<script src="js/lesson-nn-sim.js?v=202611081549"></script>
+<script src="js/lesson-nn-big.js?v=202611081549"></script>
 </body>
 </html>
