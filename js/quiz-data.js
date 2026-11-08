@@ -403,3 +403,30 @@ gpt:[
 ]};
 for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[k].concat(E[k]); }
 })();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.opt=[
+ R('Optimizer neye karar verir?',['Eğimle nasıl adım atılacağına','Eğimin kendisini hesaplamaya','Verinin etiketine','Katman sayısına'],'Eğimi geri yayılım bulur; optimizer adımı belirler.'),
+ R('Mini-batch nedir?',['Her adımda verinin küçük bir parçasıyla eğimi tahmin etmek','Ağı küçültmek','Öğrenme hızını küçültmek','Veriyi silmek'],'Tam veri yerine birkaç örnek.'),
+ R('SGD (yığın = 1) tam yığına göre nasıldır?',['Epoch başına çok daha fazla, ama gürültülü adım atar','Hiç gürültüsüzdür','Daha az adım atar','Hiç öğrenmez'],'Örnek 2: 480 ↔ 60 güncelleme.'),
+ R('Bir epoch nedir?',['Verinin baştan sona bir kez görülmesi','Tek bir güncelleme','Bir katman','Bir öğrenme hızı'],'Örnek 2: 60 epoch.'),
+ R('Dar bir vadide GD neden zikzak çizer?',['Dik yönde adım karşı yamacı aşar, yatık yönde adım çok küçük kalır','Momentum olmadığı için hiç hareket etmez','Gürültü yüzünden','Adam kullandığı için'],'Tek α iki yöne birden uymaz.'),
+ R('Momentum güncellemesi hangisi?',['v ← β·v + g, Θ ← Θ − α·v','Θ ← Θ + α·g','Θ ← Θ − α·g²','v ← g/β'],'Hız biriktirme.'),
+ R('Momentum zikzağı nasıl azaltır?',['Yön değiştiren bileşenler birikmede birbirini götürür','Eğimi sıfırlar','α\'yı büyütür','Veriyi karıştırır'],'Aynı yöndekiler birikir.'),
+ R('β = 0,9 iken momentum hızı yaklaşık kaç eğimi biriktirir?',['≈10 (1/(1−β))','≈0,9','≈1','≈100'],'Bu yüzden α küçük seçilir.'),
+ R('Adam her ağırlık için hangi iki ortalamayı tutar?',['Eğimin ortalaması (m) ve eğim karesinin ortalaması (v)','Ağırlığın ve biasın ortalaması','Kaybın ve doğruluğun ortalaması','Hiçbirini'],'Yön ve büyüklük.'),
+ R('Adam\'da adım neden eğimin ölçeğinden büyük ölçüde bağımsızdır?',['m̂/√v̂ oranı ≈ ±1 olur, adım ≈ α','Eğimi sıfırlar','α\'yı eğime göre büyütür','Yalnız işaret kullanır'],'Örnek 3: iki ağırlık da ≈0,1 yürüdü.'),
+ R('Adam\'daki "şapka" (m̂, v̂) neyi düzeltir?',['Ortalamaların sıfırdan başlamasından gelen ilk adımlardaki küçüklüğü','Eğimin işaretini','Öğrenme hızını','Veri dengesizliğini'],'Bias düzeltmesi.'),
+ R('Örnek 3\'te GD neden w₂\'yi 200 adımda neredeyse hiç hareket ettiremedi?',['Dik yön patlamasın diye α küçük seçilmek zorundaydı; yatık yönde adım minicik kaldı','w₂\'nin eğimi sıfırdı','Adam kullanıldı','Veri yoktu'],'Tek α.'),
+ R('Örnek 1\'e göre hangisi doğru?',['Büyük adımlı ayarlar çözdüklerinde hızlı ama daha sık tuzağa düştü','Adam her başlangıcı çözdü','Momentum hiçbir şeyi çözmedi','Bütün ayarlar aynıydı'],'Hız ↔ güvenilirlik.'),
+ R('Örnek 1\'de hangi başlangıçlar hiçbir ayarla çözülemedi?',['#8 ve #9','#0 ve #1','Hepsi','Hiçbiri'],'Optimizer sihirli değnek değil.'),
+ R('Öğrenme hızı çok büyükse ne olur?',['Adımlar dibi aşar, kayıp zıplar ya da patlar (NaN)','Eğitim yavaşlar','Model küçülür','Hiçbir şey'],'Isınma ve clipping bu yüzden var.'),
+ R('Öğrenme hızı ısınması (warmup) neden kullanılır?',['Başlangıçta rastgele ağırlıklar ve oturmamış ortalamalarla dev adım atmamak için','Sonda hızlanmak için','Veriyi ısıtmak için','Gerekli değildir'],'Yavaş yavaş açılır.'),
+ R('Kosinüs azalması ne yapar?',['Eğitim ilerledikçe α\'yı yumuşakça küçültür','α\'yı büyütür','Kaybı hesaplar','Veriyi karıştırır'],'Sona doğru ince ayar.'),
+ R('AdamW\'nin Adam\'dan farkı nedir?',['Ağırlık küçültmeyi (weight decay) eğimden ayırıp doğrudan uygular','Momentum kullanmaz','Yalnız GPU\'da çalışır','Öğrenme hızı yoktur'],'Loshchilov & Hutter 2017.'),
+ R('Nesterov momentum ne yapar?',['Eğimi hızın götüreceği noktada ölçer','Eğimi iki kez hesaplar','Hızı sıfırlar','α\'yı ikiye böler'],'Önce bak, sonra adım at.'),
+ R('Adam\'ın bellek maliyeti nedir?',['Her ağırlık için iki ek sayı (m ve v) tutar','Hiç ek bellek gerekmez','Ağırlık sayısını yarıya indirir','Yalnız bir sayı tutar'],'Büyük modellerde önemli.'),
+ R('Gradyan inişini ilk yazan kimdir?',['Augustin-Louis Cauchy (1847)','Kingma','Hinton','Polyak'],'Hikâye.'),
+ R('Momentum ("ağır top") fikrini 1964\'te kim önerdi?',['Boris Polyak','Cauchy','Robbins','Ba'],'Hikâye.'),
+ R('Adam hangi yıl önerildi?',['2014','1964','1997','2020'],'Kingma & Ba.'),
+ R('Mini-batch gürültüsünün olası bir faydası nedir?',['Sığ çukurlardan ve platolardan çıkmaya yardım edebilir','Kaybı her zaman artırır','Eğitimi durdurur','Hiçbir faydası yoktur'],'Simülasyonda dene.'),
+ R('Momentum ile α=0,1 (β=0,9), GD\'de yaklaşık hangi α\'ya denk gelir?',['α ≈ 1','α ≈ 0,01','α ≈ 0,1','α ≈ 10'],'v ≈ 10g olduğu için.')
+];})();
