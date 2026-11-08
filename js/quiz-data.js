@@ -754,3 +754,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Kümeler arasında kalan noktaların nedeni?',['Sürekli gürültüden sürekli çıktı: kümeler arasında köprü noktalar kalır','Hata','D\'nin hatası','Veri gürültüsü'],'Simülasyon.'),
  R('Görüntü üretiminde öncülük GAN\'dan sonra neye geçti?',['Diffusion modellerine','RNN\'lere','Karar ağaçlarına','Tokenizer\'lara'],'Sıradaki ders.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.dif=[
+ R('Diffusion\'da ileri süreç nedir?',['Veriye adım adım gürültü eklemek (sabit formül)','Gürültüyü temizlemek','Ağı eğitmek','Resmi sınıflandırmak'],'Öğrenilmez.'),
+ R('İleri süreç öğrenilir mi?',['Hayır, sabit bir formüldür','Evet, ayrı bir ağla','Yalnız sonunda','Yalnız GAN\'da'],'β takvimi.'),
+ R('x_t\'nin formülü?',['√ᾱ_t·x₀ + √(1−ᾱ_t)·ε','x₀ + t','x₀ · t','ε · t'],'Tek adımda atlama.'),
+ R('ᾱ_t nedir?',['(1−β₁)(1−β₂)…(1−β_t) çarpımı','β\'ların toplamı','Gürültünün kendisi','Öğrenme hızı'],'Takvim.'),
+ R('Örnek 1\'de t = 50\'de verinin payı (√ᾱ)?',['≈ 0,067','0,5','1','0'],'Neredeyse saf gürültü.'),
+ R('Diffusion ağı neyi tahmin eder?',['Eklenen gürültüyü (ε)','Temiz resmi doğrudan','Etiketi','Sıradaki kelimeyi'],'DDPM tarifi.'),
+ R('Ağa gürültülü örnekle birlikte ne verilir?',['Zaman adımı t','Etiket','Gerçek resim','Kayıp'],'Az/çok gürültüye göre davranış.'),
+ R('Diffusion kaybı?',['‖ε − ε_θ(x_t, t)‖² (MSE)','İkili çapraz entropi','BLEU','KL yalnız'],'Basit.'),
+ R('Eğitimde neden zincir çalıştırılmaz?',['Formül herhangi bir t\'ye tek adımda atlar','Zincir yasak','Zaman yok','Hız için zorunlu değil'],'Ucuz eğitim.'),
+ R('Üretim nereden başlar?',['Saf gürültüden (N(0,1))','Gerçek resimden','Boş resimden','Etiketten'],'x_T.'),
+ R('Her geri adımda ne olur?',['Tahmin edilen gürültünün bir kısmı çıkarılır, ölçeklenir, biraz taze gürültü eklenir','Resim tamamen silinir','Ağ yeniden eğitilir','Hiçbir şey'],'Formül.'),
+ R('Geri adımlarda taze gürültü neden eklenir?',['Çeşitlilik ve doğru dağılım için','Hata','Hız için','Zorunlu değil'],'Stokastik örnekleme.'),
+ R('Örnek 2\'de Diffusion kaç kümeyi yakaladı?',['Üç tohumda da 8/8','5','Hiç','Tohuma göre 2–8'],'GAN 5–8.'),
+ R('Diffusion\'ın GAN\'a göre avantajı?',['Kararlı eğitim ve modların kapsanması','Tek adımda üretim','Daha az hesap','Kayıp gerektirmemesi'],'Oyun yok.'),
+ R('Diffusion\'ın dezavantajı?',['Yavaş üretim (çok adım)','Kararsız eğitim','Mod çöküşü','Hiç çeşitlilik yok'],'50 ↔ 1.'),
+ R('Örnek 3\'te yapı nasıl ortaya çıktı?',['Adım adım: önce kaba şekil, sonra ayrıntı','Aniden son adımda','İlk adımda tamamen','Hiç çıkmadı'],'343 → 146 dışarıda.'),
+ R('Resim üreten diffusion modellerinde yaygın ağ?',['U-Net (ya da Transformer/DiT)','RNN','Tek nöron','Karar ağacı'],'Ekstra.'),
+ R('DDIM ne sağlar?',['Daha az adımla üretim','Daha çok gürültü','Eğitimi hızlandırır','Metin koşullama'],'2020.'),
+ R('Gürültü tahmini neye denktir?',['Skora: olasılığın arttığı yön','Etikete','Kayba','Öğrenme hızına'],'Skor bakışı.'),
+ R('DDPM\'i kim önerdi (2020)?',['Ho, Jain ve Abbeel','Goodfellow','Kingma ve Welling','Vaswani'],'Hikâye.'),
+ R('Difüzyon modellerinin ilk önerisi (2015)?',['Sohl-Dickstein ve arkadaşları','Ho ve arkadaşları','Song ve Ermon','LeCun'],'Fizikten esin.'),
+ R('Kayıp neden sıfıra inmez?',['Aynı gürültülü nokta farklı asıl noktalardan gelebilir; model ortalamayı öğrenir','Hata','Ağ küçük','Takvim yanlış'],'Simülasyon.'),
+ R('Inpainting nedir?',['Resmin bir bölgesini silip yeniden doldurmak','Resmi büyütmek','Renk değiştirmek','Etiketlemek'],'Gerçek hayat.'),
+ R('Bu sayfadaki eğitim kaç adım ve kaç örneklik yığın?',['2.000 adım, 32 örnek','50 adım, 1 örnek','10.000 adım, 1.000 örnek','1 adım'],'Simülasyon.'),
+ R('Metinden görüntü modellerinde diffusion\'a ne eklenir?',['Metin koşullama (ve çoğu zaman gizli uzayda çalışma)','RNN','Tokenizer kaldırılır','Hiçbir şey'],'Sıradaki ders.')
+]})();

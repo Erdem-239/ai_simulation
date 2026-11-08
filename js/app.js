@@ -2528,6 +2528,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'GAN: Goodfellow ve arkadaşları (2014). DCGAN: Radford, Metz & Chintala (2015). StyleGAN: Karras ve arkadaşları (NVIDIA, 2018–2020).',
       real:[['🧑','Var olmayan insan yüzleri (StyleGAN)'],['🔍','Süper çözünürlük, resim tamamlama'],['⚠️','Deepfake ve tespit yarışı']],
       sub:['Üretici ↔ ayırt edici oyunu','Gradyan D\'nin içinden G\'ye','Denge: D her yere %50','Mod çöküşü','Kararsızlık ve tohum duyarlılığı']},
+    {id:'dif',  nm:'🌫️ Diffusion', tier:17, v:50, pre:['gan'], tab:'dif',
+      d:'Veriyi adım adım gürültüye boğ (ileri süreç), sonra bir ağa her adımda gürültüyü tahmin etmeyi öğret; saf gürültüden başlayıp gürültüyü azar azar temizleyerek yeni örnek üret. Kararlı eğitim, bütün modlar, yavaş üretim.',
+      sci:'Sohl-Dickstein ve arkadaşları (2015). DDPM: Ho, Jain & Abbeel (2020). Skor tabanlı modeller: Song & Ermon (2019). DDIM: Song, Meng & Ermon (2020).',
+      real:[['🎨','Metinden görüntü üreten modellerin çoğu'],['🎬','Video ve ses üretimi'],['🧬','Protein ve molekül tasarımı']],
+      sub:['İleri süreç: x_t = √ᾱ·x₀ + √(1−ᾱ)·ε','Eğitim: eklenen gürültüyü tahmin et','Geri süreç: 50 adımda gürültüden veriye','GAN ile karşılaştırma: kararlılık ↔ hız','Hızlı örnekleme (DDIM)']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
@@ -2542,7 +2547,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
     {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
     {t0:11,t1:13,nm:'🛠️ UYGULAMADA LLM', newStyle:true},
-    {t0:14,t1:16,nm:'🎨 GÖRÜNTÜ ÜRETİMİ', newStyle:true}
+    {t0:14,t1:17,nm:'🎨 GÖRÜNTÜ ÜRETİMİ', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3469,7 +3474,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
       {t0:11, t1:13, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'},
-      {t0:14, t1:16, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ'}
+      {t0:14, t1:17, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
