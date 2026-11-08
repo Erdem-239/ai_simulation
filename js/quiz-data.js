@@ -565,3 +565,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Bugün çoğu büyük sohbet modeli neden decoder-only?',['Her konumdan öğrenir, eğitim = kullanım, tek model hem anlar hem üretir','Daha küçük olduğu için','Maskesiz olduğu için','Çeviri yapamadığı için'],'Ekstra.'),
  R('BERT ile GPT arasındaki mimari fark çoğunlukla nedir?',['Tek bir dikkat maskesi (ve buna uygun eğitim hedefi)','Tamamen farklı katmanlar','Farklı aktivasyon','Farklı tokenizer zorunluluğu'],'Aynı blok.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.paper=[
+ R('"Attention Is All You Need" hangi yıl yayımlandı?',['2017','2014','2018','2020'],'NIPS 2017.'),
+ R('Makalenin ana iddiası?',['RNN/konvolüsyon olmadan yalnız dikkatle daha iyi ve daha paralel bir çeviri modeli','RNN\'lerin en iyi model olduğu','Görüntü sınıflandırma','Yeni bir optimizer'],'Özet.'),
+ R('Makaledeki model hangi görev için eğitildi?',['Makine çevirisi','Görüntü üretimi','Sohbet','Konuşma tanıma'],'WMT 2014.'),
+ R('Temel modelde kaç encoder ve kaç decoder katmanı var?',['6 + 6','12 + 12','1 + 1','24 + 0'],'N = 6.'),
+ R('Temel modelde d_model kaçtır?',['512','768','1024','64'],'Büyük modelde 1024.'),
+ R('Temel modelde kaç dikkat kafası var ve her birinin boyutu?',['8 kafa, d_k = 64','12 kafa, 64','1 kafa, 512','16 kafa, 32'],'8 × 64 = 512.'),
+ R('FFN ara katman boyutu (temel)?',['2048','512','3072','4096'],'512 → 2048 → 512.'),
+ R('Dikkat skorları neden √d_k\'ya bölünür?',['Nokta çarpımlar büyüyüp softmax\'ı doygunluğa itmesin diye','Hız için','Konum için','Maskelemek için'],'§3.2.1.'),
+ R('Konum bilgisi makalede nasıl veriliyor?',['Sinüs/kosinüs konum kodlaması girişe ekleniyor','RoPE','Hiç verilmiyor','RNN ile'],'§3.5.'),
+ R('Makalede gömme tablosu ile ilgili hangisi doğru?',['Giriş, çıkış gömmesi ve softmax öncesi katman aynı tabloyu paylaşır','Üç ayrı tablo var','Gömme yok','Tablo eğitilmez'],'§3.4.'),
+ R('Tablo 1\'e göre öz-dikkatin katman başına işlemi?',['n²·d','n·d²','k·n·d²','n'],'Dizi karesel.'),
+ R('Tablo 1\'e göre RNN\'in sıralı adım sayısı?',['n','1','log n','n²'],'Paralel değil.'),
+ R('Öz-dikkatin en uzak iki kelime arasındaki yol uzunluğu?',['1','n','log n','n²'],'Doğrudan bağlantı.'),
+ R('n < d iken (ör. n = 50, d = 512) hangisi daha az işlem yapar?',['Öz-dikkat','RNN','Eşit','Konvolüsyon'],'~10 kat.'),
+ R('Makalenin öğrenme hızı takviminde ısınma kaç adım?',['4.000','100','100.000','1'],'Formül 3.'),
+ R('Isınmadan sonra lr nasıl değişir?',['1/√adım ile azalır','Sabit kalır','Doğrusal artar','Sıfırlanır'],'Formül 3.'),
+ R('Makalede kullanılan optimizer?',['Adam (β₂ = 0,98)','SGD','RMSProp','AdaGrad'],'§5.3.'),
+ R('Temel modelin dropout oranı?',['0,1','0,5','0','0,9'],'Büyük modelde 0,3.'),
+ R('Etiket yumuşatma (0,1) ne etkiler?',['Perpleksiteyi kötüleştirir, BLEU\'yu iyileştirir','İkisini de kötüleştirir','Hiçbir şey','Eğitimi durdurur'],'§5.4.'),
+ R('Eğitim donanımı?',['8 adet NVIDIA P100 GPU','Tek CPU','1.000 TPU','Telefon'],'Temel model ≈ 12 saat.'),
+ R('Büyük modelin eğitim süresi?',['≈ 3,5 gün (300.000 adım)','12 saat','1 yıl','10 dakika'],'§5.2.'),
+ R('İngilizce-Almanca çeviride büyük modelin BLEU skoru?',['28,4','41,8','12,0','99'],'EN-FR 41,8.'),
+ R('Kendi hesabımızla temel model kaç ağırlık çıktı?',['≈ 63,1 milyon (makale: 65 milyon)','1 milyar','5 milyon','213 milyon'],'Örnek 1.'),
+ R('Tablo 3\'e göre tek kafalı dikkat?',['En iyi ayardan 0,9 BLEU kötü','Daha iyi','Aynı','Çalışmıyor'],'Ekstra.'),
+ R('Bugünkü büyük açık modeller makaleden hangi yönde ayrılır?',['Çoğu yalnız decoder, pre-LN/RMSNorm, RoPE, GQA kullanır','Hepsi RNN\'e döndü','Dikkat kullanmazlar','Hepsi encoder-only'],'Ekstra tablo.')
+]})();
