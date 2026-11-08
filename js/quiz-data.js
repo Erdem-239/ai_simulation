@@ -673,3 +673,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Aynı sınavda çok deneme yapıp en iyisini raporlamak?',['Bir tür aşırı uyum; puanı şişirir','Daha dürüst','Zorunlu','Belirsizliği azaltır'],'Seçim yanlılığı.'),
  R('Bir şirket model seçerken ne yapmalı?',['Kendi işine benzeyen örneklerle ölçmeli','Yalnız genel tabloya bakmalı','En büyük modeli seçmeli','Ölçmemeli'],'Genel tablo temsil etmeyebilir.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.cnn=[
+ R('Bilgisayar için gri bir resim nedir?',['Her pikselin parlaklığını tutan bir sayı ızgarası','Bir kelime listesi','Bir ses dalgası','Bir vektör veritabanı'],'Piksel = sayı.'),
+ R('Renkli bir resimde her piksel kaç sayıyla tutulur?',['3 (kırmızı, yeşil, mavi)','1','9','256'],'RGB kanalları.'),
+ R('28×28 gri bir resim kaç sayıdır?',['784','28','56','2.352'],'28 × 28.'),
+ R('Konvolüsyonda bir çıktı hücresi nasıl hesaplanır?',['Filtre ile pencerenin karşılıklı sayıları çarpılıp toplanır (+ sapma)','Piksellerin en büyüğü alınır','Rastgele seçilir','Pikseller sıralanır'],'9 çarpımın toplamı.'),
+ R('Ağırlık paylaşımı nedir?',['Aynı filtrenin resmin bütün konumlarında kullanılması','Ağırlıkların bölünmesi','Ağırlıkların silinmesi','Her pikselin ayrı ağırlığı'],'Az parametre.'),
+ R('100 nöronlu tam bağlı katman (28×28 girdi) kaç ağırlık?',['78.500','80','784','100'],'Örnek 1.'),
+ R('8 tane 3×3 filtre (gri) kaç ağırlık (sapma dahil)?',['80','72','784','8'],'8 × 10.'),
+ R('Dolgu (padding) ne işe yarar?',['Kenarlara 0 ekleyerek çıktının küçülmesini önler, kenar piksellerinin de görülmesini sağlar','Resmi bulanıklaştırır','Renk ekler','Filtreyi büyütür'],'Örnek 2\'deki kenar sorunu.'),
+ R('10×10 resim, 3×3 filtre, dolgusuz → çıktı boyutu?',['8×8','10×10','3×3','7×7'],'10 − 3 + 1.'),
+ R('Adım (stride) 2 ne yapar?',['Filtreyi 2\'şer kaydırır, çıktı yaklaşık yarıya iner','Filtreyi büyütür','İki filtre kullanır','Hiçbir şey'],'Yardımcı parça.'),
+ R('Max-pool 2×2 ne yapar?',['Her 2×2 bloğun en büyük değerini tutar','Ortalamayı sıfırlar','Pikselleri çoğaltır','Filtreyi döndürür'],'Harita küçülür.'),
+ R('ReLU özellik haritasında ne yapar?',['Negatif değerleri sıfırlar','Pozitifleri sıfırlar','Hepsini 1 yapar','Haritayı döndürür'],'Aktivasyon dersi.'),
+ R('Dikey kenar filtresi düz beyaz bir alanda ne verir?',['0 (desen yok)','Çok büyük değer','Negatif sonsuz','Rastgele'],'Desene tepki verir.'),
+ R('CNN\'de filtreler nasıl bulunur?',['Eğitimle (geri yayılım)','Elle yazılır','Rastgele kalır','Tokenizer\'dan gelir'],'Örnek 2.'),
+ R('Örnek 2\'de öğrenilen filtrelerin ortak deseni?',['Sütun sütun aynı işaretli: dikey çizgi bulucu','Rastgele','Hepsi sıfır','Yatay çizgi bulucu'],'8 tohumun hepsi.'),
+ R('Örnek 2\'de bazı tohumlar hangi resimleri kaçırdı?',['Kenardaki çubukları','Ortadaki çubukları','Hepsini','Hiçbirini'],'Dolgu yok.'),
+ R('Örnek 3\'te çubuk bir sütun kayınca özellik haritası?',['Bir sütun kaydı (eşdeğişkenlik)','Değişmedi','Tersine döndü','Silindi'],'Ortalama aynı kaldı.'),
+ R('Eşdeğişkenlik + ortalama havuzlama ne sağlar?',['Desenin konumuna bağlı olmayan tanıma','Daha çok parametre','Renk değişimi','Daha yavaş eğitim'],'Kedi resmin neresinde olursa.'),
+ R('Derin bir CNN\'de ilk katmanlar genelde neyi bulur?',['Kenar ve renk gibi basit desenleri','Bütün nesneleri','Kelimeleri','Ses perdesini'],'Hiyerarşi.'),
+ R('Konvolüsyon fikrine ilham veren biyolojik çalışma?',['Hubel ve Wiesel\'in görme korteksi deneyleri','DNA\'nın keşfi','Pavlov\'un köpekleri','Mendel\'in bezelyeleri'],'Nobel 1981.'),
+ R('Neocognitron\'u kim önerdi?',['Kunihiko Fukushima (1980)','Yann LeCun','Geoffrey Hinton','Alan Turing'],'Hikâye.'),
+ R('AlexNet (2012) neden önemlidir?',['GPU\'larla eğitilen derin CNN\'in ImageNet\'te açık ara öne geçmesi','İlk dil modeli','İlk RNN','İlk tokenizer'],'Derin öğrenme patlaması.'),
+ R('ResNet\'in katkısı?',['Kestirme (residual) bağlantılarla çok derin ağları eğitilebilir yapmak','Dikkat mekanizması','Tokenizasyon','Dropout'],'2015.'),
+ R('Vision Transformer (ViT) resmi nasıl işler?',['Parçalara bölüp her parçayı bir token gibi Transformer\'a verir','Piksel piksel RNN\'e verir','Yalnız max-pool kullanır','Resmi metne çevirir'],'2020.'),
+ R('Görüntü üretiminde (VAE, GAN, Diffusion) konvolüsyon?',['Yapı taşıdır; büyütme katmanlarıyla küçük koddan resme çıkılır','Kullanılmaz','Yalnız metin için','Yalnız sınıflandırmada'],'Sıradaki dersler.')
+]})();

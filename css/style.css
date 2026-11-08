@@ -2355,3 +2355,13 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .ag-r{display:block; font-size:11px; font-weight:700; color:#95a2c2}
 .ag-sys{border-color:#95a2c2}.ag-usr{border-color:#5aa0ff}.ag-mdl{border-color:#46c46a}.ag-tool{border-color:#a34ad1}.ag-hrn{border-color:#e06a6a}
 .ag-m code{white-space:pre-wrap}
+/* 🖼️ CNN dersi */
+.cn-row{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-start}
+.cn-grid{display:grid; gap:1px; background:#2c3550; border:1px solid #2c3550; width:min(230px,70vw)}
+.cn-grid.mini{width:66px}
+.cn-c{aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:8.5px; color:#fff; cursor:pointer}
+.cn-grid.out .cn-c{cursor:pointer}
+.cn-c.hl{outline:2px solid #ffd77a; outline-offset:-2px}
+.cn-f td{width:46px; text-align:center; font-family:Consolas,monospace}
+.cn-f.sm td{width:30px; font-size:10.5px; padding:1px}
+.cn-data{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0; font-size:11px; color:#95a2c2; text-align:center}
