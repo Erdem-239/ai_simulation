@@ -781,3 +781,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Bu sayfadaki eğitim kaç adım ve kaç örneklik yığın?',['2.000 adım, 32 örnek','50 adım, 1 örnek','10.000 adım, 1.000 örnek','1 adım'],'Simülasyon.'),
  R('Metinden görüntü modellerinde diffusion\'a ne eklenir?',['Metin koşullama (ve çoğu zaman gizli uzayda çalışma)','RNN','Tokenizer kaldırılır','Hiçbir şey'],'Sıradaki ders.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.t2i=[
+ R('Metinden görüntü modelinde istem önce neye dönüştürülür?',['Bir metin kodlayıcısıyla vektörlere','Piksellere','Gürültüye','Etikete'],'CLIP vb.'),
+ R('Gürültü giderici istemi nasıl kullanır?',['Çapraz dikkatle istem vektörlerine bakar (Q resimden, K/V istemden)','İstemi yok sayar','İstemi piksele çevirir','Yalnız ilk adımda okur'],'Self-Attention dersi.'),
+ R('CLIP neyi öğrenir?',['Resim ve metni aynı vektör uzayına yerleştirmeyi','Resim üretmeyi','Çeviri','Ses tanıma'],'Karşıtlıklı öğrenme.'),
+ R('CLIP\'in eğitim verisi yaklaşık kaç resim-açıklama çifti?',['400 milyon','1.000','50 bin','10 milyar'],'2021.'),
+ R('CLIP kaybı nasıl çalışır?',['Benzerlik tablosunda doğru eşleşmeleri (köşegen) softmax ile seçmek','Piksel farkı','GAN kaybı','KL'],'Ekstra.'),
+ R('Eğitimde istem neden bazen boş bırakılır?',['Aynı ağ istemsiz tahmin de yapabilsin, CFG için','Hata','Hız için','Veri az olduğu için'],'%10–20.'),
+ R('Sınıflandırıcısız yönlendirme formülü?',['ε = ε_boş + w·(ε_istem − ε_boş)','ε = w·ε_boş','ε = ε_istem − w','ε = 0'],'Ho & Salimans 2021.'),
+ R('w = 0 ne demek?',['İstem yok sayılır','İstem iki kat güçlü','Model durur','Gürültü yok'],'Koşulsuz.'),
+ R('w = 1 ne demek?',['Öğrenilen koşullu model','İstem yok','Aşırı yönlendirme','Hata'],'Örnek 1.'),
+ R('Örnek 1\'de w = 0\'da «kuzey» kümesine düşen oran?',['~%7','~%99','%50','%0'],'8 küme.'),
+ R('Örnek 1\'de w büyüdükçe yayılım?',['Gerçek verinin altına düşer (çeşitlilik kaybı)','Artar','Değişmez','Sonsuz olur'],'0,14 → 0,07.'),
+ R('Örnek 1\'de w = 7\'de ne oldu?',['Noktalar hedefi aşıp dışarı taştı (isabet ~%10)','%100 isabet','Hiç nokta üretilmedi','Koşulsuz oldu'],'Aşırı yönlendirme.'),
+ R('Görüntü araçlarındaki "guidance scale" nedir?',['CFG\'deki w','Öğrenme hızı','Resim boyutu','Adım sayısı'],'Gerçek hayat.'),
+ R('Negatif istem nasıl uygulanır?',['CFG\'de ε_boş yerine istenmeyen istemin tahmini konur','İstem silinir','Resim ters çevrilir','Uygulanamaz'],'Ekstra.'),
+ R('CFG için ek bir sınıflandırıcı ağ gerekir mi?',['Hayır; aynı ağ istemli ve istemsiz iki kez çalışır','Evet','Yalnız GAN\'da','Yalnız CLIP ile'],'Adı buradan.'),
+ R('Latent diffusion nedir?',['Gürültü gidermeyi VAE\'nin küçük gizli kodunda yapmak','Piksellerde üretmek','RNN kullanmak','Metni gürültülemek'],'Rombach 2022.'),
+ R('Latent diffusion neden ucuzdur?',['Çok daha az sayı üzerinde çalışır (örn. 48 kat)','Daha az adım','GPU gerekmez','Eğitim yok'],'64×64×4 ↔ 512×512×3.'),
+ R('Latent diffusion\'da sonda ne olur?',['VAE decoder kodu resme açar','CLIP resmi çizer','GAN düzeltir','Hiçbir şey'],'VAE dersi.'),
+ R('DiT nedir?',['Gürültü gidericide U-Net yerine Transformer kullanmak','Bir tokenizer','Bir optimizer','Bir veri seti'],'Peebles & Xie 2023.'),
+ R('Örnek 2 neyi gösterdi?',['Tek ağ hem istemsiz (8 küme) hem istemli (yalnız güney) üretebiliyor','İki ayrı ağ gerekiyor','Model istemi duymuyor','Hiç nokta yok'],'CFG eğitimi.'),
+ R('Örnek 3\'te görülmemiş istem (22,5°) ne üretti?',['Noktaların neredeyse hepsi iki kümenin arasına gitti','Yalnız doğu','Yalnız kuzeydoğu','Rastgele'],'385/400.'),
+ R('Bu sayfadaki "metin kodlayıcısı" nasıl?',['Elle tanımlı: yön adı → (cos θ, sin θ, 1)','Eğitilmiş CLIP','GPT','BERT'],'Dürüst not.'),
+ R('Gerçek modellerde koşullama nasıl yapılır?',['Çapraz dikkatle (burada basitçe girdiye ekledik)','Hiç yapılmaz','Yalnız sonda','Etiketle'],'Simülasyon notu.'),
+ R('Metinden görüntü hattında sitedeki hangi dersler birleşir?',['Tokenizasyon, Kelime Temsili, Self-Attention, VAE, Diffusion','Yalnız RNN','Yalnız XOR','Yalnız Optimizerlar'],'Giriş görseli.'),
+ R('w\'yi çok büyütmenin görüntüdeki karşılığı?',['Aşırı doygun, yapay görünen resimler','Daha doğal resimler','Daha çok çeşitlilik','Hiç fark yok'],'Simülasyon.')
+]})();
