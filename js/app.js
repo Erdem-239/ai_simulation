@@ -2480,7 +2480,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true},
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
-    {t0:9,t1:10,nm:'📜 MAKALE VE SONRASI', newStyle:true}
+    {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3405,11 +3405,12 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL AĞLAR'},
       {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
-      {t0:9,  t1:10, c:'255,201,60',  nm:'📜 MAKALE VE SONRASI'}
+      {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'}
     ];
     const META='90,120,216';
-    sb.querySelectorAll('.sb-era').forEach(e=>e.remove());
+    sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
     let curEra=null;
+    const eraLast=new Map(), eraLes=new Map();   // çağ → son ders düğmesi / ders anahtarları
     seq.forEach(b=>{
       const m=b.dataset.model;
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
@@ -3417,6 +3418,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
       if(!e) return;
       b.style.setProperty('--era-c', e.c);
+      eraLast.set(e,b); if(!eraLes.has(e)) eraLes.set(e,[]); eraLes.get(e).push(m);
       if(e!==curEra){
         curEra=e;
         const lab=document.createElement('div');
@@ -3426,6 +3428,30 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         parent.insertBefore(lab, b);
       }
     });
+    // her çağın son dersinden sonra çağ testi kutusu, en sonda genel test (js/quiz.js açar)
+    const mkQ=(key,title,lessons,n,c,cls)=>{
+      const q=document.createElement('button');
+      q.className='sb-quiz'+(cls?' '+cls:''); q.type='button';
+      q.dataset.qkey=key; q.dataset.title=title; q.dataset.lessons=lessons.join(','); q.dataset.n=n;
+      q.style.setProperty('--era-c', c);
+      q.innerHTML='<span class="sbq-t"></span><span class="sbq-best"></span>';
+      q.querySelector('.sbq-t').textContent=title;
+      return q;
+    };
+    let lastQ=null; const allLes=[];
+    ERAC.forEach((e,i)=>{
+      const b=eraLast.get(e); if(!b) return;
+      const ls=eraLes.get(e); allLes.push(...ls);
+      const nm=e.nm.replace(/^(\S+)\s+/,'');
+      const qn=Math.min(12,ls.length*10);
+      const q=mkQ('era'+i,'🏁 '+nm.charAt(0)+nm.slice(1).toLocaleLowerCase('tr')+' testi · '+qn+' soru',ls,qn,e.c);
+      b.insertAdjacentElement('afterend',q); lastQ=q;
+    });
+    if(lastQ){
+      const g=mkQ('genel','🏆 Genel test — bütün çağlar · 20 soru',allLes,20,'255,201,60','sbq-gen');
+      lastQ.insertAdjacentElement('afterend',g);
+    }
+    if(window.__quizSbSync) window.__quizSbSync();
     // alt-navigasyon aktif butonun ardında kalmalı (yeniden dizince kopmasın)
     const sn=sb.querySelector('.subnav'), act=sb.querySelector('.navbtn.active');
     if(sn && act) act.insertAdjacentElement('afterend', sn);
