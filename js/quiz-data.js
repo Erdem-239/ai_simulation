@@ -727,3 +727,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Derin autoencoder\'ın 2006 Science makalesi kimin?',['Hinton ve Salakhutdinov','Kingma ve Ba','Hochreiter','Sennrich'],'PCA\'dan iyi.'),
  R('Bu sayfadaki gizli uzayın iki ekseni neye yaklaştı?',['Lekenin x ve y konumuna','Rengine','Boyutuna','Rastgele'],'Kimse söylemedi.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.gan=[
+ R('GAN hangi iki ağdan oluşur?',['Üretici ve ayırt edici','Encoder ve decoder','Q ve K','Öğretmen ve öğrenci'],'Sahtekâr ve polis.'),
+ R('Üretici neyi girdi alır?',['Rastgele gürültü z','Gerçek resimler','Etiketler','Metin'],'N(0,1).'),
+ R('Ayırt edicinin çıktısı nedir?',['Örneğin gerçek olma olasılığı','Yeni resim','Gürültü','Kod'],'0…1.'),
+ R('Ayırt edici neyi öğrenmeye çalışır?',['Gerçeklere 1, sahtelere 0 demeyi','Resim üretmeyi','Kodlamayı','Tokenizasyonu'],'İkili sınıflandırma.'),
+ R('Üretici neyi öğrenmeye çalışır?',['Ayırt edicinin sahtelerine "gerçek" demesini','Gerçek veriyi ezberlemeyi','Kayıbı sıfırlamayı','Kodları çökertmeyi'],'Kandırmak.'),
+ R('Üretici gerçek veriyi doğrudan görür mü?',['Hayır; yalnız ayırt edicinin gradyanından öğrenir','Evet, her adımda','Yalnız başta','Yalnız sonda'],'Gradyan D\'nin içinden geçer.'),
+ R('Dengede ayırt edici ne der?',['Her örneğe yaklaşık %50','Her şeye 1','Her şeye 0','Rastgele'],'Ayıramaz.'),
+ R('Dengede D kaybı?',['2·ln 2 ≈ 1,386','0','ln 2','∞'],'−ln 0,5 − ln 0,5.'),
+ R('Dengede G kaybı (−ln D(G(z)))?',['ln 2 ≈ 0,693','0','2·ln 2','1'],'−ln 0,5.'),
+ R('Mod çöküşü nedir?',['Üreticinin verinin bazı bölgelerini hiç üretmemesi, birkaç örneğe yığılması','Ayırt edicinin çökmesi','Kaybın sıfırlanması','Gürültünün bitmesi'],'Çeşitlilik kaybı.'),
+ R('Örnek 1\'de tohum 1 ile tohum 2\'nin farkı (3000. adım)?',['8 küme ↔ 5 küme','Aynı','0 ↔ 8','Tohum fark etmez'],'Kararsızlık.'),
+ R('Örnek 2\'nin dersi?',['Kayıplar dengede olsa bile kalite/çeşitlilik garanti değildir','Kayıp sıfırsa model mükemmeldir','D kaybı yükselirse model bozuldu','Kayıp ölçülmemeli'],'Tohum 2 de dengede.'),
+ R('GAN\'ı kim önerdi?',['Ian Goodfellow ve arkadaşları (2014)','Kingma ve Welling','Vaswani','Hinton'],'Hikâye.'),
+ R('DCGAN\'ın katkısı?',['Konvolüsyonlu, daha kararlı bir eğitim tarifi','Dikkat mekanizması','Tokenizer','VAE'],'2015.'),
+ R('StyleGAN neyle tanındı?',['Fotoğraf gerçekliğinde var olmayan yüzler','Metin üretimi','Çeviri','Ses'],'NVIDIA.'),
+ R('Neden G için −ln D(G(z)) kullanılır?',['Başta D sahteleri kolay tanıdığında da güçlü gradyan versin diye','Daha kısa olduğu için','Zorunlu','Hız için'],'Doymayan kayıp.'),
+ R('Bu sayfadaki eğitimde Adam\'ın β₁ değeri?',['0,5','0,9','0','0,999'],'DCGAN tarifi.'),
+ R('GAN ile VAE\'nin üretim farkı?',['GAN genelde daha keskin, VAE daha bulanık; GAN eğitimi daha kararsız','Aynılar','VAE daha keskin','GAN eğitilmez'],'Kayıp farkı.'),
+ R('Wasserstein GAN neyi amaçladı?',['Daha kararlı gradyanlar','Daha çok mod çöküşü','Metin üretimi','Tokenizasyon'],'2017.'),
+ R('D kaybının yükselmesi ne anlama gelebilir?',['Üreticinin iyileşmesi','Kesin bozulma','Eğitimin bitmesi','Hiçbir şey'],'Oyun.'),
+ R('GAN üretimi neden hızlıdır?',['Tek geçişte üretir','Çok adımlı gürültü giderme','Beam search','RAG'],'Diffusion\'dan farkı.'),
+ R('Süper çözünürlükte ayırt edici neyi öğretir?',['Gerçekçi keskinlik ve ayrıntı','Renk sayısı','Etiket','Sıcaklık'],'Gerçek hayat.'),
+ R('Deepfake tespitinin GAN ile ilişkisi?',['Sahtekâr ↔ polis oyununun gerçek dünyadaki karşılığı','İlişkisi yok','Aynı ağ','Tokenizer'],'Gerçek hayat.'),
+ R('Kümeler arasında kalan noktaların nedeni?',['Sürekli gürültüden sürekli çıktı: kümeler arasında köprü noktalar kalır','Hata','D\'nin hatası','Veri gürültüsü'],'Simülasyon.'),
+ R('Görüntü üretiminde öncülük GAN\'dan sonra neye geçti?',['Diffusion modellerine','RNN\'lere','Karar ağaçlarına','Tokenizer\'lara'],'Sıradaki ders.')
+]})();
