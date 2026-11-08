@@ -2527,7 +2527,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   let tierW=[]; // her tier'deki en geniş kartın genişliği (era-band kenar boşluğu için de kullanılıyor)
   function layout(){
     if(VERT){
-      const mX=108, Wv=680, rowSp=172, topM=150, botM=90;
+      const mX=108, rowSp=172, topM=150, botM=90;
+      // genişlik: en kalabalık satırdaki kartlar (210 birim + 24 boşluk) yan yana sığsın
+      const _cnt={}; NODES.forEach(n=>{_cnt[n.tier]=(_cnt[n.tier]||0)+1});
+      const maxK=Math.max(...Object.values(_cnt));
+      const Wv=Math.max(680, 2*mX+(maxK-1)*234);
       const maxTier=Math.max(...NODES.map(n=>n.tier));
       // Yatay moddaki v-yüzdesini AYNEN kullanırsak dar mobil genişlikte 3 düğümlü
       // bir satırda kartlar üst üste biner (v'ler hesap edilirken 456px'lik dar bir

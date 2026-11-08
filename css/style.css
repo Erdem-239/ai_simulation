@@ -2228,3 +2228,4 @@ body.tt-full{overflow:hidden}
 .nn-hero2 .nn-cap span{font-weight:400;color:#9aa3b6}
 .nn-hero2 svg{width:100%;height:auto}
 @media(max-width:900px){.nn-hero2{grid-template-columns:1fr}}
+#techSvg{display:block;margin-left:auto;margin-right:auto}
