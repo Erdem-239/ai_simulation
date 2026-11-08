@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202611082017"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202611082022"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202611082017">
+<link rel="stylesheet" href="css/style.css?v=202611082022">
 </head>
 <body>
 <div class="applayout">
@@ -23,7 +23,7 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">📚 DERSLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 20:17 TR · #537</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 20:22 TR · #538</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
@@ -53,6 +53,7 @@
       <button class="navbtn" data-model="ft">🎓 İnce Ayar & RLHF</button>
       <button class="navbtn" data-model="rag">📚 RAG — Bilgi Getirerek Üretim</button>
       <button class="navbtn" data-model="agent">🛠️ Ajanlar & Harness</button>
+      <button class="navbtn" data-model="ev">📏 Değerlendirme</button>
       <button class="navbtn" data-model="harita">🧭 Transformer Haritası (Ekstra)</button>
       <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
     </div>
@@ -866,7 +867,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — Tek Hücre</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082017#rnn" target="_blank" rel="noopener">🔁 RNN 3B mimari</a> <span>— zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082022#rnn" target="_blank" rel="noopener">🔁 RNN 3B mimari</a> <span>— zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları</span></div>
     <div class="rsim-weights" id="rcWeightsBox">
     <div id="rcSliderAnchor"></div>
     <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin:0">
@@ -2335,7 +2336,7 @@ for epoch in range(101):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — tek LSTM hücresi: ileri, geri, güncelle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082017#s2s" target="_blank" rel="noopener">➡️ Seq2Seq 3B</a> <span>— bu dersteki LSTM hücresi, 2 katmanlı bir çevirmenin içinde, gerçek ağırlıklarla</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082022#s2s" target="_blank" rel="noopener">➡️ Seq2Seq 3B</a> <span>— bu dersteki LSTM hücresi, 2 katmanlı bir çevirmenin içinde, gerçek ağırlıklarla</span></div>
 <div id="lstmSim">
   <div class="nsim-what">🎯 <b>Bu simülasyon ne?</b> Tek bir LSTM hücresinin <b>bir zaman adımı</b>: girdi <b>x</b>, önceki çıktı <b>h₋₁</b> ve önceki hafıza <b>c₋₁</b> girer; dört kutu (f, i, c̃, o) hesaplanır, yeni hafıza <b>c</b> ve çıktı <b>h</b> çıkar. Bir <b>hedef y</b> veriyoruz: kayıp <b>L = ½(h − y)²</b>. Üç şey yapabilirsin: hücreyi <b>adım adım</b> çalıştır (İleri ▶ / ◀ Geri), 12 ağırlığı <b>elle değiştir</b>, ya da <b>eğit</b> ve hücrenin h'yi hedefe nasıl yaklaştırdığını izle. Birden çok adımın (cümlenin) hâli 6️⃣ Bütün Resim'de, gerçek bir eğitim görevi 7️⃣ Örnek Çalışmalar'da.</div>
   <div class="nsim-wbox" id="lsWBox">
@@ -5959,7 +5960,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — dikkat laboratuvarı</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082017#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a> · <a href="harita/matris-animasyon.html?v=202611082017#temel" target="_blank" rel="noopener">🧱 Matris temelleri</a> <span>— aynı dört adım her kelime 2 sayıyla, elle takip edilir</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611082022#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a> · <a href="harita/matris-animasyon.html?v=202611082022#temel" target="_blank" rel="noopener">🧱 Matris temelleri</a> <span>— aynı dört adım her kelime 2 sayıyla, elle takip edilir</span></div>
 <div class="at-tabs" id="atTabs">
   <button class="addbtn on" data-t="lab">🔬 Dikkat laboratuvarı</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -5978,7 +5979,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div id="atBig"></div>
   <div class="sd-chips"><span>N = 6 encoder + 6 decoder</span><span>d<sub>model</sub> = 512</span><span>h = 8 kafa, d<sub>k</sub> = 64</span><span>FFN 512 → 2048 → 512</span><span>konum: sinüs/kosinüs</span><span>Add &amp; Norm çıkışta</span><span>≈65 milyon ağırlık</span></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611082017#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611082022#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
 
     </div>
   </div>
@@ -6363,7 +6364,7 @@ for d in (4, 16, 64, 256):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — kafalar, blok, konum imzası</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082017#rope" target="_blank" rel="noopener">🌀 RoPE turu</a> · <a href="harita/matris-animasyon.html?v=202611082017#ossturu" target="_blank" rel="noopener">🟢 gpt-oss turu (GQA)</a> · <a href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener">🧩 3B mimari: kafanın içi</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082022#rope" target="_blank" rel="noopener">🌀 RoPE turu</a> · <a href="harita/matris-animasyon.html?v=202611082022#ossturu" target="_blank" rel="noopener">🟢 gpt-oss turu (GQA)</a> · <a href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener">🧩 3B mimari: kafanın içi</a></div>
 <div class="at-tabs" id="mhTabs">
   <button class="addbtn on" data-t="heads">🔬 Üç kafa</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -6384,7 +6385,7 @@ for d in (4, 16, 64, 256):
   <div class="mh-pos"><div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
   <div class="work" id="posWork" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611082017#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611082022#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
 
     </div>
   </div>
@@ -6756,14 +6757,14 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — toplama turu, residual, LayerNorm</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082017" target="_blank" rel="noopener">🎬 GPT-2 turu</a> · <a href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/mimari-3b.html?v=202611082017#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082022" target="_blank" rel="noopener">🎬 GPT-2 turu</a> · <a href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/mimari-3b.html?v=202611082022#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a></div>
 <div class="at-tabs" id="tfTabs">
   <button class="addbtn on" data-t="tour">🎬 Toplama turu: 7 + 5 → 12</button>
   <button class="addbtn" data-t="res">🎚️ Residual derinliği</button>
   <button class="addbtn" data-t="ln">🧮 LayerNorm hesap makinesi</button>
 </div>
 <div class="at-pane" data-p="tour">
-  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611082017" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
+  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611082022" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
   <div id="tfTour"></div>
 </div>
 <div class="at-pane" data-p="res" style="display:none">
@@ -8595,7 +8596,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — okları döndür, benzerliği izle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082017#temel" target="_blank" rel="noopener">🧱 Matris temelleri animasyonu</a> <span>— transpoz, satır × sütun, Q·Kᵀ küçük sayılarla</span></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611082022#temel" target="_blank" rel="noopener">🧱 Matris temelleri animasyonu</a> <span>— transpoz, satır × sütun, Q·Kᵀ küçük sayılarla</span></div>
 <!-- İNTERAKTİF: nokta çarpım oyuncağı -->
   <div class="sechead">1) 🎯 Oyuncak: okları döndür, benzerliği izle</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
@@ -8756,27 +8757,27 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <h3>🗣️ 1 · Oku</h3>
     <p class="hr-cat-d">Adım adım, sayılarla ve düz dille.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611082017" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611082017" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611082017" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611082017" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611082022" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611082022" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611082022" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611082022" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g2">
     <h3>🏛️ 2 · Gez</h3>
     <p class="hr-cat-d">Mimarileri parçala, kutulara tıkla.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082017#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082017#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082017#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611082017" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082022#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082022#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611082022#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611082022" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g3">
     <h3>🎬 3 · İzle</h3>
     <p class="hr-cat-d">Video gibi oynayan turlar.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082017" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082017#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082017#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082017#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082022" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082022#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082022#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611082022#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
     </div>
   </div>
   </div>
-  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611082017" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
+  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611082022" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
   <p class="hr-note">⚠️ Minik GPT sayfalarındaki sayılar sabit bir kayıttır (tohum 1, «7+5=»); GPT-2, gpt-oss ve diğer büyük modellerde şekiller gerçek, renkli hücreler şematiktir.</p>
 
   </div>
@@ -8861,7 +8862,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — üç modeli aynı metinle eğit, üret; minik GPT'nin şeması</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
-<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/adim-adim.html?v=202611082017" target="_blank" rel="noopener">🔦 Minik GPT adım adım</a> · <a href="harita/epoch.html?v=202611082017" target="_blank" rel="noopener">📒 Eğitim günlüğü</a> · <a href="harita/mimari-3b.html?v=202611082017" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/gpt2-adim-adim.html?v=202611082017" target="_blank" rel="noopener">🧠 GPT-2 adım adım</a></div>
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/adim-adim.html?v=202611082022" target="_blank" rel="noopener">🔦 Minik GPT adım adım</a> · <a href="harita/epoch.html?v=202611082022" target="_blank" rel="noopener">📒 Eğitim günlüğü</a> · <a href="harita/mimari-3b.html?v=202611082022" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/gpt2-adim-adim.html?v=202611082022" target="_blank" rel="noopener">🧠 GPT-2 adım adım</a></div>
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🔬 Aşağıda üç model <b>aynı metinden</b> öğreniyor. Önce yukarıdaki başlangıç kutusuna bir şey yaz ya da düğmelerden seç. Denenecekler: (1) sayma modelinde bağlam uzunluğunu 1'den 10'a çıkar, çıktıların nasıl düzeldiğini izle; (2) sinir ağını eğit ve kaybın düşmesiyle çıktıların <b>rastgele harflerden</b> cevaplara dönüşmesini gör; (3) <b>görmediği toplamları</b> ve <b>hiç görmediği soruları</b> (selam&gt;, nasılsınız&gt;) dene (4) <b>Minik GPT</b>'yi eğit (≈30 sn, ▶ eğit) ve altındaki <b>mimari şemasında</b> "7+5=" için dikkatin iki rakama kaymasını izle; <b>İleri ▶</b> ile adım adım ilerle.</p>
   <div id="gtApp"></div>
   <div class="callout" style="margin-top:10px">📉 <b>Kayıp neden sıfıra inmiyor (≈0,56)?</b> Modele her karakteri tahmin ettiriyoruz, soruların kendisini de. Hangi sorunun hangi sırayla geleceği metinde rastgele; bunu kimse tahmin edemez. Cevap kısımları ve toplamlar ise tamamen belirli, onlar kayıp 0'a yaklaşır. Kalan 0,56 "tahmin edilemeyen" kısımdan geliyor, yani ağ bozuk değil.</div>
@@ -11624,6 +11625,195 @@ for s in (2, 6):
   <p class="footer">Ajanlar &amp; harness • araç çağrısı · döngü · bağlam yönetimi · adım sınırı · istem enjeksiyonu</p>
   </div><!-- /model-agent -->
 
+  <!-- ===================== 📏 DEĞERLENDİRME ===================== -->
+  <div class="model" id="model-ev">
+
+  <div class="tpl-cl" data-stage="1">
+    <div class="tpl-head"><span>1️⃣ Giriş — Görsel &amp; Kısa Açıklama</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
+  <svg class="lesson-hero-svg" viewBox="0 0 760 190" role="img" aria-label="İki modelin puanı ve güven aralıkları">
+    <rect width="760" height="190" fill="#0d1426"/>
+    <text x="380" y="26" text-anchor="middle" font-size="14" fill="#fff">"B modeli A'dan 3 puan iyi!" — gerçekten mi?</text>
+    <g font-size="12">
+      <text x="30" y="70" fill="#5aa0ff">A · 50 soru</text><line x1="160" x2="560" y1="65" y2="65" stroke="#1f2a46" stroke-width="2"/><line x1="398" x2="498" y1="65" y2="65" stroke="#5aa0ff" stroke-width="8" opacity=".45"/><circle cx="448" cy="65" r="6" fill="#5aa0ff"/>
+      <text x="30" y="100" fill="#f0a032">B · 50 soru</text><line x1="160" x2="560" y1="95" y2="95" stroke="#1f2a46" stroke-width="2"/><line x1="412" x2="508" y1="95" y2="95" stroke="#f0a032" stroke-width="8" opacity=".45"/><circle cx="460" cy="95" r="6" fill="#f0a032"/>
+      <text x="30" y="140" fill="#5aa0ff">A · 5.000 soru</text><line x1="160" x2="560" y1="135" y2="135" stroke="#1f2a46" stroke-width="2"/><line x1="443" x2="453" y1="135" y2="135" stroke="#5aa0ff" stroke-width="8" opacity=".45"/><circle cx="448" cy="135" r="6" fill="#5aa0ff"/>
+      <text x="30" y="170" fill="#f0a032">B · 5.000 soru</text><line x1="160" x2="560" y1="165" y2="165" stroke="#1f2a46" stroke-width="2"/><line x1="455" x2="465" y1="165" y2="165" stroke="#f0a032" stroke-width="8" opacity=".45"/><circle cx="460" cy="165" r="6" fill="#f0a032"/>
+      <text x="580" y="85" fill="#e06a6a">aralıklar üst üste:</text><text x="580" y="101" fill="#e06a6a">ayırt edilemez</text>
+      <text x="160" y="186" font-size="10" fill="#95a2c2">%0 ←  çizgi  → %100 · A %72, B %75 · aralıklar ±1,96·√(o(1−o)/n)</text><text x="580" y="155" fill="#46c46a">aralıklar ayrık:</text><text x="580" y="171" fill="#46c46a">fark gerçek</text>
+    </g>
+  </svg>
+  <h1>📏 Değerlendirme — "bu model daha iyi" ne demek?</h1>
+  <p class="sub">Yeni bir model çıktığında bir tablo görürüz: "şu sınavda %72, öbüründe %75". Bu derste o sayıların ne kadar güvenilir olduğunu ölçüyoruz: kaç soruyla ölçüldü (<b>güven aralığı</b>), iki model gerçekten farklı mı yoksa <b>şans</b> mı, sorular eğitime <b>sızmış</b> mı, ve cevabı tek doğrusu olmayan işler nasıl puanlanıyor (insan tercihi, modelle hakemlik, pass@k).</p>
+  <div class="callout">🔗 <b>Kaldığımız yer:</b> Aşırı Öğrenme dersinde doğrulama ve test setlerini, Ajanlar dersinde "başarıyı yalnız son cevapla ölçmek yetmez" notunu gördük. Bu ders, ölçmenin kendisinin de bir belirsizlik taşıdığını gösteriyor.</div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="2">
+    <div class="tpl-head"><span>2️⃣ Hikâye</span><span class="chev">▸</span></div>
+    <div class="tpl-body">
+    <div class="pts lesson-story">
+      <div class="lesson-story-h">💡 HİKÂYE — Sınavı geçen, sınavı ezberleyen</div>
+      <p>Makine öğrenmesi alanı uzun süre ortak sınavlarla ilerledi: herkes aynı test setinde puanını açıklar, tablo güncellenir. 2018'de anlama testlerini bir araya getiren GLUE çıktı; bir yıl içinde modeller insan seviyesine yaklaşınca daha zor SuperGLUE geldi. 2020'de <b>Dan Hendrycks</b> ve arkadaşları 57 konudan çoktan seçmeli sorular içeren <b>MMLU</b>'yu yayımladı; 2021'de OpenAI kod üreten modeller için <b>HumanEval</b>'i ve "k denemede en az biri doğru mu?" ölçüsü <b>pass@k</b>'yı tanıttı.</p>
+      <p>İki sorun sürekli geri geldi. Birincisi <b>doygunluk</b>: modeller bir sınavı kısa sürede bitiriyor, yenisi gerekiyor. İkincisi <b>sızıntı</b>: internetten toplanan eğitim verisine test soruları da karışabiliyor. Açık uçlu sohbet için ise 2023'te <b>Chatbot Arena</b> gibi platformlar insanların iki cevaptan birini seçtiği karşılaştırmaları toplamaya başladı; büyük modellerin başka modelleri puanladığı "modelle hakemlik" de yaygınlaştı.</p>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-ev" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Keşif Defteri'nde genişlet</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>3️⃣ Gerçek Hayatta Nerede</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="lesson-examples">
+      <div class="lesson-ex-h">🌍 GERÇEK HAYATTA NEREDE KARŞINA ÇIKIYOR?</div>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-ico">🏆</span><b>Model duyuruları</b> — her yeni model bir puan tablosuyla gelir; tablonun kaç soruyla, hangi ayarla (kaç deneme, hangi istem) ölçüldüğü sonucu değiştirebilir.</div>
+        <div class="ex-card"><span class="ex-ico">🕳️</span><b>Sızıntı kontrolü</b> — test sorularının eğitim verisinde geçip geçmediği aranır; bazı sınavlar bu yüzden gizli tutulur ya da sürekli yenilenir.</div>
+        <div class="ex-card"><span class="ex-ico">⚖️</span><b>İnsan tercihi</b> — iki cevabı yan yana gösterip "hangisi daha iyi?" diye sormak, açık uçlu görevlerde en yaygın ölçülerden biri.</div>
+        <div class="ex-card"><span class="ex-ico">🤖</span><b>Modelle hakemlik</b> — büyük bir model cevapları puanlar: ucuz ve hızlı, ama ilk gösterilen cevabı ya da uzun cevabı kayırma gibi bilinen eğilimleri var.</div>
+        <div class="ex-card"><span class="ex-ico">🏢</span><b>Kendi değerlendirme setin</b> — bir şirket kendi işine benzeyen birkaç yüz örnekle ölçmeden model seçmemeli: genel tablolar senin işini temsil etmeyebilir.</div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="4">
+    <div class="tpl-head closed"><span>4️⃣ Nedir &amp; Nasıl Çalışır — tek bakışta</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="nl-hap">
+      <div class="nl-card"><h4>📝 1) Benchmark</h4>Sabit bir soru seti + puanlama kuralı: çoktan seçmeli (doğru şık mı?), tam eşleşme, kod için testleri geçti mi. Sonuç tek bir oran: <b>doğru ÷ soru</b>. Aynı ayar (istem, örnek sayısı, sıcaklık) kullanılmazsa iki puan karşılaştırılamaz.</div>
+      <div class="nl-card"><h4>📐 2) Güven aralığı</h4>n soruda ölçülen oran o ise yaklaşık %95 aralık:<div class="f">o ± 1,96 · √( o·(1−o) / n )</div>Belirsizlik ~1/√n küçülür: 4 kat soru → yarı belirsizlik. İki modelin aralıkları üst üste biniyorsa sınav onları ayıramıyor.</div>
+      <div class="nl-card"><h4>🕳️ 3) Sızıntı ve doygunluk</h4>Soru eğitim verisinde varsa puan <b>ezberi</b> ölçer. Bir sınav "dolunca" (herkes ~%90+) yeni, daha zor bir sınav gerekir. Çözümler: gizli sorular, eğitimden sonra yazılmış sorular, soruları yeniden yazmak.</div>
+      <div class="nl-card"><h4>⚖️ 4) Tek doğrusu olmayan işler</h4><ul><li><b>İnsan tercihi</b>: iki cevaptan hangisi iyi (Elo benzeri puan)</li><li><b>Modelle hakemlik</b>: hızlı, ama sıra ve uzunluk kayırması var</li><li><b>pass@k</b>: k denemeden en az biri doğru mu (kod)</li></ul></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="5">
+    <div class="tpl-head closed"><span>5️⃣ Simülasyon — iki modeli sınava sok</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div id="evSim">
+      <div class="nl-ctl"><label>A'nın gerçek başarısı <input type="range" id="evA" min="50" max="95" value="72"> <b id="evAv">%72</b></label><label>B'nin gerçek başarısı <input type="range" id="evB" min="50" max="95" value="75"> <b id="evBv">%75</b></label></div>
+      <div class="nl-ctl"><label>soru sayısı n <input type="range" id="evN" min="0" max="8" value="2"> <b id="evNv">50</b></label><label>tohum <input type="number" id="evSeed" value="1" min="1" max="999" style="width:60px"></label><button class="rex-btn" id="evRun">▶ sınavı yap</button><button class="rex-btn" id="evRep">⏩ 200 kez tekrarla</button></div>
+      <div class="nl-grid">
+        <div><div id="evSvg"></div><div class="nl-legend"><span>● ölçülen oran</span><span>▬ %95 güven aralığı</span><span>┆ gerçek başarı</span></div></div>
+        <div class="nl-teach">
+          <div class="t-goal"><b class="h">🎯 Ne yapıyoruz?</b>İki modelin gerçek başarısını biz belirliyoruz (normalde kimse bilmez). Her soruda model gerçek başarısı olasılığıyla doğru cevap veriyor (tohumlu zar). Sınav küçükse ölçülen puan gerçeğinden ne kadar sapıyor, iki model ayırt edilebiliyor mu — onu görüyoruz.</div>
+          <div class="t-step" id="evStep"></div>
+          <div class="t-soz" id="evSoz"></div>
+          <div class="t-warn"><b class="h">⚠️ Sık karışan</b>
+            • "%75 &gt; %72" tek başına "B daha iyi" demek değil; aralıklara bak.<br>
+            • Güven aralığı soruların <b>rastgele</b> seçildiğini varsayar; sızan ya da taraflı sorular bu hesabın dışında kalır.<br>
+            • Aynı soru setinde çok deneme yapıp en iyisini raporlamak da bir tür aşırı uyumdur.<br>
+            • Benchmark puanı senin işindeki başarıyı garanti etmez.</div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="x">
+    <div class="tpl-head closed"><span>➕ Ekstra / Derinleşme — pass@k, modelle hakemlik, Elo</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+    <div class="pts">
+      <h3>🧪 pass@k (kod sınavları)</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Model her soru için n kez kod üretir, c tanesi testleri geçer. "k denemede en az biri geçer" olasılığının yansız tahmini: <code>1 − C(n−c, k) / C(n, k)</code> (Chen ve arkadaşları, 2021).</p>
+      <div id="evPass"></div>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Aynı model pass@1'de %30, pass@5'te %92: hangi k ile ölçüldüğü yazmayan bir puan anlamsızdır.</p>
+      <h3>⚖️ Modelle hakemlik ve eğilimleri</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Büyük bir model iki cevabı karşılaştırıp puanlayabilir; insan değerlendirmesiyle çoğu zaman uyumlu ama bilinen eğilimleri var: <b>sıra</b> (ilk ya da ikinci gösterileni kayırma), <b>uzunluk</b> (uzun cevabı iyi sanma), <b>kendini kayırma</b>. Yaygın önlemler: cevapların sırasını değiştirip iki kez sormak, puanlama ölçütünü açıkça yazmak, bir kısmını insanla kontrol etmek. (Bu sayfada ölçmedik; bilgi notu.)</p>
+      <h3>♟️ Elo ve insan tercihi</h3>
+      <p style="font-size:13.5px; color:#ccd5e8; line-height:1.7">Satrançtaki Elo puanı gibi: iki model karşılaştırılır, kazanan puan alır, kaybeden verir; beklenmedik zafer daha çok puan getirir. Binlerce insan oyu toplanınca modeller tek bir ölçekte sıralanır — yine bir güven aralığıyla.</p>
+    </div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="3">
+    <div class="tpl-head closed"><span>6️⃣ Örnek Çalışmalar — ölçmeyi ölç</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+<p style="font-size:14px; color:#ccd5e8; line-height:1.7">Üç örnek; her soruda model gerçek başarısı olasılığıyla doğru yapıyor (tohumlu zar). En alttaki Python kodu aynı sayıları üretir.</p>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 1 — Kaç soru yeter?</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> Gerçek başarı %72. 20, 100, 500, 2.000 soruluk sınavlar ne ölçüyor ve güven aralığı gerçekten %95 tutuyor mu?</p><div id="evEx1"></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 2 — 3 puanlık farkı görmek</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> A %72, B %75. Kaç soruluk sınavda B, A'dan güvenle yüksek ölçülür?</p><div id="evEx2"></div></div></div>
+<div class="pts"><h3 class="sahne-head closed"><span>Örnek 3 — Eğitime sızan sorular</span><span class="chev">▸</span></h3><div class="sahne-body closed"><p style="font-size:14px; color:#ccd5e8; line-height:1.7">🎯 <b>Problem:</b> 200 soruluk sınavın 60'ı eğitim verisinde vardı ve ezberlendi (%98). Modelin gerçek becerisi %60. Sınav ne gösterir?</p><div id="evEx3"></div><div class="acc"><div class="acc-head"><span class="ac">▸</span> 🐍 Üç örnek Python'da (kütüphanesiz)</div><div class="acc-body"><pre class="nl-code">import math
+# ---- değerlendirme: bir sınavdaki doğruluk ne kadar güvenilir? (tohumlu zar) ----
+def lcg(tohum):
+    s = [tohum]
+    def u():
+        s[0] = (s[0] * 1664525 + 1013904223) % 4294967296
+        return s[0] / 4294967296
+    return u
+def sinav(p, n, u):                            # gerçek başarısı p olan model n soruda kaç doğru yapar?
+    d = 0
+    for _ in range(n):
+        if u() &lt; p: d += 1
+    return d
+def aralik(d, n):                              # %95 güven aralığı (normal yaklaşım): oran ± 1,96·√(o(1−o)/n)
+    o = d / n; e = 1.96 * math.sqrt(o * (1 - o) / n); return o, max(0.0, o - e), min(1.0, o + e)
+def gecme(n, c, k):                            # pass@k: n denemenin c&#x27;si doğruysa, k deneme içinde en az bir doğru olasılığı
+    if n - c &lt; k: return 1.0
+    return 1 - math.comb(n - c, k) / math.comb(n, k)
+
+print(&quot;Örnek 1 — gerçek başarı %72; soru sayısı n büyüdükçe ölçüm (tohum 7) ve 1000 tekrarda aralığın gerçeği içermesi:&quot;)
+for n in (20, 100, 500, 2000):
+    u = lcg(7); d = sinav(0.72, n, u); o, a, b = aralik(d, n)
+    u = lcg(100 + n); ic = 0
+    for _ in range(1000):
+        o2, a2, b2 = aralik(sinav(0.72, n, u), n); ic += a2 &lt;= 0.72 &lt;= b2
+    print(f&quot;  n={n:5d}: ölçülen %{o*100:.1f}  aralık [%{a*100:.1f}, %{b*100:.1f}]  gerçeği içerme %{ic/10:.1f}&quot;)
+print(&quot;Örnek 2 — A (%72) ile B (%75): 500 tekrarda B&#x27;nin A&#x27;dan YÜKSEK ölçülme oranı:&quot;)
+for n in (50, 200, 1000, 5000):
+    u = lcg(n); b_ust = 0
+    for _ in range(500):
+        b_ust += sinav(0.75, n, u) &gt; sinav(0.72, n, u)
+    print(f&quot;  n={n:5d}: B &gt; A  %{b_ust/5:.1f}&quot;)
+print(&quot;Örnek 3 — sızıntı: 200 soru, %30&#x27;u eğitimde görülmüş (ezber %98), gerçek beceri %60:&quot;)
+u = lcg(3); sz = gor = 0; t = 0
+for i in range(200):
+    sizdi = i &lt; 60
+    dogru = u() &lt; (0.98 if sizdi else 0.60)
+    t += dogru; sz += dogru and sizdi; gor += dogru and not sizdi
+print(f&quot;  bütün sınav %{t/2:.1f}   sızan 60 soru %{sz/60*100:.1f}   temiz 140 soru %{gor/140*100:.1f}&quot;)
+print(&quot;Ek — pass@k (10 denemenin 3&#x27;ü doğru):&quot;, [round(gecme(10, 3, k), 4) for k in (1, 3, 5, 10)])
+
+# ---- çıktı ----
+# Örnek 1 — gerçek başarı %72; soru sayısı n büyüdükçe ölçüm (tohum 7) ve 1000 tekrarda aralığın gerçeği içermesi:
+#   n=   20: ölçülen %60.0  aralık [%38.5, %81.5]  gerçeği içerme %92.8
+#   n=  100: ölçülen %72.0  aralık [%63.2, %80.8]  gerçeği içerme %93.3
+#   n=  500: ölçülen %71.4  aralık [%67.4, %75.4]  gerçeği içerme %95.4
+#   n= 2000: ölçülen %73.4  aralık [%71.4, %75.3]  gerçeği içerme %96.2
+# Örnek 2 — A (%72) ile B (%75): 500 tekrarda B&#x27;nin A&#x27;dan YÜKSEK ölçülme oranı:
+#   n=   50: B &gt; A  %60.0
+#   n=  200: B &gt; A  %75.6
+#   n= 1000: B &gt; A  %94.4
+#   n= 5000: B &gt; A  %100.0
+# Örnek 3 — sızıntı: 200 soru, %30&#x27;u eğitimde görülmüş (ezber %98), gerçek beceri %60:
+#   bütün sınav %71.0   sızan 60 soru %98.3   temiz 140 soru %59.3
+# Ek — pass@k (10 denemenin 3&#x27;ü doğru): [0.3, 0.7083, 0.9167, 1.0]
+</pre></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="tpl-cl" data-stage="6">
+    <div class="tpl-head closed"><span>7️⃣ Kendini Test Et</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed">
+  <div class="pts">
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Önce kendi cümlenle cevapla, sonra aç-kapat ile kontrol et.</div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 1: 50 soruda %72 ölçülen bir modelin %95 güven aralığı yaklaşık nedir?</div><div class="acc-body">±1,96·√(0,72·0,28/50) ≈ ±12 puan: yaklaşık %60–%84. Tek bir sayı ("%72") bu belirsizliği gizler.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 2: Soru sayısını 4 katına çıkarmak belirsizliği nasıl etkiler?</div><div class="acc-body">Aralık genişliği 1/√n ile küçüldüğü için yarıya iner.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 3: Örnek 2'de 50 soruluk sınav neden B'yi her zaman A'dan yüksek göstermedi?</div><div class="acc-body">3 puanlık gerçek fark, 50 soruda ±12 puanlık ölçüm belirsizliğinin içinde kalıyor; şans sıralamayı sık sık değiştiriyor (B &gt; A yalnız %60).</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 4: Sızıntı puanı neden şişirir, nasıl kontrol edilir?</div><div class="acc-body">Eğitimde görülen sorular ezberlenir; puan beceriyi değil hatırlamayı ölçer. Eğitim verisinde aynı metni aramak, soruları yeniden yazmak, gizli ya da sonradan yazılmış sorular kullanmak.</div></div>
+    <div class="acc acc-soru"><div class="acc-head"><span class="ac">▸</span> Soru 5: Modelle hakemliğin bilinen eğilimleri ve önlemleri nelerdir?</div><div class="acc-body">Sıra, uzunluk ve kendini kayırma. Önlemler: sırayı değiştirip iki kez sormak, ölçütü açıkça yazmak, bir kısmını insanla doğrulamak.</div></div>
+  </div>
+    </div>
+  </div>
+<div class="tpl-cl" data-stage="q">
+    <div class="tpl-head closed"><span>8️⃣ 🏁 Bitirme Testi</span><span class="chev">▸</span></div>
+    <div class="tpl-body closed"><div class="quiz-mount" data-quiz="ev"></div></div>
+</div>
+
+  <p class="footer">Değerlendirme • benchmark · güven aralığı · sızıntı · pass@k · insan tercihi · modelle hakemlik</p>
+  </div><!-- /model-ev -->
+
   <div class="model active" id="model-yol">
 
   <h1>🗺️ Yol Haritası — sayılardan Transformer'a</h1>
@@ -12214,6 +12404,28 @@ for s in (2, 6):
     <div class="ped-links"><button class="addbtn" data-ped-tree="agent" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="agent" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
   </div>
 
+    <div class="sechead" id="pedia-ev">📏 Değerlendirme — Ölçmenin Belirsizliği</div>
+  <div class="pts pedia-art">
+    <p class="ped-hook">🏆 "%72'ye karşı %75" — puan tablolarındaki bu farkın gerçek mi şans mı olduğunu, sınavın kaç soruyla yapıldığını bilmeden söyleyemezsin.</p>
+    <div class="ped-h">👤 Kâşifler</div>
+    <div class="ped-people">
+      <div class="ped-card"><div class="ped-ava">JN</div><div><b>Jerzy Neyman</b><br><span>1894–1981 · Polonyalı-Amerikalı</span><br><i>Güven aralığı (1937)</i></div></div>
+      <div class="ped-card"><div class="ped-ava">DH</div><div><b>Dan Hendrycks</b><br><span>Amerikalı araştırmacı</span><br><i>MMLU (2020)</i></div></div>
+      <div class="ped-card"><div class="ped-ava">MC</div><div><b>Mark Chen</b><br><span>OpenAI</span><br><i>HumanEval, pass@k (2021)</i></div></div>
+    </div>
+    <div class="ped-h">💡 Keşif hikâyesi</div>
+    <p>Neyman'ın güven aralığı, bir ölçümün ne kadar belirsiz olduğunu söylemenin standart dilini kurdu. Yapay zekâda ortak sınavlar (GLUE, MMLU, HumanEval) ilerlemeyi ölçtü ama her biri hızla doydu ve sızıntı riski taşıdı. Açık uçlu sohbet için insan tercihi platformları ve modelle hakemlik yaygınlaştı.</p>
+    <div class="ped-h">🌍 Gerçek dünyada</div>
+    <ul>
+      <li><b>🏆 Model duyuruları:</b> puan tabloları — ayarlarıyla birlikte okunmalı.</li>
+      <li><b>🕳️ Sızıntı:</b> test sorularının eğitim verisinde aranması.</li>
+      <li><b>⚖️ İnsan oyları:</b> Elo benzeri sıralamalar.</li>
+    </ul>
+    <div class="ped-h">📄 Ateşlediği çalışmalar</div>
+    <p>GLUE/SuperGLUE, MMLU, HumanEval, Chatbot Arena, modelle hakemlik çalışmaları, sızıntı tespit yöntemleri.</p>
+    <div class="ped-links"><button class="addbtn" data-ped-tree="ev" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button> <button class="addbtn" data-ped-tab="ev" style="background:var(--blue); color:#fff">📄 Sayfada çalış →</button></div>
+  </div>
+
   <div class="sechead" id="pedia-paper">📜 Attention Is All You Need — Kurucu Metin</div>
   <div class="pts pedia-art">
     <p class="ped-hook">🌌 Bilim tarihinde birkaç metin "öncesi ve sonrası" diye anılır: Principia, Türlerin Kökeni, Shannon'ın bilgi kuramı... Yapay zekâ için o metin 2017'de yazıldı, 15 sayfa sürdü ve adı bir Beatles şarkısına göz kırptı. <b>Senin bilim zaferin, bu metni ana dilin gibi okumak.</b></p>
@@ -12269,85 +12481,86 @@ for s in (2, 6):
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202611082017"></script>
-<script src="js/lesson-turev.js?v=202611082017"></script>
-<script src="js/lesson-xor.js?v=202611082017"></script>
-<script src="js/lesson-xor-arch.js?v=202611082017"></script>
-<script src="js/lesson-xor-maps.js?v=202611082017"></script>
-<script src="js/lesson-xor-epoch.js?v=202611082017"></script>
-<script src="js/lesson-nn.js?v=202611082017"></script>
-<script src="js/lesson-trig.js?v=202611082017"></script>
+<script src="js/lesson-linreg.js?v=202611082022"></script>
+<script src="js/lesson-turev.js?v=202611082022"></script>
+<script src="js/lesson-xor.js?v=202611082022"></script>
+<script src="js/lesson-xor-arch.js?v=202611082022"></script>
+<script src="js/lesson-xor-maps.js?v=202611082022"></script>
+<script src="js/lesson-xor-epoch.js?v=202611082022"></script>
+<script src="js/lesson-nn.js?v=202611082022"></script>
+<script src="js/lesson-trig.js?v=202611082022"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202611082017"></script>
-<script src="js/lesson-rnn-soz.js?v=202611082017"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202611082022"></script>
+<script src="js/lesson-rnn-soz.js?v=202611082022"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202611082017"></script>
-<script src="js/lesson-lstm-cell.js?v=202611082017"></script>
-<script src="js/app.js?v=202611082017"></script>
-<script src="js/lesson-opt.js?v=202611082017"></script>
-<script src="js/lesson-ovf.js?v=202611082017"></script>
-<script src="js/lesson-tok.js?v=202611082017"></script>
-<script src="js/lesson-gen.js?v=202611082017"></script>
-<script src="js/lesson-ft.js?v=202611082017"></script>
-<script src="js/lesson-bg.js?v=202611082017"></script>
-<script src="js/lesson-paper.js?v=202611082017"></script>
-<script src="js/lesson-rag.js?v=202611082017"></script>
-<script src="js/lesson-agent.js?v=202611082017"></script>
-<script src="js/quiz-data.js?v=202611082017"></script>
-<script src="js/quiz.js?v=202611082017"></script>
-<script src="js/lesson-rnn-wbar.js?v=202611082017"></script>
-<script src="js/lesson-lstm-big.js?v=202611082017"></script>
-<script src="js/lesson-lstm-step.js?v=202611082017"></script>
-<script src="js/lesson-lstm-sim.js?v=202611082017"></script>
-<script src="js/lesson-lstm-size.js?v=202611082017"></script>
-<script src="js/lesson-lstm-m2o.js?v=202611082017"></script>
-<script src="js/lesson-emb-kullan.js?v=202611082017"></script>
-<script src="js/lesson-emb-draco.js?v=202611082017"></script>
-<script src="js/lesson-emb-arch.js?v=202611082017"></script>
-<script src="js/lesson-emb-extra.js?v=202611082017"></script>
-<script src="js/lesson-s2s-weights.js?v=202611082017"></script>
-<script src="js/lesson-s2s-add.js?v=202611082017"></script>
-<script src="js/lesson-s2s-inside.js?v=202611082017"></script>
-<script src="js/lesson-s2s-desen.js?v=202611082017"></script>
-<script src="js/lesson-s2s-anim.js?v=202611082017"></script>
-<script src="js/lesson-att-train.js?v=202611082017"></script>
-<script src="js/lesson-att-extra.js?v=202611082017"></script>
-<script src="js/lesson-att-sim.js?v=202611082017"></script>
-<script src="js/lesson-att-ornek.js?v=202611082017"></script>
-<script src="js/lesson-mh-big.js?v=202611082017"></script>
-<script src="js/lesson-mh-blk.js?v=202611082017"></script>
-<script src="js/lesson-mh-ornek.js?v=202611082017"></script>
-<script src="js/lesson-tf-big.js?v=202611082017"></script>
-<script src="js/lesson-tf-weights.js?v=202611082017"></script>
-<script src="js/lesson-tf-tour.js?v=202611082017"></script>
-<script src="js/lesson-tf-ornek.js?v=202611082017"></script>
-<script src="js/lesson-gpt-tiny.js?v=202611082017"></script>
-<script src="js/lesson-gpt-big.js?v=202611082017"></script>
-<script src="js/lesson-gpt-ornek.js?v=202611082017"></script>
-<script src="js/lesson-rnn-van.js?v=202611082017"></script>
-<script src="js/lesson-s2s-extra.js?v=202611082017"></script>
-<script src="js/lesson-s2s-ornek.js?v=202611082017"></script>
-<script src="js/lesson-emb-ornek.js?v=202611082017"></script>
-<script src="js/lesson-emb-steps.js?v=202611082017"></script>
-<script src="js/lesson-emb-big.js?v=202611082017"></script>
-<script src="js/lesson-sm-ornek.js?v=202611082017"></script>
-<script src="js/lesson-sm-big.js?v=202611082017"></script>
-<script src="js/lesson-sm-akt.js?v=202611082017"></script>
-<script src="js/lesson-lstm-unroll.js?v=202611082017"></script>
-<script src="js/lesson-lstm-seq.js?v=202611082017"></script>
-<script src="js/lesson-lstm-gate.js?v=202611082017"></script>
-<script src="js/lesson-lstm-ornek.js?v=202611082017"></script>
-<script src="js/lesson-gpt.js?v=202611082017"></script>
-<script src="js/lesson-gpt-mini.js?v=202611082017"></script>
-<script src="js/lesson-vektor-ornek.js?v=202611082017"></script>
-<script src="js/lesson-linreg-big.js?v=202611082017"></script>
-<script src="js/lesson-linreg-ornek.js?v=202611082017"></script>
-<script src="js/lesson-act-big.js?v=202611082017"></script>
-<script src="js/lesson-act-ornek.js?v=202611082017"></script>
-<script src="js/lesson-xor-ornek.js?v=202611082017"></script>
-<script src="js/lesson-nn-ornek.js?v=202611082017"></script>
-<script src="js/lesson-nn-net.js?v=202611082017"></script>
-<script src="js/lesson-nn-sim.js?v=202611082017"></script>
-<script src="js/lesson-nn-big.js?v=202611082017"></script>
+<script src="js/lesson-rnn-ornek.js?v=202611082022"></script>
+<script src="js/lesson-lstm-cell.js?v=202611082022"></script>
+<script src="js/app.js?v=202611082022"></script>
+<script src="js/lesson-opt.js?v=202611082022"></script>
+<script src="js/lesson-ovf.js?v=202611082022"></script>
+<script src="js/lesson-tok.js?v=202611082022"></script>
+<script src="js/lesson-gen.js?v=202611082022"></script>
+<script src="js/lesson-ft.js?v=202611082022"></script>
+<script src="js/lesson-bg.js?v=202611082022"></script>
+<script src="js/lesson-paper.js?v=202611082022"></script>
+<script src="js/lesson-rag.js?v=202611082022"></script>
+<script src="js/lesson-agent.js?v=202611082022"></script>
+<script src="js/lesson-ev.js?v=202611082022"></script>
+<script src="js/quiz-data.js?v=202611082022"></script>
+<script src="js/quiz.js?v=202611082022"></script>
+<script src="js/lesson-rnn-wbar.js?v=202611082022"></script>
+<script src="js/lesson-lstm-big.js?v=202611082022"></script>
+<script src="js/lesson-lstm-step.js?v=202611082022"></script>
+<script src="js/lesson-lstm-sim.js?v=202611082022"></script>
+<script src="js/lesson-lstm-size.js?v=202611082022"></script>
+<script src="js/lesson-lstm-m2o.js?v=202611082022"></script>
+<script src="js/lesson-emb-kullan.js?v=202611082022"></script>
+<script src="js/lesson-emb-draco.js?v=202611082022"></script>
+<script src="js/lesson-emb-arch.js?v=202611082022"></script>
+<script src="js/lesson-emb-extra.js?v=202611082022"></script>
+<script src="js/lesson-s2s-weights.js?v=202611082022"></script>
+<script src="js/lesson-s2s-add.js?v=202611082022"></script>
+<script src="js/lesson-s2s-inside.js?v=202611082022"></script>
+<script src="js/lesson-s2s-desen.js?v=202611082022"></script>
+<script src="js/lesson-s2s-anim.js?v=202611082022"></script>
+<script src="js/lesson-att-train.js?v=202611082022"></script>
+<script src="js/lesson-att-extra.js?v=202611082022"></script>
+<script src="js/lesson-att-sim.js?v=202611082022"></script>
+<script src="js/lesson-att-ornek.js?v=202611082022"></script>
+<script src="js/lesson-mh-big.js?v=202611082022"></script>
+<script src="js/lesson-mh-blk.js?v=202611082022"></script>
+<script src="js/lesson-mh-ornek.js?v=202611082022"></script>
+<script src="js/lesson-tf-big.js?v=202611082022"></script>
+<script src="js/lesson-tf-weights.js?v=202611082022"></script>
+<script src="js/lesson-tf-tour.js?v=202611082022"></script>
+<script src="js/lesson-tf-ornek.js?v=202611082022"></script>
+<script src="js/lesson-gpt-tiny.js?v=202611082022"></script>
+<script src="js/lesson-gpt-big.js?v=202611082022"></script>
+<script src="js/lesson-gpt-ornek.js?v=202611082022"></script>
+<script src="js/lesson-rnn-van.js?v=202611082022"></script>
+<script src="js/lesson-s2s-extra.js?v=202611082022"></script>
+<script src="js/lesson-s2s-ornek.js?v=202611082022"></script>
+<script src="js/lesson-emb-ornek.js?v=202611082022"></script>
+<script src="js/lesson-emb-steps.js?v=202611082022"></script>
+<script src="js/lesson-emb-big.js?v=202611082022"></script>
+<script src="js/lesson-sm-ornek.js?v=202611082022"></script>
+<script src="js/lesson-sm-big.js?v=202611082022"></script>
+<script src="js/lesson-sm-akt.js?v=202611082022"></script>
+<script src="js/lesson-lstm-unroll.js?v=202611082022"></script>
+<script src="js/lesson-lstm-seq.js?v=202611082022"></script>
+<script src="js/lesson-lstm-gate.js?v=202611082022"></script>
+<script src="js/lesson-lstm-ornek.js?v=202611082022"></script>
+<script src="js/lesson-gpt.js?v=202611082022"></script>
+<script src="js/lesson-gpt-mini.js?v=202611082022"></script>
+<script src="js/lesson-vektor-ornek.js?v=202611082022"></script>
+<script src="js/lesson-linreg-big.js?v=202611082022"></script>
+<script src="js/lesson-linreg-ornek.js?v=202611082022"></script>
+<script src="js/lesson-act-big.js?v=202611082022"></script>
+<script src="js/lesson-act-ornek.js?v=202611082022"></script>
+<script src="js/lesson-xor-ornek.js?v=202611082022"></script>
+<script src="js/lesson-nn-ornek.js?v=202611082022"></script>
+<script src="js/lesson-nn-net.js?v=202611082022"></script>
+<script src="js/lesson-nn-sim.js?v=202611082022"></script>
+<script src="js/lesson-nn-big.js?v=202611082022"></script>
 </body>
 </html>
