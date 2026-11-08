@@ -2518,6 +2518,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Hubel & Wiesel: görme korteksi (1959–62). Fukushima: Neocognitron (1980). LeCun: LeNet (1989–98). Krizhevsky, Sutskever & Hinton: AlexNet (2012).',
       real:[['📱','Yüz tanıma, fotoğraf ayıklama'],['🏥','Tıbbi görüntüde bulgu arama'],['🚗','Sürüş destek kameraları']],
       sub:['Resim = piksel ızgarası (RGB kanalları)','Konvolüsyon: 9 çarpımın toplamı','Dolgu ve adım (padding, stride)','ReLU ve max-pool','Filtreler eğitimle öğrenilir']},
+    {id:'vae',  nm:'🌀 Autoencoder & VAE', tier:15, v:50, pre:['cnn'], tab:'vae',
+      d:'Resmi birkaç sayıya sıkıştır, sonra geri aç. Autoencoder iyi sıkıştırır ama üretemez; VAE kodları düzenli bir bölgeye (N(0,1)) toplayarak rastgele koddan yeni resim üretir. Gizli uzay, KL, β dengesi.',
+      sci:'Autoencoder: Hinton & Salakhutdinov (2006) ve öncesi. VAE: Kingma & Welling (2013), Rezende, Mohamed & Wierstra (2014). β-VAE: Higgins ve arkadaşları (2017).',
+      real:[['🗜️','Sıkıştırma ve gürültü temizleme'],['🎨','Latent diffusion\'ın resim ↔ kod çevirmeni'],['🔍','Anormallik tespiti']],
+      sub:['Encoder → kod → decoder','Gizli uzay (latent space)','Neden AE üretemez?','VAE: z = μ + σ·ε ve KL','β dengesi ve çöküş']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
@@ -2532,7 +2537,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
     {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
     {t0:11,t1:13,nm:'🛠️ UYGULAMADA LLM', newStyle:true},
-    {t0:14,t1:14,nm:'🎨 GÖRÜNTÜ ÜRETİMİ', newStyle:true}
+    {t0:14,t1:15,nm:'🎨 GÖRÜNTÜ ÜRETİMİ', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3459,7 +3464,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
       {t0:11, t1:13, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'},
-      {t0:14, t1:14, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ'}
+      {t0:14, t1:15, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
