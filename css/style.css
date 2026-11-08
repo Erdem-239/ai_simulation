@@ -2277,3 +2277,10 @@ body.tt-full{overflow:hidden}
 #quizModal .qm-box{position:relative; width:min(900px,100%); max-height:92vh; background:var(--bg,#0f1626); border:1px solid rgba(255,201,60,.5); border-radius:12px; display:flex; flex-direction:column}
 #quizModal .qm-body{overflow:auto; padding:16px 18px}
 #quizModal .qm-x{position:absolute; top:8px; right:10px; z-index:1; font-size:16px; color:var(--text); background:rgba(255,255,255,.08); border:1px solid var(--line); border-radius:8px; padding:3px 9px; cursor:pointer}
+.qz-adv{margin-top:10px; padding:10px 12px; border-radius:10px; background:rgba(58,122,254,.08); border:1px solid rgba(58,122,254,.4); font-size:13.5px}
+.qz-adv-row{margin-top:8px}
+.qz-adv-row ul{margin:4px 0 0 18px; padding:0; color:#b9c6e2; font-size:12.5px}
+.qz-adv-n{font-size:12px; color:#ff9d9d; margin-left:8px}
+.qz-go{font:inherit; font-size:13px; color:#cfe0ff; background:rgba(58,122,254,.18); border:1px solid rgba(58,122,254,.55); border-radius:8px; padding:3px 9px; cursor:pointer}
+.qz-go:hover{background:rgba(58,122,254,.32)}
+.qz-adv-cum{margin-top:10px; font-size:12.5px; color:#b9c6e2}
