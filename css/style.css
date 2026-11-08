@@ -2229,3 +2229,14 @@ body.tt-full{overflow:hidden}
 .nn-hero2 svg{width:100%;height:auto}
 @media(max-width:900px){.nn-hero2{grid-template-columns:1fr}}
 #techSvg{display:block;margin-left:auto;margin-right:auto}
+
+/* Softmax oyuncağı: solda kontroller, sağda öğretmen anlatımı */
+.sm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.sm-sl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin-bottom:10px}
+.sm-sl>div{display:flex;align-items:center;gap:8px}.sm-sl input{flex:1;min-width:0;width:auto!important}
+.sm-teach .ts{margin-bottom:8px;padding:7px 10px;border-radius:8px;background:#10151f;border-left:3px solid #4a5468;font-size:13px;line-height:1.55}
+.sm-teach .th{font-weight:700;font-size:12.5px;margin-bottom:3px;color:#cdd4e4}
+.sm-teach .ts.hd{border-color:#6ea0ff}.sm-teach .ts.cz{border-color:#c77dff}.sm-teach .ts.an{border-color:#ffd54a;background:rgba(255,213,74,.06)}.sm-teach .ts.dk{border-color:#f27a88}
+.sm-teach ul{margin:2px 0 0;padding-left:18px}
+@media(max-width:1100px){.sm-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.sm-sl{grid-template-columns:1fr}}
