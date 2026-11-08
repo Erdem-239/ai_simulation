@@ -511,3 +511,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Aynı tohumla aynı ayarlar tekrar çalıştırılırsa?',['Aynı metin üretilir','Farklı metin üretilir','Hata verir','Model değişir'],'Tekrar üretilebilirlik.'),
  R('Spekülatif çözümleme neyi hızlandırır?',['Küçük model taslak token önerir, büyük model hepsini tek geçişte kontrol eder','Eğitimi','Tokenizasyonu','Sıcaklığı'],'Dağılım değişmez.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.ft=[
+ R('Ön eğitimin tek görevi nedir?',['Metnin sıradaki token\'ını tahmin etmek','Soruları cevaplamak','İnsan tercihini öğrenmek','Görüntü sınıflandırmak'],'Büyük metin, tek görev.'),
+ R('Örnek 1\'de temel model «soru : kedi ne yer ?» için ne yazdı?',['soru : köpek ne yer','cevap : süt .','süt','hiçbir şey'],'Soruya soruyla devam.'),
+ R('Temel model neden soruya soruyla devam etti?',['Ön eğitim metninde sorular art arda sıralanıyordu','Hata vardı','Soru anlamını bilmiyordu','Sıcaklık yüksekti'],'Metni devam ettirir.'),
+ R('İnce ayar (SFT) nedir?',['Ön eğitimli modeli istem → cevap örnekleriyle biraz daha eğitmek','Modeli sıfırdan eğitmek','Tokenizer\'ı değiştirmek','Ağırlıkları silmek'],'Küçük öğrenme hızı.'),
+ R('Bu derste ince ayar kaybı nerede ölçüldü?',['Yalnız «cevap : … .» kısmında','Bütün satırda','Yalnız soruda','Hiç ölçülmedi'],'Maskeleme.'),
+ R('LoRA\'da ne eğitilir?',['Yalnız küçük A ve B matrisleri; temel W donar','Bütün ağırlıklar','Yalnız tokenizer','Yalnız son kelime'],'W + A·B.'),
+ R('LoRA\'da B neden sıfırdan başlar?',['Başta A·B = 0 olsun, model temel modelle aynı başlasın','Daha hızlı olsun diye','Rastgele olsun diye','Bir hata'],'Başlangıçta değişiklik yok.'),
+ R('Bu derste LoRA (r = 2) kaç ağırlık eğitti?',['460 (temelin yaklaşık %10\'u)','4.418','26','0'],'Örnek 2.'),
+ R('LoRA adaptörü çıkarılınca ne olur?',['Model birebir temel modele döner','Model bozulur','Ağırlıklar sıfırlanır','Tokenizer değişir'],'Takılıp çıkarılabilir.'),
+ R('"Unutma" (catastrophic forgetting) nedir?',['Dar veriyle ince ayarın eski becerileri bozması','Modelin kapanması','Tokenların silinmesi','Sıcaklığın düşmesi'],'Ön eğitim kaybı arttı.'),
+ R('Örnek 2\'de tam ince ayardan sonra ön eğitim metni kaybı?',['0,33\'ten yaklaşık 1,00\'e çıktı','Değişmedi','Sıfıra indi','0,01 oldu'],'Unutma.'),
+ R('Görmediği «kuş ne yer?» sorusuna ince ayarlı model ne dedi?',['cevap : ot . (uydurma)','cevap : yem .','soru : balık…','hiçbir şey'],'Biçim öğrenildi, bilgi uyduruldu.'),
+ R('İnce ayar çoğunlukla neyi öğretir?',['Biçim ve davranış','Tamamen yeni dünya bilgisi','Tokenizer kurallarını','Donanımı'],'Bilgi büyük ölçüde ön eğitimden.'),
+ R('RLHF\'nin üç adımı hangisi?',['SFT → ödül modeli → pekiştirmeli öğrenme','Ön eğitim → tokenizasyon → softmax','LoRA → QLoRA → DPO','Beam → top-k → top-p'],'InstructGPT.'),
+ R('Ödül modeli neyi öğrenir?',['İnsanların hangi cevabı daha çok beğendiğini puanlamayı','Token tahmin etmeyi','Görüntü üretmeyi','Sıcaklığı'],'Tercih verisinden.'),
+ R('RLHF\'de KL cezası ne işe yarar?',['Modelin referans modelden aşırı uzaklaşmasını (ödül hilesini) önler','Hızlandırır','Tokenizer\'ı düzeltir','Sözlüğü küçültür'],'Referansa bağlılık.'),
+ R('DPO\'nun RLHF\'den farkı nedir?',['Ödül modeli ve pekiştirmeli öğrenme olmadan, tercih çiftlerinden doğrudan eğitir','Hiç tercih verisi kullanmaz','Yalnız LoRA ile çalışır','Görüntü içindir'],'Rafailov 2023.'),
+ R('DPO kaybı başlangıçta (m = 0) kaçtır?',['ln 2 ≈ 0,693','0','1','∞'],'−ln σ(0).'),
+ R('Örnek 3\'te DPO sonrasında «cevap : ot .» olasılığı?',['%70\'ten yaklaşık %11\'e düştü','%100 oldu','Değişmedi','Arttı'],'Kötü cevap bastırıldı.'),
+ R('Örnek 3\'te DPO «yem» cevabını öğretebildi mi?',['Hayır; olasılığı hâlâ neredeyse sıfır, model başka uydurmaya kaydı','Evet, %100','Evet, %50','Model durdu'],'İyi cevap üretilebilir olmalı.'),
+ R('Tercih eğitiminden önce neden ince ayar yapılır?',['Modelin iyi cevabı zaten üretebilmesi için','Gerekli değildir','Sözlük için','Hız için'],'DPO/RLHF oranları değiştirir.'),
+ R('InstructGPT hangi yıl yayımlandı?',['2022','2017','2012','2025'],'Ouyang ve arkadaşları.'),
+ R('LoRA\'yı öneren çalışma?',['Hu ve arkadaşları (2021)','Vaswani ve arkadaşları (2017)','Holtzman ve arkadaşları (2019)','Gage (1994)'],'Low-Rank Adaptation.'),
+ R('QLoRA ne yapar?',['Temel modeli 4 bite sıkıştırıp dondurur, LoRA\'yı üstüne eğitir','LoRA\'yı kaldırır','Modeli büyütür','Tercih verisi üretir'],'Tek kartta ince ayar.'),
+ R('Modele yeni ve güncel bilgi vermek için çoğu zaman tercih edilen yol?',['Bilgiyi istem sırasında vermek (RAG)','Sıcaklığı artırmak','Tokenizer\'ı değiştirmek','Daha uzun ön eğitim'],'Sonraki derslerden biri.')
+]})();
