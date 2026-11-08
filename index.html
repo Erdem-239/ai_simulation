@@ -10,11 +10,11 @@
     svg: { fontCache: 'global' }
   };
 </script>
-<script async src="js/vendor/mathjax-tex-svg.js?v=202611081559"></script>
+<script async src="js/vendor/mathjax-tex-svg.js?v=202611081602"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202611081559">
+<link rel="stylesheet" href="css/style.css?v=202611081602">
 </head>
 <body>
 <div class="applayout">
@@ -23,12 +23,12 @@
     <div class="sb-resizer" id="sbResizer" title="Panel genişliğini sürükleyerek ayarla"></div>
     <div class="sb-inner">
       <div class="sb-title">🧠 MODELLER</div>
-      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 15:59 TR · #521</div>
+      <div class="sb-ver" title="Yayınlanan sürüm — canlıda güncellenip güncellenmediğini kontrol et">v2026-11-08 16:02 TR · #522</div>
       <!-- SIRALAMA = teknoloji ağacının sırası (çağ/tier, sonra ağaçtaki dikey konum).
            js/app.js içindeki applyTreeOrder() bunu her açılışta ağaçtan yeniden doğruluyor,
            yani ağaç değişirse burası elle güncellenmese de sıra kendini düzeltir. -->
       <button class="navbtn active" data-model="yol">🗺️ Yol Haritası</button>
-      <button class="navbtn navbtn-ai" data-model="pedia">📖 AIpedia</button>
+      <button class="navbtn navbtn-ai" data-model="pedia">📖 Keşif Defteri</button>
       <button class="navbtn" data-model="matematik">🧱 Yapı Taşları</button>
       <button class="navbtn" data-model="linreg">📈 Lineer Regresyon</button>
       <button class="navbtn" data-model="aktivasyon">📊 Aktivasyon Fonksiyonları</button>
@@ -79,7 +79,7 @@
       <p>1 Ocak 1801'de İtalyan gökbilimci Giuseppe Piazzi gökyüzünde daha önce görülmemiş bir cisim buldu — cüce gezegen <b>Ceres</b>. Haftalarca izledi, sonra Ceres Güneş'in parıltısının ardına girip kayboldu. Elde yalnızca birkaç hafta boyunca, ölçüm hatalarıyla dolu birkaç düzine gözlem vardı. Avrupa'nın gökbilimcileri onu yeniden bulmak için yarışıyordu.</p>
       <p>Yirmi dört yaşındaki <b>Carl Friedrich Gauss</b> gürültülü ölçümlere "en iyi oturan" yörüngeyi bulmak için bir yöntem kullandı: tahmin ile gözlem arasındaki farkın <b>karelerinin toplamını</b> en küçük yapan parametreleri seç. Aralık 1801'de gökbilimciler teleskopu Gauss'un gösterdiği yöne çevirdi — Ceres oradaydı. Gauss yöntemini 1809'da yayımladı; fakat Fransız <b>Adrien-Marie Legendre</b> aynı "en küçük kareler" yöntemini 1805'te kendisinden önce basmıştı. İkisi arasındaki "ilk kim?" tartışması yıllarca sürdü.</p>
       <p>"Regresyon" kelimesi ise başka bir hikâyeden geliyor: 1880'lerde <b>Francis Galton</b>, uzun babaların oğullarının ortalama boya doğru "gerilediğini" (regress) fark etti. Bugün çizgi uydurmaya hâlâ regresyon deriz. Ve çizgiyi bulmanın <b>adım adım inerek</b> yolu — gradyan alçalma — fikrini ilk yazan kişi 1847'de <b>Augustin-Louis Cauchy</b>'ydi. Bir sinir ağındaki milyarlarca ağırlığı eğiten algoritma, aynı fikrin büyütülmüş hâlidir.</p>
-      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-lin" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-lin" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
     </div>
     </div>
   </div>
@@ -810,7 +810,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
       <div class="lesson-story-h">💡 HİKÂYE — Ağa hafıza takmak</div>
       <p>1986'da yapay zekâ camiası uzun bir kıştan çıkmaya çalışıyordu: Marvin Minsky'nin on yıllar önceki eleştirisi fonları kurutmuş, kimse basit ağların işe yarayacağına inanmıyordu. Sonra David Rumelhart, Geoffrey Hinton ve Ronald Williams'ın imzaladığı bir <i>Nature</i> makalesi buzu kırdı: çok katmanlı bir ağ, kendi hatasını geriye yayarak öğrenebiliyordu. (İlginç bir ayrıntı: bu matematiği aslında Paul Werbos on iki yıl önce, 1974 doktora tezinde bulmuştu — ama kimse okumamıştı. Bilim bazen doğru fikri, yanlış zamanda söyleyeni duymaz.)</p>
       <p>Asıl sıçramayı dilbilimci Jeffrey Elman yaptı. 1990'da basit ama zarif bir fikir denedi: ağın çıktısını bir sonraki adıma geri besle. Böylece ağ, o anki girdiyle birlikte "az önce ne gördüğünü" de hatırlayabiliyordu — zamanı hissediyordu. "Finding Structure in Time" makalesi, ağın hiçbir gramer kuralı verilmeden cümle yapısını kendi başına sezdiğini gösterdi.</p>
-      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-rnn" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
     </div>
     </div>
   </div>
@@ -852,6 +852,7 @@ for alfa in (0.001, 0.02, 0.07, 0.08):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — Tek Hücre</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081602#rnn" target="_blank" rel="noopener">🔁 RNN 3B mimari</a> <span>— zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım okları</span></div>
     <div class="rsim-weights" id="rcWeightsBox">
     <div id="rcSliderAnchor"></div>
     <div class="pts" id="rcSliderPanel" style="border-left:3px solid var(--green); margin:0">
@@ -2252,7 +2253,7 @@ for epoch in range(101):
       <p>1991'de Münih'te genç bir öğrenci, Sepp Hochreiter, diploma tezinde bir şeye takıldı: RNN'ler uzun dizilerde neden öğrenemiyordu? Cevabı matematikle buldu — geri yayılan sinyal her zaman adımında aynı küçük sayıyla çarpılıyor, yirmi adım sonra geriye hiçbir şey kalmıyordu. Bugün buna <b>vanishing gradient</b> diyoruz; teşhisi koyan ilk kişi oydu. Tez Almanca yazılmıştı ve yıllarca neredeyse kimse okumadı.</p>
       <p>Çözüm 1997'de, danışmanı Jürgen Schmidhuber'le birlikte geldi: fikir, hafıza için gradyanın <b>çarpılmadan</b> aktığı ayrı bir hat kurmaktı — makalede buna "sabit hata karuseli" dediler. Bu hat bugünkü <b>cell state</b>. Hat korunaklıydı ama başta kapısızdı: içine giren her şey sonsuza kadar kalıyordu.</p>
       <p>Eksik parçayı 2000'de Felix Gers ekledi: <b>unutma kapısı</b>. Hafıza artık yalnız biriktirmiyor, gerektiğinde silebiliyordu. 2014'te Kyunghyun Cho ve ekibi aynı fikrin iki kapılı, daha ucuz hâlini önerdi: <b>GRU</b>. Sonraki on yılın başlıca çeviri, konuşma tanıma ve el yazısı sistemleri bu iki mimariyle yazıldı — ta ki 2017'de attention dikkatleri üstüne çekene kadar.</p>
-      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-lstm" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+      <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-lstm" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
     </div>
     </div>
   </div>
@@ -2315,6 +2316,7 @@ for epoch in range(101):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — tek LSTM hücresi: ileri, geri, güncelle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081602#s2s" target="_blank" rel="noopener">➡️ Seq2Seq 3B</a> <span>— bu dersteki LSTM hücresi, 2 katmanlı bir çevirmenin içinde, gerçek ağırlıklarla</span></div>
 <div id="lstmSim">
   <div class="nsim-what">🎯 <b>Bu simülasyon ne?</b> Tek bir LSTM hücresinin <b>bir zaman adımı</b>: girdi <b>x</b>, önceki çıktı <b>h₋₁</b> ve önceki hafıza <b>c₋₁</b> girer; dört kutu (f, i, c̃, o) hesaplanır, yeni hafıza <b>c</b> ve çıktı <b>h</b> çıkar. Bir <b>hedef y</b> veriyoruz: kayıp <b>L = ½(h − y)²</b>. Üç şey yapabilirsin: hücreyi <b>adım adım</b> çalıştır (İleri ▶ / ◀ Geri), 12 ağırlığı <b>elle değiştir</b>, ya da <b>eğit</b> ve hücrenin h'yi hedefe nasıl yaklaştırdığını izle. Birden çok adımın (cümlenin) hâli 6️⃣ Bütün Resim'de, gerçek bir eğitim görevi 7️⃣ Örnek Çalışmalar'da.</div>
   <div class="nsim-wbox" id="lsWBox">
@@ -2773,7 +2775,7 @@ print(f&quot;cevap p = sigmoid(why*h30) = {p:.4f}  -&gt; {&#x27;miyav (kedi)&#x2
     <p>1943'te iki bilim insanı — nörofizyolog <b>Warren McCulloch</b> ve mantıkçı <b>Walter Pitts</b> — beynin çalışma prensibini matematiksel olarak yazdı: nöron, girdilerini toplar, bir <b>eşiği</b> geçerse ateşlenir, geçmezse susar. Bu "step function" (basamak fonksiyonu) aktivasyonun ilk halidir — sadece 0 ya da 1 verir, keskin bir sıçrama.</p>
     <p>1957'de <b>Frank Rosenblatt</b> bunu bir makineye dönüştürdü: <b>Perceptron</b>. Ama sorun vardı — step function <b>keskin</b> olduğu için türevlenmiyordu. Türev olmayınca öğrenmenin matematiği çalışmıyordu. Çözüm 80'lerde geldi: <b>sigmoid</b> (S-eğrisi). Aynı "aktif ol / olma" fikri, ama yumuşak bir geçişle — türevlenebilir, dolayısıyla geri yayılımla öğrenilebilir. Sigmoid ve akrabası tanh, 30 yıl boyunca varsayılan aktivasyon oldu.</p>
     <p>Ama tuhaf bir sorun ortaya çıktı: 10-20 katmanlı ağlar bir türlü eğitilemiyordu. 2010'da <b>Vinod Nair & Geoffrey Hinton</b> nedenini gösterdi ve şaşırtıcı basit bir çözüm önerdi: <b>ReLU</b> (Rectified Linear Unit) = "negatifse 0, pozitifse aynen geç" — düz doğrudan bir kırıklık. Herkes güldü ("bu bir doğru bile değil"), ama işe yaradı: sigmoid'in en fazla 0.25'lik türev sorunu ReLU'nun pozitif bölgede türevi 1 olmasıyla çözüldü. Derin öğrenme devrimi (2012 ImageNet, sonra her şey) tam olarak bu değişikliğe borçlu.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
   </div>
     </div>
   </div>
@@ -3397,7 +3399,7 @@ for ad, egim in ((&#x27;ReLU&#x27;, 0.0), (&#x27;Leaky ReLU (0.1)&#x27;, 0.1)):
       <li><b>sopalar veriye otursun</b> = geri yayılımla eğitim</li>
       <li>Pratik not: girdileri aynı ölçeğe getir (30.000 ile 0,8 yan yana olmaz), kaç sopa gerektiğini deneyerek bul.</li>
     </ul></div>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-xor" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-xor" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
   </div>
     </div>
   </div>
@@ -4447,7 +4449,7 @@ print(f&quot;12 başlangıçtan {cozen} tanesi XOR&#x27;u çözdü&quot;)
     <p>1958'de <b>Frank Rosenblatt</b>, Aktivasyon dersinde tanıdığın tek nöronu bir makineye dönüştürdü: <b>Perceptron</b>. New York Times bunu manşete taşıdı — "yürüyen, konuşan, kendi kendini kopyalayan bir elektronik beyin" vaat ediliyordu. Heyecan büyüktü.</p>
     <p>1969'da matematikçi <b>Marvin Minsky</b> ve <b>Seymour Papert</b> "Perceptrons" adlı kitapta soğuk bir gerçeği kanıtladılar: <b>tek katmanlı bir perceptron XOR'u asla öğrenemez</b> — tam olarak Aktivasyon dersinde senin de elle keşfettiğin şey (tek çizgi en fazla 3/4 doğru). Bu kanıt o kadar etkili oldu ki sinir ağı araştırmalarına giden fonlar kurudu; tarihe <b>"yapay zeka kışı" (AI winter)</b> olarak geçen ~15 yıllık bir durgunluk başladı.</p>
     <p>Buz 1986'da kırıldı: <b>David Rumelhart, Geoffrey Hinton, Ronald Williams</b> "Learning representations by back-propagating errors" makalesinde <b>çok katmanlı</b> ağları (senin h1,h2 gizli katmanın gibi) eğitmenin pratik bir yolunu gösterdi — <b>geri yayılım (backpropagation)</b>. Fikir aslında yeni değildi (kökleri 1960'lara kadar gider) ama bu makale onu popülerleştirdi ve gösterdi ki gizli katman + geri yayılım, Minsky'nin imkânsız dediği XOR'u dahil, çok daha karmaşık problemleri çözebiliyordu. Bugünün GPT'sinden ResNet'e kadar her şeyin eğitim algoritması, ölçek dışında, hâlâ bu 1986 fikrinin aynısı.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-akt" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
   </div>
 
   
@@ -4803,7 +4805,7 @@ for k in (2, 3, 4, 8):
       <p>1860'lı yıllarda <b>Ludwig Boltzmann</b> gaz moleküllerinin davranışını anlamaya çalışıyordu: bir kapta milyarlarca molekül var, hangisinin hangi enerjide olduğunu tek tek bilemezsin. Ama <b>toplu</b> olarak şu kural çıkıyor: bir enerji düzeyindeki molekül oranı <b>e<sup>−E/kT</sup></b> ile orantılı. Düşük enerji daha olası; sıcaklık (T) yükseldikçe fark silinir, molekül her düzeye daha eşit dağılır.</p>
       <p>Yarım yüzyıl sonra <b>Josiah Willard Gibbs</b> (1902) bunu istatistiksel mekaniğin temeli yaptı. Aynı formül başka bir alanda da yeniden doğdu: <b>1950-70'lerde</b> psikolog <b>Duncan Luce</b> ile iktisatçı <b>Daniel McFadden</b>, insanların çok seçenek arasından birini <i>nasıl seçtiğini</i> modellerken aynı e<sup>değer</sup> / Σe<sup>değer</sup> oranını buldu (McFadden bu çalışmayla 2000'de Nobel aldı): bir seçeneğin çekiciliği ne kadar yüksekse seçilme olasılığı o kadar fazla, ama hiçbir seçeneğin şansı sıfır değil.</p>
       <p>Sinir ağları dünyasına <b>1989</b>'da <b>John Bridle</b> getirdi ve ona <b>"softmax"</b> adını verdi: <i>"max"</i> gibi en büyüğü seçer ama <i>"soft"</i> — kazananı tek başına yutmaz, herkese olasılık payı bırakır. Bugün ChatGPT'nin her kelimeyi seçişinde, bir fotoğrafın "kedi mi köpek mi" kararında ve Transformer'ın attention formülünde aynı fonksiyon çalışıyor. "Temperature" (sıcaklık) ayarının adı da Boltzmann'dan geliyor — tesadüf değil.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-soft" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-soft" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Keşif Defteri'da genişlet</button></p>
     </div>
     </div>
   </div>
@@ -5121,7 +5123,7 @@ print(&quot;4) kararlı softmax:&quot;, softmax(dev))
       <p>1950'lerde dilbilimciler anlamın sözlükte değil <b>kullanımda</b> yattığını söylüyordu. <b>Zellig Harris</b> (1954) benzer bağlamlarda geçen kelimelerin benzer anlam taşıdığını yazdı; <b>J. R. Firth</b> (1957) bunu ünlü cümlesiyle özetledi: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> "Kedi" ile "köpek" aynı cümle kalıplarında dolaşır ("…uyudu", "…koştu"); "kedi" ile "kral" dolaşmaz. Anlam, komşuluk istatistiğidir.</p>
       <p>Fikri sayıya dökmek yıllar aldı. <b>2003'te Yoshua Bengio</b> ve arkadaşları, bir sinir ağı sonraki kelimeyi tahmin etmeyi öğrenirken kelimeler için <b>vektörler de öğrendiğini</b> gösterdi. Ama asıl patlama <b>2013'te</b> geldi: Google'da <b>Tomas Mikolov</b> ve ekibi, çok hızlı eğitilen <b>word2vec</b>'i yayımladı. Sonuç şaşırtıcıydı — vektörler üzerinde aritmetik yapılabiliyordu: <b>kral − erkek + kadın ≈ kraliçe</b>. 2014'te Stanford'dan <b>GloVe</b> aynı fikri başka bir yoldan getirdi.</p>
       <p>Sınır tek: word2vec her kelimeye <b>tek</b> bir vektör verir; "yüz" kelimesi (surat? sayı? yüzmek?) hep aynı noktada durur. <b>2018'de ELMo ve BERT</b> bu sınırı kırdı: vektör artık <b>cümleye göre değişiyor</b> (bağlamsal embedding). ChatGPT gibi modellerin ilk katmanı hâlâ bir embedding tablosu — ama üstündeki katmanlar bu vektörleri her cümlede yeniden işliyor.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-emb" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-emb" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Keşif Defteri'da genişlet</button></p>
     </div>
     </div>
   </div>
@@ -5173,7 +5175,7 @@ kadın   = (   −0.6    ,    +0.7   )</div>
   <div class="sechead">4) Embedding nereden gelir? "Arkadaşından tanı"</div>
   <div class="pts">
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bu koordinatları kimse elle girmez — model, basit bir oyunla <b>öğrenir</b>: "bir kelimenin <b>komşularını</b> tahmin et." Milyarlarca cümlede "kral" hep "taht, taç, ülke, kraliçe" yakınında geçer; "elma" ise "yemek, ağaç, kırmızı" yakınında. Sürekli komşu tahmin ede ede, benzer bağlamda geçen kelimelerin vektörleri <b>birbirine yaklaşır</b>.</p>
-    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (AIpedia → 🔤 maddesinde tam hikâye.)</div>
+    <div class="callout">💡 Dilbilimci Firth'ün 1957'deki sözü: <i>"Bir kelimeyi, tuttuğu arkadaşlarından tanırsın."</i> Word2vec bu cümleyi matematiğe çevirdi. (Keşif Defteri → 🔤 maddesinde tam hikâye.)</div>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7"><b>Sıradaki durak:</b> Seq2Seq (iki LSTM + "nereye bakayım?" fikri), ardından Attention: bu embedding'lerden <b>Q, K, V</b> üretir ve nokta çarpımla "kim kime baksın"ı hesaplar. Yani buradaki her ok, self-attention'ın girdisidir — kapı önümüzde.</p>
   </div>
     </div>
@@ -5529,7 +5531,7 @@ print(&quot;one-hot girdisi:&quot;, sinif(W, eg, te, onehot=True))
       <p>Sinir ağları 2013'e kadar genelde <b>sabit boyutlu</b> girdiyle çalışıyordu: bir resim, bir vektör. Oysa çeviri ve konuşma <b>değişken uzunlukta dizi</b> ister: 5 kelime girer, 7 kelime çıkar. LSTM dizileri okuyabiliyordu ama çıktı uzunluğunu girdiye bağlı tutmak zordu.</p>
       <p><b>2014'te iki ekip aynı fikre ayrı ayrı vardı</b>: önce bir ağ cümleyi <b>okuyup tek bir vektöre</b> özetlesin (encoder), sonra ikinci bir ağ o vektörden <b>yeni bir cümle üretsin</b> (decoder). <b>Kyunghyun Cho ve arkadaşları</b> bu encoder–decoder düzenini (ve sadeleştirilmiş hafıza hücresi GRU'yu) önerdi; <b>Ilya Sutskever, Oriol Vinyals ve Quoc Le</b> ise 4 katmanlı LSTM'lerle İngilizce→Fransızca çeviride o dönemin klasik sistemleriyle yarışır sonuç aldı. Bir ayrıntı: kaynak cümleyi <b>tersten</b> okutmak sonuçları belirgin iyileştirdi — ilk kelimeler üretilecek ilk kelimelere daha yakın olunca öğrenmek kolaylaştı.</p>
       <p>Sorun hemen göründü: ne kadar uzun olursa olsun cümlenin tamamı <b>tek bir sabit vektöre</b> sığmak zorundaydı. Uzun cümlelerde çeviri kalitesi çöküyordu. Aynı yıl <b>Bahdanau, Cho ve Bengio</b> çözümü buldu: decoder her kelimeyi üretirken kaynağın <b>tüm</b> durumlarına geri dönüp bakabilsin (attention). <b>2016'da Google Translate</b> bu aileyle (derin LSTM + attention) sinir ağı tabanlı çeviriye geçti. <b>2017'de</b> "Attention Is All You Need" recurrence'ı da attı — bir sonraki ders.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-s2s" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 AIpedia'da genişlet</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-s2s" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Keşif Defteri'da genişlet</button></p>
     </div>
     </div>
   </div>
@@ -5834,7 +5836,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
       <p>Ama ağın gövdesi hâlâ sırayla işleyen bir RNN'di: bir kelime işlenmeden sonrakine geçilemiyordu. Bu hem <b>yavaştı</b> (GPU'nun paralel gücü boşa gidiyor) hem de cümlenin başıyla sonu arasında uzun bir yol bırakıyordu. Soru kendiliğinden doğdu: <b>attention bu kadar işe yarıyorsa, RNN'e hiç gerek var mı?</b></p>
       <p><b>2017</b>'de Google'dan bir ekip (ilk yazarı <b>Ashish Vaswani</b>) cevabı makalenin başlığına koydu: <b>"Attention Is All You Need"</b>. Fikir: RNN'i tamamen çıkar; her kelime cümledeki <b>diğer her kelimeye doğrudan</b> baksın (<i>self</i>-attention), bunu bir matris çarpımıyla hepsi birden yapsın. Kelimenin üç rolü (sorgu / anahtar / içerik: Q, K, V) ve tek satırlık formül <b>softmax(QKᵀ/√d)·V</b> bu makalenin çekirdeğidir.</p>
       <p>Sonrası hızlı geldi: aynı katman BERT'te (2018), GPT serisinde, çeviri ve özetlemede, sonra bambaşka alanlarda (görüntü, protein yapısı) kullanıldı. Bugünkü büyük dil modellerinin hepsi bu tek katmanın üst üste dizilmiş hâlidir. Aşağıda onu önce elle çalıştıracak, sonra nasıl <b>öğrenildiğini</b> göreceksin.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-att" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-att" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 Keşif Defteri'da bak</button></p>
     </div>
 
     </div>
@@ -5867,6 +5869,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
       <tr><td><b style="color:#ffd54a">K</b> anahtar</td><td>"beni böyle bul"</td><td>K = x·W<sub>K</sub></td></tr>
       <tr><td><b style="color:#46c46a">V</b> değer</td><td>"vereceğim içerik"</td><td>V = x·W<sub>V</sub></td></tr></table>
     <div class="at-n">Kütüphane gibi: aradığın konu (Q) rafların etiketleriyle (K) karşılaştırılır, uyan kitapların içeriğinden (V) alırsın.</div>
+    <div class="at-n"><b>Neden ayrı Q ve K?</b> Tek kart kullansaydık her kelime en çok <b>kendine</b> benzerdi (Ali acıkmış: «aç» kartı en çok yine «aç»a uyar). Ayrı tablolar «aradığım» (Q: «yemek») ile «bende olan»ı (K) ayırır; Ali artık elinde yemek olan Ayşe'yi bulur. Kendine bakmak yasak değil; nereye bakılacağını eğitim seçer.</div>
   </div>
   <div class="at-card">
     <div class="at-h">⚙️ Dört adım</div>
@@ -5898,6 +5901,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — dikkat laboratuvarı</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/mimari-3b.html?v=202611081602#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a> · <a href="harita/matris-animasyon.html?v=202611081602#temel" target="_blank" rel="noopener">🧱 Matris temelleri</a> <span>— aynı dört adım her kelime 2 sayıyla, elle takip edilir</span></div>
 <div class="at-tabs" id="atTabs">
   <button class="addbtn on" data-t="lab">🔬 Dikkat laboratuvarı</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -5916,7 +5920,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
   <div id="atBig"></div>
   <div class="sd-chips"><span>N = 6 encoder + 6 decoder</span><span>d<sub>model</sub> = 512</span><span>h = 8 kafa, d<sub>k</sub> = 64</span><span>FFN 512 → 2048 → 512</span><span>konum: sinüs/kosinüs</span><span>Add &amp; Norm çıkışta</span><span>≈65 milyon ağırlık</span></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081559#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081559" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081602#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu →</a> · <a href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (T5 ↔ GPT-2) →</a></div>
 
     </div>
   </div>
@@ -5940,7 +5944,7 @@ for T in (3, 10, 30, 50):   # kaynak cümlenin kelime sayısı
               (nokta çarpım)    │            │  içerik toplamı
                           dikkat yüzdeleri (softmax)</div>
     <p style="font-size:14px; color:#ccd5e8; line-height:1.7">Bir cümleyle: <b>"her kelime, benzediği kelimelerin içeriğinden yüzdeli bir karışım alır."</b> Korkutucu sembol yığını değil — az önce elinle çalıştırdığın şey.</p>
-    <div class="callout">🏆 <b>Bilim zaferine çok yaklaştın.</b> Kalan parçalar (Multi-Head = bunun 8 paralel kopyası, Positional Encoding = sıra bilgisi, Transformer Bloğu = tutkal) bu çekirdeğin etrafındaki kabuk. Ağaçta "Transformer Çağı" artık açık — makale bir kol boyu ötede.</div>
+    <div class="callout">🎓 <b>Hedefe çok yaklaştın.</b> Kalan parçalar (Multi-Head = bunun 8 paralel kopyası, Positional Encoding = sıra bilgisi, Transformer Bloğu = tutkal) bu çekirdeğin etrafındaki kabuk. Ağaçta "Transformer Çağı" artık açık — makale bir kol boyu ötede.</div>
   </div>
 
   
@@ -6232,7 +6236,7 @@ for d in (4, 16, 64, 256):
       <p>Çözümleri basitti: temsili <b>küçük parçalara böl</b>, her parçada bağımsız bir attention çalıştır, sonuçları yapıştır. Makalede <b>8 kafa</b> kullanıldı (her biri 64 boyutlu dilimle, 8×64=512). Önemli ayrıntı: toplam hesap, tek kafalı tam boyutlu attention'a yakın kalıyor; yani "bedava" bir zenginlik.</p>
       <p>Yıllar içinde araştırmacılar kafaları tek tek açıp inceledi. <b>Clark ve ark. (2019)</b> BERT'in bazı kafalarının belirli dilbilgisi ilişkilerini (örneğin bir fiilin nesnesini) izlediğini gösterdi; <b>Voita ve ark. (2019)</b> az sayıda kafanın işin çoğunu yaptığını, kalanların çıkarılabildiğini buldu; <b>Michel ve ark. (2019)</b> "Are Sixteen Heads Really Better Than One?" diye sordu. Sonuç: işbölümü var ama bazı kafalar gereksiz. Hikâye hâlâ yazılıyor.</p>
       <p>Aynı makalenin üçüncü parçası <b>sıra bilgisi</b>: attention tüm kelimelere aynı anda baktığı için "kedi köpeği kovaladı" ile "köpek kediyi kovaladı"yı ayıramaz. Çözüm: her pozisyona sinüs/kosinüs dalgalarından örülmüş bir <b>imza</b> eklemek (makale ayrıca öğrenilen pozisyon tablolarını da denedi, sonuçlar neredeyse aynı çıktı). Bu sayfa ikisini birden anlatıyor.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-mha" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-mha" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 Keşif Defteri'da bak</button></p>
     </div>
 
     </div>
@@ -6296,6 +6300,7 @@ for d in (4, 16, 64, 256):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — kafalar, blok, konum imzası</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081602#rope" target="_blank" rel="noopener">🌀 RoPE turu</a> · <a href="harita/matris-animasyon.html?v=202611081602#ossturu" target="_blank" rel="noopener">🟢 gpt-oss turu (GQA)</a> · <a href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener">🧩 3B mimari: kafanın içi</a></div>
 <div class="at-tabs" id="mhTabs">
   <button class="addbtn on" data-t="heads">🔬 Üç kafa</button>
   <button class="addbtn" data-t="blk">🧱 Makaledeki blok</button>
@@ -6316,7 +6321,7 @@ for d in (4, 16, 64, 256):
   <div class="mh-pos"><div style="overflow-x:auto"><svg id="posSvg" role="img"></svg></div>
   <div class="work" id="posWork" style="white-space:pre-wrap; line-height:1.9; font-size:12.5px"></div></div>
 </div>
-<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081559#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081559" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
+<div class="at-n" style="margin-top:10px">🎬 Gerçek boyutlu hâli: <a href="harita/matris-animasyon.html?v=202611081602#gpt2" target="_blank" rel="noopener" style="color:#7aa8ff">matris çarpımı animasyonu (12 kafaya bölme, yapıştırma) →</a> · <a href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener" style="color:#7aa8ff">3B mimari (kafa kartları) →</a></div>
 
     </div>
   </div>
@@ -6603,7 +6608,7 @@ for d, H in ((512, 1), (512, 8), (512, 64), (768, 12), (4096, 32)):
       <p><b>2016</b>: <b>Ba, Kiros ve Hinton</b> <b>LayerNorm</b>'u önerdi: bir örneğin sayılarını kendi içinde hizala (BatchNorm bir batch'e ihtiyaç duyuyordu; dizi uzunluğu değişince zorlanıyordu). Metin gibi değişken uzunluklu veride çok daha uygundu.</p>
       <p><b>2017</b>: Transformer makalesi bu iki fikri, bir de <b>FFN</b>'i (her kelimeyi ayrı ayrı işleyen küçük sinir ağı) attention'ın etrafında <b>tek bir tuğlaya</b> paketledi ("Add &amp; Norm" = residual + LayerNorm). Orijinal modelde bu tuğladan 6 tane üst üste vardı. Güçlü tarafı: tuğla her yerde <b>aynı</b>, yani istediğin kadar üst üste koyabilirsin.</p>
       <p><b>2019 ve sonrası</b>: GPT-2 normalizasyonu alt-bloğun <b>girişine</b> aldı ("pre-LN"); sonraki analizler (Xiong ve ark., 2020) bunun eğitimi çok daha kararlı yaptığını gösterdi. Bugünkü büyük modellerin neredeyse hepsi pre-LN ile çalışıyor. Tuğla büyümedi, sadece üst üste çok katlandı: GPT-3'te 96 kat.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-blk" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-blk" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 Keşif Defteri'da bak</button></p>
     </div>
 
     </div>
@@ -6683,13 +6688,14 @@ normalize: (z−μ)/σ = [0.53, −1.32, 1.32, −0.53]
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — toplama turu, residual, LayerNorm</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081602" target="_blank" rel="noopener">🎬 GPT-2 turu</a> · <a href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/mimari-3b.html?v=202611081602#cevirmen" target="_blank" rel="noopener">🔤 Mini çevirmen</a></div>
 <div class="at-tabs" id="tfTabs">
   <button class="addbtn on" data-t="tour">🎬 Toplama turu: 7 + 5 → 12</button>
   <button class="addbtn" data-t="res">🎚️ Residual derinliği</button>
   <button class="addbtn" data-t="ln">🧮 LayerNorm hesap makinesi</button>
 </div>
 <div class="at-pane" data-p="tour">
-  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081559" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
+  <div class="at-n" style="margin:0 0 8px">Bütün parçalar (gömme, konum, self-attention, Add &amp; Norm, FFN, maskeli self-attention, çapraz attention, çıkış katmanı) tek bir görevde, <b>gerçek eğitilmiş ağırlıklarla</b>, adım adım. Görev Seq2Seq dersindeki LSTM'in görevinin aynısı: iki rakamı topla. Soruyu ve modelin eğitim anını değiştirebilirsin. Önce en basit hâlini görmek istersen: <a href="harita/josh-3b.html?v=202611081602" target="_blank" rel="noopener" style="color:#7aa8ff">🔤 Mini çevirmen: «let's go» → «vamos» (StatQuest'in elle hesapladığı en küçük Transformer, 3B) →</a></div>
   <div id="tfTour"></div>
 </div>
 <div class="at-pane" data-p="res" style="display:none">
@@ -6848,7 +6854,7 @@ print(&quot;en büyük |sonlu fark − elle gradyan| =&quot;, &quot;%.1e&quot; %
       <li><b>SwiGLU:</b> ReLU'lu FFN yerine iki paralel yol (kapı × değer).</li>
       <li><b>Ağırlık paylaşımı:</b> GPT-2'de giriş ve çıkış tabloları aynı (Örnek 2'de bunu sayarken görürsün).</li>
     </ul>
-    <div class="callout" style="border-left-color:var(--accent)">🏆 <b>Bütün parçalar tamam.</b> Ağaçta artık "Bilim Zaferi" bir kol boyu ötede — 📜 <b>Attention Is All You Need</b> makalesi şimdi ana dilin gibi okunmalı.</div>
+    <div class="callout" style="border-left-color:var(--accent)">🏆 <b>Bütün parçalar tamam.</b> Yol haritasında artık hedef (makale) bir adım ötede — 📜 <b>Attention Is All You Need</b> makalesi şimdi ana dilin gibi okunmalı.</div>
   </div>
 
     </div>
@@ -8236,7 +8242,7 @@ Yani model her kelimede kabaca 6 eşit olası seçenek arasında kalmış gibi.<
   <div class="acc-head"><div class="cat-title"><span class="ac">▸</span> 🌊 Trigonometri</div><div class="cat-desc">Sin, cos ve birim çember — Transformer'ın kelime sırasını nasıl hatırladığının sırrı.</div></div>
   <div class="acc-body">
 
-  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" diye not düşülür, AIpedia'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
+  <div class="callout" style="margin:0 0 16px">🧭 <b>Bu neden burada?</b> Multi-Head Attention modülünün sonunda "kalan parçalar: Positional Encoding = sıra bilgisi" diye not düşülür, Keşif Defteri'daki Positional Encoding sayfası da "hızlı ve yavaş sinüs/kosinüs dalgaları" diye bahsediyordu — ama sin/cos'un ne olduğunu hiç anlatmamıştık. Bu boşluğu dolduruyoruz: önce sin/cos'u <b>gerçekten</b> anlayacaksın (birim çember + dalga, canlı), sonra bunun Transformer'da sırayı nasıl kodladığına köprü kuracağız.</div>
 
   <div class="acc acc-module" id="ytmod-13">
   <div class="acc-head"><span class="ac">▸</span> 13) Sin, Cos ve Birim Çember</div>
@@ -8383,7 +8389,7 @@ Fark et: hızlı dalga her pozisyonda ÇOK değişiyor (0→0.84→0.91→0.14),
 yavaş dalga ise neredeyse hiç değişmiyor (0→0.01→0.02→0.03) —
 tıpkı saniye kolu ile saat kolu gibi. Her pos, bu 4 sayının
 BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
-    <div class="callout" style="margin-top:10px; border-left-color:#3a7afe">💡 <b>Neden sin/cos, başka bir şey değil?</b> Çünkü sin/cos'un periyodik olması, modelin "3 kelime ötesi" gibi <b>göreli</b> mesafeleri de matematiksel olarak çıkarabilmesini sağlıyor (iki açının farkı sabitse, dalga değerleri arasındaki ilişki de sabit kalır). Ayrıca değerleri hep [−1,1] aralığında kalır — kelime vektörünün büyüklüğünü bozmaz. Bunun ayrıntısını ve gerçek boyutuyla (512+ boyut) uygulamasını <b>AIpedia → 📍 Positional Encoding</b> sayfasında ve Multi-Head Attention modülünde bulabilirsin.</div>
+    <div class="callout" style="margin-top:10px; border-left-color:#3a7afe">💡 <b>Neden sin/cos, başka bir şey değil?</b> Çünkü sin/cos'un periyodik olması, modelin "3 kelime ötesi" gibi <b>göreli</b> mesafeleri de matematiksel olarak çıkarabilmesini sağlıyor (iki açının farkı sabitse, dalga değerleri arasındaki ilişki de sabit kalır). Ayrıca değerleri hep [−1,1] aralığında kalır — kelime vektörünün büyüklüğünü bozmaz. Bunun ayrıntısını ve gerçek boyutuyla (512+ boyut) uygulamasını <b>Keşif Defteri → 📍 Positional Encoding</b> sayfasında ve Multi-Head Attention modülünde bulabilirsin.</div>
   </div>
 
   </div>
@@ -8462,7 +8468,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
     <p>19. yüzyılın ortasında iki matematikçi, birbirlerinden habersiz, aynı devrimi hazırladı. Almanya'da <b>Hermann Grassmann</b> (1844) — bir lise öğretmeni — cebiri geometriden çıkarıp saf bir "büyüklük hesabı" olarak yazdı: yönlü sayılar, dış çarpımlar, tam bir vektör uzayı teorisi. Kimse anlamadı; kitap unutuldu. Aynı yıllarda İskoçya'da <b>William Rowan Hamilton</b>, 3B rotasyonları hesaplayabilmek için "kuaterniyon" adında dört boyutlu sayılar icat etti — bu, o zamana kadar hiç kimsenin görmediği bir şeydi.</p>
     <p>50 yıl sonra Amerika'da <b>Josiah Willard Gibbs</b> (1881, Yale), fizikçilere yakınmıştı: "Kuaterniyonun büyük kısmı gereksiz, işimize yarayanı çekip alalım." Grassmann'ın unutulmuş fikirlerini, Hamilton'ın kuaterniyonunu ve fiziğin ihtiyaçlarını birleştirdi — bugün kullandığımız <b>vektör analizi</b> doğdu. <b>Nokta çarpım</b> (a·b = aₓbₓ + a_y b_y) tam olarak bu sadeleştirmeden çıktı: "İki yönlü büyüklüğün ne kadar aynı yöne baktığını söyleyen tek sayı."</p>
     <p>Sonra 2013'te Google'da <b>Tomáš Mikolov</b> word2vec ile kelimeleri vektöre çevirdi. Ortaya çıkan sonuç şaşırtıcıydı: <i>vec("kral") − vec("erkek") + vec("kadın") ≈ vec("kraliçe")</i>. Grassmann'ın 170 yıl önce yazdığı cebir, kelimelerin anlamını taşıyabiliyordu. Attention mekanizması (2017) da aynı Q·K nokta çarpımını kullanır. Yani öğreneceğin bu tek işlem, iki yüzyıllık bir hattın devamıdır.</p>
-    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — AIpedia'da</button>
+    <button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-vek" style="background:var(--panel); color:var(--text); border:1px solid var(--line); margin-top:4px">📖 Kâşiflerin tam hikâyesi — Keşif Defteri'da</button>
   </div>
 
   
@@ -8516,6 +8522,7 @@ BENZERSİZ birleşimiyle "parmak izini" alıyor.</div>
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — okları döndür, benzerliği izle</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/matris-animasyon.html?v=202611081602#temel" target="_blank" rel="noopener">🧱 Matris temelleri animasyonu</a> <span>— transpoz, satır × sütun, Q·Kᵀ küçük sayılarla</span></div>
 <!-- İNTERAKTİF: nokta çarpım oyuncağı -->
   <div class="sechead">1) 🎯 Oyuncak: okları döndür, benzerliği izle</div>
   <div class="pts" style="border-left:3px solid var(--accent)">
@@ -8671,27 +8678,27 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
     <h3>🗣️ 1 · Oku</h3>
     <p class="hr-cat-d">Adım adım, sayılarla ve düz dille.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611081559" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611081559" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611081559" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611081559" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🔦</span><b class="hr-tt">Minik GPT: «7+5=» → «1»</b><span class="hr-l">Sitede eğittiğimiz modelin gerçek sayılarıyla.</span><div class="hr-subs"><a class="hr-sub" href="harita/adim-adim.html?v=202611081602" target="_blank" rel="noopener"><b>Adım adım</b><span>Karakterden cevaba 16 adım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/epoch.html?v=202611081602" target="_blank" rel="noopener"><b>Eğitim günlüğü</b><span>0’dan 800. epoch’a: dikkat nasıl toplandı.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧠</span><b class="hr-tt">Gerçek boyutlu GPT</b><span class="hr-l">Aynı yol büyük modellerde: şekiller gerçek, renkli hücreler şematik.</span><div class="hr-subs"><a class="hr-sub" href="harita/gpt2-adim-adim.html?v=202611081602" target="_blank" rel="noopener"><b>GPT-2, adım adım</b><span>4×768 → 12 kafa → 12 blok → 50.257 puan.</span><i>Aç →</i></a><a class="hr-sub" href="harita/istanbul-onizleme.html?v=202611081602" target="_blank" rel="noopener"><b>Bir cümlenin yolculuğu</b><span>Token, kart, dikkat, tahmin.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g2">
     <h3>🏛️ 2 · Gez</h3>
     <p class="hr-cat-d">Mimarileri parçala, kutulara tıkla.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611081559" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081559#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081559#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081559#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
-      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611081559" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🧩</span><b class="hr-tt">3B mimari sayfası</b><span class="hr-l">Bütün mimariler tek sayfada; üstteki «Mimari ailesi» düğmeleriyle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener"><b>🧠 Transformer</b><span>Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5 yan yana; 📖 Mimariyi anlat.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081602#cevirmen" target="_blank" rel="noopener"><b>🔤 Mini çevirmen: «let’s go» → «vamos»</b><span>En küçük Transformer, her kelime 2 sayı; 18 adımda anlatımlı.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081602#rnn" target="_blank" rel="noopener"><b>🔁 RNN</b><span>Zamanda açılmış hücreler, ortak ağırlıklar, geri yayılım.</span><i>Aç →</i></a><a class="hr-sub" href="harita/mimari-3b.html?v=202611081602#s2s" target="_blank" rel="noopener"><b>➡️ Seq2Seq (LSTM)</b><span>«7 + 5 → 12»: 2 katmanlı encoder-decoder, gerçek ağırlıklar.</span><i>Aç →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🗂️</span><b class="hr-tt">Şema olarak (2B)</b><span class="hr-l">Bilinen açık modeller aynı çizim diliyle, yan yana tablo.</span><div class="hr-subs"><a class="hr-sub" href="harita/guncel-mimariler.html?v=202611081602" target="_blank" rel="noopener"><b>Örnek mimariler</b><span>DeepSeek-V3, Mixtral, gpt-oss, Gemma 3, GPT-2, Minik GPT.</span><i>Aç →</i></a></div></div>
     </div>
   </div>
   <div class="hr-cat hr-g3">
     <h3>🎬 3 · İzle</h3>
     <p class="hr-cat-d">Video gibi oynayan turlar.</p>
     <div class="hr-tiles">
-      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081559" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081559#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081559#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081559#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
+      <div class="hr-tile"><span class="hr-ic">🎞️</span><b class="hr-tt">Animasyon sayfası</b><span class="hr-l">Dört animasyon tek sayfada; üstteki düğmelerle geçilir.</span><div class="hr-subs"><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081602" target="_blank" rel="noopener"><b>🎬 GPT-2 turu</b><span>3B mimari + her parçanın matris işlemi, ~5 dk.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081602#ossturu" target="_blank" rel="noopener"><b>🟢 gpt-oss turu</b><span>MoE, GQA, kayan pencere, RoPE.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081602#rope" target="_blank" rel="noopener"><b>🌀 RoPE turu</b><span>Konum bilgisi okların dönmesiyle, 13 durak.</span><i>Oynat →</i></a><a class="hr-sub" href="harita/matris-animasyon.html?v=202611081602#temel" target="_blank" rel="noopener"><b>🧱 Matris temelleri</b><span>Transpoz, satır × sütun, Q·Kᵀ, maske, softmax.</span><i>Oynat →</i></a></div></div>
     </div>
   </div>
   </div>
-  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081559" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
+  <div class="hr-extra">📎 <b>Ek:</b> <a href="harita/yerel-model-donanim.html?v=202611081602" target="_blank" rel="noopener">🖥️ Yerel çalıştırma rehberi</a> — hangi model kaç GB VRAM / RAM ister, 4 / 8 / 16 bit, tahmini maliyet.</div>
   <p class="hr-note">⚠️ Minik GPT sayfalarındaki sayılar sabit bir kayıttır (tohum 1, «7+5=»); GPT-2, gpt-oss ve diğer büyük modellerde şekiller gerçek, renkli hücreler şematiktir.</p>
 
   </div>
@@ -8734,7 +8741,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
       <p><b>2003</b>: <b>Bengio ve ekibi</b> sayma tablosunu bir <b>sinir ağıyla</b> değiştirdi: her kelime bir sayı vektörüne (embedding) çevrilir, önceki birkaç kelimenin vektörleri ağa girer, ağ sıradaki kelimeyi tahmin eder. Bu sayfadaki "pencereli sinir ağı" ve Bütün Resim bölümündeki model bunun minik hâli. Ardından RNN ve LSTM dil modelleri geldi (hafıza = pencere sınırı olmasın diye).</p>
       <p><b>2017</b>'de Transformer pencerenin yerine <b>self-attention</b> koydu. <b>2018</b>'de OpenAI bu mimariyi "sıradaki kelimeyi tahmin et" görevinde dev bir metin yığınıyla eğitip <b>GPT</b> adını verdi; GPT-2 (2019) ve GPT-3 (2020, 175 milyar ağırlık) aynı tarifi büyüttü. <b>2022</b>'de ChatGPT, GPT'ye ek olarak insan geri bildirimiyle sohbet etmeyi öğretti.</p>
       <p>Hikâyenin ortak kahramanı tek bir fikir: <b>metnin kendisi etiket</b>. Kimsenin elle "doğru cevap" yazmasına gerek yok: her karakterin sonraki karakteri zaten metinde duruyor. Bu sayfa o fikri en küçük ölçekte baştan kuruyor.</p>
-      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-llm" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 AIpedia'da bak</button></p>
+      <p><button class="addbtn" data-ped-tab="pedia" data-ped-scroll="pedia-llm" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">📖 Keşif Defteri'da bak</button></p>
     </div>
 
     </div>
@@ -8776,6 +8783,7 @@ for ad, q in zip([&#x27;kedi&#x27;, &#x27;uyudu&#x27;, &#x27;süt&#x27;], Q):
   <div class="tpl-cl" data-stage="6">
     <div class="tpl-head closed"><span>5️⃣ Simülasyon — üç modeli aynı metinle eğit, üret; minik GPT'nin şeması</span><span class="chev">▸</span></div>
     <div class="tpl-body closed">
+<div class="hr-bridge">🧭 <b>Haritada gör:</b> <a href="harita/adim-adim.html?v=202611081602" target="_blank" rel="noopener">🔦 Minik GPT adım adım</a> · <a href="harita/epoch.html?v=202611081602" target="_blank" rel="noopener">📒 Eğitim günlüğü</a> · <a href="harita/mimari-3b.html?v=202611081602" target="_blank" rel="noopener">🧩 3B mimari</a> · <a href="harita/gpt2-adim-adim.html?v=202611081602" target="_blank" rel="noopener">🧠 GPT-2 adım adım</a></div>
 <p style="font-size:14px; color:#ccd5e8; line-height:1.7">🔬 Aşağıda üç model <b>aynı metinden</b> öğreniyor. Önce yukarıdaki başlangıç kutusuna bir şey yaz ya da düğmelerden seç. Denenecekler: (1) sayma modelinde bağlam uzunluğunu 1'den 10'a çıkar, çıktıların nasıl düzeldiğini izle; (2) sinir ağını eğit ve kaybın düşmesiyle çıktıların <b>rastgele harflerden</b> cevaplara dönüşmesini gör; (3) <b>görmediği toplamları</b> ve <b>hiç görmediği soruları</b> (selam&gt;, nasılsınız&gt;) dene (4) <b>Minik GPT</b>'yi eğit (≈30 sn, ▶ eğit) ve altındaki <b>mimari şemasında</b> "7+5=" için dikkatin iki rakama kaymasını izle; <b>İleri ▶</b> ile adım adım ilerle.</p>
   <div id="gtApp"></div>
   <div class="callout" style="margin-top:10px">📉 <b>Kayıp neden sıfıra inmiyor (≈0,56)?</b> Modele her karakteri tahmin ettiriyoruz, soruların kendisini de. Hangi sorunun hangi sırayla geleceği metinde rastgele; bunu kimse tahmin edemez. Cevap kısımları ve toplamlar ise tamamen belirli, onlar kayıp 0'a yaklaşır. Kalan 0,56 "tahmin edilemeyen" kısımdan geliyor, yani ağ bozuk değil.</div>
@@ -9236,28 +9244,28 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
   <!-- ===================== YOL HARİTASI (TECH TREE) ===================== -->
   <div class="model active" id="model-yol">
 
-  <h1>🗺️ Teknoloji Ağacı — Bilim Zaferi: "Attention Is All You Need"</h1>
-  <p class="sub">Civ 6'daki gibi <b id="ttDir">soldan sağa çağlar</b> halinde ilerliyorsun: 📜 Temeller → ⚙️ Nöral → 🌉 Dizi Modelleme → 🎯 Transformer → 🏆 <b>Bilim Zaferi</b> (makaleyi ana dilin gibi okumak). Yeşil hatlarda <b>güç akıyor</b>; turuncu yanıp sönen teknoloji <b>araştırılmaya hazır</b>.</p>
+  <h1>🗺️ Yol Haritası — hedef: "Attention Is All You Need" makalesini okuyabilmek</h1>
+  <p class="sub">Dersler <b id="ttDir">soldan sağa aşamalar</b> halinde sıralı: 📜 Temeller → ⚙️ Nöral → 🌉 Dizi Modelleme → 🎯 Transformer → 🎓 <b>Hedef</b> (makaleyi kendi dilinde okumak gibi okuyabilmek). Yeşil hatlar tamamladığın yolu gösterir; turuncu yanıp sönen ders <b>sıradaki</b>.</p>
 
-  <div class="callout">📖 <b>AIpedia:</b> Her teknolojiye tıkla → <b>kim, nasıl keşfetti</b> (Bernoulli'nin bileşik faizden e'yi bulması, Gauss'un kayıp asteroidi regresyonla yakalaması...) ve <b>gerçek dünyada neyin kilidini açtığı</b> (kartların altındaki emojiler: 💰 finans, 🦠 salgın modelleri, 🌍 Google Translate...) görünür. Alt başlıkları bitirdikçe işaretle → hepsi dolunca teknoloji <b>araştırılmış</b> sayılır ve sonraki çağın kilidi açılır. İlerlemen tarayıcıda saklanır.</div>
+  <div class="callout">📖 <b>Keşif Defteri:</b> Her derse tıkla → <b>kim, nasıl keşfetti</b> (Bernoulli'nin bileşik faizden e'yi bulması, Gauss'un kayıp asteroidi regresyonla yakalaması...) ve <b>gerçek dünyada neyin kilidini açtığı</b> (kartların altındaki emojiler: 💰 finans, 🦠 salgın modelleri, 🌍 Google Translate...) görünür. Alt başlıkları bitirdikçe işaretle → hepsi dolunca ders <b>tamamlanmış</b> sayılır ve sonraki dersin kilidi açılır. İlerlemen tarayıcıda saklanır.</div>
 
   <div class="pts">
     <div id="techProg" style="font-size:14px; color:#ccd5e8; margin-bottom:10px"></div>
     <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-bottom:12px">
-      <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#e3ecd6; border:2px solid #3f7d3f; vertical-align:middle"></span> araştırıldı</span>
-      <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#fbedc4; border:2px solid #b8860b; vertical-align:middle"></span> araştırılabilir — sıradaki</span>
+      <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#e3ecd6; border:2px solid #3f7d3f; vertical-align:middle"></span> tamamlandı</span>
+      <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#fbedc4; border:2px solid #b8860b; vertical-align:middle"></span> sıradaki</span>
       <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:#b9a578; border:2px solid #8a7550; vertical-align:middle"></span> kilitli</span>
-      <span style="color:#3f7d3f">▬▬▬ güç hattı</span>
-      <span id="ttHint">➡️ sağa kaydırarak çağlarda ilerle</span>
+      <span style="color:#3f7d3f">▬▬▬ tamamlanan yol</span>
+      <span id="ttHint">➡️ sağa kaydırarak aşamalarda ilerle</span>
     </div>
     <div id="ttScroll" style="overflow-x:auto"><svg id="techSvg" role="img"></svg></div>
-    <div id="techInfo" class="callout" style="margin-top:14px">Bir teknolojiye tıkla → AIpedia burada açılsın.</div>
+    <div id="techInfo" class="callout" style="margin-top:14px">Bir derse tıkla → Keşif Defteri burada açılsın.</div>
   </div>
 
 
-  <div class="sechead">🏛️ İnşa Edilen Harikalar</div>
+  <div class="sechead">🌍 Gerçek Dünyada Açtığın Kapılar</div>
   <div class="pts">
-    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Araştırdığın her teknoloji gerçek dünyada bir <b>anıt</b> diker. Bir düğümü tamamla → harikası "inşa edilir". (Detayı AIpedia'da.)</div>
+    <div style="font-size:13px; color:#ccd5e8; margin-bottom:10px">Her ders gerçek dünyada bir uygulamanın kapısını açar. Bir dersi tamamla → o uygulama burada açılır. (Detayı Keşif Defteri'da.)</div>
     <div id="techWonders"></div>
   </div>
 
@@ -9271,15 +9279,15 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
     <textarea id="ttIO" spellcheck="false" style="width:100%; height:58px; background:#0d1426; color:var(--text); border:1px solid var(--line); border-radius:6px; font-size:12px; padding:8px; font-family:Consolas,monospace; box-sizing:border-box" placeholder="ilerleme kodu buraya gelir / yapıştır"></textarea>
   </div>
 
-  <p class="footer">Teknoloji ağacı • 📜 temeller → ⚙️ nöral → 🌉 dizi → 🎯 transformer → 🏆 bilim zaferi</p>
+  <p class="footer">Yol haritası • 📜 temeller → ⚙️ nöral → 🌉 dizi → 🎯 transformer → 🎓 hedef: makale</p>
   </div><!-- /model-yol -->
 
 
   <!-- ===================== AIPEDIA ===================== -->
   <div class="model" id="model-pedia">
 
-  <h1 class="pedia-h1">📖 AIpedia — Kâşifler, Keşifler ve Gerçek Dünya</h1>
-  <p class="sub">Ağaçtaki her teknolojinin tam ansiklopedi maddesi: <b>kim buldu, nasıl buldu, dünyayı nasıl değiştirdi</b> — rakamlarla, hikâyelerle. Soldaki fihristten atla ya da ağaçtan "📖 AIpedia'da oku" ile gel.</p>
+  <h1 class="pedia-h1">📖 Keşif Defteri — Kâşifler, Keşifler ve Gerçek Dünya</h1>
+  <p class="sub">Yol haritasındaki her dersin keşif hikâyesi: <b>kim buldu, nasıl buldu, dünyayı nasıl değiştirdi</b> — rakamlarla, hikâyelerle. Soldaki fihristten atla ya da ağaçtan "📖 Keşif Defteri'da oku" ile gel.</p>
 
   <div class="sechead" id="pedia-mat">🧱 Yapı Taşları — e Sayısı ve Kalkülüs</div>
   <div class="pts pedia-art">
@@ -9676,7 +9684,7 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
     <ul>
       <li><b>📈 Etki:</b> <span class="ped-stat">100.000+ atıf</span>; yapay zekâda 2017 sonrası her büyük sıçramanın ortak atası.</li>
       <li><b>💼 Ekonomi:</b> yazarların kurduğu şirketlerin toplam değerlemesi <span class="ped-stat">milyarlarca dolar</span> — tek makalenin girişim ekosistemi.</li>
-      <li><b>🏆 Zafer kriterin:</b> Şekil 1'deki mimari şemayı bir arkadaşına kendi cümlelerinle anlatabilmek. Bu ağacı bitirdiğinde yapacaksın.</li>
+      <li><b>🎓 Bitiş ölçütün:</b> Şekil 1'deki mimari şemayı bir arkadaşına kendi cümlelerinle anlatabilmek. Bu ağacı bitirdiğinde yapacaksın.</li>
     </ul>
     <div class="ped-h">📄 Ateşlediği çalışmalar</div>
     <p>BERT, GPT-1/2/3/4, T5, ViT, AlphaFold2, Whisper, Stable Diffusion, ChatGPT, Claude... — modern YZ'nin soy ağacında kök düğüm.</p>
@@ -9707,81 +9715,81 @@ print(&quot;2+1= (eğitimde YOK) →&quot;, c, &quot;(%.1f%%)&quot; % (pr * 100)
     <div class="ped-links"><button class="addbtn" data-ped-tree="llm" style="background:var(--panel); color:var(--text); border:1px solid var(--line)">🗺️ Ağaçta gör</button></div>
   </div>
 
-  <p class="footer">AIpedia • kâşifler · keşif hikâyeleri · rakamlarla gerçek dünya — ağaçla senkron 14 madde</p>
+  <p class="footer">Keşif Defteri • kâşifler · keşif hikâyeleri · rakamlarla gerçek dünya — ağaçla senkron 14 madde</p>
   </div><!-- /model-pedia -->
 
 
   </div><!-- /wrap -->
 </div><!-- /applayout -->
 
-<script src="js/lesson-linreg.js?v=202611081559"></script>
-<script src="js/lesson-turev.js?v=202611081559"></script>
-<script src="js/lesson-xor.js?v=202611081559"></script>
-<script src="js/lesson-xor-arch.js?v=202611081559"></script>
-<script src="js/lesson-xor-maps.js?v=202611081559"></script>
-<script src="js/lesson-xor-epoch.js?v=202611081559"></script>
-<script src="js/lesson-nn.js?v=202611081559"></script>
-<script src="js/lesson-trig.js?v=202611081559"></script>
+<script src="js/lesson-linreg.js?v=202611081602"></script>
+<script src="js/lesson-turev.js?v=202611081602"></script>
+<script src="js/lesson-xor.js?v=202611081602"></script>
+<script src="js/lesson-xor-arch.js?v=202611081602"></script>
+<script src="js/lesson-xor-maps.js?v=202611081602"></script>
+<script src="js/lesson-xor-epoch.js?v=202611081602"></script>
+<script src="js/lesson-nn.js?v=202611081602"></script>
+<script src="js/lesson-trig.js?v=202611081602"></script>
 
-<script src="js/vendor/three-0.128.0.min.js?v=202611081559"></script>
-<script src="js/lesson-rnn-soz.js?v=202611081559"></script>
+<script src="js/vendor/three-0.128.0.min.js?v=202611081602"></script>
+<script src="js/lesson-rnn-soz.js?v=202611081602"></script>
 <script>(function(){var ids=['rc_Wxh','rc_Whh','rc_b','rc_Why','rc_by'];document.querySelectorAll('#rcPresets .rc-preset').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.p.split(',');ids.forEach(function(id,i){var e=document.getElementById(id);if(e){e.value=v[i];e.dispatchEvent(new Event('input',{bubbles:true}));}});});});})();</script>
-<script src="js/lesson-rnn-ornek.js?v=202611081559"></script>
-<script src="js/lesson-lstm-cell.js?v=202611081559"></script>
-<script src="js/app.js?v=202611081559"></script>
-<script src="js/lesson-rnn-wbar.js?v=202611081559"></script>
-<script src="js/lesson-lstm-big.js?v=202611081559"></script>
-<script src="js/lesson-lstm-step.js?v=202611081559"></script>
-<script src="js/lesson-lstm-sim.js?v=202611081559"></script>
-<script src="js/lesson-lstm-size.js?v=202611081559"></script>
-<script src="js/lesson-lstm-m2o.js?v=202611081559"></script>
-<script src="js/lesson-emb-kullan.js?v=202611081559"></script>
-<script src="js/lesson-emb-draco.js?v=202611081559"></script>
-<script src="js/lesson-emb-arch.js?v=202611081559"></script>
-<script src="js/lesson-emb-extra.js?v=202611081559"></script>
-<script src="js/lesson-s2s-weights.js?v=202611081559"></script>
-<script src="js/lesson-s2s-add.js?v=202611081559"></script>
-<script src="js/lesson-s2s-inside.js?v=202611081559"></script>
-<script src="js/lesson-s2s-desen.js?v=202611081559"></script>
-<script src="js/lesson-s2s-anim.js?v=202611081559"></script>
-<script src="js/lesson-att-train.js?v=202611081559"></script>
-<script src="js/lesson-att-extra.js?v=202611081559"></script>
-<script src="js/lesson-att-sim.js?v=202611081559"></script>
-<script src="js/lesson-att-ornek.js?v=202611081559"></script>
-<script src="js/lesson-mh-big.js?v=202611081559"></script>
-<script src="js/lesson-mh-blk.js?v=202611081559"></script>
-<script src="js/lesson-mh-ornek.js?v=202611081559"></script>
-<script src="js/lesson-tf-big.js?v=202611081559"></script>
-<script src="js/lesson-tf-weights.js?v=202611081559"></script>
-<script src="js/lesson-tf-tour.js?v=202611081559"></script>
-<script src="js/lesson-tf-ornek.js?v=202611081559"></script>
-<script src="js/lesson-gpt-tiny.js?v=202611081559"></script>
-<script src="js/lesson-gpt-big.js?v=202611081559"></script>
-<script src="js/lesson-gpt-ornek.js?v=202611081559"></script>
-<script src="js/lesson-rnn-van.js?v=202611081559"></script>
-<script src="js/lesson-s2s-extra.js?v=202611081559"></script>
-<script src="js/lesson-s2s-ornek.js?v=202611081559"></script>
-<script src="js/lesson-emb-ornek.js?v=202611081559"></script>
-<script src="js/lesson-emb-steps.js?v=202611081559"></script>
-<script src="js/lesson-emb-big.js?v=202611081559"></script>
-<script src="js/lesson-sm-ornek.js?v=202611081559"></script>
-<script src="js/lesson-sm-big.js?v=202611081559"></script>
-<script src="js/lesson-sm-akt.js?v=202611081559"></script>
-<script src="js/lesson-lstm-unroll.js?v=202611081559"></script>
-<script src="js/lesson-lstm-seq.js?v=202611081559"></script>
-<script src="js/lesson-lstm-gate.js?v=202611081559"></script>
-<script src="js/lesson-lstm-ornek.js?v=202611081559"></script>
-<script src="js/lesson-gpt.js?v=202611081559"></script>
-<script src="js/lesson-gpt-mini.js?v=202611081559"></script>
-<script src="js/lesson-vektor-ornek.js?v=202611081559"></script>
-<script src="js/lesson-linreg-big.js?v=202611081559"></script>
-<script src="js/lesson-linreg-ornek.js?v=202611081559"></script>
-<script src="js/lesson-act-big.js?v=202611081559"></script>
-<script src="js/lesson-act-ornek.js?v=202611081559"></script>
-<script src="js/lesson-xor-ornek.js?v=202611081559"></script>
-<script src="js/lesson-nn-ornek.js?v=202611081559"></script>
-<script src="js/lesson-nn-net.js?v=202611081559"></script>
-<script src="js/lesson-nn-sim.js?v=202611081559"></script>
-<script src="js/lesson-nn-big.js?v=202611081559"></script>
+<script src="js/lesson-rnn-ornek.js?v=202611081602"></script>
+<script src="js/lesson-lstm-cell.js?v=202611081602"></script>
+<script src="js/app.js?v=202611081602"></script>
+<script src="js/lesson-rnn-wbar.js?v=202611081602"></script>
+<script src="js/lesson-lstm-big.js?v=202611081602"></script>
+<script src="js/lesson-lstm-step.js?v=202611081602"></script>
+<script src="js/lesson-lstm-sim.js?v=202611081602"></script>
+<script src="js/lesson-lstm-size.js?v=202611081602"></script>
+<script src="js/lesson-lstm-m2o.js?v=202611081602"></script>
+<script src="js/lesson-emb-kullan.js?v=202611081602"></script>
+<script src="js/lesson-emb-draco.js?v=202611081602"></script>
+<script src="js/lesson-emb-arch.js?v=202611081602"></script>
+<script src="js/lesson-emb-extra.js?v=202611081602"></script>
+<script src="js/lesson-s2s-weights.js?v=202611081602"></script>
+<script src="js/lesson-s2s-add.js?v=202611081602"></script>
+<script src="js/lesson-s2s-inside.js?v=202611081602"></script>
+<script src="js/lesson-s2s-desen.js?v=202611081602"></script>
+<script src="js/lesson-s2s-anim.js?v=202611081602"></script>
+<script src="js/lesson-att-train.js?v=202611081602"></script>
+<script src="js/lesson-att-extra.js?v=202611081602"></script>
+<script src="js/lesson-att-sim.js?v=202611081602"></script>
+<script src="js/lesson-att-ornek.js?v=202611081602"></script>
+<script src="js/lesson-mh-big.js?v=202611081602"></script>
+<script src="js/lesson-mh-blk.js?v=202611081602"></script>
+<script src="js/lesson-mh-ornek.js?v=202611081602"></script>
+<script src="js/lesson-tf-big.js?v=202611081602"></script>
+<script src="js/lesson-tf-weights.js?v=202611081602"></script>
+<script src="js/lesson-tf-tour.js?v=202611081602"></script>
+<script src="js/lesson-tf-ornek.js?v=202611081602"></script>
+<script src="js/lesson-gpt-tiny.js?v=202611081602"></script>
+<script src="js/lesson-gpt-big.js?v=202611081602"></script>
+<script src="js/lesson-gpt-ornek.js?v=202611081602"></script>
+<script src="js/lesson-rnn-van.js?v=202611081602"></script>
+<script src="js/lesson-s2s-extra.js?v=202611081602"></script>
+<script src="js/lesson-s2s-ornek.js?v=202611081602"></script>
+<script src="js/lesson-emb-ornek.js?v=202611081602"></script>
+<script src="js/lesson-emb-steps.js?v=202611081602"></script>
+<script src="js/lesson-emb-big.js?v=202611081602"></script>
+<script src="js/lesson-sm-ornek.js?v=202611081602"></script>
+<script src="js/lesson-sm-big.js?v=202611081602"></script>
+<script src="js/lesson-sm-akt.js?v=202611081602"></script>
+<script src="js/lesson-lstm-unroll.js?v=202611081602"></script>
+<script src="js/lesson-lstm-seq.js?v=202611081602"></script>
+<script src="js/lesson-lstm-gate.js?v=202611081602"></script>
+<script src="js/lesson-lstm-ornek.js?v=202611081602"></script>
+<script src="js/lesson-gpt.js?v=202611081602"></script>
+<script src="js/lesson-gpt-mini.js?v=202611081602"></script>
+<script src="js/lesson-vektor-ornek.js?v=202611081602"></script>
+<script src="js/lesson-linreg-big.js?v=202611081602"></script>
+<script src="js/lesson-linreg-ornek.js?v=202611081602"></script>
+<script src="js/lesson-act-big.js?v=202611081602"></script>
+<script src="js/lesson-act-ornek.js?v=202611081602"></script>
+<script src="js/lesson-xor-ornek.js?v=202611081602"></script>
+<script src="js/lesson-nn-ornek.js?v=202611081602"></script>
+<script src="js/lesson-nn-net.js?v=202611081602"></script>
+<script src="js/lesson-nn-sim.js?v=202611081602"></script>
+<script src="js/lesson-nn-big.js?v=202611081602"></script>
 </body>
 </html>

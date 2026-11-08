@@ -336,7 +336,7 @@
        rail-done  = araştırıldı  → yeşil düğüm + hattan akan enerji
        rail-avail = sıradaki     → nabız atan altın düğüm
        rail-locked= kilitli      → sönük içi boş düğüm
-       rail-meta  = ders değil (Yol Haritası / AIpedia) → mavi elmas
+       rail-meta  = ders değil (Yol Haritası / Keşif Defteri) → mavi elmas
      Butonun ALT kenarındaki ince çubuk = o dersin alt başlık ilerlemesi (--prog).
      Üç arka plan katmanı: [hover parıltısı] , [ilerleme çubuğu] , [taban gradyan]. */
   .sb-prog{background:linear-gradient(160deg,#26325a,#16203a); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin:0 0 12px}
@@ -526,7 +526,7 @@
   .subnav a.cur{color:var(--accent); font-weight:600}
   .subnav a.cur::before{background:var(--accent)}
   @media(max-width:860px){ .subnav{display:none !important} }
-  /* ---- yol haritası (tech tree) — Civ6 parşömen temalı ---- */
+  /* ---- yol haritası (tech tree) — parşömen temalı ---- */
   #techSvg{width:100%; max-width:960px; min-width:640px; height:auto; background:#c9b283; border-radius:10px; box-shadow:inset 0 0 60px rgba(70,45,10,.35)}
   #techSvg text{fill:#3a2a12; font-family:"Segoe UI",Arial,sans-serif; pointer-events:none}
   #techSvg .tsub{font-size:9.5px; fill:#7a5a2a; font-weight:600}
@@ -565,7 +565,7 @@
   /* Bağlantı kabloları: te-off (kaynağı hâlâ kilitli) ve te-on (kaynağı zaten
      araştırılmış) varsayılan durumda sakin — sırasıyla sabit kahverengi ve
      sabit yeşil + hep akan kesikli çizgi (ttflow, "güç akıyor" der). Rengarenk/
-     "cafcaflı" gökkuşağı akışı (AIpedia kutusuyla AYNI 7 renk durağı + o
+     "cafcaflı" gökkuşağı akışı (Keşif Defteri kutusuyla AYNI 7 renk durağı + o
      kutudaki gibi renkle eşleşen parıltı/drop-shadow) sadece o an SEÇİLİ
      düğümü açmak için gereken doğrudan ön koşul kablolarında yanıyor — te-req
      sınıfı (bkz. app.js render()) tıklanan düğüme göre her çizimde yeniden
@@ -879,7 +879,7 @@
   /* ---- aynı vurgu, "5️⃣ Bütün Resim" ağacının/akışının xf-box/xt-box kutuları için ---- */
   .xf-box.eq-hl-f, .xt-box.eq-hl-f{border-color:#ffd24a !important; box-shadow:0 0 0 2px rgba(255,210,74,.5), 0 0 10px rgba(255,210,74,.35)}
   .xf-box.eq-hl-b, .xt-box.eq-hl-b{border-color:#f0a032 !important; box-shadow:0 0 0 2px rgba(240,160,50,.5), 0 0 10px rgba(240,160,50,.35)}
-  /* ---- Civ6 tech tree v4: parşömen + çağlar ----
+  /* ---- Yol haritası v4: parşömen + çağlar ----
      Bu parşömen degrade sadece newStyle:false (eski) çağların GÖRÜNMEDIĞİ
      boşluklarda kalan tabana ait — şu an bütün çağlar newStyle olduğu için
      dış kenar (bkz. #techSvg-newera) koyu temaya çevrildi ki era-band'lar
@@ -906,7 +906,7 @@
   #ttScroll::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#8a6a2e,#d4a94a); border-radius:8px; border:2px solid #0e1728}
   #ttScroll::-webkit-scrollbar-thumb:hover{background:linear-gradient(90deg,#a5822f,#e6c26e)}
 
-  /* ---- Yol Haritası — Civ VII tarzı yeni kart dili (kademeli geçiş) ----
+  /* ---- Yol Haritası — madalyon tarzı yeni kart dili (kademeli geçiş) ----
      Sadece newStyle:true işaretli çağlar (şu an TEMELLER ÇAĞI) bu dili
      kullanıyor; js/app.js render()'da .tn-newstyle olarak işaretleniyor,
      içeriği <foreignObject> ile gerçek HTML/CSS kartı SVG koordinat
@@ -919,7 +919,7 @@
   #techSvg .era-ribbon.era-ribbon-new{fill:#7a5420}
   #techSvg .era-lbl.era-lbl-new{font-family:"Cinzel",serif; letter-spacing:4px}
 
-  /* Kart çerçevesi — Civ VII'nin sade tek-çizgi kenarlığının birebir
+  /* Kart çerçevesi — referansın sade tek-çizgi kenarlığının birebir
      kopyası DEĞİL: "işlenmiş madalyon" hissi için üç katman bir arada —
      (1) dış çizgi belirginleşsin diye 1.5px→2px kalın kenarlık,
      (2) outline+negatif outline-offset ile kenarlığın birkaç piksel
@@ -946,7 +946,7 @@
     box-shadow:0 0 0 1px rgba(224,184,102,.25), 0 0 18px rgba(224,184,102,.3), 0 5px 14px rgba(0,0,0,.4)}
   /* Kilitli kart eskiden tüm-kart opacity:.66 ile soluklaştırılıyordu —
      kullanıcı "açık/kapalı arasında ton farkı çok fazla, neredeyse
-     okunmuyor" dedi (Civ VII referansında kilitli kartlar TAM OPAK, sadece
+     okunmuyor" dedi (referansta kilitli kartlar TAM OPAK, sadece
      daha az canlı renkli). Blanket opacity KALDIRILDI; ayrım artık sadece
      kenarlık rengi (gri-mavi/altın/yeşil) + ikon doygunluğu + rozet/başlık
      tonuyla taşınıyor — okunabilirlik korunuyor, durum farkı hâlâ net. */
@@ -955,7 +955,7 @@
   .ttc-head{position:relative; display:flex; align-items:center; gap:9px; padding:8px 10px 8px 8px;
     border-bottom:1px solid rgba(255,255,255,.07); background:linear-gradient(180deg, rgba(255,255,255,.05), transparent)}
   .ttc-icon-wrap{position:relative; flex:0 0 auto; width:38px; height:38px}
-  /* İlerleme halkası — Civ VII'deki ikon çevresindeki dolma çubuğunun
+  /* İlerleme halkası — referanstaki ikon çevresindeki dolma çubuğunun
      aynısı: conic-gradient + radial-gradient mask ile bir "donut" kesiti.
      Dolum oranı (--pct, 0-100) js/app.js'te alt-konu tamamlanma yüzdesine
      (k/N) göre inline style ile veriliyor; .tn.sel/.justUnlocked gibi
@@ -1003,13 +1003,13 @@
      seçicisi tek başına #techSvg'den daha spesifik olduğu için yukarıdaki tüm
      min-width kurallarını (masaüstü + @media 720px) ezer, sıralarına bakılmaksızın. */
   #techSvg.techSvg-vert{min-width:0; max-width:100%}
-  /* ---- AIpedia ---- */
+  /* ---- Keşif Defteri ---- */
   /* Bilinçli tipografik kopuş: geri kalan bütün site tek bir sans-serif yığınıyla
-     (Segoe UI/Roboto...) konuşuyor — AIpedia bir ansiklopedi/kitap gibi hissetsin
+     (Segoe UI/Roboto...) konuşuyor — Keşif Defteri bir ansiklopedi/kitap gibi hissetsin
      diye klasik bir serif yığınına geçiyor. Yeni font indirilmiyor (indirme
      başarısız olursa çirkin bir boşluk kalır); evrensel, her işletim sisteminde
      zaten yüklü serif fontlar zincirleniyor. Kapsam: sidebar butonu + sayfa başlığı
-     + AIpedia'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
+     + Keşif Defteri'nın kendi madde başlıkları (#model-pedia .sechead) — sitenin geri
      kalanındaki paylaşılan .sechead'lere DOKUNULMUYOR.  */
   /* Sadece font ailesi değişince gözle fark edilmeyebiliyor (bazı Android
      cihazlarda Georgia/Times yok, sisteme en yakın serif'e düşüyor). Bu yüzden
@@ -1018,7 +1018,7 @@
   .navbtn-ai{font-family:Georgia,"Times New Roman","Noto Serif",serif; font-style:italic; font-weight:700; letter-spacing:.3px; color:#e3c26b}
   .navbtn-ai:hover{color:#f5d98a}
   /* .navbtn.active (0,2,0) ile .navbtn-ai:hover (0,2,0) eşit özgüllükte —
-     imleç AIpedia AKTİFKEN üstünde dururken altın rengin turuncu zemini
+     imleç Keşif Defteri AKTİFKEN üstünde dururken altın rengin turuncu zemini
      ezmemesi için üç sınıflı bu kural (0,3,0) ile açıkça kazandırılıyor */
   .navbtn.active.navbtn-ai, .navbtn.active.navbtn-ai:hover{color:#101830}
   /* Hareketli RGB çerçeve: kategori kartlarındaki gökkuşağı halkasıyla (catRgbSpin)
@@ -1067,7 +1067,7 @@
   .ped-h{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:1px; margin:14px 0 4px}
   .ped-h:first-child{margin-top:0}
   .ped-links{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-  /* ---- AIpedia v2: portreler + hook ---- */
+  /* ---- Keşif Defteri v2: portreler + hook ---- */
   .ped-hook{font-size:15px; font-style:italic; color:#e8dcbf; border-left:3px solid var(--accent); padding:10px 14px; background:rgba(240,160,50,.06); border-radius:4px; line-height:1.75; margin:0 0 16px}
   .ped-people{display:flex; flex-wrap:wrap; gap:10px; margin:8px 0 14px}
   .ped-card{display:flex; gap:10px; align-items:center; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px; flex:0 1 auto; max-width:290px}
@@ -2204,3 +2204,9 @@ body.xt-full-lock{overflow:hidden}
 .hr-cols .hr-cat{margin:0}
 .hr-cols .hr-tiles{grid-template-columns:1fr}
 @media(max-width:420px){.hr-cols{grid-template-columns:1fr}}
+
+/* derslerden haritaya köprü satırı */
+.hr-bridge{margin:0 0 10px;padding:7px 12px;border-radius:9px;background:rgba(90,160,224,.08);border:1px dashed rgba(90,160,224,.45);font-size:13px;line-height:1.6}
+.hr-bridge a{color:#9fc8f0;font-weight:700;text-decoration:none}
+.hr-bridge a:hover{text-decoration:underline}
+.hr-bridge span{color:#9aa3b6}
