@@ -538,3 +538,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('QLoRA ne yapar?',['Temel modeli 4 bite sıkıştırıp dondurur, LoRA\'yı üstüne eğitir','LoRA\'yı kaldırır','Modeli büyütür','Tercih verisi üretir'],'Tek kartta ince ayar.'),
  R('Modele yeni ve güncel bilgi vermek için çoğu zaman tercih edilen yol?',['Bilgiyi istem sırasında vermek (RAG)','Sıcaklığı artırmak','Tokenizer\'ı değiştirmek','Daha uzun ön eğitim'],'Sonraki derslerden biri.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.bg=[
+ R('BERT Transformer\'ın hangi kısmını kullanır?',['Yalnız encoder','Yalnız decoder','İkisini de','Hiçbirini'],'Encoder-only.'),
+ R('GPT Transformer\'ın hangi kısmını kullanır?',['Yalnız decoder','Yalnız encoder','İkisini de','Yalnız embedding'],'Decoder-only.'),
+ R('T5 hangi yapıdadır?',['Encoder-decoder','Encoder-only','Decoder-only','RNN'],'Metinden metne.'),
+ R('BERT\'te dikkat maskesi nasıldır?',['Maskesiz: her kelime bütün cümleyi görür','Nedensel: yalnız sol','Yalnız sağ','Hiç dikkat yok'],'İki yönlü.'),
+ R('GPT\'de dikkat maskesi nasıldır?',['Nedensel: her kelime kendisini ve solunu görür','Maskesiz','Yalnız sağ','Rastgele'],'Üst üçgen kapalı.'),
+ R('BERT\'in ön eğitim görevi?',['Gizlenmiş (maskeli) kelimeleri tahmin etmek','Sıradaki kelimeyi tahmin etmek','Çeviri','Görüntü sınıflandırma'],'Masked LM.'),
+ R('GPT\'nin ön eğitim görevi?',['Her konumda sıradaki kelimeyi tahmin etmek','Gizlenmiş kelimeyi tahmin etmek','Cümle sırası','Sınıflandırma'],'Causal LM.'),
+ R('BERT\'te kelimelerin yaklaşık yüzde kaçı gizlenir?',['%15','%50','%1','%100'],'Ve 80/10/10 kuralı.'),
+ R('80/10/10 kuralında seçilen kelimelerin %10\'u ne olur?',['Rastgele başka bir kelimeyle değiştirilir (bir %10 da olduğu gibi kalır)','Silinir','Çoğaltılır','Büyük harfe çevrilir'],'%80 [MASK].'),
+ R('80/10/10 kuralının nedeni?',['Kullanımda hiç [MASK] olmadığı için eğitim ↔ kullanım farkını azaltmak','Hız','Bellek','Tokenizer'],'Uyumsuzluk.'),
+ R('BERT neden metin üretmekte zayıftır?',['Sağı görerek eğitildi; üretimde sağ henüz yoktur','Çok küçük olduğu için','Tokenizer\'ı olmadığı için','Softmax\'ı olmadığı için'],'Soldan sağa yol yok.'),
+ R('GPT neden doğal olarak metin üretebilir?',['Eğitimi zaten "solu gör, sıradakini tahmin et"','İki yöne baktığı için','Encoder\'ı olduğu için','Çeviri modeli olduğu için'],'Eğitim = kullanım.'),
+ R('Örnek 1\'de iki yanı gören model kaç boşluğu doğru doldurdu?',['47 / 59','28 / 59','59 / 59','18 / 59'],'Yalnız sol: 28.'),
+ R('Örnek 2\'de (birini dışarıda bırak) ne oldu?',['Avantaj kayboldu: 18 ↔ 20 (veri azlığı)','BERT 59/59 yaptı','GPT 0 yaptı','Değişmedi'],'Sayma modeli genelleyemez.'),
+ R('Gerçek BERT veri azlığı sorununu nasıl aşar?',['Kelimeleri vektörlerle temsil edip benzer bağlamlar arasında genelleyerek ve çok büyük veriyle','Daha çok sayarak','Sağı görmeyerek','Sözlüğü küçülterek'],'Gömme vektörleri.'),
+ R('Aynı metinde bir geçişte GPT\'nin tahmin sayısı BERT\'inkine göre?',['Çok daha fazla (her konum ↔ %15)','Daha az','Eşit','Sıfır'],'79 ↔ ≈12.'),
+ R('Encoder-decoder modelde decoder neye bakar?',['Kendi yazdığının soluna ve encoder\'ın tamamına (çapraz dikkat)','Yalnız encoder\'a','Yalnız sağına','Hiçbir şeye'],'Çapraz dikkat maskesiz.'),
+ R('[CLS] token\'ının işi?',['Çıkış vektörü bütün cümlenin özeti olarak sınıflandırmada kullanılır','Cümle sonunu gösterir','Maske yapar','Çeviri yapar'],'BERT.'),
+ R('Yorum sınıflandırması için ucuz ve uygun aile?',['Encoder (BERT ailesi)','Decoder-only dev model şart','Encoder-decoder şart','Hiçbiri'],'Küçük ve hızlı.'),
+ R('Anlamsal arama ve RAG\'de metni vektöre çeviren modeller çoğunlukla?',['Encoder yapısında embedding modelleri','Decoder-only sohbet modelleri','Görüntü modelleri','Tokenizer\'lar'],'Sentence-BERT vb.'),
+ R('BERT kim tarafından ve ne zaman yayımlandı?',['Google, 2018','OpenAI, 2020','Meta, 2023','DeepMind, 2014'],'Devlin ve arkadaşları.'),
+ R('İlk GPT kim tarafından ve ne zaman?',['OpenAI, 2018','Google, 2017','Meta, 2019','Microsoft, 2016'],'Radford ve arkadaşları.'),
+ R('RoBERTa hangi bulguyu gösterdi?',['BERT\'in "sonraki cümle tahmini" görevinin gerekli olmadığını','BERT\'in metin ürettiğini','GPT\'nin encoder olduğunu','Maskenin gereksiz olduğunu'],'Ekstra.'),
+ R('Bugün çoğu büyük sohbet modeli neden decoder-only?',['Her konumdan öğrenir, eğitim = kullanım, tek model hem anlar hem üretir','Daha küçük olduğu için','Maskesiz olduğu için','Çeviri yapamadığı için'],'Ekstra.'),
+ R('BERT ile GPT arasındaki mimari fark çoğunlukla nedir?',['Tek bir dikkat maskesi (ve buna uygun eğitim hedefi)','Tamamen farklı katmanlar','Farklı aktivasyon','Farklı tokenizer zorunluluğu'],'Aynı blok.')
+]})();

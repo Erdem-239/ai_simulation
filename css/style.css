@@ -2332,3 +2332,12 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .gn-note{font-size:13.5px; color:#ccd5e8; line-height:1.7}
 .gn-corp{font-size:12.5px; color:#ccd5e8; margin-top:8px}
 .gn-corp summary{cursor:pointer; color:#fff}
+/* 🔀 BERT ↔ GPT dersi */
+.bg-mask td{text-align:center; font-weight:700}
+.bg-mask td.ok{color:#46c46a; background:rgba(70,196,106,.10)}
+.bg-mask td.no{color:#e06a6a; background:rgba(224,106,106,.08)}
+.bg-tok{cursor:pointer; font:inherit}
+.bg-edge{color:#5a6584; font-family:Consolas,monospace}
+.bg-cols{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:6px}
+@media(max-width:700px){.bg-cols{grid-template-columns:1fr}}
+.bg-col{background:#0e1424; border:1px solid var(--line); border-radius:8px; padding:6px 9px; font-size:12.5px; color:#dde6f7}
