@@ -154,11 +154,24 @@ body.nobar #barShow{display:block}
 @media (max-width:700px){#info{top:auto;bottom:150px;right:12px;max-height:38vh}#top h1{font-size:18px}}
 @media (max-width:700px){#bar{max-height:58vh;overflow:auto}#story{top:70px;max-height:56vh}}
 @media (prefers-reduced-motion:reduce){}
+#fam{position:fixed;top:8px;right:12px;z-index:60;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+#fam .fl{font:700 11.5px var(--sans);color:#9aa3b6;margin-right:2px}
+#fam button{font:700 12.5px var(--sans);height:32px;border-radius:8px;border:1px solid var(--line);background:#1b2131;color:var(--ink);cursor:pointer;padding:0 11px}
+#fam button.on{border-color:var(--hl);color:var(--hl);background:#2a2410}
+#fam button:hover{border-color:var(--blue)}
+body.famon #fam{left:0;right:0;top:0;padding:7px 12px;background:rgba(11,14,20,.97);border-bottom:1px solid var(--line);justify-content:center}
+#famView{position:fixed;left:0;right:0;bottom:0;top:47px;width:100%;height:calc(100% - 47px);border:0;display:none;z-index:55;background:#0b0e14}
+body.famon #famView{display:block}
+body.famon #bar,body.famon #barShow,body.famon #top,body.famon #lb,body.famon #info,body.famon #tour,body.famon #story{display:none!important}
+body.emb #fam{display:none!important}
+@media(max-width:760px){#fam{left:8px;right:8px;justify-content:center}#fam .fl{display:none}#fam button{padding:0 8px;font-size:11.5px}}
 </style>
 </head><body>
 
 <div id="stage"></div>
 <div id="labels"></div>
+<div id="fam"><span class="fl">Mimari ailesi:</span><button data-fam="tr" class="on" title="Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5">🧠 Transformer</button><button data-fam="oyuncak" title="StatQuest: «let's go» → «vamos», her kelime 2 sayı">🧸 Oyuncak</button><button data-fam="rnn" title="Zamanda açılmış RNN">🔁 RNN</button><button data-fam="s2s" title="2 katmanlı LSTM encoder-decoder, 7 + 5 → 12">➡️ Seq2Seq (LSTM)</button></div>
+<iframe id="famView" title="Mimari"></iframe>
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
 <div id="tour"></div>
@@ -773,6 +786,7 @@ function declutter(act){
     if(hit){o.e.style.opacity=0;o.e.style.pointerEvents='none'}else kept.push(r)})}
 let GAPY=6;const wt=new THREE.Vector3();let frameN=0,lostN=0;
 function frame(){
+  if(document.body.classList.contains('famon')){requestAnimationFrame(frame);return}
   t+=(tT-t)*0.12;if(Math.abs(tT-t)<1e-4)t=tT;$('sl').value=Math.round(tT*100);
   const e=ease(t),sc=0.28+0.72*e;hoverTick();keyMove();
   const act=ARCHS.filter(A=>A.on);
@@ -1386,3 +1400,14 @@ $('pa').onclick=()=>doPrint(true);
 
 </script>
 <script src="print-a4.js?v=202610220920"></script>
+<script>
+/* ---------- mimari ailesi: RNN / Seq2Seq / oyuncak aynı sayfada ---------- */
+(function(){const FAM={oyuncak:'josh-3b.html',rnn:'rnn-3b.html',s2s:'s2s-3b.html'};
+ const vm=location.search.match(/[?&]v=(\d+)/),vq=vm?'?v='+vm[1]:'';const fv=document.getElementById('famView');
+ function setFam(k){if(!FAM[k])k='tr';document.querySelectorAll('#fam button').forEach(b=>b.classList.toggle('on',b.dataset.fam===k));
+  if(k==='tr'){document.body.classList.remove('famon');fv.src='about:blank';if(location.hash)history.replaceState(null,'',location.pathname+location.search)}
+  else{document.body.classList.add('famon');const u=FAM[k]+vq;if(!fv.src.includes(FAM[k]))fv.src=u;history.replaceState(null,'',location.pathname+location.search+'#'+k);setTimeout(()=>{try{fv.focus()}catch(e){}},300)}}
+ document.querySelectorAll('#fam button').forEach(b=>b.onclick=()=>setFam(b.dataset.fam));
+ const h=(location.hash||'').slice(1);if(FAM[h])setFam(h);
+ window.__fam=setFam})();
+</script>

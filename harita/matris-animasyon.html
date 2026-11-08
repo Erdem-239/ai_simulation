@@ -41,10 +41,16 @@ canvas{display:block;width:100%;height:auto}
 .say{border-left:3px solid var(--teal)}
 .note{font-size:12.5px;color:var(--mute)}
 a{color:var(--blue)}
+#pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0 8px}
+#pick button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:9px 12px;border-radius:10px;border:1px solid var(--line,#2a3140);background:#161b26;color:inherit;font:700 14px system-ui,sans-serif;cursor:pointer}
+#pick button small{font-weight:400;font-size:11.5px;color:var(--mute,#9aa3b6)}
+#pick button:hover{border-color:#5aa0e0}
+#pick button.on{border-color:var(--hl,#ffc82e);background:#2a2410;color:var(--hl,#ffc82e)}
 </style></head><body><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
-<p class="sub">Önce <b>GPT-2 mimarisinin tamamı</b>, sonra her kutuya <b>zoom</b> yapıp içindeki matris işleminin animasyonu (🎬 tur). İstersen sahneleri tek tek de izle: <b>T0–T7</b> küçük sayılarla temel, <b>⓪–⑮</b> GPT-2 boyutunda. Sahne listesi aşağıdaki kutuda.</p>
-<details id="tabsBox"><summary id="tabsSum">📑 Sahne listesi</summary><div class="tabs" id="tabs"></div></details>
+<p class="sub">Dört animasyon tek sayfada. Üstten seç; her biri video gibi oynar, ⏮ ⏭ ile durak durak gidilir.</p>
+<div id="pick"><button data-pk="gpt2">🎬 GPT-2 turu<small>3B mimari + matris işlemleri, ~5 dk</small></button><button data-pk="oss">🟢 gpt-oss turu<small>MoE, GQA, kayan pencere, RoPE</small></button><button data-pk="rope">🌀 RoPE turu<small>konum = okların dönmesi, 13 durak</small></button><button data-pk="temel">🧱 Matris temelleri<small>transpoz, satır × sütun, Q·Kᵀ, maske</small></button></div>
+<details id="tabsBox"><summary id="tabsSum">📑 Bütün sahneler (tek tek)</summary><div class="tabs" id="tabs"></div></details>
 <div class="bar">
   <button id="bPrev">◀ Önceki sahne</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">Sonraki sahne ▶</button>
   <span id="tNav" style="display:none"><button id="tPrev">⏮ Önceki durak</button> <button id="tNext">Sonraki durak ⏭</button></span>
@@ -1894,9 +1900,13 @@ var tabsWrap=document.getElementById('tabs'),TB=[];
   tabsWrap.appendChild(d)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
 hs.onchange=function(){head_=+hs.value;draw(true)};
+function pickKey(i){return i===0?'gpt2':i===SC.length-2?'oss':i===SC.length-1?'rope':(i>=1&&i<=TEMEL.length)?'temel':''}
+function pickSync(){var k=pickKey(cur);document.querySelectorAll('#pick button').forEach(function(b){b.classList.toggle('on',b.dataset.pk===k)})}
+document.querySelectorAll('#pick button').forEach(function(b){b.onclick=function(){var k=b.dataset.pk;go(k==='gpt2'?0:k==='oss'?SC.length-2:k==='rope'?SC.length-1:1);
+  if(!SNAP)history.replaceState(null,'',location.pathname+location.search+(k==='gpt2'?'':'#'+(k==='oss'?'ossturu':k)))}});
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
   TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi ('+SC.length+' sahne) — şu an: '+SC[cur].tag;
-  lastSay=null;draw(true)}
+  lastSay=null;pickSync();draw(true)}
 function draw(force){
   ctx.clearRect(0,0,CW,CH);SC[cur].draw(t);
   document.getElementById('scrub').value=Math.round(t*1000);
