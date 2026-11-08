@@ -2498,6 +2498,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'BERT: Devlin ve arkadaşları (Google, 2018). GPT: Radford ve arkadaşları (OpenAI, 2018). T5: Raffel ve arkadaşları (Google, 2019).',
       real:[['🔍','Arama ve sınıflandırma: BERT ailesi'],['💬','Sohbet ve üretim: GPT ailesi'],['🌐','Çeviri ve özet: T5 / encoder-decoder']],
       sub:['Dikkat maskesi: iki yönlü ↔ nedensel','Maskeli dil modeli (%15)','Sıradaki token tahmini','Encoder-decoder ve çapraz dikkat','Neden decoder-only kazandı?']},
+    {id:'rag',  nm:'📚 RAG', tier:12, v:30, pre:['ft'], tab:'rag',
+      d:'Bilgiyi modelin ağırlıklarına değil, soruyla birlikte istemine koy: belgeleri parçala, vektöre çevir, soruya en yakın parçaları getir, model onlara dayanarak cevaplasın.',
+      sci:'RAG: Lewis ve arkadaşları (Facebook AI, 2020). Yoğun arama (DPR): Karpukhin ve arkadaşları (2020). TF-IDF: Spärck Jones (1972).',
+      real:[['🏢','Şirket belgeleriyle cevap veren asistanlar'],['🔎','Kaynak göstererek cevaplayan arama'],['📅','Güncel bilgi: eğitimden sonraki olaylar']],
+      sub:['Parçala → vektöre çevir → getir → isteme koy','TF-IDF ve kosinüs benzerliği','Türkçe ekler: 3\'lü harf grupları','Embedding modelleri ve anlam araması','k ve parça boyu ayarı']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
@@ -2511,7 +2516,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
     {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
-    {t0:11,t1:11,nm:'🛠️ UYGULAMADA LLM', newStyle:true}
+    {t0:11,t1:12,nm:'🛠️ UYGULAMADA LLM', newStyle:true}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3437,7 +3442,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
-      {t0:11, t1:11, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'}
+      {t0:11, t1:12, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());

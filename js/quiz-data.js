@@ -592,3 +592,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Tablo 3\'e göre tek kafalı dikkat?',['En iyi ayardan 0,9 BLEU kötü','Daha iyi','Aynı','Çalışmıyor'],'Ekstra.'),
  R('Bugünkü büyük açık modeller makaleden hangi yönde ayrılır?',['Çoğu yalnız decoder, pre-LN/RMSNorm, RoPE, GQA kullanır','Hepsi RNN\'e döndü','Dikkat kullanmazlar','Hepsi encoder-only'],'Ekstra tablo.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.rag=[
+ R('RAG neyin kısaltmasıdır?',['Retrieval-Augmented Generation (bilgi getirerek üretim)','Random Attention Graph','Recurrent Adaptive Gate','Reward And Gradient'],'Lewis 2020.'),
+ R('RAG modelin ağırlıklarını değiştirir mi?',['Hayır; bilgi istemin içine konur','Evet, her soruda','Yalnız son katmanı','Yalnız LoRA ile'],'İstemde bilgi.'),
+ R('RAG\'in her sorudaki adımları?',['Soruyu vektöre çevir → en benzer parçaları getir → isteme koy → model cevaplar','Modeli yeniden eğit','Sıcaklığı artır','Tokenizer\'ı değiştir'],'Getir, koy, üret.'),
+ R('Belgeler RAG için neden parçalara bölünür?',['İsteme yalnız ilgili kısımlar sığsın ve arama isabetli olsun diye','Daha çok token için','Gizlilik için','Zorunlu değil'],'Parça boyu ayarı.'),
+ R('TF-IDF\'te IDF ne ölçer?',['Bir terimin belgeler arasında ne kadar nadir olduğunu','Belgenin uzunluğunu','Kelimenin harf sayısını','Sorunun yılını'],'Nadir = ayırt edici.'),
+ R('Kosinüs benzerliği neyi ölçer?',['İki vektörün yönlerinin ne kadar aynı olduğunu','Uzunluk farkını','Doğruluğu','Token sayısını'],'Vektör dersi.'),
+ R('Örnek 1\'de kelime TF-IDF ilk sırada kaç soruyu bildi?',['10 / 14','14 / 14','13 / 14','5 / 14'],'3\'lü harf: 13/14.'),
+ R('Türkçede kelime eşleşmesi neden kırıldı?',['Ekler kelime biçimini değiştirdi («kapılarla» ↔ «kapılarıyla»)','Büyük harf yüzünden','Rakamlar yüzünden','Kelimeler çok kısa'],'Harf grupları kökü yakalar.'),
+ R('Aynı anlamı farklı kelimelerle soran soruyu hangi yöntem yakalar?',['Embedding (yoğun vektör) modelleri','Kelime TF-IDF','3\'lü harf TF-IDF','Hiçbiri yakalayamaz'],'Anlam araması.'),
+ R('Seyrek (TF-IDF/BM25) aramanın avantajı?',['Hızlı ve açıklanabilir; nadir terimleri (ad, kod) iyi bulur','Eşanlamlıları bulur','Sinir ağı gerektirir','Her dilde aynı'],'Hibrit kullanılır.'),
+ R('Soru ve belgeler nasıl vektöre çevrilmeli?',['Aynı yöntem/modelle','Farklı modellerle','Rastgele','Yalnız belgeler'],'Aynı uzay.'),
+ R('k (getirilen parça sayısı) büyüyünce ne olur?',['Doğru belgenin girme şansı artar ama istem uzar ve ilgisiz metin karışır','Her zaman daha iyi olur','İstem kısalır','Model eğitilir'],'Örnek 2.'),
+ R('Örnek 2\'de doğru belge hangi k\'da 14/14 isteme girdi?',['k = 4','k = 1','k = 2','Hiçbir zaman'],'Bağlam ~65 kelime.'),
+ R('Örnek 3\'te belgeleri cümlelere bölmek isabeti nasıl etkiledi?',['13\'ten 12\'ye düşürdü','Arttırdı','Değiştirmedi','Sıfırladı'],'Kısa parçada bağlam kaybolur.'),
+ R('Yeniden sıralama (reranking) nedir?',['Geniş aday listesini, soruyla birlikte okuyan daha pahalı bir modelle yeniden sıralamak','Belgeleri alfabetik sıralamak','Modeli yeniden eğitmek','Sıcaklığı değiştirmek'],'Cross-encoder.'),
+ R('Vektör veritabanları milyonlarca parçada nasıl hızlı arar?',['Yaklaşık en yakın komşu dizinleriyle (ör. HNSW)','Her parçayı tek tek okuyarak','Rastgele seçerek','Arama yapmazlar'],'ANN.'),
+ R('Arama doğru parçayı bulamazsa ne olur?',['Model ya "bilmiyorum" der ya da uydurur','Model her zaman doğru bilir','Sistem çöker','Parça kendiliğinden eklenir'],'Arama kaçırırsa üretim kurtaramaz.'),
+ R('Güncel bilgi eklemek için RAG\'in ince ayara üstünlüğü?',['Belgeyi değiştirmek yeterli, yeniden eğitim yok','Daha az token','Daha az kod','Üstünlüğü yok'],'Ekstra tablo.'),
+ R('İnce ayar en çok ne için uygundur?',['Biçim, üslup, görev davranışı','Güncel haber eklemek','Kaynak göstermek','Erişim izni'],'RAG bilgi için.'),
+ R('İstemde "bilgilerde yoksa bilmiyorum de" talimatı neden konur?',['Uydurmayı azaltmak için','Hızlandırmak için','Tokenizer için','Zorunlu sözdizimi'],'Sıfırlamaz ama azaltır.'),
+ R('İstem enjeksiyonu RAG\'de nasıl olur?',['Getirilen belgenin içinde talimat gibi görünen metin bulunur','Model ağırlıkları değişir','Sözlük bozulur','Vektörler kaybolur'],'Belgeler veri olarak işlenmeli.'),
+ R('RAG makalesini (2020) kim yayımladı?',['Lewis ve arkadaşları (Facebook AI)','Vaswani ve arkadaşları','Devlin ve arkadaşları','Holtzman ve arkadaşları'],'Hikâye.'),
+ R('IDF fikrini 1972\'de ortaya koyan?',['Karen Spärck Jones','Philip Gage','Geoffrey Hinton','Claude Shannon'],'Arama motorlarının temeli.'),
+ R('Bu sayfadaki "cevap" kutusu ne gösteriyor?',['Dil modeli yerine, en ilgili belgedeki en benzer cümleyi','Gerçek bir dil modelinin cevabını','Rastgele bir cümleyi','Sorunun kendisini'],'Dürüst not.'),
+ R('Hibrit arama nedir?',['Seyrek (terim) ve yoğun (embedding) aramayı birlikte kullanmak','İki dil modeli','İnce ayar + LoRA','Beam + top-p'],'Gerçek sistemlerde yaygın.')
+]})();
