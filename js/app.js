@@ -4102,25 +4102,6 @@ function setupFloatingPanel(ids){
     box.innerHTML=s;
   }
 
-  // --- export / import ---
-  const io=document.getElementById('ttIO');
-  document.getElementById('ttExport').addEventListener('click',()=>{
-    const st=window.__ttGet();
-    io.value=JSON.stringify({d:st.done, s:st.subs, e:[...eureka]});
-    io.select();
-    try{ navigator.clipboard.writeText(io.value); }catch(e){}
-    toast('📤 İlerleme kodu kutuya yazıldı (kopyalandı).');
-  });
-  document.getElementById('ttImport').addEventListener('click',()=>{
-    try{
-      const o=JSON.parse(io.value);
-      window.__ttImport(o.d||[], o.s||[]);
-      eureka=new Set(o.e||[]); saveEk();
-      renderWonders();
-      toast('📥 İlerleme yüklendi.');
-    }catch(e){ toast('⚠️ Kod okunamadı — metni kontrol et.'); }
-  });
-
   renderWonders();
 })();
 
