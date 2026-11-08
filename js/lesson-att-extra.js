@@ -82,7 +82,7 @@
       v:'<b>V (değer), n × dᵥ.</b> Her kelimenin aktaracağı içerik: V = X·W<sub>V</sub>. Q ve K ile çarpılmaz, yan yoldan bekler; yalnız en sondaki MatMul\'a girer.',
       mm1:'<b>MatMul: Q · Kᵀ → n × n skor tablosu.</b> Hücre [i][j] = i. kelimenin sorusu · j. kelimenin etiketi (nokta çarpım). Laboratuvarda "2) Skorlar".',
       scale:'<b>Scale: ÷ √dₖ.</b> Boyut büyüdükçe nokta çarpımlar da büyür, softmax tek kelimeye kilitlenir. √dₖ\'ye bölmek skorları ılık tutar (makalede ÷8). Örnek Çalışmalar Örnek 2 bunu ölçüyor.',
-      mask:'<b>Mask (isteğe bağlı, kesikli).</b> Decoder\'da üst üçgen −∞ yapılır: bir kelime henüz yazılmamış sağdakileri göremez. Encoder\'da kullanılmaz. Ayrıntısı hemen aşağıdaki 🎭 Maske bölümünde.',
+      mask:'<b>Mask (isteğe bağlı, kesikli).</b> Decoder\'da üst üçgen −∞ yapılır: bir kelime henüz yazılmamış sağdakileri göremez. Encoder\'da kullanılmaz. Kısa özeti 4️⃣ Nedir\'deki 🎭 Maske kartında; 🔬 Dikkat laboratuvarı sekmesinde maskeli/maskesiz karşılaştırabilirsin.',
       soft:'<b>SoftMax, satır satır.</b> Her satırın skorları yüzdeye çevrilir, toplam %100: "bu kelime dikkatinin ne kadarını kime veriyor". Laboratuvarda "3) Softmax".',
       mm2:'<b>MatMul: A · V.</b> Yüzdelerle V satırları karıştırılır: her kelimenin yeni kartı = baktığı kelimelerin içeriklerinin ağırlıklı toplamı. Laboratuvarda "4) Yeni kart".',
       out:'<b>Çıktı Z, n × dᵥ</b> (girdiyle aynı şekil). Her kelimenin bağlamla zenginleşmiş hâli. Makalede bu blok 8 kafada paralel çalışır, çıktılar yan yana yapıştırılıp W<sub>O</sub> ile karıştırılır (Multi-Head, sonraki ders).'};
