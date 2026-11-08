@@ -2089,3 +2089,17 @@ body.xt-full-lock{overflow:hidden}
 #atSdpa .sd-f span{cursor:pointer;font-weight:700}
 #model-attention .sd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 #model-attention .sd-chips span{font-size:12px;color:#ccd5e8;background:rgba(122,168,255,.08);border:1px solid #2a3552;border-radius:999px;padding:3px 10px}
+
+/* Self-Attention tek bakışta (Nedir) + sekmeli Simülasyon */
+#model-attention .at-hap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:900px){#model-attention .at-hap{grid-template-columns:1fr}}
+#model-attention .at-card{background:rgba(255,255,255,.025);border:1px solid #2a3552;border-radius:10px;padding:10px 12px}
+#model-attention .at-h{font-weight:700;color:#e9edf8;margin-bottom:6px;font-size:14.5px}
+#model-attention .at-t{margin:0;font-size:13px;width:100%}
+#model-attention .at-t td{padding:4px 8px}
+#model-attention .at-n{font-size:13px;color:#b9c3dc;line-height:1.6;margin-top:6px}
+#model-attention .at-ol,#model-attention .at-ul{margin:0;padding-left:20px;font-size:13.5px;color:#ccd5e8;line-height:1.7}
+#model-attention .at-f{margin-top:8px;text-align:center;font-weight:700;color:#ffd54a;font-size:14px;background:rgba(255,213,74,.06);border-radius:8px;padding:6px}
+#model-attention .at-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+#model-attention .at-tabs .addbtn{background:var(--panel);color:var(--text);border:1px solid var(--line)}
+#model-attention .at-tabs .addbtn.on{background:var(--blue);color:#fff}

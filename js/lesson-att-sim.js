@@ -62,3 +62,9 @@
   host.addEventListener('change',e=>{if(e.target.classList.contains('asD')){st.scale=e.target.checked;render();}});
   render();
 })();
+
+// Simülasyon sekmeleri: laboratuvar / makaledeki blok / tam model
+(function(){const tb=document.getElementById('atTabs');if(!tb)return;
+  tb.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;
+    tb.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('#model-attention .at-pane').forEach(p=>p.style.display=p.dataset.p===b.dataset.t?'':'none');});})();
