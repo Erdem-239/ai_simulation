@@ -484,3 +484,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Özel token\'lara örnek hangisi?',['<|endoftext|> (metin sonu)','"lar"','"ev"','"123"'],'Metinden gelmeyen işaretler.'),
  R('Dil modeli API\'lerinde fiyat ve bağlam penceresi neyle ölçülür?',['Token sayısıyla','Kelime sayısıyla','Harf sayısıyla','Saniyeyle'],'Gerçek Hayatta Nerede.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.gen=[
+ R('Bir dil modeli her adımda ne üretir?',['Sözlükteki her aday için bir olasılık','Tek bir kelime','Bütün cümle','Bir vektör'],'Seçimi kural yapar.'),
+ R('Açgözlü (greedy) seçim nedir?',['Her adımda en olası adayı seçmek','Rastgele seçmek','En az olası adayı seçmek','B yolu birden tutmak'],'Rastgelelik yok.'),
+ R('Açgözlü seçimin tipik sorunu nedir?',['Tekrar eden döngüye girme','Çok rastgele olma','Hiç durmama','Sözlük dışına çıkma'],'Örnek 1: kedi süt içti . kedi…'),
+ R('Örnek 1\'de 16 kelimelik açgözlü metinde kaç farklı kelime vardı?',['4','16','8','1'],'kedi, süt, içti, .'),
+ R('Sıcaklık T olasılığa nasıl uygulanır?',['p^(1/T), sonra toplam 1 olacak şekilde bölünür','p × T','p + T','p − T'],'Logit/T ile aynı şey.'),
+ R('T < 1 ne yapar?',['Dağılımı sivriltir; büyük olasılık daha büyür','Düzleştirir','Sıralamayı ters çevirir','Hiçbir şey'],'Tutarlı ama tekrarcı.'),
+ R('T > 1 ne yapar?',['Dağılımı düzleştirir; nadir adaylar daha sık seçilir','Sivriltir','Modeli yeniden eğitir','Sözlüğü küçültür'],'Çeşitli ama tuhaf.'),
+ R('T = 1 iken olasılıklar?',['Modelin kendi olasılıklarıdır','Hepsi eşit olur','En büyüğü 1 olur','Sıfırlanır'],'Değişmez.'),
+ R('T → 0 hangi kurala yaklaşır?',['Açgözlü seçime','Beam search\'e','Düz rastgele seçime','Top-p\'ye'],'En büyük olasılık 1\'e gider.'),
+ R('Sıcaklık adayların sırasını değiştirir mi?',['Hayır, yalnız oranları değiştirir','Evet, tersine çevirir','Evet, rastgele karıştırır','Yalnız T=1\'de'],'Monoton dönüşüm.'),
+ R('Top-k ne yapar?',['Yalnız en olası k adayı bırakır, kalanını keser','k kez örnekler','k kelime üretir','k sıcaklığı uygular'],'Sabit aday sayısı.'),
+ R('Top-p (nucleus) ne yapar?',['Olasılık toplamı p\'ye ulaşana kadar en iyi adayları bırakır','Yalnız p olasılıklı adayı seçer','p kadar adayı rastgele siler','Olasılığı p ile çarpar'],'Aday sayısı dağılıma göre değişir.'),
+ R('Top-p\'nin top-k\'ya üstünlüğü nedir?',['Model eminken az, kararsızken çok aday bırakır','Daha hızlıdır','Hiç rastgele değildir','Sözlüğü büyütür'],'Uyumlu.'),
+ R('Filtreden sonra kalan olasılıklara ne olur?',['Toplamları 1 olacak şekilde yeniden ölçeklenir','Olduğu gibi kalır','Hepsi eşitlenir','Sıfırlanır'],'Sonra zar atılır.'),
+ R('Örneklemede zar (r) nasıl kullanılır?',['Birikimli olasılık aralıklarından r hangisine düşerse o seçilir','r en büyük olasılıkla çarpılır','r token numarasıdır','r sıcaklıktır'],'Simülasyon tablosu.'),
+ R('Beam search ne yapar?',['B tane kısmi metni aynı anda tutar, toplam olasılığı en büyüğü seçer','Her adımda rastgele seçer','Yalnız ilk kelimeyi seçer','Sıcaklığı ayarlar'],'Σ ln p.'),
+ R('Örnek 3\'te «kuş» ile açgözlü ve beam metinlerinin olasılıkları?',['0,107 ve 0,25','0,25 ve 0,107','1 ve 0','eşit'],'Beam daha olası metni buldu.'),
+ R('Beam search neden sohbet modellerinde az kullanılır?',['Açık uçlu yazıda en olası metin kısa ve düz olma eğiliminde','Çok rastgele olduğu için','Çeviri yapamadığı için','Yasak olduğu için'],'Holtzman 2019.'),
+ R('Top-p örneklemeyi öneren 2019 makalesi?',['The Curious Case of Neural Text Degeneration','Attention Is All You Need','Deep Residual Learning','Adam'],'Holtzman ve arkadaşları.'),
+ R('Tekrar cezası (repetition penalty) ne yapar?',['Daha önce geçmiş token\'ların puanını düşürür','Metni kısaltır','Sıcaklığı artırır','Sözlüğü değiştirir'],'Döngüyü kırar.'),
+ R('Min-p hangi adayları atar?',['En iyi adayın olasılığının belli bir kesrinin altındakileri','En iyi k dışındakileri','Toplamı p\'yi aşanları','Hiçbirini'],'Uyumlu eşik.'),
+ R('Üretim ne zaman durur?',['Metin sonu token\'ı seçilince ya da en fazla token sayısına ulaşınca','Hiç durmaz','Model yorulunca','Sıcaklık 0 olunca'],'Ekstra.'),
+ R('Örnek 2\'de T yükseldikçe ortalama ln p nasıl değişti?',['Düştü: metinler modelin gözünde daha olağandışı','Yükseldi','Hiç değişmedi','Sıfır oldu'],'−0,78 → −1,21.'),
+ R('Aynı tohumla aynı ayarlar tekrar çalıştırılırsa?',['Aynı metin üretilir','Farklı metin üretilir','Hata verir','Model değişir'],'Tekrar üretilebilirlik.'),
+ R('Spekülatif çözümleme neyi hızlandırır?',['Küçük model taslak token önerir, büyük model hepsini tek geçişte kontrol eder','Eğitimi','Tokenizasyonu','Sıcaklığı'],'Dağılım değişmez.')
+]})();
