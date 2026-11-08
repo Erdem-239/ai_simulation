@@ -55,6 +55,42 @@
   }
 
   // ============ 6) BÜYÜK RESİM ============
+  // ============ MAKALEDEKİ MODEL: Scaled Dot-Product Attention (Vaswani vd. 2017, Şekil 2 sol — kendi çizimimiz) ============
+  const sd=$('atSdpa');
+  if(sd){
+    const C={q:'#7aa8ff',k:'#ffd54a',v:'#46c46a',op:'#c77dff',sc:'#4ad0e0',mk:'#95a2c2',sm:'#f0a032',out:'#e06a9a'};
+    const B=(x,y,w,h,t,col,key,dash,sub)=>'<g data-k="'+key+'" style="cursor:pointer"><rect class="sd-b" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="9" fill="'+col+'" fill-opacity=".16" stroke="'+col+'" stroke-width="2.2"'+(dash?' stroke-dasharray="6 4"':'')+'/><text x="'+(x+w/2)+'" y="'+(y+h/2+(sub?-2:5))+'" text-anchor="middle" font-size="14" fill="#e9edf8" font-weight="700">'+t+'</text>'+(sub?'<text x="'+(x+w/2)+'" y="'+(y+h/2+14)+'" text-anchor="middle" font-size="11" fill="#b9c3dc">'+sub+'</text>':'')+'</g>';
+    const A=(x1,y1,x2,y2)=>'<path d="M'+x1+','+y1+' L'+x2+','+y2+'" stroke="#95a2c2" stroke-width="2" fill="none" marker-end="url(#sdArr)"/>';
+    let s='<defs><marker id="sdArr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#95a2c2"/></marker></defs>';
+    // alttan yukarı: Q,K,V → MatMul → Scale → Mask(ops.) → SoftMax → MatMul(·V) → çıktı
+    s+=B(40,470,80,40,'Q',C.q,'q')+B(150,470,80,40,'K',C.k,'k')+B(300,470,80,40,'V',C.v,'v');
+    s+=A(80,470,120,428)+A(190,470,150,428);
+    s+=B(70,388,130,40,'MatMul','#c77dff','mm1',0,'Q · Kᵀ');
+    s+=A(135,388,135,358)+B(70,318,130,40,'Scale',C.sc,'scale',0,'÷ √dₖ');
+    s+=A(135,318,135,288)+B(70,248,130,40,'Mask',C.mk,'mask',1,'isteğe bağlı');
+    s+=A(135,248,135,218)+B(70,178,130,40,'SoftMax',C.sm,'soft',0,'satır satır');
+    s+=A(135,178,215,138)+'<path d="M340,470 L340,158 L282,158" stroke="#95a2c2" stroke-width="2" fill="none" marker-end="url(#sdArr)"/>';
+    s+=B(150,98,130,40,'MatMul','#c77dff','mm2',0,'A · V');
+    s+=A(215,98,215,64)+B(150,24,130,40,'çıktı Z',C.out,'out');
+    sd.innerHTML='<div class="sd-wrap"><div style="overflow-x:auto"><svg viewBox="20 14 360 506" style="width:100%;max-width:330px;min-width:260px;display:block;margin:0 auto" role="img" aria-label="Scaled Dot-Product Attention blok şeması">'+s+'</svg></div>'+
+      '<div><div id="atSdpaInfo" class="callout" style="margin:0"></div>'+
+      '<div class="sd-f">Attention(Q, K, V) = <span data-k="soft" style="color:'+C.sm+'">softmax</span>( <span data-k="mm1" style="color:#c77dff">QKᵀ</span> / <span data-k="scale" style="color:'+C.sc+'">√dₖ</span> ) · <span data-k="mm2" style="color:'+C.v+'">V</span></div></div></div>';
+    const INFO={
+      '':'👆 <b>Bir kutuya tıkla.</b> Makalenin (Vaswani vd., 2017) 2. şeklindeki bloğun kendi çizimimiz. Aşağıdan yukarı okunur; aynı adımları Simülasyon\'daki dikkat laboratuvarında sayılarla çalıştırıyorsun.',
+      q:'<b>Q (sorgu), n × dₖ.</b> Her kelimenin "ne arıyorum?" vektörü: Q = X·W<sub>Q</sub>. Makalede bir kafa için dₖ = 64 (512 ÷ 8 kafa).',
+      k:'<b>K (anahtar), n × dₖ.</b> Her kelimenin "beni böyle bul" etiketi: K = X·W<sub>K</sub>.',
+      v:'<b>V (değer), n × dᵥ.</b> Her kelimenin aktaracağı içerik: V = X·W<sub>V</sub>. Q ve K ile çarpılmaz, yan yoldan bekler; yalnız en sondaki MatMul\'a girer.',
+      mm1:'<b>MatMul: Q · Kᵀ → n × n skor tablosu.</b> Hücre [i][j] = i. kelimenin sorusu · j. kelimenin etiketi (nokta çarpım). Laboratuvarda "2) Skorlar".',
+      scale:'<b>Scale: ÷ √dₖ.</b> Boyut büyüdükçe nokta çarpımlar da büyür, softmax tek kelimeye kilitlenir. √dₖ\'ye bölmek skorları ılık tutar (makalede ÷8). Örnek Çalışmalar Örnek 2 bunu ölçüyor.',
+      mask:'<b>Mask (isteğe bağlı, kesikli).</b> Decoder\'da üst üçgen −∞ yapılır: bir kelime henüz yazılmamış sağdakileri göremez. Encoder\'da kullanılmaz. Ayrıntısı hemen aşağıdaki 🎭 Maske bölümünde.',
+      soft:'<b>SoftMax, satır satır.</b> Her satırın skorları yüzdeye çevrilir, toplam %100: "bu kelime dikkatinin ne kadarını kime veriyor". Laboratuvarda "3) Softmax".',
+      mm2:'<b>MatMul: A · V.</b> Yüzdelerle V satırları karıştırılır: her kelimenin yeni kartı = baktığı kelimelerin içeriklerinin ağırlıklı toplamı. Laboratuvarda "4) Yeni kart".',
+      out:'<b>Çıktı Z, n × dᵥ</b> (girdiyle aynı şekil). Her kelimenin bağlamla zenginleşmiş hâli. Makalede bu blok 8 kafada paralel çalışır, çıktılar yan yana yapıştırılıp W<sub>O</sub> ile karıştırılır (Multi-Head, sonraki ders).'};
+    const show=k=>{$('atSdpaInfo').innerHTML=INFO[k||''];sd.querySelectorAll('.sd-b').forEach(r=>r.setAttribute('stroke-width',r.parentNode.dataset.k===k?4:2.2));};
+    show('');
+    sd.addEventListener('click',e=>{const g=e.target.closest('[data-k]');if(g)show(g.dataset.k);});
+  }
+
   const big=$('atBig');
   if(big){
     const C={self:'#46c46a',cross:'#f0a032',ffn:'#c77dff',norm:'#7a8bb5',emb:'#4ad0e0',out:'#5aa0e0'};

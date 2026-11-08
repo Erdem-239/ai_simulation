@@ -2081,3 +2081,11 @@ body.xt-full-lock{overflow:hidden}
 #attSim .as-tb2{border-collapse:collapse;font-size:12.5px;margin-top:6px}
 #attSim .as-tb2 td{padding:3px 10px;border-bottom:1px solid #1e2742}
 #attSim .as-tb2 tr.on td{color:#ffd54a}
+
+/* Self-Attention 🏛️ makaledeki model (js/lesson-att-extra.js #atSdpa) */
+#atSdpa .sd-wrap{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:16px;align-items:center}
+@media(max-width:760px){#atSdpa .sd-wrap{grid-template-columns:1fr}}
+#atSdpa .sd-f{margin-top:10px;font-size:15px;text-align:center;color:#e9edf8;background:rgba(255,255,255,.03);border:1px solid #2a3552;border-radius:8px;padding:8px}
+#atSdpa .sd-f span{cursor:pointer;font-weight:700}
+#model-attention .sd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#model-attention .sd-chips span{font-size:12px;color:#ccd5e8;background:rgba(122,168,255,.08);border:1px solid #2a3552;border-radius:999px;padding:3px 10px}
