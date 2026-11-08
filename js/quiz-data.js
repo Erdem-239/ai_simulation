@@ -619,3 +619,30 @@ for(const k in E){ if(window.QUIZ_DATA[k]) window.QUIZ_DATA[k]=window.QUIZ_DATA[
  R('Bu sayfadaki "cevap" kutusu ne gösteriyor?',['Dil modeli yerine, en ilgili belgedeki en benzer cümleyi','Gerçek bir dil modelinin cevabını','Rastgele bir cümleyi','Sorunun kendisini'],'Dürüst not.'),
  R('Hibrit arama nedir?',['Seyrek (terim) ve yoğun (embedding) aramayı birlikte kullanmak','İki dil modeli','İnce ayar + LoRA','Beam + top-p'],'Gerçek sistemlerde yaygın.')
 ]})();
+(function(){const R=(q,o,w)=>({q:q,o:o,a:0,w:w});window.QUIZ_DATA.agent=[
+ R('Bir dil modelini "ajan" yapan nedir?',['Etrafındaki harness: araçlar, döngü, sınırlar','Daha büyük olması','Daha yüksek sıcaklık','Tokenizer'],'Model + harness + araçlar.'),
+ R('Harness nedir?',['Modeli çağıran, araçları çalıştıran ve döngüyü yöneten program','Modelin bir katmanı','Bir optimizer','Bir veri seti'],'Koşum takımı.'),
+ R('Model bir aracı nasıl kullanır?',['Araç çağrısı metni yazar, harness çalıştırır','Aracı kendisi çalıştırır','İnternete doğrudan bağlanır','Ağırlıklarını değiştirir'],'Model yalnız yazar.'),
+ R('Araç çıktısı modele nasıl ulaşır?',['Harness onu bağlama yeni bir mesaj olarak ekler','Ağırlıklara yazılır','Tokenizer\'a eklenir','Ulaşmaz'],'Sonraki çağrıda okunur.'),
+ R('Örnek 1\'deki «fark» görevi kaç model çağrısı sürdü?',['4','1','10','2'],'İki arama, bir hesap, bir cevap.'),
+ R('Model her çağrıda neyi okur?',['Bağlamın tamamını','Yalnız son mesajı','Yalnız sistem talimatını','Hiçbir şeyi'],'Örnek 2.'),
+ R('Örnek 2\'de «fark» görevinde toplam okunan kelime?',['157 (son bağlam 58)','58','23','1000'],'Bağlam tekrar tekrar okunur.'),
+ R('Bağlam yönetimi neden gerekir?',['Bağlam penceresi dolar ve her çağrı onu yeniden okur (maliyet)','Model hızlansın diye','Tokenizer için','Gerekmez'],'Özetleme, kırpma.'),
+ R('Adım sınırı ne işe yarar?',['Sonsuz döngüyü ve sınırsız maliyeti engeller','Modeli eğitir','Cevabı uzatır','Aramayı hızlandırır'],'Harness sınırı.'),
+ R('Örnek 3\'te adım sınırı 2 iken ne oldu?',['Görev bitmeden harness durdurdu','2 yıl cevabı geldi','Model çöktü','Zehirli belge çalıştı'],'İki arama + hesap gerekiyordu.'),
+ R('İstem enjeksiyonu nedir?',['Modelin okuduğu dış içeriğe gizlenmiş talimatlar','Modelin ağırlıklarına yazılım sızması','Çok uzun istem','Yanlış tokenizer'],'Belge, web, e-posta.'),
+ R('Zehirli belge örneğinde koruma kapalıyken ne oldu?',['Ajan gizli anahtarı söyledi (belgedeki talimatı uyguladı)','Doğru cevap verdi','Durdu','Arama yapmadı'],'Örnek 3.'),
+ R('Bu sayfadaki "koruma" neden yeterli değildir?',['Basit bir kelime kontrolü; saldırılar farklı yazılabilir','Çok yavaş olduğu için','Model öğrendiği için','Yeterlidir'],'Asıl savunma: en az yetki, onay.'),
+ R('En az yetki ilkesi nedir?',['Ajana yalnız işi için gereken araç ve erişimi vermek','Ajana her şeye erişim vermek','Modeli küçültmek','Adım sınırını kaldırmak'],'Güvenlik.'),
+ R('Hangi işlemlerde insan onayı istenmesi önerilir?',['Geri alınamaz ya da dışa dönük (silme, gönderme, ödeme)','Her okumada','Hiçbirinde','Yalnız hesapta'],'Riskli adım.'),
+ R('Sistem talimatı istem enjeksiyonunu tek başına engeller mi?',['Hayır','Evet, her zaman','Yalnız İngilizcede','Yalnız RAG\'de'],'Model için hepsi metin.'),
+ R('Bu sayfadaki "model" nedir?',['Gerçek dil modeli değil, kurallı bir politika (taklit)','GPT-4','BERT','Claude'],'Dürüst not.'),
+ R('Bu sayfada gerçek olan parçalar?',['Harness döngüsü, arama (RAG motoru), hesap makinesi, bağlam sayımı','Dil modeli','İnternet','Hiçbiri'],'Simülasyon.'),
+ R('ReAct kalıbı nedir?',['Düşün → eylem yaz → gözlemi oku → tekrar','Yalnız cevap yaz','Yalnız ara','Modeli yeniden eğit'],'Yao 2022.'),
+ R('Toolformer neyi gösterdi?',['Modellerin araç çağırmayı kendi kendine öğrenebileceğini','Tokenizer\'ın gereksiz olduğunu','RNN\'lerin üstünlüğünü','Beam search\'ü'],'2023.'),
+ R('Araç tanımı neleri içerir?',['Ad, açıklama ve girdi şeması','Yalnız ağırlıklar','Tokenizer kuralları','Sıcaklık'],'Ekstra.'),
+ R('Model "hafızalı" mıdır?',['Hayır; hatırladığı her şey bağlamdadır','Evet, her konuşmayı ağırlıklarına yazar','Yalnız RAG ile','Yalnız ince ayarla'],'Bağlam kırpılırsa unutur.'),
+ R('Alt görevleri yardımcı ajanlara vermenin bir faydası?',['Ana bağlamı temiz ve kısa tutmak','Modeli eğitmek','Tokenizer\'ı değiştirmek','Faydası yok'],'Bağlam yönetimi.'),
+ R('Bir ajanın başarısı neyle ölçülür?',['Son cevap + adım sayısı, token maliyeti, hatalar','Yalnız hız','Yalnız parametre sayısı','Ölçülemez'],'Değerlendirme dersi.'),
+ R('Araç çıktıları nasıl ele alınmalı?',['Veri olarak; içindeki talimatlar kullanıcı talimatı sayılmamalı','Talimat olarak','Silinmeli','Ağırlıklara yazılmalı'],'Güvenlik ilkesi.')
+]})();
