@@ -2381,7 +2381,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   });
 })();
 
-/* ---- Yol Haritası: tech tree (v3: Civ6 yatay + çağlar + AIpedia) ---- */
+/* ---- Yol Haritası: tech tree (v3: yatay + aşamalar + Keşif Defteri) ---- */
 (function(){
   const svg=document.getElementById('techSvg'); if(!svg) return;
   const info=document.getElementById('techInfo');
@@ -2466,7 +2466,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {id:'paper',nm:'📜 Attention Is All You Need', tier:9, v:50, pre:['blk'], crown:true,
       d:'2017, Vaswani vd. Bütün çarklar dönünce bu makale ana dilin gibi okunur. BÜYÜK HEDEF.',
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
-      real:[['🏆','BİLİM ZAFERİ: makale ana dilin gibi'],['🌍','Modern YZ çağının kurucu metni']],
+      real:[['🎓','HEDEF: makaleyi okuyabilmek'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Makaleyi baştan sona oku','Şekil 1 mimarisini kendi cümlelerinle anlat','Sonuç tablolarını yorumla']},
     {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
@@ -2476,13 +2476,13 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   ];
   const byId={}; NODES.forEach(n=>byId[n.id]=n);
   const ERAS=[
-    {t0:0,t1:1,nm:'📜 TEMELLER ÇAĞI', newStyle:true},
-    {t0:2,t1:3,nm:'⚙️ NÖRAL ÇAĞ', newStyle:true},
-    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME ÇAĞI', newStyle:true},
-    {t0:7,t1:8,nm:'🎯 TRANSFORMER ÇAĞI', newStyle:true},
-    {t0:9,t1:10,nm:'🏆 BİLİM ZAFERİ', newStyle:true}
+    {t0:0,t1:1,nm:'📜 TEMELLER', newStyle:true},
+    {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true},
+    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
+    {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
+    {t0:9,t1:10,nm:'🎓 HEDEF: MAKALE', newStyle:true}
   ];
-  // Civ VII tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
+  // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
   // TEMELLER ÇAĞI canlıya alınıyor; kullanıcı onaylayınca sıradaki çağ
   // buraya (era.newStyle=true) eklenerek genelleştirilecek.
@@ -2512,7 +2512,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
      genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
   const BP_VERT=720;
   let VERT=window.innerWidth<=BP_VERT;
-  // Yeni-stil (Civ VII) kartlar eskisinden daha zengin içerik taşıdığı için
+  // Yeni-stil (madalyon) kartlar eskisinden daha zengin içerik taşıdığı için
   // daha geniş/uzun — masaüstünde tam boy, dikey/mobil modda VERT slot
   // matematiği (mX=100 marjı, bkz. layout()) eski 184-birimlik kartlara göre
   // ayarlandığından kompakt bir boyuta küçülüyor (aksi halde kart canvas
@@ -2597,7 +2597,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
     +'</defs>';
 
-  // Civ VII tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
+  // Madalyon tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
   // koordinat sistemine gömer (viewBox ölçeklemesiyle otomatik büyür/küçülür,
   // ayrı bir mobil/masaüstü CSS'i gerekmez). Seçim "yılan" kenarlığı ve
   // justUnlocked patlaması PAYLAŞILAN #techSvg .tn.sel/.justUnlocked
@@ -2654,9 +2654,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     svg.style.minWidth = VERT ? '' : (W+'px');
     if(svgWrap) svgWrap.style.overflowX = VERT ? 'visible' : 'auto';
     const hint=document.getElementById('ttHint');
-    if(hint) hint.textContent = VERT ? '⬇️ aşağı kaydırarak çağlarda ilerle' : '➡️ sağa kaydırarak çağlarda ilerle';
+    if(hint) hint.textContent = VERT ? '⬇️ aşağı kaydırarak aşamalarda ilerle' : '➡️ sağa kaydırarak aşamalarda ilerle';
     const dir=document.getElementById('ttDir');
-    if(dir) dir.textContent = VERT ? 'yukarıdan aşağı çağlar' : 'soldan sağa çağlar';
+    if(dir) dir.textContent = VERT ? 'yukarıdan aşağı aşamalar' : 'soldan sağa aşamalar';
 
     let s=DEFS;
     // çağ bantları + ayraç çizgileri + kurdele etiket
@@ -2666,7 +2666,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const lblCls='era-lbl'+(e.newStyle?' era-lbl-new':'');
       if(VERT){
         // üst boşluk 96px: normal düğümler için fazlasıyla yeterli, AMA asıl amacı
-        // "kraliyet" (crown) kartının (★ BİLİM ZAFERİ ★ etiketi) çağın ilk satırında
+        // "kraliyet" (crown) kartının (★ HEDEF ★ etiketi) çağın ilk satırında
         // olduğunda ribbon/etiketle çakışmasını önlemek — o yüzden alttan büyük
         const y0=Y({tier:e.t0})-96, y1=Y({tier:e.t1})+58;
         s+='<rect class="'+bandCls+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
@@ -2699,7 +2699,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         if(nd) nd.pre.forEach(p=>stack.push(p));
       }
     }
-    // kenarlar (Civ tarzı dik hatlar) — yatayda sol/sağ kart kenarından, dikeyde üst/alt kart kenarından
+    // kenarlar (Dik dik hatlar) — yatayda sol/sağ kart kenarından, dikeyde üst/alt kart kenarından
     NODES.forEach(n=>{
       n.pre.forEach(p=>{
         const a=byId[p];
@@ -2721,22 +2721,22 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         s+='<path class="'+(done.has(p)?'te-on':'te-off')+(req.has(n.id)?' te-req':'')+'" d="'+path+'"/>';
       });
     });
-    // düğüm kartları — Civ6 tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
-    // (newStyle çağlarda yerini foreignObject'li Civ VII kartına bırakıyor, bkz. newCardSvg)
+    // düğüm kartları — Kart tarzı: solda ikon dairesi, sağda başlık/durum/etiketler
+    // (newStyle çağlarda yerini foreignObject'li madalyon kartına bırakıyor, bkz. newCardSvg)
     NODES.forEach(n=>{
       const st=stateOf(n);
       const k=subCount(n), N=n.sub.length;
       const w=NW(n), h=NH(n), x=X(n)-w/2, y=Y(n)-h/2;
       const sp=n.nm.indexOf(' ');
       const icon=sp>0?n.nm.slice(0,sp):n.nm, label=sp>0?n.nm.slice(sp+1):n.nm;
-      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ BİLİM ZAFERİ ★</text>';
+      if(n.crown) s+='<text x="'+X(n)+'" y="'+(y-12)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5a3d14" letter-spacing="1">★ HEDEF ★</text>';
       if(isNewStyle(n)){
         s+=newCardSvg(n, st, k, N, icon, label, x, y, w, h);
         return;
       }
       let sub;
       if(st==='done') sub='✓ Tamamlandı';
-      else if(st==='avail') sub='Araştırılabilir · '+k+'/'+N;
+      else if(st==='avail') sub='Sıradaki · '+k+'/'+N;
       else sub='Kilitli'+(k?' · '+k+'/'+N:'');
       const chips=n.real.map(r=>r[0]).join(' ');
       const icx=x+ICR+9, icy=Y(n), tx=icx+ICR+11;
@@ -2760,7 +2760,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     const totS=NODES.reduce((a,n)=>a+n.sub.length,0);
     const kS=NODES.reduce((a,n)=>a+subCount(n),0);
     const next=NODES.filter(n=>stateOf(n)==='avail').map(n=>n.nm).join(' · ');
-    prog.innerHTML='⚙️ Açılan teknoloji: <b style="color:#46c46a">'+nd+'/'+NODES.length+'</b> &nbsp;·&nbsp; Alt başlık: <b style="color:#46c46a">'+kS+'/'+totS+'</b>'+(next?' &nbsp;·&nbsp; Araştırılabilir: <b style="color:var(--accent)">'+esc(next)+'</b>':'');
+    prog.innerHTML='⚙️ Tamamlanan ders: <b style="color:#46c46a">'+nd+'/'+NODES.length+'</b> &nbsp;·&nbsp; Alt başlık: <b style="color:#46c46a">'+kS+'/'+totS+'</b>'+(next?' &nbsp;·&nbsp; Sıradaki: <b style="color:var(--accent)">'+esc(next)+'</b>':'');
     var _av=new Set(NODES.filter(n=>stateOf(n)==='avail').map(n=>n.id));
     if(window.__ttPrevAv){ var _f=[..._av].filter(x=>!window.__ttPrevAv.has(x)); if(_f.length && window.__ttOnUnlock) window.__ttOnUnlock(_f); }
     window.__ttPrevAv=_av;
@@ -2778,7 +2778,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     const unlocks=NODES.filter(m=>m.pre.includes(id));
     const chips=n.pre.length
       ? n.pre.map(p=>'<span style="display:inline-block; margin:2px 4px 2px 0; padding:2px 9px; border-radius:10px; font-size:12px; border:1px solid '+(done.has(p)?'#46c46a; color:#46c46a':'#e06a6a; color:#e06a6a')+'">'+esc(byId[p].nm)+(done.has(p)?' ✓':' ✗')+'</span>').join('')
-      : '<span style="color:var(--muted)">yok — kök teknoloji</span>';
+      : '<span style="color:var(--muted)">yok — ilk ders</span>';
     const ul=unlocks.length? unlocks.map(m=>esc(m.nm)).join(' · ') : '—';
     const dis=(st==='locked')?' disabled':'';
     const reals=n.real.map(r=>'<div style="margin:3px 0">'+r[0]+' '+esc(r[1])+'</div>').join('');
@@ -2790,12 +2790,12 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     }).join('');
     let btns='';
     if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'"'+(n.gostage?' data-gostage="'+n.gostage+'"':'')+' style="background:var(--blue); color:#fff">'+(n.golabel||'Sayfada aç →')+'</button> ';
-    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 AIpedia&#39;da oku</button> ';
+    btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 Keşif Defteri&#39;da oku</button> ';
     if(st!=='locked') btns+='<button class="addbtn" data-tg="'+n.id+'" style="background:'+(done.has(n.id)?'var(--panel); color:var(--muted); border:1px solid var(--line)':'var(--green); color:#0b2a12')+'">'+(done.has(n.id)?'↩ Hepsini geri al':'✔ Hepsini tamamladım')+'</button>';
     info.innerHTML='<b style="font-size:16px">'+esc(n.nm)+'</b>'
-      +' <span style="font-size:12px; color:var(--muted)">('+(st==='done'?'araştırıldı':st==='avail'?'araştırılabilir':'kilitli — önce gerekenleri aç')+')</span>'
+      +' <span style="font-size:12px; color:var(--muted)">('+(st==='done'?'tamamlandı':st==='avail'?'sıradaki':'kilitli — önce gerekenleri aç')+')</span>'
       +'<div style="margin:8px 0; line-height:1.6">'+n.d+'</div>'
-      +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">👤 KEŞİF — AIpedia</div>'
+      +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">👤 KEŞİF — Keşif Defteri</div>'
       +'<div style="font-size:13px; line-height:1.6; color:#ccd5e8">'+n.sci+'</div>'
       +'<div style="font-size:12px; color:var(--accent); font-weight:700; margin:12px 0 4px">🌍 GERÇEK DÜNYADA NEYİ AÇTI</div>'
       +'<div style="font-size:13px; line-height:1.5; color:#ccd5e8">'+reals+'</div>'
@@ -2831,7 +2831,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     if(window.__ttAfterShow) window.__ttAfterShow(n, st, info);
   }
 
-  // ---- Civ VII tarzı hover tooltip'i ---------------------------------
+  // ---- Madalyon tarzı hover tooltip'i ---------------------------------
   // Paylaşılan [data-pop] pop-up motoruyla (js/lesson-linreg.js) İSTEMEDEN
   // çakışmasın diye AYRI ve sadece HOVER'da çalışan küçük bir kopyası —
   // o motor click'te "pinle" davranışına geçiyor, bizim .tn click'i zaten
@@ -2859,8 +2859,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     function content(id){
       const n=byId[id]; if(!n) return '';
       const st=stateOf(n);
-      const lockLine = st==='done' ? '✅ Araştırıldı'
-        : st==='avail' ? '🔓 Araştırılabilir · Alt başlık '+subCount(n)+'/'+n.sub.length
+      const lockLine = st==='done' ? '✅ Tamamlandı'
+        : st==='avail' ? '🔓 Sıradaki · Alt başlık '+subCount(n)+'/'+n.sub.length
         : '🔒 Kilitli — önce gerekli: '+n.pre.map(p=>byId[p].nm).join(', ');
       return '<div class="xp-bas">'+esc(n.nm)+'</div>'
         +'<div class="xp-sat">'+n.d+'</div>'
@@ -3372,11 +3372,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
        karıştırılmayacak kadar uzak bir tonda (iki bitişik çağ da "soğuk" ya da ikisi
        de "sıcak" olsa bile ton farkı göze çarpsın diye). */
     const ERAC=[
-      {t0:0,  t1:1,  c:'46,134,255',  nm:'📜 TEMELLER ÇAĞI'},
-      {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL ÇAĞ'},
-      {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME ÇAĞI'},
-      {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER ÇAĞI'},
-      {t0:9,  t1:10, c:'255,201,60',  nm:'🏆 BİLİM ZAFERİ'}
+      {t0:0,  t1:1,  c:'46,134,255',  nm:'📜 TEMELLER'},
+      {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL AĞLAR'},
+      {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
+      {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
+      {t0:9,  t1:10, c:'255,201,60',  nm:'🎓 HEDEF: MAKALE'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era').forEach(e=>e.remove());
@@ -3384,7 +3384,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     seq.forEach(b=>{
       const m=b.dataset.model;
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
-      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/AIpedia)
+      if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/Keşif Defteri)
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
       if(!e) return;
       b.style.setProperty('--era-c', e.c);
@@ -3424,7 +3424,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const N=node.sub.length;
       b.classList.add('rail-'+s);
       b.style.setProperty('--prog', (N?Math.round(k/N*100):0)+'%');
-      b.title=(s==='done'?'✓ Araştırıldı':s==='avail'?'⚡ Sıradaki — araştırılabilir':'🔒 Kilitli — önce gerekenleri aç')
+      b.title=(s==='done'?'✓ Tamamlandı':s==='avail'?'⚡ Sıradaki':'🔒 Kilitli — önce gerekenleri aç')
         +' · alt başlık '+k+'/'+N;
     });
 
@@ -3439,7 +3439,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     const T=api.NODES.length;
     capN.textContent=doneN+'/'+T;
     capBar.style.width=(T?Math.round(doneN/T*100):0)+'%';
-    capSub.innerHTML=(nextNm?'⚡ Sıradaki: <b style="color:var(--accent)">'+nextNm+'</b>':'🏆 Tüm teknolojiler araştırıldı')
+    capSub.innerHTML=(nextNm?'⚡ Sıradaki: <b style="color:var(--accent)">'+nextNm+'</b>':'🎓 Tüm dersler tamamlandı')
       +'<br>alt başlık '+kS+'/'+totS;
   }
 
@@ -3601,7 +3601,7 @@ function setupFloatingPanel(ids){
   });
 })();
 
-/* ---- AIpedia gezinme ---- */
+/* ---- Keşif Defteri gezinme ---- */
 (function(){
   document.querySelectorAll('[data-ped-tree]').forEach(b=>b.addEventListener('click',()=>{
     const id=b.dataset.pedTree;
@@ -4014,12 +4014,12 @@ function setupFloatingPanel(ids){
   draw(); info();
 })();
 
-/* ---- eğlence paketi: unlock animasyonu + Eureka + Harikalar + export/import ---- */
+/* ---- eğlence paketi: açılma animasyonu + Ön sezgi + Açılan kapılar + export/import ---- */
 (function(){
   if(!document.getElementById('techWonders')) return;
   const F=v=>v;
 
-  // Eureka boost soruları (konuya başlamadan bilirsen ⚡)
+  // Ön sezgi soruları (konuya başlamadan bilirsen ⚡)
   const BOOST={
     mat:{q:'e sayısının en meşhur özelliği: eˣ\'in türevi nedir?', a:'eˣ — kendi türevidir.'},
     vek:{q:'Birbirine dik iki vektörün nokta çarpımı kaçtır?', a:'0 (cos90°=0).'},
@@ -4061,7 +4061,7 @@ function setupFloatingPanel(ids){
   }
   window.__ttOnUnlock=function(ids){
     const names=ids.map(id=>{ const n=(window.__ttAPI.NODES).find(x=>x.id===id); return n?n.nm:id; });
-    toast('🎉 <b>Yeni teknoloji araştırılabilir!</b><br>'+names.join(' · '));
+    toast('🎉 <b>Yeni ders açıldı!</b><br>'+names.join(' · '));
     confetti();
     ids.forEach(id=>{ const g=document.querySelector('#techSvg .tn[data-id="'+id+'"]'); if(g){ g.classList.add('justUnlocked'); setTimeout(()=>g.classList.remove('justUnlocked'),2200); } });
   };
@@ -4072,29 +4072,29 @@ function setupFloatingPanel(ids){
     const b=BOOST[n.id]; if(!b) return;
     const got=eureka.has(n.id);
     let h='<div style="margin-top:12px; border-top:1px dashed var(--line); padding-top:10px">'
-      +'<div style="font-size:12px; color:#ffd24a; font-weight:700">⚡ EUREKA — konuya başlamadan bil, rozet kap'+(got?' ✓ kazanıldı':'')+'</div>'
+      +'<div style="font-size:12px; color:#ffd24a; font-weight:700">⚡ ÖN SEZGİ — konuya başlamadan bil, rozet kap'+(got?' ✓ kazanıldı':'')+'</div>'
       +'<div style="font-size:13px; color:#ccd5e8; margin:6px 0">'+b.q+'</div>';
     if(!got){
       h+='<button class="addbtn" id="ekReveal" style="background:var(--panel); color:var(--accent); border:1px solid var(--accent); font-size:12px; padding:4px 10px">Cevabı gör</button>'
         +' <button class="addbtn" id="ekGot" style="background:#ffd24a; color:#101830; font-size:12px; padding:4px 10px">✅ Bildim → ⚡ kap</button>'
         +'<div id="ekAns" style="display:none; margin-top:8px; background:#1f2138; border-left:3px solid #ffd24a; padding:8px 12px; border-radius:4px; font-size:13px">'+b.a+'</div>';
     } else {
-      h+='<div style="font-size:13px; color:#46c46a">⚡ Bu teknolojiyi önceden sezmiştin — cevap: '+b.a+'</div>';
+      h+='<div style="font-size:13px; color:#46c46a">⚡ Bu dersi önceden sezmiştin — cevap: '+b.a+'</div>';
     }
     h+='</div>';
     info.insertAdjacentHTML('beforeend', h);
     const rv=document.getElementById('ekReveal'), gt=document.getElementById('ekGot');
     if(rv) rv.addEventListener('click',()=>{ document.getElementById('ekAns').style.display='block'; });
-    if(gt) gt.addEventListener('click',()=>{ eureka.add(n.id); saveEk(); toast('⚡ <b>Eureka!</b> '+n.nm+' önceden sezildi.'); confetti(); window.__ttShow(n.id); });
+    if(gt) gt.addEventListener('click',()=>{ eureka.add(n.id); saveEk(); toast('⚡ <b>Ön sezgi!</b> '+n.nm+' önceden sezildi.'); confetti(); window.__ttShow(n.id); });
   };
 
-  // --- Harikalar paneli ---
+  // --- Açılan kapılar paneli ---
   function renderWonders(){
     const box=document.getElementById('techWonders'); if(!box) return;
     const NODES=window.__ttAPI.NODES, done=window.__ttGet().done;
     const built=NODES.filter(n=>done.includes(n.id)).length;
-    let s='<div style="font-size:14px; margin-bottom:10px">🏛️ İnşa edilen harika: <b style="color:#46c46a">'+built+'/'+NODES.length+'</b>'
-      +' &nbsp;·&nbsp; ⚡ Eureka: <b style="color:#ffd24a">'+eureka.size+'/'+Object.keys(BOOST).length+'</b></div>';
+    let s='<div style="font-size:14px; margin-bottom:10px">🌍 Açılan kapı: <b style="color:#46c46a">'+built+'/'+NODES.length+'</b>'
+      +' &nbsp;·&nbsp; ⚡ Ön sezgi: <b style="color:#ffd24a">'+eureka.size+'/'+Object.keys(BOOST).length+'</b></div>';
     s+='<div class="wond-grid">'+NODES.map(n=>{
       const on=done.includes(n.id), w=n.real&&n.real[0]?n.real[0]:['🔧',n.nm];
       return '<div class="wond'+(on?' built':'')+'" title="'+n.nm.replace(/"/g,'')+'">'+w[0]+' '+(on?w[1]:'<span style="color:var(--muted)">— kilitli —</span>')+'</div>';
