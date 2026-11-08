@@ -20,15 +20,22 @@
 #info .src.v{background:#12201a;border:1px solid #5fcf8a;color:#9fe3b8}#info .src.b{background:#261a12;border:1px solid #f0a032;color:#f7c98a}
 #info .cr{margin-top:6px;padding:6px 8px;border-radius:7px;background:#12201a;border-left:3px solid #5fcf8a}
 #info .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute)}
-#tour{position:fixed;left:12px;bottom:66px;width:460px;max-width:calc(100vw - 24px);max-height:46vh;overflow:auto;background:rgba(20,25,35,.96);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.8px;line-height:1.55;z-index:6;display:none}
+#tour{position:fixed;left:12px;top:98px;bottom:60px;width:min(560px,40vw);overflow:auto;background:rgba(20,25,35,.96);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.8px;line-height:1.55;z-index:6;display:none}
 #tour.on{display:block}#tour h3{margin:0 0 4px;font-size:14px;color:var(--hl)}#tour .nm{color:var(--mute);font-size:11px;margin-top:5px}
+#tour .ts{margin-top:8px;padding:7px 10px;border-radius:8px;background:#10151f;border-left:3px solid #4a5468}
+#tour .th{font-weight:700;font-size:12px;margin-bottom:3px;color:#cdd4e4}
+#tour .ts.hd{border-color:#6ea0ff}#tour .ts.bk{border-color:#3fc7c1}#tour .ts.cz{border-color:#c77dff}#tour .ts.an{border-color:#ffd54a;background:rgba(255,213,74,.06)}#tour .ts.dk{border-color:#f27a88}#tour .ts.sn{border-color:#5fcf8a}
+#tour ul{margin:2px 0 0;padding-left:18px}#tour li{margin:2px 0}
+#tour .calc{font-family:ui-monospace,Menlo,monospace;font-size:11.8px;background:#0b0f17;border:1px solid #232a38;border-radius:6px;padding:7px 9px;margin:6px 0 2px;white-space:pre-wrap;line-height:1.6;overflow-x:auto}
+#tour .calc b{color:#ffd54a}
+body.touring #leg{display:none}
 #tour .soz{margin-top:6px;padding:6px 8px;border-radius:7px;background:rgba(255,213,74,.08);border-left:3px solid #ffd54a}
 #bar{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;background:rgba(11,14,20,.93);border-top:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap;align-items:center;z-index:7}
 #bar button{background:#1a2030;color:var(--tx);border:1px solid #38425a;border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer}
 #bar button.on{border-color:var(--hl);color:var(--hl)}#bar button:disabled{opacity:.4;cursor:default}#bar .sp{flex:1}
 #leg{position:fixed;left:14px;top:84px;font-size:11.5px;color:var(--mute);z-index:5;pointer-events:none;line-height:1.7}
 #leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-@media(max-width:760px){#info{width:calc(100vw - 24px);top:auto;bottom:66px;right:12px;max-height:38vh}#leg{display:none}#tour{bottom:110px}#top p{display:none}}
+@media(max-width:760px){#info{width:calc(100vw - 24px);top:auto;bottom:66px;right:12px;max-height:38vh}#leg{display:none}#tour{top:auto;bottom:110px;width:calc(100vw - 24px);max-height:46vh}#top p{display:none}}
 </style></head><body>
 <canvas id="c"></canvas><div id="lb"></div>
 <div id="top"><h1>🧸 Transformer oyuncağı — «let's go» → «vamos» (3B)</h1><p>StatQuest'te (Josh Starmer, <i>Transformer Neural Networks, Clearly Explained</i>) elle hesaplanan minik Transformer'ın <b>tamamı</b>, kendi çizimimizle: her kelime 2 sayı, tek kafa, normalizasyon ve FFN yok. Soldaki iki sütun ENCODER, sağdaki iki sütun DECODER. Sürükle = döndür, tekerlek = yakınlaş, sağ tuş/Shift = kaydır; klavye: <b>oklar</b> kaydırır, <b>A/D</b> döndürür, <b>W/S</b> yakınlaşır, <b>Q/E</b> eğer, <b>H</b> sıfırlar, <b>PageUp/PageDown</b> tur adımı. Bir kutuya tıkla: içindeki sayılar ve <b>nasıl hesaplandığı</b>. 🟢 videoda gösterilen sayı · 🟠 videoda gösterilmeyen, bizim eğittiğimiz ağırlık.</p></div>
@@ -210,32 +217,231 @@ document.getElementById('ix').onclick=()=>{sel=null;document.getElementById('inf
 function refresh(){parts.forEach(p=>{const on=p===sel;p.lb.classList.toggle('sel',on);p.edge.material.color.set(on?0xffc82e:CL[p.cl])})}
 // ===== TUR =====
 const ids=(pre,n)=>Array.from({length:n},(_,i)=>pre+i);
-const ST=()=>{const E=M.E,D=M.D,w=M.src.map(t=>EW[t]),s0=SENT===0,o0=DW[M.outs[0]],o1=DW[M.outs[1]];return [
- {t:'Büyük resim',ids:[],tx:'Görev: İngilizce «'+w.join(' ')+'» → İspanyolca. <b>Solda ENCODER</b> (girdi kelimeleri, her biri bir sütun), <b>sağda DECODER</b> (çevirinin her adımı bir sütun). Aşağıdan yukarı okunur. Her sütun <b>aynı birimin kopyası</b>: ağırlıklar ortak, yalnız girdi farklı. En alttaki mor tablolar ağırlıklar; kesikli çizgiler hangi kutuda kullanıldıklarını gösterir.',soz:'Video bunları ekrana sığdırmak için katlayıp küçültüyordu; burada hepsi aynı anda açık.'},
- {t:'1 · Kelime → sayı (word embedding)',ids:[...ids('eoh',2),...ids('eemb',2),'WE'],tx:'One-hot (1 0 0 0) ağırlıklarla çarpılınca yalnız o kelimenin satırı kalır: «'+w[0]+'» → ('+fmt(E.emb[0][0])+' ; '+fmt(E.emb[0][1])+'), «'+w[1]+'» → ('+fmt(E.emb[1][0])+' ; '+fmt(E.emb[1][1])+'). Gerçek modellerde yüzlerce/binlerce sayı olur; burada 2.'},
- {t:'2 · Konum: sin/cos imzası eklenir',ids:[...ids('epe',2),...ids('ex',2)],tx:'Sıra önemli («Squatch eats pizza» ≠ «pizza eats Squatch»). Konum 0 → (0 ; 1), konum 1 → (−0,9 ; 0,4). Toplam: «'+w[0]+'» ('+fmt(E.x[0][0])+' ; '+fmt(E.x[0][1])+'), «'+w[1]+'» ('+fmt(E.x[1][0])+' ; '+fmt(E.x[1][1])+').'},
- {t:'3 · Sorgu Q',ids:[...ids('eq',2),'WQ'],tx:'Kart W_Q ile çarpılır: q«'+w[0]+'» = ('+fmt(E.q[0][0])+' ; '+fmt(E.q[0][1])+'). Squatch\'ın sorusu: «neden kartın kendisini kullanmıyoruz?» Çünkü «ne arıyorum» (Q) ile «neyim» (K) farklı roller; bunları ayrı ağırlıklar öğrenir.'},
- {t:'4 · Anahtar K ve değer V',ids:[...ids('ek',2),...ids('ev',2),'WK','WV'],tx:'Aynı kart iki tablo daha ile çarpılır: K («beni böyle bul») ve V («aktaracağım içerik»). İki kelimede <b>aynı W_K ve W_V</b>; videoda iki pembe Key kutusu olması iki ayrı tablo demek değil.'},
- {t:'5 · Skorlar: Q · K',ids:[...ids('es',2),...ids('eq',2),...ids('ek',2)],tx:'Her kelimenin sorgusu her kelimenin anahtarıyla nokta çarpılır. «'+w[0]+'» satırı: '+E.s[0].map(fmt).join(' / ')+'; «'+w[1]+'» satırı: '+E.s[1].map(fmt).join(' / ')+'. Büyük = benzer.'},
- {t:'6 · Softmax: yüzdeler',ids:ids('ea',2),tx:'Her satır kendi içinde %100\'e tamamlanır: «'+w[0]+'» → '+E.a[0].map(pc).join(' / ')+', «'+w[1]+'» → '+E.a[1].map(pc).join(' / ')+'.'},
- {t:'7 · Değerleri yüzdelerle karıştır',ids:[...ids('ez',2),...ids('ev',2)],tx:'Self-attention değeri = Σ yüzde × V. '+(s0?'Burada iki kelime de %100 «let\'s»e baktığı için ikisinin sonucu da V«let\'s» = (2,48 ; −2,09). Videoda iki sütunun da 2,5 / −2,1 göstermesinin nedeni bu.':'«to» → ('+fmt(E.z[0][0])+' ; '+fmt(E.z[0][1])+'), «go» → ('+fmt(E.z[1][0])+' ; '+fmt(E.z[1][1])+').'),soz:'Bütün V\'ler toplama girer; payı %0 olan kelimenin katkısı sıfırlanır.'},
- {t:'8 · Residual → encoder çıktısı',ids:[...ids('eo',2),...ids('ex',2)],tx:'Yeşil yay: kartın kendisi attention sonucuna <b>eklenir</b>. «'+w[0]+'» → ('+fmt(E.o[0][0])+' ; '+fmt(E.o[0][1])+'), «'+w[1]+'» → ('+fmt(E.o[1][0])+' ; '+fmt(E.o[1][1])+'). İki kelimenin attention değeri aynı olsa da çıktıları farklı. Encoder bitti: girdi cümlesi 2 satırlık bir tabloya kodlandı.'},
- {t:'9 · Decoder başlar: <EOS>',ids:['doh0','demb0','dpe0','dx0','WD'],tx:'Decoder\'ın kendi gömme tablosu var. Başlangıç işareti &lt;EOS&gt; → (2,70 ; −1,34) + konum 0 → <b>(2,70 ; −0,34)</b> (videodaki sayılar).'},
- {t:'10 · Decoder self-attention (maskeli)',ids:['dq0','dk0','dv0','ds0','da0','dz0','dy1'+0],tx:'Şimdilik tek token var: kendine %100 bakar, sonuç kendi değeri ('+fmt(D.z[0][0])+' ; '+fmt(D.z[0][1])+') (videoda −2,8 / −2,3). Residual ile ('+fmt(D.y1[0][0])+' ; '+fmt(D.y1[0][1])+'). Bu katman, çeviri uzadıkça «şimdiye kadar ne yazdım» bilgisini taşır.'},
- {t:'11 · Çapraz attention: girdiye bak',ids:['dcq0','dcs0','dca0','eck0','eck1','ecv0','ecv1'],tx:'Sorgu decoder\'dan, anahtar ve değer <b>encoder çıktılarından</b>. Skorlar '+D.cs[0].map(fmt).join(' / ')+' → <b>'+D.ca[0].map((a,j)=>'«'+w[j]+'» '+pc(a)).join(', ')+'</b>. Video: «don\'t eat the pizza» çevrilirken «don\'t» kaybolmasın diye bu katman var.'},
- {t:'12 · Çapraz değer + residual',ids:['dcz0','dy20'],tx:'Yüzdelerle encoder değerleri karıştırılır, ikinci residual ile eklenir: ('+fmt(D.y2[0][0])+' ; '+fmt(D.y2[0][1])+').'},
- {t:'13 · Tam bağlı katman + softmax → «'+o0+'»',ids:['dlg0','dp0','WF'],tx:'2 sayı, 4 çıktılı küçük bir ağa girer: her İspanyolca token için bir puan. Softmax: '+DW.map((u,k)=>'«'+u+'» '+pc(D.p[0][k])).join(', ')+'. Seçilen: <b>«'+o0+'»</b>.'},
- {t:'14 · Seçilen token girdiye eklenir',ids:['doh1','demb1','dx1','ds1','da1'],tx:'«'+o0+'» decoder\'ın ikinci girdisi olur (sarı ok). <b>Aynı ağırlıklarla</b> ikinci sütun hesaplanır. Maskeli self-attention: «'+o0+'» kendine ve &lt;EOS&gt;\'a bakabilir (%'+Math.round(D.a[1][0]*100)+' / %'+Math.round(D.a[1][1]*100)+'). Birinci sütun aynen kalır (maske sayesinde değişmez).'},
- {t:'15 · İkinci adım: çapraz attention',ids:['dcq1','dcs1','dca1','dcz1','dy21'],tx:'Bu kez girdinin '+D.ca[1].map((a,j)=>'«'+w[j]+'» '+pc(a)).join(', ')+' payına bakıyor.'},
- {t:'16 · Çıkış: «'+o1+'» → bitti',ids:['dlg1','dp1'],tx:'Softmax: '+DW.map((u,k)=>'«'+u+'» '+pc(D.p[1][k])).join(', ')+'. '+(M.outs[1]===EOS?'&lt;EOS&gt; seçildi: decoder durur. Çeviri: <b>«'+o0+'»</b>.':'')},
- {t:'Özet ve videonun en sonda ekledikleri',ids:[],tx:'Gömme (kelime → sayı), konum (sıra), self-attention (cümle içi ilişki), çapraz attention (girdi ↔ çıktı), residual (her parça kendi işine odaklansın). Gerçek Transformer\'da ayrıca: her adımdan sonra <b>normalizasyon</b>, skorlar <b>÷√d</b>, her blokta <b>FFN</b> (gizli katmanlı ağ), çok kafa ve 37 bin token\'lık sözlük. Bu oyuncakta hiçbiri yok.',soz:'Sitede: Self-Attention (dikkat laboratuvarı), Multi-Head (kafalar), Transformer Bloğu (Add & Norm, FFN ve 7+5 toplama turu).'}]};
+// ---- öğretmen anlatımı yardımcıları
+const pm=v=>v<0?'('+fmt(v)+')':fmt(v);
+const V2=v=>'('+fmt(v[0])+' ; '+fmt(v[1])+')';
+const mm=(x,W,j)=>pm(x[0])+'·'+pm(W[0][j])+' + '+pm(x[1])+'·'+pm(W[1][j])+' = <b>'+fmt(vm(x,W)[j])+'</b>';
+const mvL=(nm,x,W)=>nm+'₁ = '+mm(x,W,0)+'\n'+nm+'₂ = '+mm(x,W,1);
+const dt=(a,b)=>pm(a[0])+'·'+pm(b[0])+' + '+pm(a[1])+'·'+pm(b[1])+' = <b>'+fmt(dot(a,b))+'</b>';
+const SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sm=v=>v>=0.001?v.toFixed(3).replace('.',','):v.toExponential(1).replace('.',',').replace(/e-(\d+)/,(m,d)=>' × 10⁻'+d.split('').map(c=>SUP[c]).join(''));
+const smxL=(s,lab)=>{const f=s.filter(isFinite),m=Math.max(...f),e=s.map(v=>isFinite(v)?Math.exp(v-m):0),t=e.reduce((a,b)=>a+b,0);
+ return '  en büyüğü çıkar → '+s.map(v=>isFinite(v)?fmt(v-m):'maske').join(' ; ')+'\n'+
+  s.map((v,j)=>'  '+lab[j]+': e^'+(isFinite(v)?pm(v-m):'maske')+' = '+(isFinite(v)?sm(e[j]):'0')+'  →  '+sm(e[j])+' ÷ '+sm(t)+' = <b>'+pc(e[j]/t)+'</b>').join('\n')};
+const mix=(a,V,lab)=>{const z=[0,1].map(c=>a.reduce((s,w,j)=>s+w*V[j][c],0));
+ return [0,1].map(c=>(c?'2. sayı':'1. sayı')+' = '+a.map((w,j)=>pc(w)+'·'+pm(V[j][c])).join(' + ')+' = <b>'+fmt(z[c])+'</b>').join('\n')};
+const big=(s,j)=>s[0]>=s[1]?0:1;
+const ST=()=>{const E=M.E,D=M.D,w=M.src.map(t=>EW[t]),s0=SENT===0,o0=DW[M.outs[0]],o1=DW[M.outs[1]],din=D.din.map(t=>DW[t]);
+ const lb=['«'+w[0]+'»','«'+w[1]+'»'];
+ const look=i=>lb[big(E.s[i])];
+ const same=look(0)===look(1);
+ return [
+ {t:'Büyük resim',ids:[],
+  hedef:`İngilizce «${w.join(' ')}» cümlesini İspanyolcaya çevireceğiz. Hiçbir kural yazmadan; yalnız sayıları çarpıp toplayarak.`,
+  bak:`<b>Sol iki sütun = ENCODER</b>: her sütun bir girdi kelimesi (${lb.join(', ')}). <b>Sağ iki sütun = DECODER</b>: her sütun çevirinin bir adımı. Her sütunu <b>aşağıdan yukarı</b> oku: en altta kelime, en üstte sonuç. En alttaki <b>mor tablolar ağırlıklar</b>; mor kesikli çizgi "bu tablo şu kutuda kullanıldı" demek. Yeşil yaylar residual (kısayol), sarı ok "seçilen kelime bir sonraki adımın girdisi".`,
+  coz:`Geometri sorusu çözer gibi gideceğiz: önce şekli tanıdık, şimdi aşağıdan yukarı <b>her kutuyu sırayla</b> hesaplayacağız. Her adımda: 1) hangi kutuya bakıyoruz, 2) içindeki sayılar nereden geldi (işlemle), 3) bu sayılar ne demek.`,
+  anlam:`Her kutu bir ara sonuç. Kutunun içindeki sayıların rengi işaretini gösterir: <b>mavi = artı</b>, <b>kırmızı = eksi</b>, renk koyulaştıkça sayı büyür.`,
+  dikkat:['İki encoder sütunu ayrı ağlar değil: <b>aynı birim, aynı ağırlıklar</b>, yalnız girdi kelime farklı. Decoder sütunları için de aynısı.','Bu oyuncakta her kelime yalnız <b>2 sayı</b>. Gerçek modellerde yüzlerce/binlerce sayı olur ama işlem aynıdır.'],
+  sonra:`En alttan başlıyoruz: kelime nasıl sayıya çevrilir?`},
+
+ {t:'1 · Kelime → sayı (gömme)',ids:[...ids('eoh',2),...ids('eemb',2),'WE'],
+  hedef:`Bilgisayar kelimeyle çalışamaz; her kelimeyi birkaç sayıdan oluşan bir <b>kimlik kartına</b> çevirmeliyiz.`,
+  bak:`En alttaki <b>one-hot</b> kutusu (1×4): sözlükte 4 kelime var (let's, to, go, &lt;EOS&gt;); kelimenin yerine 1, diğerlerine 0 yazılır. Üstündeki <b>gömme</b> kutusu (1×2): kelimenin kartı. Aşağıdaki mor <b>E</b> tablosu (4×2) bütün kelimelerin kartlarını tutar.`,
+  coz:`«${w[0]}» one-hot = (1 ; 0 ; 0 ; 0) gibi tek bir 1.<div class="calc">one-hot × E = 1·(1. satır) + 0·(2. satır) + 0·… + 0·…
+          = yalnız o kelimenin satırı
+${lb[0]} → <b>${V2(E.emb[0])}</b>
+${lb[1]} → <b>${V2(E.emb[1])}</b></div>`,
+  anlam:`Çarpma burada gerçek bir hesap değil: one-hot sadece "tablonun hangi satırını oku" der. Kart, kelimenin <b>anlamını</b> taşır: eğitimde benzer bağlamlarda geçen kelimeler benzer kartlar alır.`,
+  dikkat:['Kart elle yazılmadı; tablo eğitimle öğrenilir (buradaki sayılar videodan).','Kart şu an <b>sırayı bilmiyor</b>: «'+w[0]+'» birinci de olsa ikinci de olsa aynı kartı alır.'],
+  sonra:`Sıra bilgisini karta ekleyeceğiz: konum.`},
+
+ {t:'2 · Konum eklenir: x = gömme + konum',ids:[...ids('epe',2),...ids('ex',2)],
+  hedef:`Karta kelimenin <b>kaçıncı sırada</b> olduğunu eklemek. «Squatch eats pizza» ile «pizza eats Squatch» aynı kelimeler, farklı anlam.`,
+  bak:`Gömmenin yanındaki <b>konum</b> kutusu (1×2) ve ikisinin üstündeki <b>x</b> kutusu (1×2). İki ok x'te birleşiyor: toplama.`,
+  coz:`Konum sayıları sin/cos eğrilerinden okunur (sabit formül): konum 0 → (0 ; 1), konum 1 → (−0,9 ; 0,4).<div class="calc">x = gömme + konum (sayı sayı topla)
+${lb[0]}: ${V2(E.emb[0])} + ${V2(PE[0])} = <b>${V2(E.x[0])}</b>
+${lb[1]}: ${V2(E.emb[1])} + ${V2(PE[1])} = <b>${V2(E.x[1])}</b></div>`,
+  anlam:`x artık iki bilgiyi birden taşıyor: <b>"ben kimim" (gömme) + "neredeyim" (konum)</b>. Aynı kelime başka bir sırada olsaydı farklı bir x alırdı.`,
+  dikkat:['Toplama, yan yana ekleme değil: x hâlâ 2 sayı.','Konum sayıları öğrenilmez, formülden gelir; gömme ise öğrenilir.'],
+  sonra:`Bundan sonraki her şey x'ten türetilecek. İlk iş: x'ten bir "soru" üretmek.`},
+
+ {t:'3 · Sorgu Q: "ne arıyorum?"',ids:[...ids('eq',2),'WQ'],
+  hedef:`Her kelime, anlamını tamamlamak için <b>diğer kelimelerde ne aradığını</b> bir soruya çevirir.`,
+  bak:`x'ten yukarı giden mavi ok → <b>Q</b> kutusu (1×2). Mor kesikli çizgi aşağıdaki <b>W_Q</b> tablosuna (2×2) gidiyor: Q, x'in W_Q ile çarpımı.`,
+  coz:`Satır × tablo: Q'nun 1. sayısı = x'in iki sayısı × W_Q'nun 1. sütunu; 2. sayısı = × 2. sütunu.<div class="calc">${lb[0]}  (x = ${V2(E.x[0])})
+${mvL('q',E.x[0],WQ)}
+${lb[1]}  (x = ${V2(E.x[1])})
+${mvL('q',E.x[1],WQ)}</div>`,
+  anlam:`Q = <b>soru</b>: "bana hangi bilgi lazım?" Aynı kart, W_Q gözlüğünden geçince bir soruya dönüşür.`,
+  dikkat:['İki kelime <b>aynı W_Q</b>\'yu kullanır; soruları farklı çünkü x\'leri farklı.','Neden x\'in kendisi değil? Çünkü "ne arıyorum" ile "neyim" farklı roller; ayrı tablolar ayrı roller öğrenir.','Q\'nun tam olarak neyi sorduğunu kimse yazmaz; eğitim bulur.'],
+  sonra:`Aynı x'ten iki tablo daha: K ve V.`},
+
+ {t:'4 · Anahtar K ve değer V',ids:[...ids('ek',2),...ids('ev',2),'WK','WV'],
+  hedef:`Her kelime iki şey daha hazırlar: <b>etiketi (K)</b> "beni şununla bul" ve <b>içeriği (V)</b> "seçilirsem bunu veririm".`,
+  bak:`Q'nun yanında pembe <b>K</b> ve yeşil <b>V</b> kutuları. Kesikli çizgiler W_K ve W_V tablolarına gidiyor. İşlem Q'dakiyle aynı, yalnız tablo farklı.`,
+  coz:`<div class="calc">${lb[0]}
+${mvL('k',E.x[0],WK)}
+${mvL('v',E.x[0],WV)}
+${lb[1]}
+${mvL('k',E.x[1],WK)}
+${mvL('v',E.x[1],WV)}</div>`,
+  anlam:`Artık her kelimenin elinde aynı x'ten çıkmış üç vektör var: <b>Q soru, K etiket, V içerik</b>. Sonraki adımda sorular etiketlerle karşılaştırılacak; V ise o karşılaştırmanın sonucuna göre paylaştırılacak.`,
+  dikkat:['Videoda iki pembe "Key" kutusu var: bu iki ayrı tablo değil, <b>aynı W_K iki kelimeye uygulanmış</b>.','V şu an beklemede: skor ve yüzde hesabına girmez, en sonda karıştırılır.'],
+  sonra:`Her soru her etiketle karşılaştırılır: skorlar.`},
+
+ {t:'5 · Skorlar: Q · K',ids:[...ids('es',2),...ids('eq',2),...ids('ek',2)],
+  hedef:`Her kelimenin sorusunu <b>her kelimenin etiketiyle</b> karşılaştırıp bir uyum puanı çıkarmak.`,
+  bak:`Her sütunda bir sarı <b>skor</b> kutusu (1×2). İçine iki ok giriyor: <b>mavi ok kendi Q'su</b>, <b>pembe çapraz oklar iki kelimenin K'si</b>. Kutunun 1. hücresi = ${lb[0]} sütunu, 2. hücresi = ${lb[1]} sütunu (iki kutuda da sıra aynı).`,
+  coz:`Karşılaştırma = <b>nokta çarpım</b>: aynı sıradaki sayıları çarp, topla.<div class="calc">${lb[0]} soruyor (q = ${V2(E.q[0])})
+  · k${lb[0]} = ${dt(E.q[0],E.k[0])}
+  · k${lb[1]} = ${dt(E.q[0],E.k[1])}
+${lb[1]} soruyor (q = ${V2(E.q[1])})
+  · k${lb[0]} = ${dt(E.q[1],E.k[0])}
+  · k${lb[1]} = ${dt(E.q[1],E.k[1])}</div>`,
+  anlam:`Skor = <b>uyum puanı</b>. Büyük artı: "aradığım sende var"; sıfıra yakın: ilgisiz; eksi: "sende hiç yok". Burada ${lb[0]} en çok ${look(0)}'e, ${lb[1]} en çok ${look(1)}'e uyum buluyor${same?' (ikisi de aynı kelimeye)':''}.`,
+  dikkat:['K\'ler <b>ortak</b>: bir kez hesaplanır, iki skor kutusu da aynı iki K\'yi kullanır. Q ise kişiye özel.','Skorun birimi yok; tek başına "18 büyük mü" sorusu anlamsız, yalnız <b>aynı satırdaki diğer skorla</b> kıyaslanır.','Gerçek Transformer skorları √d\'ye böler; bu oyuncakta bölme yok.'],
+  sonra:`Puanları "dikkatimin yüzde kaçı kime" yüzdelerine çevireceğiz: softmax.`},
+
+ {t:'6 · Softmax: puanlar yüzdeye',ids:ids('ea',2),
+  hedef:`Her satırın puanlarını, toplamı %100 olan <b>dikkat yüzdelerine</b> çevirmek.`,
+  bak:`Skor kutusunun üstündeki <b>softmax</b> kutusu (1×2); yeşillik yüzdeyi gösterir. Her sütun kendi satırını ayrı hesaplar.`,
+  coz:`Kural: her puanın e üzerisini al, satır toplamına böl. (Önce en büyük puanı çıkarmak sonucu değiştirmez, sayıları küçük tutar.)<div class="calc">${lb[0]} satırı: ${E.s[0].map(fmt).join(' ; ')}
+${smxL(E.s[0],lb)}
+${lb[1]} satırı: ${E.s[1].map(fmt).join(' ; ')}
+${smxL(E.s[1],lb)}</div>`,
+  anlam:`Yüzde = <b>dikkat payı</b>: kelime, bir sonraki adımda bilgisinin yüzde kaçını kimden alacak. Puanlar arasındaki fark büyük olduğu için e üzerisi bu farkı devleştirir; sonuç neredeyse "hepsi bir kelimeye".`,
+  dikkat:['%0 tam sıfır değil, çok küçük bir sayı (yukarıdaki × 10⁻ⁿ değeri).','Satır içinde toplam %100; sütunların toplamı %100 olmak zorunda değil.','√d bölmesi olsaydı fark küçülür, dağılım daha yumuşak olurdu.'],
+  sonra:`Bu yüzdelerle V'leri karıştırıp her kelimenin yeni bilgisini hesaplayacağız.`},
+
+ {t:'7 · V\'leri yüzdelerle karıştır',ids:[...ids('ez',2),...ids('ev',2)],
+  hedef:`Her kelime, dikkat yüzdeleri oranında <b>diğer kelimelerin içeriğini (V)</b> toplar.`,
+  bak:`Softmax'ın üstündeki <b>self-attention</b> kutusu (1×2). İçine iki V'den (yeşil) ve yüzdelerden oklar geliyor.`,
+  coz:`Ağırlıklı ortalama: (yüzde × V) toplamı, her sayı için ayrı.<div class="calc">${lb[0]} (yüzdeler ${E.a[0].map(pc).join(' / ')})
+${mix(E.a[0],E.v,lb)}
+${lb[1]} (yüzdeler ${E.a[1].map(pc).join(' / ')})
+${mix(E.a[1],E.v,lb)}</div>`,
+  anlam:`Sonuç, kelimenin <b>başkalarından topladığı bilgi</b>. ${same?`İki kelime de %100 ${look(0)}'e baktığı için ikisinin sonucu da ${look(0)}'in V'sine eşit: videoda iki sütunun da aynı sayıları göstermesinin nedeni bu.`:'Her kelime kendi yüzdeleriyle farklı bir karışım aldı.'}`,
+  dikkat:['Bütün V\'ler toplama girer; payı %0 olanın katkısı ×0 ile sıfırlanır (çizgisi görünür ama etkisi yok).','Bu adımda kelimenin kendi x\'i yok; o bir sonraki adımda geri eklenecek.'],
+  sonra:`Kelimenin kendi bilgisi kaybolmasın: residual.`},
+
+ {t:'8 · Residual → encoder çıktısı',ids:[...ids('eo',2),...ids('ex',2)],
+  hedef:`Attention sonucuna kelimenin <b>kendi x'ini</b> geri eklemek.`,
+  bak:`Yeşil yay: x kutusundan çıkıp en üstteki <b>çıktı</b> kutusuna gidiyor (attention'ın yanından dolanan kısayol).`,
+  coz:`<div class="calc">çıktı = x + self-attention
+${lb[0]}: ${V2(E.x[0])} + ${V2(E.z[0])} = <b>${V2(E.o[0])}</b>
+${lb[1]}: ${V2(E.x[1])} + ${V2(E.z[1])} = <b>${V2(E.o[1])}</b></div>`,
+  anlam:`Çıktı = "kendim + başkalarından öğrendiğim". ${same?'Attention kısmı iki kelimede aynıydı ama x\'ler farklı olduğu için çıktılar farklı: kelimeler birbirine karışmadı.':''} <b>Encoder bitti</b>: cümle 2 satırlık bir tabloya kodlandı; decoder buna çapraz attention ile bakacak.`,
+  dikkat:['Videoda 4,37 / −1,01 yazıyor; bizde '+fmt(E.o[0][0])+' / '+fmt(E.o[0][1])+'. Fark yuvarlamadan (video ara sonuçları 1 haneye yuvarlıyor).','Residual\'ın asıl faydası eğitimde: her katman sıfırdan değil, "üstüne ekleme" öğrenir.'],
+  sonra:`Sağ tarafa geçiyoruz: decoder çeviriyi yazmaya başlıyor.`},
+
+ {t:'9 · Decoder başlar: <EOS>',ids:['doh0','demb0','dpe0','dx0','WD'],
+  hedef:`Decoder'a "yazmaya başla" işareti vermek.`,
+  bak:`Sağdaki ilk sütunun en altı: one-hot &lt;EOS&gt;, gömme, konum, x. Decoder'ın <b>kendi gömme tablosu</b> var (aşağıda mor, İspanyolca sözlük: ir, vamos, y, &lt;EOS&gt;).`,
+  coz:`<div class="calc">&lt;EOS&gt; kartı = ${V2(Edec[EOS])}
+x = ${V2(Edec[EOS])} + konum 0 ${V2(PE[0])} = <b>${V2(D.x[0])}</b></div>`,
+  anlam:`Decoder İngilizce cümleyi girdi olarak <b>almaz</b>; kendi yazdıklarını alır. İlk adımda henüz bir şey yazmadığı için yalnız başlangıç işareti var.`,
+  dikkat:['Encoder\'daki gibi gömme + konum; tablolar farklı.','Bu sayılar videoda gösterilen sayılar (🟢); decoder\'ın diğer ağırlıkları videoda yok, biz eğittik (🟠).'],
+  sonra:`Decoder önce kendi yazdıklarına bakar: maskeli self-attention.`},
+
+ {t:'10 · Decoder self-attention (maskeli)',ids:['dq0','dk0','dv0','ds0','da0','dz0','dy10'],
+  hedef:`"Şimdiye kadar ne yazdım?" bilgisini toplamak.`,
+  bak:`İlk decoder sütununda Q, K, V → skor → softmax → self-attention → residual. Encoder'daki Q,K,V → skor → softmax → karışım → residual adımlarının aynısı, decoder'ın kendi W tablolarıyla.`,
+  coz:`<div class="calc">${mvL('q',D.x[0],Qd)}
+${mvL('k',D.x[0],Kd)}
+${mvL('v',D.x[0],Vd)}
+skor = q·k = ${dt(D.q[0],D.k[0])}
+tek token → softmax = <b>%100</b> (kendine)
+self-attention = %100·v = <b>${V2(D.z[0])}</b>
+residual = ${V2(D.x[0])} + ${V2(D.z[0])} = <b>${V2(D.y1[0])}</b></div>`,
+  anlam:`Şu an tek token olduğu için kendine %100 bakmak zorunda. Çeviri uzadıkça bu katman önceki yazılan kelimeleri toplar.`,
+  dikkat:['<b>Maske</b>: decoder kendinden sonraki kelimelere bakamaz (henüz yazılmadılar). İlk adımda bakacak başka kelime yok.','Videoda bu sonuç −2,8 / −2,3; bizimki '+V2(D.z[0])+'.'],
+  sonra:`Şimdi decoder İngilizce cümleye bakacak: çapraz attention.`},
+
+ {t:'11 · Çapraz attention: girdiye bak',ids:['dcq0','dcs0','dca0','eck0','eck1','ecv0','ecv1'],
+  hedef:`Çevirinin bu adımında <b>girdi cümlesinin hangi kelimesine</b> bakılacağını bulmak.`,
+  bak:`Turuncu kutular: soru <b>decoder'dan</b> (çapraz Q), etiket ve içerik <b>encoder çıktılarından</b> (sol sütunların tepesindeki çapraz K ve V). Encoder'dan decoder'a giden uzun çizgiler bu bağlantı.`,
+  coz:`<div class="calc">soru: q = residual × W_Qc
+${mvL('q',D.y1[0],Qc)}
+etiketler: k = encoder çıktısı × W_Kc
+  k${lb[0]} = ${V2(M.ck[0])}   k${lb[1]} = ${V2(M.ck[1])}
+skorlar
+  · k${lb[0]} = ${dt(D.cq[0],M.ck[0])}
+  · k${lb[1]} = ${dt(D.cq[0],M.ck[1])}
+${smxL(D.cs[0],lb)}</div>`,
+  anlam:`Decoder ilk kelimeyi yazarken dikkatinin <b>${D.ca[0].map((a,j)=>pc(a)+'\'ini '+lb[j]).join(', ')}</b> kelimesine veriyor. Bu katman olmasa çeviri girdiyi hiç görmezdi.`,
+  dikkat:['Q decoder\'dan, K ve V encoder\'dan: iki farklı cümle buluşuyor.','Encoder <b>bir kez</b> hesaplanır; decoder her adımda aynı encoder çıktısını yeniden okur.','Video: «don\'t eat the pizza» çevrilirken «don\'t» kaybolmasın diye bu katman var.'],
+  sonra:`Bakılan kelimelerin içeriğini alıp ekliyoruz.`},
+
+ {t:'12 · Çapraz değer + residual',ids:['dcz0','dy20'],
+  hedef:`Seçilen girdi kelimelerinin içeriğini (V) almak ve decoder'ın kendi bilgisine eklemek.`,
+  bak:`Çapraz yüzdelerin üstündeki <b>çapraz değer</b> kutusu ve ikinci yeşil yayla gelen residual kutusu.`,
+  coz:`<div class="calc">içerikler: v = encoder çıktısı × W_Vc
+  v${lb[0]} = ${V2(M.cv[0])}   v${lb[1]} = ${V2(M.cv[1])}
+${mix(D.ca[0],M.cv,lb)}
+residual = ${V2(D.y1[0])} + ${V2(D.cz[0])} = <b>${V2(D.y2[0])}</b></div>`,
+  anlam:`Bu 2 sayı artık hem "ne yazdım" hem "girdide neye baktım" bilgisini taşıyor. Sıradaki kelimeyi bu karar verecek.`,
+  dikkat:['İkinci residual: decoder\'ın kendi bilgisi çapraz bilginin altında kaybolmasın.'],
+  sonra:`2 sayıdan "hangi İspanyolca kelime?" kararına.`},
+
+ {t:'13 · Tam bağlı katman + softmax → «'+o0+'»',ids:['dlg0','dp0','WF'],
+  hedef:`2 sayıyı, İspanyolca sözlüğün <b>her kelimesi için bir puana</b> çevirmek ve en olasıyı seçmek.`,
+  bak:`Kırmızı <b>puan</b> kutusu (1×4: ir, vamos, y, &lt;EOS&gt;) ve üstünde <b>olasılık</b> kutusu. Kesikli çizgi W_F (2×4) tablosuna.`,
+  coz:`Her kelime için: 2 sayı × tablonun o sütunu + sabit (b).<div class="calc">${DW.map((u,k)=>u.padEnd(6,' ')+' = '+pm(D.y2[0][0])+'·'+pm(Wf[0][k])+' + '+pm(D.y2[0][1])+'·'+pm(Wf[1][k])+' + '+pm(bf[k])+' = <b>'+fmt(D.lg[0][k])+'</b>').join('\n')}
+softmax → ${DW.map((u,k)=>u+' '+pc(D.p[0][k])).join(' ; ')}</div>`,
+  anlam:`En yüksek olasılık <b>«${o0}»</b>: decoder'ın ilk yazdığı kelime bu. «${w.join(' ')}» → «${o0}»: model girdide ${look(0)}'e bakarak bu çeviriyi seçti.`,
+  dikkat:['Sözlük 4 kelime olduğu için 4 puan; gerçek modelde on binlerce.','Seçim en yüksek olasılık (greedy); başka seçim yöntemleri de var.'],
+  sonra:`Seçilen kelime decoder'ın bir sonraki girdisi olur.`},
+
+ {t:'14 · Seçilen kelime girdiye eklenir',ids:['doh1','demb1','dx1','ds1','da1'],
+  hedef:`«${o0}» kelimesini girdi yapıp <b>aynı ağırlıklarla</b> ikinci decoder sütununu hesaplamak.`,
+  bak:`Sarı ok: birinci sütunun çıkışından ikinci sütunun girdisine. İkinci sütun aynı kutuları tekrar ediyor.`,
+  coz:`<div class="calc">x = kart«${o0}» ${V2(D.emb[1])} + konum 1 ${V2(PE[1])} = <b>${V2(D.x[1])}</b>
+maskeli skorlar (önceki ve kendisi):
+  · k«${din[0]}» = ${dt(D.q[1],D.k[0])}
+  · k«${din[1]}» = ${dt(D.q[1],D.k[1])}
+${smxL(D.s[1],['«'+din[0]+'»','«'+din[1]+'»'])}</div>`,
+  anlam:`«${o0}» hem kendine hem başlangıç işaretine bakabiliyor: "şu ana kadar ne yazdım" bilgisi böyle toplanıyor.`,
+  dikkat:['Birinci sütun <b>aynen kalır</b>: maske yüzünden ilk token ikincisine bakamaz, sonucu değişmez.','Yeni ağırlık yok; decoder her adımda aynı tabloları kullanır.'],
+  sonra:`İkinci adımda girdiye yeniden bak.`},
+
+ {t:'15 · İkinci adım: çapraz attention',ids:['dcq1','dcs1','dca1','dcz1','dy21'],
+  hedef:`İkinci kelimeyi yazmadan önce girdi cümlesine yeniden bakmak.`,
+  bak:`İkinci decoder sütununun turuncu kutuları; encoder'daki aynı çapraz K ve V kullanılıyor.`,
+  coz:`<div class="calc">${mvL('q',D.y1[1],Qc)}
+  · k${lb[0]} = ${dt(D.cq[1],M.ck[0])}
+  · k${lb[1]} = ${dt(D.cq[1],M.ck[1])}
+${smxL(D.cs[1],lb)}
+${mix(D.ca[1],M.cv,lb)}
+residual = ${V2(D.y1[1])} + ${V2(D.cz[1])} = <b>${V2(D.y2[1])}</b></div>`,
+  anlam:`Bu kez dikkat ${D.ca[1].map((a,j)=>pc(a)+' '+lb[j]).join(', ')}. Her adım girdiye farklı bakabilir.`,
+  dikkat:['Encoder çıktısı yeniden hesaplanmadı; aynı K, V kullanıldı.'],
+  sonra:`Son karar: bir kelime daha mı, bitti mi?`},
+
+ {t:'16 · Çıkış: «'+o1+'» → bitti',ids:['dlg1','dp1'],
+  hedef:`İkinci kelimeyi seçmek.`,
+  bak:`İkinci sütunun puan ve olasılık kutuları.`,
+  coz:`<div class="calc">${DW.map((u,k)=>u.padEnd(6,' ')+' = '+pm(D.y2[1][0])+'·'+pm(Wf[0][k])+' + '+pm(D.y2[1][1])+'·'+pm(Wf[1][k])+' + '+pm(bf[k])+' = <b>'+fmt(D.lg[1][k])+'</b>').join('\n')}
+softmax → ${DW.map((u,k)=>u+' '+pc(D.p[1][k])).join(' ; ')}</div>`,
+  anlam:M.outs[1]===EOS?`&lt;EOS&gt; seçildi: "çeviri bitti" demek. Decoder durur. Sonuç: <b>«${w.join(' ')}» → «${o0}»</b>.`:`«${o1}» seçildi.`,
+  dikkat:['&lt;EOS&gt; hem başlangıç hem bitiş işareti olarak kullanılıyor (videodaki gibi).','Model çıktı uzunluğunu kendisi belirler: &lt;EOS&gt; seçince durur.'],
+  sonra:`Özet.`},
+
+ {t:'Özet',ids:[],
+  hedef:`Bütün yolculuğu tek cümleyle: kelime → kart → soru/etiket/içerik → kime bakayım → bilgiyi topla → kendimi ekle → (decoder) girdiye bak → kelime seç.`,
+  bak:`Bütün mimari açık. İstediğin kutuya tıklayıp hesabını yeniden görebilirsin.`,
+  coz:`<b>Gömme</b> (kelime → sayı), <b>konum</b> (sıra), <b>self-attention</b> (cümle içi ilişki), <b>çapraz attention</b> (girdi ↔ çıktı), <b>residual</b> (kendi bilgisini koru), <b>tam bağlı + softmax</b> (kelime seç).`,
+  anlam:`Hiçbir adımda kural yok: hepsi çarpma, toplama, e üzeri ve bölme. Ne yapılacağını <b>ağırlıklar</b> belirler ve onlar eğitimle öğrenilir.`,
+  dikkat:['Gerçek Transformer\'da ayrıca: her adımdan sonra <b>normalizasyon</b>, skorlar <b>÷√d</b>, her blokta <b>FFN</b>, çok kafa, çok blok ve on binlerce kelimelik sözlük. Bu oyuncakta hiçbiri yok.'],
+  sonra:`Sitede: Self-Attention (dikkat laboratuvarı), Multi-Head (kafalar), Transformer Bloğu (Add & Norm, FFN, 7+5 toplama turu).`}]};
 let tour=-1;
 function stepFocus(){const s=ST()[tour],ps=s.ids.map(i=>byId[i]).filter(Boolean);focus=ps.length?new Set(ps):null;
  if(ps.length){const c=new THREE.Vector3();ps.forEach(p=>c.add(p.mesh.position));c.divideScalar(ps.length);tgtGoal=c;let mx=0;ps.forEach(p=>mx=Math.max(mx,p.mesh.position.distanceTo(c)));distGoal=Math.max(10,Math.min(34,mx*2.4+8))}
  else{tgtGoal=DEF.t.clone();distGoal=DEF.dist}
- document.getElementById('tb').innerHTML='<h3>'+(tour+1)+'/'+ST().length+' · '+s.t.replace(/^[0-9]+ · /,'')+'</h3>'+s.tx+(s.soz?'<div class="soz">'+s.soz+'</div>':'');
+ const sec=(c,ic,h,x)=>x?'<div class="ts '+c+'"><div class="th">'+ic+' '+h+'</div>'+x+'</div>':'';
+ document.getElementById('tb').innerHTML='<h3>'+(tour+1)+'/'+ST().length+' · '+s.t.replace(/^[0-9]+ · /,'')+'</h3>'+sec('hd','🎯','Bu adımda ne yapıyoruz?',s.hedef)+sec('bk','👀','Şekle bak',s.bak)+sec('cz','✏️','Adım adım çözüm',s.coz)+sec('an','🗣️','Ne anlama geliyor?',s.anlam)+(s.dikkat&&s.dikkat.length?sec('dk','⚠️','Dikkat / sık karışan','<ul>'+s.dikkat.map(d=>'<li>'+d+'</li>').join('')+'</ul>'):'')+sec('sn','➡️','Sonra',s.sonra);
+ document.getElementById('tb').scrollTop=0;document.getElementById('tour').scrollTop=0;document.body.classList.add('touring');resize();
  document.getElementById('tour').classList.add('on');document.getElementById('tp').disabled=tour===0;document.getElementById('tn').textContent=tour===ST().length-1?'↺ Baştan':'İleri ▶';document.getElementById('tx').style.display=''}
-function tourOff(){tour=-1;focus=null;tgtGoal=null;distGoal=null;document.getElementById('tour').classList.remove('on');document.getElementById('tx').style.display='none';document.getElementById('tp').disabled=true;document.getElementById('tn').textContent='🎬 Adım adım ▶'}
+function tourOff(){tour=-1;document.body.classList.remove('touring');setTimeout(resize,0);focus=null;tgtGoal=null;distGoal=null;document.getElementById('tour').classList.remove('on');document.getElementById('tx').style.display='none';document.getElementById('tp').disabled=true;document.getElementById('tn').textContent='🎬 Adım adım ▶'}
 document.getElementById('tn').onclick=()=>{tour=tour<0?0:tour===ST().length-1?0:tour+1;stepFocus()};
 document.getElementById('tp').onclick=()=>{if(tour>0){tour--;stepFocus()}};document.getElementById('tx').onclick=tourOff;
 const setS=k=>{SENT=k;document.getElementById('s1').classList.toggle('on',k===0);document.getElementById('s2').classList.toggle('on',k===1);const t=tour;build();if(t>=0){tour=t;stepFocus()}};
@@ -255,7 +461,7 @@ cv.addEventListener('pointerup',e=>{const d=drag;drag=null;if(d&&d.mv<5){const p
 cv.addEventListener('wheel',e=>{e.preventDefault();dist=Math.max(4,Math.min(80,dist*Math.exp(e.deltaY*0.0012)));distGoal=null},{passive:false});
 function pickAt(e){const r=cv.getBoundingClientRect();mp.set((e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(mp,cam);const h=ray.intersectObjects(parts.map(p=>p.mesh),false);return h.length?h[0].object.userData.p:null}
 const v3=new THREE.Vector3();
-function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
+function resize(){const w=innerWidth,h=innerHeight;ren.setSize(w,h,false);ren.setPixelRatio(Math.min(2,devicePixelRatio||1));cam.aspect=w/h;const tp=document.getElementById('tour');if(document.body.classList.contains('touring')&&w>900){const pw=Math.min(560,w*0.4)+24;cam.setViewOffset(w,h,-pw/2,0,w,h)}else cam.clearViewOffset();cam.updateProjectionMatrix()}addEventListener('resize',resize);
 
 // ---- klavye: oklar = kaydır, A/D = döndür, Q/E = eğ, W/S = yakınlaş, H/Home = sıfırla (3B mimari sayfasıyla aynı)
 const KEYS=new Set(),kNorm=k=>k.length===1?k.toLowerCase():k;
@@ -290,4 +496,4 @@ document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),f
 document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
 })();
 </script>
-<script src="print-a4.js?v=202611081207"></script></body></html>
+<script src="print-a4.js?v=202611081405"></script></body></html>
