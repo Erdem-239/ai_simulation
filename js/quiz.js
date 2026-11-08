@@ -5,7 +5,7 @@
    - Seçenekler her denemede karıştırılır; en iyi skor tarayıcıda saklanır. */
 (function(){
   const D=window.QUIZ_DATA||{};
-  const NM={linreg:'Lineer Regresyon',aktivasyon:'Aktivasyon',xor:'XOR',neural:'Neural Network',softmax:'Softmax',rnn:'RNN',lstm:'LSTM',vektor:'Vektör',embedding:'Kelime Temsili',seq2seq:'Seq2Seq',attention:'Self-Attention',multihead:'Multi-Head',transformer:'Transformer Bloğu',gpt:'GPT',opt:'Optimizerlar',ovf:'Aşırı öğrenme',tok:'Tokenizasyon'};
+  const NM={linreg:'Lineer Regresyon',aktivasyon:'Aktivasyon',xor:'XOR',neural:'Neural Network',softmax:'Softmax',rnn:'RNN',lstm:'LSTM',vektor:'Vektör',embedding:'Kelime Temsili',seq2seq:'Seq2Seq',attention:'Self-Attention',multihead:'Multi-Head',transformer:'Transformer Bloğu',gpt:'GPT',opt:'Optimizerlar',ovf:'Aşırı öğrenme',tok:'Tokenizasyon',gen:'Üretim stratejileri'};
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
   function getBest(k){try{return JSON.parse(localStorage.getItem('attn_quiz_'+k)||'null');}catch(e){return null;}}
