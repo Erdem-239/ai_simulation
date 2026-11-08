@@ -2370,3 +2370,4 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .va-data{display:flex; flex-wrap:wrap; gap:4px}
 .va-data>div{border:2px solid; border-radius:3px; line-height:0}
 .va-path{display:flex; gap:4px; flex-wrap:wrap; margin:2px 0 8px}
+/* 🌫️ Diffusion dersi: ortak .nl-* bileşenleri yeterli */
