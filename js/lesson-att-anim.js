@@ -48,14 +48,14 @@
   const SC=[
    {tag:'Girdi',
     goal:'<b>🎯 Bu adımda ne yapıyoruz?</b> Cümlemiz «kedi balığı yedi». Her kelime 4 sayılık bir kart (d = 4): <b>hayvan</b>, <b>yemek</b>, <b>eylem</b>, <b>geçmiş</b> boyutları. Sayılar öğretmek için elle seçildi.',
-    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» kartı tek başına yalnızca «bir eylem, geçmiş zaman» der; <b>kim</b> yedi, <b>ne</b> yedi bilmez. Bunu cümledeki öteki kelimelere bakarak öğrenmesi gerekir — self-attention tam bunu yapar.',
+    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» kartı tek başına yalnızca «bir eylem, geçmiş zaman» der; <b>kim</b> yedi, <b>ne</b> yedi bilmez. Bunu cümledeki öteki kelimelere bakarak öğrenmesi gerekir — self-attention tam bunu yapar.'+'<div style="margin-top:5px;padding:4px 8px;border-left:3px solid #ff9b3d;background:rgba(255,155,61,.08)">🧑‍🤝‍🧑 <b>Ali–Ayşe:</b> her kelime bir <b>kişi</b> gibi düşün: kimi aradığını kendisi söyler, kimde ne olduğunu başkaları söyler. Sonraki sahnelerde Ali ile Ayşe’yi izleyeceğiz.</div>',
     elde:'<b>📦 Elde ettik:</b> X (3×4): üç kelime, her biri 4 sayı. Sonraki sahnelerde her kelime bu X\'in <b>aynı cümledeki öteki satırlarına</b> bakacak.',
     draw:t=>{mat(X,330,110,{cw:70,ch:46,rows:TOK,title:'X  (3 kelime × 4 boyut)',alpha:st(t,0,2),fs:14});
       DIM.forEach((s,j)=>txt(s,330+j*70+34,92,'#9fb0d0',11,'center'));
       txt('→ her satır bir kelimenin kartı',330,330,'#9fb0d0',13);}},
    {tag:'Q, K, V',
     goal:'<b>🎯 Bu adımda ne yapıyoruz?</b> X üç ayrı küçük tabloyla (W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, her biri 4×2) çarpılır → her kelime için bir <b>soru</b> (Q), bir <b>etiket</b> (K), bir <b>değer</b> (V).',
-    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi»nin sorusu Q = ['+Q[2].map(f).join(', ')+']: «hem <b>hayvan</b> hem <b>yemek</b> arıyorum». «kedi»nin etiketi K = ['+K[0].map(f).join(', ')+'] («bende hayvan var»), «balığı»nın K = ['+K[1].map(f).join(', ')+'] («bende yemek var»); «yedi»nin etiketi boş. V = verilecek bilgi. Aynı kelimeden üç ayrı rol çıktı.',
+    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi»nin sorusu Q = ['+Q[2].map(f).join(', ')+']: «hem <b>hayvan</b> hem <b>yemek</b> arıyorum». «kedi»nin etiketi K = ['+K[0].map(f).join(', ')+'] («bende hayvan var»), «balığı»nın K = ['+K[1].map(f).join(', ')+'] («bende yemek var»); «yedi»nin etiketi boş. V = verilecek bilgi. Aynı kelimeden üç ayrı rol çıktı.'+'<div style="margin-top:5px;padding:4px 8px;border-left:3px solid #ff9b3d;background:rgba(255,155,61,.08)">🧑‍🤝‍🧑 <b>Ali–Ayşe:</b> Ali acıkmış: <b>Q</b> = «ben <b>yemek</b> arıyorum» (Ali’nin <u>aradığı</u>). Ayşe’nin elinde yemek var: <b>K</b> = «bende <b>yemek</b> var» (Ayşe’nin <u>etiketi</u>). <b>V</b> = Ayşe’nin Ali’ye gerçekten vereceği şey (yemeğin kendisi). Q ile K <b>ayrı</b> tablolardan çıkar; tek kart olsaydı Ali en çok kendine benzerdi («aç» ↔ «aç»). Burada «yedi» Ali, «balığı» Ayşe.</div>',
     elde:'<b>📦 Elde ettik:</b> Q, K, V (her biri 3×2). Aynı X\'ten üç farklı tabloyla çıktıkları için «soran», «etiket» ve «bilgi» ayrı şeyler.',
     draw:t=>{[['W_Q',WQ,Q,'Q'],['W_K',WK,K,'K'],['W_V',WV,V,'V']].forEach(([n,W,R,nm],i)=>{
         const a=st(t,i,3), x0=90+i*320;
@@ -65,7 +65,7 @@
       txt('sarı satır: «yedi»',90,400,'#ffd24a',13);}},
    {tag:'Skor: Q·Kᵀ ÷ √d',
     goal:'<b>🎯 Bu adımda ne yapıyoruz?</b> Her kelimenin sorusu <b>herkesin etiketiyle</b> nokta çarpılır (Q·Kᵀ → 3×3), sonra √d<sub>k</sub> = √2 ile bölünür (sayılar kontrolden çıkmasın).',
-    soz:'<b>🗣️ Ne anlama geliyor?</b> Satır = soran, sütun = bakılan. «yedi» satırı: kedi <b>'+f(S[2][0])+'</b>, balığı <b>'+f(S[2][1])+'</b>, kendisi <b>'+f(S[2][2])+'</b> — soru ile etiket ne kadar örtüşürse skor o kadar büyük. Skor henüz yüzde değil.',
+    soz:'<b>🗣️ Ne anlama geliyor?</b> Satır = soran, sütun = bakılan. «yedi» satırı: kedi <b>'+f(S[2][0])+'</b>, balığı <b>'+f(S[2][1])+'</b>, kendisi <b>'+f(S[2][2])+'</b> — soru ile etiket ne kadar örtüşürse skor o kadar büyük. Skor henüz yüzde değil.'+'<div style="margin-top:5px;padding:4px 8px;border-left:3px solid #ff9b3d;background:rgba(255,155,61,.08)">🧑‍🤝‍🧑 <b>Ali–Ayşe:</b> Ali’nin «yemek arıyorum»u ile Ayşe’nin «bende yemek var»ı <b>örtüşünce</b> skor yüksek çıkar ('+f(S[2][1])+'); Ali’nin sorusu ile etiketi boş olan kendi kartı örtüşmez ('+f(S[2][2])+'). Skor = «bu kişide aradığım var mı?» puanı.</div>',
     elde:'<b>📦 Elde ettik:</b> S (3×3) ham benzerlik tablosu. Büyük sayı = «ona bakmaya değer».',
     draw:t=>{const a0=st(t,0,3),a1=st(t,1,3),a2=st(t,2,3);
       mat(Q,40,110,{cw:40,ch:34,title:'Q',alpha:a0,fs:12,rows:TOK,hr:2}); op('·',150,170,a0); mat(tr(K),180,110,{cw:40,ch:34,title:'Kᵀ',alpha:a0,fs:12,cols:TOK});
@@ -74,7 +74,7 @@
       txt('satır = soran, sütun = bakılan',40,330,'#9fb0d0',13);}},
    {tag:'Softmax → dikkat yüzdeleri',
     goal:'<b>🎯 Bu adımda ne yapıyoruz?</b> Her <b>satıra</b> softmax uygulanır: skorlar e üzeri alınıp satır toplamına bölünür → her satır toplamı %100 olan yüzdeler. Bu tabloya <b>dikkat deseni</b> (A) denir.',
-    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» dikkatini <b>%'+Math.round(A[2][0]*100)+' kediye, %'+Math.round(A[2][1]*100)+' balığa, %'+Math.round(A[2][2]*100)+' kendine</b> verdi. «kedi» ise %'+Math.round(A[0][1]*100)+' balığa baktı. Skorlar farklıydı; softmax onları «kime ne kadar bakayım» payına çevirdi.',
+    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» dikkatini <b>%'+Math.round(A[2][0]*100)+' kediye, %'+Math.round(A[2][1]*100)+' balığa, %'+Math.round(A[2][2]*100)+' kendine</b> verdi. «kedi» ise %'+Math.round(A[0][1]*100)+' balığa baktı. Skorlar farklıydı; softmax onları «kime ne kadar bakayım» payına çevirdi.'+'<div style="margin-top:5px;padding:4px 8px;border-left:3px solid #ff9b3d;background:rgba(255,155,61,.08)">🧑‍🤝‍🧑 <b>Ali–Ayşe:</b> Ali dikkatini Ayşe’ye (yemeği olana) çok, yemeği olmayana az verir; paylar toplam %100.</div>',
     elde:'<b>📦 Elde ettik:</b> A (3×3), her satırı %100. Hangi kelimenin hangisinden <b>ne kadar</b> alacağı belli.',
     draw:t=>{const a0=st(t,0,2),a1=st(t,1,2);
       mat(S,60,110,{cw:50,ch:34,title:'S (skor)',alpha:a0,fs:12,rows:TOK,cols:TOK,hr:2});
@@ -83,7 +83,7 @@
       txt('her SATIR ayrı ayrı %100 yapılır',60,330,'#9fb0d0',13);}},
    {tag:'A·V: karışım',
     goal:'<b>🎯 Bu adımda ne yapıyoruz?</b> Her kelime, dikkat yüzdeleriyle <b>V\'leri karıştırır</b> (A·V). Satır başına: yüzde × değer + yüzde × değer + …',
-    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» için: %'+Math.round(A[2][0]*100)+'×V<sub>kedi</sub> + %'+Math.round(A[2][1]*100)+'×V<sub>balığı</sub> + %'+Math.round(A[2][2]*100)+'×V<sub>yedi</sub> = ['+Z[2].map(f).join(', ')+'] → <b>hem hayvan hem yemek bilgisi</b>. Artık «yedi» kartı «kedinin balığı yemesi»ni taşıyor.',
+    soz:'<b>🗣️ Ne anlama geliyor?</b> «yedi» için: %'+Math.round(A[2][0]*100)+'×V<sub>kedi</sub> + %'+Math.round(A[2][1]*100)+'×V<sub>balığı</sub> + %'+Math.round(A[2][2]*100)+'×V<sub>yedi</sub> = ['+Z[2].map(f).join(', ')+'] → <b>hem hayvan hem yemek bilgisi</b>. Artık «yedi» kartı «kedinin balığı yemesi»ni taşıyor.'+'<div style="margin-top:5px;padding:4px 8px;border-left:3px solid #ff9b3d;background:rgba(255,155,61,.08)">🧑‍🤝‍🧑 <b>Ali–Ayşe:</b> Ali yüzdelerine göre herkesten <b>V</b> alır: Ayşe’den yemek bilgisini çoğunlukla, yemeği olmayandan neredeyse hiç. Ali’nin yeni kartı = aldığı şeylerin karışımı.</div>',
     elde:'<b>📦 Elde ettik:</b> Z = A·V (3×2): her kelimenin <b>yeni, bağlamlı</b> kartı. Z, X\'ten farklı: kelime çevresini içine kattı.',
     draw:t=>{const a0=st(t,0,3),a1=st(t,1,3),a2=st(t,2,3);
       mat(A,50,110,{cw:50,ch:34,title:'A',alpha:a0,fs:12,rows:TOK,hr:2}); op('·',230,170,a1); mat(V,260,110,{cw:50,ch:34,title:'V',alpha:a1,fs:12,hr:2,rows:TOK});
