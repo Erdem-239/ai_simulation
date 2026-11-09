@@ -41,7 +41,7 @@ const H=[0,1].map(i=>mm(A[i],V[i])),CAT=X.map((_,r)=>[...H[0][r],...H[1][r]]),DE
 const CH={x:'#3fc7c1',h1:'#4aa3ff',h2:'#ff9b3d',s:'#b592f0',o:'#f27a88'};
 const cv=document.getElementById('c'),ren=new THREE.WebGLRenderer({canvas:cv,antialias:true}),scene=new THREE.Scene();
 scene.background=new THREE.Color(0x0b0e14);const cam=new THREE.PerspectiveCamera(45,1,0.1,300);
-const DEF={yaw:0.5,pitch:0.25,dist:34,t:new THREE.Vector3(0,10.5,0)};
+const DEF={yaw:0.1,pitch:0.1,dist:44,t:new THREE.Vector3(-3.6,13.6,0)};
 let yaw=DEF.yaw,pitch=DEF.pitch,dist=DEF.dist,tgt=DEF.t.clone(),tgtGoal=null,distGoal=null;
 let grp=new THREE.Group(),parts=[],byId={},focus=null,sel=null;scene.add(grp);const lbEl=document.getElementById('lb');
 function tex(M,vmax){const rows=M.length,cols=M[0].length,cs=44,cn=document.createElement('canvas');cn.width=cols*cs;cn.height=rows*cs;const g=cn.getContext('2d');
@@ -55,40 +55,58 @@ function mk(o){const rows=o.vals.length,cols=o.vals[0].length,w=cols*CS,h=rows*C
  const eg=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),new THREE.LineBasicMaterial({color:new THREE.Color(CH[o.cl]),transparent:true}));mesh.add(eg);
  mesh.position.set(o.x,o.y,0);grp.add(mesh);
  const p=Object.assign({mesh,edge:eg,w,h,rows,cols,mats:[side,f1,f2]},o);mesh.userData.p=p;parts.push(p);byId[o.id]=p;
- const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',CH[o.cl]);d.innerHTML=o.short+'<small>'+rows+'×'+cols+'</small>';d.onclick=e=>{e.stopPropagation();select(p)};lbEl.appendChild(d);p.lb=d;return p}
+ const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',CH[o.cl]);d.innerHTML=o.short+(EMB?'':'<small>'+rows+'×'+cols+'</small>');d.onclick=e=>{e.stopPropagation();select(p)};lbEl.appendChild(d);p.lb=d;return p}
 function arrow(a,b,col){const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();if(len<0.05)return;dir.normalize();grp.add(new THREE.ArrowHelper(dir,a,len,col,Math.min(0.4,len*0.35),0.22))}
 const top=p=>new THREE.Vector3(p.mesh.position.x,p.mesh.position.y+p.h/2,0),bot=p=>new THREE.Vector3(p.mesh.position.x,p.mesh.position.y-p.h/2,0);
 function link(a,b,col){arrow(top(byId[a]),bot(byId[b]),col)}
-const LV={x:0,w:3.6,q:7.2,a:10.6,h:14,cat:17.4,del:20.8,xn:24.2};
+const LV={x:0,w:4.2,q:8.2,a:12,h:15.6,cat:19.6,del:23.4,xn:27};
+const arrows=[];
+function ar(aId,bId,col,fromSide){const A=byId[aId],B=byId[bId];if(!A||!B)return;const a=new THREE.Vector3(A.mesh.position.x,A.mesh.position.y+A.h/2,0.1),b=new THREE.Vector3(B.mesh.position.x,B.mesh.position.y-B.h/2,0.1);
+ const dir=new THREE.Vector3().subVectors(b,a),len=dir.length();if(len<0.05)return;dir.normalize();const h=new THREE.ArrowHelper(dir,a,len,col,Math.min(0.5,len*0.3),0.28);
+ h.line.material.transparent=true;h.cone.material.transparent=true;grp.add(h);arrows.push({h,a:aId,b:bId})}
 mk({id:'X',name:'X (girdi)',short:'X',cl:'x',vals:X,x:0,y:LV.x,info:'Üç kelime, her biri 4 sayılık kart (sıfat, renk, isim, doku). İki kafa da AYNI X\'e bakar.'});
-const cx=[-6.2,6.2],NM=['W_Q','W_K','W_V'],off=[-2.1,0,2.1];
+const cx=[-6.4,6.4],NM=['W_Q','W_K','W_V'],off=[-2.2,0,2.2];
+// kafa çerçeveleri (arka plan kutuları): bir kafaya ait her şey tek kutuda
+function clusterFrame(h){const c=h?0xff9b3d:0x4aa3ff,x0=cx[h]-3.9,x1=cx[h]+3.9,y0=LV.w-2.2,y1=LV.h+1.6,z=-0.3;
+ const g=new THREE.BufferGeometry().setFromPoints([[x0,y0],[x1,y0],[x1,y1],[x0,y1],[x0,y0]].map(p=>new THREE.Vector3(p[0],p[1],z)));
+ const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.55}));grp.add(l);
+ const m=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,y1-y0),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.06}));m.position.set(cx[h],(y0+y1)/2,z-0.05);grp.add(m)}
+clusterFrame(0);clusterFrame(1);
 [0,1].forEach(h=>{const c=h?'h2':'h1',s=h+1,W=[WQ[h],WK[h],WV[h]],R=[Q[h],K[h],V[h]],N=['Q','K','V'];
  for(let i=0;i<3;i++){mk({id:'W'+N[i]+s,name:NM[i]+'^('+s+') — kafa '+s+'\'in KENDİ tablosu',short:NM[i]+s,cl:c,vals:W[i],x:cx[h]+off[i],y:LV.w,info:'<b>Kafa '+s+'</b>\'in kendi '+NM[i]+' tablosu (4×2). Başka kafa bu tabloya dokunmaz. 4 boyutlu kartı 2 boyuta indirir (d_k = 2).'});
   mk({id:N[i]+s,name:N[i]+s+' = X·'+NM[i]+'^('+s+')',short:N[i]+s,cl:c,vals:R[i],x:cx[h]+off[i],y:LV.q,info:N[i]+s+': kafa '+s+'\'in '+(N[i]==='Q'?'«ne arıyorum» sorusu':N[i]==='K'?'«bende ne var» etiketi':'«vereceğim bilgi» değeri')+' (3×2).'});}
- mk({id:'A'+s,name:'A'+s+' = softmax(Q·Kᵀ/√d_k) — kafa '+s+' dikkat deseni',short:'A'+s,cl:c,vals:A[h],vmax:1,x:cx[h],y:LV.a,info:'Kafa '+s+'\'in dikkat deseni (3×3, her satır toplamı 1, üst üçgen maske). «yaratık» satırı: '+A[h][2].map(v=>Math.round(v*100)+'%').join(' / ')+' (kabarık / mavi / yaratık).'});
+ mk({id:'A'+s,name:'A'+s+' = softmax(Q·Kᵀ/√d_k) — kafa '+s+' dikkat deseni',short:'A'+s,cl:c,vals:A[h],vmax:1,x:cx[h]-1.1,y:LV.a,info:'Kafa '+s+'\'in dikkat deseni (3×3, her satır toplamı 1, üst üçgen maske). «yaratık» satırı: '+A[h][2].map(v=>Math.round(v*100)+'%').join(' / ')+' (kabarık / mavi / yaratık).'});
  mk({id:'H'+s,name:'kafa '+s+' çıktısı = A·V',short:'A·V '+s,cl:c,vals:H[h],x:cx[h],y:LV.h,info:'Kafa '+s+'\'in dikkat yüzdeleriyle V\'yi karıştırıp hazırladığı öneri (3×2).'});
 });
 mk({id:'CAT',name:'Concat (kafaları yan yana yapıştır)',short:'Concat',cl:'o',vals:CAT,x:0,y:LV.cat,info:'İki kafanın çıktısı yan yana yapıştırılır: 3×2 | 3×2 → 3×4. Hesap yok, sadece birleştirme.'});
-mk({id:'WO',name:'W_O (çıktı tablosu)',short:'W_O',cl:'s',vals:WO,x:6,y:LV.cat,info:'Kafaların önerilerini kelimenin kendi boyutlarına yerleştirir ve kafaları birbirine karıştırır. Kafalar arasındaki TEK iletişim burası. (4×4)'});
+mk({id:'WO',name:'W_O (çıktı tablosu)',short:'W_O',cl:'s',vals:WO,x:5.6,y:LV.cat,info:'Kafaların önerilerini kelimenin kendi boyutlarına yerleştirir ve kafaları birbirine karıştırır. Kafalar arasındaki TEK iletişim burası. (4×4)'});
 mk({id:'DEL',name:'Δ = Concat·W_O (öneri)',short:'Δ',cl:'o',vals:DEL,x:0,y:LV.del,info:'Kelimenin kartına EKLENECEK değişim.'});
 mk({id:'XN',name:"X' = X + Δ (residual)",short:"X'",cl:'x',vals:XN,x:0,y:LV.xn,info:'«yaratık» artık mavi + dokulu: ['+XN[2].map(f).join(', ')+'].'});
-// oklar
-[0,1].forEach(h=>{const s=h+1,c=h?0xff9b3d:0x4aa3ff;['Q','K','V'].forEach(n=>{arrow(top(byId.X),bot(byId['W'+n+s]),c);link('W'+n+s,n+s,c);});
- arrow(top(byId['Q'+s]),bot(byId['A'+s]),c);arrow(top(byId['K'+s]),bot(byId['A'+s]),c);link('A'+s,'H'+s,c);arrow(top(byId['V'+s]),new THREE.Vector3(cx[h]+0.9,LV.h-0.5,0),c);link('H'+s,'CAT',c)});
-link('CAT','DEL',0xf27a88);arrow(top(byId.WO),new THREE.Vector3(0.9,LV.del-0.5,0),0xb592f0);link('DEL','XN',0xf27a88);
-// residual: X → X' (arkadan eğri)
-{const c=new THREE.CatmullRomCurve3([new THREE.Vector3(-1.4,LV.x,0),new THREE.Vector3(-9.5,10,-3),new THREE.Vector3(-9.5,20,-3),new THREE.Vector3(-1.4,LV.xn,0)]);grp.add(new THREE.Mesh(new THREE.TubeGeometry(c,40,0.05,6),new THREE.MeshBasicMaterial({color:0x5fd18a})));}
-function addText(t,x,y){const d=document.createElement('div');d.className='lb tt';d.textContent=t;lbEl.appendChild(d);labels.push({d,v:new THREE.Vector3(x,y,0)})}
+// oklar — az ve temiz: X→her kafanın W satırı (kafa başına tek ok, kutuya), kafa içi dikey zincir, birleştirme, residual
+[0,1].forEach(h=>{const s=h+1,c=h?0xff9b3d:0x4aa3ff;
+ ['Q','K','V'].forEach(n=>ar('W'+n+s,n+s,c));
+ ar('Q'+s,'A'+s,c);ar('K'+s,'A'+s,c);ar('A'+s,'H'+s,c);ar('V'+s,'H'+s,c);ar('H'+s,'CAT',c)});
+// X → iki kafaya (kutunun alt kenarına): görsel olarak tek bir "dağıtım"
+[0,1].forEach(h=>{const c=h?0xff9b3d:0x4aa3ff,a=new THREE.Vector3(h?1.2:-1.2,LV.x+0.95,0.1),b=new THREE.Vector3(cx[h],LV.w-2.2,0.1),d=new THREE.Vector3().subVectors(b,a),L=d.length();d.normalize();
+ const hh=new THREE.ArrowHelper(d,a,L,c,0.5,0.28);hh.line.material.transparent=true;hh.cone.material.transparent=true;grp.add(hh);arrows.push({h:hh,a:'X',b:'W'+'Q'+(h+1)})});
+ar('CAT','DEL',0xf27a88);ar('DEL','XN',0xf27a88);
+{const A=byId.WO,a=new THREE.Vector3(A.mesh.position.x-A.w/2,A.mesh.position.y,0.1),b=new THREE.Vector3(1.0,LV.del-0.9,0.1),d=new THREE.Vector3().subVectors(b,a),L=d.length();d.normalize();const hh=new THREE.ArrowHelper(d,a,L,0xb592f0,0.4,0.25);hh.line.material.transparent=true;hh.cone.material.transparent=true;grp.add(hh);arrows.push({h:hh,a:'WO',b:'DEL'})}
+// residual: X → X' (yan eğri)
+{const c=new THREE.CatmullRomCurve3([new THREE.Vector3(-1.4,LV.x+0.2,0),new THREE.Vector3(-11.8,6,0),new THREE.Vector3(-11.8,22,0),new THREE.Vector3(-1.4,LV.xn-0.2,0)]);const m=new THREE.Mesh(new THREE.TubeGeometry(c,50,0.06,6),new THREE.MeshBasicMaterial({color:0x5fd18a,transparent:true}));grp.add(m);window.__resid=m}
 const labels=[];
-addText('KAFA 1 (doku kafası)',cx[0],LV.w-2.4);addText('KAFA 2 (renk kafası)',cx[1],LV.w-2.4);addText('residual: X doğrudan X\'e eklenir',-9.5,10);
+function addText(t,x,y,c){const d=document.createElement('div');d.className='lb tt';d.textContent=t;if(c)d.style.color=c;lbEl.appendChild(d);labels.push({d,v:new THREE.Vector3(x,y,0)});return d}
+addText('KAFA 1 · doku kafası',cx[0],LV.h+2.5,'#4aa3ff');addText('KAFA 2 · renk kafası',cx[1],LV.h+2.5,'#ff9b3d');
+
+// seviye başlıkları (hep görünür): bütün resmin okunur olması için
+const LVL=[['① girdi',LV.x],['② her kafa kendi W\'leri',LV.w],['③ Q · K · V',LV.q],['④ dikkat deseni',LV.a],['⑤ A · V',LV.h],['⑥ yapıştır + W_O',LV.cat],['⑦ + residual (yeşil eğri: X → X\')',LV.xn]];
+const lvlEls=LVL.map(([t,y])=>addText(t,-16.2,y,'#9aa3b6'));
 // ---- seçim / bilgi
 function select(p){sel=p;const i=document.getElementById('info');i.style.setProperty('--c',CH[p.cl]);document.getElementById('ib').innerHTML='<h3>'+p.name+'</h3><div>'+p.info+'</div><div class="vals">'+p.vals.map(r=>r.map(f).join('  ')).join('\n')+'</div>';i.classList.add('on');parts.forEach(q=>{q.lb.classList.toggle('sel',q===p);q.edge.material.color.set(q===p?0xffc82e:CH[q.cl])})}
 document.getElementById('ix').onclick=()=>{sel=null;document.getElementById('info').classList.remove('on');parts.forEach(q=>{q.lb.classList.remove('sel');q.edge.material.color.set(CH[q.cl])})};
 document.getElementById('rs').onclick=()=>{yaw=DEF.yaw;pitch=DEF.pitch;dist=DEF.dist;tgt.copy(DEF.t);tgtGoal=null;distGoal=null;focus=null};
 // ---- ders sahnelerine odak (postMessage {type:'mh3d',scene:n})
 const SCN=[['X'],['WQ1','WK1','WV1','Q1','K1','V1'],['WQ2','WK2','WV2','Q2','K2','V2'],['Q1','K1','A1','Q2','K2','A2'],['A1','V1','H1','A2','V2','H2'],['H1','H2','CAT','WO','DEL','XN'],['WQ1','WQ2']];
-function setScene(n){if(n==null||n<0||!SCN[n]){focus=null;tgtGoal=DEF.t.clone();distGoal=DEF.dist;return}
- const ps=SCN[n].map(i=>byId[i]);focus=new Set(ps);const c=new THREE.Vector3();ps.forEach(p=>c.add(p.mesh.position));c.divideScalar(ps.length);tgtGoal=c;let mx=0;ps.forEach(p=>mx=Math.max(mx,p.mesh.position.distanceTo(c)));distGoal=Math.max(18,Math.min(40,mx*2.4+13))}
+function setScene(n){tgtGoal=null;distGoal=null;if(n==null||n<0||!SCN[n]){focus=null;return}focus=new Set(SCN[n].map(i=>byId[i]))}
 addEventListener('message',e=>{const d=e.data;if(d&&d.type==='mh3d')setScene(d.scene)});
 // ---- kamera / etkileşim
 let drag=null;const ray=new THREE.Raycaster(),mp=new THREE.Vector2();
@@ -110,8 +128,9 @@ const v3=new THREE.Vector3();
 function frame(){keyMove();if(tgtGoal)tgt.lerp(tgtGoal,0.08);if(distGoal!=null)dist+=(distGoal-dist)*0.08;
  cam.position.set(tgt.x+dist*Math.sin(yaw)*Math.cos(pitch),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(yaw)*Math.cos(pitch));cam.lookAt(tgt);cam.updateMatrixWorld();
  const w=innerWidth,h=innerHeight;
- parts.forEach(p=>{const on=!focus||focus.has(p),o=on?1:0.16;p.mats.forEach(m=>m.opacity=o);p.edge.material.opacity=o;v3.copy(p.mesh.position);v3.y+=p.h/2+0.35;v3.project(cam);p.lb.style.display=(v3.z<1&&(!EMB||on))?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px';p.lb.classList.toggle('dim',!on)});
- labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=(v3.z<1&&!(EMB&&focus))?'':'none'});
+ parts.forEach(p=>{const on=!focus||focus.has(p),o=on?1:0.16;p.mats.forEach(m=>m.opacity=o);p.edge.material.opacity=o;v3.copy(p.mesh.position);v3.y+=p.h/2+0.35;v3.project(cam);p.lb.style.display=(v3.z<1&&(!EMB||on||!focus))?'':'none';p.lb.style.left=((v3.x+1)/2*w)+'px';p.lb.style.top=((1-v3.y)/2*h)+'px';p.lb.classList.toggle('dim',!on)});
+ labels.forEach(l=>{v3.copy(l.v).project(cam);l.d.style.left=((v3.x+1)/2*w)+'px';l.d.style.top=((1-v3.y)/2*h)+'px';l.d.style.display=(v3.z<1)?'':'none'});
+ arrows.forEach(r=>{const on=!focus||(focus.has(byId[r.a])&&focus.has(byId[r.b])),o=on?1:0.12;r.h.line.material.opacity=o;r.h.cone.material.opacity=o});if(window.__resid)window.__resid.material.opacity=focus?(focus.has(byId.X)||focus.has(byId.XN)?1:0.12):1;
  ren.render(scene,cam);requestAnimationFrame(frame)}
 resize();frame();window.__mh3={setScene,parts:()=>parts};
 })();
