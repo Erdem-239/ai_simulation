@@ -3517,7 +3517,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
           branchDone=true;
           const br=document.createElement('div');
           br.className='sb-branch';
-          br.innerHTML='<b>🌱 DEVRİMİN İKİ KOLU</b><span>Attention\'dan sonra iki ayrı yol. Biri ötekinin önkoşulu değil — istediğin koldan başla.</span>';
+          br.innerHTML='<b>🌱 Devrimin iki kolu</b><span>Yapay zekâ devriminin devamı: Attention\'dan çıkan iki yol. Biri ötekinin önkoşulu değil — istediğin koldan başla.</span>';
+          br.style.setProperty('--era-c','255,201,60');   // YZ Devrimi'nin rengi: kollar o çağın içinde
           parent.insertBefore(br, b);
         }
         parent.insertBefore(lab, b);
