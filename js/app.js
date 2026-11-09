@@ -2223,11 +2223,13 @@ window.__goStage=function(tab, st, sel){
     }
     heads=hs;
     const api=window.__ttAPI, node=api && api.NODES.find(n=>n.tab===tab && n.alt && n.alt.length);
-    if(node){
+    sb.querySelectorAll('.navbtn.sb-altbtn').forEach(x=>x.classList.toggle('sb-altshow', x.dataset.model===tab || x.dataset.altparent===tab));
+    const alts=node ? node.alt.filter(al=>!(al.tab && al.tab!==tab && sb.querySelector('.navbtn[data-model="'+al.tab+'"]'))) : [];   // kendi düğmesi olan alt ders zaten altta görünüyor
+    if(alts.length){
       const lb=document.createElement('div'); lb.className='sn-altlbl'; lb.textContent='📎 Alt dersler'; nav.appendChild(lb);
-      node.alt.forEach(al=>{
+      alts.forEach(al=>{
         const a=document.createElement('a'); a.className='sn-alt'; a.textContent=al.nm;
-        a.addEventListener('click',()=>window.__goStage(tab, al.st, al.sel));
+        a.addEventListener('click',()=>window.__goStage(al.tab||tab, al.st, al.sel));
         nav.appendChild(a);
       });
     }
@@ -2495,7 +2497,8 @@ window.__goStage=function(tab, st, sel){
       d:'Skorları olasılığa çeviren formül — ve LLM\'lerin "yaratıcılık" düğmesi. Attention ağırlıklarının mutfağı.',
       sci:'Kök: Boltzmann dağılımı e^(−E/kT) (1868) — T gerçekten sıcaklık! "softmax" adını Bridle koydu (1989). Fizikten yapay zekâya 120 yıllık köprü.',
       real:[['🎲','LLM örneklemesi: her kelime bir zar atışı'],['🌡️','temperature API parametresi'],['🖼️','"%97 kedi" güven skorları'],['🎯','Attention dikkat yüzdeleri']],
-      sub:['Neden exp? (skor→olasılık)','Softmax formülü','Temperature: keskin↔yaratıcı','√d ölçekleme ipucu','Kendini test (4 soru)']},
+      sub:['Neden exp? (skor→olasılık)','Softmax formülü','Temperature: keskin↔yaratıcı','√d ölçekleme ipucu','Kendini test (4 soru)'],
+      alt:[{nm:'🎲 Üretim Stratejileri', tab:'gen', d:'Olasılıktan metne: açgözlü seçim, sıcaklık, top-k, top-p, beam search.'}]},
     {id:'att',  nm:'🎯 Self-Attention (Q/K/V)', tier:6, v:50, pre:['s2s','vek','soft'], tab:'attention',
       d:'softmax(QKᵀ/√d)·V — her kelime her kelimeye bakar, recurrence tamamen atılır. Makalenin kalbi.',
       sci:'Vaswani ve 7 arkadaşı, Google Brain/Research (2017). "Recurrence\'ı tamamen atalım, yalnız attention kalsın" cesareti — makalenin adı buradan.',
@@ -2516,12 +2519,7 @@ window.__goStage=function(tab, st, sel){
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['📜','Modern yapay zekânın temel makalesi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Bölüm bölüm okuma rehberi','Tablo 1: öz-dikkat ↔ RNN','Formül 3: ısınmalı öğrenme hızı','65 milyon ağırlığı kendin say','Makaleden sonra ne değişti?']},
-    {id:'gen',  nm:'🎲 Üretim Stratejileri', tier:11, v:10, lane:'llm', pre:['llm'], tab:'gen',
-      d:'Model her adımda bir olasılık dağılımı verir; metni seçim kuralı yazar. Açgözlü seçim, sıcaklık, top-k, top-p, beam search — tekrar ↔ tutarlılık ↔ çeşitlilik dengesi.',
-      sci:'Beam search: konuşma tanıma ve çeviri (1970\'ler–2014). Top-k örnekleme: Fan, Lewis & Dauphin (2018). Top-p (nucleus): Holtzman ve arkadaşları, "The Curious Case of Neural Text Degeneration" (2019).',
-      real:[['💬','Sohbet modellerinde sıcaklık ayarı'],['🌐','Çeviride beam search'],['🔁','Tekrar eden metin (açgözlü döngü)']],
-      sub:['Açgözlü seçim ve döngü','Sıcaklık: p^(1/T)','Top-k ve top-p','Beam search','Tekrar cezası, min-p (Ekstra)']},
-    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:11, v:30, lane:'llm', pre:['gen'], tab:'ft',
+    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:11, v:30, lane:'llm', pre:['llm'], tab:'ft',
       d:'Ön eğitimli model metni devam ettirir; asistan olması için ince ayar (SFT), parametre verimli ince ayar (LoRA) ve insan tercihiyle eğitim (RLHF / DPO) gerekir. Unutma ve uydurma da bu dersin konusu.',
       sci:'InstructGPT / RLHF: Ouyang ve arkadaşları (2022), Christiano ve arkadaşları (2017). LoRA: Hu ve arkadaşları (2021). DPO: Rafailov ve arkadaşları (2023).',
       real:[['💬','Temel model → sohbet modeli'],['🔌','LoRA adaptörleri: tek modele çok uzmanlık'],['👍','Beğen/beğenme düğmeleri = tercih verisi']],
@@ -2885,7 +2883,7 @@ window.__goStage=function(tab, st, sel){
       g.style.cursor='pointer';
       g.addEventListener('click',e=>{
         const al=e.target.closest && e.target.closest('.ttc-altl');
-        if(al){ const n=byId[g.dataset.id], a=n.alt[+al.dataset.alt]; if(a){ e.stopPropagation(); window.__goStage(n.tab, a.st, a.sel); return; } }
+        if(al){ const n=byId[g.dataset.id], a=n.alt[+al.dataset.alt]; if(a){ e.stopPropagation(); window.__goStage(a.tab||n.tab, a.st, a.sel); return; } }
         show(g.dataset.id);
       });
     });
@@ -2948,7 +2946,7 @@ window.__goStage=function(tab, st, sel){
         if(cl){const h=cl.querySelector('.tpl-head'); if(h&&h.classList.contains('closed')) h.click(); cl.scrollIntoView({behavior:'smooth',block:'start'});}
       },150);
     }));
-    info.querySelectorAll('[data-altgo]').forEach(b=>b.addEventListener('click',()=>{ const a=n.alt[+b.dataset.altgo]; window.__goStage(n.tab, a.st, a.sel); }));
+    info.querySelectorAll('[data-altgo]').forEach(b=>b.addEventListener('click',()=>{ const a=n.alt[+b.dataset.altgo]; window.__goStage(a.tab||n.tab, a.st, a.sel); }));
     info.querySelectorAll('[data-pedia]').forEach(b=>b.addEventListener('click',()=>{
       const t=document.querySelector('.navbtn[data-model="pedia"]'); if(t) t.click();
       setTimeout(()=>{ const el=document.getElementById('pedia-'+b.dataset.pedia); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); },60);
@@ -3506,9 +3504,12 @@ window.__goStage=function(tab, st, sel){
     const api=window.__ttAPI; if(!api) return;
     const HEAD={yol:-2, pedia:-1};              // ders değil, hep en üstte
     const head=[], lessons=[], extra=[];        // extra = ağaçta düğümü olmayan düğmeler (ör. 🧭 Transformer Haritası ekstra dersi) → sona
+    const ALTP={}; api.NODES.forEach(n=>(n.alt||[]).forEach(a=>{ if(a.tab && a.tab!==n.tab) ALTP[a.tab]=n.tab; }));   // kendi sayfası olan alt ders → ana ders
+    const altB=[];
     btns.forEach(b=>{
       const m=b.dataset.model;
       if(m in HEAD){ head.push([HEAD[m], b]); return; }
+      if(ALTP[m]){ b.classList.add('sb-altbtn'); b.dataset.altparent=ALTP[m]; if(!b.querySelector('.sb-altk')) b.insertAdjacentHTML('beforeend','<small class="sb-altk">📎 Softmax\'ın alt dersi</small>'.replace('Softmax',(api.NODES.find(x=>x.tab===ALTP[m])||{nm:''}).nm.replace(/^\S+\s/,'').replace(/ &.*/,''))); altB.push(b); return; }
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
       if(n) lessons.push([n.tier, n.v, b, n.lane==='img'?1:0]); else extra.push(b);
     });
@@ -3516,6 +3517,7 @@ window.__goStage=function(tab, st, sel){
     // iki kollu çağda (aynı tier'ler) önce 💬 dil kolu, sonra 🎨 görüntü kolu gelsin
     lessons.sort((a,b)=> (a[0]>=11&&b[0]>=11? a[3]-b[3]:0) || a[0]-b[0] || a[1]-b[1]);
     const seq=[...head.map(x=>x[1]), ...lessons.map(x=>x[2])];
+    altB.forEach(b=>{ const i=seq.findIndex(x=>x.dataset.model===b.dataset.altparent); if(i>=0) seq.splice(i+1,0,b); else extra.push(b); });
     extra.forEach(e=>seq.push(e));
 
     const parent=btns[0].parentNode, note=sb.querySelector('.sb-note');
@@ -3545,6 +3547,11 @@ window.__goStage=function(tab, st, sel){
     const eraLast=new Map(), eraLes=new Map();   // çağ → son ders düğmesi / ders anahtarları
     seq.forEach(b=>{
       const m=b.dataset.model;
+      if(b.dataset.altparent){   // alt ders: ana dersin çağında, çağ testine dahil, etiket açmaz
+        const pb=seq.find(x=>x.dataset.model===b.dataset.altparent); if(pb) b.style.setProperty('--era-c', pb.style.getPropertyValue('--era-c'));
+        if(curEra){ eraLast.set(curEra,b); eraLes.get(curEra).push(m); }
+        return;
+      }
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
       if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/Keşif Defteri)
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1 && (!x.lane || x.lane===n.lane));
