@@ -2504,38 +2504,38 @@ window.__goStage=function(tab, st, sel){
       sci:'Vaswani ve 7 arkadaşı, Google Brain/Research (2017). "Recurrence\'ı tamamen atalım, yalnız attention kalsın" cesareti — makalenin adı buradan.',
       real:[['⚡','Paralel eğitim: GPU\'ların tam gücü'],['🔗','Uzun menzilli bağlam yakalama'],['🧬','AlphaFold\'a giden temsil gücü']],
       sub:['Q, K, V nedir','Skor: QKᵀ/√d','Softmax ağırlıkları','Ağırlıklı toplam (çıktı)']},
-    {id:'mha',  nm:'🧩 Multi-Head Attention', tier:7, v:26, pre:['att'], tab:'multihead',
+    {id:'mha',  nm:'🧩 Multi-Head Attention', tier:6, v:52, pre:['att'], tab:'multihead',
       d:'Aynı anda farklı ilişki türlerini yakalayan paralel attention kafaları — ve recurrence yoksa sıra bilgisini taşıyan sinüs/kosinüs "imza" (Positional Encoding).',
       sci:'Aynı makale (2017): tek attention yerine 8 paralel "kafa" — her biri farklı ilişki türünü öğrenir (sözdizimi, anlam, eşleşme...). Sıra bilgisi de aynı makalede sinüs/kosinüs dalgalarıyla vektöre işlendi — recurrence olmadan "kim önce kim sonra" çözüldü.',
       real:[['🧩','Zengin dil temsili (BERT/GPT içi)'],['🔬','Yorumlanabilirlik: kafa analizi'],['📐','Sırayı koruyarak tam paralellik'],['🎼','Dalga-tabanlı konum kodlama']],
       sub:['Kafalara bölme','Farklı ilişki uzayları','Birleştirme (concat + W)','Neden konum bilgisi gerekli','Sinüs/kosinüs kodlama (Positional Encoding)']},
-    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:8, v:50, pre:['mha'], tab:'transformer',
+    {id:'blk',  nm:'🏗️ Transformer Bloğu', tier:6, v:54, pre:['mha'], tab:'transformer',
       d:'Residual + LayerNorm + FFN; encoder/decoder mimarisi. Bütün parçaların tek makinede birleşmesi.',
       sci:'Residual: He ve ekibi (2015, ResNet). LayerNorm: Ba, Kiros & Hinton (2016). Transformer bloğu bu parçaları tek makinede birleştirdi (2017).',
       real:[['🏗️','Yüzlerce katman derinlik mümkün'],['📦','Kopyala-yapıştır ölçeklenen mimari']],
       sub:['Residual bağlantı','LayerNorm','FFN katmanı','Encoder/decoder yığını']},
-    {id:'paper',nm:'📜 Attention Is All You Need', tier:9, v:50, pre:['blk'], crown:true, tab:'paper',
+    {id:'paper',nm:'📜 Attention Is All You Need', tier:7, v:50, pre:['blk'], crown:true, tab:'paper',
       d:'2017, Vaswani vd. Önceki derslerin bütün parçaları bu 15 sayfalık makalede tek bir mimaride birleşti.',
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['📜','Modern yapay zekânın temel makalesi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Bölüm bölüm okuma rehberi','Tablo 1: öz-dikkat ↔ RNN','Formül 3: ısınmalı öğrenme hızı','65 milyon ağırlığı kendin say','Makaleden sonra ne değişti?']},
-    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:11, v:30, lane:'llm', pre:['llm'], tab:'ft',
+    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:9, v:30, lane:'llm', pre:['llm'], tab:'ft',
       d:'Ön eğitimli model metni devam ettirir; asistan olması için ince ayar (SFT), parametre verimli ince ayar (LoRA) ve insan tercihiyle eğitim (RLHF / DPO) gerekir. Unutma ve uydurma da bu dersin konusu.',
       sci:'InstructGPT / RLHF: Ouyang ve arkadaşları (2022), Christiano ve arkadaşları (2017). LoRA: Hu ve arkadaşları (2021). DPO: Rafailov ve arkadaşları (2023).',
       real:[['💬','Temel model → sohbet modeli'],['🔌','LoRA adaptörleri: tek modele çok uzmanlık'],['👍','Beğen/beğenme düğmeleri = tercih verisi']],
       sub:['Ön eğitim: metni devam ettir','İnce ayar (SFT): yalnız cevap puanlanır','LoRA: W + A·B, temel donuk','Unutma ve uydurma','RLHF ve DPO'],
       alt:[{nm:'📏 Değerlendirme', tab:'ev', d:'İnce ayar işe yaradı mı? Benchmark, güven aralığı, sızıntı, pass@k.'}]},
-    {id:'bg',   nm:'🔀 BERT ↔ GPT', tier:10, v:20, pre:['paper'], tab:'bg',
+    {id:'bg',   nm:'🔀 BERT ↔ GPT', tier:8, v:20, pre:['paper'], tab:'bg',
       d:'Aynı Transformer bloğundan üç aile: yalnız encoder (BERT, iki yönlü, maskeli dil modeli), yalnız decoder (GPT, nedensel, sıradaki token), encoder-decoder (T5). Hangisi anlamada, hangisi üretmede iyi?',
       sci:'BERT: Devlin ve arkadaşları (Google, 2018). GPT: Radford ve arkadaşları (OpenAI, 2018). T5: Raffel ve arkadaşları (Google, 2019).',
       real:[['🔍','Arama ve sınıflandırma: BERT ailesi'],['💬','Sohbet ve üretim: GPT ailesi'],['🌐','Çeviri ve özet: T5 / encoder-decoder']],
       sub:['Dikkat maskesi: iki yönlü ↔ nedensel','Maskeli dil modeli (%15)','Sıradaki token tahmini','Encoder-decoder ve çapraz dikkat','Neden decoder-only kazandı?']},
-    {id:'rag',  nm:'📚 RAG', tier:12, v:10, lane:'llm', pre:['ft'], tab:'rag',
+    {id:'rag',  nm:'📚 RAG', tier:10, v:10, lane:'llm', pre:['ft'], tab:'rag',
       d:'Bilgiyi modelin ağırlıklarına değil, soruyla birlikte istemine koy: belgeleri parçala, vektöre çevir, soruya en yakın parçaları getir, model onlara dayanarak cevaplasın.',
       sci:'RAG: Lewis ve arkadaşları (Facebook AI, 2020). Yoğun arama (DPR): Karpukhin ve arkadaşları (2020). TF-IDF: Spärck Jones (1972).',
       real:[['🏢','Şirket belgeleriyle cevap veren asistanlar'],['🔎','Kaynak göstererek cevaplayan arama'],['📅','Güncel bilgi: eğitimden sonraki olaylar']],
       sub:['Parçala → vektöre çevir → getir → isteme koy','TF-IDF ve kosinüs benzerliği','Türkçe ekler: 3\'lü harf grupları','Embedding modelleri ve anlam araması','k ve parça boyu ayarı']},
-    {id:'agent',nm:'🛠️ Ajanlar & Harness', tier:12, v:30, lane:'llm', pre:['rag'], tab:'agent',
+    {id:'agent',nm:'🛠️ Ajanlar & Harness', tier:10, v:30, lane:'llm', pre:['rag'], tab:'agent',
       d:'Model tek başına yalnız metin yazar. Harness onu bir döngüye koyar: model araç çağrısı yazar, harness çalıştırır, sonucu bağlama ekler, model devam eder. Araçlar, bağlam yönetimi, adım sınırı ve istem enjeksiyonu.',
       sci:'ReAct (düşün + eyle): Yao ve arkadaşları (2022). Toolformer: Schick ve arkadaşları (2023). İstem enjeksiyonu kavramı 2022\'de yaygınlaştı.',
       real:[['🔎','"Web\'de arıyor…" adımları'],['💻','Kod yazıp çalıştıran asistanlar'],['🛡️','Riskli adımda insan onayı']],
@@ -2545,27 +2545,27 @@ window.__goStage=function(tab, st, sel){
       sci:'Hubel & Wiesel: görme korteksi (1959–62). Fukushima: Neocognitron (1980). LeCun: LeNet (1989–98). Krizhevsky, Sutskever & Hinton: AlexNet (2012).',
       real:[['📱','Yüz tanıma, fotoğraf ayıklama'],['🏥','Tıbbi görüntüde bulgu arama'],['🚗','Sürüş destek kameraları']],
       sub:['Resim = piksel ızgarası (RGB kanalları)','Konvolüsyon: 9 çarpımın toplamı','Dolgu ve adım (padding, stride)','ReLU ve max-pool','Filtreler eğitimle öğrenilir']},
-    {id:'vae',  nm:'🌀 Autoencoder & VAE', tier:11, v:70, lane:'img', pre:['cnn','paper'], tab:'vae',
+    {id:'vae',  nm:'🌀 Autoencoder & VAE', tier:9, v:70, lane:'img', pre:['cnn','paper'], tab:'vae',
       d:'Resmi birkaç sayıya sıkıştır, sonra geri aç. Autoencoder iyi sıkıştırır ama üretemez; VAE kodları düzenli bir bölgeye (N(0,1)) toplayarak rastgele koddan yeni resim üretir. Gizli uzay, KL, β dengesi.',
       sci:'Autoencoder: Hinton & Salakhutdinov (2006) ve öncesi. VAE: Kingma & Welling (2013), Rezende, Mohamed & Wierstra (2014). β-VAE: Higgins ve arkadaşları (2017).',
       real:[['🗜️','Sıkıştırma ve gürültü temizleme'],['🎨','Latent diffusion\'ın resim ↔ kod çevirmeni'],['🔍','Anormallik tespiti']],
       sub:['Encoder → kod → decoder','Gizli uzay (latent space)','Neden AE üretemez?','VAE: z = μ + σ·ε ve KL','β dengesi ve çöküş']},
-    {id:'gan',  nm:'🥊 GAN', tier:12, v:70, lane:'img', pre:['vae'], tab:'gan',
+    {id:'gan',  nm:'🥊 GAN', tier:10, v:70, lane:'img', pre:['vae'], tab:'gan',
       d:'İki ağ karşı karşıya: üretici sahte örnek üretir, ayırt edici gerçeği sahteden ayırmaya çalışır. Denge, mod çöküşü, kararsız eğitim; keskin ama zor eğitilen bir üretici.',
       sci:'GAN: Goodfellow ve arkadaşları (2014). DCGAN: Radford, Metz & Chintala (2015). StyleGAN: Karras ve arkadaşları (NVIDIA, 2018–2020).',
       real:[['🧑','Var olmayan insan yüzleri (StyleGAN)'],['🔍','Süper çözünürlük, resim tamamlama'],['⚠️','Deepfake ve tespit yarışı']],
       sub:['Üretici ↔ ayırt edici oyunu','Gradyan D\'nin içinden G\'ye','Denge: D her yere %50','Mod çöküşü','Kararsızlık ve tohum duyarlılığı']},
-    {id:'dif',  nm:'🌫️ Diffusion', tier:12, v:90, lane:'img', pre:['gan'], tab:'dif',
+    {id:'dif',  nm:'🌫️ Diffusion', tier:10, v:90, lane:'img', pre:['gan'], tab:'dif',
       d:'Veriyi adım adım gürültüye boğ (ileri süreç), sonra bir ağa her adımda gürültüyü tahmin etmeyi öğret; saf gürültüden başlayıp gürültüyü azar azar temizleyerek yeni örnek üret. Kararlı eğitim, bütün modlar, yavaş üretim.',
       sci:'Sohl-Dickstein ve arkadaşları (2015). DDPM: Ho, Jain & Abbeel (2020). Skor tabanlı modeller: Song & Ermon (2019). DDIM: Song, Meng & Ermon (2020).',
       real:[['🎨','Metinden görüntü üreten modellerin çoğu'],['🎬','Video ve ses üretimi'],['🧬','Protein ve molekül tasarımı']],
       sub:['İleri süreç: x_t = √ᾱ·x₀ + √(1−ᾱ)·ε','Eğitim: eklenen gürültüyü tahmin et','Geri süreç: 50 adımda gürültüden veriye','GAN ile karşılaştırma: kararlılık ↔ hız','Hızlı örnekleme (DDIM)']},
-    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:13, v:80, lane:'img', pre:['dif'], tab:'t2i',
+    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:11, v:80, lane:'img', pre:['dif'], tab:'t2i',
       d:'Diffusion modeline istemi dinlemeyi öğretmek: metin kodlayıcısı (CLIP), koşul vektörü, çapraz dikkat, sınıflandırıcısız yönlendirme (CFG), gizli uzayda üretim (latent diffusion), DiT.',
       sci:'CLIP: Radford ve arkadaşları (OpenAI, 2021). Sınıflandırıcısız yönlendirme: Ho & Salimans (2021). Latent diffusion: Rombach ve arkadaşları (2022). DiT: Peebles & Xie (2023).',
       real:[['🎨','İstemden resim üreten araçlar'],['🎚️','"Guidance scale" ayarı'],['🔎','CLIP ile resim arama']],
       sub:['Metin kodlayıcısı → koşul vektörü','Çapraz dikkat ile koşullama','Sınıflandırıcısız yönlendirme: ε_boş + w·(ε_istem − ε_boş)','Latent diffusion (VAE + diffusion)','DiT: Transformer ile diffusion']},
-    {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:10, v:50, pre:['paper'], tab:'gpt',
+    {id:'llm',  nm:'🤖 GPT ve Modern LLM\'ler', tier:8, v:50, pre:['paper'], tab:'gpt',
       d:'Decoder-only + "sonraki kelimeyi tahmin et" + ölçek = bugünkü sohbet modelleri. Ufuk çizgisi. Sayfada minik bir karakter modelinden (sıfırdan eğitilen minik GPT) başlayıp GPT-2 ve Llama mimarilerine uzanıyorsun; mimari karşılaştırması için 🧭 Transformer Haritası (Ekstra) dersindeki 3B mimari kartına bak.',
       sci:'GPT serisi: Radford & OpenAI (2018→). Ölçekleme yasaları: Kaplan vd. (2020). "Sonraki kelimeyi tahmin et"in ölçekle mucizeye dönüşmesi.',
       real:[['🤖','ChatGPT, Claude, Gemini'],['👨‍💻','Copilot: kod yazan YZ'],['🔬','Bilimsel keşif asistanları']],
@@ -2575,10 +2575,10 @@ window.__goStage=function(tab, st, sel){
   const ERAS=[
     {t0:0,t1:1,nm:'📜 TEMELLER', newStyle:true, c:'46,134,255'},
     {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true, c:'156,77,255'},
-    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true, c:'229,71,155'},
-    {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true, c:'255,122,51'},
-    {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true, c:'255,201,60'},
-    {t0:11,t1:13,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, c:'64,200,170', c2:'236,110,190', lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
+    {t0:4,t1:5,nm:'🌉 DİZİ MODELLEME', newStyle:true, c:'229,71,155'},
+    {t0:6,t1:6,nm:'🎯 TRANSFORMER', newStyle:true, c:'255,122,51'},
+    {t0:7,t1:8,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true, c:'255,201,60'},
+    {t0:9,t1:11,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, c:'64,200,170', c2:'236,110,190', lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -2992,7 +2992,10 @@ window.__goStage=function(tab, st, sel){
       n.pre.forEach(p=>{
         const a=byId[p];
         let path;
-        if(VERT){
+        if(a.tier===n.tier){   // aynı sütunda üst üste (ör. Self-Attention → Multi-Head → Blok): yatayda dikey, dikeyde yatay kısa bağ
+          path = VERT ? 'M'+(X(a)+NW(a)/2)+' '+Y(a)+' H'+(X(n)-NW(n)/2)
+                      : 'M'+X(a)+' '+(Y(a)+NH(a)/2)+' V'+(Y(n)-NH(n)/2);
+        } else if(VERT){
           const x1=X(a), y1=Y(a)+NH(a)/2, x2=X(n), y2=Y(n)-NH(n)/2, my=(y1+y2)/2;
           path='M'+x1+' '+y1+' V'+my+' H'+x2+' V'+y2;
         } else {
@@ -3683,7 +3686,7 @@ window.__goStage=function(tab, st, sel){
     });
     head.sort((a,b)=>a[0]-b[0]);
     // iki kollu çağda (aynı tier'ler) önce 💬 dil kolu, sonra 🎨 görüntü kolu gelsin
-    lessons.sort((a,b)=> (a[0]>=11&&b[0]>=11? a[3]-b[3]:0) || a[0]-b[0] || a[1]-b[1]);
+    lessons.sort((a,b)=> (a[0]>=9&&b[0]>=9? a[3]-b[3]:0) || a[0]-b[0] || a[1]-b[1]);
     const seq=[...head.map(x=>x[1]), ...lessons.map(x=>x[2])];
     altB.forEach(b=>{ const i=seq.findIndex(x=>x.dataset.model===b.dataset.altparent); if(i>=0) seq.splice(i+1,0,b); else extra.push(b); });
     extra.forEach(e=>seq.push(e));
@@ -3701,11 +3704,11 @@ window.__goStage=function(tab, st, sel){
     const ERAC=[
       {t0:0,  t1:1,  c:'46,134,255',  nm:'📜 TEMELLER'},
       {t0:2,  t1:3,  c:'156,77,255',  nm:'⚙️ NÖRAL AĞLAR'},
-      {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
-      {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
-      {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
-      {t0:11, t1:13, c:'64,200,170',  nm:'💬 UYGULAMADA LLM', lane:'llm'},
-      {t0:11, t1:13, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
+      {t0:4,  t1:5,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
+      {t0:6,  t1:6,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
+      {t0:7,  t1:8,  c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
+      {t0:9,  t1:11, c:'64,200,170',  nm:'💬 UYGULAMADA LLM', lane:'llm'},
+      {t0:9,  t1:11, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz,.sb-branch').forEach(e=>e.remove());
