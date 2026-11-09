@@ -2700,8 +2700,8 @@ window.__goStage=function(tab, st, sel){
     +'<radialGradient id="tnGradDone" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#a8d896"/><stop offset="100%" stop-color="#4a8a3f"/></radialGradient>'
     +'<radialGradient id="tnGradAvail" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a8"/><stop offset="100%" stop-color="#c9962f"/></radialGradient>'
     +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
-    +'<pattern id="eaPp" width="46" height="46" patternUnits="userSpaceOnUse"><circle cx="6" cy="9" r=".8" fill="#fff3d0" fill-opacity=".10"/><circle cx="31" cy="4" r=".6" fill="#fff3d0" fill-opacity=".08"/><circle cx="19" cy="28" r=".9" fill="#fff3d0" fill-opacity=".09"/><circle cx="40" cy="35" r=".7" fill="#fff3d0" fill-opacity=".10"/><circle cx="11" cy="41" r=".6" fill="#fff3d0" fill-opacity=".08"/><path d="M2 20 l5 -1 M26 15 l6 1 M33 24 l5 -2 M14 6 l4 1" stroke="#fff3d0" stroke-opacity=".07" stroke-width=".7"/></pattern>'
-    +'<pattern id="eaMe" width="22" height="12" patternUnits="userSpaceOnUse"><path d="M0 10 H3 V2 H19 V8 H8 V5 H14 V10 H22" fill="none" stroke="#e0b866" stroke-opacity=".5" stroke-width="1.3"/></pattern>'
+    +'<pattern id="eaPp" width="46" height="46" patternUnits="userSpaceOnUse"><circle cx="6" cy="9" r=".9" fill="#5a3d14" fill-opacity=".16"/><circle cx="31" cy="4" r=".7" fill="#5a3d14" fill-opacity=".12"/><circle cx="19" cy="28" r="1" fill="#5a3d14" fill-opacity=".14"/><circle cx="40" cy="35" r=".8" fill="#5a3d14" fill-opacity=".15"/><circle cx="11" cy="41" r=".7" fill="#5a3d14" fill-opacity=".12"/><path d="M2 20 l5 -1 M26 15 l6 1 M33 24 l5 -2 M14 6 l4 1" stroke="#5a3d14" stroke-opacity=".12" stroke-width=".8"/></pattern>'
+    +'<pattern id="eaOrn" width="64" height="28" patternUnits="userSpaceOnUse"><path d="M32 3 L43 14 L32 25 L21 14 Z M32 8 L38 14 L32 20 L26 14 Z M0 14 H21 M43 14 H64 M12 14 Q18 4 26 7 M52 14 Q46 4 38 7 M12 14 Q18 24 26 21 M52 14 Q46 24 38 21" fill="none" stroke="#5a3d14" stroke-opacity=".4" stroke-width="1.4"/><circle cx="32" cy="14" r="2" fill="#5a3d14" fill-opacity=".45"/></pattern>'
     +'</defs>';
 
 
@@ -2844,21 +2844,24 @@ window.__goStage=function(tab, st, sel){
   }
   // Bant zemini: çağ tonu + parşömen tanesi + yunan kıvrımlı friz + dikey çağ adı filigranı + sönük gravür çizim
   function eraArt(i,e,x,y,w,h){
-    let g='<defs><linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".22"/><stop offset=".5" stop-color="rgb('+e.c+')" stop-opacity=".07"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".2"/></linearGradient></defs>';
+    let g='<defs><linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".1"/><stop offset=".5" stop-color="rgb('+e.c+')" stop-opacity=".02"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".09"/></linearGradient>'
+      +'<radialGradient id="eaV'+i+'" cx="50%" cy="50%" r="78%"><stop offset=".55" stop-color="#3a2408" stop-opacity="0"/><stop offset="1" stop-color="#3a2408" stop-opacity=".42"/></radialGradient></defs>';
     g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaG'+i+')" pointer-events="none"/>';
     g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaPp)" pointer-events="none"/>';
-    const top=VERT?36:46;   // her çağda tek, büyük arka plan çizimi — boş yer aramadan bandın ortasına (kartların ARKASINA) oturur
+    g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaV'+i+')" pointer-events="none"/>';
+    const top=VERT?40:50;   // her çağda tek, büyük arka plan çizimi — bandın ortasında, kartların arkasında
     if(e.lanes){
-      if(VERT){ g+=artBox('llm',x+6,y+top,w/2-12,h-top-26,e.c)+artBox('img',x+w/2+6,y+top,w/2-12,h-top-26,e.c2); }
-      else { g+=artBox('llm',x+40,y+top,w-80,h/2-top-10,e.c)+artBox('img',x+40,y+h/2+8,w-80,h/2-40,e.c2); }
-    } else g+=artBox('t'+i,x+6,y+top,w-12,h-top-26,e.c);
-    g+='<rect x="'+(x+10)+'" y="'+(y+h-17)+'" width="'+(w-20)+'" height="12" fill="url(#eaMe)" pointer-events="none"/>'
-      +'<line x1="'+(x+10)+'" y1="'+(y+h-19)+'" x2="'+(x+w-10)+'" y2="'+(y+h-19)+'" class="ea-rule"/><line x1="'+(x+10)+'" y1="'+(y+h-3)+'" x2="'+(x+w-10)+'" y2="'+(y+h-3)+'" class="ea-rule"/>'
-      +'<line x1="'+(x+10)+'" y1="'+(y+4)+'" x2="'+(x+w-10)+'" y2="'+(y+4)+'" class="ea-rule"/>';
+      if(VERT){ g+=artBox('llm',x+6,y+top,w/2-12,h-top-34,e.c)+artBox('img',x+w/2+6,y+top,w/2-12,h-top-34,e.c2); }
+      else { g+=artBox('llm',x+40,y+top,w-80,h/2-top-10,e.c)+artBox('img',x+40,y+h/2+8,w-80,h/2-44,e.c2); }
+    } else g+=artBox('t'+i,x+6,y+top,w-12,h-top-34,e.c);
+    // süslü üst ve alt şerit (Civ 6'daki kabartma desen şeridi gibi); üstte başlık kurdelesi bunun üzerine biner
+    const strip=(yy)=>'<rect x="'+(x+8)+'" y="'+yy+'" width="'+(w-16)+'" height="28" fill="rgba(90,61,20,.1)" pointer-events="none"/><rect x="'+(x+8)+'" y="'+yy+'" width="'+(w-16)+'" height="28" fill="url(#eaOrn)" pointer-events="none"/>'
+      +'<line x1="'+(x+8)+'" y1="'+yy+'" x2="'+(x+w-8)+'" y2="'+yy+'" class="ea-rule"/><line x1="'+(x+8)+'" y1="'+(yy+28)+'" x2="'+(x+w-8)+'" y2="'+(yy+28)+'" class="ea-rule"/>';
+    g+=strip(y+3)+strip(y+h-31);
     const nm=e.nm.replace(/^\S+\s/,'');
-    if(!VERT){ const tx=e.lanes? x+w-26 : x+24;
-      g+='<text class="ea-wm" transform="translate('+tx+','+(y+h/2)+') rotate(-90)" text-anchor="middle" style="fill:rgb('+e.c+')">'+nm+'</text>'; }
-    else g+='<text class="ea-wm ea-wm-v" x="'+(x+w/2)+'" y="'+(y+h-26)+'" text-anchor="middle" style="fill:rgb('+e.c+')">'+nm+'</text>';
+    if(!VERT){ const tx=e.lanes? x+w-26 : x+26;
+      g+='<text class="ea-wm" transform="translate('+tx+','+(y+h/2)+') rotate(-90)" text-anchor="middle">'+nm+'</text>'; }
+    else g+='<text class="ea-wm ea-wm-v" x="'+(x+w/2)+'" y="'+(y+h-40)+'" text-anchor="middle">'+nm+'</text>';
     return g;
   }
 
