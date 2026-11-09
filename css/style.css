@@ -2476,3 +2476,37 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #techSvg .era-art .ea-b,#techSvg .era-art .ea-dash{fill:none}
 #techSvg .era-art .ea-b{stroke:#33210a; stroke-opacity:.7; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 #techSvg .era-art .ea-dash{stroke:#4a3210; stroke-opacity:.5; stroke-width:1.8; stroke-dasharray:6 6}
+
+/* ===== Sol panel: Yol Haritası'nın bronz/parşömen paletine uyum (#562) ===== */
+.sidebar{background:linear-gradient(180deg,#3a2810 0%,#2a1c0a 100%); border:1px solid #8a6a2c; border-left:none; box-shadow:inset 0 0 0 1px rgba(214,170,80,.14), inset -10px 0 30px -18px #000}
+.sidebar .sb-inner::-webkit-scrollbar-thumb{background:#8a6a2c}
+.sidebar .sb-ver{background:#241707; border-color:#6b4a1c; color:#d9bf85}
+.sidebar .sb-prog{background:linear-gradient(160deg,#5a4122,#3b2912); border:1px solid #a98238; box-shadow:inset 0 0 0 1px rgba(255,226,150,.1)}
+.sidebar .sb-prog-top,.sidebar .sb-prog-sub{color:#d9bf85}
+.sidebar .sb-prog-bar{background:#1d1306}
+.sidebar .navbtn{
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255,236,180,.12) 50%, transparent 58%),
+    linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
+    linear-gradient(160deg, rgba(var(--era-c,150,120,60),.20) 0%, rgba(var(--era-c,150,120,60),.04) 30%, #3b2912 70%, #4a3519 100%);
+  background-size:230% 100%, 100% 2px, 100% 100%; background-position:150% 0, 0 100%, 0 0; background-repeat:no-repeat;
+  color:#f3e6c4; border:1px solid rgba(var(--era-c,150,120,60),.6); box-shadow:inset 0 0 0 1px rgba(255,226,150,.07);
+}
+.sidebar .navbtn:hover{color:#fff7de; background-position:-50% 0, 0 100%, 0 0}
+.sidebar .navbtn.active{
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255,255,255,.22) 50%, transparent 58%),
+    linear-gradient(90deg, rgba(60,36,6,.5) 0 var(--prog), transparent 0),
+    linear-gradient(135deg,#f0c35a 0%,#c98f2a 100%);
+  background-size:230% 100%, 100% 2px, 100% 100%; background-position:150% 0, 0 100%, 0 0; background-repeat:no-repeat;
+  color:#2a1a05; border-color:#ffe08a; box-shadow:0 4px 16px -4px rgba(240,190,80,.6);
+}
+.sidebar .navbtn::before{background:#6b4a1c}
+.sidebar .navbtn.rail-locked::after{background:#3b2912; border-color:#8a6a2c}
+.sidebar .navbtn.rail-meta::after{background:#d9a640; border-color:#ffe08a; box-shadow:0 0 9px rgba(240,190,80,.5)}
+.sidebar .sb-era b{color:#f3d98e; background:linear-gradient(180deg,#5a4122,#3b2912); border:1px solid rgba(var(--era-c),.85); box-shadow:0 0 0 1px rgba(255,226,150,.15) inset; font-family:Cinzel,Georgia,serif; letter-spacing:1.6px}
+.sidebar .sb-era::before{background:linear-gradient(180deg,transparent,rgba(214,170,80,.55) 30%,rgba(214,170,80,.55) 70%,transparent)}
+.sidebar .sb-quiz{background:rgba(var(--era-c),.12); border:1px dashed rgba(240,210,140,.55); color:#f3d98e}
+.sidebar .sb-quiz .sbq-best{color:#c9ad73}
+.sidebar .sb-branch{background:rgba(214,170,80,.1); color:#f3e6c4}
+.sidebar .sb-branch span{color:#c9ad73}

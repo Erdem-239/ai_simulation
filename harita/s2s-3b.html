@@ -55,8 +55,8 @@ body.emb #info{top:64px;max-height:calc(100vh - 80px);width:300px}
 <button id="tf" class="on">Kamera takip</button><button id="tw" class="on">Ağırlık bağları</button><button id="rs">⟲ Görünüm</button><button id="pk" title="Yatay A4, koyu zemin">🖨️ A4 (koyu)</button><button id="pa" title="Yatay A4, açık zemin">🖨️ A4 (açık)</button>
 </div>
 <script src="../js/vendor/three-0.128.0.min.js"></script>
-<script src="../js/lesson-lstm-cell.js?v=202611091027"></script>
-<script src="../js/lesson-s2s-weights.js?v=202611091027"></script>
+<script src="../js/lesson-lstm-cell.js?v=202611091030"></script>
+<script src="../js/lesson-s2s-weights.js?v=202611091030"></script>
 <script>
 (function(){
 const D=window.S2S_CK,H=D.H,PLUS=10,ST=10,EN=11,VD=12;
@@ -280,4 +280,4 @@ document.getElementById('pk').onclick=()=>printA4(cv,()=>ren.render(scene,cam),f
 document.getElementById('pa').onclick=()=>printA4(cv,()=>ren.render(scene,cam),true,PH);
 })();
 </script>
-<script src="print-a4.js?v=202611091027"></script></body></html>
+<script src="print-a4.js?v=202611091030"></script></body></html>
