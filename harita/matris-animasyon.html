@@ -52,10 +52,12 @@ a{color:var(--blue)}
 #steps button:hover{border-color:#5aa0e0}
 #steps button.on{border-color:var(--hl,#ffc82e);color:var(--hl,#ffc82e);background:#2a2410}
 #steps button.done{color:#7fd18b}
-</style></head><body><div class="wrap">
+html.emb h1,html.emb .sub,html.emb #pick{display:none}
+html.emb body{padding-top:0}
+</style></head><body><script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("emb")</script><div class="wrap">
 <h1>🎞️ Matris çarpımları — animasyon</h1>
 <p class="sub">Dört animasyon tek sayfada. Üstten seç; her biri video gibi oynar, ⏮ ⏭ ile durak durak gidilir.</p>
-<div id="pick"><button data-pk="gpt2">🎬 GPT-2 turu<small>3B mimari + matris işlemleri, ~5 dk</small></button><button data-pk="oss">🟢 gpt-oss turu<small>MoE, GQA, kayan pencere, RoPE</small></button><button data-pk="rope">🌀 RoPE turu<small>konum = okların dönmesi, 13 durak</small></button><button data-pk="temel">🧱 Matris temelleri<small>transpoz, satır × sütun, Q·Kᵀ, maske</small></button></div>
+<div id="pick"><button data-pk="gpt2">🎬 GPT-2 turu<small>3B mimari + matris işlemleri, ~5 dk</small></button><button data-pk="oss">🟢 gpt-oss turu<small>MoE, GQA, kayan pencere, RoPE</small></button><button data-pk="mh">🧩 Multi-Head turu<small>Q,K,V → 12 kafa → W_O, 7 durak</small></button><button data-pk="rope">🌀 RoPE turu<small>konum = okların dönmesi, 13 durak</small></button><button data-pk="temel">🧱 Matris temelleri<small>transpoz, satır × sütun, Q·Kᵀ, maske</small></button></div>
 <div id="steps"></div><details id="tabsBox" style="display:none"><summary id="tabsSum"></summary><div class="tabs" id="tabs"></div></details>
 <div class="bar">
   <button id="bPrev">◀ Geri</button><button id="bPlay">⏸ Duraklat</button><button id="bRe">↺ Baştan</button><button id="bNext">İleri ▶</button>
@@ -1895,19 +1897,28 @@ var tourR=mkTour({arch:'gptoss',tag:'🌀 RoPE turu: Q,K → RoPE → skor → s
  sayIntro:'<b>🌀 RoPE turu.</b> Konuşmada adım adım kurduğumuz RoPE anlatısının animasyonu. Tek bir kafayı (Q kafa 1, K/V grubu 1) ve 4 token\'ı («7 + 5 =») izliyoruz. Sıra: <b>önceki adım</b> (Q ve K nereden geldi) → <b>RoPE</b> (64 sayı = 32 ok, okun yönü = içerik, konum kadar döndür, 32 farklı hız, K döner/V dönmez) → <b>sonraki adımlar</b> (Q·Kᵀ = 32 katkının toplamı, yalnız mesafe kalır, uzaktaki rakam, ÷8 + maske, softmax, ×V) → <b>eğitim</b> okları nasıl hizalıyor. RoPE formülü gerçek (θⱼ = 10000^(−2j/64)); Q/K/V sayıları <b>örnek</b>, «rakam arayan» bir kafa gibi elle tasarlandı — gpt-oss\'un gerçek ağırlıkları değil. gpt-oss\'un tabanı/YaRN ayarı † hafızadan.',
  sayOut:'<b>Tur bitti.</b> Q ve K içerik taşır (W_Q, W_K) → RoPE her satırı kendi konumu kadar döndürür (32 çift, 32 hız, ağırlık yok, V\'ye dokunmaz) → Q·Kᵀ\'de dönüşler sadeleşir, yalnız mesafe kalır: skor = içerik + mesafe → ÷8 → maske → softmax → yüzdelerle V karıştırılır. Eğitim yalnız içerik yönlerini değiştirir.'});
 
-var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO,tourR]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
+var tourM=mkTour({arch:'gpt2',tag:'🧩 Multi-Head turu: Q,K,V → 12 kafa → skor → softmax → A·V → yapıştır → W_O',title:'🧩 Multi-Head turu — yol haritası (3B GPT-2 mimarisinde attention alt-bloğu)',
+ ORD:['qkv','slice','qk','sm','av','cat','wo'],SCN:[s1,s2,s3,s4,s5,s6,s7],hvSc:[s3,s4,s5],
+ SHORT:{qkv:'Q, K, V üretimi',slice:'12 kafaya dilim',qk:'Q·Kᵀ → skor',sm:'maske + softmax',av:'A·V',cat:'12 kafayı yapıştır',wo:'×W_O + residual'},
+ CRUMB:{qkv:CRUMB.qkv,slice:CRUMB.slice,qk:CRUMB.qk,sm:CRUMB.sm,av:CRUMB.av,cat:CRUMB.cat,wo:CRUMB.wo},
+ COLS:{qkv:COLS.qkv,slice:COLS.slice,qk:COLS.qk,sm:COLS.sm,av:COLS.av,cat:COLS.cat,wo:COLS.wo},
+ cap1:'Solda/üstte GPT-2 small\'un 3B mimarisi. Tur yalnız Multi-Head attention alt-bloğuna yakınlaşır.',capOut:'Tur bitti: Q,K,V → 12 kafaya dilim → her kafada skor/softmax/A·V → yapıştır → W_O.',
+ liveIntro:'Multi-Head turu: LayerNorm çıkışı → Q,K,V (üç T×768 tablo) → her biri 12 dilime bölünür → her kafa kendi T×T skorunu çıkarır → softmax → A·V → 12 çıktı yan yana → ×W_O → residual.',
+ sayIntro:'<b>🧩 Multi-Head turu.</b> Derste «her kafanın kendi W\'si var» diye öğrendiğimiz şeyin <b>gerçek mimarideki</b> hâli. Solda GPT-2 small\'un 3B mimarisi, sağda o parçadaki matris işlemi canlı oynar. Sıra: <b>Q, K, V üç ayrı T×768 tablo</b> → her biri <b>sütunlardan 12 dilime</b> bölünür (kafa i = üçünün i. dilimi) → <b>her kafa kendi skor tablosunu</b> (T×T) çıkarır → maske + softmax → A·V → 12 kafanın çıktısı <b>yan yana yapıştırılır</b> → <b>W_O</b> ile karıştırılır → residual. Üstteki sürgü ve ⏮ ⏭ ile durak durak atlayabilirsin; sağ üstteki kafa seçiciyle farklı kafaları görebilirsin.',
+ sayOut:'<b>Tur bitti.</b> Multi-Head = tek büyük Q, K, V tablosunun sütun dilimleri: her kafa kendi dilimiyle dikkat hesaplar, çıktılar yapıştırılıp W_O ile karıştırılır.'});
+var SC=[tour].concat(TEMEL).concat(SCN).concat(OSS).concat([tourO,tourR,tourM]),cur=0,t=0,playing=true,last=0,lastLive='',lastSay=null;
 function curT(){return t}
 function setTourT(v){t=v;playing=true;document.getElementById('bPlay').textContent='⏸ Duraklat'}
 var GP0=1+OFF;
 var tabsWrap=document.getElementById('tabs'),TB=[];
-[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🎬 Mimari turu — gpt-oss (3B MoE mimarisi + zoom)',SC.length-2,SC.length-1],['🌀 RoPE turu — önceki adım → RoPE → skor → softmax → ×V',SC.length-1,SC.length],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length-2]].forEach(function(gr){
+[['🎬 Mimari turu — video (3B GPT-2 mimarisi + zoom)',0,1],['🎬 Mimari turu — gpt-oss (3B MoE mimarisi + zoom)',SC.length-3,SC.length-2],['🌀 RoPE turu — önceki adım → RoPE → skor → softmax → ×V',SC.length-2,SC.length-1],['🧩 Multi-Head turu — Q,K,V → 12 kafa → W_O',SC.length-1,SC.length],['🧱 Temel — küçük sayılarla (3 token, 2 boyut)',1,1+OFF],['🔬 GPT-2 boyutunda — 4×768, 12 kafa, 12 blok',GP0,GP0+SCN.length],['🟢 gpt-oss-120b — MoE, kayan pencere, GQA (şematik)',GP0+SCN.length,SC.length-3]].forEach(function(gr){
   var d=document.createElement('div');d.className='tgrp';var l=document.createElement('div');l.className='tglab';l.textContent=gr[0];d.appendChild(l);
   var row=document.createElement('div');row.className='tabs';d.appendChild(row);
   for(var i=gr[1];i<gr[2];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag;b.onclick=function(){go(i)};row.appendChild(b);TB[i]=b})(i);
   tabsWrap.appendChild(d)});
 var hs=document.getElementById('hsel');for(var i=0;i<H;i++){var o=document.createElement('option');o.value=i;o.textContent=(i+1);hs.appendChild(o)}
 hs.onchange=function(){head_=+hs.value;draw(true)};
-function grpRange(i){if(i===0||i>=SC.length-2)return [i,i+1];if(i>=1&&i<=TEMEL.length)return [1,1+TEMEL.length];if(i>=GP0&&i<GP0+SCN.length)return [GP0,GP0+SCN.length];return [GP0+SCN.length,SC.length-2]}
+function grpRange(i){if(i===0||i>=SC.length-3)return [i,i+1];if(i>=1&&i<=TEMEL.length)return [1,1+TEMEL.length];if(i>=GP0&&i<GP0+SCN.length)return [GP0,GP0+SCN.length];return [GP0+SCN.length,SC.length-3]}
 var stepsKey='',stepsIdx=-1;
 function stepsBuild(){var el=document.getElementById('steps'),sc=SC[cur];var key=sc.tour?'t'+cur:'g'+grpRange(cur)[0];if(key===stepsKey)return;stepsKey=key;stepsIdx=-2;el.innerHTML='';
   var lab=document.createElement('b');lab.textContent=sc.tour?'Duraklar:':'Sahneler:';el.appendChild(lab);
@@ -1915,9 +1926,9 @@ function stepsBuild(){var el=document.getElementById('steps'),sc=SC[cur];var key
   else{var r=grpRange(cur);for(var i=r[0];i<r[1];i++)(function(i){var b=document.createElement('button');b.textContent=SC[i].tag.replace(/^(T\d|[0-9]+[ab]?|[①-⑳⓪]) · /,'$1 · ');b.onclick=function(){go(i)};el.appendChild(b)})(i)}}
 function stepsSync(){var sc=SC[cur],k=sc.tour?sc.curIdx():cur-grpRange(cur)[0];if(k===stepsIdx)return;stepsIdx=k;
   [].forEach.call(document.querySelectorAll('#steps button'),function(b,j){b.classList.toggle('on',j===k);b.classList.toggle('done',!!sc.tour&&j<k)})}
-function pickKey(i){return i===0?'gpt2':i===SC.length-2?'oss':i===SC.length-1?'rope':(i>=1&&i<=TEMEL.length)?'temel':''}
+function pickKey(i){return i===0?'gpt2':i===SC.length-3?'oss':i===SC.length-2?'rope':i===SC.length-1?'mh':(i>=1&&i<=TEMEL.length)?'temel':''}
 function pickSync(){var k=pickKey(cur);document.querySelectorAll('#pick button').forEach(function(b){b.classList.toggle('on',b.dataset.pk===k)})}
-document.querySelectorAll('#pick button').forEach(function(b){b.onclick=function(){var k=b.dataset.pk;go(k==='gpt2'?0:k==='oss'?SC.length-2:k==='rope'?SC.length-1:1);
+document.querySelectorAll('#pick button').forEach(function(b){b.onclick=function(){var k=b.dataset.pk;go(k==='gpt2'?0:k==='oss'?SC.length-3:k==='rope'?SC.length-2:k==='mh'?SC.length-1:1);
   if(!SNAP)history.replaceState(null,'',location.pathname+location.search+(k==='gpt2'?'':'#'+(k==='oss'?'ossturu':k)))}});
 function go(i){cur=clamp(i,0,SC.length-1);t=0;playing=true;lastLive='';document.getElementById('bPlay').textContent='⏸ Duraklat';
   TB.forEach(function(b,k){b.className=k===cur?'on':''});document.getElementById('tabsSum').textContent='📑 Sahne listesi ('+SC.length+' sahne) — şu an: '+SC[cur].tag;
@@ -1945,7 +1956,7 @@ function tick(ts){
     if(t>=1){t=1;playing=false;document.getElementById('bPlay').textContent='▶ Oynat';
       if(document.getElementById('auto').checked&&!SC[cur].tour&&cur<grpRange(cur)[1]-1){var n=cur+1;setTimeout(function(){go(n)},700)}}}
   draw();requestAnimationFrame(tick)}
-window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,tourR:tourR,ROPE:ROPE,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
+window.__matAnim={OFF:OFF,GP0:GP0,TD:tour.TD,TS:tour.TS,tourO:tourO,tourR:tourR,tourM:tourM,ROPE:ROPE,go:go,setT:function(v){t=v;playing=false;draw(true)},setHead:function(h){head_=h;hs.value=h},cache:head};
 var SNAP=/[?&]snap=1/.test(location.search);
 if(SNAP){
   /* A4 yazdırma için gizli kare: sahneleri sabit bir andan resme çevirir (postMessage: {type:'snapReq',id,kind:'gpt2'|'gptoss',mode:'mid'|'end'}) */
@@ -1962,7 +1973,7 @@ if(SNAP){
   go(GP0);playing=false;
   parent.postMessage({type:'snapReady'},'*');
 }else{
-go(/rope/i.test(location.hash)?SC.length-1:/ossturu/i.test(location.hash)?SC.length-2:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel|transpoz/i.test(location.hash)?1:0);requestAnimationFrame(tick);
+go(/multihead|mhturu|#mh$/i.test(location.hash)?SC.length-1:/rope/i.test(location.hash)?SC.length-2:/ossturu/i.test(location.hash)?SC.length-3:/oss/i.test(location.hash)?GP0+SCN.length:/gpt2/i.test(location.hash)?GP0:/temel|transpoz/i.test(location.hash)?1:0);requestAnimationFrame(tick);
 }
 })();
 </script></body></html>
