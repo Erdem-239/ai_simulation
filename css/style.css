@@ -2376,9 +2376,11 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 #techSvg .era-lane-lbl{font-size:11px; font-weight:800; letter-spacing:1.6px; fill:#e8c27a; opacity:.85}
 
 /* Sol menü: devrimden sonraki iki kol (Yol Haritası'ndaki «Devrimin iki kolu» çağı) */
-.sb-branch{position:relative; margin:20px 0 6px; padding:8px 10px 8px 12px; border:1px dashed rgba(232,194,122,.55); border-radius:10px; background:rgba(232,194,122,.07)}
-.sb-branch b{display:block; font-size:10px; letter-spacing:1.2px; font-weight:800; color:#e8c27a}
-.sb-branch span{display:block; font-size:11px; line-height:1.35; color:var(--muted,#9fb0d0); margin-top:3px}
-.sb-era.sb-era-lane{margin:12px 0 6px 14px}
-.navbtn.sb-inlane{margin-left:14px !important; width:calc(100% - 14px) !important}
-.sb-inlane + .sb-quiz{margin-left:48px; width:calc(100% - 48px)}
+.sb-branch{position:relative; margin:4px 0 6px 14px; padding:7px 10px 7px 12px; border-left:3px solid rgba(var(--era-c),.8); border-radius:0 9px 9px 0; background:rgba(var(--era-c),.08)}
+.sb-branch b{display:block; font-size:11.5px; font-weight:800; color:rgb(var(--era-c))}
+.sb-branch span{display:block; font-size:11px; line-height:1.35; color:var(--muted,#9fb0d0); margin-top:2px}
+/* kollar YZ Devrimi'nin içinde: etiket, ders ve testler bir kademe içeriden */
+.sb-era.sb-era-lane{margin:10px 0 6px 26px; padding-left:22px}
+.sb-era.sb-era-lane b{font-size:9px}
+.navbtn.sb-inlane{margin-left:26px !important; width:calc(100% - 26px) !important}
+.sb-inlane + .sb-quiz{margin-left:60px; width:calc(100% - 60px)}
