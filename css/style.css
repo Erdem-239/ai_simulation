@@ -2394,3 +2394,8 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .subnav .sn-altlbl{margin:6px 0 2px 8px; font-size:10px; font-weight:800; letter-spacing:.4px; color:#8fb8e0; text-transform:uppercase}
 .subnav a.sn-alt{color:#cfe7ff}
 .subnav a.sn-alt::before{background:#5aa0e0}
+
+/* Kendi sayfası olan alt ders (#549): ana dersin altında, yalnız ana ders ya da kendisi açıkken görünür */
+.navbtn.sb-altbtn{display:none; --rail-x:-7px; margin-left:22px !important; width:calc(100% - 22px) !important; font-size:12.5px; padding-top:6px; padding-bottom:6px; border-style:dashed}
+.navbtn.sb-altbtn.sb-altshow{display:block}
+.navbtn .sb-altk{display:block; font-size:9.5px; font-weight:800; letter-spacing:.4px; color:#8fb8e0; margin-top:2px}
