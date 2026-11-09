@@ -3040,6 +3040,13 @@ window.__goStage=function(tab, st, sel){
     q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=1; render();};
     const fs=on=>{document.body.classList.toggle('tt-full',on); render();};
     q('ttFs').onclick=()=>fs(!document.body.classList.contains('tt-full'));
+    // görünüm: 🗺️ Dersler (varsayılan, her açılışta) ↔ 📜 Makaleler (iframe, ilk seçilişte yüklenir)
+    const box=q('ttBox'), pap=q('ttPapers'), pf=q('ttPapF');
+    const view=v=>{ const p=v==='pap'; box.classList.toggle('tt-pap',p); pap.hidden=!p;
+      q('ttV_les').classList.toggle('on',!p); q('ttV_pap').classList.toggle('on',p);
+      if(p && !pf.getAttribute('src')) pf.setAttribute('src', pf.dataset.src);
+      if(!p) render(); };
+    q('ttV_les').onclick=()=>view('les'); q('ttV_pap').onclick=()=>view('pap');
     document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.body.classList.contains('tt-full')) fs(false); });
     ttToolSync();
   })();
