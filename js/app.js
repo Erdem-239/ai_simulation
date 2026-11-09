@@ -2617,7 +2617,7 @@ window.__goStage=function(tab, st, sel){
   // matematiği (mX=100 marjı, bkz. layout()) eski 184-birimlik kartlara göre
   // ayarlandığından kompakt bir boyuta küçülüyor (aksi halde kart canvas
   // dışına taşıp kırpılırdı).
-  const NW=n=> isNewStyle(n) ? (VERT?210:300) : (n.crown?208:184);
+  const NW=n=> isNewStyle(n) ? (VERT?210:264) : (n.crown?208:184);
   const NH=n=> isNewStyle(n) ? (VERT?104:150)+(n.alt&&n.alt.length?(VERT?14:10):0) : 78;   // alt dersli kartlarda 📎 satırı için ek yükseklik
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
@@ -2654,7 +2654,7 @@ window.__goStage=function(tab, st, sel){
       // (300 birim) eski kartlardan (184-208) çok daha geniş olduğu için
       // sabit aralık iki komşu tier'i üst üste bindirirdi.
       const maxTier=Math.max(...NODES.map(n=>n.tier));
-      const GAP=60; // tier'ler arası minimum boşluk (kablo dirseği + nefes payı)
+      const GAP=34; // tier'ler arası minimum boşluk (kablo dirseği + nefes payı)
       const MARGIN=40; // sol/sağ kenar boşluğu
       const tierX=[];
       tierW=[];
