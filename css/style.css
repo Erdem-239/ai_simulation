@@ -2547,3 +2547,20 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #mhGqa .gq-kb.on{opacity:1; background:color-mix(in srgb,var(--c) 65%,transparent); box-shadow:0 0 0 2px #ffd24a}
 #mhGqa .gq-txt{margin-top:10px; line-height:1.8; font-size:13px}
 @media(max-width:600px){#mhGqa .gq-q{grid-template-columns:repeat(8,minmax(0,1fr))}}
+
+/* Multi-Head → Ders ↔ mimari sekmesi */
+#mhView .mv-grid{display:flex; gap:10px; align-items:stretch; flex-wrap:wrap}
+#mhView .mv-box{flex:1 1 300px; min-width:0; border:1px solid var(--line); border-radius:10px; padding:10px; background:rgba(0,0,0,.15)}
+#mhView .mv-ttl{font-weight:800; font-size:13px; margin-bottom:2px}
+#mhView .mv-sub{font-size:11.5px; color:var(--muted); margin-bottom:8px; line-height:1.4}
+#mhView .mv-mid{align-self:center; text-align:center; font-size:12px; color:#ffd24a; font-weight:700; line-height:1.3}
+#mhView .mv-row{display:flex; gap:8px; flex-wrap:wrap}
+#mhView .mv-one{border:1px solid var(--c); border-radius:8px; padding:4px 5px; cursor:pointer; opacity:.6}
+#mhView .mv-one.on{opacity:1; box-shadow:0 0 0 2px #ffd24a}
+#mhView .mv-cap{font-size:10px; color:var(--c); font-weight:700; text-align:center}
+#mhView .mv-t{border-collapse:separate; border-spacing:1px; font-size:10px; font-family:Consolas,monospace}
+#mhView .mv-t td{border:1px solid; border-radius:2px; min-width:15px; text-align:center; padding:1px 2px; background:rgba(255,255,255,.04)}
+#mhView .mv-big{overflow-x:auto}
+#mhView .mv-tok{margin:10px 0 6px; font-size:12.5px}
+#mhView .mv-proof{line-height:1.9; font-size:12.5px; overflow-x:auto}
+@media(max-width:600px){#mhView .mv-mid{width:100%}}
