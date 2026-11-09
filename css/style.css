@@ -2408,14 +2408,19 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 body.tt-full #ttBox.tt-pap #ttPapers{flex:1 1 auto;min-height:0;display:flex}
 body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 
-/* Yol Haritası çağ arka planları (#551→#555): Civ 6 gibi sönük tek tonlu gravür çizim, parşömen tanesi, yunan kıvrımlı friz, dikey çağ adı filigranı — kartlar öne çıkar */
-#techSvg .era-art{pointer-events:none; opacity:.9}
-#techSvg .era-art .ea-s{fill:none; stroke:#f6e7c1; stroke-opacity:.14; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round}
-#techSvg .era-art .ea-b{stroke:rgb(var(--ea)); stroke-opacity:.22; stroke-width:2.8}
-#techSvg .era-art .ea-f{fill:#f6e7c1; fill-opacity:.05; stroke:#f6e7c1; stroke-opacity:.13; stroke-width:1}
-#techSvg .era-art .ea-d{fill:#f6e7c1; fill-opacity:.14; stroke:none}
+/* Yol Haritası çağ arka planları (#551→#556): Civ 6'daki gibi sarı-bej parşömen zemin, sepya gravür çizim, süslü kabartma şeritler, dikey çağ adı */
+#techSvg.techSvg-all-new{background:radial-gradient(ellipse at 50% 0%, #4a3516 0%, #20160a 70%)}
+#techSvg .era-band.era-band-new{fill:#d9c391; stroke:#6b4a1c; stroke-width:2.6}
+#techSvg .era-art{pointer-events:none}
+#techSvg .era-art .ea-s{fill:none; stroke:#4a3210; stroke-opacity:.55; stroke-width:2.1; stroke-linecap:round; stroke-linejoin:round}
+#techSvg .era-art .ea-b{stroke:#33210a; stroke-opacity:.7; stroke-width:3.2}
+#techSvg .era-art .ea-f{fill:#5a3d14; fill-opacity:.1; stroke:#4a3210; stroke-opacity:.35; stroke-width:1}
+#techSvg .era-art .ea-d{fill:#4a3210; fill-opacity:.55; stroke:none}
 #techSvg .era-art .ea-dash{stroke-dasharray:6 6}
-#techSvg .era-art .ea-t{fill:#f6e7c1; fill-opacity:.14; font:600 15px "Cinzel",Georgia,serif; letter-spacing:1px}
-#techSvg .ea-rule{stroke:#e0b866; stroke-opacity:.3; stroke-width:1; pointer-events:none}
-#techSvg .ea-wm{font:700 54px "Cinzel",Georgia,serif; letter-spacing:14px; fill-opacity:.1; pointer-events:none}
+#techSvg .era-art .ea-t{fill:#4a3210; fill-opacity:.55; font:700 16px "Cinzel",Georgia,serif; letter-spacing:1px}
+#techSvg .ea-rule{stroke:#5a3d14; stroke-opacity:.55; stroke-width:1.2; pointer-events:none}
+#techSvg .ea-wm{font:700 54px "Cinzel",Georgia,serif; letter-spacing:14px; fill:#4a3210; fill-opacity:.2; pointer-events:none}
 #techSvg .ea-wm-v{font-size:26px; letter-spacing:6px}
+#techSvg .te-off{stroke:#6b4a1c}
+#techSvg .era-lane-sep{stroke:#5a3d14; opacity:.55}
+#techSvg .era-lane-lbl{fill:#3d2a0e; opacity:.9}
