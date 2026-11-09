@@ -2560,7 +2560,7 @@ window.__goStage=function(tab, st, sel){
       sci:'Sohl-Dickstein ve arkadaşları (2015). DDPM: Ho, Jain & Abbeel (2020). Skor tabanlı modeller: Song & Ermon (2019). DDIM: Song, Meng & Ermon (2020).',
       real:[['🎨','Metinden görüntü üreten modellerin çoğu'],['🎬','Video ve ses üretimi'],['🧬','Protein ve molekül tasarımı']],
       sub:['İleri süreç: x_t = √ᾱ·x₀ + √(1−ᾱ)·ε','Eğitim: eklenen gürültüyü tahmin et','Geri süreç: 50 adımda gürültüden veriye','GAN ile karşılaştırma: kararlılık ↔ hız','Hızlı örnekleme (DDIM)']},
-    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:11, v:80, lane:'img', pre:['dif'], tab:'t2i',
+    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:8, v:80, pre:['dif'], tab:'t2i',
       d:'Diffusion modeline istemi dinlemeyi öğretmek: metin kodlayıcısı (CLIP), koşul vektörü, çapraz dikkat, sınıflandırıcısız yönlendirme (CFG), gizli uzayda üretim (latent diffusion), DiT.',
       sci:'CLIP: Radford ve arkadaşları (OpenAI, 2021). Sınıflandırıcısız yönlendirme: Ho & Salimans (2021). Latent diffusion: Rombach ve arkadaşları (2022). DiT: Peebles & Xie (2023).',
       real:[['🎨','İstemden resim üreten araçlar'],['🎚️','"Guidance scale" ayarı'],['🔎','CLIP ile resim arama']],
@@ -2609,7 +2609,7 @@ window.__goStage=function(tab, st, sel){
      geldiğini yeniden tanımlıyor. render() her çağrıldığında güncel pencere
      genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
   const BP_VERT=720;
-  let TT_MODE='auto', TT_Z=1;
+  let TT_MODE='auto', TT_Z=0.925; const TT_Z0=0.925;
   const ttVert=()=> TT_MODE==='auto' ? window.innerWidth<=BP_VERT : TT_MODE==='v';
   let VERT=ttVert();
   // Yeni-stil (madalyon) kartlar eskisinden daha zengin içerik taşıdığı için
@@ -3181,15 +3181,15 @@ window.__goStage=function(tab, st, sel){
     const q=id=>document.getElementById(id);
     if(!q('ttTools')) return;
     ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.classList.toggle('on',TT_MODE===m)});
-    const z=q('ttZv'); if(z) z.textContent='%'+Math.round(TT_Z*100);
+    const z=q('ttZv'); if(z) z.textContent='%'+(Math.round(TT_Z*1000)/10);
     const f=q('ttFs'); if(f) f.textContent=document.body.classList.contains('tt-full')?'✕ Tam ekrandan çık':'⛶ Tam ekran';
   }
   (function(){
     const q=id=>document.getElementById(id);
     if(!q('ttTools')) return;
     ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.onclick=()=>{TT_MODE=m; render();}});
-    const zoom=f=>{TT_Z=Math.max(0.4,Math.min(2.5,Math.round(TT_Z*f*10)/10)); render();};
-    q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=1; render();};
+    const zoom=f=>{TT_Z=Math.max(0.4,Math.min(2.5,Math.round(TT_Z*f*1000)/1000)); render();};
+    q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=TT_Z0; render();};
     const fs=on=>{document.body.classList.toggle('tt-full',on); render();};
     q('ttFs').onclick=()=>fs(!document.body.classList.contains('tt-full'));
     // görünüm: 🗺️ Dersler (varsayılan, her açılışta) ↔ 📜 Makaleler (iframe, ilk seçilişte yüklenir)
