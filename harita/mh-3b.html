@@ -41,7 +41,7 @@ const H=[0,1].map(i=>mm(A[i],V[i])),CAT=X.map((_,r)=>[...H[0][r],...H[1][r]]),DE
 const CH={x:'#3fc7c1',h1:'#4aa3ff',h2:'#ff9b3d',s:'#b592f0',o:'#f27a88'};
 const cv=document.getElementById('c'),ren=new THREE.WebGLRenderer({canvas:cv,antialias:true}),scene=new THREE.Scene();
 scene.background=new THREE.Color(0x0b0e14);const cam=new THREE.PerspectiveCamera(45,1,0.1,300);
-const DEF={yaw:0.1,pitch:0.1,dist:44,t:new THREE.Vector3(-3.6,13.6,0)};
+const DEF={yaw:0.1,pitch:0.1,dist:38,t:new THREE.Vector3(-3.4,13.6,0)};
 let yaw=DEF.yaw,pitch=DEF.pitch,dist=DEF.dist,tgt=DEF.t.clone(),tgtGoal=null,distGoal=null;
 let grp=new THREE.Group(),parts=[],byId={},focus=null,sel=null;scene.add(grp);const lbEl=document.getElementById('lb');
 function tex(M,vmax){const rows=M.length,cols=M[0].length,cs=44,cn=document.createElement('canvas');cn.width=cols*cs;cn.height=rows*cs;const g=cn.getContext('2d');
