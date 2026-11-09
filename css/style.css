@@ -2384,3 +2384,13 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 .sb-era.sb-era-lane b{font-size:9px}
 .navbtn.sb-inlane{margin-left:26px !important; width:calc(100% - 26px) !important}
 .sb-inlane + .sb-quiz{margin-left:60px; width:calc(100% - 60px)}
+
+/* Alt dersler (#547): Yol Haritası kartında 📎 satırı, sol barda aşamalar + alt dersler */
+.ttc-alt{display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding:3px 10px 4px; font-size:10.5px; line-height:1.3; background:rgba(80,150,220,.10); border-top:1px solid rgba(120,180,240,.18)}
+.ttc-altk{color:#8fb8e0; font-weight:700}
+.ttc-altl{color:#cfe7ff; padding:1px 7px; border-radius:7px; border:1px solid rgba(120,180,240,.35); background:rgba(40,80,130,.35); cursor:pointer; white-space:nowrap}
+.ttc-altl:hover{background:rgba(70,130,200,.55); color:#fff}
+.subnav a.sn-stage{font-size:11.5px}
+.subnav .sn-altlbl{margin:6px 0 2px 8px; font-size:10px; font-weight:800; letter-spacing:.4px; color:#8fb8e0; text-transform:uppercase}
+.subnav a.sn-alt{color:#cfe7ff}
+.subnav a.sn-alt::before{background:#5aa0e0}

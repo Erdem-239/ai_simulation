@@ -2176,6 +2176,19 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   });
 })();
 
+/* ---- Bir dersin belirli aşamasına/bölümüne git (alt dersler, Yol Haritası, sol bar) ---- */
+window.__goStage=function(tab, st, sel){
+  const cur=document.querySelector('.model.active');
+  if(!cur || cur.id!=='model-'+tab){ const t=document.querySelector('.navbtn[data-model="'+tab+'"]'); if(t) t.click(); }
+  setTimeout(()=>{
+    const m=document.getElementById('model-'+tab); if(!m) return;
+    let el=sel? m.querySelector(sel) : null, cl=st? m.querySelector('.tpl-cl[data-stage="'+st+'"]') : null;
+    if(el && !cl) cl=el.closest('.tpl-cl');
+    if(cl){ const h=cl.querySelector(':scope > .tpl-head'); if(h && h.classList.contains('closed')) h.click(); }
+    (el||cl||m).scrollIntoView({behavior:'smooth', block:'start'});
+  },150);
+};
+
 /* ---- Stanford-tarzı bölüm alt-navigasyonu + scroll-spy ---- */
 (function(){
   const sb=document.querySelector('.sidebar'); if(!sb) return;
@@ -2184,16 +2197,40 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   let lastModel=null, subnavOpen=true;
   function build(){
     const model=document.querySelector('.model.active'); if(!model) return;
-    let hs=[...model.querySelectorAll('.sechead')];
-    if(!hs.length) hs=[...model.querySelectorAll('.pts > h3')];
-    heads=hs; links=[]; nav.innerHTML='';
-    hs.forEach((h,i)=>{
-      if(!h.id) h.id='sh-'+model.id+'-'+i;
-      const a=document.createElement('a');
-      a.textContent=h.textContent.replace(/\s+/g,' ').trim();
-      a.addEventListener('click',()=>{ h.scrollIntoView({behavior:'smooth', block:'start'}); });
-      nav.appendChild(a); links.push(a);
-    });
+    const tab=model.id.replace(/^model-/,'');
+    const stages=[...model.querySelectorAll('.tpl-cl')].filter(c=>!c.parentElement.closest('.tpl-cl'));
+    let hs;
+    links=[]; nav.innerHTML='';
+    if(stages.length){
+      hs=stages;
+      stages.forEach(c=>{
+        const h=c.querySelector(':scope > .tpl-head'), sp=h&&h.querySelector('span');
+        const a=document.createElement('a'); a.className='sn-stage';
+        a.textContent=((sp||h||c).textContent).replace(/BOŞ — eklenebilir/,'').replace(/\s+/g,' ').trim(); a.title=a.textContent;
+        a.addEventListener('click',()=>{ if(h&&h.classList.contains('closed')) h.click(); c.scrollIntoView({behavior:'smooth', block:'start'}); });
+        nav.appendChild(a); links.push(a);
+      });
+    } else {
+      hs=[...model.querySelectorAll('.sechead')];
+      if(!hs.length) hs=[...model.querySelectorAll('.pts > h3')];
+      hs.forEach((h,i)=>{
+        if(!h.id) h.id='sh-'+model.id+'-'+i;
+        const a=document.createElement('a');
+        a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+        a.addEventListener('click',()=>{ h.scrollIntoView({behavior:'smooth', block:'start'}); });
+        nav.appendChild(a); links.push(a);
+      });
+    }
+    heads=hs;
+    const api=window.__ttAPI, node=api && api.NODES.find(n=>n.tab===tab && n.alt && n.alt.length);
+    if(node){
+      const lb=document.createElement('div'); lb.className='sn-altlbl'; lb.textContent='📎 Alt dersler'; nav.appendChild(lb);
+      node.alt.forEach(al=>{
+        const a=document.createElement('a'); a.className='sn-alt'; a.textContent=al.nm;
+        a.addEventListener('click',()=>window.__goStage(tab, al.st, al.sel));
+        nav.appendChild(a);
+      });
+    }
     const btn=sb.querySelector('.navbtn.active');
     if(btn) btn.insertAdjacentElement('afterend', nav);
     nav.classList.toggle('show', hs.length>0 && subnavOpen);
@@ -2432,7 +2469,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       d:'Dizi + hafıza (gizli durum). Zincir kuralı zamana yayılır; gradyan geçmişe doğru akar.',
       sci:'Backprop: Rumelhart, Hinton & Williams (1986). Basit RNN: Elman (1990). "Ağa hafıza takma" fikrinin ilk çalışan hali.',
       real:[['🎙️','İlk konuşma tanıma sistemleri'],['✍️','El yazısı tanıma (posta/çek okuma)'],['🎵','Dizi üretimi: müzik, metin (erken dönem)']],
-      sub:['Gizli durum hₜ (hafıza)','İleri yayılım + kayıp','BPTT domino (tek hücre)','Ağırlık paylaşımı → Σₜ','Kendini test (5 soru)']},
+      sub:['Gizli durum hₜ (hafıza)','İleri yayılım + kayıp','BPTT domino (tek hücre)','Ağırlık paylaşımı → Σₜ','Kendini test (5 soru)'],
+      alt:[{nm:'📉 Vanishing / Exploding', st:'x', d:'Gradyan zaman boyunca çarpıla çarpıla söner ya da patlar; r<sup>T</sup> sezgisi ve gradient clipping.'}]},
     {id:'tok',  nm:'✂️ Tokenizasyon (BPE)', tier:4, v:82, pre:['soft'], tab:'tok',
       d:'Metin modele nasıl girer? Karakter mi, kelime mi, alt-kelime mi? BPE: en sık yan yana iki parçayı birleştir, tekrarla. Sözlük boyu ↔ dizi uzunluğu, Türkçe ekler, bayt düzeyi.',
       sci:'Philip Gage: BPE sıkıştırma (1994). Sennrich, Haddow & Birch: BPE ile alt-kelime çeviri (2016). Schuster & Nakajima: WordPiece (2012). Kudo: SentencePiece / Unigram (2018). GPT-2: bayt düzeyi BPE (2019).',
@@ -2443,12 +2481,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Word2vec: Mikolov ve ekibi, Google (2013). "kral − erkek + kadın ≈ kraliçe" ile dünyayı şaşırttı: anlam, vektör aritmetiğine dönüştü.',
       real:[['🔍','Arama motorlarında anlamsal eşleme'],['🎬','Öneri sistemleri (film/ürün benzerliği)'],['🌐','Çok dilli anlam haritaları']],
       sub:['One-hot vs yoğun vektör','Word2vec fikri','Benzerlik (cosine)']},
-    {id:'van',  nm:'📉 Vanishing / Exploding', tier:4, v:26, pre:['rnn'], tab:'rnn', gostage:'x', golabel:'RNN dersinde ilgili bölüme git →',
-      d:'Whh·(1−h²) çarpanı zaman boyunca üst üste binince gradyan ya söner ya patlar. RNN çağının duvarı. <i>Ayrı bir ders sayfası yok: bu durak RNN dersinin "➕ Ekstra" bölümünde (Vanishing/Exploding, r<sup>T</sup> sezgisi ve gradient clipping) ve Bütün Resim\'deki δ zincirinde işleniyor; düğme seni oraya götürür.</i>',
-      sci:'Teşhis: Sepp Hochreiter\'ın yüksek lisans tezi (1991, Almanca!) ve Bengio (1994). Derin öğrenmenin 20 yıl gecikmesinin baş şüphelisi.',
-      real:[['🧱','Derin ağ duvarının teşhisi'],['✂️','Gradient clipping tekniği'],['🛣️','LSTM ve ResNet\'e giden yolun açılması']],
-      sub:['Whh·(1−h²) çarpanı','0.5²⁰ vs 1.5²⁰ sezgisi','Gradient clipping']},
-    {id:'lstm', nm:'🚪 LSTM / GRU', tier:4, v:62, pre:['van'], tab:'lstm',
+    {id:'lstm', nm:'🚪 LSTM / GRU', tier:4, v:62, pre:['rnn'], tab:'lstm',
       d:'Kapılar + cell-state "otoyolu": gradyanın bozulmadan aktığı yol. Vanishing duvarının ilk büyük çözümü.',
       sci:'Hochreiter & Schmidhuber (1997). Vanishing\'i teşhis eden adam, çözümünü de yazdı: gradyanın bozulmadan aktığı cell-state otoyolu + kapılar.',
       real:[['🌍','Google Translate (2016, GNMT)'],['🗣️','Siri/Alexa dönemi konuşma tanıma'],['📱','Klavye tahmini & otomatik tamamlama']],
@@ -2591,7 +2624,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
   // ayarlandığından kompakt bir boyuta küçülüyor (aksi halde kart canvas
   // dışına taşıp kırpılırdı).
   const NW=n=> isNewStyle(n) ? (VERT?210:300) : (n.crown?208:184);
-  const NH=n=> isNewStyle(n) ? (VERT?104:150) : 78;
+  const NH=n=> isNewStyle(n) ? (VERT?104:150)+(n.alt&&n.alt.length?(VERT?14:10):0) : 78;   // alt dersli kartlarda 📎 satırı için ek yükseklik
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
   let W,H,X,Y;
@@ -2706,6 +2739,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const on = subs.has(n.id+':'+i);
       return '<div class="ttc-mdot'+(on?' on':'')+'">'+(on?'✓':'·')+'</div>';
     }).join('');
+    if(n.alt && n.alt.length){
+      body += '<div class="ttc-alt">'+(compact
+        ? '<span class="ttc-altl" data-alt="0">📎 '+(n.alt.length===1? esc(n.alt[0].nm.replace(/^\S+\s/,'')) : n.alt.length+' alt ders')+'</span>'
+        : '<span class="ttc-altk">📎 içerir:</span>'+n.alt.map((a,i)=>'<span class="ttc-altl" data-alt="'+i+'">'+esc(a.nm.replace(/^\S+\s/,''))+'</span>').join(''))+'</div>';
+    }
     body += '<div class="ttc-mastery"><div class="ttc-mnum">'+N+'</div><div class="ttc-mdots">'+dotsHtml+'</div></div>';
     // gi=0: hayalet rect foreignObject ile TAM aynı sınırları paylaşıyor —
     // SVG stroke'u path üzerinde ORTALANDIĞI için yarısı dışarı taşar, bu
@@ -2845,7 +2883,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     svg.innerHTML=s;
     svg.querySelectorAll('.tn').forEach(g=>{
       g.style.cursor='pointer';
-      g.addEventListener('click',()=>show(g.dataset.id));
+      g.addEventListener('click',e=>{
+        const al=e.target.closest && e.target.closest('.ttc-altl');
+        if(al){ const n=byId[g.dataset.id], a=n.alt[+al.dataset.alt]; if(a){ e.stopPropagation(); window.__goStage(n.tab, a.st, a.sel); return; } }
+        show(g.dataset.id);
+      });
     });
     const nd=NODES.filter(n=>stateOf(n)==='done').length;
     const totS=NODES.reduce((a,n)=>a+n.sub.length,0);
@@ -2881,6 +2923,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     }).join('');
     let btns='';
     if(n.tab) btns+='<button class="addbtn" data-go="'+n.tab+'"'+(n.gostage?' data-gostage="'+n.gostage+'"':'')+' style="background:var(--blue); color:#fff">'+(n.golabel||'Sayfada aç →')+'</button> ';
+    if(n.alt) n.alt.forEach((a,i)=>{ btns+='<button class="addbtn" data-altgo="'+i+'" style="background:#24405f; color:#cfe7ff; border:1px solid #3d6a99">'+esc(a.nm)+' →</button> '; });
     btns+='<button class="addbtn" data-pedia="'+n.id+'" style="background:var(--accent); color:#101830">📖 Keşif Defteri&#39;da oku</button> ';
     if(st!=='locked') btns+='<button class="addbtn" data-tg="'+n.id+'" style="background:'+(done.has(n.id)?'var(--panel); color:var(--muted); border:1px solid var(--line)':'var(--green); color:#0b2a12')+'">'+(done.has(n.id)?'↩ Hepsini geri al':'✔ Hepsini tamamladım')+'</button>';
     info.innerHTML='<b style="font-size:16px">'+esc(n.nm)+'</b>'
@@ -2905,6 +2948,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         if(cl){const h=cl.querySelector('.tpl-head'); if(h&&h.classList.contains('closed')) h.click(); cl.scrollIntoView({behavior:'smooth',block:'start'});}
       },150);
     }));
+    info.querySelectorAll('[data-altgo]').forEach(b=>b.addEventListener('click',()=>{ const a=n.alt[+b.dataset.altgo]; window.__goStage(n.tab, a.st, a.sel); }));
     info.querySelectorAll('[data-pedia]').forEach(b=>b.addEventListener('click',()=>{
       const t=document.querySelector('.navbtn[data-model="pedia"]'); if(t) t.click();
       setTimeout(()=>{ const el=document.getElementById('pedia-'+b.dataset.pedia); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); },60);
@@ -2955,6 +2999,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         : '🔒 Kilitli — önce gerekli: '+n.pre.map(p=>byId[p].nm).join(', ');
       return '<div class="xp-bas">'+esc(n.nm)+'</div>'
         +'<div class="xp-sat">'+n.d+'</div>'
+        +(n.alt&&n.alt.length?'<div class="xp-sat" style="color:#9fd6ff; font-size:11.5px">📎 Alt ders: '+n.alt.map(a=>esc(a.nm)).join(' · ')+' — karttaki satıra tıkla</div>':'')
         +'<div class="xp-sat" style="color:var(--muted); font-size:11.5px">'+esc(lockLine)+'</div>';
     }
     svg.addEventListener('mouseover', e=>{
