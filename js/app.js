@@ -2767,6 +2767,42 @@ window.__goStage=function(tab, st, sel){
       for(let k=0;k<4;k++) g+='<path d="M'+(28+k*12)+' 116 v-8 M'+(28+k*12)+' 180 v8 M16 '+(128+k*12)+' h-8 M80 '+(128+k*12)+' h8" class="ea-s"/>';
       g+='<text x="128" y="292" class="ea-t">2017</text>';
       return g; },
+    // ikinci sahneler (aynı çağda boş yer kalırsa, tekrar etmesin diye farklı konu)
+    // Temeller-2: eğri + teğet (türev), dy/dx, matris parantezi
+    t0b:function(){ let g='';
+      g+='<path d="M40 250 C120 250 160 60 360 50" class="ea-s ea-b"/><path d="M110 270 L330 70" class="ea-s ea-dash"/><circle cx="214" cy="170" r="6" class="ea-d"/>';
+      g+='<path d="M214 170 h60 v-55" class="ea-s"/><text x="282" y="150" class="ea-t">dy</text><text x="236" y="192" class="ea-t">dx</text>';
+      g+='<path d="M40 40 h-10 v90 h10 M140 40 h10 v90 h-10" class="ea-s"/>';
+      [[60,70],[110,70],[60,110],[110,110]].forEach((q,k)=>g+='<text x="'+q[0]+'" y="'+q[1]+'" class="ea-t">'+['2','1','0','3'][k]+'</text>');
+      g+='<text x="40" y="290" class="ea-t">f′(x) = lim (f(x+h) − f(x)) / h</text>';
+      return g; },
+    // Nöral-2: XOR'un dört noktası + iki ayırıcı doğru
+    t1b:function(){ let g='';
+      g+='<path d="M60 250 H340 M60 250 V30" class="ea-s"/>';
+      [[110,200,0],[290,200,1],[110,70,1],[290,70,0]].forEach(q=>g+=q[2]?'<circle cx="'+q[0]+'" cy="'+q[1]+'" r="16" class="ea-s ea-b"/>':'<path d="M'+(q[0]-14)+' '+(q[1]-14)+' l28 28 M'+(q[0]+14)+' '+(q[1]-14)+' l-28 28" class="ea-s ea-b"/>');
+      g+='<path d="M60 150 L230 30 M170 250 L340 130" class="ea-s ea-dash"/>';
+      g+='<text x="150" y="285" class="ea-t">XOR</text>';
+      return g; },
+    // Dizi-2: LSTM hücresi (c hattı, kapılar σ σ tanh σ)
+    t2b:function(){ let g='';
+      g+='<rect x="40" y="40" width="320" height="200" rx="16" class="ea-s ea-b"/><path d="M10 80 H390" class="ea-s ea-b"/><path d="M10 210 H390" class="ea-s"/>';
+      ['σ','σ','tanh','σ'].forEach((t,k)=>{ const x=80+k*70; g+='<rect x="'+x+'" y="160" width="50" height="30" rx="5" class="ea-s"/><text x="'+(x+25)+'" y="181" text-anchor="middle" class="ea-t" style="font-size:'+(t.length>1?12:16)+'px">'+t+'</text><path d="M'+(x+25)+' 160 V'+(k===3?120:80)+'" class="ea-s"/>'; });
+      g+='<circle cx="105" cy="80" r="11" class="ea-s"/><circle cx="210" cy="80" r="11" class="ea-s"/><circle cx="315" cy="120" r="11" class="ea-s"/>';
+      g+='<text x="20" y="72" class="ea-t">c</text><text x="20" y="232" class="ea-t">h</text>';
+      return g; },
+    // Transformer-2: blok kulesi (Attention / Add & Norm / FFN / Add & Norm) ×N
+    t3b:function(){ let g='';
+      [['Add & Norm',40],['FFN',95],['Add & Norm',160],['Multi-Head',215]].forEach(b=>g+='<rect x="120" y="'+b[1]+'" width="160" height="40" rx="8" class="ea-s"/><text x="'+(b[0].length>5?136:180)+'" y="'+(b[1]+26)+'" class="ea-t">'+b[0]+'</text>');
+      g+='<path d="M200 290 V255 M200 215 V200 M200 160 V135 M200 95 V80 M200 40 V15" class="ea-s"/>';
+      g+='<path d="M120 235 H90 V180 H120 M120 115 H90 V60 H120" class="ea-s ea-dash"/>';
+      g+='<text x="300" y="160" class="ea-t">× N</text>';
+      return g; },
+    // YZ devrimi-2: roket + yükselen ölçek eğrisi
+    t4b:function(){ let g='';
+      g+='<path d="M200 40 C230 70 238 120 230 180 H170 C162 120 170 70 200 40 Z" class="ea-s ea-b"/><circle cx="200" cy="105" r="14" class="ea-s"/>';
+      g+='<path d="M170 150 L140 200 L172 186 M230 150 L260 200 L228 186" class="ea-s"/><path d="M182 190 L200 250 L218 190" class="ea-s ea-dash"/>';
+      g+='<path d="M30 280 C120 278 250 250 380 120" class="ea-s"/><text x="290" y="285" class="ea-t">ölçek</text>';
+      return g; },
     // 💬 LLM kolu: sohbet balonları, büyüteç (arama), araç anahtarı
     llm:function(){ let g='';
       g+='<path d="M40 50 H230 a14 14 0 0 1 14 14 V120 a14 14 0 0 1 -14 14 H90 L64 160 V134 H40 a14 14 0 0 1 -14 -14 V64 a14 14 0 0 1 14 -14 Z" class="ea-s ea-b"/>';
@@ -2788,20 +2824,42 @@ window.__goStage=function(tab, st, sel){
   };
   // Bir çizimi kutuya (x,y,w,h) sığdırıp çağ rengiyle çiz
   function artBox(key,x,y,w,h,c){
-    const sc=Math.min(w/420,h/320)*0.94, ox=x+(w-400*sc)/2, oy=y+(h-300*sc)/2;
+    const sc=Math.min(w/400,h/300)*0.96, ox=x+(w-400*sc)/2, oy=y+(h-300*sc)/2;
     return '<g class="era-art" style="--ea:'+c+'" transform="translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')">'+ART[key]()+'</g>';
   }
-  // Bant zemini: çağ renginde yukarıdan aşağı solan ton + çizim(ler)
+  // Kartların kapladığı dikdörtgenler (çizimi boş alana koymak için)
+  function cardRects(e){
+    return NODES.filter(n=>n.tier>=e.t0 && n.tier<=e.t1).map(n=>{const w=NW(n),h=NH(n); return [X(n)-w/2-14,Y(n)-h/2-14,w+28,h+28];});
+  }
+  function ovl(a,b){ const w=Math.min(a[0]+a[2],b[0]+b[2])-Math.max(a[0],b[0]), h=Math.min(a[1]+a[3],b[1]+b[3])-Math.max(a[1],b[1]); return (w>0&&h>0)?w*h:0; }
+  // Bölgede (x,y,w,h) kartlara en az binen, olabildiğince büyük 4:3 kutu
+  function freeSpot(x,y,w,h,rects){
+    for(const fr of [1,.85,.72,.6,.5,.42,.35,.28]){
+      const bw=Math.min(w*fr,h*fr*4/3), bh=bw*.75; if(bw<150) break;
+      let best=null, bo=1e18;
+      for(let yy=y; yy+bh<=y+h+0.5; yy+=Math.max(12,(h-bh)/14||12)) for(let xx=x; xx+bw<=x+w+0.5; xx+=Math.max(12,(w-bw)/14||12)){
+        let o=0; rects.forEach(r=>o+=ovl([xx,yy,bw,bh],r)); if(o<bo){bo=o; best=[xx,yy,bw,bh];}
+      }
+      if(best && bo/(bw*bh)<0.1) return best;
+    }
+    return null;
+  }
+  // Bant zemini: çağ renginde solan ton + konu çizimi kartların boş bıraktığı yere
   function eraArt(i,e,x,y,w,h){
-    let g='<linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".16"/><stop offset=".55" stop-color="rgb('+e.c+')" stop-opacity=".05"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".14"/></linearGradient>';
+    let g='<linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".2"/><stop offset=".55" stop-color="rgb('+e.c+')" stop-opacity=".06"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".18"/></linearGradient>';
     g='<defs>'+g+'</defs><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaG'+i+')" pointer-events="none"/>';
+    const rects=cardRects(e), top=VERT?36:46;
+    const place=(key,rx,ry,rw,rh,c)=>{ const b=freeSpot(rx,ry,rw,rh,rects)||[rx,ry,rw,rh]; rects.push(b); return artBox(key,b[0],b[1],b[2],b[3],c); };
     if(e.lanes){
-      if(VERT){ g+=artBox('llm',x,y+40,w/2,h-50,e.c)+artBox('img',x+w/2,y+40,w/2,h-50,e.c2); }
-      else { g+=artBox('llm',x+30,y+40,w-40,h/2-50,e.c)+artBox('img',x+30,y+h/2+10,w-40,h/2-30,e.c2); }
-    } else g+=artBox('t'+i,x,y+(VERT?34:40),w,h-(VERT?40:50),e.c);
+      if(VERT){ g+=place('llm',x+6,y+top,w/2-12,h-top-6,e.c)+place('img',x+w/2+6,y+top,w/2-12,h-top-6,e.c2); }
+      else { g+=place('llm',x+30,y+top,w-36,h/2-top,e.c)+place('img',x+30,y+h/2+6,w-36,h/2-12,e.c2); }
+    } else {
+      g+=place('t'+i,x+6,y+top,w-12,h-top-6,e.c);
+      const b2=freeSpot(x+6,y+top,w-12,h-top-6,rects);   // yer kalırsa ikinci, küçük bir kopya
+      if(b2 && b2[2]>=190 && ART['t'+i+'b']) g+=artBox('t'+i+'b',b2[0],b2[1],b2[2],b2[3],e.c);
+    }
     return g;
   }
-
   // Madalyon tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
   // koordinat sistemine gömer (viewBox ölçeklemesiyle otomatik büyür/küçülür,
   // ayrı bir mobil/masaüstü CSS'i gerekmez). Seçim "yılan" kenarlığı ve

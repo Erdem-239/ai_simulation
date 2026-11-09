@@ -1407,7 +1407,7 @@ body.xt-full-lock{overflow:hidden}
 #matSvg .tn-icon-bg{stroke:#5a3d14; stroke-width:1.3}
 #matSvg .tn-div{stroke:#8a6a35; stroke-width:1; opacity:.5}
 #matSvg .tn.sel rect.tn-card{
-  stroke:#b8264a; stroke-width:2.2; stroke-linecap:round;
+  stroke:#b8264a; stroke-width:2.4; stroke-linecap:round;
   stroke-dasharray:18 82;
   filter:drop-shadow(0 0 5px rgba(184,38,74,.85));
   animation:mtSnake 2.4s linear infinite;
@@ -2409,8 +2409,8 @@ body.tt-full #ttBox.tt-pap #ttPapers{flex:1 1 auto;min-height:0;display:flex}
 body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 
 /* Yol Haritası çağ arka planları (#551): her çağın kendi tonu + soluk konu çizimi */
-#techSvg .era-art{pointer-events:none; opacity:.17}
-#techSvg .era-art .ea-s{fill:none; stroke:rgb(var(--ea)); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+#techSvg .era-art{pointer-events:none; opacity:.42}
+#techSvg .era-art .ea-s{fill:none; stroke:rgb(var(--ea)); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round}
 #techSvg .era-art .ea-b{stroke-width:3.6}
 #techSvg .era-art .ea-f{fill:rgb(var(--ea)); fill-opacity:.12; stroke:rgb(var(--ea)); stroke-opacity:.55; stroke-width:1}
 #techSvg .era-art .ea-d{fill:rgb(var(--ea)); stroke:none}
