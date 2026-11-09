@@ -2523,7 +2523,8 @@ window.__goStage=function(tab, st, sel){
       d:'Ön eğitimli model metni devam ettirir; asistan olması için ince ayar (SFT), parametre verimli ince ayar (LoRA) ve insan tercihiyle eğitim (RLHF / DPO) gerekir. Unutma ve uydurma da bu dersin konusu.',
       sci:'InstructGPT / RLHF: Ouyang ve arkadaşları (2022), Christiano ve arkadaşları (2017). LoRA: Hu ve arkadaşları (2021). DPO: Rafailov ve arkadaşları (2023).',
       real:[['💬','Temel model → sohbet modeli'],['🔌','LoRA adaptörleri: tek modele çok uzmanlık'],['👍','Beğen/beğenme düğmeleri = tercih verisi']],
-      sub:['Ön eğitim: metni devam ettir','İnce ayar (SFT): yalnız cevap puanlanır','LoRA: W + A·B, temel donuk','Unutma ve uydurma','RLHF ve DPO']},
+      sub:['Ön eğitim: metni devam ettir','İnce ayar (SFT): yalnız cevap puanlanır','LoRA: W + A·B, temel donuk','Unutma ve uydurma','RLHF ve DPO'],
+      alt:[{nm:'📏 Değerlendirme', tab:'ev', d:'İnce ayar işe yaradı mı? Benchmark, güven aralığı, sızıntı, pass@k.'}]},
     {id:'bg',   nm:'🔀 BERT ↔ GPT', tier:10, v:20, pre:['paper'], tab:'bg',
       d:'Aynı Transformer bloğundan üç aile: yalnız encoder (BERT, iki yönlü, maskeli dil modeli), yalnız decoder (GPT, nedensel, sıradaki token), encoder-decoder (T5). Hangisi anlamada, hangisi üretmede iyi?',
       sci:'BERT: Devlin ve arkadaşları (Google, 2018). GPT: Radford ve arkadaşları (OpenAI, 2018). T5: Raffel ve arkadaşları (Google, 2019).',
@@ -2539,11 +2540,6 @@ window.__goStage=function(tab, st, sel){
       sci:'ReAct (düşün + eyle): Yao ve arkadaşları (2022). Toolformer: Schick ve arkadaşları (2023). İstem enjeksiyonu kavramı 2022\'de yaygınlaştı.',
       real:[['🔎','"Web\'de arıyor…" adımları'],['💻','Kod yazıp çalıştıran asistanlar'],['🛡️','Riskli adımda insan onayı']],
       sub:['Döngü: model → araç çağrısı → harness → sonuç','Sistem talimatı ve araç tanımları','Bağlam büyümesi ve yönetimi','Adım sınırı ve hata yönetimi','İstem enjeksiyonu ve en az yetki']},
-    {id:'ev',   nm:'📏 Değerlendirme', tier:13, v:20, lane:'llm', pre:['agent'], tab:'ev',
-      d:'Bir modelin iyi olduğunu nasıl biliriz? Benchmark, örneklem büyüklüğü ve güven aralığı, iki modelin şansla yer değiştirmesi, eğitime sızan sorular, modelle hakemlik ve pass@k.',
-      sci:'Güven aralığı: Neyman (1937). MMLU: Hendrycks ve arkadaşları (2020). HumanEval ve pass@k: Chen ve arkadaşları (2021). Chatbot Arena: Zheng ve arkadaşları (2023).',
-      real:[['🏆','Puan tabloları ve sıralamalar'],['🕳️','Eğitime sızan test soruları'],['⚖️','Modelin modeli puanlaması']],
-      sub:['Benchmark ve doğruluk','Güven aralığı (±1,96·√(o(1−o)/n))','İki model: sıralama şansla döner mi?','Sızıntı (contamination)','pass@k, insan tercihi, modelle hakemlik']},
     {id:'cnn',  nm:'🖼️ Görüntü & CNN', tier:11, v:70, lane:'img', pre:['paper'], tab:'cnn',
       d:'Bir resim sayı ızgarasıdır. Konvolüsyon küçük bir filtreyi resmin üstünde kaydırıp desen arar; ağırlık paylaşımı, dolgu, havuzlama. Filtreler eğitimle bulunur.',
       sci:'Hubel & Wiesel: görme korteksi (1959–62). Fukushima: Neocognitron (1980). LeCun: LeNet (1989–98). Krizhevsky, Sutskever & Hinton: AlexNet (2012).',
@@ -2822,10 +2818,25 @@ window.__goStage=function(tab, st, sel){
       g+='<text x="40" y="215" class="ea-t">gürültü → resim</text>';
       return g; }
   };
-  // Bir çizimi kutuya (x,y,w,h) sığdırıp çağ rengiyle çiz
+  // Bir çizimi kutuya (x,y,w,h) sığdırıp çağ rengiyle çiz: altın kabartma çizim + parıltı + süslü çerçeve + parlayan yıldızlar
+  let artN=0;
   function artBox(key,x,y,w,h,c){
-    const sc=Math.min(w/400,h/300)*0.96, ox=x+(w-400*sc)/2, oy=y+(h-300*sc)/2;
-    return '<g class="era-art" style="--ea:'+c+'" transform="translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')">'+ART[key]()+'</g>';
+    const sc=Math.min(w/400,h/300)*0.9, dw=400*sc, dh=300*sc, ox=x+(w-dw)/2, oy=y+(h-dh)/2;
+    const fx=ox-14, fy=oy-12, fw=dw+28, fh=dh+24, id=++artN;
+    const cor=(cx,cy,sx,sy)=>'<g transform="translate('+cx.toFixed(1)+','+cy.toFixed(1)+') scale('+sx+','+sy+')"><path d="M0 26 V10 Q0 0 10 0 H26" class="ea-co"/><path d="M5 18 V12 Q5 5 12 5 H18" class="ea-co ea-co2"/><circle cx="10" cy="10" r="2.6" class="ea-dot2"/></g>';
+    const rh=(cx,cy)=>'<path d="M'+cx+' '+(cy-6)+' l6 6 l-6 6 l-6 -6 Z" class="ea-dia"/>';
+    let g='<g class="era-art" style="--ea:'+c+'">';
+    g+='<ellipse cx="'+(fx+fw/2)+'" cy="'+(fy+fh/2)+'" rx="'+(fw*.5)+'" ry="'+(fh*.5)+'" class="ea-halo"/>';
+    g+='<rect x="'+fx+'" y="'+fy+'" width="'+fw+'" height="'+fh+'" rx="12" class="ea-frame"/>';
+    g+=cor(fx,fy,1,1)+cor(fx+fw,fy,-1,1)+cor(fx,fy+fh,1,-1)+cor(fx+fw,fy+fh,-1,-1);
+    g+=rh(fx+fw/2,fy)+rh(fx+fw/2,fy+fh)+rh(fx,fy+fh/2)+rh(fx+fw,fy+fh/2);
+    const T='translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')', art=ART[key]();
+    g+='<g class="ea-under" transform="'+T+'">'+art+'</g><g class="ea-draw" transform="'+T+'">'+art+'</g>';
+    let sd=id*7919;
+    const R=()=>{sd=(sd*1103515245+12345)%2147483648; return sd/2147483648;};
+    for(let k=0;k<7;k++){ const px=fx+R()*fw, py=fy+R()*fh, z=.5+R()*.9;
+      g+='<path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" class="ea-sp" transform="translate('+px.toFixed(1)+','+py.toFixed(1)+') scale('+z.toFixed(2)+')" style="animation-delay:'+(R()*4).toFixed(2)+'s; animation-duration:'+(2.2+R()*2.4).toFixed(2)+'s"/>'; }
+    return g+'</g>';
   }
   // Kartların kapladığı dikdörtgenler (çizimi boş alana koymak için)
   function cardRects(e){
