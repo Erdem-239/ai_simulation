@@ -2424,3 +2424,7 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #techSvg .te-off{stroke:#6b4a1c}
 #techSvg .era-lane-sep{stroke:#5a3d14; opacity:.55}
 #techSvg .era-lane-lbl{fill:#3d2a0e; opacity:.9}
+/* Harita daraltıldı (#557): dar kartta başlık daha az kırpılsın */
+#techSvg .ttc-head{gap:7px; padding-right:8px}
+#techSvg .ttc-title{font-size:12px; letter-spacing:0}
+#techSvg .ttc-badge{padding:2px 6px; font-size:9.5px}
