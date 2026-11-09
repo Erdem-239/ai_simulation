@@ -2560,7 +2560,7 @@ window.__goStage=function(tab, st, sel){
       sci:'Sohl-Dickstein ve arkadaşları (2015). DDPM: Ho, Jain & Abbeel (2020). Skor tabanlı modeller: Song & Ermon (2019). DDIM: Song, Meng & Ermon (2020).',
       real:[['🎨','Metinden görüntü üreten modellerin çoğu'],['🎬','Video ve ses üretimi'],['🧬','Protein ve molekül tasarımı']],
       sub:['İleri süreç: x_t = √ᾱ·x₀ + √(1−ᾱ)·ε','Eğitim: eklenen gürültüyü tahmin et','Geri süreç: 50 adımda gürültüden veriye','GAN ile karşılaştırma: kararlılık ↔ hız','Hızlı örnekleme (DDIM)']},
-    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:11, v:80, lane:'img', pre:['dif'], tab:'t2i',
+    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:8, v:80, pre:['dif'], tab:'t2i',
       d:'Diffusion modeline istemi dinlemeyi öğretmek: metin kodlayıcısı (CLIP), koşul vektörü, çapraz dikkat, sınıflandırıcısız yönlendirme (CFG), gizli uzayda üretim (latent diffusion), DiT.',
       sci:'CLIP: Radford ve arkadaşları (OpenAI, 2021). Sınıflandırıcısız yönlendirme: Ho & Salimans (2021). Latent diffusion: Rombach ve arkadaşları (2022). DiT: Peebles & Xie (2023).',
       real:[['🎨','İstemden resim üreten araçlar'],['🎚️','"Guidance scale" ayarı'],['🔎','CLIP ile resim arama']],
@@ -2609,7 +2609,7 @@ window.__goStage=function(tab, st, sel){
      geldiğini yeniden tanımlıyor. render() her çağrıldığında güncel pencere
      genişliğine göre yeniden karar verir (resize/rotate anında tepki verir). */
   const BP_VERT=720;
-  let TT_MODE='auto', TT_Z=1;
+  let TT_MODE='auto', TT_Z=0.925; const TT_Z0=0.925;
   const ttVert=()=> TT_MODE==='auto' ? window.innerWidth<=BP_VERT : TT_MODE==='v';
   let VERT=ttVert();
   // Yeni-stil (madalyon) kartlar eskisinden daha zengin içerik taşıdığı için
@@ -2709,120 +2709,108 @@ window.__goStage=function(tab, st, sel){
      Civ tarzı "çağa göre değişen arka plan" fikri; çizimler bize özgü (oyun görsellerinden kopya değil).
      Her sahne 400×300'lük kendi koordinatında çizilir, banda sığacak şekilde ölçeklenir.
      Kartlar üstte durur; çizim yalnız aralardan görünür (opacity düşük). */
-  const ART={
-    // 📜 Temeller: kareli kâğıt, eksenler, nokta bulutu + regresyon doğrusu, çan eğrisi, pergel, formül
-    t0:function(){ let g='';
-      for(let x=0;x<=400;x+=20) g+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="300" class="ea-f"/>';
-      for(let y=0;y<=300;y+=20) g+='<line x1="0" y1="'+y+'" x2="400" y2="'+y+'" class="ea-f"/>';
-      g+='<path d="M40 260 H380 M40 260 V30" class="ea-s"/><path d="M372 254 L382 260 L372 266 M34 38 L40 28 L46 38" class="ea-s"/>';
-      [[70,220],[95,205],[120,214],[140,180],[165,190],[190,160],[215,168],[240,138],[262,146],[290,118],[315,124],[340,96]].forEach(q=>g+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="4" class="ea-d"/>');
-      g+='<path d="M55 232 L365 86" class="ea-s ea-b"/>';
-      g+='<path d="M60 258 C120 258 130 150 160 150 C190 150 200 258 260 258" class="ea-s"/>';
-      g+='<path d="M300 40 l-18 70 M300 40 l18 70 M300 40 v-10" class="ea-s"/><circle cx="300" cy="38" r="5" class="ea-s"/><path d="M276 112 A40 40 0 0 0 324 112" class="ea-s ea-dash"/>';
-      g+='<text x="60" y="58" class="ea-t">y = θ₀ + θ₁x</text><text x="60" y="84" class="ea-t">Σ (h − y)²</text>';
-      return g; },
-    // ⚙️ Nöral ağlar: biyolojik nöron (gövde, dendritler, akson) + küçük katmanlı ağ
-    t1:function(){ let g='';
-      g+='<circle cx="110" cy="150" r="30" class="ea-s ea-b"/><circle cx="110" cy="150" r="10" class="ea-s"/>';
-      [[-150,-110],[-120,-60],[-95,10],[-130,70],[-80,110]].forEach((d,i)=>{const a=(200+i*35)*Math.PI/180, x1=110+Math.cos(a)*30, y1=150+Math.sin(a)*30, x2=110+Math.cos(a)*85, y2=150+Math.sin(a)*85;
-        g+='<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+8)+' '+((y1+y2)/2-10)+' '+x2+' '+y2+'" class="ea-s"/>';
-        g+='<path d="M'+x2+' '+y2+' l'+(-14)+' '+(-12)+' M'+x2+' '+y2+' l'+(-16)+' '+(8)+'" class="ea-s"/>'; });
-      g+='<path d="M140 150 C170 150 175 140 205 142 S250 150 270 150" class="ea-s ea-b"/>';
-      [0,1,2].forEach(i=>g+='<ellipse cx="'+(172+i*28)+'" cy="146" rx="10" ry="6" class="ea-s"/>');
-      g+='<path d="M270 150 l14 -12 M270 150 l16 0 M270 150 l14 12" class="ea-s"/>';
-      const L=[[300,[70,110,150]],[340,[60,100,140,180]],[380,[100,140]]];
-      L.forEach((l,k)=>{ if(k<2) l[1].forEach(y=>L[k+1][1].forEach(y2=>g+='<line x1="'+l[0]+'" y1="'+y+'" x2="'+L[k+1][0]+'" y2="'+y2+'" class="ea-f"/>')); });
-      L.forEach(l=>l[1].forEach(y=>g+='<circle cx="'+l[0]+'" cy="'+y+'" r="7" class="ea-s"/>'));
-      g+='<text x="300" y="232" class="ea-t">σ(w·x + b)</text>';
-      return g; },
-    // 🌉 Dizi modelleme: zamanda açılmış hücre zinciri, geri dönen hafıza oku, dalga, kelime şeridi
-    t2:function(){ let g='';
-      for(let i=0;i<4;i++){ const x=30+i*92;
-        g+='<rect x="'+x+'" y="110" width="58" height="58" rx="10" class="ea-s ea-b"/>';
-        g+='<path d="M'+(x+29)+' 210 V170 M'+(x+24)+' 176 l5 -7 l5 7" class="ea-s"/><text x="'+(x+22)+'" y="228" class="ea-t">x'+(i+1)+'</text>';
-        g+='<path d="M'+(x+29)+' 108 V70 M'+(x+24)+' 76 l5 -7 l5 7" class="ea-s"/>';
-        if(i<3) g+='<path d="M'+(x+58)+' 139 H'+(x+92)+' M'+(x+86)+' 134 l7 5 l-7 5" class="ea-s"/>'; }
-      g+='<path d="M60 40 C140 10 260 10 340 40" class="ea-s ea-dash"/><path d="M332 34 l9 6 l-10 4" class="ea-s"/>';
-      g+='<text x="150" y="30" class="ea-t">h(t) → h(t+1)</text>';
-      let w='M20 270'; for(let x=20;x<=380;x+=10) w+=' L'+x+' '+(270+Math.sin(x/18)*12); g+='<path d="'+w+'" class="ea-s"/>';
-      return g; },
-    // 🎯 Transformer: kelime satırı + dikkat yayları + Q/K/V matrisi
-    t3:function(){ let g=''; const W=['kedi','sütü','içti','çünkü','acıkmıştı'];
-      W.forEach((t,i)=>{ const x=30+i*76; g+='<rect x="'+x+'" y="170" width="62" height="26" rx="6" class="ea-s"/><text x="'+(x+8)+'" y="188" class="ea-t" style="font-size:13px">'+t+'</text>'; });
-      [[4,0,1],[2,0,.7],[3,2,.5],[1,0,.6],[4,2,.4]].forEach(a=>{ const x1=61+a[0]*76, x2=61+a[1]*76, h=30+Math.abs(x1-x2)*0.45;
-        g+='<path d="M'+x1+' 168 Q'+((x1+x2)/2)+' '+(168-h)+' '+x2+' 168" class="ea-s" style="stroke-width:'+(1+a[2]*3)+'"/>'; });
-      for(let r=0;r<4;r++) for(let c=0;c<4;c++) g+='<rect x="'+(130+c*22)+'" y="'+(224+r*16)+'" width="20" height="14" class="ea-f"'+((c<=r)?' style="fill-opacity:.12"':'')+'/>';
-      g+='<text x="30" y="250" class="ea-t">softmax(QKᵀ/√d)·V</text><text x="230" y="250" class="ea-t">Q  K  V</text>';
-      return g; },
-    // 🚀 Yapay zekâ devrimi: makale sayfası, yıldızlar, GPU çipi
-    t4:function(){ let g='';
-      g+='<path d="M110 40 H270 L300 70 V270 H110 Z M270 40 V70 H300" class="ea-s ea-b"/>';
-      g+='<text x="128" y="94" class="ea-t" style="font-size:13px">Attention Is</text><text x="128" y="112" class="ea-t" style="font-size:13px">All You Need</text>';
-      for(let y=132;y<=250;y+=12) g+='<line x1="128" y1="'+y+'" x2="'+(y%36===0?232:282)+'" y2="'+y+'" class="ea-f" style="stroke-width:2"/>';
-      g+='<rect x="190" y="180" width="70" height="56" class="ea-s"/><path d="M200 226 V196 h12 v30 M220 226 v-40 h12 v40 M240 226 v-20 h12 v20" class="ea-s"/>';
-      [[60,70],[340,60],[50,220],[350,230],[330,140]].forEach(q=>g+='<path d="M'+q[0]+' '+(q[1]-9)+' L'+(q[0]+3)+' '+(q[1]-3)+' L'+(q[0]+9)+' '+q[1]+' L'+(q[0]+3)+' '+(q[1]+3)+' L'+q[0]+' '+(q[1]+9)+' L'+(q[0]-3)+' '+(q[1]+3)+' L'+(q[0]-9)+' '+q[1]+' L'+(q[0]-3)+' '+(q[1]-3)+' Z" class="ea-s"/>');
-      g+='<rect x="20" y="120" width="56" height="56" rx="4" class="ea-s"/><rect x="34" y="134" width="28" height="28" class="ea-s"/>';
-      for(let k=0;k<4;k++) g+='<path d="M'+(28+k*12)+' 116 v-8 M'+(28+k*12)+' 180 v8 M16 '+(128+k*12)+' h-8 M80 '+(128+k*12)+' h8" class="ea-s"/>';
-      g+='<text x="128" y="292" class="ea-t">2017</text>';
-      return g; },
-    // ikinci sahneler (aynı çağda boş yer kalırsa, tekrar etmesin diye farklı konu)
-    // Temeller-2: eğri + teğet (türev), dy/dx, matris parantezi
-    t0b:function(){ let g='';
-      g+='<path d="M40 250 C120 250 160 60 360 50" class="ea-s ea-b"/><path d="M110 270 L330 70" class="ea-s ea-dash"/><circle cx="214" cy="170" r="6" class="ea-d"/>';
-      g+='<path d="M214 170 h60 v-55" class="ea-s"/><text x="282" y="150" class="ea-t">dy</text><text x="236" y="192" class="ea-t">dx</text>';
-      g+='<path d="M40 40 h-10 v90 h10 M140 40 h10 v90 h-10" class="ea-s"/>';
-      [[60,70],[110,70],[60,110],[110,110]].forEach((q,k)=>g+='<text x="'+q[0]+'" y="'+q[1]+'" class="ea-t">'+['2','1','0','3'][k]+'</text>');
-      g+='<text x="40" y="290" class="ea-t">f′(x) = lim (f(x+h) − f(x)) / h</text>';
-      return g; },
-    // Nöral-2: XOR'un dört noktası + iki ayırıcı doğru
-    t1b:function(){ let g='';
-      g+='<path d="M60 250 H340 M60 250 V30" class="ea-s"/>';
-      [[110,200,0],[290,200,1],[110,70,1],[290,70,0]].forEach(q=>g+=q[2]?'<circle cx="'+q[0]+'" cy="'+q[1]+'" r="16" class="ea-s ea-b"/>':'<path d="M'+(q[0]-14)+' '+(q[1]-14)+' l28 28 M'+(q[0]+14)+' '+(q[1]-14)+' l-28 28" class="ea-s ea-b"/>');
-      g+='<path d="M60 150 L230 30 M170 250 L340 130" class="ea-s ea-dash"/>';
-      g+='<text x="150" y="285" class="ea-t">XOR</text>';
-      return g; },
-    // Dizi-2: LSTM hücresi (c hattı, kapılar σ σ tanh σ)
-    t2b:function(){ let g='';
-      g+='<rect x="40" y="40" width="320" height="200" rx="16" class="ea-s ea-b"/><path d="M10 80 H390" class="ea-s ea-b"/><path d="M10 210 H390" class="ea-s"/>';
-      ['σ','σ','tanh','σ'].forEach((t,k)=>{ const x=80+k*70; g+='<rect x="'+x+'" y="160" width="50" height="30" rx="5" class="ea-s"/><text x="'+(x+25)+'" y="181" text-anchor="middle" class="ea-t" style="font-size:'+(t.length>1?12:16)+'px">'+t+'</text><path d="M'+(x+25)+' 160 V'+(k===3?120:80)+'" class="ea-s"/>'; });
-      g+='<circle cx="105" cy="80" r="11" class="ea-s"/><circle cx="210" cy="80" r="11" class="ea-s"/><circle cx="315" cy="120" r="11" class="ea-s"/>';
-      g+='<text x="20" y="72" class="ea-t">c</text><text x="20" y="232" class="ea-t">h</text>';
-      return g; },
-    // Transformer-2: blok kulesi (Attention / Add & Norm / FFN / Add & Norm) ×N
-    t3b:function(){ let g='';
-      [['Add & Norm',40],['FFN',95],['Add & Norm',160],['Multi-Head',215]].forEach(b=>g+='<rect x="120" y="'+b[1]+'" width="160" height="40" rx="8" class="ea-s"/><text x="'+(b[0].length>5?136:180)+'" y="'+(b[1]+26)+'" class="ea-t">'+b[0]+'</text>');
-      g+='<path d="M200 290 V255 M200 215 V200 M200 160 V135 M200 95 V80 M200 40 V15" class="ea-s"/>';
-      g+='<path d="M120 235 H90 V180 H120 M120 115 H90 V60 H120" class="ea-s ea-dash"/>';
-      g+='<text x="300" y="160" class="ea-t">× N</text>';
-      return g; },
-    // YZ devrimi-2: roket + yükselen ölçek eğrisi
-    t4b:function(){ let g='';
-      g+='<path d="M200 40 C230 70 238 120 230 180 H170 C162 120 170 70 200 40 Z" class="ea-s ea-b"/><circle cx="200" cy="105" r="14" class="ea-s"/>';
-      g+='<path d="M170 150 L140 200 L172 186 M230 150 L260 200 L228 186" class="ea-s"/><path d="M182 190 L200 250 L218 190" class="ea-s ea-dash"/>';
-      g+='<path d="M30 280 C120 278 250 250 380 120" class="ea-s"/><text x="290" y="285" class="ea-t">ölçek</text>';
-      return g; },
-    // 💬 LLM kolu: sohbet balonları, büyüteç (arama), araç anahtarı
-    llm:function(){ let g='';
-      g+='<path d="M40 50 H230 a14 14 0 0 1 14 14 V120 a14 14 0 0 1 -14 14 H90 L64 160 V134 H40 a14 14 0 0 1 -14 -14 V64 a14 14 0 0 1 14 -14 Z" class="ea-s ea-b"/>';
-      for(let k=0;k<3;k++) g+='<line x1="48" y1="'+(76+k*18)+'" x2="'+(210-k*40)+'" y2="'+(76+k*18)+'" class="ea-f" style="stroke-width:3"/>';
-      g+='<path d="M370 150 H190 a14 14 0 0 0 -14 14 V214 a14 14 0 0 0 14 14 H320 L346 254 V228 H370 a14 14 0 0 0 14 -14 V164 a14 14 0 0 0 -14 -14 Z" class="ea-s"/>';
-      g+='<text x="196" y="196" class="ea-t">soru → cevap</text>';
-      g+='<circle cx="320" cy="70" r="26" class="ea-s"/><path d="M339 89 L366 116" class="ea-s ea-b"/>';
-      return g; },
-    // 🎨 Görüntü kolu: resim çerçevesi (dağ + güneş), piksel ızgarası, fırça, gürültü noktaları
-    img:function(){ let g='';
-      g+='<rect x="40" y="50" width="180" height="140" rx="6" class="ea-s ea-b"/><circle cx="180" cy="86" r="16" class="ea-s"/>';
-      g+='<path d="M48 182 L100 112 L140 160 L168 128 L212 182" class="ea-s"/>';
-      for(let r=0;r<5;r++) for(let c=0;c<5;c++) g+='<rect x="'+(250+c*22)+'" y="'+(60+r*22)+'" width="20" height="20" class="ea-f"'+(((r+c)%3===0)?' style="fill-opacity:.12"':'')+'/>';
-      g+='<path d="M250 260 L330 180 M322 176 l14 -6 l-6 14 Z" class="ea-s ea-b"/>';
-      let seed=7; const R=()=>{seed=(seed*1103515245+12345)%2147483648; return seed/2147483648;};
-      for(let k=0;k<40;k++) g+='<circle cx="'+(40+R()*170)+'" cy="'+(220+R()*60)+'" r="1.6" class="ea-d"/>';
-      g+='<text x="40" y="215" class="ea-t">gürültü → resim</text>';
-      return g; }
-  };
+  const ART=(function(){
+    const N=v=>(+v).toFixed(1);
+    const P=(d,c,st)=>'<path d="'+d+'" class="'+(c||'ea-s')+'"'+(st?' style="'+st+'"':'')+'/>';
+    const C=(x,y,r,c)=>'<circle cx="'+N(x)+'" cy="'+N(y)+'" r="'+r+'" class="'+(c||'ea-s')+'"/>';
+    const E=(x,y,rx,ry,rot,c)=>'<ellipse cx="'+N(x)+'" cy="'+N(y)+'" rx="'+rx+'" ry="'+ry+'" class="'+(c||'ea-s')+'"'+(rot?' transform="rotate('+rot+' '+N(x)+' '+N(y)+')"':'')+'/>';
+    const R=(x,y,w,h,c,rx)=>'<rect x="'+N(x)+'" y="'+N(y)+'" width="'+w+'" height="'+h+'" rx="'+(rx||0)+'" class="'+(c||'ea-s')+'"/>';
+    const T=(x,y,s,sz)=>'<text x="'+N(x)+'" y="'+N(y)+'" class="ea-t" style="font-size:'+(sz||14)+'px">'+s+'</text>';
+    const cub=(a,b,c,d,t)=>{const u=1-t; return [u*u*u*a[0]+3*u*u*t*b[0]+3*u*t*t*c[0]+t*t*t*d[0], u*u*u*a[1]+3*u*u*t*b[1]+3*u*t*t*c[1]+t*t*t*d[1]];};
+    let seed=11; const RND=()=>{seed=(seed*1103515245+12345)%2147483648; return seed/2147483648;};
+    const gear=(x,y,r,n)=>{let d=''; for(let k=0;k<n*2;k++){const a=k*Math.PI/n, rr=(k%2)?r*0.8:r; d+=(k?'L':'M')+N(x+Math.cos(a)*rr)+' '+N(y+Math.sin(a)*rr);} return P(d+'Z')+C(x,y,r*0.28);};
+    // Yaratılış'taki el: parmak ucu (196,126) civarında; mekanik=true ise eklem/bağlantı çizgileri eklenir
+    const hand=(mech)=>{ let g='';
+      g+=P('M0 205 C30 195 70 175 112 160','ea-b')+P('M0 166 C30 158 60 148 108 138','ea-b');
+      g+=P('M108 138 C122 128 138 126 146 134 L150 160 C140 172 122 172 112 160')+P('M146 134 C165 128 182 124 196 123 C203 125 203 130 197 131 C184 136 166 142 150 146','ea-b');
+      g+=P('M148 150 C160 150 172 153 178 158 C176 162 164 160 150 158')+P('M147 160 C158 162 167 166 171 171 C168 175 158 172 146 168')+P('M143 168 C151 171 157 176 158 182 C154 184 148 180 141 174')+P('M116 138 C122 124 134 118 144 121 C142 128 134 132 124 140');
+      if(mech){ g+=P('M165 126 V141','ea-th')+P('M180 123 V135','ea-th')+C(150,140,3.5)+C(172,156,2.5)+C(166,168,2.5)+P('M20 190 H64 V172 H96','ea-th')+P('M30 176 H58 V158 H92','ea-th')+C(96,172,2.5,'ea-d')+C(92,158,2.5,'ea-d'); }
+      return g; };
+    const o={};
+    // 📜 TEMELLER — «Evrenin dili»: dor sütunları, Vitruvius insanı (daire + kare), üçgen, pergel, Pisagor parşömeni
+    o.t0=function(){ let g='';
+      g+=R(8,18,384,12,'ea-s')+R(2,12,396,8,'ea-th');
+      [6,368].forEach(x=>{ g+=R(x,30,26,236,'ea-s')+R(x-5,266,36,10,'ea-s')+R(x-5,24,36,8,'ea-s'); for(let k=1;k<5;k++) g+=P('M'+(x+k*5)+' 32 V264','ea-th'); });
+      g+=C(200,160,100,'ea-b')+R(100,60,200,200,'ea-s')+C(200,160,52,'ea-th');
+      g+=P('M200 60 L286.6 210 L113.4 210 Z','ea-th');
+      g+=C(200,100,9,'ea-s')+P('M200 109 V176','ea-b')+P('M128 128 L272 128','ea-b')+P('M140 98 L200 120 L260 98','ea-s')+P('M200 176 L152 262','ea-b')+P('M200 176 L248 262','ea-b')+P('M200 176 L188 262 M200 176 L212 262','ea-s');
+      g+=P('M70 62 L50 150 M70 62 L100 150','ea-b')+C(70,58,5)+P('M50 150 A28 28 0 0 0 100 150','ea-dash')+P('M60 100 H90','ea-th');
+      g+=P('M306 210 q-9 0 -9 9 t9 9 H356 q9 0 9 -9 t-9 -9 Z')+P('M306 228 V244 q-9 0 -9 8 t9 8 H356 q9 0 9 -8 t-9 -8 V228','ea-s');
+      g+=T(310,226,'a²+b²=c²',9)+P('M310 238 H352 M310 248 H340','ea-th');
+      g+=P('M46 214 C56 214 58 186 66 186 C74 186 76 214 86 214','ea-s')+P('M40 214 H92','ea-th');
+      g+=T(160,50,'GEOMETRIA',15)+T(178,292,'π · φ · e',14);
+      return g; };
+    // ⚙️ NÖRAL AĞLAR — «Yaşam ağacı»: Cajal nöronu gibi dallanan ağaç, kökler, yan nöronlar
+    o.t1=function(){ let g='';
+      const tree=(x,y,a,len,d)=>{ if(d===0||len<5){ g+=C(x,y,2.8,'ea-d'); return;} const x2=x+Math.cos(a)*len, y2=y+Math.sin(a)*len; g+=P('M'+N(x)+' '+N(y)+' L'+N(x2)+' '+N(y2),'ea-s','stroke-width:'+(d*0.85+0.7)); tree(x2,y2,a-0.46,len*0.76,d-1); tree(x2,y2,a+0.46,len*0.76,d-1); if(d>3) tree(x2,y2,a+0.04,len*0.62,d-2); };
+      tree(200,262,-Math.PI/2,58,6);
+      ['M200 262 C190 272 168 280 138 284','M200 262 C206 274 226 282 258 286','M200 262 C196 276 190 288 184 296','M200 262 C204 278 212 290 220 298'].forEach(d=>g+=P(d,'ea-s','stroke-width:2.2'));
+      // sol/sağ piramidal nöronlar
+      [[50,1],[350,-1]].forEach(a=>{ const x=a[0], s=a[1];
+        g+=P('M'+x+' 214 l-13 24 h26 Z','ea-b')+P('M'+x+' 214 V150 M'+x+' 180 l'+(-26*s)+' -34 M'+x+' 180 l'+(24*s)+' -30 M'+x+' 150 l'+(-14*s)+' -36 M'+x+' 150 l'+(14*s)+' -40')+P('M'+x+' 238 V282')+C(x+10*s,282,3,'ea-d');
+        for(let k=0;k<3;k++) g+=P('M'+(x-8)+' '+(238-k*3)+' l'+(-22*s)+' '+(12+k*5),'ea-th'); });
+      g+=P('M72 200 l16 -10 l-6 14 l16 -12 l-8 16','ea-b')+P('M328 204 l-16 -10 l6 14 l-16 -12 l8 16','ea-b');
+      g+=T(158,298,'σ(w·x + b)',14);
+      return g; };
+    // 🌉 DİZİ MODELLEME — «Zamanın nehri»: akan nehir üstünde sözcük kütükleri, kum saati, saat, hafıza sarmalı
+    o.t2=function(){ let g='';
+      const A=[[0,232],[70,187],[130,277],[210,232]], B=[[210,232],[290,187],[340,147],[400,192]];
+      const bank=(dy)=>'M'+A[0][0]+' '+(A[0][1]+dy)+' C'+A[1][0]+' '+(A[1][1]+dy)+' '+A[2][0]+' '+(A[2][1]+dy)+' '+A[3][0]+' '+(A[3][1]+dy)+' C'+B[1][0]+' '+(B[1][1]+dy)+' '+B[2][0]+' '+(B[2][1]+dy)+' '+B[3][0]+' '+(B[3][1]+dy);
+      g+=P(bank(-20),'ea-b')+P(bank(20),'ea-b')+P(bank(0),'ea-dash');
+      [['kedi',A,.12],['uyudu',A,.42],['ve',A,.78],['…',B,.3],['sonra',B,.7]].forEach(q=>{ const p=cub(q[1][0],q[1][1],q[1][2],q[1][3],q[2]); g+=R(p[0]-22,p[1]-9,44,18,'ea-f',5)+T(p[0]-17,p[1]+4,q[0],10); });
+      g+=P('M178 22 H222 C222 48 207 56 200 62 C207 68 222 76 222 102 H178 C178 76 193 68 200 62 C193 56 178 48 178 22 Z','ea-b')+P('M172 22 H228 M172 102 H228')+P('M200 62 V90','ea-th');
+      for(let k=0;k<14;k++) g+=C(190+RND()*20,88+RND()*12,1.2,'ea-d');
+      g+=C(60,76,30)+C(60,76,3,'ea-d'); for(let k=0;k<12;k++){const a=k*Math.PI/6; g+=P('M'+N(60+Math.cos(a)*26)+' '+N(76+Math.sin(a)*26)+' L'+N(60+Math.cos(a)*30)+' '+N(76+Math.sin(a)*30));} g+=P('M60 76 V56 M60 76 L74 82','ea-b');
+      let sp='M340 80'; for(let k=0;k<70;k++){const a=k*0.33, r=2+k*0.52; sp+=' L'+N(340+Math.cos(a)*r)+' '+N(80+Math.sin(a)*r);} g+=P(sp,'ea-b');
+      g+=gear(120,40,13,8)+T(132,296,'h(t) → h(t+1)',13);
+      return g; };
+    // 🎯 TRANSFORMER — «Dikkat mandalası»: gotik gül pencere, yivli kemer, sözcük sırası ve dikkat yayları
+    o.t3=function(){ let g='';
+      g+=P('M46 292 V150 C46 62 150 6 200 6 C250 6 354 62 354 150 V292','ea-b')+P('M64 292 V150 C64 74 156 26 200 26 C244 26 336 74 336 150 V292','ea-th');
+      g+=C(200,126,66,'ea-b')+C(200,126,58)+C(200,126,24)+C(200,126,11,'ea-d');
+      for(let k=0;k<8;k++){ const a=k*Math.PI/4, d=a*180/Math.PI; g+=E(200+Math.cos(a)*41,126+Math.sin(a)*41,22,11,d)+P('M'+N(200+Math.cos(a)*24)+' '+N(126+Math.sin(a)*24)+' L'+N(200+Math.cos(a)*58)+' '+N(126+Math.sin(a)*58),'ea-th')+C(200+Math.cos(a+Math.PI/8)*62,126+Math.sin(a+Math.PI/8)*62,4); }
+      const xs=[0,1,2,3,4,5].map(i=>80+i*48);
+      xs.forEach((x,i)=>{ g+=R(x-20,238,40,18,'ea-f',4)+T(x-14,251,['kedi','sütü','içti','çünkü','acıkmıştı','.'][i],i===4?7:9); });
+      [[0,5,.9],[2,0,.7],[3,2,.55],[4,0,.8],[1,3,.4]].forEach(a=>{ const x1=xs[a[0]], x2=xs[a[1]], h=22+Math.abs(x1-x2)*0.14; g+=P('M'+x1+' 236 Q'+((x1+x2)/2)+' '+(236-h)+' '+x2+' 236','ea-s','stroke-width:'+(1+a[2]*3)); });
+      g+=T(122,284,'softmax(QKᵀ/√d)·V',12);
+      return g; };
+    // 🚀 YAPAY ZEKÂ DEVRİMİ — «Yaratılış»: insan eli ile makine elinin kıvılcımı (Sistina), çevrede atom, DNA, kimya, gezegenler
+    o.t4=function(){ let g='';
+      g+=C(200,127,64,'ea-th')+C(200,127,92,'ea-dash');
+      g+=hand(false)+'<g transform="translate(400 0) scale(-1 1)">'+hand(true)+'</g>';
+      g+=C(200,127,3.6,'ea-d'); for(let k=0;k<8;k++){const a=k*Math.PI/4; g+=P('M'+N(200+Math.cos(a)*7)+' '+N(127+Math.sin(a)*7)+' L'+N(200+Math.cos(a)*17)+' '+N(127+Math.sin(a)*17),'ea-b');}
+      [0,60,120].forEach(r=>g+=E(62,50,38,13,r)); g+=C(62,50,4,'ea-d');
+      let h1='M340 14', h2='M340 14'; for(let k=0;k<=36;k++){const y=14+k*2.7, x=345+Math.sin(k*0.5)*16; h1+=' L'+N(x)+' '+N(y); h2+=' L'+N(690-x)+' '+N(y);} g+=P(h1,'ea-b')+P(h2,'ea-b'); for(let k=1;k<36;k+=3){const y=14+k*2.7, x=345+Math.sin(k*0.5)*16; g+=P('M'+N(x)+' '+N(y)+' H'+N(690-x),'ea-th');}
+      g+=P('M42 236 V258 L22 292 H80 L60 258 V236')+P('M36 236 H66')+P('M30 274 H72','ea-th')+C(52,224,3)+C(60,214,2)+C(48,208,2.5);
+      g+=C(334,254,15,'ea-b')+E(334,254,36,8,-18)+P('M268 270 L290 232 L312 270 Z')+C(290,254,5)+P('M270 270 l-8 12 M310 270 l8 12');
+      [[120,24],[150,52],[262,28],[300,66],[36,128],[372,150],[140,262],[250,274]].forEach((p,i,a)=>{ g+=C(p[0],p[1],2,'ea-d'); if(i<a.length-1&&i%2===0) g+=P('M'+p[0]+' '+p[1]+' L'+a[i+1][0]+' '+a[i+1][1],'ea-th'); });
+      return g; };
+    // 💬 UYGULAMADA LLM — «Agora»: yuvarlak kemerli kolonad, açık kitap, yükselen konuşma balonları, divit, dişli, büyüteç
+    o.llm=function(){ let g='';
+      for(let k=0;k<4;k++){ const x=18+k*92; g+=P('M'+x+' 122 V70 A38 38 0 0 1 '+(x+76)+' 70 V122','ea-b')+P('M'+(x+8)+' 122 V74 A30 30 0 0 1 '+(x+68)+' 74 V122','ea-th'); }
+      g+=R(10,122,380,8,'ea-s')+R(4,130,392,6,'ea-th');
+      g+=P('M100 276 C140 258 180 258 200 272 C220 258 260 258 300 276 V218 C260 200 220 200 200 214 C180 200 140 200 100 218 Z','ea-b')+P('M200 214 V272');
+      for(let k=0;k<4;k++){ g+=P('M114 '+(226+k*10)+' C140 '+(218+k*10)+' 170 '+(218+k*10)+' 192 '+(226+k*10),'ea-th')+P('M208 '+(226+k*10)+' C230 '+(218+k*10)+' 260 '+(218+k*10)+' 286 '+(226+k*10),'ea-th'); }
+      [[142,176,'?'],[200,154,'!'],[262,178,'…']].forEach(b=>{ g+=R(b[0]-24,b[1]-13,48,26,'ea-s',8)+T(b[0]-5,b[1]+6,b[2],17)+P('M'+b[0]+' '+(b[1]+13)+' V'+(b[1]+30),'ea-dash'); });
+      g+=P('M36 262 C42 232 62 204 92 176 C88 208 70 238 44 268 Z','ea-b')+P('M36 262 C52 226 70 196 92 176','ea-th')+R(26,266,24,18,'ea-s',3)+E(38,266,12,3,0);
+      g+=gear(346,206,17,9)+C(334,262,17,'ea-b')+P('M346 274 L368 296','ea-b');
+      return g; };
+    // 🎨 GÖRÜNTÜ ÜRETİMİ — «Ressamın atölyesi»: şövale, yarısı gürültü yarısı manzara olan tuval, palet, fırçalar, duvar tabloları
+    o.img=function(){ let g='';
+      g+=P('M200 16 L126 292 M200 16 L274 292 M200 170 V290')+R(126,48,148,124,'ea-b',3)+R(134,56,132,108,'ea-th')+P('M120 180 H280 V190 H120 Z');
+      for(let k=0;k<70;k++){ const x=136+RND()*58, y=58+RND()*104; g+=C(x,y,1.2,'ea-d'); }
+      g+=P('M194 56 L186 80 L198 96 L188 120 L200 140 L192 164','ea-dash')+C(246,82,10)+P('M196 164 L222 116 L240 142 L254 124 L264 164','ea-b')+P('M198 150 C214 142 226 156 240 148 S256 150 264 146','ea-th');
+      g+=E(66,236,50,32,-12)+C(40,230,6)+[[58,218],[78,214],[92,228],[88,246],[68,252]].map((p,i)=>C(p[0],p[1],5.5,i%2?'ea-f':'ea-d')).join('');
+      g+=P('M296 294 L362 206','ea-b')+P('M362 206 l8 -10 l4 6 l-6 12 Z')+P('M312 296 L372 236','ea-b')+P('M372 236 l8 -8 l3 5 l-6 9 Z');
+      g+=R(16,14,64,48,'ea-s')+P('M20 56 L40 32 L54 46 L64 36 L76 56','ea-th')+C(66,26,5)+R(318,12,66,56,'ea-s')+E(351,40,14,19,0)+P('M335 62 C340 52 362 52 367 62','ea-th');
+      g+=T(34,292,'ex nihilo',13);
+      return g; };
+    return o;
+  })();
+
   // Bir çizimi kutuya (x,y,w,h) sığdırıp çiz — Civ 6'daki gibi sönük, tek tonlu gravür çizgi (kartların önüne geçmez)
-  function artBox(key,x,y,w,h,c){
-    const sc=Math.min(w/400,h/300)*0.96, dw=400*sc, dh=300*sc, ox=x+(w-dw)/2, oy=y+(h-dh)/2;
+  function artBox(key,x,y,w,h,c,topAnchor){
+    const sc=Math.min(w/400,h/300)*0.96, dw=400*sc, dh=300*sc, ox=x+(w-dw)/2, oy=topAnchor? y+2 : y+(h-dh)/2;   // topAnchor: ana özne kartların ÜSTÜNDE kalsın (kartlar bandın ortasında toplanıyor)
     return '<g class="era-art" style="--ea:'+c+'" transform="translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')">'+ART[key]()+'</g>';
   }
   // Kartların kapladığı dikdörtgenler (çizimi boş alana koymak için)
@@ -2853,7 +2841,7 @@ window.__goStage=function(tab, st, sel){
     if(e.lanes){
       if(VERT){ g+=artBox('llm',x+6,y+top,w/2-12,h-top-34,e.c)+artBox('img',x+w/2+6,y+top,w/2-12,h-top-34,e.c2); }
       else { g+=artBox('llm',x+40,y+top,w-80,h/2-top-10,e.c)+artBox('img',x+40,y+h/2+8,w-80,h/2-44,e.c2); }
-    } else g+=artBox('t'+i,x+6,y+top,w-12,h-top-34,e.c);
+    } else g+=artBox('t'+i,x+6,y+top,w-12,h-top-34,e.c,true);
     // süslü üst ve alt şerit (Civ 6'daki kabartma desen şeridi gibi); üstte başlık kurdelesi bunun üzerine biner
     const strip=(yy)=>'<rect x="'+(x+8)+'" y="'+yy+'" width="'+(w-16)+'" height="28" fill="rgba(90,61,20,.1)" pointer-events="none"/><rect x="'+(x+8)+'" y="'+yy+'" width="'+(w-16)+'" height="28" fill="url(#eaOrn)" pointer-events="none"/>'
       +'<line x1="'+(x+8)+'" y1="'+yy+'" x2="'+(x+w-8)+'" y2="'+yy+'" class="ea-rule"/><line x1="'+(x+8)+'" y1="'+(yy+28)+'" x2="'+(x+w-8)+'" y2="'+(yy+28)+'" class="ea-rule"/>';
@@ -3193,15 +3181,15 @@ window.__goStage=function(tab, st, sel){
     const q=id=>document.getElementById(id);
     if(!q('ttTools')) return;
     ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.classList.toggle('on',TT_MODE===m)});
-    const z=q('ttZv'); if(z) z.textContent='%'+Math.round(TT_Z*100);
+    const z=q('ttZv'); if(z) z.textContent='%'+(Math.round(TT_Z*1000)/10);
     const f=q('ttFs'); if(f) f.textContent=document.body.classList.contains('tt-full')?'✕ Tam ekrandan çık':'⛶ Tam ekran';
   }
   (function(){
     const q=id=>document.getElementById(id);
     if(!q('ttTools')) return;
     ['auto','h','v'].forEach(m=>{const b=q('ttM_'+m); if(b) b.onclick=()=>{TT_MODE=m; render();}});
-    const zoom=f=>{TT_Z=Math.max(0.4,Math.min(2.5,Math.round(TT_Z*f*10)/10)); render();};
-    q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=1; render();};
+    const zoom=f=>{TT_Z=Math.max(0.4,Math.min(2.5,Math.round(TT_Z*f*1000)/1000)); render();};
+    q('ttZm').onclick=()=>zoom(1/1.2); q('ttZp').onclick=()=>zoom(1.2); q('ttZv').onclick=()=>{TT_Z=TT_Z0; render();};
     const fs=on=>{document.body.classList.toggle('tt-full',on); render();};
     q('ttFs').onclick=()=>fs(!document.body.classList.contains('tt-full'));
     // görünüm: 🗺️ Dersler (varsayılan, her açılışta) ↔ 📜 Makaleler (iframe, ilk seçilişte yüklenir)
