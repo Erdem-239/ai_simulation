@@ -12,7 +12,7 @@
   const by=i=>Y0+(5-i)*H;
   function box(x,y,w,h,txt,col,sub){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#141c2c" stroke="'+col+'" stroke-width="2"/><text x="'+(x+w/2)+'" y="'+(y+h/2+(sub?-3:5))+'" fill="#e8ebf2" font-size="14" font-weight="700" text-anchor="middle">'+txt+'</text>'+(sub?'<text x="'+(x+w/2)+'" y="'+(y+h/2+15)+'" fill="#9fb0d0" font-size="11" text-anchor="middle">'+sub+'</text>':'');}
   function arr(x1,y1,x2,y2,col){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" stroke-width="2.4" marker-end="url(#ppArr)"/>';}
-  let s='<svg viewBox="0 0 '+W+' '+(Y0*2+6*H)+'" style="width:100%;display:block" font-family="system-ui,sans-serif"><defs><marker id="ppArr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#cdd4e4"/></marker></defs>';
+  let s='<svg viewBox="0 0 '+W+' '+(Y0*2+6*H)+'" style="width:100%;max-width:760px;max-height:66vh;display:block;margin:0 auto" font-family="system-ui,sans-serif"><defs><marker id="ppArr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#cdd4e4"/></marker></defs>';
   B.forEach((b,i)=>{const y=by(i);
     s+='<g class="pp-band" data-b="'+i+'" style="cursor:pointer"><rect x="4" y="'+y+'" width="'+(W-8)+'" height="'+(H-6)+'" rx="12" fill="'+b.c+'" fill-opacity=".07" stroke="'+b.c+'" stroke-opacity=".55" stroke-width="1.5"/>';
     s+='<text x="20" y="'+(y+H/2)+'" fill="'+b.c+'" font-size="15" font-weight="800">'+b.n+'</text></g>';});
@@ -37,7 +37,7 @@
   // döngü oku
   s+='<path d="M '+(X2+232)+' '+(by(5)+40)+' C '+(W-30)+' '+(by(5)+40)+' '+(W-30)+' '+(by(0)+40)+' '+(X2+232)+' '+(by(0)+40)+'" fill="none" stroke="#cdd4e4" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#ppArr)"/><text x="'+(W-24)+'" y="'+(by(2)+50)+'" fill="#9fb0d0" font-size="11" transform="rotate(90 '+(W-24)+' '+(by(2)+50)+')" >üretilen kelime hedefe eklenir</text>';
   s+='</svg>';
-  host.innerHTML='<div id="ppOverBtns" style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px"></div><div style="overflow-x:auto"><div style="min-width:640px">'+s+'</div></div><div id="ppOverCap" class="callout" style="margin-top:8px;min-height:44px"></div>';
+  host.innerHTML='<div id="ppOverBtns" style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px"></div><div style="overflow-x:auto"><div style="min-width:560px">'+s+'</div></div><div id="ppOverCap" class="callout" style="margin-top:8px;min-height:44px"></div>';
   const btns=host.querySelector('#ppOverBtns'),cap=host.querySelector('#ppOverCap');
   const ALL='<b>Genel resim.</b> Sol sütun <b>encoder</b> (kaynağı okur), sağ sütun <b>decoder</b> (hedefi yazar). Altı bölüm aşağıdan yukarı akar; bir bölüme tıkla, ne yaptığını gör. Ayrıntılı adım adım tur ➕ Ekstra\'da.';
   let cur=-1;
