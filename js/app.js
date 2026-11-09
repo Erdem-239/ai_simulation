@@ -2577,12 +2577,12 @@ window.__goStage=function(tab, st, sel){
   ];
   const byId={}; NODES.forEach(n=>byId[n.id]=n);
   const ERAS=[
-    {t0:0,t1:1,nm:'📜 TEMELLER', newStyle:true},
-    {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true},
-    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
-    {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
-    {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
-    {t0:11,t1:13,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
+    {t0:0,t1:1,nm:'📜 TEMELLER', newStyle:true, c:'46,134,255'},
+    {t0:2,t1:3,nm:'⚙️ NÖRAL AĞLAR', newStyle:true, c:'156,77,255'},
+    {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true, c:'229,71,155'},
+    {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true, c:'255,122,51'},
+    {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true, c:'255,201,60'},
+    {t0:11,t1:13,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, c:'64,200,170', c2:'236,110,190', lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -2706,6 +2706,102 @@ window.__goStage=function(tab, st, sel){
     +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
     +'</defs>';
 
+
+  /* ---- Çağ arka planları (#551): her çağın bandında kendi tonu + konusunu anlatan soluk çizim ----
+     Civ tarzı "çağa göre değişen arka plan" fikri; çizimler bize özgü (oyun görsellerinden kopya değil).
+     Her sahne 400×300'lük kendi koordinatında çizilir, banda sığacak şekilde ölçeklenir.
+     Kartlar üstte durur; çizim yalnız aralardan görünür (opacity düşük). */
+  const ART={
+    // 📜 Temeller: kareli kâğıt, eksenler, nokta bulutu + regresyon doğrusu, çan eğrisi, pergel, formül
+    t0:function(){ let g='';
+      for(let x=0;x<=400;x+=20) g+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="300" class="ea-f"/>';
+      for(let y=0;y<=300;y+=20) g+='<line x1="0" y1="'+y+'" x2="400" y2="'+y+'" class="ea-f"/>';
+      g+='<path d="M40 260 H380 M40 260 V30" class="ea-s"/><path d="M372 254 L382 260 L372 266 M34 38 L40 28 L46 38" class="ea-s"/>';
+      [[70,220],[95,205],[120,214],[140,180],[165,190],[190,160],[215,168],[240,138],[262,146],[290,118],[315,124],[340,96]].forEach(q=>g+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="4" class="ea-d"/>');
+      g+='<path d="M55 232 L365 86" class="ea-s ea-b"/>';
+      g+='<path d="M60 258 C120 258 130 150 160 150 C190 150 200 258 260 258" class="ea-s"/>';
+      g+='<path d="M300 40 l-18 70 M300 40 l18 70 M300 40 v-10" class="ea-s"/><circle cx="300" cy="38" r="5" class="ea-s"/><path d="M276 112 A40 40 0 0 0 324 112" class="ea-s ea-dash"/>';
+      g+='<text x="60" y="58" class="ea-t">y = θ₀ + θ₁x</text><text x="60" y="84" class="ea-t">Σ (h − y)²</text>';
+      return g; },
+    // ⚙️ Nöral ağlar: biyolojik nöron (gövde, dendritler, akson) + küçük katmanlı ağ
+    t1:function(){ let g='';
+      g+='<circle cx="110" cy="150" r="30" class="ea-s ea-b"/><circle cx="110" cy="150" r="10" class="ea-s"/>';
+      [[-150,-110],[-120,-60],[-95,10],[-130,70],[-80,110]].forEach((d,i)=>{const a=(200+i*35)*Math.PI/180, x1=110+Math.cos(a)*30, y1=150+Math.sin(a)*30, x2=110+Math.cos(a)*85, y2=150+Math.sin(a)*85;
+        g+='<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+8)+' '+((y1+y2)/2-10)+' '+x2+' '+y2+'" class="ea-s"/>';
+        g+='<path d="M'+x2+' '+y2+' l'+(-14)+' '+(-12)+' M'+x2+' '+y2+' l'+(-16)+' '+(8)+'" class="ea-s"/>'; });
+      g+='<path d="M140 150 C170 150 175 140 205 142 S250 150 270 150" class="ea-s ea-b"/>';
+      [0,1,2].forEach(i=>g+='<ellipse cx="'+(172+i*28)+'" cy="146" rx="10" ry="6" class="ea-s"/>');
+      g+='<path d="M270 150 l14 -12 M270 150 l16 0 M270 150 l14 12" class="ea-s"/>';
+      const L=[[300,[70,110,150]],[340,[60,100,140,180]],[380,[100,140]]];
+      L.forEach((l,k)=>{ if(k<2) l[1].forEach(y=>L[k+1][1].forEach(y2=>g+='<line x1="'+l[0]+'" y1="'+y+'" x2="'+L[k+1][0]+'" y2="'+y2+'" class="ea-f"/>')); });
+      L.forEach(l=>l[1].forEach(y=>g+='<circle cx="'+l[0]+'" cy="'+y+'" r="7" class="ea-s"/>'));
+      g+='<text x="300" y="232" class="ea-t">σ(w·x + b)</text>';
+      return g; },
+    // 🌉 Dizi modelleme: zamanda açılmış hücre zinciri, geri dönen hafıza oku, dalga, kelime şeridi
+    t2:function(){ let g='';
+      for(let i=0;i<4;i++){ const x=30+i*92;
+        g+='<rect x="'+x+'" y="110" width="58" height="58" rx="10" class="ea-s ea-b"/>';
+        g+='<path d="M'+(x+29)+' 210 V170 M'+(x+24)+' 176 l5 -7 l5 7" class="ea-s"/><text x="'+(x+22)+'" y="228" class="ea-t">x'+(i+1)+'</text>';
+        g+='<path d="M'+(x+29)+' 108 V70 M'+(x+24)+' 76 l5 -7 l5 7" class="ea-s"/>';
+        if(i<3) g+='<path d="M'+(x+58)+' 139 H'+(x+92)+' M'+(x+86)+' 134 l7 5 l-7 5" class="ea-s"/>'; }
+      g+='<path d="M60 40 C140 10 260 10 340 40" class="ea-s ea-dash"/><path d="M332 34 l9 6 l-10 4" class="ea-s"/>';
+      g+='<text x="150" y="30" class="ea-t">h(t) → h(t+1)</text>';
+      let w='M20 270'; for(let x=20;x<=380;x+=10) w+=' L'+x+' '+(270+Math.sin(x/18)*12); g+='<path d="'+w+'" class="ea-s"/>';
+      return g; },
+    // 🎯 Transformer: kelime satırı + dikkat yayları + Q/K/V matrisi
+    t3:function(){ let g=''; const W=['kedi','sütü','içti','çünkü','acıkmıştı'];
+      W.forEach((t,i)=>{ const x=30+i*76; g+='<rect x="'+x+'" y="170" width="62" height="26" rx="6" class="ea-s"/><text x="'+(x+8)+'" y="188" class="ea-t" style="font-size:13px">'+t+'</text>'; });
+      [[4,0,1],[2,0,.7],[3,2,.5],[1,0,.6],[4,2,.4]].forEach(a=>{ const x1=61+a[0]*76, x2=61+a[1]*76, h=30+Math.abs(x1-x2)*0.45;
+        g+='<path d="M'+x1+' 168 Q'+((x1+x2)/2)+' '+(168-h)+' '+x2+' 168" class="ea-s" style="stroke-width:'+(1+a[2]*3)+'"/>'; });
+      for(let r=0;r<4;r++) for(let c=0;c<4;c++) g+='<rect x="'+(130+c*22)+'" y="'+(224+r*16)+'" width="20" height="14" class="ea-f"'+((c<=r)?' style="fill-opacity:.35"':'')+'/>';
+      g+='<text x="30" y="250" class="ea-t">softmax(QKᵀ/√d)·V</text><text x="230" y="250" class="ea-t">Q  K  V</text>';
+      return g; },
+    // 🚀 Yapay zekâ devrimi: makale sayfası, yıldızlar, GPU çipi
+    t4:function(){ let g='';
+      g+='<path d="M110 40 H270 L300 70 V270 H110 Z M270 40 V70 H300" class="ea-s ea-b"/>';
+      g+='<text x="128" y="94" class="ea-t" style="font-size:13px">Attention Is</text><text x="128" y="112" class="ea-t" style="font-size:13px">All You Need</text>';
+      for(let y=132;y<=250;y+=12) g+='<line x1="128" y1="'+y+'" x2="'+(y%36===0?232:282)+'" y2="'+y+'" class="ea-f" style="stroke-width:2"/>';
+      g+='<rect x="190" y="180" width="70" height="56" class="ea-s"/><path d="M200 226 V196 h12 v30 M220 226 v-40 h12 v40 M240 226 v-20 h12 v20" class="ea-s"/>';
+      [[60,70],[340,60],[50,220],[350,230],[330,140]].forEach(q=>g+='<path d="M'+q[0]+' '+(q[1]-9)+' L'+(q[0]+3)+' '+(q[1]-3)+' L'+(q[0]+9)+' '+q[1]+' L'+(q[0]+3)+' '+(q[1]+3)+' L'+q[0]+' '+(q[1]+9)+' L'+(q[0]-3)+' '+(q[1]+3)+' L'+(q[0]-9)+' '+q[1]+' L'+(q[0]-3)+' '+(q[1]-3)+' Z" class="ea-s"/>');
+      g+='<rect x="20" y="120" width="56" height="56" rx="4" class="ea-s"/><rect x="34" y="134" width="28" height="28" class="ea-s"/>';
+      for(let k=0;k<4;k++) g+='<path d="M'+(28+k*12)+' 116 v-8 M'+(28+k*12)+' 180 v8 M16 '+(128+k*12)+' h-8 M80 '+(128+k*12)+' h8" class="ea-s"/>';
+      g+='<text x="128" y="292" class="ea-t">2017</text>';
+      return g; },
+    // 💬 LLM kolu: sohbet balonları, büyüteç (arama), araç anahtarı
+    llm:function(){ let g='';
+      g+='<path d="M40 50 H230 a14 14 0 0 1 14 14 V120 a14 14 0 0 1 -14 14 H90 L64 160 V134 H40 a14 14 0 0 1 -14 -14 V64 a14 14 0 0 1 14 -14 Z" class="ea-s ea-b"/>';
+      for(let k=0;k<3;k++) g+='<line x1="48" y1="'+(76+k*18)+'" x2="'+(210-k*40)+'" y2="'+(76+k*18)+'" class="ea-f" style="stroke-width:3"/>';
+      g+='<path d="M370 150 H190 a14 14 0 0 0 -14 14 V214 a14 14 0 0 0 14 14 H320 L346 254 V228 H370 a14 14 0 0 0 14 -14 V164 a14 14 0 0 0 -14 -14 Z" class="ea-s"/>';
+      g+='<text x="196" y="196" class="ea-t">soru → cevap</text>';
+      g+='<circle cx="320" cy="70" r="26" class="ea-s"/><path d="M339 89 L366 116" class="ea-s ea-b"/>';
+      return g; },
+    // 🎨 Görüntü kolu: resim çerçevesi (dağ + güneş), piksel ızgarası, fırça, gürültü noktaları
+    img:function(){ let g='';
+      g+='<rect x="40" y="50" width="180" height="140" rx="6" class="ea-s ea-b"/><circle cx="180" cy="86" r="16" class="ea-s"/>';
+      g+='<path d="M48 182 L100 112 L140 160 L168 128 L212 182" class="ea-s"/>';
+      for(let r=0;r<5;r++) for(let c=0;c<5;c++) g+='<rect x="'+(250+c*22)+'" y="'+(60+r*22)+'" width="20" height="20" class="ea-f"'+(((r+c)%3===0)?' style="fill-opacity:.4"':'')+'/>';
+      g+='<path d="M250 260 L330 180 M322 176 l14 -6 l-6 14 Z" class="ea-s ea-b"/>';
+      let seed=7; const R=()=>{seed=(seed*1103515245+12345)%2147483648; return seed/2147483648;};
+      for(let k=0;k<40;k++) g+='<circle cx="'+(40+R()*170)+'" cy="'+(220+R()*60)+'" r="1.6" class="ea-d"/>';
+      g+='<text x="40" y="215" class="ea-t">gürültü → resim</text>';
+      return g; }
+  };
+  // Bir çizimi kutuya (x,y,w,h) sığdırıp çağ rengiyle çiz
+  function artBox(key,x,y,w,h,c){
+    const sc=Math.min(w/420,h/320)*0.94, ox=x+(w-400*sc)/2, oy=y+(h-300*sc)/2;
+    return '<g class="era-art" style="--ea:'+c+'" transform="translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')">'+ART[key]()+'</g>';
+  }
+  // Bant zemini: çağ renginde yukarıdan aşağı solan ton + çizim(ler)
+  function eraArt(i,e,x,y,w,h){
+    let g='<linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".16"/><stop offset=".55" stop-color="rgb('+e.c+')" stop-opacity=".05"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".14"/></linearGradient>';
+    g='<defs>'+g+'</defs><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaG'+i+')" pointer-events="none"/>';
+    if(e.lanes){
+      if(VERT){ g+=artBox('llm',x,y+40,w/2,h-50,e.c)+artBox('img',x+w/2,y+40,w/2,h-50,e.c2); }
+      else { g+=artBox('llm',x+30,y+40,w-40,h/2-50,e.c)+artBox('img',x+30,y+h/2+10,w-40,h/2-30,e.c2); }
+    } else g+=artBox('t'+i,x,y+(VERT?34:40),w,h-(VERT?40:50),e.c);
+    return g;
+  }
+
   // Madalyon tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
   // koordinat sistemine gömer (viewBox ölçeklemesiyle otomatik büyür/küçülür,
   // ayrı bir mobil/masaüstü CSS'i gerekmez). Seçim "yılan" kenarlığı ve
@@ -2787,6 +2883,7 @@ window.__goStage=function(tab, st, sel){
         // olduğunda ribbon/etiketle çakışmasını önlemek — o yüzden alttan büyük
         const y0=Y({tier:e.t0})-96, y1=Y({tier:e.t1})+58;
         s+='<rect class="'+bandCls+'" x="14" y="'+y0+'" width="'+(W-28)+'" height="'+(y1-y0)+'" rx="8"/>';
+        if(e.c) s+=eraArt(i,e,14,y0,W-28,y1-y0);
         const lw=Math.max(150, e.nm.length*7.2);
         s+='<rect class="'+ribCls+'" x="'+(W/2-lw/2)+'" y="'+(y0+8)+'" width="'+lw+'" height="22" rx="11"/>';
         s+='<text class="'+lblCls+'" x="'+(W/2)+'" y="'+(y0+23)+'" text-anchor="middle" style="font-size:10.5px; letter-spacing:1.5px">'+e.nm+'</text>';
@@ -2798,6 +2895,7 @@ window.__goStage=function(tab, st, sel){
       } else {
         const x0=X({tier:e.t0})-(tierW[e.t0]||184)/2-30, x1=X({tier:e.t1})+(tierW[e.t1]||184)/2+30;
         s+='<rect class="'+bandCls+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
+        if(e.c) s+=eraArt(i,e,x0,10,x1-x0,H-20);
         const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
         s+='<rect class="'+ribCls+'" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
         s+='<text class="'+lblCls+'" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
