@@ -3493,7 +3493,9 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:11, t1:13, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
     ];
     const META='90,120,216';
-    sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
+    sb.querySelectorAll('.sb-era,.sb-quiz,.sb-branch').forEach(e=>e.remove());
+    btns.forEach(b=>b.classList.remove('sb-inlane'));
+    let branchDone=false;
     let curEra=null;
     const eraLast=new Map(), eraLes=new Map();   // çağ → son ders düğmesi / ders anahtarları
     seq.forEach(b=>{
@@ -3503,13 +3505,21 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1 && (!x.lane || x.lane===n.lane));
       if(!e) return;
       b.style.setProperty('--era-c', e.c);
+      if(e.lane) b.classList.add('sb-inlane');   // devrimden sonraki iki kol: içeriden
       eraLast.set(e,b); if(!eraLes.has(e)) eraLes.set(e,[]); eraLes.get(e).push(m);
       if(e!==curEra){
         curEra=e;
         const lab=document.createElement('div');
-        lab.className='sb-era';
+        lab.className='sb-era'+(e.lane?' sb-era-lane':'');
         lab.innerHTML='<b></b>'; lab.querySelector('b').textContent=e.nm;
         lab.style.setProperty('--era-c', e.c);
+        if(e.lane && !branchDone){   // iki kolun ortak üst başlığı (haritadaki «Devrimin iki kolu» çağı)
+          branchDone=true;
+          const br=document.createElement('div');
+          br.className='sb-branch';
+          br.innerHTML='<b>🌱 DEVRİMİN İKİ KOLU</b><span>Attention\'dan sonra iki ayrı yol. Biri ötekinin önkoşulu değil — istediğin koldan başla.</span>';
+          parent.insertBefore(br, b);
+        }
         parent.insertBefore(lab, b);
       }
     });
@@ -3529,7 +3539,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const ls=eraLes.get(e); allLes.push(...ls);
       const nm=e.nm.replace(/^(\S+)\s+/,'');
       const qn=Math.min(12,ls.length*10);
-      const q=mkQ('era'+i,'🏁 '+nm.charAt(0)+nm.slice(1).toLocaleLowerCase('tr')+' testi · '+qn+' soru',ls,qn,e.c);
+      const q=mkQ('era'+i,'🏁 '+(nm.charAt(0)+nm.slice(1).toLocaleLowerCase('tr')).replace(/\bllm\b/,'LLM')+' testi · '+qn+' soru',ls,qn,e.c);
       b.insertAdjacentElement('afterend',q); lastQ=q;
     });
     if(lastQ){
