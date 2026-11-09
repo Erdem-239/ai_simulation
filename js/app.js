@@ -2483,12 +2483,12 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, Polosukhin (Google, 2017). 8 yazar, 15 sayfa — yapay zekânın son on yılını tek başına şekillendirdi.',
       real:[['📜','Modern yapay zekânın temel makalesi'],['🌍','Modern YZ çağının kurucu metni']],
       sub:['Bölüm bölüm okuma rehberi','Tablo 1: öz-dikkat ↔ RNN','Formül 3: ısınmalı öğrenme hızı','65 milyon ağırlığı kendin say','Makaleden sonra ne değişti?']},
-    {id:'gen',  nm:'🎲 Üretim Stratejileri', tier:11, v:30, pre:['llm'], tab:'gen',
+    {id:'gen',  nm:'🎲 Üretim Stratejileri', tier:11, v:10, lane:'llm', pre:['llm'], tab:'gen',
       d:'Model her adımda bir olasılık dağılımı verir; metni seçim kuralı yazar. Açgözlü seçim, sıcaklık, top-k, top-p, beam search — tekrar ↔ tutarlılık ↔ çeşitlilik dengesi.',
       sci:'Beam search: konuşma tanıma ve çeviri (1970\'ler–2014). Top-k örnekleme: Fan, Lewis & Dauphin (2018). Top-p (nucleus): Holtzman ve arkadaşları, "The Curious Case of Neural Text Degeneration" (2019).',
       real:[['💬','Sohbet modellerinde sıcaklık ayarı'],['🌐','Çeviride beam search'],['🔁','Tekrar eden metin (açgözlü döngü)']],
       sub:['Açgözlü seçim ve döngü','Sıcaklık: p^(1/T)','Top-k ve top-p','Beam search','Tekrar cezası, min-p (Ekstra)']},
-    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:11, v:70, pre:['gen'], tab:'ft',
+    {id:'ft',   nm:'🎓 İnce Ayar & RLHF', tier:11, v:30, lane:'llm', pre:['gen'], tab:'ft',
       d:'Ön eğitimli model metni devam ettirir; asistan olması için ince ayar (SFT), parametre verimli ince ayar (LoRA) ve insan tercihiyle eğitim (RLHF / DPO) gerekir. Unutma ve uydurma da bu dersin konusu.',
       sci:'InstructGPT / RLHF: Ouyang ve arkadaşları (2022), Christiano ve arkadaşları (2017). LoRA: Hu ve arkadaşları (2021). DPO: Rafailov ve arkadaşları (2023).',
       real:[['💬','Temel model → sohbet modeli'],['🔌','LoRA adaptörleri: tek modele çok uzmanlık'],['👍','Beğen/beğenme düğmeleri = tercih verisi']],
@@ -2498,42 +2498,42 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       sci:'BERT: Devlin ve arkadaşları (Google, 2018). GPT: Radford ve arkadaşları (OpenAI, 2018). T5: Raffel ve arkadaşları (Google, 2019).',
       real:[['🔍','Arama ve sınıflandırma: BERT ailesi'],['💬','Sohbet ve üretim: GPT ailesi'],['🌐','Çeviri ve özet: T5 / encoder-decoder']],
       sub:['Dikkat maskesi: iki yönlü ↔ nedensel','Maskeli dil modeli (%15)','Sıradaki token tahmini','Encoder-decoder ve çapraz dikkat','Neden decoder-only kazandı?']},
-    {id:'rag',  nm:'📚 RAG', tier:12, v:30, pre:['ft'], tab:'rag',
+    {id:'rag',  nm:'📚 RAG', tier:12, v:10, lane:'llm', pre:['ft'], tab:'rag',
       d:'Bilgiyi modelin ağırlıklarına değil, soruyla birlikte istemine koy: belgeleri parçala, vektöre çevir, soruya en yakın parçaları getir, model onlara dayanarak cevaplasın.',
       sci:'RAG: Lewis ve arkadaşları (Facebook AI, 2020). Yoğun arama (DPR): Karpukhin ve arkadaşları (2020). TF-IDF: Spärck Jones (1972).',
       real:[['🏢','Şirket belgeleriyle cevap veren asistanlar'],['🔎','Kaynak göstererek cevaplayan arama'],['📅','Güncel bilgi: eğitimden sonraki olaylar']],
       sub:['Parçala → vektöre çevir → getir → isteme koy','TF-IDF ve kosinüs benzerliği','Türkçe ekler: 3\'lü harf grupları','Embedding modelleri ve anlam araması','k ve parça boyu ayarı']},
-    {id:'agent',nm:'🛠️ Ajanlar & Harness', tier:12, v:70, pre:['rag'], tab:'agent',
+    {id:'agent',nm:'🛠️ Ajanlar & Harness', tier:12, v:30, lane:'llm', pre:['rag'], tab:'agent',
       d:'Model tek başına yalnız metin yazar. Harness onu bir döngüye koyar: model araç çağrısı yazar, harness çalıştırır, sonucu bağlama ekler, model devam eder. Araçlar, bağlam yönetimi, adım sınırı ve istem enjeksiyonu.',
       sci:'ReAct (düşün + eyle): Yao ve arkadaşları (2022). Toolformer: Schick ve arkadaşları (2023). İstem enjeksiyonu kavramı 2022\'de yaygınlaştı.',
       real:[['🔎','"Web\'de arıyor…" adımları'],['💻','Kod yazıp çalıştıran asistanlar'],['🛡️','Riskli adımda insan onayı']],
       sub:['Döngü: model → araç çağrısı → harness → sonuç','Sistem talimatı ve araç tanımları','Bağlam büyümesi ve yönetimi','Adım sınırı ve hata yönetimi','İstem enjeksiyonu ve en az yetki']},
-    {id:'ev',   nm:'📏 Değerlendirme', tier:13, v:50, pre:['agent'], tab:'ev',
+    {id:'ev',   nm:'📏 Değerlendirme', tier:13, v:20, lane:'llm', pre:['agent'], tab:'ev',
       d:'Bir modelin iyi olduğunu nasıl biliriz? Benchmark, örneklem büyüklüğü ve güven aralığı, iki modelin şansla yer değiştirmesi, eğitime sızan sorular, modelle hakemlik ve pass@k.',
       sci:'Güven aralığı: Neyman (1937). MMLU: Hendrycks ve arkadaşları (2020). HumanEval ve pass@k: Chen ve arkadaşları (2021). Chatbot Arena: Zheng ve arkadaşları (2023).',
       real:[['🏆','Puan tabloları ve sıralamalar'],['🕳️','Eğitime sızan test soruları'],['⚖️','Modelin modeli puanlaması']],
       sub:['Benchmark ve doğruluk','Güven aralığı (±1,96·√(o(1−o)/n))','İki model: sıralama şansla döner mi?','Sızıntı (contamination)','pass@k, insan tercihi, modelle hakemlik']},
-    {id:'cnn',  nm:'🖼️ Görüntü & CNN', tier:14, v:50, pre:['ev'], tab:'cnn',
+    {id:'cnn',  nm:'🖼️ Görüntü & CNN', tier:11, v:70, lane:'img', pre:['paper'], tab:'cnn',
       d:'Bir resim sayı ızgarasıdır. Konvolüsyon küçük bir filtreyi resmin üstünde kaydırıp desen arar; ağırlık paylaşımı, dolgu, havuzlama. Filtreler eğitimle bulunur.',
       sci:'Hubel & Wiesel: görme korteksi (1959–62). Fukushima: Neocognitron (1980). LeCun: LeNet (1989–98). Krizhevsky, Sutskever & Hinton: AlexNet (2012).',
       real:[['📱','Yüz tanıma, fotoğraf ayıklama'],['🏥','Tıbbi görüntüde bulgu arama'],['🚗','Sürüş destek kameraları']],
       sub:['Resim = piksel ızgarası (RGB kanalları)','Konvolüsyon: 9 çarpımın toplamı','Dolgu ve adım (padding, stride)','ReLU ve max-pool','Filtreler eğitimle öğrenilir']},
-    {id:'vae',  nm:'🌀 Autoencoder & VAE', tier:15, v:50, pre:['cnn'], tab:'vae',
+    {id:'vae',  nm:'🌀 Autoencoder & VAE', tier:11, v:90, lane:'img', pre:['cnn'], tab:'vae',
       d:'Resmi birkaç sayıya sıkıştır, sonra geri aç. Autoencoder iyi sıkıştırır ama üretemez; VAE kodları düzenli bir bölgeye (N(0,1)) toplayarak rastgele koddan yeni resim üretir. Gizli uzay, KL, β dengesi.',
       sci:'Autoencoder: Hinton & Salakhutdinov (2006) ve öncesi. VAE: Kingma & Welling (2013), Rezende, Mohamed & Wierstra (2014). β-VAE: Higgins ve arkadaşları (2017).',
       real:[['🗜️','Sıkıştırma ve gürültü temizleme'],['🎨','Latent diffusion\'ın resim ↔ kod çevirmeni'],['🔍','Anormallik tespiti']],
       sub:['Encoder → kod → decoder','Gizli uzay (latent space)','Neden AE üretemez?','VAE: z = μ + σ·ε ve KL','β dengesi ve çöküş']},
-    {id:'gan',  nm:'🥊 GAN', tier:16, v:50, pre:['vae'], tab:'gan',
+    {id:'gan',  nm:'🥊 GAN', tier:12, v:70, lane:'img', pre:['vae'], tab:'gan',
       d:'İki ağ karşı karşıya: üretici sahte örnek üretir, ayırt edici gerçeği sahteden ayırmaya çalışır. Denge, mod çöküşü, kararsız eğitim; keskin ama zor eğitilen bir üretici.',
       sci:'GAN: Goodfellow ve arkadaşları (2014). DCGAN: Radford, Metz & Chintala (2015). StyleGAN: Karras ve arkadaşları (NVIDIA, 2018–2020).',
       real:[['🧑','Var olmayan insan yüzleri (StyleGAN)'],['🔍','Süper çözünürlük, resim tamamlama'],['⚠️','Deepfake ve tespit yarışı']],
       sub:['Üretici ↔ ayırt edici oyunu','Gradyan D\'nin içinden G\'ye','Denge: D her yere %50','Mod çöküşü','Kararsızlık ve tohum duyarlılığı']},
-    {id:'dif',  nm:'🌫️ Diffusion', tier:17, v:50, pre:['gan'], tab:'dif',
+    {id:'dif',  nm:'🌫️ Diffusion', tier:12, v:90, lane:'img', pre:['gan'], tab:'dif',
       d:'Veriyi adım adım gürültüye boğ (ileri süreç), sonra bir ağa her adımda gürültüyü tahmin etmeyi öğret; saf gürültüden başlayıp gürültüyü azar azar temizleyerek yeni örnek üret. Kararlı eğitim, bütün modlar, yavaş üretim.',
       sci:'Sohl-Dickstein ve arkadaşları (2015). DDPM: Ho, Jain & Abbeel (2020). Skor tabanlı modeller: Song & Ermon (2019). DDIM: Song, Meng & Ermon (2020).',
       real:[['🎨','Metinden görüntü üreten modellerin çoğu'],['🎬','Video ve ses üretimi'],['🧬','Protein ve molekül tasarımı']],
       sub:['İleri süreç: x_t = √ᾱ·x₀ + √(1−ᾱ)·ε','Eğitim: eklenen gürültüyü tahmin et','Geri süreç: 50 adımda gürültüden veriye','GAN ile karşılaştırma: kararlılık ↔ hız','Hızlı örnekleme (DDIM)']},
-    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:18, v:50, pre:['dif'], tab:'t2i',
+    {id:'t2i',  nm:'🖋️ Metinden Görüntüye', tier:13, v:80, lane:'img', pre:['dif'], tab:'t2i',
       d:'Diffusion modeline istemi dinlemeyi öğretmek: metin kodlayıcısı (CLIP), koşul vektörü, çapraz dikkat, sınıflandırıcısız yönlendirme (CFG), gizli uzayda üretim (latent diffusion), DiT.',
       sci:'CLIP: Radford ve arkadaşları (OpenAI, 2021). Sınıflandırıcısız yönlendirme: Ho & Salimans (2021). Latent diffusion: Rombach ve arkadaşları (2022). DiT: Peebles & Xie (2023).',
       real:[['🎨','İstemden resim üreten araçlar'],['🎚️','"Guidance scale" ayarı'],['🔎','CLIP ile resim arama']],
@@ -2551,8 +2551,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
     {t0:4,t1:6,nm:'🌉 DİZİ MODELLEME', newStyle:true},
     {t0:7,t1:8,nm:'🎯 TRANSFORMER', newStyle:true},
     {t0:9,t1:10,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true},
-    {t0:11,t1:13,nm:'🛠️ UYGULAMADA LLM', newStyle:true},
-    {t0:14,t1:18,nm:'🎨 GÖRÜNTÜ ÜRETİMİ', newStyle:true}
+    {t0:11,t1:13,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -2642,7 +2641,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         // canvas'ın SOLUNA taşıp kırpılmaya yol açardı.
         tierX[t]= t===0 ? (tierW[0]/2+MARGIN) : tierX[t-1]+tierW[t-1]/2+GAP+tierW[t]/2;
       }
-      H=680;
+      { const cnt={}; NODES.forEach(n=>{cnt[n.tier]=(cnt[n.tier]||0)+1;}); const mx=Math.max(...Object.values(cnt));
+        H=Math.max(680, mx*150+(mx-1)*26+150); }   // 4 kartlı sütun (iki kol) sığsın
       X=n=>tierX[n.tier];
       // Y ARTIK n.v'nin ham yüzdesi değil — v sadece aynı tier içindeki
       // SIRALAMA için (hangi düğüm üstte/altta görünsün) kullanılıyor.
@@ -2754,12 +2754,22 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
         const lw=Math.max(150, e.nm.length*7.2);
         s+='<rect class="'+ribCls+'" x="'+(W/2-lw/2)+'" y="'+(y0+8)+'" width="'+lw+'" height="22" rx="11"/>';
         s+='<text class="'+lblCls+'" x="'+(W/2)+'" y="'+(y0+23)+'" text-anchor="middle" style="font-size:10.5px; letter-spacing:1.5px">'+e.nm+'</text>';
+        if(e.lanes){   // iki kol: solda dil, sağda görüntü — ortada kesik ayraç
+          s+='<line class="era-lane-sep" x1="'+(W/2)+'" y1="'+(y0+40)+'" x2="'+(W/2)+'" y2="'+(y1-8)+'"/>';
+          s+='<text class="era-lane-lbl" x="'+(W*0.16)+'" y="'+(y0+23)+'" text-anchor="middle">'+e.lanes[0][1]+'</text>';
+          s+='<text class="era-lane-lbl" x="'+(W*0.84)+'" y="'+(y0+23)+'" text-anchor="middle">'+e.lanes[1][1]+'</text>';
+        }
       } else {
         const x0=X({tier:e.t0})-(tierW[e.t0]||184)/2-30, x1=X({tier:e.t1})+(tierW[e.t1]||184)/2+30;
         s+='<rect class="'+bandCls+'" x="'+x0+'" y="10" width="'+(x1-x0)+'" height="'+(H-20)+'" rx="8"/>';
         const cx=(x0+x1)/2, lw=Math.max(180, e.nm.length*8.6);
         s+='<rect class="'+ribCls+'" x="'+(cx-lw/2)+'" y="16" width="'+lw+'" height="26" rx="13"/>';
         s+='<text class="'+lblCls+'" x="'+cx+'" y="34" text-anchor="middle">'+e.nm+'</text>';
+        if(e.lanes){   // iki kol: üstte dil, altta görüntü — ortada kesik ayraç, solda dikey şerit adları
+          s+='<line class="era-lane-sep" x1="'+(x0+10)+'" y1="'+(H/2)+'" x2="'+(x1-10)+'" y2="'+(H/2)+'"/>';
+          s+='<text class="era-lane-lbl" transform="translate('+(x0+19)+','+(H*0.3)+') rotate(-90)" text-anchor="middle">'+e.lanes[0][1]+'</text>';
+          s+='<text class="era-lane-lbl" transform="translate('+(x0+19)+','+(H*0.72)+') rotate(-90)" text-anchor="middle">'+e.lanes[1][1]+'</text>';
+        }
       }
     });
     // "req" kümesi: seçili düğümü açmak için gereken TÜM zincir — sadece
@@ -3455,10 +3465,11 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const m=b.dataset.model;
       if(m in HEAD){ head.push([HEAD[m], b]); return; }
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
-      if(n) lessons.push([n.tier, n.v, b]); else extra.push(b);
+      if(n) lessons.push([n.tier, n.v, b, n.lane==='img'?1:0]); else extra.push(b);
     });
     head.sort((a,b)=>a[0]-b[0]);
-    lessons.sort((a,b)=> a[0]-b[0] || a[1]-b[1]);
+    // iki kollu çağda (aynı tier'ler) önce 💬 dil kolu, sonra 🎨 görüntü kolu gelsin
+    lessons.sort((a,b)=> (a[0]>=11&&b[0]>=11? a[3]-b[3]:0) || a[0]-b[0] || a[1]-b[1]);
     const seq=[...head.map(x=>x[1]), ...lessons.map(x=>x[2])];
     extra.forEach(e=>seq.push(e));
 
@@ -3478,8 +3489,8 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       {t0:4,  t1:6,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:7,  t1:8,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:9,  t1:10, c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
-      {t0:11, t1:13, c:'64,200,170',  nm:'🛠️ UYGULAMADA LLM'},
-      {t0:14, t1:18, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ'}
+      {t0:11, t1:13, c:'64,200,170',  nm:'💬 UYGULAMADA LLM', lane:'llm'},
+      {t0:11, t1:13, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz').forEach(e=>e.remove());
@@ -3489,7 +3500,7 @@ scInit({svg:'bsCellSvg',fbox:'bsCellFormula',info:'bsCellInfo',step:'bsCellStep'
       const m=b.dataset.model;
       const n=m ? api.NODES.find(x=>x.tab===m) : null;
       if(!n){ b.style.setProperty('--era-c', META); return; }   // ders değil (Yol Haritası/Keşif Defteri)
-      const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1);
+      const e=ERAC.find(x=>n.tier>=x.t0 && n.tier<=x.t1 && (!x.lane || x.lane===n.lane));
       if(!e) return;
       b.style.setProperty('--era-c', e.c);
       eraLast.set(e,b); if(!eraLes.has(e)) eraLes.set(e,[]); eraLes.get(e).push(m);
