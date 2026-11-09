@@ -2578,7 +2578,7 @@ window.__goStage=function(tab, st, sel){
     {t0:4,t1:5,nm:'🌉 DİZİ MODELLEME', newStyle:true, c:'229,71,155'},
     {t0:6,t1:6,nm:'🎯 TRANSFORMER', newStyle:true, c:'255,122,51'},
     {t0:7,t1:8,nm:'🚀 YAPAY ZEKÂ DEVRİMİ', newStyle:true, c:'255,201,60'},
-    {t0:9,t1:11,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, c:'64,200,170', c2:'236,110,190', lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
+    {t0:9,t1:10,nm:'🌱 DEVRİMİN İKİ KOLU', newStyle:true, c:'64,200,170', c2:'236,110,190', lanes:[['llm','💬 UYGULAMADA LLM'],['img','🎨 GÖRÜNTÜ ÜRETİMİ']]}
   ];
   // Madalyon tarzı yeni kart diline geçiş KADEMELİ — sadece newStyle:true
   // işaretli çağların düğümleri bu dili kullanır (bkz. CLAUDE.md). Önce
@@ -3695,8 +3695,8 @@ window.__goStage=function(tab, st, sel){
       {t0:4,  t1:5,  c:'229,71,155',  nm:'🌉 DİZİ MODELLEME'},
       {t0:6,  t1:6,  c:'255,122,51',  nm:'🎯 TRANSFORMER'},
       {t0:7,  t1:8,  c:'255,201,60',  nm:'🚀 YAPAY ZEKÂ DEVRİMİ'},
-      {t0:9,  t1:11, c:'64,200,170',  nm:'💬 UYGULAMADA LLM', lane:'llm'},
-      {t0:9,  t1:11, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
+      {t0:9,  t1:10, c:'64,200,170',  nm:'💬 UYGULAMADA LLM', lane:'llm'},
+      {t0:9,  t1:10, c:'236,110,190', nm:'🎨 GÖRÜNTÜ ÜRETİMİ', lane:'img'}
     ];
     const META='90,120,216';
     sb.querySelectorAll('.sb-era,.sb-quiz,.sb-branch').forEach(e=>e.remove());
