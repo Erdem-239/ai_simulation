@@ -2705,3 +2705,30 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #ppAnim .mha-tk{position:absolute; left:0; right:0; bottom:0; height:14px; pointer-events:none}
 #ppAnim .mha-tk i{position:absolute; top:-12px; width:2px; height:10px; background:#5a6a8a; transform:translateX(-1px)}
 #ppAnim .mha-tk span{position:absolute; bottom:0; transform:translateX(-50%); font-size:10px; color:var(--muted)}
+
+#btAnim .mha-steps{display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 8px}
+#btAnim .mha-steps button{font:12px system-ui,sans-serif; padding:4px 9px; border-radius:14px; border:1px solid var(--line); background:#161b26; color:#cdd4e4; cursor:pointer}
+#btAnim .mha-steps button.on{border-color:#ffc82e; color:#ffc82e; background:#2a2410}
+#btAnim .mha-steps button.done{color:#7fd18b}
+#btAnim .mha-bar{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:4px}
+#btAnim .mha-box{margin-top:8px; padding:9px 12px; border-radius:9px; font-size:13px; line-height:1.6; border-left:3px solid var(--line); background:rgba(255,255,255,.03)}
+#btAnim .mha-goal{border-left-color:#4aa3ff}
+#btAnim .mha-soz{border-left-color:#ffd24a}
+#btAnim .mha-elde{border-left-color:#5fd18a}
+#btAnim .mha-grid{display:grid; grid-template-columns:1fr; gap:10px}
+#btAnim .mha-3d{position:relative}
+#btAnim .mha-cap3{font-size:11.5px; color:var(--muted); margin-top:4px}
+#btAnim .mha-top{display:flex; flex-direction:column; gap:4px; margin-bottom:6px}
+#btAnim .mha-steps{margin:0}
+#btAnim .mha-bar{margin:0; flex-wrap:nowrap}
+#btAnim .mha-scr{flex:1; min-width:80px; margin:0 6px}
+#btAnim .mha-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; align-items:start}
+#btAnim .mha-3d iframe{width:100%; height:clamp(300px,45vh,460px); border:1px solid var(--line); border-radius:10px; background:#0b0e14; display:block}
+#btAnim .mha-boxes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:8px}
+#btAnim .mha-boxes .mha-box{margin:0; padding:7px 10px; font-size:12px; line-height:1.5}
+@media(max-width:1000px){#btAnim .mha-grid{grid-template-columns:1fr} #btAnim .mha-boxes{grid-template-columns:1fr} #btAnim .mha-bar{flex-wrap:wrap}}
+#btAnim .mha-scrw{position:relative; flex:1; min-width:120px; margin:0 8px; padding-bottom:14px}
+#btAnim .mha-scrw .mha-scr{width:100%; margin:0}
+#btAnim .mha-tk{position:absolute; left:0; right:0; bottom:0; height:14px; pointer-events:none}
+#btAnim .mha-tk i{position:absolute; top:-12px; width:2px; height:10px; background:#5a6a8a; transform:translateX(-1px)}
+#btAnim .mha-tk span{position:absolute; bottom:0; transform:translateX(-50%); font-size:10px; color:var(--muted)}
