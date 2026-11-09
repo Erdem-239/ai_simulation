@@ -2524,3 +2524,13 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 .sidebar .sb-era b{color:#fff; background:linear-gradient(180deg,rgba(var(--era-c),.95),rgba(var(--era-c),.6)); border:1px solid rgb(var(--era-c)); text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .sidebar .sb-era::before{background:linear-gradient(180deg,transparent,rgba(var(--era-c),.9) 25%,rgba(var(--era-c),.9) 75%,transparent); width:3px}
 .sidebar .sb-quiz{background:rgba(var(--era-c),.28); border:1px dashed rgb(var(--era-c)); color:#fff4d6}
+
+/* seçili kart: sarı-altın parıltı (#564) */
+#techSvg .tn.sel rect.tn-card{
+  stroke:#ffd24a; stroke-width:3.4; stroke-dasharray:30 70;
+  filter:drop-shadow(0 0 7px rgba(255,210,74,.95)) drop-shadow(0 0 14px rgba(255,190,40,.6));
+}
+#techSvg .tn.sel .ttc-card{
+  border-color:#ffd24a !important;
+  box-shadow:0 0 0 2px #ffd24a, 0 0 18px 4px rgba(255,200,60,.65), inset 0 0 22px rgba(255,210,90,.28);
+}
