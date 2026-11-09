@@ -2442,3 +2442,37 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
   #techSvg .ttc-mdot{width:12px; height:12px}
   #techSvg .ttc-alt{padding:2px 8px 3px; font-size:10px}
 }
+
+/* Çağ çizimleri: ince yardımcı çizgi (#560) */
+#techSvg .era-art .ea-th{fill:none; stroke:#4a3210; stroke-opacity:.34; stroke-width:1.1}
+
+/* Kartlar parşömenle uyumlu BRONZ palet (#560): koyu lacivert yerine sıcak kahve/bronz, krem yazı, altın kenar */
+#techSvg .ttc-card{
+  background:
+    radial-gradient(circle at 11px 11px, var(--corner-c) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle at calc(100% - 11px) 11px, var(--corner-c) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle at 11px calc(100% - 11px), var(--corner-c) 0 1.6px, transparent 2.2px),
+    radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), var(--corner-c) 0 1.6px, transparent 2.2px),
+    linear-gradient(180deg,#5a4122 0%,#3b2912 100%);
+  border-color:#8d6a2c; --corner-c:#e8c27a; outline-color:rgba(255,226,160,.22);
+  box-shadow:0 5px 14px rgba(50,28,6,.55), inset 0 1px 0 rgba(255,236,190,.14)}
+#techSvg .ttc-card.ttc-avail{border-color:#f0c868; --corner-c:#ffe29a; box-shadow:0 0 0 1px rgba(240,200,104,.35), 0 0 18px rgba(240,200,104,.4), 0 5px 14px rgba(50,28,6,.55)}
+#techSvg .ttc-card.ttc-done{border-color:#6a9a4e; --corner-c:#a9d98a; outline-color:rgba(120,180,90,.3)}
+#techSvg .ttc-card.ttc-locked{border-color:#7d6338; --corner-c:#a98f5a; outline-color:rgba(255,226,160,.1)}
+#techSvg .ttc-head{border-bottom-color:rgba(255,226,160,.14); background:linear-gradient(180deg,rgba(255,236,190,.09),transparent)}
+#techSvg .ttc-title{color:#fbeecb}
+#techSvg .ttc-locked .ttc-title{color:#d3bf92}
+#techSvg .ttc-locked .ttc-icon{background:radial-gradient(circle at 32% 28%, #d6c39b, #8a7249 70%, #55421f 100%); border-color:#4a3818; filter:none}
+#techSvg .ttc-locked .ttc-ring{--ring-c:#a98f5a}
+#techSvg .ttc-locked .ttc-badge{background:rgba(255,226,160,.1); color:#e0cc9c; border-color:rgba(255,226,160,.28)}
+#techSvg .ttc-chip{background:linear-gradient(180deg,rgba(255,236,190,.14),rgba(40,22,4,.25)); border-color:rgba(255,226,160,.28)}
+#techSvg .ttc-avail .ttc-chips{background:linear-gradient(180deg,#5a4118,#33230d)}
+#techSvg .ttc-mastery{background:rgba(32,18,4,.42); border-top-color:rgba(255,226,160,.12)}
+#techSvg .ttc-mdot{background:rgba(255,236,190,.07); border-color:rgba(255,226,160,.28); color:#d8c493}
+#techSvg .ttc-alt{background:rgba(255,226,160,.09); border-top-color:rgba(255,226,160,.18)}
+#techSvg .ttc-altk{color:#e6c987}
+#techSvg .ttc-altl{color:#fbeecb; border-color:rgba(255,226,160,.4); background:rgba(255,226,160,.12)}
+#techSvg .ttc-altl:hover{background:rgba(255,226,160,.28); color:#fff}
+#techSvg .era-art .ea-b,#techSvg .era-art .ea-dash{fill:none}
+#techSvg .era-art .ea-b{stroke:#33210a; stroke-opacity:.7; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+#techSvg .era-art .ea-dash{stroke:#4a3210; stroke-opacity:.5; stroke-width:1.8; stroke-dasharray:6 6}
