@@ -2510,3 +2510,17 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 .sidebar .sb-quiz .sbq-best{color:#c9ad73}
 .sidebar .sb-branch{background:rgba(214,170,80,.1); color:#f3e6c4}
 .sidebar .sb-branch span{color:#c9ad73}
+
+/* çağ ayrımı belirgin (#563): sol kalın çağ şeridi + güçlü çağ tonu + dolgulu çağ rozeti */
+.sidebar .navbtn{
+  background:
+    linear-gradient(105deg, transparent 42%, rgba(255,236,180,.12) 50%, transparent 58%),
+    linear-gradient(90deg, var(--pc) 0 var(--prog), transparent 0),
+    linear-gradient(160deg, rgba(var(--era-c,150,120,60),.55) 0%, rgba(var(--era-c,150,120,60),.22) 45%, #3b2912 100%);
+  background-size:230% 100%, 100% 2px, 100% 100%; background-position:150% 0, 0 100%, 0 0; background-repeat:no-repeat;
+  border:1px solid rgba(var(--era-c,150,120,60),.9); border-left:5px solid rgb(var(--era-c,150,120,60));
+}
+.sidebar .navbtn.active{border-left:5px solid #fff1c2}
+.sidebar .sb-era b{color:#fff; background:linear-gradient(180deg,rgba(var(--era-c),.95),rgba(var(--era-c),.6)); border:1px solid rgb(var(--era-c)); text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.sidebar .sb-era::before{background:linear-gradient(180deg,transparent,rgba(var(--era-c),.9) 25%,rgba(var(--era-c),.9) 75%,transparent); width:3px}
+.sidebar .sb-quiz{background:rgba(var(--era-c),.28); border:1px dashed rgb(var(--era-c)); color:#fff4d6}
