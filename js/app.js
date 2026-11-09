@@ -2617,8 +2617,8 @@ window.__goStage=function(tab, st, sel){
   // matematiği (mX=100 marjı, bkz. layout()) eski 184-birimlik kartlara göre
   // ayarlandığından kompakt bir boyuta küçülüyor (aksi halde kart canvas
   // dışına taşıp kırpılırdı).
-  const NW=n=> isNewStyle(n) ? (VERT?210:264) : (n.crown?208:184);
-  const NH=n=> isNewStyle(n) ? (VERT?104:150)+(n.alt&&n.alt.length?(VERT?14:10):0) : 78;   // alt dersli kartlarda 📎 satırı için ek yükseklik
+  const NW=n=> isNewStyle(n) ? (VERT?210:236) : (n.crown?208:184);
+  const NH=n=> isNewStyle(n) ? (VERT?104:112)+(n.alt&&n.alt.length?(VERT?14:10):0) : 78;   // alt dersli kartlarda 📎 satırı için ek yükseklik
   const ICR=19; // ikon dairesi yarıçapı
   let sel=null;
   let W,H,X,Y;
@@ -2654,7 +2654,7 @@ window.__goStage=function(tab, st, sel){
       // (300 birim) eski kartlardan (184-208) çok daha geniş olduğu için
       // sabit aralık iki komşu tier'i üst üste bindirirdi.
       const maxTier=Math.max(...NODES.map(n=>n.tier));
-      const GAP=34; // tier'ler arası minimum boşluk (kablo dirseği + nefes payı)
+      const GAP=30; // tier'ler arası minimum boşluk (kablo dirseği + nefes payı)
       const MARGIN=40; // sol/sağ kenar boşluğu
       const tierX=[];
       tierW=[];
@@ -2669,7 +2669,7 @@ window.__goStage=function(tab, st, sel){
         tierX[t]= t===0 ? (tierW[0]/2+MARGIN) : tierX[t-1]+tierW[t-1]/2+GAP+tierW[t]/2;
       }
       { const cnt={}; NODES.forEach(n=>{cnt[n.tier]=(cnt[n.tier]||0)+1;}); const mx=Math.max(...Object.values(cnt));
-        H=Math.max(680, mx*150+(mx-1)*26+150); }   // 4 kartlı sütun (iki kol) sığsın
+        H=Math.max(560, mx*(112+10)+(mx-1)*18+150); }   // 4 kartlı sütun (iki kol) sığsın
       X=n=>tierX[n.tier];
       // Y ARTIK n.v'nin ham yüzdesi değil — v sadece aynı tier içindeki
       // SIRALAMA için (hangi düğüm üstte/altta görünsün) kullanılıyor.
@@ -2681,7 +2681,7 @@ window.__goStage=function(tab, st, sel){
       const byTierY={};
       NODES.forEach(n=>{ (byTierY[n.tier]=byTierY[n.tier]||[]).push(n); });
       const yPos=new Map();
-      const VGAP=26;
+      const VGAP=18;
       Object.values(byTierY).forEach(arr=>{
         arr.sort((a,b)=>a.v-b.v);
         const totalH=arr.reduce((s,n)=>s+NH(n),0)+VGAP*(arr.length-1);
