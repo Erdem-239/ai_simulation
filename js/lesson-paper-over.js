@@ -1,6 +1,5 @@
 // Makale dersi → Simülasyon: GENEL RESİM. Makaledeki encoder-decoder mimarisi (Şekil 1) — 6 bölüm, bloğun içi (Multi-Head, self/çapraz attention, FFN, Add&Norm) görünür; sayı yok.
-(function(){
-  const host=document.getElementById('ppOver'); if(!host) return;
+window.__ppOverBuild=function(host){
   const B=[ // alttan yukarı
    {n:'① girdiler',c:'#3fc7c1',t:'<b>① Girdiler.</b> Kaynak cümle (Türkçe) encoder\'a, şimdiye kadar yazılan hedef (İngilizce) decoder\'a girer; ikisine de <b>gömme + konum</b> bilgisi eklenir.'},
    {n:'② self-attention',c:'#4aa3ff',t:'<b>② Self-attention (Multi-Head).</b> Her kelime <b>aynı cümledeki</b> ötekilere bakar: <b>h kafa</b> yan yana çalışır (her kafa kendi Q, K, V\'siyle Q·K → softmax → ·V), çıktılar <b>Concat + W<sub>O</sub></b> ile birleşir, sonra Add &amp; Norm. Encoder\'da hepsini görür; decoder\'da <b>maskeli</b>: geleceğe bakamaz.'},
@@ -29,37 +28,34 @@
   s+='<rect x="'+(X1-10)+'" y="'+(by(2)+2)+'" width="'+(W1+20)+'" height="'+(2*H-14)+'" rx="14" fill="none" stroke="#3fc7c1" stroke-width="1.6" stroke-dasharray="7 4"/>'+T(X1+W1-6,by(2)+17,'ENCODER  × N','#3fc7c1',12,800,'end');
   s+='<rect x="'+(X2-10)+'" y="'+(by(3)+2)+'" width="'+(W2+20)+'" height="'+(3*H-14)+'" rx="14" fill="none" stroke="#4aa3ff" stroke-width="1.6" stroke-dasharray="7 4"/>'+T(X2+W2-6,by(3)+17,'DECODER  × N','#4aa3ff',12,800,'end');
   // bant 0
-  s+='<g class="pp-el" data-b="0">'+simple(X1,by(0)+34,W1,64,'Kaynak cümle','kedi balığı yedi  +  gömme + konum','#3fc7c1')+simple(X2,by(0)+34,W2,64,'Hedef (şimdiye kadar)','&lt;s&gt; cat ate  +  gömme + konum','#4aa3ff')+'</g>';
+  s+='<g class="pp-el" data-b="0" data-k="in-enc">'+simple(X1,by(0)+34,W1,64,'Kaynak cümle','kedi balığı yedi  +  gömme + konum','#3fc7c1')+'</g><g class="pp-el" data-b="0" data-k="in-dec">'+simple(X2,by(0)+34,W2,64,'Hedef (şimdiye kadar)','&lt;s&gt; cat ate  +  gömme + konum','#4aa3ff')+'</g>';
   // bant 1: self-attention
-  s+='<g class="pp-el" data-b="1">'+mha(X1,by(1)+10,W1,H-26,'Multi-Head Self-Attention','Q, K, V hepsi aynı cümleden','#3fc7c1')+mha(X2,by(1)+10,W2,H-26,'Maskeli Multi-Head Self-Attention','geleceğe bakamaz (maske)','#4aa3ff')+'</g>';
+  s+='<g class="pp-el" data-b="1" data-k="sa-enc">'+mha(X1,by(1)+10,W1,H-26,'Multi-Head Self-Attention','Q, K, V hepsi aynı cümleden','#3fc7c1')+'</g><g class="pp-el" data-b="1" data-k="sa-dec">'+mha(X2,by(1)+10,W2,H-26,'Maskeli Multi-Head Self-Attention','geleceğe bakamaz (maske)','#4aa3ff')+'</g>';
   // bant 2: encoder FFN + decoder çapraz MHA
-  s+='<g class="pp-el" data-b="2">'+ffn(X1,by(2)+28,W1,H-52,'#3fc7c1')+mha(X2,by(2)+10,W2,H-26,'Multi-Head ÇAPRAZ Attention','Q: decoder · K, V: encoder','#ffd24a')+'</g>';
+  s+='<g class="pp-el" data-b="2" data-k="ff-enc">'+ffn(X1,by(2)+28,W1,H-52,'#3fc7c1')+'</g><g class="pp-el" data-b="2" data-k="cross">'+mha(X2,by(2)+10,W2,H-26,'Multi-Head ÇAPRAZ Attention','Q: decoder · K, V: encoder','#ffd24a')+'</g>';
   // bant 3: decoder FFN
-  s+='<g class="pp-el" data-b="3">'+ffn(X2,by(3)+28,W2,H-52,'#5fd18a')+'</g>';
-  s+='<g class="pp-el" data-b="4">'+simple(X2,by(4)+36,W2,60,'Linear','kart → sözlükteki her kelime için puan','#ff9b3d')+'</g>';
-  s+='<g class="pp-el" data-b="5">'+simple(X2,by(5)+36,W2,60,'softmax','→ sıradaki kelime','#f27a88')+'</g>';
+  s+='<g class="pp-el" data-b="3" data-k="ff-dec">'+ffn(X2,by(3)+28,W2,H-52,'#5fd18a')+'</g>';
+  s+='<g class="pp-el" data-b="4" data-k="linear">'+simple(X2,by(4)+36,W2,60,'Linear','kart → sözlükteki her kelime için puan','#ff9b3d')+'</g>';
+  s+='<g class="pp-el" data-b="5" data-k="softmax">'+simple(X2,by(5)+36,W2,60,'softmax','→ sıradaki kelime','#f27a88')+'</g>';
   // oklar
   const ex=X1+W1/2,dx=X2+W2/2;
   const top=(i,y)=>by(i)+y, bot=(i,y,h)=>by(i)+y+h;
+  s+='<g class="pp-ar">';
   s+=arr(ex,top(0,34),ex,bot(1,10,H-26),'#3fc7c1')+arr(ex,top(1,10),ex,bot(2,28,H-52),'#3fc7c1');
   s+=arr(dx,top(0,34),dx,bot(1,10,H-26),'#4aa3ff')+arr(dx,top(1,10),dx,bot(2,10,H-26),'#4aa3ff')+arr(dx,top(2,10),dx,bot(3,28,H-52),'#ffd24a')+arr(dx,top(3,28),dx,bot(4,36,60),'#5fd18a')+arr(dx,top(4,36),dx,bot(5,36,60),'#ff9b3d');
+  s+='</g>';
   // köprü: encoder çıktısı → çapraz attention (K, V)
   const my=by(2)+75;
-  s+='<line x1="'+(X1+W1)+'" y1="'+my+'" x2="'+X2+'" y2="'+my+'" stroke="#ffd24a" stroke-width="2.6" stroke-dasharray="7 4" marker-end="url(#ppArr)"/>'+T((X1+W1+X2)/2,my-8,'bellek M','#ffd24a',11.5,700)+T((X1+W1+X2)/2,my+16,'(K ve V)','#ffd24a',10.5);
+  s+='<g class="pp-el pp-x" data-k="bridge"><line x1="'+(X1+W1)+'" y1="'+my+'" x2="'+X2+'" y2="'+my+'" stroke="#ffd24a" stroke-width="2.6" stroke-dasharray="7 4" marker-end="url(#ppArr)"/>'+T((X1+W1+X2)/2,my-8,'bellek M','#ffd24a',11.5,700)+T((X1+W1+X2)/2,my+16,'(K ve V)','#ffd24a',10.5)+'</g>';
   // döngü oku
-  s+='<path d="M '+(X2+W2)+' '+(by(5)+66)+' C '+(W-30)+' '+(by(5)+66)+' '+(W-30)+' '+(by(0)+66)+' '+(X2+W2)+' '+(by(0)+66)+'" fill="none" stroke="#cdd4e4" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#ppArr)"/>'+'<text transform="translate('+(W-12)+','+(by(2)+60)+') rotate(90)" fill="#9fb0d0" font-size="11" text-anchor="middle">üretilen kelime hedefe eklenir</text>';
+  s+='<g class="pp-el pp-x" data-k="loop"><path d="M '+(X2+W2)+' '+(by(5)+66)+' C '+(W-30)+' '+(by(5)+66)+' '+(W-30)+' '+(by(0)+66)+' '+(X2+W2)+' '+(by(0)+66)+'" fill="none" stroke="#cdd4e4" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#ppArr)"/>'+'<text transform="translate('+(W-12)+','+(by(2)+60)+') rotate(90)" fill="#9fb0d0" font-size="11" text-anchor="middle">üretilen kelime hedefe eklenir</text>'+'</g>';
   s+='</svg>';
-  host.innerHTML='<div id="ppOverBtns" style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px"></div><div style="overflow-x:auto"><div style="min-width:600px">'+s+'</div></div><div id="ppOverCap" class="callout" style="margin-top:8px;min-height:44px"></div>';
-  const btns=host.querySelector('#ppOverBtns'),cap=host.querySelector('#ppOverCap');
-  const ALL='<b>Genel resim.</b> Sol sütun <b>encoder</b> (kaynağı okur), sağ sütun <b>decoder</b> (hedefi yazar); ikisinde de bloğun içi görünüyor: Multi-Head (self / çapraz) attention, FFN, Add &amp; Norm. Altı bölüm aşağıdan yukarı akar; bir bölüme tıkla. Sayılarla adım adım tur ➕ Ekstra\'da.';
-  let cur=-1;
-  function show(i){cur=i;
-    host.querySelectorAll('.pp-band').forEach(g=>{g.style.opacity=(i<0||+g.dataset.b===i)?1:.28;});
-    host.querySelectorAll('.pp-el').forEach(g=>{g.style.opacity=(i<0||+g.dataset.b===i)?1:.25;});
-    btns.querySelectorAll('button').forEach((b,k)=>b.classList.toggle('on',k-1===i));
-    cap.innerHTML=i<0?ALL:B[i].t;}
-  btns.innerHTML='<button class="rex-btn on">Hepsi</button>'+B.map(b=>'<button class="rex-btn" style="border-color:'+b.c+'">'+b.n+'</button>').join('');
-  btns.onclick=e=>{const k=[...btns.children].indexOf(e.target.closest('button'));if(k>=0)show(k-1);};
-  host.querySelectorAll('.pp-band,.pp-el').forEach(g=>g.onclick=()=>show(cur===+g.dataset.b?-1:+g.dataset.b));
-  show(-1);
-})();
+  host.innerHTML='<div style="overflow-x:auto"><div style="min-width:420px">'+s+'</div></div>';
+  const keyBand={'in-enc':0,'in-dec':0,'sa-enc':1,'sa-dec':1,'ff-enc':2,'cross':2,'ff-dec':3,'linear':4,'softmax':5,'bridge':2};
+  function focus(keys){const all=!keys;
+    host.querySelectorAll('.pp-el').forEach(g=>{g.style.opacity=(all||keys.indexOf(g.dataset.k)>=0)?1:.22;});
+    const ab=new Set(all?[]:keys.map(k=>keyBand[k]));
+    host.querySelectorAll('.pp-band').forEach(g=>{g.style.opacity=(all||ab.has(+g.dataset.b))?1:.3;});
+    host.querySelectorAll('.pp-ar').forEach(g=>{g.style.opacity=all?1:.3;});}
+  return {focus};
+};

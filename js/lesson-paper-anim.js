@@ -26,7 +26,7 @@
   const TOK=SRC;
   const cv=document.createElement('canvas'); cv.width=1000; cv.height=500; cv.style.cssText='width:100%;height:auto;display:block;background:#0d1117;border:1px solid var(--line);border-radius:10px';
   const g=cv.getContext('2d');
-  host.innerHTML='<div class="mha-top"><div class="mha-steps" id="ppaSteps"></div><div class="mha-bar"><button class="addbtn" id="ppaPrev">◀ Geri</button><button class="addbtn" id="ppaPlay">⏸ Duraklat</button><button class="addbtn" id="ppaRe">↺ Baştan</button><button class="addbtn" id="ppaNext">İleri ▶</button><div class="mha-scrw"><input type="range" id="ppaScr" min="0" max="1000" value="0" class="mha-scr"><div class="mha-tk" id="ppaTk"></div></div><label>Hız <select id="ppaSpd"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div><div class="mha-grid"><div class="mha-3d"><iframe id="ppa3d" title="Minik 3B mimari" src="'+(host.dataset['3d']||'')+'"></iframe></div><div id="ppaCv"></div></div><div class="mha-boxes"><div class="mha-box mha-goal" id="ppaGoal"></div><div class="mha-box mha-soz" id="ppaSoz"></div><div class="mha-box mha-elde" id="ppaElde"></div></div>';
+  host.innerHTML='<div class="mha-top"><div class="mha-steps" id="ppaSteps"></div><div class="mha-bar"><button class="addbtn" id="ppaPrev">◀ Geri</button><button class="addbtn" id="ppaPlay">⏸ Duraklat</button><button class="addbtn" id="ppaRe">↺ Baştan</button><button class="addbtn" id="ppaNext">İleri ▶</button><div class="mha-scrw"><input type="range" id="ppaScr" min="0" max="1000" value="0" class="mha-scr"><div class="mha-tk" id="ppaTk"></div></div><label>Hız <select id="ppaSpd"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div><div class="mha-grid"><div class="mha-3d" id="ppaOver"></div><div id="ppaCv"></div></div><div class="mha-boxes"><div class="mha-box mha-goal" id="ppaGoal"></div><div class="mha-box mha-soz" id="ppaSoz"></div><div class="mha-box mha-elde" id="ppaElde"></div></div>';
   document.getElementById('ppaCv').appendChild(cv);
   // ---- çizim yardımcıları ----
   function txt(s,x,y,c,sz,al){g.fillStyle=c||'#cdd4e4';g.font=(sz||13)+'px Consolas,monospace';g.textAlign=al||'left';g.fillText(s,x,y);}
@@ -127,9 +127,9 @@
   stepsEl.innerHTML=SC.map((s,i)=>'<button data-i="'+i+'">'+(i+1)+'. '+s.tag+'</button>').join('');
   function show(){document.getElementById('ppaGoal').innerHTML=SC[cur].goal;document.getElementById('ppaSoz').innerHTML=SC[cur].soz;document.getElementById('ppaElde').innerHTML=SC[cur].elde;
     stepsEl.querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('on',i===cur);b.classList.toggle('done',i<cur);});}
-  let f3=document.getElementById('ppa3d'),f3ok=false,f3pend=null;
-  if(f3)f3.addEventListener('load',()=>{f3ok=true;if(f3pend!=null)f3.contentWindow.postMessage({type:'pp3d',scene:f3pend},'*');});
-  function post3d(n){f3pend=n;if(f3&&f3ok)f3.contentWindow.postMessage({type:'pp3d',scene:n},'*');}
+  const OV=window.__ppOverBuild?window.__ppOverBuild(document.getElementById('ppaOver')):null;
+  const FOC=[['in-enc','in-dec'],['in-enc','sa-enc','ff-enc'],['in-dec','sa-dec'],['sa-dec','cross','bridge','ff-enc'],['cross','ff-dec'],['ff-dec','linear','softmax'],null];
+  function post3d(n){if(OV)OV.focus(FOC[n]);}
   function go(i){cur=cl(i,0,SC.length-1);t=0;post3d(SCENE3D[cur]);try{const r=host.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight+40)host.scrollIntoView({block:'start',behavior:'smooth'});}catch(e){}playing=true;document.getElementById('ppaPlay').textContent='⏸ Duraklat';show();}
   function setScene(i,keepT){ if(i===cur) return; cur=i; post3d(SCENE3D[cur]); show(); }
   function frame(ts){const dt=last?(ts-last)/1000:0;last=ts;
