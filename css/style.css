@@ -2598,3 +2598,30 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #mhAnim .mha-tk{position:absolute; left:0; right:0; bottom:0; height:14px; pointer-events:none}
 #mhAnim .mha-tk i{position:absolute; top:-12px; width:2px; height:10px; background:#5a6a8a; transform:translateX(-1px)}
 #mhAnim .mha-tk span{position:absolute; bottom:0; transform:translateX(-50%); font-size:10px; color:var(--muted)}
+/* Self-Attention animasyonu: Multi-Head ile aynı bileşen */
+#atAnim .mha-steps{display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 8px}
+#atAnim .mha-steps button{font:12px system-ui,sans-serif; padding:4px 9px; border-radius:14px; border:1px solid var(--line); background:#161b26; color:#cdd4e4; cursor:pointer}
+#atAnim .mha-steps button.on{border-color:#ffc82e; color:#ffc82e; background:#2a2410}
+#atAnim .mha-steps button.done{color:#7fd18b}
+#atAnim .mha-bar{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:4px}
+#atAnim .mha-box{margin-top:8px; padding:9px 12px; border-radius:9px; font-size:13px; line-height:1.6; border-left:3px solid var(--line); background:rgba(255,255,255,.03)}
+#atAnim .mha-goal{border-left-color:#4aa3ff}
+#atAnim .mha-soz{border-left-color:#ffd24a}
+#atAnim .mha-elde{border-left-color:#5fd18a}
+#atAnim .mha-grid{display:grid; grid-template-columns:1fr; gap:10px}
+#atAnim .mha-3d{position:relative}
+#atAnim .mha-cap3{font-size:11.5px; color:var(--muted); margin-top:4px}
+#atAnim .mha-top{display:flex; flex-direction:column; gap:4px; margin-bottom:6px}
+#atAnim .mha-steps{margin:0}
+#atAnim .mha-bar{margin:0; flex-wrap:nowrap}
+#atAnim .mha-scr{flex:1; min-width:80px; margin:0 6px}
+#atAnim .mha-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; align-items:start}
+#atAnim .mha-3d iframe{width:100%; height:clamp(300px,45vh,460px); border:1px solid var(--line); border-radius:10px; background:#0b0e14; display:block}
+#atAnim .mha-boxes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:8px}
+#atAnim .mha-boxes .mha-box{margin:0; padding:7px 10px; font-size:12px; line-height:1.5}
+@media(max-width:1000px){#atAnim .mha-grid{grid-template-columns:1fr} #atAnim .mha-boxes{grid-template-columns:1fr} #atAnim .mha-bar{flex-wrap:wrap}}
+#atAnim .mha-scrw{position:relative; flex:1; min-width:120px; margin:0 8px; padding-bottom:14px}
+#atAnim .mha-scrw .mha-scr{width:100%; margin:0}
+#atAnim .mha-tk{position:absolute; left:0; right:0; bottom:0; height:14px; pointer-events:none}
+#atAnim .mha-tk i{position:absolute; top:-12px; width:2px; height:10px; background:#5a6a8a; transform:translateX(-1px)}
+#atAnim .mha-tk span{position:absolute; bottom:0; transform:translateX(-50%); font-size:10px; color:var(--muted)}
