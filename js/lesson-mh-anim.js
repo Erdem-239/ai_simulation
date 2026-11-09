@@ -23,7 +23,7 @@
   const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)), st=(t,i,n)=>cl(t*n-i);   // t: 0..1 sahne ilerlemesi; st: i. aşamanın 0..1 ilerlemesi
   const cv=document.createElement('canvas'); cv.width=1000; cv.height=500; cv.style.cssText='width:100%;height:auto;display:block;background:#0d1117;border:1px solid var(--line);border-radius:10px';
   const g=cv.getContext('2d');
-  host.innerHTML='<div class="mha-top"><div class="mha-steps" id="mhaSteps"></div><div class="mha-bar"><button class="addbtn" id="mhaPrev">◀ Geri</button><button class="addbtn" id="mhaPlay">⏸ Duraklat</button><button class="addbtn" id="mhaRe">↺ Baştan</button><button class="addbtn" id="mhaNext">İleri ▶</button><input type="range" id="mhaScr" min="0" max="1000" value="0" class="mha-scr"><label>Hız <select id="mhaSpd"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div><div class="mha-grid"><div class="mha-3d"><iframe id="mha3d" title="Minik 3B mimari" src="'+(host.dataset['3d']||'')+'"></iframe></div><div id="mhaCv"></div></div><div class="mha-boxes"><div class="mha-box mha-goal" id="mhaGoal"></div><div class="mha-box mha-soz" id="mhaSoz"></div><div class="mha-box mha-elde" id="mhaElde"></div></div>';
+  host.innerHTML='<div class="mha-top"><div class="mha-steps" id="mhaSteps"></div><div class="mha-bar"><button class="addbtn" id="mhaPrev">◀ Geri</button><button class="addbtn" id="mhaPlay">⏸ Duraklat</button><button class="addbtn" id="mhaRe">↺ Baştan</button><button class="addbtn" id="mhaNext">İleri ▶</button><div class="mha-scrw"><input type="range" id="mhaScr" min="0" max="1000" value="0" class="mha-scr"><div class="mha-tk" id="mhaTk"></div></div><label>Hız <select id="mhaSpd"><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div></div><div class="mha-grid"><div class="mha-3d"><iframe id="mha3d" title="Minik 3B mimari" src="'+(host.dataset['3d']||'')+'"></iframe></div><div id="mhaCv"></div></div><div class="mha-boxes"><div class="mha-box mha-goal" id="mhaGoal"></div><div class="mha-box mha-soz" id="mhaSoz"></div><div class="mha-box mha-elde" id="mhaElde"></div></div>';
   document.getElementById('mhaCv').appendChild(cv);
   // ---- çizim yardımcıları ----
   function txt(s,x,y,c,sz,al){g.fillStyle=c||'#cdd4e4';g.font=(sz||13)+'px Consolas,monospace';g.textAlign=al||'left';g.fillText(s,x,y);}
@@ -123,16 +123,19 @@
   if(f3)f3.addEventListener('load',()=>{f3ok=true;if(f3pend!=null)f3.contentWindow.postMessage({type:'mh3d',scene:f3pend},'*');});
   function post3d(n){f3pend=n;if(f3&&f3ok)f3.contentWindow.postMessage({type:'mh3d',scene:n},'*');}
   function go(i){cur=cl(i,0,SC.length-1);t=0;post3d(SCENE3D[cur]);try{const r=host.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight+40)host.scrollIntoView({block:'start',behavior:'smooth'});}catch(e){}playing=true;document.getElementById('mhaPlay').textContent='⏸ Duraklat';show();}
+  function setScene(i,keepT){ if(i===cur) return; cur=i; post3d(SCENE3D[cur]); show(); }
   function frame(ts){const dt=last?(ts-last)/1000:0;last=ts;
-    if(playing&&host.offsetParent){t+=dt*(+document.getElementById('mhaSpd').value)/DUR; if(t>=1){t=1;playing=false;document.getElementById('mhaPlay').textContent='▶ Oynat';}}
-    document.getElementById('mhaScr').value=Math.round(t*1000);
+    if(playing&&host.offsetParent){t+=dt*(+document.getElementById('mhaSpd').value)/DUR;
+      if(t>=1){ if(cur<SC.length-1){ t-=1; setScene(cur+1); } else { t=1; playing=false; document.getElementById('mhaPlay').textContent='▶ Oynat'; } } }
+    document.getElementById('mhaScr').value=Math.round((cur+t)/SC.length*1000);
     if(host.offsetParent){g.clearRect(0,0,1000,500);txt(SC[cur].tag,20,30,'#ffd24a',16);SC[cur].draw(t);}
     requestAnimationFrame(frame);}
   stepsEl.onclick=e=>{const b=e.target.closest('[data-i]');if(b)go(+b.dataset.i);};
   document.getElementById('mhaPrev').onclick=()=>go(cur-1); document.getElementById('mhaNext').onclick=()=>go(cur+1);
   document.getElementById('mhaRe').onclick=()=>go(cur);
   document.getElementById('mhaPlay').onclick=function(){if(t>=1){t=0;}playing=!playing;this.textContent=playing?'⏸ Duraklat':'▶ Oynat';};
-  document.getElementById('mhaScr').oninput=function(){t=this.value/1000;playing=false;document.getElementById('mhaPlay').textContent='▶ Oynat';};
+  document.getElementById('mhaScr').oninput=function(){const gv=this.value/1000*SC.length;let i=Math.min(SC.length-1,Math.floor(gv));t=gv-i;if(this.value>=1000){i=SC.length-1;t=1;}setScene(i);playing=false;document.getElementById('mhaPlay').textContent='▶ Oynat';};
+  document.getElementById('mhaTk').innerHTML=SC.map((_,i)=>'<span style="left:'+((i+.5)/SC.length*100)+'%">'+(i+1)+'</span>'+(i?'<i style="left:'+(i/SC.length*100)+'%"></i>':'')).join('');
   window.__mhAnim={SC,A,Hh,OUT,CAT,Qbig,go};
   post3d(0); show(); requestAnimationFrame(frame);
 })();
