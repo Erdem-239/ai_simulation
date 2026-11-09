@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Makaleler Zaman Çizelgesi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1424;--card:#18213a;--card2:#1c2744;--ink:#e8ecf6;--mute:#9aa6c2;--line:#2c3a5e;--gold:#e0b866;--hl:#ffc93c;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:radial-gradient(1200px 600px at 50% -200px,#1c2a52 0,transparent 70%),var(--bg)}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 16px 80px}
+header h1{font-family:Cinzel,Georgia,serif;font-size:30px;letter-spacing:.5px;margin:0;color:#f4dfae}
+header p{color:var(--mute);margin:6px 0 0;max-width:820px}
+.back{display:inline-block;margin-bottom:10px;font-size:13px;color:#9fc2ff;text-decoration:none}
+.back:hover{text-decoration:underline}
+
+/* üst araç çubuğu: konu filtresi + arama + çağ atlama, kayınca yapışır */
+.bar{position:sticky;top:0;z-index:5;margin:16px -16px 0;padding:10px 16px;background:rgba(14,20,36,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.row+.row{margin-top:7px}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--mute);text-transform:uppercase;margin-right:4px}
+.chip{border:1px solid rgba(var(--c),.55);background:rgba(var(--c),.12);color:rgb(var(--c));border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:700;cursor:pointer;user-select:none}
+.chip.off{opacity:.38;filter:saturate(.4)}
+.chip.all{--c:224,184,102}
+.era-j{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:3px 10px;font-size:12px;cursor:pointer}
+.era-j:hover{border-color:var(--gold)}
+input[type=search]{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:13px;width:220px}
+.cnt{font-size:12px;color:var(--mute);margin-left:auto}
+
+/* yoğunluk şeridi: hangi yıllarda kaç makale (1800 → 2025, kırık eksen) */
+.strip{margin:18px 0 6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px 8px}
+.strip svg{display:block;width:100%;height:auto}
+.strip text{font:11px system-ui,sans-serif;fill:var(--mute)}
+
+/* zaman çizelgesi */
+.tl{position:relative;margin-top:26px}
+.tl::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;
+  background:linear-gradient(180deg,#8a6a2e,#e0b866 40%,#6ea0ff 70%,#b592f0);border-radius:2px;opacity:.75}
+.era{position:relative;text-align:center;margin:34px 0 18px;z-index:1}
+.era:first-child{margin-top:0}
+.era .rb{display:inline-block;background:linear-gradient(180deg,#2a2210,#171208);border:1.5px solid var(--gold);border-radius:999px;padding:6px 18px;
+  font-family:Cinzel,Georgia,serif;font-weight:800;letter-spacing:2.5px;font-size:13px;color:#f4d998;box-shadow:0 0 18px rgba(224,184,102,.25)}
+.era .ed{display:block;margin:8px auto 0;max-width:560px;font-size:13px;color:var(--mute);background:var(--bg);padding:2px 10px}
+.it{position:relative;width:50%;padding:8px 34px 8px 0}
+.it.r{margin-left:50%;padding:8px 0 8px 34px}
+.dot{position:absolute;top:24px;right:-8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid rgb(var(--c));z-index:2}
+.it.r .dot{left:-8px;right:auto}
+.it.star .dot{width:22px;height:22px;top:21px;right:-11px;background:var(--hl);border-color:#fff3c4;box-shadow:0 0 16px var(--hl)}
+.it.r.star .dot{left:-11px}
+.yr{position:absolute;top:19px;right:-86px;width:62px;font-family:Cinzel,Georgia,serif;font-weight:800;font-size:16px;color:#f4d998;text-align:left}
+.it.r .yr{left:-86px;right:auto;text-align:right}
+.cd{position:relative;background:linear-gradient(180deg,var(--card2),var(--card));border:1.5px solid rgba(var(--c),.45);border-radius:12px;padding:11px 14px 11px;
+  outline:1px solid rgba(255,255,255,.05);outline-offset:-5px;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .15s,border-color .15s}
+.cd:hover{transform:translateY(-2px);border-color:rgb(var(--c))}
+.cd::after{content:"";position:absolute;top:26px;right:-9px;width:9px;height:2px;background:rgba(var(--c),.6)}
+.it.r .cd::after{left:-9px;right:auto}
+.it.star .cd{border-color:var(--hl);box-shadow:0 0 0 1px rgba(255,201,60,.35),0 0 26px rgba(255,201,60,.25),0 6px 16px rgba(0,0,0,.35)}
+.tg{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.4px;border-radius:6px;padding:1px 7px;background:rgba(var(--c),.18);color:rgb(var(--c));margin-right:6px}
+.ym{font-family:Cinzel,Georgia,serif;font-weight:800;color:#f4d998;font-size:15px;margin-right:8px;vertical-align:-1px}
+.yr{display:none!important}
+.tt{display:block;font-weight:700;font-size:15px;margin:5px 0 1px;font-style:italic;color:#f1f4fb}
+.au{font-size:12.5px;color:var(--mute)}
+.ne{margin:6px 0 0;font-size:13.5px;color:#d4dbec}
+.ft{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.go{font-size:12px;font-weight:700;text-decoration:none;border-radius:7px;padding:3px 9px;background:#203a5c;color:#cfe7ff;border:1px solid #3d6a99}
+.go:hover{background:#2c5585}
+.vn{font-size:11.5px;color:var(--mute);align-self:center}
+.empty{display:none;text-align:center;color:var(--mute);margin:30px 0}
+.note{margin-top:34px;background:#251f10;border:1px solid #6b5a1e;border-radius:10px;padding:10px 14px;color:#efdba6;font-size:13px}
+
+@media(max-width:820px){
+  .tl::before{left:12px}
+  .it,.it.r{width:auto;margin-left:0;padding:8px 0 8px 34px}
+  .dot,.it.r .dot{left:5px;right:auto}
+  .it.star .dot,.it.r.star .dot{left:2px}
+  .yr{display:none}.ym{display:inline}
+  .cd::after,.it.r .cd::after{left:-9px;right:auto}
+  .era{text-align:left;padding-left:30px}
+  .era .ed{margin-left:0}
+  input[type=search]{width:100%}
+  .cnt{margin-left:0}
+  header h1{font-size:23px}
+  .bar{position:static}
+}
+</style></head><body><div class="wrap">
+<a class="back" href="../index.html#ders=harita">← Siteye dön</a>
+<header>
+<h1>📜 Makaleler Zaman Çizelgesi</h1>
+<p>En küçük kareler yönteminden bugünün dil ve görüntü modellerine, sitede anlattığımız fikirlerin ilk yazıldığı makaleler. Her kartta makalenin ne getirdiği tek cümleyle ve sitede nerede çalışıldığı yazıyor. ⭐ işaretli makaleler alanın yönünü değiştirenler.</p>
+</header>
+
+<div class="bar">
+  <div class="row" id="topics"><span class="lbl">Konu</span></div>
+  <div class="row"><span class="lbl">Çağa git</span><span id="eraJump" class="row" style="gap:6px"></span>
+    <input type="search" id="q" placeholder="Ara: yazar, başlık, kavram…"><span class="cnt" id="cnt"></span></div>
+</div>
+
+<div class="strip"><svg id="strip" viewBox="0 0 1000 70" preserveAspectRatio="none"></svg></div>
+
+<div class="tl" id="tl"></div>
+<div class="empty" id="empty">Bu filtreyle makale yok.</div>
+
+<div class="note">⚠️ <b>Dürüst not:</b> Liste ve yıllar hafızadan derlendi; bu sayfada bir kaynakla tek tek doğrulanmadı. Yıl, makalenin <b>ilk kamuya açıldığı</b> yıldır (çoğu zaman arXiv ön baskısı); konferans/dergi yılı farklıysa «yayın» satırında yazıyor. Seçim bizim: sitede çalıştığımız kavramların kaynağı olanlar. Pek çok önemli çalışma (ör. donanım, veri kümeleri, pekiştirmeli öğrenme) bilerek dışarıda.</div>
+</div>
+
+<script>
+// Konu renkleri (Yol Haritası çağ renkleriyle uyumlu)
+const T={
+  temel:{n:'📐 Temeller',c:'224,184,102'},
+  noral:{n:'🧠 Nöral ağlar & eğitim',c:'110,200,140'},
+  dizi:{n:'🔁 Dizi modelleme',c:'110,160,255'},
+  dil:{n:'🔤 Dil & temsil',c:'120,210,230'},
+  tf:{n:'🎯 Transformer',c:'255,140,90'},
+  llm:{n:'💬 Büyük dil modelleri',c:'64,200,170'},
+  img:{n:'🎨 Görüntü',c:'236,110,190'}
+};
+// Dersler: sitedeki data-model anahtarları
+const L={linreg:'Lineer Regresyon',aktivasyon:'Aktivasyon',xor:'XOR',neural:'Neural Network',opt:'Optimizerlar',ovf:'Aşırı Öğrenme',rnn:'RNN',lstm:'LSTM / GRU',
+  vektor:'Vektör',tok:'Tokenizasyon',embedding:'Kelime Temsili',seq2seq:'Seq2Seq',softmax:'Softmax',attention:'Self-Attention',multihead:'Multi-Head',
+  transformer:'Transformer Bloğu',paper:'Attention Is All You Need',bg:'BERT ↔ GPT',gpt:'GPT Test',gen:'Üretim Stratejileri',ft:'İnce Ayar & RLHF',
+  rag:'RAG',agent:'Ajanlar',ev:'Değerlendirme',cnn:'Görüntü & CNN',vae:'Autoencoder & VAE',gan:'GAN',dif:'Diffusion',t2i:'Metinden Görüntüye'};
+// Çağlar (tarihsel)
+const E=[
+  {y0:1800,y1:1969,n:'KÖKLER',d:'Matematik araçları ve ilk yapay nöron: en küçük kareler, gradyan, bilgi kuramı, algılayıcı.'},
+  {y0:1970,y1:1999,n:'KIŞ VE GERİ YAYILIM',d:'Tek katmanın sınırı görüldü, geri yayılım çok katmanı mümkün kıldı; hafızalı ağlar ve CNN doğdu.'},
+  {y0:2000,y1:2016,n:'DERİN ÖĞRENMENİN UYANIŞI',d:'GPU, büyük veri ve yeni eğitim teknikleri: gömmeler, seq2seq, attention, üretici modeller.'},
+  {y0:2017,y1:2019,n:'TRANSFORMER ÇAĞI',d:'Yinelemesiz, yalnız attention: önce çeviri, sonra BERT ve GPT ile ön eğitim.'},
+  {y0:2020,y1:2022,n:'BÜYÜK MODELLER',d:'Ölçek yasaları, GPT-3, insan geri bildirimi, metinden görüntü üretimi.'},
+  {y0:2023,y1:2100,n:'BUGÜN',d:'Açık ağırlıklı modeller, verimli dikkat, uzman karışımı (MoE), ajanlar.'}
+];
+// [yıl, konu, başlık, yazarlar, ne getirdi, dersler[], yayın notu, yıldız]
+const P=[
+ [1805,'temel','Nouvelles méthodes pour la détermination des orbites des comètes','A.-M. Legendre (en küçük kareler eki; Gauss 1809\'da aynı yöntemi olasılıkla gerekçelendirdi)','Hataların karelerinin toplamını en aza indir: lineer regresyonun ve kayıp fonksiyonu fikrinin başlangıcı.',['linreg']],
+ [1847,'temel','Méthode générale pour la résolution des systèmes d\'équations simultanées','A.-L. Cauchy','Gradyan alçalma: türevin tersi yönünde küçük adımlar at. Bugün bütün sinir ağları böyle eğitiliyor.',['linreg','opt']],
+ [1943,'noral','A Logical Calculus of the Ideas Immanent in Nervous Activity','W. McCulloch, W. Pitts','İlk yapay nöron modeli: girdileri topla, eşiği geçerse ateşle. Mantık kapıları nöronlarla kurulabilir.',['xor','neural']],
+ [1948,'temel','A Mathematical Theory of Communication','C. Shannon','Bilgi ve entropi; metni "sıradaki harfin olasılığı" diye modelleyen ilk dil modelleri.',['gpt','softmax']],
+ [1951,'temel','A Stochastic Approximation Method','H. Robbins, S. Monro','Gürültülü tahminlerle küçük adımlar da hedefe ulaşır: mini-batch / SGD\'nin kuramsal temeli.',['opt']],
+ [1958,'noral','The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain','F. Rosenblatt','Ağırlıklarını örneklerden kendisi ayarlayan ilk öğrenen makine.',['xor']],
+ [1969,'noral','Perceptrons (kitap)','M. Minsky, S. Papert','Tek katmanlı algılayıcı XOR\'u çözemez; ilgi azaldı, "yapay zekâ kışı"na giden yol.',['xor']],
+ [1986,'noral','Learning Representations by Back-propagating Errors','D. Rumelhart, G. Hinton, R. Williams','Geri yayılım: zincir kuralıyla gizli katmanlar da eğitilir. Çok katmanlı ağlar mümkün oldu.',['neural','xor'],'Nature',1],
+ [1989,'img','Backpropagation Applied to Handwritten Zip Code Recognition','Y. LeCun ve ark.','Konvolüsyon + geri yayılım: posta kodu rakamlarını okuyan ilk pratik CNN.',['cnn']],
+ [1990,'dizi','Finding Structure in Time','J. Elman','Gizli durumu bir sonraki adıma geri besleyen basit RNN: ağa hafıza.',['rnn']],
+ [1991,'dizi','Untersuchungen zu dynamischen neuronalen Netzen (diploma tezi)','S. Hochreiter','Gradyan zaman boyunca çarpıla çarpıla söner ya da patlar: vanishing/exploding teşhisi.',['rnn']],
+ [1994,'dizi','Learning Long-Term Dependencies with Gradient Descent is Difficult','Y. Bengio, P. Simard, P. Frasconi','Aynı duvarın İngilizce, kuramsal açıklaması: RNN uzun bağımlılığı öğrenemiyor.',['rnn']],
+ [1994,'dil','A New Algorithm for Data Compression','P. Gage','Byte Pair Encoding: en sık yan yana iki parçayı birleştir. Bugünkü tokenizer\'ların atası.',['tok'],'C Users Journal'],
+ [1997,'dizi','Long Short-Term Memory','S. Hochreiter, J. Schmidhuber','Kapılar ve hücre durumu otobanı: gradyanın bozulmadan aktığı hafıza.',['lstm'],'Neural Computation',1],
+ [1998,'img','Gradient-Based Learning Applied to Document Recognition','Y. LeCun, L. Bottou, Y. Bengio, P. Haffner','LeNet-5: konvolüsyon + havuzlama katmanları, çek okuma sistemlerinde kullanıldı.',['cnn']],
+ [2003,'dil','A Neural Probabilistic Language Model','Y. Bengio, R. Ducharme, P. Vincent, C. Jauvin','Kelimeye öğrenilen vektör + sinir ağıyla sıradaki kelime: sinirsel dil modelinin başlangıcı.',['embedding','gpt'],'JMLR'],
+ [2012,'img','ImageNet Classification with Deep Convolutional Neural Networks','A. Krizhevsky, I. Sutskever, G. Hinton','AlexNet: GPU\'da eğitilen derin CNN ImageNet\'te büyük farkla kazandı; derin öğrenme patlaması.',['cnn'],'NeurIPS',1],
+ [2013,'dil','Efficient Estimation of Word Representations in Vector Space','T. Mikolov, K. Chen, G. Corrado, J. Dean','word2vec (skip-gram, CBOW): "kral − erkek + kadın ≈ kraliçe".',['embedding','vektor']],
+ [2013,'img','Auto-Encoding Variational Bayes','D. Kingma, M. Welling','VAE: kodu bir dağılım yap, yeniden parametrelemeyle eğit; gizli uzaydan örnek çekip yeni resim üret.',['vae'],'ICLR 2014'],
+ [2014,'noral','Dropout: A Simple Way to Prevent Neural Networks from Overfitting','N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov','Eğitimde nöronları rastgele kapat: ağ ezberlemek yerine genellemeyi öğrensin.',['ovf'],'JMLR'],
+ [2014,'img','Generative Adversarial Nets','I. Goodfellow ve ark.','Üretici ↔ ayırt edici yarışı: sahte resimler gerçekten ayırt edilemez hâle gelir.',['gan'],'NeurIPS',1],
+ [2014,'dizi','Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation','K. Cho ve ark.','Encoder–decoder ve GRU: LSTM\'in daha sade, iki kapılı kardeşi.',['lstm','seq2seq'],'EMNLP'],
+ [2014,'dizi','Sequence to Sequence Learning with Neural Networks','I. Sutskever, O. Vinyals, Q. Le','Bir LSTM cümleyi tek vektöre sıkıştırır, ikincisi o vektörden çeviriyi yazar.',['seq2seq'],'NeurIPS'],
+ [2014,'tf','Neural Machine Translation by Jointly Learning to Align and Translate','D. Bahdanau, K. Cho, Y. Bengio','Attention doğdu: decoder her kelimede kaynağın neresine bakacağını kendisi öğrenir.',['seq2seq','attention'],'ICLR 2015',1],
+ [2014,'noral','Adam: A Method for Stochastic Optimization','D. Kingma, J. Ba','Momentum + her ağırlığa kendi adım boyu: bugün en çok kullanılan optimizer ailesi.',['opt'],'ICLR 2015'],
+ [2015,'noral','Deep Residual Learning for Image Recognition','K. He, X. Zhang, S. Ren, J. Sun','ResNet: artık bağlantı (x + f(x)) ile yüzlerce katmanlı ağlar eğitilebildi; Transformer bloğunun "Add" kısmı.',['transformer','cnn'],'CVPR 2016'],
+ [2015,'dil','Neural Machine Translation of Rare Words with Subword Units','R. Sennrich, B. Haddow, A. Birch','BPE\'yi kelime parçalamaya uyguladı: görmediği kelimeyi parçalarından kurmak.',['tok'],'ACL 2016'],
+ [2016,'tf','Layer Normalization','J. Ba, J. Kiros, G. Hinton','Her örneğin kartını kendi içinde ortala ve ölçekle: Transformer\'daki "Norm".',['transformer']],
+ [2017,'tf','Attention Is All You Need','A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. Gomez, Ł. Kaiser, I. Polosukhin','Yineleme yok, yalnız attention: çok kafalı öz-dikkat + konum kodlaması + FFN. Bugünkü dil modellerinin mimarisi.',['paper','attention','multihead','transformer'],'NeurIPS',1],
+ [2017,'llm','Deep Reinforcement Learning from Human Preferences','P. Christiano, J. Leike, T. Brown, M. Martic, S. Legg, D. Amodei','İnsanların iki seçenekten hangisini beğendiğinden ödül modeli öğren: RLHF\'in temeli.',['ft'],'NeurIPS'],
+ [2017,'llm','Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer','N. Shazeer ve ark.','Uzman karışımı (MoE): bir yönlendirici her token için birkaç uzman seçer; dev ama ucuz modeller.',['transformer'],'ICLR'],
+ [2018,'llm','Improving Language Understanding by Generative Pre-Training','A. Radford, K. Narasimhan, T. Salimans, I. Sutskever','GPT-1: önce çok metinde sıradaki kelimeyi tahmin et, sonra göreve ince ayar yap.',['bg','gpt']],
+ [2018,'llm','BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding','J. Devlin, M.-W. Chang, K. Lee, K. Toutanova','Encoder ve [MASK] tahmini: iki yönlü bağlam; anlama görevlerinde çığır.',['bg'],'NAACL 2019',1],
+ [2019,'llm','Language Models are Unsupervised Multitask Learners','A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, I. Sutskever','GPT-2: daha büyük model, daha çok metin; ince ayarsız görev yapabilen ilk dil modelleri.',['gpt']],
+ [2019,'llm','The Curious Case of Neural Text Degeneration','A. Holtzman, J. Buys, L. Du, M. Forbes, Y. Choi','Açgözlü seçim tekrar döngüsüne girer; çekirdek örnekleme (top-p) önerildi.',['gen'],'ICLR 2020'],
+ [2019,'llm','Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer','C. Raffel ve ark.','T5: her görev "metin gir → metin çık"; encoder–decoder ön eğitimi.',['bg'],'JMLR 2020'],
+ [2020,'llm','Scaling Laws for Neural Language Models','J. Kaplan ve ark.','Kayıp; model boyu, veri ve hesapla düzenli bir kuvvet yasasıyla azalır: büyütmek öngörülebilir.',['gpt']],
+ [2020,'llm','Language Models are Few-Shot Learners','T. Brown ve ark.','GPT-3 (175 milyar): birkaç örnekle istemde öğrenme (in-context learning).',['gpt'],'NeurIPS',1],
+ [2020,'llm','Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks','P. Lewis ve ark.','RAG: önce belgelerden ara, bulduğunu modele bağlam olarak ver.',['rag'],'NeurIPS'],
+ [2020,'img','Denoising Diffusion Probabilistic Models','J. Ho, A. Jain, P. Abbeel','Gürültüyü adım adım temizlemeyi öğren: diffusion modellerinin pratik başlangıcı.',['dif'],'NeurIPS',1],
+ [2020,'img','An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale','A. Dosovitskiy ve ark.','ViT: resmi yamalara böl, her yamayı token gibi Transformer\'a ver.',['cnn','transformer'],'ICLR 2021'],
+ [2021,'img','Learning Transferable Visual Models From Natural Language Supervision','A. Radford ve ark.','CLIP: resim ve metni aynı vektör uzayına koy; metinden görüntünün "pusulası".',['t2i'],'ICML'],
+ [2021,'tf','RoFormer: Enhanced Transformer with Rotary Position Embedding','J. Su ve ark.','RoPE: konumu Q ve K\'yı döndürerek ver; skor yalnız göreli mesafeye bağlı kalır.',['multihead']],
+ [2021,'llm','LoRA: Low-Rank Adaptation of Large Language Models','E. Hu ve ark.','Dev ağırlığı dondur, yanına küçük A·B çarpımı ekleyip yalnız onu eğit.',['ft'],'ICLR 2022'],
+ [2021,'llm','Evaluating Large Language Models Trained on Code','M. Chen ve ark.','Codex ve HumanEval; pass@k ölçüsü: k denemeden en az biri doğru mu?',['ev']],
+ [2021,'img','Classifier-Free Diffusion Guidance','J. Ho, T. Salimans','İstemli ve istemsiz tahminin farkını büyüt: metne daha sadık görüntü.',['t2i'],'NeurIPS çalıştayı'],
+ [2021,'img','High-Resolution Image Synthesis with Latent Diffusion Models','R. Rombach, A. Blattmann, D. Lorenz, P. Esser, B. Ommer','Diffusion\'ı pikselde değil sıkıştırılmış gizli uzayda yap: Stable Diffusion.',['t2i','vae'],'CVPR 2022',1],
+ [2022,'llm','Training Language Models to Follow Instructions with Human Feedback','L. Ouyang ve ark.','InstructGPT: ince ayar + ödül modeli + pekiştirme; ChatGPT\'nin yöntemi.',['ft'],'NeurIPS',1],
+ [2022,'llm','Chain-of-Thought Prompting Elicits Reasoning in Large Language Models','J. Wei ve ark.','Cevaptan önce adım adım düşünce yazdırmak çok adımlı sorularda başarıyı artırır.',['agent'],'NeurIPS'],
+ [2022,'llm','Training Compute-Optimal Large Language Models','J. Hoffmann ve ark.','Chinchilla: aynı hesapla daha küçük model + daha çok veri daha iyi.',['gpt']],
+ [2022,'llm','ReAct: Synergizing Reasoning and Acting in Language Models','S. Yao ve ark.','Düşün → araç kullan → gözlemi oku → tekrar: ajan döngüsünün kalıbı.',['agent'],'ICLR 2023'],
+ [2022,'img','Scalable Diffusion Models with Transformers','W. Peebles, S. Xie','DiT: diffusion\'ın içindeki U-Net yerine Transformer; büyüdükçe kalite artıyor.',['t2i'],'ICCV 2023'],
+ [2023,'llm','LLaMA: Open and Efficient Foundation Language Models','H. Touvron ve ark.','Açık ağırlıklı güçlü model ailesi; RMSNorm, SwiGLU, RoPE ile modern decoder tarifi.',['gpt']],
+ [2023,'tf','GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints','J. Ainslie ve ark.','Birkaç sorgu kafası bir K/V kafasını paylaşır: KV önbelleği küçülür.',['multihead']],
+ [2023,'llm','Direct Preference Optimization: Your Language Model is Secretly a Reward Model','R. Rafailov ve ark.','Ödül modeli ve pekiştirme olmadan, tercih çiftlerinden doğrudan eğitim.',['ft'],'NeurIPS'],
+ [2024,'llm','DeepSeek-V3 Technical Report','DeepSeek-AI','671 milyar parametreli MoE; MLA dikkat, çok-token tahmini, düşük maliyetli eğitim.',['transformer']],
+ [2025,'llm','gpt-oss-120b & gpt-oss-20b Model Card','OpenAI','Açık ağırlıklı MoE modeller: GQA, kayan pencere ↔ tam dikkat, dikkat çukuru.',['multihead']]
+];
+
+const tl=document.getElementById('tl'), on=new Set(Object.keys(T));
+let q='';
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function eraOf(y){return E.findIndex(e=>y>=e.y0&&y<=e.y1)}
+function render(){
+  let h='', last=-1, side=0, n=0;
+  const ql=q.toLocaleLowerCase('tr');
+  P.forEach((p,i)=>{
+    const [y,t,ti,au,ne,ls,vn,st]=p;
+    if(!on.has(t)) return;
+    if(ql && !(ti+' '+au+' '+ne+' '+y+' '+ls.map(k=>L[k]).join(' ')).toLocaleLowerCase('tr').includes(ql)) return;
+    const ei=eraOf(y);
+    if(ei!==last){ last=ei; h+='<div class="era" id="era'+ei+'"><span class="rb">'+E[ei].n+'</span><span class="ed">'+E[ei].d+'</span></div>'; }
+    const c=T[t].c; n++;
+    h+='<div class="it'+(side%2?' r':'')+(st?' star':'')+'" style="--c:'+c+'"><span class="dot"></span><span class="yr">'+y+'</span>'
+      +'<div class="cd"><span class="ym">'+y+'</span><span class="tg">'+T[t].n+'</span>'+(st?'<span class="tg" style="--c:255,201,60">⭐ dönüm noktası</span>':'')
+      +'<span class="tt">'+esc(ti)+'</span><span class="au">'+esc(au)+'</span>'
+      +'<p class="ne">'+esc(ne)+'</p><div class="ft">'
+      +ls.map(k=>'<a class="go" href="../index.html#ders='+k+'">📚 '+L[k]+' →</a>').join('')
+      +(vn?'<span class="vn">yayın: '+esc(vn)+'</span>':'')+'</div></div></div>';
+    side++;
+  });
+  tl.innerHTML=h; pack();
+  document.getElementById('empty').style.display=n?'none':'block';
+  document.getElementById('cnt').textContent=n+' / '+P.length+' makale';
+  strip();
+}
+// konu çipleri
+const tp=document.getElementById('topics');
+const all=document.createElement('span'); all.className='chip all'; all.textContent='Hepsi';
+all.onclick=()=>{ Object.keys(T).forEach(k=>on.add(k)); sync(); render(); }; tp.appendChild(all);
+Object.entries(T).forEach(([k,v])=>{
+  const s=document.createElement('span'); s.className='chip'; s.style.setProperty('--c',v.c); s.textContent=v.n; s.dataset.k=k;
+  s.onclick=()=>{ // ilk tıklama yalnız bu konuyu seçer, sonrakiler aç/kapa
+    if(on.size===Object.keys(T).length){ on.clear(); on.add(k); } else if(on.has(k)){ on.delete(k); if(!on.size) Object.keys(T).forEach(x=>on.add(x)); } else on.add(k);
+    sync(); render(); };
+  tp.appendChild(s);
+});
+function sync(){ tp.querySelectorAll('.chip[data-k]').forEach(s=>s.classList.toggle('off',!on.has(s.dataset.k))); }
+// çağ atlama
+const ej=document.getElementById('eraJump');
+E.forEach((e,i)=>{ const b=document.createElement('button'); b.className='era-j'; b.textContent=e.n.charAt(0)+e.n.slice(1).toLocaleLowerCase('tr');
+  b.onclick=()=>{ const el=document.getElementById('era'+i); if(el){ const y=el.getBoundingClientRect().top+scrollY-document.querySelector('.bar').offsetHeight-10; scrollTo({top:y,behavior:'smooth'}); } };
+  ej.appendChild(b); });
+document.getElementById('q').addEventListener('input',e=>{ q=e.target.value.trim(); render(); });
+// yoğunluk şeridi: 1800–1940 sıkıştırılmış, 1940–2025 açık
+function xOf(y){ return y<1940 ? 20+(y-1800)/140*90 : 110+(y-1940)/85*870; }
+function strip(){
+  const sv=document.getElementById('strip'); let s='';
+  s+='<line x1="20" y1="40" x2="980" y2="40" stroke="#3a4a72" stroke-width="2"/>';
+  s+='<line x1="110" y1="30" x2="110" y2="50" stroke="#3a4a72" stroke-dasharray="3 3"/>';
+  [1800,1940,1960,1980,2000,2010,2020].forEach(y=>{ s+='<text x="'+xOf(y)+'" y="64" text-anchor="middle">'+y+'</text>'; });
+  const cnt={}; P.forEach(p=>{ if(on.has(p[1])) cnt[p[0]]=(cnt[p[0]]||[]).concat([p]); });
+  Object.entries(cnt).forEach(([y,arr])=>{ arr.forEach((p,j)=>{
+    s+='<circle cx="'+xOf(+y)+'" cy="'+(38-j*5.5)+'" r="'+(p[7]?3.6:2.6)+'" fill="rgb('+T[p[1]].c+')" stroke="'+(p[7]?'#fff3c4':'none')+'"><title>'+y+' · '+esc(p[2])+'</title></circle>'; }); });
+  s+='<text x="130" y="14">her nokta bir makale · ⭐ = dönüm noktası</text>';
+  sv.innerHTML=s;
+}
+// Masaüstü: kartları iki sütuna sıkı yerleştir (sıra korunur; her kart bir öncekinden en az 46px aşağıda, kısa olan sütuna)
+function pack(){
+  const kids=[...tl.children];
+  if(innerWidth<=820){ kids.forEach(k=>{k.style.position='';k.style.top='';k.style.left='';k.style.width='';k.style.marginLeft='';}); tl.style.height=''; return; }
+  let L=0,R=0,prev=-1e9;
+  kids.forEach(k=>{ k.style.position='absolute'; k.style.marginLeft='0'; if(k.classList.contains('era')){k.style.left='0';k.style.width='100%';} });
+  kids.forEach(k=>{
+    if(k.classList.contains('era')){ const y=Math.max(L,R)+(prev<0?0:26); k.style.top=y+'px'; const b=y+k.offsetHeight+18; L=R=b; prev=b-46; return; }
+    const right = R < L;
+    k.classList.toggle('r', right); k.style.left=right?'50%':'0'; k.style.width='50%';
+    const y=Math.max(right?R:L, prev+46);
+    k.style.top=y+'px'; prev=y;
+    const b=y+k.offsetHeight+10; if(right) R=b; else L=b;
+  });
+  tl.style.height=Math.max(L,R)+'px';
+}
+addEventListener('resize',()=>{ clearTimeout(pack.t); pack.t=setTimeout(pack,80); });
+if(document.fonts) document.fonts.ready.then(pack);
+sync(); render();
+</script>
+</body></html>

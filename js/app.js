@@ -4367,3 +4367,10 @@ function setupFloatingPanel(ids){
   }
   draw(); info();
 })();
+
+/* ---- Adres çubuğundan ders aç: index.html#ders=rnn (harita sayfalarından gelen bağlantılar) ---- */
+(function(){
+  function go(){ const m=location.hash.match(/^#ders=([\w-]+)/); if(!m) return;
+    const b=document.querySelector('.navbtn[data-model="'+m[1]+'"]'); if(b){ b.click(); scrollTo(0,0); } }
+  window.addEventListener('hashchange',go); setTimeout(go,60);
+})();
