@@ -2564,3 +2564,14 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #mhView .mv-tok{margin:10px 0 6px; font-size:12.5px}
 #mhView .mv-proof{line-height:1.9; font-size:12.5px; overflow-x:auto}
 @media(max-width:600px){#mhView .mv-mid{width:100%}}
+
+/* Multi-Head → özel sahne animasyonu */
+#mhAnim .mha-steps{display:flex; flex-wrap:wrap; gap:5px; margin:4px 0 8px}
+#mhAnim .mha-steps button{font:12px system-ui,sans-serif; padding:4px 9px; border-radius:14px; border:1px solid var(--line); background:#161b26; color:#cdd4e4; cursor:pointer}
+#mhAnim .mha-steps button.on{border-color:#ffc82e; color:#ffc82e; background:#2a2410}
+#mhAnim .mha-steps button.done{color:#7fd18b}
+#mhAnim .mha-bar{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:4px}
+#mhAnim .mha-box{margin-top:8px; padding:9px 12px; border-radius:9px; font-size:13px; line-height:1.6; border-left:3px solid var(--line); background:rgba(255,255,255,.03)}
+#mhAnim .mha-goal{border-left-color:#4aa3ff}
+#mhAnim .mha-soz{border-left-color:#ffd24a}
+#mhAnim .mha-elde{border-left-color:#5fd18a}
