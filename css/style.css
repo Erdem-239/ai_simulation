@@ -2408,29 +2408,14 @@ pre.nl-code{background:#0e1424; border:1px solid var(--line); border-radius:8px;
 body.tt-full #ttBox.tt-pap #ttPapers{flex:1 1 auto;min-height:0;display:flex}
 body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 
-/* Yol Haritası çağ arka planları (#551→#553): altın kabartma çizim, parıltı, süslü çerçeve, parlayan yıldızlar */
-#techSvg .era-art{pointer-events:none}
-#techSvg .era-art .ea-halo{fill:rgba(var(--ea),.16); filter:blur(22px)}
-#techSvg .era-art .ea-frame{fill:rgba(8,12,24,.28); stroke:rgba(244,217,152,.4); stroke-width:1.4}
-#techSvg .era-art .ea-co{fill:none; stroke:#f4d998; stroke-width:2.2; stroke-linecap:round; filter:drop-shadow(0 0 3px rgba(255,214,120,.9))}
-#techSvg .era-art .ea-co2{stroke-width:1; opacity:.6}
-#techSvg .era-art .ea-dot2{fill:#ffe9a8; filter:drop-shadow(0 0 4px #ffd36a)}
-#techSvg .era-art .ea-dia{fill:#ffe9a8; stroke:#8a6a2e; stroke-width:1; filter:drop-shadow(0 0 4px rgba(255,214,120,.9))}
-/* alttaki geniş bulanık kopya = ışıma; üstteki ince kopya = keskin altın çizgi */
-#techSvg .era-art .ea-under{opacity:.55; filter:blur(5px); animation:eaPulse 4.5s ease-in-out infinite alternate}
-#techSvg .era-art .ea-under .ea-s{stroke:rgb(var(--ea)); stroke-width:8}
-#techSvg .era-art .ea-under .ea-d{fill:rgb(var(--ea))}
-#techSvg .era-art .ea-under .ea-f{fill:rgb(var(--ea)); fill-opacity:.4; stroke:none}
-#techSvg .era-art .ea-under .ea-t{fill:rgb(var(--ea)); stroke:rgb(var(--ea)); stroke-width:2}
-#techSvg .era-art .ea-draw{filter:drop-shadow(0 0 2px rgba(255,214,120,.95)) drop-shadow(0 0 7px rgba(var(--ea),.75))}
-#techSvg .era-art .ea-draw .ea-s{fill:none; stroke:#ffe29a; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
-#techSvg .era-art .ea-draw .ea-b{stroke:rgb(var(--ea)); stroke-width:3.4; filter:brightness(1.6)}
-#techSvg .era-art .ea-draw .ea-f{fill:rgba(255,226,154,.13); stroke:rgba(255,226,154,.55); stroke-width:1}
-#techSvg .era-art .ea-draw .ea-d{fill:#ffe29a; stroke:none}
-#techSvg .era-art .ea-draw .ea-dash{stroke-dasharray:7 7; animation:eaDash 2.4s linear infinite}
-#techSvg .era-art .ea-draw .ea-t{fill:#ffe9b0; stroke:none; font:700 17px "Cinzel",Georgia,serif; letter-spacing:1px}
-#techSvg .era-art .ea-under .ea-dash{stroke-dasharray:none}
-#techSvg .era-art .ea-sp{fill:#fff3c4; filter:drop-shadow(0 0 5px #ffd36a) drop-shadow(0 0 10px rgba(var(--ea),.9)); transform-box:fill-box; transform-origin:center; animation:eaTwinkle 3s ease-in-out infinite alternate}
-@keyframes eaPulse{from{opacity:.3} to{opacity:.8}}
-@keyframes eaDash{to{stroke-dashoffset:-28}}
-@keyframes eaTwinkle{from{opacity:.15} to{opacity:1}}
+/* Yol Haritası çağ arka planları (#551→#555): Civ 6 gibi sönük tek tonlu gravür çizim, parşömen tanesi, yunan kıvrımlı friz, dikey çağ adı filigranı — kartlar öne çıkar */
+#techSvg .era-art{pointer-events:none; opacity:.9}
+#techSvg .era-art .ea-s{fill:none; stroke:#f6e7c1; stroke-opacity:.14; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round}
+#techSvg .era-art .ea-b{stroke:rgb(var(--ea)); stroke-opacity:.22; stroke-width:2.8}
+#techSvg .era-art .ea-f{fill:#f6e7c1; fill-opacity:.05; stroke:#f6e7c1; stroke-opacity:.13; stroke-width:1}
+#techSvg .era-art .ea-d{fill:#f6e7c1; fill-opacity:.14; stroke:none}
+#techSvg .era-art .ea-dash{stroke-dasharray:6 6}
+#techSvg .era-art .ea-t{fill:#f6e7c1; fill-opacity:.14; font:600 15px "Cinzel",Georgia,serif; letter-spacing:1px}
+#techSvg .ea-rule{stroke:#e0b866; stroke-opacity:.3; stroke-width:1; pointer-events:none}
+#techSvg .ea-wm{font:700 54px "Cinzel",Georgia,serif; letter-spacing:14px; fill-opacity:.1; pointer-events:none}
+#techSvg .ea-wm-v{font-size:26px; letter-spacing:6px}

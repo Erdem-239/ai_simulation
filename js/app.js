@@ -2700,6 +2700,8 @@ window.__goStage=function(tab, st, sel){
     +'<radialGradient id="tnGradDone" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#a8d896"/><stop offset="100%" stop-color="#4a8a3f"/></radialGradient>'
     +'<radialGradient id="tnGradAvail" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#ffe9a8"/><stop offset="100%" stop-color="#c9962f"/></radialGradient>'
     +'<radialGradient id="tnGradLocked" cx="35%" cy="30%" r="75%"><stop offset="0%" stop-color="#c9b98f"/><stop offset="100%" stop-color="#8a7550"/></radialGradient>'
+    +'<pattern id="eaPp" width="46" height="46" patternUnits="userSpaceOnUse"><circle cx="6" cy="9" r=".8" fill="#fff3d0" fill-opacity=".10"/><circle cx="31" cy="4" r=".6" fill="#fff3d0" fill-opacity=".08"/><circle cx="19" cy="28" r=".9" fill="#fff3d0" fill-opacity=".09"/><circle cx="40" cy="35" r=".7" fill="#fff3d0" fill-opacity=".10"/><circle cx="11" cy="41" r=".6" fill="#fff3d0" fill-opacity=".08"/><path d="M2 20 l5 -1 M26 15 l6 1 M33 24 l5 -2 M14 6 l4 1" stroke="#fff3d0" stroke-opacity=".07" stroke-width=".7"/></pattern>'
+    +'<pattern id="eaMe" width="22" height="12" patternUnits="userSpaceOnUse"><path d="M0 10 H3 V2 H19 V8 H8 V5 H14 V10 H22" fill="none" stroke="#e0b866" stroke-opacity=".5" stroke-width="1.3"/></pattern>'
     +'</defs>';
 
 
@@ -2749,7 +2751,7 @@ window.__goStage=function(tab, st, sel){
       W.forEach((t,i)=>{ const x=30+i*76; g+='<rect x="'+x+'" y="170" width="62" height="26" rx="6" class="ea-s"/><text x="'+(x+8)+'" y="188" class="ea-t" style="font-size:13px">'+t+'</text>'; });
       [[4,0,1],[2,0,.7],[3,2,.5],[1,0,.6],[4,2,.4]].forEach(a=>{ const x1=61+a[0]*76, x2=61+a[1]*76, h=30+Math.abs(x1-x2)*0.45;
         g+='<path d="M'+x1+' 168 Q'+((x1+x2)/2)+' '+(168-h)+' '+x2+' 168" class="ea-s" style="stroke-width:'+(1+a[2]*3)+'"/>'; });
-      for(let r=0;r<4;r++) for(let c=0;c<4;c++) g+='<rect x="'+(130+c*22)+'" y="'+(224+r*16)+'" width="20" height="14" class="ea-f"'+((c<=r)?' style="fill-opacity:.35"':'')+'/>';
+      for(let r=0;r<4;r++) for(let c=0;c<4;c++) g+='<rect x="'+(130+c*22)+'" y="'+(224+r*16)+'" width="20" height="14" class="ea-f"'+((c<=r)?' style="fill-opacity:.12"':'')+'/>';
       g+='<text x="30" y="250" class="ea-t">softmax(QKᵀ/√d)·V</text><text x="230" y="250" class="ea-t">Q  K  V</text>';
       return g; },
     // 🚀 Yapay zekâ devrimi: makale sayfası, yıldızlar, GPU çipi
@@ -2811,32 +2813,17 @@ window.__goStage=function(tab, st, sel){
     img:function(){ let g='';
       g+='<rect x="40" y="50" width="180" height="140" rx="6" class="ea-s ea-b"/><circle cx="180" cy="86" r="16" class="ea-s"/>';
       g+='<path d="M48 182 L100 112 L140 160 L168 128 L212 182" class="ea-s"/>';
-      for(let r=0;r<5;r++) for(let c=0;c<5;c++) g+='<rect x="'+(250+c*22)+'" y="'+(60+r*22)+'" width="20" height="20" class="ea-f"'+(((r+c)%3===0)?' style="fill-opacity:.4"':'')+'/>';
+      for(let r=0;r<5;r++) for(let c=0;c<5;c++) g+='<rect x="'+(250+c*22)+'" y="'+(60+r*22)+'" width="20" height="20" class="ea-f"'+(((r+c)%3===0)?' style="fill-opacity:.12"':'')+'/>';
       g+='<path d="M250 260 L330 180 M322 176 l14 -6 l-6 14 Z" class="ea-s ea-b"/>';
       let seed=7; const R=()=>{seed=(seed*1103515245+12345)%2147483648; return seed/2147483648;};
       for(let k=0;k<40;k++) g+='<circle cx="'+(40+R()*170)+'" cy="'+(220+R()*60)+'" r="1.6" class="ea-d"/>';
       g+='<text x="40" y="215" class="ea-t">gürültü → resim</text>';
       return g; }
   };
-  // Bir çizimi kutuya (x,y,w,h) sığdırıp çağ rengiyle çiz: altın kabartma çizim + parıltı + süslü çerçeve + parlayan yıldızlar
-  let artN=0;
+  // Bir çizimi kutuya (x,y,w,h) sığdırıp çiz — Civ 6'daki gibi sönük, tek tonlu gravür çizgi (kartların önüne geçmez)
   function artBox(key,x,y,w,h,c){
-    const sc=Math.min(w/400,h/300)*0.9, dw=400*sc, dh=300*sc, ox=x+(w-dw)/2, oy=y+(h-dh)/2;
-    const fx=ox-14, fy=oy-12, fw=dw+28, fh=dh+24, id=++artN;
-    const cor=(cx,cy,sx,sy)=>'<g transform="translate('+cx.toFixed(1)+','+cy.toFixed(1)+') scale('+sx+','+sy+')"><path d="M0 26 V10 Q0 0 10 0 H26" class="ea-co"/><path d="M5 18 V12 Q5 5 12 5 H18" class="ea-co ea-co2"/><circle cx="10" cy="10" r="2.6" class="ea-dot2"/></g>';
-    const rh=(cx,cy)=>'<path d="M'+cx+' '+(cy-6)+' l6 6 l-6 6 l-6 -6 Z" class="ea-dia"/>';
-    let g='<g class="era-art" style="--ea:'+c+'">';
-    g+='<ellipse cx="'+(fx+fw/2)+'" cy="'+(fy+fh/2)+'" rx="'+(fw*.5)+'" ry="'+(fh*.5)+'" class="ea-halo"/>';
-    g+='<rect x="'+fx+'" y="'+fy+'" width="'+fw+'" height="'+fh+'" rx="12" class="ea-frame"/>';
-    g+=cor(fx,fy,1,1)+cor(fx+fw,fy,-1,1)+cor(fx,fy+fh,1,-1)+cor(fx+fw,fy+fh,-1,-1);
-    g+=rh(fx+fw/2,fy)+rh(fx+fw/2,fy+fh)+rh(fx,fy+fh/2)+rh(fx+fw,fy+fh/2);
-    const T='translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')', art=ART[key]();
-    g+='<g class="ea-under" transform="'+T+'">'+art+'</g><g class="ea-draw" transform="'+T+'">'+art+'</g>';
-    let sd=id*7919;
-    const R=()=>{sd=(sd*1103515245+12345)%2147483648; return sd/2147483648;};
-    for(let k=0;k<7;k++){ const px=fx+R()*fw, py=fy+R()*fh, z=.5+R()*.9;
-      g+='<path d="M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2 Z" class="ea-sp" transform="translate('+px.toFixed(1)+','+py.toFixed(1)+') scale('+z.toFixed(2)+')" style="animation-delay:'+(R()*4).toFixed(2)+'s; animation-duration:'+(2.2+R()*2.4).toFixed(2)+'s"/>'; }
-    return g+'</g>';
+    const sc=Math.min(w/400,h/300)*0.96, dw=400*sc, dh=300*sc, ox=x+(w-dw)/2, oy=y+(h-dh)/2;
+    return '<g class="era-art" style="--ea:'+c+'" transform="translate('+ox.toFixed(1)+','+oy.toFixed(1)+') scale('+sc.toFixed(3)+')">'+ART[key]()+'</g>';
   }
   // Kartların kapladığı dikdörtgenler (çizimi boş alana koymak için)
   function cardRects(e){
@@ -2855,22 +2842,26 @@ window.__goStage=function(tab, st, sel){
     }
     return null;
   }
-  // Bant zemini: çağ renginde solan ton + konu çizimi kartların boş bıraktığı yere
+  // Bant zemini: çağ tonu + parşömen tanesi + yunan kıvrımlı friz + dikey çağ adı filigranı + sönük gravür çizim
   function eraArt(i,e,x,y,w,h){
-    let g='<linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".2"/><stop offset=".55" stop-color="rgb('+e.c+')" stop-opacity=".06"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".18"/></linearGradient>';
-    g='<defs>'+g+'</defs><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaG'+i+')" pointer-events="none"/>';
-    const rects=cardRects(e), top=VERT?36:46;
-    const place=(key,rx,ry,rw,rh,c)=>{ const b=freeSpot(rx,ry,rw,rh,rects)||[rx,ry,rw,rh]; rects.push(b); return artBox(key,b[0],b[1],b[2],b[3],c); };
+    let g='<defs><linearGradient id="eaG'+i+'" x1="0" y1="0" x2="'+(VERT?1:0)+'" y2="'+(VERT?0:1)+'"><stop offset="0" stop-color="rgb('+e.c+')" stop-opacity=".22"/><stop offset=".5" stop-color="rgb('+e.c+')" stop-opacity=".07"/><stop offset="1" stop-color="rgb('+(e.c2||e.c)+')" stop-opacity=".2"/></linearGradient></defs>';
+    g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaG'+i+')" pointer-events="none"/>';
+    g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="url(#eaPp)" pointer-events="none"/>';
+    const top=VERT?36:46;   // her çağda tek, büyük arka plan çizimi — boş yer aramadan bandın ortasına (kartların ARKASINA) oturur
     if(e.lanes){
-      if(VERT){ g+=place('llm',x+6,y+top,w/2-12,h-top-6,e.c)+place('img',x+w/2+6,y+top,w/2-12,h-top-6,e.c2); }
-      else { g+=place('llm',x+30,y+top,w-36,h/2-top,e.c)+place('img',x+30,y+h/2+6,w-36,h/2-12,e.c2); }
-    } else {
-      g+=place('t'+i,x+6,y+top,w-12,h-top-6,e.c);
-      const b2=freeSpot(x+6,y+top,w-12,h-top-6,rects);   // yer kalırsa ikinci, küçük bir kopya
-      if(b2 && b2[2]>=190 && ART['t'+i+'b']) g+=artBox('t'+i+'b',b2[0],b2[1],b2[2],b2[3],e.c);
-    }
+      if(VERT){ g+=artBox('llm',x+6,y+top,w/2-12,h-top-26,e.c)+artBox('img',x+w/2+6,y+top,w/2-12,h-top-26,e.c2); }
+      else { g+=artBox('llm',x+40,y+top,w-80,h/2-top-10,e.c)+artBox('img',x+40,y+h/2+8,w-80,h/2-40,e.c2); }
+    } else g+=artBox('t'+i,x+6,y+top,w-12,h-top-26,e.c);
+    g+='<rect x="'+(x+10)+'" y="'+(y+h-17)+'" width="'+(w-20)+'" height="12" fill="url(#eaMe)" pointer-events="none"/>'
+      +'<line x1="'+(x+10)+'" y1="'+(y+h-19)+'" x2="'+(x+w-10)+'" y2="'+(y+h-19)+'" class="ea-rule"/><line x1="'+(x+10)+'" y1="'+(y+h-3)+'" x2="'+(x+w-10)+'" y2="'+(y+h-3)+'" class="ea-rule"/>'
+      +'<line x1="'+(x+10)+'" y1="'+(y+4)+'" x2="'+(x+w-10)+'" y2="'+(y+4)+'" class="ea-rule"/>';
+    const nm=e.nm.replace(/^\S+\s/,'');
+    if(!VERT){ const tx=e.lanes? x+w-26 : x+24;
+      g+='<text class="ea-wm" transform="translate('+tx+','+(y+h/2)+') rotate(-90)" text-anchor="middle" style="fill:rgb('+e.c+')">'+nm+'</text>'; }
+    else g+='<text class="ea-wm ea-wm-v" x="'+(x+w/2)+'" y="'+(y+h-26)+'" text-anchor="middle" style="fill:rgb('+e.c+')">'+nm+'</text>';
     return g;
   }
+
   // Madalyon tarzı yeni kart — gerçek HTML/CSS'i <foreignObject> ile SVG
   // koordinat sistemine gömer (viewBox ölçeklemesiyle otomatik büyür/küçülür,
   // ayrı bir mobil/masaüstü CSS'i gerekmez). Seçim "yılan" kenarlığı ve
