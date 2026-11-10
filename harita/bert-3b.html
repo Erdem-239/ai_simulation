@@ -18,6 +18,7 @@
 #bar{position:fixed;left:0;right:0;bottom:0;padding:6px 10px;background:rgba(11,14,20,.92);border-top:1px solid var(--line);display:flex;gap:6px;align-items:center;z-index:7}
 #bar button{background:#1a2030;color:var(--tx);border:1px solid #38425a;border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer}
 html.emb #top,html.emb #bar,html.emb #info{display:none!important}
+html.emb #c{touch-action:pan-y}
 </style></head><body>
 <script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add("emb")</script>
 <canvas id="c"></canvas><div id="lb"></div>
