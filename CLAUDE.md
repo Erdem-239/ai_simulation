@@ -7,6 +7,32 @@ halinde), `js/app.js` (Yol Haritası/tech-tree + sidebar + genel sayfa
 mantığı), `js/lesson-*.js` (belirli derslerin simülasyon kodu), `css/style.css`.
 GitHub Pages'ten `main` dalından yayınlanır.
 
+## NİHAİ HEDEF (kullanıcı, 2026-11-11) — yön kaybolmasın
+
+Bu site tek başına bir "yapay zekâ sitesi" olarak kalmayacak; kullanıcının
+**kişisel blog / öğrenme alanı**nın ilk parçası: çalışmalarını, projelerini,
+öğrendiklerini ve düşüncelerini, bu tür canlı simülasyonlarla birlikte
+paylaşabileceği bir yer. Sıra: **yapay zekâ → computer science → elektrik-
+elektronik → fizik → biyoloji …**, her biri **şimdiki sistemle** (Yol Haritası
+ağacı + 8 aşamalı ders şablonu + sahneli simülasyon kalıpları + testler).
+
+- **AI bir "çatı" DEĞİL.** Alanlar birbirinin altında değil, **birbirinden
+  bağımsız**; ama birbirini **besler** (ortak zemin: bilim). Alanlar arası
+  geçiş/atıf olabilir, hiyerarşi yok.
+- **Mimari sonuç (henüz yapılmadı, acele etme):** bugünkü tek dev `index.html`
+  alan başına çoğaltılamaz; ileride ortak **motor** (ağaç, ders şablonu, sahne
+  oynatıcıları, test) ile alana özel **içerik** ayrılacak, üstüne basit bir ana
+  sayfa/blog katmanı gelecek. Dosya bağlantıları göreli kalsın ki taşınabilsin.
+- **Domain henüz yok**; site GitHub Pages'te (`main`). Adres yapısı (tek depo mu
+  çok depo mu, depo adı) ikinci alana geçmeden netleştirilecek; depo adı
+  değişirse eski bağlantılar kırılır.
+- **Yakın plan (kullanıcı):** (1) yapay zekâ sitesini bitir (ya da şu haliyle
+  yeter) ve **genel siteyi LinkedIn'de paylaş**; (2) ardından **2–3 günde bir**
+  tek tek dersleri özel olarak paylaş. Bu yüzden her ders kendi başına
+  paylaşılabilir/okunabilir olmalı (güçlü Giriş + Hikâye, doğrudan bağlantı:
+  `index.html#ders=KEY`), ve site herkese açık olduğundan kişisel notlar/hedefler
+  (ör. "makaleyi okuyabilmek") site metnine yazılmaz.
+
 ## Ders modülü içerik şablonu (devam eden bir iş)
 
 Kullanıcı tüm ders modüllerinin (Yol Haritası'ndaki her düğüm = bir ders)
