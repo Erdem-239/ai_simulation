@@ -2732,3 +2732,24 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 #btAnim .mha-tk{position:absolute; left:0; right:0; bottom:0; height:14px; pointer-events:none}
 #btAnim .mha-tk i{position:absolute; top:-12px; width:2px; height:10px; background:#5a6a8a; transform:translateX(-1px)}
 #btAnim .mha-tk span{position:absolute; bottom:0; transform:translateX(-50%); font-size:10px; color:var(--muted)}
+
+/* ---- İlk açılış karşılama ekranı (js/welcome.js) ---- */
+.wl-ov[hidden]{display:none!important}
+.wl-ov{position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(6,9,20,.82); backdrop-filter:blur(3px)}
+.wl-card{position:relative; width:min(760px,100%); max-height:94vh; overflow:auto; padding:26px 30px 22px; border-radius:18px; border:2px solid #c9a24a; background:radial-gradient(ellipse at 15% 0%,#25315c 0,#101630 62%); color:#f3ead2; box-shadow:0 20px 60px rgba(0,0,0,.6), inset 0 0 0 6px rgba(201,162,74,.12)}
+.wl-x{position:absolute; right:12px; top:10px; background:none; border:0; color:#cdbf98; font-size:20px; cursor:pointer}
+.wl-kicker{font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#c9a24a; font-weight:700}
+.wl-card h1{margin:6px 0 8px; font:700 clamp(28px,5vw,42px)/1.1 Georgia,'Cinzel',serif; color:#ffd77a; text-shadow:0 0 24px rgba(255,200,80,.25)}
+.wl-sub{margin:0 0 16px; font-size:16px; line-height:1.6; color:#e8dcc0}
+.wl-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:14px}
+.wl-grid div{padding:10px 12px; border-radius:12px; border:1px solid rgba(201,162,74,.5); background:linear-gradient(#3b2912aa,#2a1d0eaa); font-size:13px; line-height:1.5; color:#d9c79a}
+.wl-grid b{display:block; margin-bottom:3px; color:#ffd77a; font-size:14px}
+.wl-steps{margin:0 0 16px; padding-left:20px; font-size:14px; line-height:1.8; color:#e8dcc0}
+.wl-btns{display:flex; flex-wrap:wrap; gap:10px}
+.wl-go,.wl-alt{border-radius:12px; padding:11px 18px; font-size:15px; font-weight:700; cursor:pointer}
+.wl-go{border:2px solid #ffd77a; background:linear-gradient(#e0b04a,#b88a2e); color:#2a1d0e}
+.wl-alt{border:2px solid #c9a24a; background:transparent; color:#f3ead2}
+.wl-foot{margin-top:12px; font-size:12px; color:#9d916f}
+.sb-hello{margin:2px 0 8px; width:100%; padding:6px 10px; border-radius:10px; border:1px solid rgba(201,162,74,.5); background:rgba(201,162,74,.08); color:#f3ead2; font-size:12.5px; cursor:pointer; text-align:left}
+body.wl-open{overflow:hidden}
+@media(max-width:640px){.wl-grid{grid-template-columns:1fr}.wl-card{padding:22px 18px 18px}}
