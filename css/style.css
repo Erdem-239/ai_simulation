@@ -2753,3 +2753,6 @@ body.tt-full #ttBox.tt-pap #ttPapers iframe{height:100%;min-height:0}
 .sb-hello{margin:2px 0 8px; width:100%; padding:6px 10px; border-radius:10px; border:1px solid rgba(201,162,74,.5); background:rgba(201,162,74,.08); color:#f3ead2; font-size:12.5px; cursor:pointer; text-align:left}
 body.wl-open{overflow:hidden}
 @media(max-width:640px){.wl-grid{grid-template-columns:1fr}.wl-card{padding:22px 18px 18px}}
+
+#model-harita .hr-off{display:none!important}
+#model-harita .hr-g3{order:-1}
