@@ -1903,3 +1903,6 @@ Kullanıcı domain aldı (Hostinger, `erdemerzurumlu.dev`; DNS: 4 A kaydı GitHu
 - Doğrulama: ana sayfa, eski `#ders=xor`, eski `harita/...?embed=1#rope`, AI sitesi → 404 yok, sayfa hatası 0, 33 model görünür, iç içe `.model` yok.
 - **Henüz yapılmadı:** gündem seçici (X API; kullanıcı ücretli API'yi seçti, ham akış herkese açık sitede GÖSTERİLMEZ, yalnız gizli yönetim sayfasında), diğer alanların (veri bilimi, bilgisayar bilimi…) içeriği, blog/yazılar bölümü. Kişisel hedefler site metnine yazılmaz.
 - **Ders:** root-relative (`/…`) bağlantı olmadığı için taşıma risksizdi — yeni dosyalarda da kökten (`/…`) bağlantı verme, göreli kal.
+
+## Ana sayfa tasarımları (#602)
+Kullanıcı güneş sistemi tasarımını **yedekledi** (`index-gunes-sistemi.html`, noindex, eski haline dönmek için `index.html`'e kopyalanır) ve yeni deneme istedi: **yalnız gökada, merkezde kara delik, çevresinde dönen yıldızlar = alanlar/dersler**. Yeni `index.html`: merkezdeki XOR ışığı kalktı (gizli `#heat` canvas'ı XOR hesabını sürdürür, simülasyon bölümü bozulmasın), merkez `#bhCore` (Interstellar tarzı kara delik sprite'ı, `bhDraw`), parçacıklar 2 kollu logaritmik spiral (tek hızla dönüş ki kollar bozulmasın), gezegenler parlak yıldız (CSS), arka plandaki ayrı kara delik kapatıldı. Beğenilmezse yedek dosya geri kopyalanır.

@@ -147,6 +147,13 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 .core .corona{position:absolute;inset:-70%;border-radius:50%;pointer-events:none;background:repeating-conic-gradient(from 0deg,rgba(255,215,205,.22) 0 1.6deg,transparent 1.6deg 7deg);-webkit-mask:radial-gradient(closest-side,transparent 30%,#000 40%,transparent 100%);mask:radial-gradient(closest-side,transparent 30%,#000 40%,transparent 100%);animation:corona 120s linear infinite;opacity:.55}
 @keyframes corona{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.core .corona{animation:none}}
+
+/* Yeni tasarım: gökada + merkezde kara delik, dersler yörüngedeki yıldızlar */
+.core:before,.core:after,.core .halo,.core .corona{display:none!important}
+#bhCore{position:absolute;left:50%;top:50%;width:800%;height:800%;transform:translate(-50%,-50%);pointer-events:none}
+.pl .pb{background:radial-gradient(circle,#fff 0,#fff 16%,color-mix(in srgb,var(--c) 65%,#fff) 32%,var(--c) 52%,transparent 74%)!important;box-shadow:0 0 14px var(--c),0 0 40px color-mix(in srgb,var(--c) 55%,transparent)!important}
+.pl.act .pb:after{display:none}
+.pl.soon .pb{filter:none;opacity:.8}
 </style>
 </head>
 <body>
@@ -163,16 +170,16 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 
 <header class="hero" id="top">
   <canvas class="orb" id="orbBack" aria-hidden="true"></canvas>
-  <div class="core" aria-hidden="true"><i class="halo"></i><i class="corona"></i><canvas id="heat"></canvas></div>
+  <div class="core" aria-hidden="true"><canvas id="bhCore"></canvas><canvas id="heat" style="display:none"></canvas></div>
   <canvas class="orb" id="orbFront" aria-hidden="true" style="z-index:4"></canvas>
   <div id="planets"></div>
   <div class="hero-top">
-    <div class="pill"><b></b>Ortadaki ışık canlı: bir sinir ağı şu an XOR'u öğreniyor</div>
+    <div class="pill"><b></b>Merkezde bir kara delik, çevresinde dönen her yıldız bir alan</div>
     <h1>Per aspera<br><em>ad astra</em></h1>
     <p class="motto">Zorluklardan yıldızlara</p>
   </div>
   <div class="hero-bot">
-    <p class="sub">Sayılardan Transformer'a, her konu tarayıcında çalışan bir simülasyon. Bir gezegene dokun, o alana geç.</p>
+    <p class="sub">Sayılardan Transformer'a, her konu tarayıcında çalışan bir simülasyon. Bir yıldıza dokun, o alana geç.</p>
     <div class="cta">
       <a class="btn p" href="yapay-zeka/index.html">Yol Haritasını aç <span>→</span></a>
       <a class="btn s" href="yapay-zeka/index.html#ders=xor">▶ XOR'u dene</a>
@@ -446,7 +453,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
       if(st.z===2&&st.s>2.1){g.fillStyle='rgba(255,255,255,'+(a*.35)+')';g.fillRect(x-5,y+st.s/2-.3,12,.6);g.fillRect(x+st.s/2-.3,y-5,.6,12)}
     }
     // kara delik
-    if(by>-r*6&&by<H+r*6){
+    if(false&&by>-r*6&&by<H+r*6){
       const k=r/R0,S=R0*16;g.globalAlpha=.92;g.drawImage(bhSpr,bx-S*k/2,by-S*k/2,S*k,S*k);g.globalAlpha=1;
       g.globalCompositeOperation='lighter';
       for(const b of band){
@@ -505,20 +512,40 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     el.addEventListener('focus',()=>F.hov=1);el.addEventListener('blur',()=>F.hov=0);
     host.appendChild(el);F.el=el;F.pb=el.firstChild;F.a=F.ph;
   });
+  const rnd=Math.random;
+  function bhDraw(c){
+    const S=1024,R0=64;c.width=c.height=S;const x=c.getContext('2d'),m=S/2,R=R0;
+    let gr=x.createRadialGradient(m,m,R*.8,m,m,R*7.2);gr.addColorStop(0,'rgba(255,236,232,.30)');gr.addColorStop(.22,'rgba(255,190,190,.14)');gr.addColorStop(.6,'rgba(190,140,170,.05)');gr.addColorStop(1,'rgba(150,110,140,0)');x.fillStyle=gr;x.fillRect(0,0,S,S);
+    x.globalCompositeOperation='lighter';x.lineCap='round';
+    const wisp=half=>{for(let i=0;i<34;i++){const t=rnd(),rx=R*(2.4+4.4*rnd()),ry=R*(.012+.1*t*rnd()),y=(rnd()-.5)*R*.05,a=.1+.38*(1-t)*rnd(),lg=x.createLinearGradient(m-rx,0,m+rx,0);
+      lg.addColorStop(0,'rgba(255,200,190,0)');lg.addColorStop(.28,'rgba(255,215,205,'+a+')');lg.addColorStop(.5,'rgba(255,245,240,'+Math.min(.9,a*1.7)+')');lg.addColorStop(.72,'rgba(255,215,205,'+a+')');lg.addColorStop(1,'rgba(255,200,190,0)');
+      x.strokeStyle=lg;x.lineWidth=.8+rnd()*2.4;x.beginPath();x.ellipse(m,m+y,rx,ry,0,half?Math.PI:0,half?6.2832:Math.PI);x.stroke()}};
+    wisp(true);
+    x.shadowColor='rgba(255,215,210,.9)';x.shadowBlur=14;
+    for(let i=0;i<18;i++){const t=i/17;x.strokeStyle='rgba(255,'+Math.round(244-34*t)+','+Math.round(238-54*t)+','+(.5-.36*t)+')';x.lineWidth=R*(.075+.05*(1-t));x.beginPath();x.ellipse(m,m,R*(1.13+2.1*t),R*(1.13+.9*t),0,Math.PI,6.2832);x.stroke()}
+    for(let i=0;i<12;i++){const t=i/11;x.strokeStyle='rgba(255,'+Math.round(240-40*t)+','+Math.round(232-60*t)+','+(.42-.3*t)+')';x.lineWidth=R*(.07+.04*(1-t));x.beginPath();x.ellipse(m,m,R*(1.13+.95*t),R*(1.13+.85*t),0,0,Math.PI);x.stroke()}
+    x.shadowBlur=0;x.globalCompositeOperation='source-over';x.fillStyle='#000';x.beginPath();x.arc(m,m,R,0,6.2832);x.fill();
+    x.globalCompositeOperation='lighter';x.shadowColor='rgba(255,230,225,.9)';x.shadowBlur=10;x.strokeStyle='rgba(255,245,240,.85)';x.lineWidth=R*.03;x.beginPath();x.arc(m,m,R*1.025,0,6.2832);x.stroke();x.shadowBlur=0;
+    wisp(false);
+    const lg=x.createLinearGradient(m-R*5,0,m+R*5,0);lg.addColorStop(0,'rgba(255,220,210,0)');lg.addColorStop(.3,'rgba(255,235,228,.55)');lg.addColorStop(.5,'rgba(255,252,250,1)');lg.addColorStop(.7,'rgba(255,235,228,.55)');lg.addColorStop(1,'rgba(255,220,210,0)');
+    x.strokeStyle=lg;x.lineWidth=R*.06;x.shadowColor='rgba(255,230,225,.9)';x.shadowBlur=12;x.beginPath();x.ellipse(m,m+R*.02,R*5,R*.035,0,0,Math.PI);x.stroke();
+  }
+  bhDraw(document.getElementById('bhCore'));
   function build(){
     const r=hero.getBoundingClientRect();W=r.width;H=r.height;
     [cb,cf].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
     const tp=hero.querySelector('.hero-top').getBoundingClientRect(),bt=hero.querySelector('.hero-bot').getBoundingClientRect();
     const g0=tp.bottom-r.top+14,g1=bt.top-r.top-8,gap=Math.max(160,g1-g0);
     CX=W/2;CY=g0+gap/2;R=Math.min(W*(W<600?.46:.40),680,(gap/2)/(1.02*RY));
-    const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width=Math.min(Math.max(96,W*.15),200,gap*.62)+'px';
-    const n=W<700?1800:4200;P=[];
+    const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width=Math.min(Math.max(54,W*.06),84,gap*.3)+'px';
+    const n=W<700?3000:9000;P=[];
+    const gs=()=>{let t=0;for(let k=0;k<4;k++)t+=Math.random()-.5;return t};
     for(let i=0;i<n;i++){
-      let f;
-      if(Math.random()<.5){const k=Math.floor(Math.random()*FIELDS.length);f=FIELDS[k].f+(Math.random()-.5)*.07}
-      else{f=.2+(-Math.log(1-Math.random()*.97))*.26;if(f>1.04)f=.2+Math.random()*.85}
-      const ci=Math.min(4,Math.max(0,Math.floor((f-.2)/.85*5+(Math.random()-.5)*1.2)));
-      P.push({a:Math.random()*6.283,f:f,sp:.22/Math.sqrt(f)*(Math.random()*.4+.8),s:Math.random()*1.5+.6,c:pal[ci],al:Math.random()*.5+.3,z:(Math.random()+Math.random()-1)*R*.014});
+      let f=.1+(-Math.log(1-Math.random()*.97))*.3;if(f>1.06)f=.1+Math.random()*.95;
+      const arm=Math.random()<.78,k=Math.floor(Math.random()*2);
+      let a=arm?k*Math.PI+2.3*Math.log(f/.09)+gs()*(.55/(f+.25)):Math.random()*6.283;
+      const ci=Math.min(4,Math.max(0,Math.floor((f-.1)/.9*5+(Math.random()-.5)*1.2)));
+      P.push({a:a,f:f,sp:.035,s:Math.random()*1.6+.8,c:pal[ci],al:Math.random()*.5+.5,z:(Math.random()+Math.random()-1)*R*.012*(1.2-f)});
     }
   }
   const pos=(a,f,dx,dy)=>{const rx=R*f,x0=Math.cos(a)*rx,y0=Math.sin(a)*rx*(RY+dy);return [CX+x0*ct-y0*st+dx,CY+x0*st+y0*ct+dy*40]}
@@ -529,7 +556,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     gb.setTransform(dpr,0,0,dpr,0,0);gf.setTransform(dpr,0,0,dpr,0,0);gb.clearRect(0,0,W,H);gf.clearRect(0,0,W,H);
     // yörünge çizgileri
     gb.globalCompositeOperation='source-over';gb.lineWidth=1;
-    FIELDS.forEach((F,i)=>{const acc=i===4||i===8;gb.strokeStyle=F.hov?'rgba(255,255,255,.42)':acc?'rgba(140,170,255,.36)':'rgba(150,170,255,'+(F.act?.22:.1)+')';gb.lineWidth=acc?1.5:1;gb.shadowColor='rgba(120,160,255,.9)';gb.shadowBlur=acc?10:0;gb.beginPath();
+    FIELDS.forEach((F,i)=>{const acc=i===4||i===8;gb.strokeStyle=F.hov?'rgba(255,255,255,.42)':'rgba(150,170,255,'+(F.act?.13:.06)+')';gb.lineWidth=1;gb.shadowBlur=0;gb.beginPath();
       for(let j=0;j<=96;j++){const a=j/96*6.2832,q=pos(a,F.f,dx,dyk);j?gb.lineTo(q[0],q[1]):gb.moveTo(q[0],q[1])}gb.stroke()});gb.shadowBlur=0;
     // toz parçacıkları
     gb.globalCompositeOperation='lighter';gf.globalCompositeOperation='lighter';
