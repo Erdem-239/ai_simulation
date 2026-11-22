@@ -1984,3 +1984,5 @@ Kullanıcı «Sıfırdan Medeniyet İnşası» başlıklı bir belge yapıştır
 **Güncelleme:** yıldız adı «Gliese 667 Cc» (kullanıcı NASA tarzı garip ad istedi; URL `medeniyet/` kaldı). 16 ders: enerji (dinamo/rüzgâr/akü), isi (Carnot, buhar/Stirling), konum (enlem/boylam/saat hatası), islemci (röle→tüp→transistör, hesap bütçesi) eklendi — kullanıcı «pil, işlemci, enerji yok; en önemli buluşları düşün» dedi. Çağlar: Hayatta kalma t0-1, Atölye/enerji/kimya t2-4, Sağlık t5-6, Haberleşme/konum/hesap t7-8, Kurtuluş t9. Röle/transistör yapım saatleri varsayımdır (derste yazılı).
 
 **Ana sayfa mobil düzeltmesi**: ≤600 px'te göz canvas'ı hero kenarında kırpılıyordu (R=.42W → 2.4R>W), göz fazla yassıydı, Koordinat düğmesi alt yazıyı örtüyordu. Artık `RY` mobilde .6, `R=.35W` ve `R≤gap/(2·RY·1.25)` (alt yazıyla örtüşmesin), hero `min-height:700px`/alt padding 70, `#skyBtn` yalnız 🔭 simgesi. Masaüstü değişmedi.
+
+**Avalon gemisi (ana sayfa)**: kozmos canvas'ında (supernova bloğunun yanında) ~45–90 sn'de bir, 34 sn'de ekranı yatay geçen küçük yolcu gemisi (uzun gövde, dönen iki halka, motor izi; `av/nextAv`). Kendi çizimimiz, `prefers-reduced-motion`'da yok.
