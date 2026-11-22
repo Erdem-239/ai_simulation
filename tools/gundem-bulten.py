@@ -72,7 +72,19 @@ def openai_compat(prompt, base, key, model):
 def llm(prompt):
     sg = (os.environ.get('GUNDEM_SAGLAYICI') or CFG.get('saglayici') or 'gemini').lower()
     if sg == 'groq':
-        d = openai_compat(prompt, 'https://api.groq.com/openai/v1', os.environ['GROQ_API_KEY'], CFG.get('model_groq', 'llama-3.3-70b-versatile'))
+        base, key = 'https://api.groq.com/openai/v1', os.environ['GROQ_API_KEY']
+        try:
+            d = openai_compat(prompt, base, key, CFG.get('model_groq', 'llama-3.3-70b-versatile'))
+        except urllib.error.HTTPError as e:
+            if e.code != 404: raise
+            ids = [m['id'] for m in json.loads(get(base + '/models', {'Authorization': 'Bearer ' + key})).get('data', [])]
+            print('Groq model listesi:', ids, file=sys.stderr)
+            bad = ('whisper', 'guard', 'tts', 'embed', 'orpheus', 'prompt-guard')
+            ok = [i for i in ids if not any(b in i for b in bad)]
+            pick = next((i for i in ok if any(w in i for w in ('70b', 'gpt-oss-120b', 'qwen', 'llama', 'gpt-oss'))), ok[0] if ok else None)
+            if not pick: raise
+            print('Seçilen model:', pick, file=sys.stderr)
+            d = openai_compat(prompt, base, key, pick)
     elif sg == 'openrouter':
         d = openai_compat(prompt, 'https://openrouter.ai/api/v1', os.environ['OPENROUTER_API_KEY'], CFG.get('model_openrouter', 'meta-llama/llama-3.3-70b-instruct:free'))
     else:
