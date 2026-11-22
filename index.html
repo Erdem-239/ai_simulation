@@ -29,13 +29,13 @@ a{color:inherit;text-decoration:none}
 @media(max-width:760px){.nav a.hide{display:none}.nav a{padding:9px 12px}}
 
 /* HERO */
-.hero{position:relative;margin:78px 14px 0;border-radius:30px;border:1px solid var(--line);overflow:hidden;min-height:min(96vh,880px);display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:56px 22px 48px;background:radial-gradient(80% 60% at 50% 55%,#0b0d1a,#040509 70%)}
+.hero{position:relative;margin:78px 14px 0;border-radius:30px;border:1px solid var(--line);overflow:hidden;min-height:min(96vh,880px);display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:56px 22px 48px;background:radial-gradient(80% 60% at 50% 55%,rgba(11,13,26,.5),rgba(4,5,9,.3) 70%)}
 .hero .orb{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .core{position:absolute;left:50%;top:55%;z-index:1;transform:translate(-50%,-50%);width:clamp(110px,15vw,200px);aspect-ratio:1}
 .core .halo{position:absolute;inset:-120%;background:radial-gradient(closest-side,rgba(255,196,120,.34),rgba(240,160,50,.16) 35%,rgba(70,196,106,.07) 62%,transparent 75%);animation:breathe 5s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.08);opacity:.8}}
 #heat{display:block;position:relative;width:100%;height:100%;border-radius:50%;filter:saturate(1.35) blur(.4px);box-shadow:0 0 50px rgba(240,160,50,.6),0 0 130px rgba(70,196,106,.32),inset 0 0 30px rgba(0,0,0,.5)}
-.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 54%,transparent 40%,rgba(4,5,9,.62) 100%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.06'/></svg>");pointer-events:none}
+.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 54%,transparent 40%,rgba(4,5,9,.34) 100%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.06'/></svg>");pointer-events:none}
 .hero-top,.hero-bot{position:relative;z-index:5;max-width:900px;pointer-events:none}.hero-top .pill,.hero-bot .btn,.hero-bot a{pointer-events:auto}
 .pill{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:#cfd5e6;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);backdrop-filter:blur(6px)}
 .pill b{width:7px;height:7px;border-radius:50%;background:var(--gr);box-shadow:0 0 10px var(--gr);animation:pulse 2s infinite}
@@ -108,9 +108,9 @@ h2 em{font-style:normal;color:#9aa3ba}
 .nums span{font-size:12px;color:var(--mut);font-family:'JetBrains Mono',monospace}
 
 /* FIELDS */
-.fields{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px}
-@media(max-width:900px){.fields{grid-template-columns:1fr 1fr}.f-main{grid-column:span 2}}
-@media(max-width:520px){.fields{grid-template-columns:1fr}.f-main{grid-column:span 1}}
+.fields{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.f-main,.f-blog{grid-column:span 2}
+@media(max-width:900px){.fields{grid-template-columns:1fr 1fr}.f-main,.f-blog{grid-column:span 2}}
+@media(max-width:520px){.fields{grid-template-columns:1fr}.f-main,.f-blog{grid-column:span 1}}
 .fcard{border:1px solid var(--line);border-radius:22px;padding:24px;min-height:170px;position:relative;overflow:hidden;background:rgba(255,255,255,.02)}
 .fcard.soon{opacity:.55}
 .fcard h3{font-weight:500;font-size:20px}
@@ -122,7 +122,7 @@ h2 em{font-style:normal;color:#9aa3ba}
 .f-main .btn{margin-top:18px}
 
 /* CTA band */
-.band{margin:110px 14px 0;border:1px solid var(--line);border-radius:30px;padding:70px 24px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(70% 120% at 50% 0%,rgba(106,167,255,.18),transparent 60%),#080a10}
+.band{margin:110px 14px 0;border:1px solid var(--line);border-radius:30px;padding:70px 24px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(70% 120% at 50% 0%,rgba(106,167,255,.18),transparent 60%),rgba(8,10,16,.72)}
 .band h2{margin:0 auto}
 .band .cta{margin-top:28px}
 footer{padding:60px 0 50px;color:#69718a;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -132,15 +132,24 @@ footer a:hover{color:#fff}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.pill b{animation:none}html{scroll-behavior:auto}}
+
+/* Kozmos: sabit arka plan (yıldızlar, gökadalar, kara delik) */
+#cosmos{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main.wrap,.band,footer,.wrap{position:relative;z-index:1}
+.f-blog{background:radial-gradient(120% 140% at 100% 0%,rgba(232,236,248,.10),transparent 55%),rgba(255,255,255,.02)}
+.f-blog h3:before{content:"✍️ "}
+@media(max-width:600px){.pl.soon .nm{display:none}}
 </style>
 </head>
 <body>
+<canvas id="cosmos" aria-hidden="true"></canvas>
 
 <nav class="nav" aria-label="Ana menü">
   <a class="brand" href="#top"><i></i>Erdem Erzurumlu</a>
   <a class="hide" href="#canli">Simülasyonlar</a>
   <a class="hide" href="#neden">Yaklaşım</a>
   <a class="hide" href="#alanlar">Alanlar</a>
+  <a class="hide" href="#blog">Blog</a>
   <a class="go" href="yapay-zeka/index.html">Derslere git →</a>
 </nav>
 
@@ -248,6 +257,10 @@ footer a:hover{color:#fff}
     <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Elektrik-elektronik</h3><p>Devreler, sinyaller, işlemciler.</p></div>
     <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Fizik</h3><p>Hareketten alanlara.</p></div>
     <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Biyoloji</h3><p>Hücreden sinir sistemine.</p></div>
+    <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Felsefe</h3><p>Mantık, bilinç, etik: büyük sorular.</p></div>
+    <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Tarih</h3><p>Fikirlerin ve icatların hikâyesi.</p></div>
+    <div class="fcard soon rv"><div class="st"><i></i>YAKINDA</div><h3>Oyun teorisi</h3><p>Strateji, iş birliği, rekabet, denge.</p></div>
+    <div class="fcard soon f-blog rv" id="blog"><div class="st"><i></i>YAKINDA</div><h3>Blog</h3><p>Çalışmalar, projeler, öğrenilenler ve düşünceler. İlk yazılar yolda.</p></div>
   </div>
 </section>
 
@@ -324,6 +337,104 @@ footer a:hover{color:#fff}
     mc.parentElement.appendChild(ov);}
 })();
 
+/* ---------- Kozmos: yıldızlar, dönen gökadalar, kara delik, kayan yıldız ---------- */
+(function(){
+  const cv=document.getElementById('cosmos');if(!cv)return;const g=cv.getContext('2d');
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,rnd=Math.random;
+  const gauss=()=>(rnd()+rnd()+rnd()-1.5)/1.5;
+  let W=0,H=0,docH=1,dpr=Math.min(devicePixelRatio||1,2),stars=[],gals=[],shoot=null,nextShoot=3500,bhSpr=null,band=[];
+  const R0=64;
+  function galaxy(S,hue,arms,twist){
+    const c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d'),m=S/2;x.globalCompositeOperation='lighter';
+    for(let i=0;i<S*.9;i++){const u=Math.pow(rnd(),.8),a=rnd()*6.28,r=u*S*.4;x.fillStyle='hsla('+(hue+10)+',70%,60%,.05)';x.beginPath();x.arc(m+Math.cos(a)*r,m+Math.sin(a)*r,S*(.02+rnd()*.035),0,6.2832);x.fill()}
+    const N=Math.round(S*14);
+    for(let i=0;i<N;i++){
+      const u=Math.pow(rnd(),.62),r=u*S*.47,arm=Math.floor(rnd()*arms);
+      const a=arm*6.2832/arms+twist*u*3.4+gauss()*(.16+.3*u);
+      const px=m+Math.cos(a)*r,py=m+Math.sin(a)*r;
+      const warm=1-u,hh=hue+warm*38-u*8,l=62+warm*28;
+      x.fillStyle='hsla('+hh+',85%,'+l+'%,'+(.3+rnd()*.4)+')';
+      const sz=.6+rnd()*(1.1+warm*.8);x.fillRect(px,py,sz,sz);
+    }
+    for(let i=0;i<S*.18;i++){const u=Math.pow(rnd(),.9),r=u*S*.42,arm=Math.floor(rnd()*arms),a=arm*6.2832/arms+twist*u*3.4+gauss()*.1;
+      x.fillStyle='hsla('+(hue-60)+',90%,75%,.8)';x.beginPath();x.arc(m+Math.cos(a)*r,m+Math.sin(a)*r,1+rnd()*1.3,0,6.2832);x.fill()}
+    const gr=x.createRadialGradient(m,m,0,m,m,S*.25);gr.addColorStop(0,'hsla('+(hue+25)+',90%,92%,.95)');gr.addColorStop(.25,'hsla('+(hue+15)+',85%,70%,.5)');gr.addColorStop(1,'hsla('+hue+',70%,40%,0)');
+    x.fillStyle=gr;x.fillRect(0,0,S,S);return c;
+  }
+  function bh(){
+    const S=R0*11,c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d'),m=S/2;
+    let gr=x.createRadialGradient(m,m,R0*.9,m,m,R0*5.4);gr.addColorStop(0,'rgba(255,175,80,.34)');gr.addColorStop(.3,'rgba(255,120,40,.12)');gr.addColorStop(1,'rgba(255,100,30,0)');x.fillStyle=gr;x.fillRect(0,0,S,S);
+    const grad=(a,b)=>{const l=x.createLinearGradient(m-R0*3.4,0,m+R0*3.4,0);l.addColorStop(0,'rgba(255,120,40,0)');l.addColorStop(.25,a);l.addColorStop(.5,b);l.addColorStop(.75,a);l.addColorStop(1,'rgba(255,120,40,0)');return l};
+    x.lineCap='round';x.shadowColor='rgba(255,150,50,.95)';
+    x.shadowBlur=22;x.strokeStyle=grad('rgba(255,150,60,.85)','rgba(255,240,210,1)');x.lineWidth=R0*.2;x.beginPath();x.ellipse(m,m,R0*2.7,R0*1.5,0,Math.PI,6.2832);x.stroke();
+    x.shadowBlur=14;x.strokeStyle=grad('rgba(255,130,50,.5)','rgba(255,215,170,.8)');x.lineWidth=R0*.1;x.beginPath();x.ellipse(m,m,R0*2.1,R0*1.05,0,0,Math.PI);x.stroke();
+    x.shadowBlur=16;x.strokeStyle='rgba(255,235,200,.95)';x.lineWidth=R0*.07;x.beginPath();x.arc(m,m,R0*1.1,0,6.2832);x.stroke();
+    x.shadowBlur=18;x.strokeStyle=grad('rgba(255,140,50,.7)','rgba(255,225,180,.95)');x.lineWidth=R0*.12;x.beginPath();x.ellipse(m,m,R0*3.2,R0*.3,0,Math.PI,6.2832);x.stroke();
+    x.shadowBlur=0;x.fillStyle='#000';x.beginPath();x.arc(m,m,R0,0,6.2832);x.fill();
+    x.shadowBlur=18;x.strokeStyle=grad('rgba(255,140,50,.8)','rgba(255,235,200,1)');x.lineWidth=R0*.16;x.beginPath();x.ellipse(m,m,R0*3.2,R0*.3,0,0,Math.PI);x.stroke();
+    return c;
+  }
+  function build(){
+    W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;docH=document.documentElement.scrollHeight;
+    const n=Math.max(110,Math.round(W*H/5200));stars=[];
+    for(let i=0;i<n;i++){const z=rnd()<.6?0:rnd()<.7?1:2;stars.push({x:rnd(),y:rnd(),z:z,s:z===0?.7+rnd()*.5:z===1?1+rnd()*.6:1.6+rnd()*.9,ph:rnd()*6.28,sp:.6+rnd()*1.6,h:rnd()<.2?28:rnd()<.5?215:0,al:.35+rnd()*.5})}
+    const k=W<600?.62:1;
+    gals=[
+      {sc:0,cx:.10,cy:.34,size:340*k,hue:215,arms:2,tw:1.1,tilt:-.5,sq:.48,spin:.014,al:.62,p:.28},
+      {sc:.3,cx:.90,cy:.55,size:430*k,hue:285,arms:2,tw:-1.0,tilt:.4,sq:.55,spin:-.011,al:.55,p:.3},
+      {sc:.58,cx:.08,cy:.52,size:380*k,hue:30,arms:3,tw:.9,tilt:.7,sq:.4,spin:.012,al:.5,p:.28},
+      {sc:.84,cx:.88,cy:.32,size:400*k,hue:190,arms:2,tw:-1.2,tilt:-.3,sq:.5,spin:-.013,al:.55,p:.3},
+      {sc:1,cx:.14,cy:.74,size:360*k,hue:330,arms:2,tw:1.0,tilt:.2,sq:.6,spin:.01,al:.5,p:.28}
+    ];
+    gals.forEach(o=>{o.spr=galaxy(Math.round(o.size),o.hue,o.arms,o.tw)});
+    if(!bhSpr)bhSpr=bh();
+    band=[];for(let i=0;i<110;i++)band.push({a:rnd()*6.28,r:1.5+rnd()*1.7,al:.5+rnd()*.5});
+  }
+  function draw(t){
+    const s=scrollY,maxS=Math.max(1,docH-H);
+    g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+    g.globalCompositeOperation='lighter';
+    for(const o of gals){
+      const x=W*o.cx,y=H*o.cy+(o.sc*maxS-s)*o.p;if(y<-o.size||y>H+o.size)continue;
+      g.save();g.translate(x,y);g.rotate(o.tilt);g.scale(1,o.sq);g.rotate(reduce?0:o.spin*t/1000);g.globalAlpha=o.al;g.drawImage(o.spr,-o.size/2,-o.size/2,o.size,o.size);g.restore();
+    }
+    g.globalAlpha=1;g.globalCompositeOperation='source-over';
+    const PZ=[.05,.12,.25];
+    for(const st of stars){
+      const y=(((st.y*H-s*PZ[st.z])%H)+H)%H,x=st.x*W,a=st.al*(.55+.45*Math.sin(t/1000*st.sp+st.ph));
+      g.fillStyle=st.h===215?'rgba(170,200,255,'+a+')':st.h===28?'rgba(255,215,170,'+a+')':'rgba(255,255,255,'+a+')';
+      g.fillRect(x,y,st.s,st.s);
+      if(st.z===2&&st.s>2.1){g.fillStyle='rgba(255,255,255,'+(a*.35)+')';g.fillRect(x-5,y+st.s/2-.3,12,.6);g.fillRect(x+st.s/2-.3,y-5,.6,12)}
+    }
+    // kara delik
+    const r=Math.max(24,Math.min(W,H)*(W<600?.05:.052)),bx=W*(W<600?.80:.86),by=H*.2+(0-s)*.25;
+    if(by>-r*6&&by<H+r*6){
+      const k=r/R0,S=R0*11;g.drawImage(bhSpr,bx-S*k/2,by-S*k/2,S*k,S*k);
+      g.globalCompositeOperation='lighter';
+      for(const b of band){
+        if(!reduce)b.a+=.9/Math.pow(b.r,1.3)*.012;
+        const sn=Math.sin(b.a),x=bx+Math.cos(b.a)*b.r*r,y=by+sn*b.r*r*.095;
+        if(sn<0&&Math.abs(x-bx)<r*1.02)continue;
+        g.fillStyle='rgba(255,'+(190+Math.round(b.al*60))+',150,'+b.al*.85+')';g.fillRect(x,y,1.5,1.5);
+      }
+      g.globalCompositeOperation='source-over';
+    }
+    // kayan yıldız
+    if(!reduce){
+      if(!shoot&&t>nextShoot){shoot={x:rnd()*W*.7,y:rnd()*H*.3,vx:W*1.1,vy:H*.5,t0:t};nextShoot=t+5000+rnd()*6000}
+      if(shoot){const q=(t-shoot.t0)/700;if(q>1)shoot=null;else{const x=shoot.x+shoot.vx*q*.7,y=shoot.y+shoot.vy*q*.7,L=90;
+        const gr=g.createLinearGradient(x,y,x-L*.9,y-L*.45);gr.addColorStop(0,'rgba(255,255,255,'+(1-q)+')');gr.addColorStop(1,'rgba(255,255,255,0)');
+        g.strokeStyle=gr;g.lineWidth=1.6;g.beginPath();g.moveTo(x,y);g.lineTo(x-L*.9,y-L*.45);g.stroke()}}
+    }
+  }
+  build();
+  let ticks=0;
+  function loop(t){draw(t);if(++ticks%120===0)docH=document.documentElement.scrollHeight;requestAnimationFrame(loop)}
+  if(reduce){draw(0);addEventListener('scroll',()=>requestAnimationFrame(()=>draw(0)),{passive:true})}else requestAnimationFrame(loop);
+  addEventListener('resize',()=>{build();if(reduce)draw(0)});
+  addEventListener('load',()=>{docH=document.documentElement.scrollHeight;if(reduce)draw(0)});
+})();
+
 /* ---------- Güneş sistemi: merkez = canlı XOR ağı, gezegenler = alanlar ---------- */
 (function(){
   const hero=document.getElementById('top'),cb=document.getElementById('orbBack'),cf=document.getElementById('orbFront'),host=document.getElementById('planets');
@@ -333,12 +444,16 @@ footer a:hover{color:#fff}
   const TILT=-.16,RY=.25,ct=Math.cos(TILT),st=Math.sin(TILT);
   const pal=[[255,176,84],[255,214,140],[120,220,160],[130,180,255],[180,150,255]];
   const FIELDS=[
-    {k:'ai',n:'Yapay zekâ',c:'#f0a032',f:.30,ph:1.15,sz:34,act:1,d:'28 ders, canlı simülasyonlar ve 3B mimariler.',href:'yapay-zeka/index.html',cta:'Dersleri aç →'},
-    {k:'vb',n:'Veri bilimi',c:'#46c46a',f:.43,ph:3.2,sz:24,d:'İstatistik, veri hazırlama, modelleri değerlendirme.'},
-    {k:'cs',n:'Bilgisayar bilimi',c:'#6aa7ff',f:.57,ph:5.0,sz:26,d:'Algoritmalar, veri yapıları, sistemler.'},
-    {k:'ee',n:'Elektrik-elektronik',c:'#ffd24a',f:.70,ph:.2,sz:25,d:'Devreler, sinyaller, işlemciler.'},
-    {k:'fz',n:'Fizik',c:'#a98bff',f:.83,ph:2.3,sz:27,d:'Hareketten alanlara.'},
-    {k:'bi',n:'Biyoloji',c:'#5fe0c0',f:.96,ph:4.15,sz:23,d:'Hücreden sinir sistemine.'}
+    {k:'ai',n:'Yapay zekâ',c:'#f0a032',f:.27,ph:1.15,sz:34,act:1,d:'28 ders, canlı simülasyonlar ve 3B mimariler.',href:'yapay-zeka/index.html',cta:'Dersleri aç →'},
+    {k:'vb',n:'Veri bilimi',c:'#46c46a',f:.35,ph:3.2,sz:23,d:'İstatistik, veri hazırlama, modelleri değerlendirme.'},
+    {k:'cs',n:'Bilgisayar bilimi',c:'#6aa7ff',f:.43,ph:5.0,sz:25,d:'Algoritmalar, veri yapıları, sistemler.'},
+    {k:'ee',n:'Elektrik-elektronik',c:'#ffd24a',f:.51,ph:.2,sz:24,d:'Devreler, sinyaller, işlemciler.'},
+    {k:'fz',n:'Fizik',c:'#a98bff',f:.59,ph:2.3,sz:26,d:'Hareketten alanlara.'},
+    {k:'bi',n:'Biyoloji',c:'#5fe0c0',f:.67,ph:4.15,sz:22,d:'Hücreden sinir sistemine.'},
+    {k:'fe',n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
+    {k:'ta',n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
+    {k:'ot',n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
+    {k:'bl',n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,d:'Çalışmalar, projeler, düşünceler. İlk yazılar yolda.'}
   ];
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),2600)}
   FIELDS.forEach(F=>{
@@ -357,7 +472,7 @@ footer a:hover{color:#fff}
     [cb,cf].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
     const tp=hero.querySelector('.hero-top').getBoundingClientRect(),bt=hero.querySelector('.hero-bot').getBoundingClientRect();
     const g0=tp.bottom-r.top+14,g1=bt.top-r.top-8,gap=Math.max(160,g1-g0);
-    CX=W/2;CY=g0+gap/2;R=Math.min(W*(W<600?.46:.40),680,(gap/2)/(.96*RY));
+    CX=W/2;CY=g0+gap/2;R=Math.min(W*(W<600?.46:.40),680,(gap/2)/(1.02*RY));
     const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width=Math.min(Math.max(96,W*.15),200,gap*.62)+'px';
     const n=W<700?1100:2400;P=[];
     for(let i=0;i<n;i++){
