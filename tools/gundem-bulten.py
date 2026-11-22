@@ -54,7 +54,7 @@ def socialdata_items():
 
 def gemini(prompt):
     key = os.environ['GEMINI_API_KEY']
-    url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=' + key
+    url = 'https://generativelanguage.googleapis.com/v1beta/models/'+(os.environ.get('GEMINI_MODEL') or CFG.get('model') or 'gemini-2.5-flash-lite')+':generateContent?key=' + key
     body = json.dumps({'contents': [{'parts': [{'text': prompt}]}], 'generationConfig': {'responseMimeType': 'application/json', 'temperature': .3}}).encode()
     r = json.loads(get(url, {'Content-Type': 'application/json'}, body, 90))
     return json.loads(r['candidates'][0]['content']['parts'][0]['text'])

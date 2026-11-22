@@ -1,4 +1,5 @@
 {
+  "model": "gemini-2.5-flash-lite",
   "max_yeni_gunluk": 12,
   "rss": [],
   "socialdata": {
