@@ -1,0 +1,50 @@
+/* Bilgisayar bilimi teması: devre kartı (PCB) + fosfor yeşili terminal. AI sitesinin motorunu kullanır, görünümü farklıdır. */
+:root{--bg:#16102d;--panel:#2a1f52;--panel2:#201848;--line:#5b46a8;--text:#ece6ff;--muted:#a99ad6;--accent:#b79cff;--blue:#7a5af0;--blue2:#6a49e0;--green:#b79cff}
+body{background:#16102d radial-gradient(circle at 1px 1px,rgba(183,156,255,.09) 1px,transparent 1.5px) 0 0/22px 22px;font-family:"JetBrains Mono",Consolas,"Segoe UI",monospace}
+h1,h2,.sb-title,.tpl-head{font-family:"JetBrains Mono",Consolas,monospace}
+h1{letter-spacing:-.3px;color:#f4efff}h1:before{content:"> ";color:var(--accent)}
+.sub,.tpl-body p{font-family:"Segoe UI",Roboto,Arial,sans-serif}
+.pts,.tpl-cl{border-color:rgba(183,156,255,.28)!important;background:var(--panel2)}
+.pts:hover{border-color:rgba(183,156,255,.6)!important;box-shadow:0 10px 28px -18px rgba(183,156,255,.6)}
+.tpl-cl[data-stage="1"] .tpl-head{background:rgba(31,157,138,.16)}.tpl-cl[data-stage="2"] .tpl-head{background:rgba(240,176,60,.13)}
+.tpl-cl[data-stage="3"] .tpl-head{background:rgba(183,156,255,.13)}.tpl-cl[data-stage="4"] .tpl-head{background:rgba(120,140,255,.14)}
+.tpl-cl[data-stage="5"] .tpl-head{background:rgba(47,200,230,.14)}.tpl-cl[data-stage="6"] .tpl-head{background:rgba(255,110,110,.13)}
+/* kenar çubuğu */
+.sidebar{background:#150f2c!important;border:1px solid #5b46a8!important;border-left:none!important;box-shadow:inset -12px 0 30px -22px #b79cff!important}
+.sidebar .sb-inner::-webkit-scrollbar-thumb{background:#46368a}
+.sidebar .sb-hello{background:#241a4a;border:1px solid #5b46a8;color:#d3c4ff}
+.sidebar .navbtn{background:#241a4a!important;border:1px solid #4a3a88!important;border-left:3px solid #7a5af0!important;border-radius:4px!important;color:#e0d6ff!important;font-family:"JetBrains Mono",Consolas,monospace;font-size:12.5px;box-shadow:none!important;background-image:none!important;transform:none!important}
+.sidebar .navbtn:hover{background:#33265f!important;border-color:#b79cff!important;color:#fff!important}
+.sidebar .navbtn.active{background:#b79cff!important;color:#120a2a!important;border-color:#b79cff!important;font-weight:700}
+.sidebar .navbtn.soon{opacity:.45}
+.sidebar .navbtn::before,.sidebar .navbtn::after{display:none!important}
+.sidebar .sb-note{color:var(--muted)}
+/* harita: devre kartı */
+#techSvg.techSvg-all-new{background:#16102d!important}
+#techSvg .era-band.era-band-new{fill:#1b1440;stroke:rgba(183,156,255,.5);stroke-width:2}
+#techSvg .era-ribbon.era-ribbon-new{fill:#5a3fc0}
+#techSvg .era-lbl.era-lbl-new{font-family:"JetBrains Mono",Consolas,monospace;letter-spacing:2px;fill:#f4efff}
+#techSvg .era-art .ea-s{stroke:#b79cff;stroke-opacity:.34}
+#techSvg .era-art .ea-b{stroke:#b79cff;stroke-opacity:.5}
+#techSvg .era-art .ea-t{fill:#b79cff;fill-opacity:.5;font-family:"JetBrains Mono",Consolas,monospace}
+#techSvg .era-art .ea-dash,#techSvg .era-art .ea-f{stroke:#b79cff}
+#techSvg .era-art .ea-d{fill:#b79cff}
+#techSvg .ea-rule{stroke:#b79cff;stroke-opacity:.4}
+#techSvg .ea-wm{font-family:"JetBrains Mono",Consolas,monospace;fill:#b79cff;fill-opacity:.1;letter-spacing:8px}
+#techSvg .te-off{stroke:#5b46a8;stroke-width:2.2}
+#techSvg .te-on{stroke:#b79cff;stroke-width:3}
+.ttc-card{border-radius:4px!important;font-family:"JetBrains Mono",Consolas,monospace;border-color:#5b46a8;--corner-c:#b79cff;
+  background:radial-gradient(circle at 10px 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at 10px calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),linear-gradient(135deg,#2c2158,#201848)!important}
+.ttc-card.ttc-done{border-color:#b79cff;outline-color:rgba(183,156,255,.35)}
+.ttc-card.ttc-avail{border-color:#f0b03c;--corner-c:#ffd47a;outline-color:rgba(240,176,60,.4)}
+.ttc-card.ttc-locked{border-color:#4a3a88;--corner-c:#6e58c0}
+#ttTools button,#ttTools .tt-lab{font-family:"JetBrains Mono",Consolas,monospace}
+#ttTools button.on{background:#b79cff;color:#120a2a;border-color:#b79cff}
+body.tt-full #ttBox{background:#16102d}
+.cs .btn.on{background:#b79cff;border-color:#b79cff;color:#120a2a}
+.cs .cards3 b,.cs h4{color:var(--accent)}
+.ttc-card.ttc-locked{border-color:#6e58c0!important}.ttc-card.ttc-done{border-color:#b79cff!important}
+.ttc-card .ttc-head,.ttc-card .ttc-chips,.ttc-card [class*=ttc-mast]{background-image:none}
+
+.sidebar .navbtn{margin-bottom:6px}
+.sidebar .sb-era{margin:16px 0 8px}
