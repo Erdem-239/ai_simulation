@@ -491,9 +491,9 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     }
     // kayan yıldız
     if(!reduce){
-      if(!shoot&&t>nextShoot){shoot={x:rnd()*W*.7,y:rnd()*H*.3,vx:W*1.1,vy:H*.5,t0:t};nextShoot=t+5000+rnd()*6000}
-      if(shoot){const q=(t-shoot.t0)/700;if(q>1)shoot=null;else{const x=shoot.x+shoot.vx*q*.7,y=shoot.y+shoot.vy*q*.7,L=90;
-        const gr=g.createLinearGradient(x,y,x-L*.9,y-L*.45);gr.addColorStop(0,'rgba(255,255,255,'+(1-q)+')');gr.addColorStop(1,'rgba(255,255,255,0)');
+      if(!shoot&&t>nextShoot){shoot={x:rnd()*W*.7,y:rnd()*H*.3,vx:W*.3,vy:H*.14,t0:t};nextShoot=t+9000+rnd()*9000}
+      if(shoot){const q=(t-shoot.t0)/3800;if(q>1)shoot=null;else{const x=shoot.x+shoot.vx*q,y=shoot.y+shoot.vy*q,L=70,al=Math.sin(q*Math.PI);
+        const gr=g.createLinearGradient(x,y,x-L*.9,y-L*.45);gr.addColorStop(0,'rgba(255,255,255,'+al*.9+')');gr.addColorStop(1,'rgba(255,255,255,0)');
         g.strokeStyle=gr;g.lineWidth=1.6;g.beginPath();g.moveTo(x,y);g.lineTo(x-L*.9,y-L*.45);g.stroke()}}
     }
   }
