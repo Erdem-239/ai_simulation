@@ -6,8 +6,8 @@
   const NODES=[
     {id:'early', nm:'🧮 Erken Hesaplama', tier:0, v:50, pre:[], tab:'early',
       d:'Abaküs, Babbage, Lovelace, delikli kart. Ders hazır: canlı simülasyon, örnek ve test içerir.', sci:'Babbage (1820\'ler) tablolardaki hataları yok etmek için yalnızca toplama yapan Fark Makinesi\'ni tasarladı; sonra kartlarla programlanan Analitik Makine\'yi. Ada Lovelace bu makinenin yalnız sayılarla değil, her tür simgeyle çalışabileceğini yazdı.', real:[], sub:["Abaküs", "Babbage", "Lovelace", "Delikli kart", "Kendini test (5 soru)"]},
-    {id:'elec', nm:'⚡ Elektronik Hesaplama', tier:1, v:50, pre:["early"], tab:'',
-      d:'Röle, vakum tüpü, ENIAC, transistör. Ders yakında.', sci:'Bu dersin keşif hikâyesi, ders yazılınca buraya eklenecek.', real:[], sub:["Röle", "Vakum tüpü", "ENIAC", "Transistör"]},
+    {id:'elec', nm:'⚡ Elektronik Hesaplama', tier:1, v:50, pre:["early"], tab:'elec',
+      d:'Röle, vakum tüpü, ENIAC, transistör. Ders hazır: canlı simülasyon, örnek ve test içerir.', sci:'Colossus ve ENIAC vakum tüpleriyle hesabı yüzlerce kat hızlandırdı; 1947\'de Bell Laboratuvarları\'nda transistör icat edildi ve anahtar küçüldü, soğudu, ucuzladı.', real:[], sub:["Röle", "Vakum tüpü", "ENIAC", "Transistör", "Kendini test (5 soru)"]},
     {id:'gates', nm:'🔀 Mantık Kapıları', tier:2, v:30, pre:["elec"], tab:'gates',
       d:'Boole cebri, NOT/AND/OR/XOR, doğruluk tablosu. Ders hazır: canlı simülasyon, örnek ve test içerir.', sci:'George Boole (1850\'ler) mantığı cebire çevirdi; Claude Shannon (1937) bu cebirin anahtar devreleriyle birebir örtüştüğünü gösterdi.', real:[], sub:["Boole cebri", "NOT/AND/OR/XOR", "Doğruluk tablosu", "Kendini test (5 soru)"]},
     {id:'binary', nm:'🔢 İkili Sayılar ve Metin', tier:2, v:70, pre:["elec"], tab:'binary',
