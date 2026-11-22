@@ -4,7 +4,6 @@
   "model_openrouter": "meta-llama/llama-3.3-70b-instruct:free",
   "max_yeni_gunluk": 12,
   "rss": [
-    "https://rss.arxiv.org/rss/cs.CL",
     "https://huggingface.co/blog/feed.xml",
     "https://openai.com/news/rss.xml"
   ],
@@ -13,7 +12,7 @@
     "arama": "list:LISTE_ID_BURAYA",
     "en_fazla": 200
   },
-  "ilgi": "yapay zekâ, makine öğrenmesi, dil modelleri, açık modeller, araştırma makaleleri",
+  "ilgi": "yeni modeller, yeni mimariler, önemli gelişmeler, herkesin konuştuğu yapay zekâ haberleri",
   "model": "gemini-2.5-flash-lite",
   "apify": {
     "aktif": true,
@@ -42,5 +41,17 @@
       "OpenAI"
     ],
     "en_fazla": 150
-  }
+  },
+  "hacker_news": {
+    "aktif": true,
+    "tara": 80,
+    "min_puan": 100
+  },
+  "huggingface": {
+    "aktif": true,
+    "model": 15,
+    "makale": 15
+  },
+  "aday_kaynak_basina": 25,
+  "secim_kaynak_basina": 4
 }
