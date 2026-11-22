@@ -1,1 +1,112 @@
-[]
+[
+ {
+  "date": "2026-11-22",
+  "title": "Qwen3.8‑27B Modeli 20 Milyon Beğeniyle En Popüler HF Modeli Oldu",
+  "note": "Geniş topluluk desteği, modelin ekosistemdeki etkisini artırıyor.",
+  "url": "https://huggingface.co/Qwen/Qwen3.8-27B",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "açık-model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Inkling 2 Mini Yerel Kurulumda Kesintisiz Performans Sunuyor",
+  "note": "Küçük donanımlarda yüksek kalite görüntü‑metin üretimi mümkün hâle geliyor.",
+  "url": "https://huggingface.co/blog/inkling2mini",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "donanım"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "OpenAI, Adversarial Distillation’a Katmanlı Savunma Yaklaşımı Geliştirdi",
+  "note": "Model yeteneklerinin izinsiz çıkarılmasını önleyerek güvenliği artırıyor.",
+  "url": "https://openai.com/index/combatting-adversarial-distillation",
+  "source": "openai.com",
+  "tags": [
+   "güvenlik",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Vibecoding: Inference Chip Üzerinde Ses‑Kodlama Devrimi",
+  "note": "Düşük güç tüketimiyle gerçek‑zamanlı ses işleme sağlanıyor.",
+  "url": "https://ankitg.me/blog/vibecoding-inference-chip/",
+  "source": "Hacker News",
+  "tags": [
+   "donanım",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Qwen3.8‑27B‑pi‑adapted Modeli Harness‑Hub’da Görüntü‑Metin Üretimi İçin Uyarladı",
+  "note": "Adaptasyon sayesinde maliyet ve gecikme önemli ölçüde azaldı.",
+  "url": "https://huggingface.co/harness-hub/Qwen3.8-27B-pi-adapted",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "180B Parametre, 32GB RAM ile MoE İnferansı Sınırları Zorladı",
+  "note": "Büyük MoE modelleri, orta ölçekli sunucularda çalıştırılabilir hâle geldi.",
+  "url": "https://huggingface.co/blog/moe-expert-streaming",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "donanım"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "GPT‑6 Astra, Finansal Araştırmalarda Kaynak Kapsamı ve Atıf Kalitesini Yükseltti",
+  "note": "Finans sektöründe LLM‑tabanlı analizlerin doğruluk ve verimliliği artıyor.",
+  "url": "https://openai.com/business/customer-stories/hebbia",
+  "source": "openai.com",
+  "tags": [
+   "model",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Lightricks/LTX‑2.5: Görüntü‑Video Modeli 3M İndirme ile Popüler",
+  "note": "Yaratıcı içerik üretiminde yüksek kalite video çıktısı sağlıyor.",
+  "url": "https://huggingface.co/Lightricks/LTX-2.5",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "llama.cpp v1.0.0: Yerel AI Ekosistemi İçin Daha Güçlü Temel",
+  "note": "",
+  "url": "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "OpenAI Research Acceleration: Kodlama Ajanları Araştırma Hızını Katlıyor",
+  "note": "Otomatik kodlama ajanları, yeni buluşların ortaya çıkış süresini kısaltıyor.",
+  "url": "https://openai.com/index/research-acceleration-jagged-frontier",
+  "source": "openai.com",
+  "tags": [
+   "araştırma",
+   "araç"
+  ]
+ }
+]
