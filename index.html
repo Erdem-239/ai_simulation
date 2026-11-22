@@ -374,7 +374,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     return c;
   }
   // Sinaps ağı: düğümler + yaylı bağlar + üzerinde akan sinyal noktaları
-  let nodes=[],edges=[],glow=null,learnT=1;const coreEl=document.querySelector('.core');let sn=null,nextSn=3500;
+  let nodes=[],edges=[],glow=null,learnT=1.5;const coreEl=document.querySelector('.core');let sn=null,nextSn=3500;
   function net(){
     const n=W<600?34:60;nodes=[];edges=[];
     for(let i=0;i<n;i++)nodes.push({x:rnd()*1.1-.05,y:rnd()*1.2-.1,p:.02+rnd()*.05,r:1.2+rnd()*2.4});
@@ -384,18 +384,34 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     glow=document.createElement('canvas');glow.width=glow.height=48;const x=glow.getContext('2d'),gg=x.createRadialGradient(24,24,0,24,24,24);gg.addColorStop(0,'rgba(255,255,255,1)');gg.addColorStop(.25,'rgba(255,255,255,.5)');gg.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=gg;x.fillRect(0,0,48,48);
   }
   const ncol=(x,y)=>{const t=Math.min(1,Math.max(0,x*.65+y*.35));return [Math.round(90+165*t),Math.round(150-20*t),Math.round(255-205*t)]};
+  let strike=null;
   function drawNet(s,dt){
     const sy=-s*.05;
-    if(!reduce){learnT-=dt;if(learnT<=0){const e=edges[Math.floor(rnd()*edges.length)];e.w=1;e.s=Math.min(1,(e.s||0)+.12);e.t=0;e.on=true;e.v=2.2;e.f=.07;edges.forEach(o=>{if(o!==e&&(o.a===e.b||o.b===e.b)&&rnd()<.7){o.w=.8;o.s=Math.min(1,(o.s||0)+.06);o.on=true;o.t=0;o.v=2.4;o.f=.11}});learnT=1.6+rnd()*2.6}}
-    for(const e of edges){if(!reduce){e.w=Math.max(0,e.w-2.6*dt);e.s=Math.max(0,(e.s||0)-.03*dt);if(e.f>0){e.f-=dt;if(e.f<=0){e.w=.85;e.f=0}}}
+    if(!nodes[0].adj){nodes.forEach(n=>n.adj=[]);edges.forEach(e=>{nodes[e.a].adj.push(e);nodes[e.b].adj.push(e)})}
+    if(!reduce){
+      learnT-=dt;
+      if(learnT<=0&&!strike){
+        // şimşek: rastgele bir düğümden birkaç bağ boyunca ilerleyen yol
+        let n=Math.floor(rnd()*nodes.length),path=[];const used=new Set();
+        for(let h=0,hops=3+Math.floor(rnd()*4);h<hops;h++){const c=nodes[n].adj.filter(e=>!used.has(e));if(!c.length)break;const e=c[Math.floor(rnd()*c.length)];used.add(e);const rev=e.b===n;path.push({e:e,rev:rev});n=rev?e.a:e.b}
+        if(path.length){strike={path:path,t:0,i:0}}learnT=2.5+rnd()*3
+      }
+      if(strike){strike.t+=dt;while(strike.i<strike.path.length&&strike.t>=strike.i*.05){const q=strike.path[strike.i++],e=q.e;e.w=1;e.age=0;e.p=0;e.rev=q.rev;e.s=Math.min(1,(e.s||0)+.1);nodes[e.a].fl=1;nodes[e.b].fl=1}
+        if(strike.i>=strike.path.length&&strike.t>strike.path.length*.05+.1)strike=null}
+    }
+    for(const e of edges){
+      if(!reduce){e.w=Math.max(0,e.w-.55*dt);e.s=Math.max(0,(e.s||0)-.02*dt);e.age=(e.age||0)+dt;if(e.p>=0){e.p+=dt/.05;if(e.p>1)e.p=-1}}
       const A=nodes[e.a],B=nodes[e.b],ax=A.x*W,ay=A.y*H+sy,bx=B.x*W,by=B.y*H+sy;
       if((ay<-80&&by<-80)||(ay>H+80&&by>H+80))continue;
       const ddx=bx-ax,ddy=by-ay,c1x=ax+ddx*.3-ddy*e.o,c1y=ay+ddy*.3+ddx*e.o,c2x=ax+ddx*.7-ddy*e.o2,c2y=ay+ddy*.7+ddx*e.o2,c=ncol((A.x+B.x)/2,(A.y+B.y)/2);
-      const k=Math.max(e.w,.45*(e.s||0));g.strokeStyle='rgba('+c+','+(.05+.14*(e.s||0)+.7*k)+')';g.lineWidth=.6+.8*(e.s||0)+1.8*k;g.beginPath();g.moveTo(ax,ay);g.bezierCurveTo(c1x,c1y,c2x,c2y,bx,by);g.stroke();
-      if(!reduce){e.t+=e.v*dt;if(e.t>1){e.t=0;e.on=rnd()<.15;e.v=.08+rnd()*.2}}
-      if(e.on){const t=e.t,u=1-t,px=u*u*u*ax+3*u*u*t*c1x+3*u*t*t*c2x+t*t*t*bx,py=u*u*u*ay+3*u*u*t*c1y+3*u*t*t*c2y+t*t*t*by;g.globalAlpha=.4+.6*e.w;g.fillStyle='rgb('+c+')';const gs=10+10*e.w;g.drawImage(glow,px-gs/2,py-gs/2,gs,gs);g.globalAlpha=1}
+      const fl=e.age<.3?(Math.sin(e.age*95)>-.2?1:.5):1,k=Math.max(e.w*fl,.35*(e.s||0));
+      g.strokeStyle='rgba('+c+','+(.05+.12*(e.s||0)+.75*k)+')';g.lineWidth=.6+.7*(e.s||0)+2*k;g.beginPath();g.moveTo(ax,ay);g.bezierCurveTo(c1x,c1y,c2x,c2y,bx,by);g.stroke();
+      if(k>.3){g.strokeStyle='rgba(255,255,255,'+.7*k+')';g.lineWidth=.7+.6*k;g.stroke()}
+      if(!reduce){e.t+=(e.v||.1)*dt;if(e.t>1){e.t=0;e.on=rnd()<.08;e.v=.05+rnd()*.12}}
+      if(e.on){const t=e.t,u=1-t,px=u*u*u*ax+3*u*u*t*c1x+3*u*t*t*c2x+t*t*t*bx,py=u*u*u*ay+3*u*u*t*c1y+3*u*t*t*c2y+t*t*t*by;g.globalAlpha=.35;g.drawImage(glow,px-5,py-5,10,10);g.globalAlpha=1}
+      if(e.p>=0){const t=e.rev?1-e.p:e.p,u=1-t,px=u*u*u*ax+3*u*u*t*c1x+3*u*t*t*c2x+t*t*t*bx,py=u*u*u*ay+3*u*u*t*c1y+3*u*t*t*c2y+t*t*t*by;g.drawImage(glow,px-17,py-17,34,34)}
     }
-    for(const n of nodes){const y=n.y*H+sy;if(y<-20||y>H+20)continue;const c=ncol(n.x,n.y),r=n.r*5;g.globalAlpha=.32;g.drawImage(glow,n.x*W-r,y-r,2*r,2*r);g.globalAlpha=1}
+    for(const n of nodes){if(!reduce)n.fl=Math.max(0,(n.fl||0)-.6*dt);const y=n.y*H+sy;if(y<-30||y>H+30)continue;const r=n.r*5+(n.fl||0)*14;g.globalAlpha=Math.min(1,.32+.7*(n.fl||0));g.drawImage(glow,n.x*W-r,y-r,2*r,2*r);g.globalAlpha=1}
   }
   // Samanyolu bandı: her şeyin arkasından geçen tek, soluk gökyüzü
   function milky(){
