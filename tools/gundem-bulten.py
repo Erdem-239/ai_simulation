@@ -89,10 +89,20 @@ def gemini(prompt):
     return json.loads(r['candidates'][0]['content']['parts'][0]['text'])
 
 def openai_compat(prompt, base, key, model):
-    body = json.dumps({'model': model, 'temperature': .3, 'response_format': {'type': 'json_object'},
-        'messages': [{'role': 'system', 'content': 'Yalnız geçerli JSON döndür.'}, {'role': 'user', 'content': prompt}]}).encode()
-    r = json.loads(get(base + '/chat/completions', {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, body, 90))
-    return json.loads(r['choices'][0]['message']['content'])
+    def call(js):
+        b = {'model': model, 'temperature': .3,
+             'messages': [{'role': 'system', 'content': 'Yalnız geçerli JSON döndür.'}, {'role': 'user', 'content': prompt}]}
+        if js: b['response_format'] = {'type': 'json_object'}
+        r = json.loads(get(base + '/chat/completions', {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, json.dumps(b).encode(), 120))
+        return r['choices'][0]['message']['content']
+    try:
+        txt = call(True)
+    except urllib.error.HTTPError as e:
+        if e.code != 400: raise
+        print('JSON modu başarısız, serbest metinle yeniden deneniyor', file=sys.stderr)
+        txt = call(False)
+    m = re.search(r'[\[{].*[\]}]', txt, re.S)
+    return json.loads(m.group(0) if m else txt)
 
 def llm(prompt):
     sg = (os.environ.get('GUNDEM_SAGLAYICI') or CFG.get('saglayici') or 'gemini').lower()
@@ -106,7 +116,7 @@ def llm(prompt):
             print('Groq model listesi:', ids, file=sys.stderr)
             bad = ('whisper', 'guard', 'tts', 'embed', 'orpheus', 'prompt-guard')
             ok = [i for i in ids if not any(b in i for b in bad)]
-            pick = next((i for i in ok if any(w in i for w in ('70b', 'gpt-oss-120b', 'qwen', 'llama', 'gpt-oss'))), ok[0] if ok else None)
+            pick = next((i for k in ('gpt-oss-120b', '70b', 'qwen', 'llama', 'gpt-oss') for i in ok if k in i and 'safeguard' not in i), ok[0] if ok else None)
             if not pick: raise
             print('Seçilen model:', pick, file=sys.stderr)
             d = openai_compat(prompt, base, key, pick)
@@ -142,6 +152,8 @@ def main():
         except Exception as e: print('apify hata', e, file=sys.stderr)
         try: items += socialdata_items()
         except Exception as e: print('socialdata hata', e, file=sys.stderr)
+    from collections import Counter
+    print('kaynaklara göre aday:', dict(Counter(it['author'] for it in items).most_common(30)))
     old = json.load(open(OUT, encoding='utf-8')) if os.path.exists(OUT) else []
     seen = {o['url'] for o in old}
     items = [it for it in items if it['url'] not in seen]
