@@ -16,9 +16,31 @@
   "ilgi": "yapay zekâ, makine öğrenmesi, dil modelleri, açık modeller, araştırma makaleleri",
   "model": "gemini-2.5-flash-lite",
   "apify": {
-    "aktif": false,
+    "aktif": true,
     "aktor": "apidojo~tweet-scraper",
-    "hesaplar": [],
+    "hesaplar": [
+      "ClaudeDevs",
+      "DailyDoseOfDS_",
+      "egor65884",
+      "0xKapri",
+      "DeepTechTR",
+      "joshuastarmer",
+      "Avenoxai",
+      "AlexiGlad",
+      "askalphaxiv",
+      "gryhkn",
+      "BenjDicken",
+      "thinkymachines",
+      "rasbt",
+      "mertcobanov",
+      "fatihguzeldev",
+      "karpathy",
+      "ylecun",
+      "sama",
+      "AndrewYNg",
+      "AnthropicAI",
+      "OpenAI"
+    ],
     "en_fazla": 150
   }
 }
