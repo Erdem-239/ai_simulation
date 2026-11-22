@@ -72,7 +72,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const CH=[['Yapay Zekâ','yz'],['Veri Bilimi',''],['Bilgisayar Bilimi','cs'],['Fizik','fz'],['Elektrik-Elektronik',''],['Blog','blog'],['Ana Sayfa','home']];
+const CH=[['Yapay Zekâ','yz'],['Veri Bilimi',''],['Bilgisayar Bilimi','cs'],['Fizik','fz'],['Medeniyet','md'],['Elektrik-Elektronik',''],['Blog','blog'],['Ana Sayfa','home']];
 const VIS=5;let sel=0,opening=false;
 const gd=$('guide');
 function draw(){const top=Math.max(0,Math.min(CH.length-VIS,sel-3));let h='<div class="hd"><span>ALANLAR</span><span>CH '+String(sel+1).padStart(2,'0')+'</span></div><div class="rows">';
@@ -85,7 +85,7 @@ function open(){if(opening)return;pulse();const key=CH[sel][1];if(!key){const t=
   setTimeout(()=>{$('noise').classList.remove('on');const sc=document.querySelector('#tv .screen').getBoundingClientRect(),cx=sc.left+sc.width/2,cy=sc.top+sc.height/2,k=Math.max(innerWidth/sc.width,innerHeight/sc.height)*1.05,s=$('scene');
     s.style.transformOrigin=cx+'px '+cy+'px';s.style.transition='transform .95s cubic-bezier(.6,0,.9,.4)';s.style.transform='scale('+k+')';
     setTimeout(()=>{$('white').style.opacity=1},650);
-    setTimeout(()=>{try{sessionStorage.setItem('wh','1')}catch(e){}location.href=key==='home'?'./':key==='blog'?'blog/':key==='cs'?'bilgisayar-bilimi/':key==='fz'?'fizik/':'yapay-zeka/index.html'},1050)},650)}
+    setTimeout(()=>{try{sessionStorage.setItem('wh','1')}catch(e){}location.href=key==='home'?'./':key==='blog'?'blog/':key==='cs'?'bilgisayar-bilimi/':key==='fz'?'fizik/':key==='md'?'medeniyet/':'yapay-zeka/index.html'},1050)},650)}
 gd.addEventListener('click',e=>{const r=e.target.closest('.r');if(!r)return;sel=+r.dataset.i;draw();open()});
 gd.addEventListener('wheel',e=>{e.preventDefault();move(e.deltaY>0?1:-1)},{passive:false});
 $('up').onclick=()=>move(-1);$('dn').onclick=()=>move(1);$('ok').onclick=open;

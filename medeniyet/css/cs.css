@@ -1,0 +1,38 @@
+/* Bilgisayar bilimi dersleri: AI sitesinin style.css'ini temel alır, yalnız ders içeriği bileşenleri burada */
+.cs{--ac:#c9b3ff;--ac2:#f0a032}
+.cs .mono{font-family:Consolas,"JetBrains Mono",monospace}
+.cs .btn{padding:6px 13px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);cursor:pointer;font:inherit;font-size:13px;text-decoration:none;display:inline-block}
+.cs .btn:hover{background:#26335a}.cs .btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.cs .cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:10px 0}
+.cs .cards3>div{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:13.5px}
+.cs .cards3 b{display:block;margin-bottom:3px;color:var(--accent)}
+.cs .call{border-left:3px solid var(--accent);padding:8px 12px;margin:10px 0;background:rgba(240,160,50,.08);border-radius:0 8px 8px 0;font-size:13.5px}
+.cs h4{margin:14px 0 4px;font-size:14px;color:var(--accent)}
+.cs .tpl-body p{margin:8px 0;line-height:1.65}
+.cs .sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media(max-width:860px){.cs .sim{grid-template-columns:1fr}}
+.cs .panel{padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+.cs .panel h5{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cs .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.cs table{border-collapse:collapse;font:13px Consolas,monospace;width:100%}
+.cs td,.cs th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:center}.cs th{color:var(--muted)}
+.cs tr.hl td{background:rgba(255,157,77,.2)}
+.cs .bit{width:34px;height:40px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:#fff;font:700 18px Consolas,monospace;cursor:pointer}
+.cs .bit.on{background:var(--ac);color:#052a27;border-color:var(--ac)}
+.cs .big{font:700 22px Consolas,monospace;color:var(--ac)}
+.cs .soz{margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(240,160,50,.1);font-size:13.5px}
+.cs pre.code{background:#150e08;border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow:auto;font:12.5px/1.5 Consolas,monospace;margin:10px 0}
+.cs .q{margin:12px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px}
+.cs .q .o{display:block;margin:6px 0;padding:6px 10px;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:14px}
+.cs .q .o:hover{background:var(--panel)}.cs .q .o.ok{background:rgba(70,196,106,.2);border-color:var(--green)}.cs .q .o.bad{background:rgba(224,106,106,.2);border-color:#e06a6a}
+.cs .q .w{display:none;margin-top:6px;font-size:13px;color:var(--muted)}.cs .q.done .w{display:block}
+.cs .navrow{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+.navbtn.soon{opacity:.5}
+#csToast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,10px);padding:9px 16px;border-radius:999px;background:#1c2745;border:1px solid var(--line);opacity:0;transition:.3s;pointer-events:none;font-size:14px;z-index:99999}
+#csToast.on{opacity:1;transform:translate(-50%,0)}
+
+#csModal{position:fixed;inset:0;background:rgba(3,10,8,.82);z-index:99990;display:none;overflow:auto;padding:24px}
+#csModal.on{display:block}.cm-box{max-width:760px;margin:0 auto;background:var(--panel2);border:1px solid var(--accent);border-radius:12px;padding:18px 20px;position:relative}
+.cm-x{position:absolute;right:12px;top:12px}
+.navbtn-test{border-left-color:#f0b03c!important;color:#f6d58a!important;font-weight:700}
+.tpl-cl[data-stage="x"] .tpl-head{background:rgba(160,180,170,.1)}
