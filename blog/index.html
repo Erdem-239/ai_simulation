@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blog — Erdem Erzurumlu</title>
+<meta name="description" content="Çalışmalar, projeler, öğrenilenler ve düşünceler.">
+<meta name="theme-color" content="#06070b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06070b;--line:rgba(255,255,255,.1);--tx:#eef0f6;--mut:#8b93a7;--ac:#f0a032}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(900px 500px at 80% -10%,rgba(120,130,255,.14),transparent 60%),radial-gradient(700px 500px at 0% 0%,rgba(255,170,150,.1),transparent 60%),var(--bg);color:var(--tx);font:300 17px/1.7 Inter,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.top{max-width:760px;margin:0 auto;padding:22px 20px 0;display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.top a{padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);text-decoration:none;color:#cfd5e6}
+.top a:hover{background:rgba(255,255,255,.1)}
+main{max-width:760px;margin:0 auto;padding:36px 20px 90px}
+h1.t{font:italic 400 clamp(40px,7vw,64px)/1.05 "Instrument Serif",Georgia,serif;margin-bottom:8px}
+.sub{color:var(--mut);margin-bottom:26px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tags button{font:inherit;font-size:13px;color:#c9cfdd;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:999px;padding:5px 13px;cursor:pointer}
+.tags button.on{background:#fff;color:#0a0b10}
+.card{display:block;text-decoration:none;padding:20px 22px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:14px;transition:.2s}
+.card:hover{background:rgba(255,255,255,.07);transform:translateY(-2px)}
+.card h2{font:400 26px/1.2 "Instrument Serif",Georgia,serif;margin-bottom:6px}
+.card p{color:#aab1c4;font-size:15px}
+.meta{font:400 12px "JetBrains Mono",monospace;color:var(--mut);margin-top:10px;display:flex;gap:12px;flex-wrap:wrap}
+.empty{color:var(--mut);padding:30px 0}
+/* yazı */
+article h1{font:italic 400 clamp(34px,6vw,52px)/1.08 "Instrument Serif",Georgia,serif;margin:6px 0 10px}
+article h2{font:400 28px/1.2 "Instrument Serif",Georgia,serif;margin:34px 0 10px}
+article h3{font:500 18px Inter;margin:26px 0 8px}
+article p{margin:0 0 16px;color:#d8dcea}
+article ul,article ol{margin:0 0 16px 22px;color:#d8dcea}article li{margin:4px 0}
+article blockquote{border-left:3px solid var(--ac);padding:4px 0 4px 16px;margin:0 0 16px;color:#e9d9b8;font-style:italic}
+article code{font:400 .88em "JetBrains Mono",monospace;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px}
+article pre{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:auto;margin:0 0 16px}article pre code{background:none;padding:0}
+article a{color:#9cc4ff}article img{max-width:100%;border-radius:12px}
+article hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+article iframe{width:100%;border:1px solid var(--line);border-radius:14px;background:#000;margin:0 0 16px}
+.post-meta{font:400 12px "JetBrains Mono",monospace;color:var(--mut)}
+.back{display:inline-block;margin-bottom:6px;color:var(--mut);font-size:14px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="top"><a href="../">← Ana sayfa</a><a href="../yapay-zeka/index.html">Yapay zekâ dersleri</a></div>
+<main id="m"></main>
+<script>
+(function(){
+const m=document.getElementById('m');
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=d=>new Date(d+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+function inl(s){s=esc(s);
+  s=s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>');
+  s=s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,'<img alt="$1" src="$2">').replace(/\[([^\]]+)\]\(([^)\s]+)\)/g,'<a href="$2">$1</a>');return s}
+function md(src){const L=src.replace(/\r/g,'').split('\n');let h='',i=0;
+  while(i<L.length){const l=L[i];
+    if(!l.trim()){i++;continue}
+    let q;
+    if(q=l.match(/^\{\{iframe\s+(\S+)\s+(\d+)\}\}$/)){h+='<iframe src="'+esc(q[1])+'" height="'+q[2]+'" loading="lazy" title="Canlı simülasyon"></iframe>';i++;continue}
+    if(/^```/.test(l)){let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);i++;h+='<pre><code>'+esc(c.join('\n'))+'</code></pre>';continue}
+    if(q=l.match(/^(#{1,3})\s+(.*)$/)){h+='<h'+q[1].length+'>'+inl(q[2])+'</h'+q[1].length+'>';i++;continue}
+    if(/^---+$/.test(l.trim())){h+='<hr>';i++;continue}
+    if(/^>\s?/.test(l)){let c=[];while(i<L.length&&/^>\s?/.test(L[i]))c.push(L[i++].replace(/^>\s?/,''));h+='<blockquote>'+inl(c.join(' '))+'</blockquote>';continue}
+    if(/^\s*[-*]\s+/.test(l)){let c=[];while(i<L.length&&/^\s*[-*]\s+/.test(L[i]))c.push('<li>'+inl(L[i++].replace(/^\s*[-*]\s+/,''))+'</li>');h+='<ul>'+c.join('')+'</ul>';continue}
+    if(/^\s*\d+\.\s+/.test(l)){let c=[];while(i<L.length&&/^\s*\d+\.\s+/.test(L[i]))c.push('<li>'+inl(L[i++].replace(/^\s*\d+\.\s+/,''))+'</li>');h+='<ol>'+c.join('')+'</ol>';continue}
+    let c=[];while(i<L.length&&L[i].trim()&&!/^(#{1,3}\s|```|>|\s*[-*]\s|\s*\d+\.\s|\{\{iframe)/.test(L[i]))c.push(L[i++]);h+='<p>'+inl(c.join(' '))+'</p>'}
+  return h}
+let posts=[],tag='';
+async function load(){try{posts=await (await fetch('yazilar/index.json?'+Date.now())).json()}catch(e){posts=[]}posts.sort((a,b)=>b.date.localeCompare(a.date))}
+function list(){document.title='Blog — Erdem Erzurumlu';
+  const tags=[...new Set(posts.flatMap(p=>p.tags||[]))];
+  let h='<h1 class="t">Blog</h1><p class="sub">Çalışmalar, projeler, öğrenilenler ve düşünceler.</p>';
+  if(tags.length)h+='<div class="tags"><button data-t=""'+(tag?'':' class="on"')+'>Hepsi</button>'+tags.map(t=>'<button data-t="'+esc(t)+'"'+(t===tag?' class="on"':'')+'>'+esc(t)+'</button>').join('')+'</div>';
+  const ps=posts.filter(p=>!tag||(p.tags||[]).includes(tag));
+  h+=ps.length?ps.map(p=>'<a class="card" href="#/'+p.slug+'"><h2>'+esc(p.title)+'</h2><p>'+esc(p.summary||'')+'</p><div class="meta"><span>'+fmt(p.date)+'</span>'+(p.tags||[]).map(t=>'<span>#'+esc(t)+'</span>').join('')+'</div></a>').join(''):'<p class="empty">İlk yazılar yolda.</p>';
+  m.innerHTML=h;m.querySelectorAll('.tags button').forEach(b=>b.onclick=()=>{tag=b.dataset.t;list()})}
+async function post(slug){const p=posts.find(x=>x.slug===slug);
+  if(!p){m.innerHTML='<a class="back" href="#/">← Tüm yazılar</a><p class="empty">Yazı bulunamadı.</p>';return}
+  document.title=p.title+' — Erdem Erzurumlu';
+  m.innerHTML='<a class="back" href="#/">← Tüm yazılar</a><p class="post-meta">'+fmt(p.date)+(p.tags&&p.tags.length?' · '+p.tags.map(t=>'#'+esc(t)).join(' '):'')+'</p><article>…</article>';
+  try{const t=await (await fetch('yazilar/'+slug+'.md?'+Date.now())).text();m.querySelector('article').innerHTML=md(t)}catch(e){m.querySelector('article').innerHTML='<p class="empty">Yazı yüklenemedi.</p>'}
+  scrollTo(0,0)}
+function route(){const s=(location.hash.match(/^#\/(.+)$/)||[])[1];s?post(s):list()}
+addEventListener('hashchange',route);load().then(route);
+})();
+</script>
+</body>
+</html>
