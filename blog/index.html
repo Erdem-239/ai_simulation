@@ -29,6 +29,18 @@ h1.t{font:italic 400 clamp(40px,7vw,64px)/1.05 "Instrument Serif",Georgia,serif;
 .card p{color:#aab1c4;font-size:15px}
 .meta{font:400 12px "JetBrains Mono",monospace;color:var(--mut);margin-top:10px;display:flex;gap:12px;flex-wrap:wrap}
 .empty{color:var(--mut);padding:30px 0}
+/* sekmeler + gündem */
+.tabs{display:flex;gap:8px;margin:0 0 22px}
+.tabs a{padding:8px 16px;border:1px solid var(--line);border-radius:999px;text-decoration:none;font-size:14px;color:#c9cfdd;background:rgba(255,255,255,.03)}
+.tabs a.on{background:#fff;color:#0a0b10;font-weight:500}
+.day{font:500 12px "JetBrains Mono",monospace;color:var(--mut);letter-spacing:.08em;margin:26px 0 10px;text-transform:uppercase}
+.nw{display:flex;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);margin-bottom:10px;text-decoration:none;transition:.2s}
+.nw:hover{background:rgba(255,255,255,.07)}
+.nw .pf{flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font:600 13px Inter;color:#fff}
+.nw h3{font:500 16px/1.35 Inter;margin:0 0 4px}.nw p{font-size:14px;color:#aab1c4;margin:0}
+.nw .src{font:400 12px "JetBrains Mono",monospace;color:var(--mut);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+.pfl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.note{font-size:13px;color:var(--mut);margin-top:26px}
 /* yazı */
 article h1{font:italic 400 clamp(34px,6vw,52px)/1.08 "Instrument Serif",Georgia,serif;margin:6px 0 10px}
 article h2{font:400 28px/1.2 "Instrument Serif",Georgia,serif;margin:34px 0 10px}
@@ -69,22 +81,36 @@ function md(src){const L=src.replace(/\r/g,'').split('\n');let h='',i=0;
     if(/^\s*\d+\.\s+/.test(l)){let c=[];while(i<L.length&&/^\s*\d+\.\s+/.test(L[i]))c.push('<li>'+inl(L[i++].replace(/^\s*\d+\.\s+/,''))+'</li>');h+='<ol>'+c.join('')+'</ol>';continue}
     let c=[];while(i<L.length&&L[i].trim()&&!/^(#{1,3}\s|```|>|\s*[-*]\s|\s*\d+\.\s|\{\{iframe)/.test(L[i]))c.push(L[i++]);h+='<p>'+inl(c.join(' '))+'</p>'}
   return h}
-let posts=[],tag='';
-async function load(){try{posts=await (await fetch('yazilar/index.json?'+Date.now())).json()}catch(e){posts=[]}posts.sort((a,b)=>b.date.localeCompare(a.date))}
+const PF={x:['X','#1d9bf0'],youtube:['YT','#e0372f'],reddit:['R','#ff5a1f'],hn:['HN','#f0652f'],arxiv:['ar','#b5342b'],github:['GH','#6e5adf'],linkedin:['in','#2b6cb0'],diger:['↗','#566']};
+function pfOf(u){try{const h=new URL(u).hostname.replace(/^www\./,'');if(/(^|\.)(x|twitter)\.com$/.test(h))return'x';if(/youtube\.com|youtu\.be/.test(h))return'youtube';if(/reddit\.com/.test(h))return'reddit';if(/ycombinator\.com/.test(h))return'hn';if(/arxiv\.org/.test(h))return'arxiv';if(/github\.com/.test(h))return'github';if(/linkedin\.com/.test(h))return'linkedin'}catch(e){}return'diger'}
+let posts=[],news=[],tag='',npf='',ntag='';
+const tabs=a=>'<div class="tabs"><a href="#/"'+(a==='y'?' class="on"':'')+'>Yazılar</a><a href="#/gundem"'+(a==='g'?' class="on"':'')+'>Haber &amp; gündem</a></div>';
+async function load(){try{posts=await (await fetch('yazilar/index.json?'+Date.now())).json()}catch(e){posts=[]}posts.sort((a,b)=>b.date.localeCompare(a.date));try{news=await (await fetch('gundem/index.json?'+Date.now())).json()}catch(e){news=[]}news.sort((a,b)=>b.date.localeCompare(a.date))}
 function list(){document.title='Blog — Erdem Erzurumlu';
   const tags=[...new Set(posts.flatMap(p=>p.tags||[]))];
-  let h='<h1 class="t">Blog</h1><p class="sub">Çalışmalar, projeler, öğrenilenler ve düşünceler.</p>';
+  let h='<h1 class="t">Blog</h1><p class="sub">Çalışmalar, projeler, öğrenilenler ve düşünceler.</p>'+tabs('y');
   if(tags.length)h+='<div class="tags"><button data-t=""'+(tag?'':' class="on"')+'>Hepsi</button>'+tags.map(t=>'<button data-t="'+esc(t)+'"'+(t===tag?' class="on"':'')+'>'+esc(t)+'</button>').join('')+'</div>';
   const ps=posts.filter(p=>!tag||(p.tags||[]).includes(tag));
   h+=ps.length?ps.map(p=>'<a class="card" href="#/'+p.slug+'"><h2>'+esc(p.title)+'</h2><p>'+esc(p.summary||'')+'</p><div class="meta"><span>'+fmt(p.date)+'</span>'+(p.tags||[]).map(t=>'<span>#'+esc(t)+'</span>').join('')+'</div></a>').join(''):'<p class="empty">İlk yazılar yolda.</p>';
   m.innerHTML=h;m.querySelectorAll('.tags button').forEach(b=>b.onclick=()=>{tag=b.dataset.t;list()})}
+function gundem(){document.title='Haber & gündem — Erdem Erzurumlu';
+  const tg=[...new Set(news.flatMap(n=>n.tags||[]))],pfs=[...new Set(news.map(n=>n.pf||pfOf(n.url)))];
+  let h='<h1 class="t">Haber &amp; gündem</h1><p class="sub">Takip ettiğim yapay zekâ ve teknoloji gelişmelerinden, X ve diğer platformlardan derlediklerim. Her kart özgün kaynağa bağlanır.</p>'+tabs('g');
+  if(pfs.length>1)h+='<div class="tags pfl"><button data-p=""'+(npf?'':' class="on"')+'>Tüm kaynaklar</button>'+pfs.map(x=>'<button data-p="'+x+'"'+(x===npf?' class="on"':'')+'>'+({x:'X',youtube:'YouTube',reddit:'Reddit',hn:'Hacker News',arxiv:'arXiv',github:'GitHub',linkedin:'LinkedIn',diger:'Diğer'})[x]+'</button>').join('')+'</div>';
+  if(tg.length)h+='<div class="tags"><button data-t=""'+(ntag?'':' class="on"')+'>Hepsi</button>'+tg.map(t=>'<button data-t="'+esc(t)+'"'+(t===ntag?' class="on"':'')+'>'+esc(t)+'</button>').join('')+'</div>';
+  const ns=news.filter(n=>(!npf||(n.pf||pfOf(n.url))===npf)&&(!ntag||(n.tags||[]).includes(ntag)));
+  if(!ns.length)h+='<p class="empty">Henüz derleme yok. İlk haberler yolda.</p>';
+  else{let d='';for(const n of ns){if(n.date!==d){d=n.date;h+='<div class="day">'+fmt(d)+'</div>'}const k=n.pf||pfOf(n.url),c=PF[k]||PF.diger;
+    h+='<a class="nw" href="'+esc(n.url)+'" target="_blank" rel="noopener noreferrer"><span class="pf" style="background:'+c[1]+'">'+c[0]+'</span><div><h3>'+esc(n.title)+'</h3>'+(n.note?'<p>'+esc(n.note)+'</p>':'')+'<div class="src"><span>'+esc(n.source||({x:'X',youtube:'YouTube',reddit:'Reddit',hn:'Hacker News',arxiv:'arXiv',github:'GitHub',linkedin:'LinkedIn',diger:'Bağlantı'})[k])+'</span>'+(n.tags||[]).map(t=>'<span>#'+esc(t)+'</span>').join('')+'</div></div></a>'}}
+  h+='<p class="note">Bu sayfa kişisel derlemedir; içerikler ilgili kaynaklara aittir, doğruluğu kaynağa bağlıdır.</p>';
+  m.innerHTML=h;m.querySelectorAll('.pfl button').forEach(b=>b.onclick=()=>{npf=b.dataset.p;gundem()});m.querySelectorAll('.tags:not(.pfl) button').forEach(b=>b.onclick=()=>{ntag=b.dataset.t;gundem()})}
 async function post(slug){const p=posts.find(x=>x.slug===slug);
   if(!p){m.innerHTML='<a class="back" href="#/">← Tüm yazılar</a><p class="empty">Yazı bulunamadı.</p>';return}
   document.title=p.title+' — Erdem Erzurumlu';
   m.innerHTML='<a class="back" href="#/">← Tüm yazılar</a><p class="post-meta">'+fmt(p.date)+(p.tags&&p.tags.length?' · '+p.tags.map(t=>'#'+esc(t)).join(' '):'')+'</p><article>…</article>';
   try{const t=await (await fetch('yazilar/'+slug+'.md?'+Date.now())).text();m.querySelector('article').innerHTML=md(t)}catch(e){m.querySelector('article').innerHTML='<p class="empty">Yazı yüklenemedi.</p>'}
   scrollTo(0,0)}
-function route(){const s=(location.hash.match(/^#\/(.+)$/)||[])[1];s?post(s):list()}
+function route(){const s=(location.hash.match(/^#\/(.+)$/)||[])[1];s==='gundem'?gundem():s?post(s):list()}
 addEventListener('hashchange',route);load().then(route);
 })();
 </script>
