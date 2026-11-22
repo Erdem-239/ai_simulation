@@ -14,5 +14,11 @@
     "en_fazla": 200
   },
   "ilgi": "yapay zekâ, makine öğrenmesi, dil modelleri, açık modeller, araştırma makaleleri",
-  "model": "gemini-2.5-flash-lite"
+  "model": "gemini-2.5-flash-lite",
+  "apify": {
+    "aktif": false,
+    "aktor": "apidojo~tweet-scraper",
+    "hesaplar": [],
+    "en_fazla": 150
+  }
 }

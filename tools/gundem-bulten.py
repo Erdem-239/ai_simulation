@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Günlük 'Haber & gündem' bülteni.
 Kaynaklardan öğe çeker -> Gemini ile süzer/özetler (kendi cümleleriyle) -> blog/gundem/index.json'a ekler.
-Gizli anahtarlar yalnız ortam değişkeninden: GEMINI_API_KEY | GROQ_API_KEY | OPENROUTER_API_KEY (saglayici ayardan), SOCIALDATA_API_KEY (hiçbiri depoda YOK).
+Gizli anahtarlar yalnız ortam değişkeninden: APIFY_TOKEN (X için), GEMINI_API_KEY | GROQ_API_KEY | OPENROUTER_API_KEY (saglayici ayardan), SOCIALDATA_API_KEY (hiçbiri depoda YOK).
 Kullanım: python3 tools/gundem-bulten.py [--dry-run] [--girdi dosya.json]
   --girdi : kaynak çekmek yerine hazır öğe listesi ([{"url","text","author"}]) kullan (test)
   GUNDEM_MOCK=1 : LLM yerine sahte yanıt (anahtarsız test)
@@ -56,6 +56,31 @@ def socialdata_items():
         out.append({'url': 'https://x.com/%s/status/%s' % (u, t.get('id_str')), 'text': t.get('full_text') or t.get('text') or '', 'author': '@' + u})
     return out
 
+def apify_items():
+    a = CFG.get('apify', {})
+    tok = os.environ.get('APIFY_TOKEN')
+    hs = [h.strip().lstrip('@') for h in a.get('hesaplar', []) if h.strip()]
+    if not (a.get('aktif') and tok and hs):
+        return []
+    # NOT: aktör adı ve girdi alanları Apify'ın güncel belgesinden doğrulanmalı (ilk gerçek çalıştırmada günlüğe bak).
+    since = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+    terms = []
+    for i in range(0, len(hs), 15):
+        q = ' OR '.join('from:' + h for h in hs[i:i + 15])
+        terms.append('(%s) since:%s -filter:nativeretweets -filter:replies' % (q, since))
+    actor = a.get('aktor', 'apidojo~tweet-scraper')
+    body = json.dumps({'searchTerms': terms, 'maxItems': a.get('en_fazla', 150), 'sort': 'Latest'}).encode()
+    d = json.loads(get('https://api.apify.com/v2/acts/%s/run-sync-get-dataset-items' % actor,
+                       {'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json'}, body, 240))
+    out = []
+    for t in d if isinstance(d, list) else []:
+        text = t.get('text') or t.get('fullText') or ''
+        url = t.get('url') or t.get('twitterUrl') or ''
+        au = (t.get('author') or {}).get('userName', '')
+        if text and url:
+            out.append({'url': url, 'text': text, 'author': '@' + au if au else 'X', 'likes': t.get('likeCount', 0)})
+    return out
+
 def gemini(prompt):
     key = os.environ['GEMINI_API_KEY']
     url = 'https://generativelanguage.googleapis.com/v1beta/models/'+(os.environ.get('GEMINI_MODEL') or CFG.get('model') or 'gemini-2.5-flash-lite')+':generateContent?key=' + key
@@ -96,7 +121,7 @@ def llm(prompt):
 def summarize(items, n):
     if os.environ.get('GUNDEM_MOCK'):
         return [{'i': i, 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
-    lst = '\n'.join('[%d] (%s) %s' % (i, it['author'], it['text'][:500].replace('\n', ' ')) for i, it in enumerate(items))
+    lst = '\n'.join('[%d] (%s%s) %s' % (i, it['author'], (', beğeni ' + str(it['likes'])) if it.get('likes') else '', it['text'][:500].replace('\n', ' ')) for i, it in enumerate(items))
     p = ('Aşağıda numaralı gönderiler var. İlgi alanım: %s.\n'
          'Yalnız önemli ve özgün gelişmeleri seç (en fazla %d), reklam/tekrar/sohbeti ele.\n'
          'Her seçilen için KENDİ CÜMLELERİNLE Türkçe kısa bir başlık (en fazla 90 karakter) ve tek cümlelik not yaz; '
@@ -113,6 +138,8 @@ def main():
         for u in CFG.get('rss', []):
             try: items += rss_items(u)
             except Exception as e: print('RSS hata', u, e, file=sys.stderr)
+        try: items += apify_items()
+        except Exception as e: print('apify hata', e, file=sys.stderr)
         try: items += socialdata_items()
         except Exception as e: print('socialdata hata', e, file=sys.stderr)
     old = json.load(open(OUT, encoding='utf-8')) if os.path.exists(OUT) else []
