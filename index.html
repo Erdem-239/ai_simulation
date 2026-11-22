@@ -478,8 +478,8 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   }
   function build(){
     W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;docH=document.documentElement.scrollHeight;
-    const n=Math.max(110,Math.round(W*H/5200));stars=[];
-    for(let i=0;i<n;i++){const z=rnd()<.6?0:rnd()<.7?1:2;stars.push({x:rnd(),y:rnd(),z:z,s:z===0?.7+rnd()*.5:z===1?1+rnd()*.6:1.6+rnd()*.9,ph:rnd()*6.28,sp:.6+rnd()*1.6,h:rnd()<.2?28:rnd()<.5?215:0,al:.35+rnd()*.5})}
+    const n=Math.max(220,Math.round(W*H/2300));stars=[];
+    for(let i=0;i<n;i++){const z=rnd()<.6?0:rnd()<.7?1:2;stars.push({x:rnd(),y:rnd(),z:z,s:z===0?.55+rnd()*.45:z===1?.8+rnd()*.5:1.4+rnd()*.8,ph:rnd()*6.28,sp:.6+rnd()*1.6,h:rnd()<.2?28:rnd()<.5?215:0,al:.35+rnd()*.5})}
     const k=W<600?.62:1;
     gals=[
       {sc:.2,cx:.2,cy:.3,size:520*k,tilt:.4,sq:.7,spin:.003,al:.45,p:.15,h:0},
@@ -515,7 +515,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     drawNet(s,Math.min(.05,(t-(drawNet.l||t))/1000));drawNet.l=t;
     SKY.forEach((o,i)=>{
       const x=o.fx*W,y=o.fy*H,a=.5+.35*Math.sin(t/800+i*2);
-      g.fillStyle='rgba(235,240,255,'+a+')';g.fillRect(x-.6,y-.6,1.5,1.5);
+      g.fillStyle='rgba(235,240,255,'+a*.8+')';g.fillRect(x-.5,y-.5,1,1);
       if(o.found){g.strokeStyle='rgba('+o.col+',.28)';g.lineWidth=1;g.beginPath();g.arc(x,y,7,0,6.283);g.stroke()}
       if(o.g0){const p=(t-o.g0)/14000;if(p>=1||p<0){if(p>=1)o.g0=0}else{const e=1-p*.55,ph=((t-o.g0)%1500)/1500;
         let q=g.createRadialGradient(x,y,0,x,y,30);q.addColorStop(0,'rgba(255,255,255,'+.9*e+')');q.addColorStop(.25,'rgba('+o.col+','+.55*e+')');q.addColorStop(1,'rgba('+o.col+',0)');g.fillStyle=q;g.fillRect(x-30,y-30,60,60);
@@ -573,16 +573,16 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   const TILT=0,RY=.42,ct=Math.cos(TILT),st=Math.sin(TILT);
   const pal=[[255,238,228],[255,205,195],[205,178,255],[155,172,255],[112,150,255]];
   const FIELDS=[
-    {k:'ai',n:'Yapay zekâ',c:'#f0a032',f:.27,ph:1.15,sz:34,act:1,d:'28 ders, canlı simülasyonlar ve 3B mimariler.',href:'yapay-zeka/index.html',cta:'Dersleri aç →'},
-    {k:'vb',n:'Veri bilimi',c:'#46c46a',f:.35,ph:3.2,sz:23,d:'İstatistik, veri hazırlama, modelleri değerlendirme.'},
-    {k:'cs',n:'Bilgisayar bilimi',c:'#6aa7ff',f:.43,ph:5.0,sz:25,d:'Algoritmalar, veri yapıları, sistemler.'},
-    {k:'ee',n:'Elektrik-elektronik',c:'#ffd24a',f:.51,ph:.2,sz:24,d:'Devreler, sinyaller, işlemciler.'},
-    {k:'fz',n:'Fizik',c:'#a98bff',f:.59,ph:2.3,sz:26,d:'Hareketten alanlara.'},
-    {k:'bi',n:'Biyoloji',c:'#5fe0c0',f:.67,ph:4.15,sz:22,d:'Hücreden sinir sistemine.'},
-    {k:'fe',n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
-    {k:'ta',n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
-    {k:'ot',n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
-    {k:'bl',n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,d:'Çalışmalar, projeler, düşünceler. İlk yazılar yolda.'}
+    {k:'ai',ff:0.55,dp:0.25,n:'Yapay zekâ',c:'#f0a032',f:.27,ph:1.15,sz:34,act:1,d:'28 ders, canlı simülasyonlar ve 3B mimariler.',href:'yapay-zeka/index.html',cta:'Dersleri aç →'},
+    {k:'vb',ff:0.78,dp:0.2,n:'Veri bilimi',c:'#46c46a',f:.35,ph:3.2,sz:23,d:'İstatistik, veri hazırlama, modelleri değerlendirme.'},
+    {k:'cs',ff:1.05,dp:0.55,n:'Bilgisayar bilimi',c:'#6aa7ff',f:.43,ph:5.0,sz:25,d:'Algoritmalar, veri yapıları, sistemler.'},
+    {k:'ee',ff:0.66,dp:0.2,n:'Elektrik-elektronik',c:'#ffd24a',f:.51,ph:.2,sz:24,d:'Devreler, sinyaller, işlemciler.'},
+    {k:'fz',ff:1.32,dp:1.0,n:'Fizik',c:'#a98bff',f:.59,ph:2.3,sz:26,d:'Hareketten alanlara.'},
+    {k:'bi',ff:0.9,dp:0.3,n:'Biyoloji',c:'#5fe0c0',f:.67,ph:4.15,sz:22,d:'Hücreden sinir sistemine.'},
+    {k:'fe',ff:1.18,dp:0.8,n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
+    {k:'ta',ff:0.72,dp:0.2,n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
+    {k:'ot',ff:1.46,dp:1.1,n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
+    {k:'bl',ff:1.0,dp:0.4,n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,d:'Çalışmalar, projeler, düşünceler. İlk yazılar yolda.'}
   ];
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),2600)}
   FIELDS.forEach(F=>{
@@ -651,7 +651,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     [cb,cf].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
     const tp=hero.querySelector('.hero-top').getBoundingClientRect(),bt=hero.querySelector('.hero-bot').getBoundingClientRect();
     const g0=tp.bottom-r.top+14,g1=bt.top-r.top-8,gap=Math.max(160,g1-g0);
-    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.42:.36),520,H*.66);FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=.5+(F.f0-.27)*.9});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
+    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.42:.36),520,H*.66);FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=F.ff});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
     const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width='10px';
     const n=W<700?1800:3400;P=[];
     for(let i=0;i<n;i++){
@@ -681,10 +681,10 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     // gezegenler
     for(const F of FIELDS){
       if(!reduce)F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1);
-      const q=pos(F.a,F.f,dx,dyk),front=Math.sin(F.a)>0,sc=.94+.16*Math.sin(F.a);
+      const q=pos(F.a,F.f,dx,dyk),front=Math.sin(F.a)>0,sc=Math.max(.45,1+(.16+.8*F.dp)*Math.sin(F.a));
       {const vx=CX-q[0],vy=CY-q[1],ln=Math.hypot(vx,vy)||1;F.pb.style.setProperty('--lx',(50+vx/ln*30).toFixed(1)+'%');F.pb.style.setProperty('--ly',(50+vy/ln*30).toFixed(1)+'%')}
       F.el.style.transform='translate('+(q[0])+'px,'+(q[1])+'px) translate(-50%,-50%) scale('+sc.toFixed(3)+')';
-      F.el.style.zIndex=F.hov?8:(front?3:0);F.el.style.opacity=front?1:.72;
+      F.el.style.zIndex=F.hov?8:(front?3:0);F.el.style.opacity=front?1:.72;F.el.style.filter=sc>1.45?'blur('+((sc-1.45)*2.2).toFixed(1)+'px)':'';
       F.el.classList.toggle('sl',q[0]<W*.18);F.el.classList.toggle('sr',q[0]>W*.82);F.el.classList.toggle('below',q[1]<H*.3);
     }
   }
@@ -727,9 +727,8 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     msg.textContent='Sinyal alındı…';scrollTo({top:0,behavior:'smooth'});box.classList.remove('open');S.glow(hit);setTimeout(()=>card(hit),1400)};
   // elle bulma: imleç bir noktanın yakınındaysa
   const near=e=>{if(e.target.closest&&e.target.closest('a,button,input,textarea,select,label,.pl,.sky-card,#skyBox'))return null;
-    let b=null,bd=15;S.list.forEach(o=>{const p=S.pos(o),d=Math.hypot(e.clientX-p[0],e.clientY-p[1]);if(d<bd){bd=d;b=o}});return b};
-  addEventListener('pointermove',e=>{document.documentElement.style.cursor=near(e)?'pointer':''});
-  addEventListener('click',e=>{const o=near(e);if(o)card(o)});
+    let b=null,bd=matchMedia('(pointer:coarse)').matches?14:8;S.list.forEach(o=>{const p=S.pos(o),d=Math.hypot(e.clientX-p[0],e.clientY-p[1]);if(d<bd){bd=d;b=o}});return b};
+    addEventListener('click',e=>{const o=near(e);if(o)card(o)});
   renderList();
 })();
 </script>
