@@ -14,6 +14,8 @@ CFG = json.load(open(os.path.join(ROOT, 'tools', 'gundem-kaynaklar.json'), encod
 OUT = os.path.join(ROOT, 'blog', 'gundem', 'index.json')
 UA = {'User-Agent': 'gundem-bulten/1.0'}
 
+ETIKETLER = ['model', 'araştırma', 'araç', 'güvenlik', 'açık-model', 'donanım', 'uygulama', 'ses-görüntü', 'bilim']
+
 def get(url, headers=None, data=None, timeout=30):
     req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
     try:
@@ -41,6 +43,46 @@ def rss_items(url):
         if href:
             out.append({'url': href.strip(), 'text': (title + ' — ' + desc).strip(), 'author': urllib.parse.urlparse(url).hostname})
     return out[:40]
+
+AI_RE = re.compile(r'\b(ai|llm|gpt|claude|gemini|llama|qwen|deepseek|mistral|grok|openai|anthropic|deepmind|transformer|diffusion|model|neural|agent|rag|inference|fine-?tun|benchmark|moe|attention|robot|nvidia|gpu|tpu|open[- ]?source|weights)\b', re.I)
+
+def hn_items():
+    c = CFG.get('hacker_news', {})
+    if not c.get('aktif'): return []
+    from concurrent.futures import ThreadPoolExecutor
+    ids = json.loads(get('https://hacker-news.firebaseio.com/v0/topstories.json'))[:c.get('tara', 80)]
+    def one(i):
+        try: return json.loads(get('https://hacker-news.firebaseio.com/v0/item/%d.json' % i, timeout=15))
+        except Exception: return None
+    with ThreadPoolExecutor(8) as ex: its = list(ex.map(one, ids))
+    out = []
+    for t in its:
+        if not t or t.get('type') != 'story' or not t.get('title'): continue
+        if t.get('score', 0) < c.get('min_puan', 100) or not AI_RE.search(t['title']): continue
+        out.append({'url': t.get('url') or 'https://news.ycombinator.com/item?id=%d' % t['id'], 'text': t['title'],
+                    'author': 'Hacker News', 'pop': '%d puan, %d yorum' % (t.get('score', 0), t.get('descendants', 0))})
+    print('hacker news:', len(out), 'öğe', file=sys.stderr)
+    return out
+
+def hf_items():
+    c = CFG.get('huggingface', {})
+    if not c.get('aktif'): return []
+    out = []
+    try:
+        for m in json.loads(get('https://huggingface.co/api/models?sort=trendingScore&direction=-1&limit=%d' % c.get('model', 15))):
+            mid = m.get('id') or m.get('modelId')
+            if mid: out.append({'url': 'https://huggingface.co/' + mid, 'text': 'Trend model: %s (%s)' % (mid, m.get('pipeline_tag') or 'model'),
+                                'author': 'HF trend model', 'pop': '%s beğeni, %s indirme' % (m.get('likes', 0), m.get('downloads', 0))})
+    except Exception as e: print('hf model hata', e, file=sys.stderr)
+    try:
+        for p in json.loads(get('https://huggingface.co/api/daily_papers?limit=%d' % c.get('makale', 15))):
+            pp = p.get('paper') or p
+            if pp.get('id') and pp.get('title'):
+                out.append({'url': 'https://huggingface.co/papers/' + pp['id'], 'text': pp['title'] + ' — ' + (pp.get('summary') or '')[:300].replace('\n', ' '),
+                            'author': 'HF günün makalesi', 'pop': '%s oy' % pp.get('upvotes', 0)})
+    except Exception as e: print('hf makale hata', e, file=sys.stderr)
+    print('huggingface trend:', len(out), 'öğe', file=sys.stderr)
+    return out
 
 def socialdata_items():
     s = CFG.get('socialdata', {})
@@ -138,15 +180,15 @@ def llm(prompt):
 def summarize(items, n):
     if os.environ.get('GUNDEM_MOCK'):
         return [{'i': i, 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
-    lst = '\n'.join('[%d] (%s%s) %s' % (i, it['author'], (', beğeni ' + str(it['likes'])) if it.get('likes') else '', it['text'][:500].replace('\n', ' ')) for i, it in enumerate(items))
-    p = ('Aşağıda numaralı gönderiler var. İlgi alanım: %s.\n'
-         'Yalnız önemli ve özgün gelişmeleri seç (en fazla %d), reklam/tekrar/sohbeti ele.\n'
-         'Her seçilen için KENDİ CÜMLELERİNLE Türkçe kısa bir başlık (en fazla 90 karakter) ve tek cümlelik not yaz; '
-         'metni kopyalama/alıntılama. etiketleri YALNIZCA şu listeden seç (1-3 tane): '+', '.join(ETIKETLER)+'.\n'
-         'Yanıt yalnız JSON nesnesi: {"secilen":[{"i":numara,"title":"...","note":"...","tags":["..."]}]}\n\n%s') % (CFG['ilgi'], n, lst)
+    lst = '\n'.join('[%d] (%s%s) %s' % (i, it['author'], (', ' + it['pop']) if it.get('pop') else ((', beğeni ' + str(it['likes'])) if it.get('likes') else ''), it['text'][:400].replace('\n', ' ')) for i, it in enumerate(items))
+    p = ('Ben yapay zekâ gündemini hızlıca öğrenmek istiyorum: şu an herkesin konuştuğu şeyler.\n'
+         'ÖNCELİK: yeni çıkan modeller (sürüm/ağırlık yayını), yeni mimari ve teknikler, büyük şirket/laboratuvar duyuruları, '
+         'önemli araştırma bulguları, açık kaynakta büyük gelişmeler. Beğeni/puan/yorum sayısı yüksekse daha önemlidir.\n'
+         'ELE: müşteri hikâyeleri, tanıtım/pazarlama, genel eğitim yazıları, küçük araç güncellemeleri, aynı olayın tekrarları.\n'
+         'En fazla %d haber seç. Her biri için KENDİ CÜMLELERİNLE Türkçe kısa başlık (en fazla 90 karakter; model/ürün adını koru), '
+         'tek cümlelik "neden önemli" notu, 1-3 etiket (YALNIZCA şu listeden: %s) ve 1-10 arası önem puanı ver. Metni kopyalama/alıntılama.\n'
+         'Yanıt yalnız JSON nesnesi: {"secilen":[{"i":numara,"title":"...","note":"...","tags":["..."],"puan":8}]}\n\n%s') % (n, ', '.join(ETIKETLER), lst)
     return llm(p)
-
-ETIKETLER = ['model', 'araştırma', 'araç', 'güvenlik', 'açık-model', 'donanım', 'uygulama', 'ses-görüntü', 'bilim']
 
 def norm_tags(tags):
     out = []
@@ -164,6 +206,9 @@ def main():
         for u in CFG.get('rss', []):
             try: items += rss_items(u)
             except Exception as e: print('RSS hata', u, e, file=sys.stderr)
+        for fn in (hn_items, hf_items):
+            try: items += fn()
+            except Exception as e: print(fn.__name__, 'hata', e, file=sys.stderr)
         try: items += apify_items()
         except Exception as e: print('apify hata', e, file=sys.stderr)
         try: items += socialdata_items()
@@ -175,16 +220,26 @@ def main():
     items = [it for it in items if it['url'] not in seen]
     uniq = {}
     for it in items: uniq.setdefault(it['url'], it)
-    items = list(uniq.values())[:150]
+    items = list(uniq.values())
+    by = {}
+    for it in items: by.setdefault(it['author'] if it['author'].startswith('@') is False else 'X', []).append(it)
+    cap = CFG.get('aday_kaynak_basina', 25)
+    items = [it for g in by.values() for it in g[:cap]]
     print('yeni aday:', len(items))
     if not items:
         return
     sel = summarize(items, CFG.get('max_yeni_gunluk', 12))
     today = datetime.date.today().isoformat()
     new = []
+    sel = sorted([x for x in sel if isinstance(x, dict)], key=lambda x: -float(x.get('puan', 0) or 0))
+    per = {}
+    kcap = CFG.get('secim_kaynak_basina', 4)
     for s in sel:
         try: it = items[int(s['i'])]
         except Exception: continue
+        k = it['author']
+        if per.get(k, 0) >= kcap: continue
+        per[k] = per.get(k, 0) + 1
         new.append({'date': today, 'title': str(s['title'])[:120], 'note': str(s.get('note', ''))[:240], 'url': it['url'],
                     'source': it['author'], 'tags': norm_tags(s.get('tags'))})
     print('eklenen:', len(new))
