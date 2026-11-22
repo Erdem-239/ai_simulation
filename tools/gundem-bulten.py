@@ -224,24 +224,33 @@ def main():
     by = {}
     for it in items: by.setdefault(it['author'] if it['author'].startswith('@') is False else 'X', []).append(it)
     cap = CFG.get('aday_kaynak_basina', 25)
-    items = [it for g in by.values() for it in g[:cap]]
+    groups = [g[:cap] for g in by.values()]
+    items = []
+    for r in range(cap):
+        for g in groups:
+            if r < len(g): items.append(g[r])
     print('yeni aday:', len(items))
     if not items:
         return
-    sel = summarize(items, CFG.get('max_yeni_gunluk', 12))
+    nmax = CFG.get('max_yeni_gunluk', 12)
+    sel = summarize(items, int(nmax * 2))
     today = datetime.date.today().isoformat()
     new = []
     sel = sorted([x for x in sel if isinstance(x, dict)], key=lambda x: -float(x.get('puan', 0) or 0))
-    per = {}
-    kcap = CFG.get('secim_kaynak_basina', 4)
-    for s in sel:
-        try: it = items[int(s['i'])]
+    byk = {}
+    kcap = CFG.get('secim_kaynak_basina', 3)
+    for s_ in sel:
+        try: it = items[int(s_['i'])]
         except Exception: continue
-        k = it['author']
-        if per.get(k, 0) >= kcap: continue
-        per[k] = per.get(k, 0) + 1
-        new.append({'date': today, 'title': str(s['title'])[:120], 'note': str(s.get('note', ''))[:240], 'url': it['url'],
-                    'source': it['author'], 'tags': norm_tags(s.get('tags'))})
+        s_['_it'] = it
+        byk.setdefault('X' if it['author'].startswith('@') else it['author'], []).append(s_)
+    order = sorted(byk, key=lambda k: -float(byk[k][0].get('puan', 0) or 0))
+    for r in range(kcap):
+        for k in order:
+            if r < len(byk[k]) and len(new) < nmax:
+                s_ = byk[k][r]; it = s_['_it']
+                new.append({'date': today, 'title': str(s_['title'])[:120], 'note': str(s_.get('note', ''))[:240], 'url': it['url'],
+                            'source': it['author'], 'tags': norm_tags(s_.get('tags'))})
     print('eklenen:', len(new))
     allv = (new + old)[:300]
     if dry:
