@@ -1,6 +1,6 @@
 {
   "saglayici": "groq",
-  "model_groq": "llama-3.3-70b-versatile",
+  "model_groq": "openai/gpt-oss-120b",
   "model_openrouter": "meta-llama/llama-3.3-70b-instruct:free",
   "max_yeni_gunluk": 12,
   "rss": [
