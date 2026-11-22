@@ -1,6 +1,150 @@
 [
  {
   "date": "2026-11-22",
+  "title": "Hugging Face ve OpenRouter iş birliğiyle açık ağırlıklı modeller kolaylaşıyor",
+  "note": "Bu ortaklık, geliştiricilerin açık‑ağırlıklı LLM'leri tek bir platformda hızlıca dağıtıp çalıştırmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/openrouter",
+  "source": "huggingface.co",
+  "tags": [
+   "açık-modeller",
+   "dağıtım",
+   "hız"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "LLMON: Granite 4.1'de LLM‑yerel işaretleme dili",
+  "note": "LLMON, metin içinde yapılandırılmış içerik oluşturmayı kolaylaştıran yeni bir işaretleme dili sunuyor.",
+  "url": "https://huggingface.co/blog/ibm-granite/llmon-an-llm-native-markup-language-now-in-granite",
+  "source": "huggingface.co",
+  "tags": [
+   "işaretleme",
+   "dil-modelleri",
+   "granite"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Token Pooling‑Aware Eğitim ile çok‑vektörlü gömme modelleri",
+  "note": "Bu yöntem, token havuzlamasını dikkate alarak gömme kalitesini artırıp eğitim maliyetini düşürüyor.",
+  "url": "https://huggingface.co/blog/token-pooling",
+  "source": "huggingface.co",
+  "tags": [
+   "gömme",
+   "verimlilik",
+   "eğitim"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Mısır ve Nijerya İngilizcesi Open ASR Lider Tablosuna eklendi",
+  "note": "Yeni diller, açık kaynaklı konuşma tanıma sistemlerinin küresel kapsama alanını genişletiyor.",
+  "url": "https://huggingface.co/blog/open-asr-leaderboard-liva",
+  "source": "huggingface.co",
+  "tags": [
+   "ses",
+   "açık-asr",
+   "çeşitlilik"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Phonon TTS: Cihaz içi yüksek kaliteli konuşma sentezi",
+  "note": "Phonon, mobil cihazlarda çalışan ve benchmarkları geçen bir TTS motoru sunuyor.",
+  "url": "https://huggingface.co/blog/phonon-tts",
+  "source": "huggingface.co",
+  "tags": [
+   "tts",
+   "cihaz-içi",
+   "kalite"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Le Chonk: Mistral Large 4 Hugging Face'te",
+  "note": "Mistral Large 4, büyük ölçekli açık model olarak platforma katıldı ve geniş görevlerde güçlü performans gösteriyor.",
+  "url": "https://huggingface.co/blog/mistral-large4",
+  "source": "huggingface.co",
+  "tags": [
+   "açık-modeller",
+   "mistral",
+   "performans"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "AnySpeechRecognizer ve AnyDecisionModel: Apple platformları için açık modeller",
+  "note": "Bu araçlar, ses ve karar modellerini iOS/macOS ekosistemine entegre etmeyi basitleştiriyor.",
+  "url": "https://huggingface.co/blog/anydecisionmodel",
+  "source": "huggingface.co",
+  "tags": [
+   "apple",
+   "ses-modelleri",
+   "karar-modelleri"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "LFM3 ile özelleştirilmiş çok‑modal modeller inşa edin",
+  "note": "LFM3, görsel ve metinsel girdileri birleştirerek görev‑spesifik multimodal modeller oluşturmayı kolaylaştırıyor.",
+  "url": "https://huggingface.co/blog/LiquidAI/lfm3",
+  "source": "huggingface.co",
+  "tags": [
+   "multimodal",
+   "özel-modeller",
+   "lfm3"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "SLM'lerde kelime hazinesini özelleştirerek çıkarım maliyetini %77 azalttık",
+  "note": "Vocab daraltma, gerçek uygulamalarda büyük dil modellerinin yanıt süresini ve enerji tüketimini önemli ölçüde düşürüyor.",
+  "url": "https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization",
+  "source": "huggingface.co",
+  "tags": [
+   "verimlilik",
+   "kelime-hazinesi",
+   "çıkarsama"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Hebbia, GPT‑6 Astra ile finans araştırmalarında iyileşme raporladı",
+  "note": "Pre‑release testler, kaynak kapsamı ve alıntı alaka düzeyinde belirgin artışlar gösterdi.",
+  "url": "https://openai.com/business/customer-stories/hebbia",
+  "source": "openai.com",
+  "tags": [
+   "finans",
+   "araştırma",
+   "gpt6"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "MedChemBench: AI destekli erken ilaç keşfinde model değerlendirmesi",
+  "note": "Bu benchmark, moleküler yapı yorumlama ve deneysel kanıt çıkarımında AI modellerinin yeteneklerini ölçüyor.",
+  "url": "https://openai.com/index/introducing-medchembench",
+  "source": "openai.com",
+  "tags": [
+   "ilaç",
+   "bilim",
+   "ai-değerlendirme"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "The Silent Consensus: Daha yetkin AI'nin toplumsal etkileri",
+  "note": "OpenAI yöneticisi, güçlü AI'nin toplumu nasıl şekillendireceği ve kurumların kontrolünü nasıl koruyabileceği üzerine bir perspektif sundu.",
+  "url": "https://openai.com/index/the-silent-consensus",
+  "source": "openai.com",
+  "tags": [
+   "etik",
+   "toplum",
+   "gelecek"
+  ]
+ },
+ {
+  "date": "2026-11-22",
   "title": "llama.cpp 1.0.0: Yerel AI ekosistemi için daha güçlü altyapı",
   "note": "Yeni sürüm, CPU ve GPU’da daha hızlı ve hafif LLM çalıştırmayı mümkün kılıyor.",
   "url": "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
