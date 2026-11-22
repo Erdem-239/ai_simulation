@@ -323,13 +323,13 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 </div>
 
 <div class="toast" id="toast" role="status"></div>
-<script src="js/sky-data.js?v=202611221200"></script>
+<script src="js/sky-data.js?v=202611221400"></script>
 <script>
 /* ---------- Canlı XOR: 2-2-1 sigmoid ağ, tarayıcıda gerçekten eğitiliyor ---------- */
 (function(){
   const sig=z=>1/(1+Math.exp(-z));
   const X=[[0,0],[0,1],[1,0],[1,1]],Y=[0,1,1,0];
-  let rs=7;const rnd=()=>{rs=(rs*1664525+1013904223)>>>0;return rs/4294967296};
+  let rs=1;const rnd=()=>{rs=(rs*1664525+1013904223)>>>0;return rs/4294967296};
   let W;
   function init(){ // her seferinde farklı ama çözen bir başlangıç ara
     W={w1:[[(rnd()-.5)*2,(rnd()-.5)*2],[(rnd()-.5)*2,(rnd()-.5)*2]],b1:[0,0],w2:[(rnd()-.5)*2,(rnd()-.5)*2],b2:0};
@@ -360,17 +360,17 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
       img.data[i]=r;img.data[i+1]=g;img.data[i+2]=b;img.data[i+3]=255}
     cx.putImageData(img,0,0);
   }
-  function frame(){
-    if(hold>0){hold--;}else{
-      for(let k=0;k<3;k++)loss=step(1.6),ep++;
-      if(ok()===4&&loss<.08){hold=160}
-      else if(ep>2600){hold=1;init()}
-    }
-    if(hold===1){init();hold=0}
+  // ~4,5 dakikalık canlı eğitim: saniyede 12 adım, lr .12, sabit başlangıç (seed 1) → hata yavaşça düşer; hata yıldızı bunu izler
+  let lastT=performance.now(),acc=0;window.__loss={v:Math.LN2,ep:0,hist:[]};
+  function frame(now){
+    const dt=Math.min(.1,((now||performance.now())-lastT)/1000);lastT=now||performance.now();acc+=dt*12;
+    while(acc>=1){loss=step(.12);ep++;acc--}
+    if(!loss){loss=Math.LN2}
+    window.__loss.v=loss;window.__loss.ep=ep;const H=window.__loss.hist;if(!H.length||performance.now()-H[H.length-1][0]>500){H.push([performance.now(),loss]);if(H.length>60)H.shift()}
     paint();lEp.textContent=ep;lLo.textContent=loss?loss.toFixed(3):'—';lOk.textContent=ok()+'/4';
     if(!reduce)requestAnimationFrame(frame);
   }
-  if(reduce){for(let i=0;i<900;i++)loss=step(1.6),ep++;paint();lEp.textContent=ep;lLo.textContent=loss.toFixed(3);lOk.textContent=ok()+'/4'}else frame();
+  if(reduce){for(let i=0;i<3000;i++)loss=step(.12),ep++;window.__loss.v=loss;paint();lEp.textContent=ep;lLo.textContent=loss.toFixed(3);lOk.textContent=ok()+'/4'}else requestAnimationFrame(frame);
   // kart içi küçük harita: eğitilmiş çözüm, sabit
   const mc=document.getElementById('miniXor');if(mc){const M=64;mc.width=M;mc.height=M;const c=mc.getContext('2d'),im=c.createImageData(M,M);
     const sw={w1:[[5.7,-5.9],[-5.6,5.2]],b1:[-3.2,-2.9],w2:[8.3,8.4],b2:-4.1};
@@ -566,6 +566,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   const gb=cb.getContext('2d'),gf=cf.getContext('2d'),toast=document.getElementById('toast');
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   let W=0,H=0,dpr=Math.min(devicePixelRatio||1,2),P=[],mx=0,ty=0,tx=0,my=0,R=0,CX=0,CY=0;
+  const ES={f:1.55,a:-.6,w:.05,tr:[]};window.__es=ES;
   const TILT=0,RY=.42,ct=Math.cos(TILT),st=Math.sin(TILT);
   const pal=[[255,238,228],[255,205,195],[205,178,255],[155,172,255],[112,150,255]];
   const FIELDS=[
@@ -675,6 +676,16 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
       g.fillStyle='rgba('+p.c[0]+','+p.c[1]+','+p.c[2]+','+(p.al*(front?1:.6))+')';
       const sz=p.s*(front?1.3:.9);g.fillRect(q[0],q[1],sz,sz);
     }
+    // hata yıldızı: en dış halkadan başlar, hata düştükçe merkeze yaklaşır; hata durulunca merkez etrafında döner
+    {const Ls=window.__loss;if(Ls){const v=Math.max(.002,Ls.v),fmx=Math.min(1.55,(W*.5-34)/R),tg=.2+(fmx-.2)*Math.min(1,Math.max(0,Math.log(v/.002)/Math.log(.7/.002)));
+      ES.f+=(tg-ES.f)*Math.min(1,dt*1.5);
+      const H=Ls.hist,old=H.length>8?H[H.length-8][1]:Ls.v,ch=Math.abs(Math.log(Math.max(.002,Ls.v)/Math.max(.002,old))),stab=Math.max(0,1-ch/.12);
+      ES.w+=((.05+.55*stab)-ES.w)*Math.min(1,dt);if(!reduce)ES.a+=ES.w*dt/Math.sqrt(Math.max(.25,ES.f));
+      const q=pos(ES.a,ES.f,dx,dyk),fr=Math.sin(ES.a)>0,gg=gf,sc2=.85+.35*Math.sin(ES.a);
+      ES.tr.push([q[0],q[1]]);if(ES.tr.length>46)ES.tr.shift();
+      gg.globalCompositeOperation='lighter';for(let i=0;i<ES.tr.length;i++){const al=i/ES.tr.length*.35;gg.fillStyle='rgba(255,110,90,'+al+')';gg.beginPath();gg.arc(ES.tr[i][0],ES.tr[i][1],1+i/ES.tr.length*2.2*sc2,0,6.283);gg.fill()}
+      const r0=7*sc2,gr2=gg.createRadialGradient(q[0],q[1],0,q[0],q[1],r0*3.2);gr2.addColorStop(0,'rgba(255,255,255,.95)');gr2.addColorStop(.3,'rgba(255,110,80,.75)');gr2.addColorStop(1,'rgba(255,60,50,0)');gg.fillStyle=gr2;gg.fillRect(q[0]-r0*3.2,q[1]-r0*3.2,r0*6.4,r0*6.4);
+      gg.globalCompositeOperation='source-over';gg.font='500 10px "JetBrains Mono",monospace';gg.fillStyle='rgba(255,170,150,.8)';const rt=q[0]>W*.8;gg.textAlign=rt?'right':'left';gg.fillText('hata '+Ls.v.toFixed(3),q[0]+(rt?-r0*1.8:r0*1.8),q[1]+3)}}
     // gezegenler
     for(const F of FIELDS){
       if(!reduce)F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1);
@@ -747,40 +758,69 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 (function(){
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;let busy=false;
   function hex(c){c=(c||'').trim();if(/^#([0-9a-f]{3})$/i.test(c))c='#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];const m=/^#([0-9a-f]{6})$/i.exec(c);return m?[parseInt(m[1].slice(0,2),16),parseInt(m[1].slice(2,4),16),parseInt(m[1].slice(4,6),16)]:[240,160,50]}
-  function go(x,y,col,href){
+  function go(x,y,col,href,label){
     if(busy)return;busy=true;try{sessionStorage.setItem('wh','1')}catch(e){}
-    const cv=document.createElement('canvas');cv.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:500;pointer-events:all';document.body.appendChild(cv);
+    const cv=document.createElement('canvas');cv.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:500;pointer-events:all;cursor:wait';document.body.appendChild(cv);
     const dpr=Math.min(devicePixelRatio||1,2),W=innerWidth,H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;const g=cv.getContext('2d');g.scale(dpr,dpr);
-    const S=[];for(let i=0;i<420;i++)S.push({a:Math.random()*6.283,d:Math.random()*.5+.02,sp:.35+Math.random()*1.1,w:Math.random()<.2?1.6:.9,h:Math.random()});
-    const DUR=2600,t0=performance.now(),mx=Math.hypot(W,H);let done=false;
-    function fr(now){
-      const t=now-t0,p=Math.min(1,t/DUR),e=p*p*(3-2*p),cx=x+(W/2-x)*Math.min(1,e*1.15),cy=y+(H/2-y)*Math.min(1,e*1.15);
-      g.clearRect(0,0,W,H);
-      g.fillStyle='rgba(2,3,8,'+Math.min(1,p*2.6)+')';g.fillRect(0,0,W,H);
+    const cx=W/2,cy=H*.52,F=Math.min(W,H)*.09,diag=Math.hypot(W,H);
+    const N=W<700?520:900,S=[];for(let i=0;i<N;i++)S.push({a:Math.random()*6.283,o:.02+Math.pow(Math.random(),1.6)*.9,z:Math.random(),v:.25+Math.random()*.9,h:190+Math.random()*150,w:.7+Math.random()*1.5});
+    const bgs=[];for(let i=0;i<160;i++)bgs.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*1.2+.3});
+    const DUR=3400,t0=performance.now();let done=false,last=t0;
+    const mm=(n)=>String(n).padStart(2,'0');
+    function planet(e,alpha){
+      const R=Math.max(8,H*(.012+.34*Math.pow(e,1.7)));
+      g.save();g.globalAlpha=alpha;g.beginPath();g.arc(cx,cy,R,0,6.283);g.clip();
+      let gr=g.createRadialGradient(cx-R*.35,cy-R*.4,R*.05,cx,cy,R*1.1);gr.addColorStop(0,'rgb('+Math.min(255,col[0]+90)+','+Math.min(255,col[1]+90)+','+Math.min(255,col[2]+90)+')');gr.addColorStop(.45,'rgb('+col[0]+','+col[1]+','+col[2]+')');gr.addColorStop(1,'rgb('+(col[0]>>3)+','+(col[1]>>3)+','+(col[2]>>2)+')');g.fillStyle=gr;g.fillRect(cx-R,cy-R,2*R,2*R);
       g.globalCompositeOperation='lighter';
-      // tünel halkaları: merkezden dışarı akan
-      for(let k=0;k<16;k++){const q=((k/16)+p*1.9)%1,r=Math.pow(q,2.4)*mx*.75*(0.4+e),a=Math.sin(q*Math.PI)*.5*Math.min(1,p*3);
-        g.strokeStyle='rgba('+col[0]+','+col[1]+','+col[2]+','+a+')';g.lineWidth=1+q*5;g.beginPath();g.ellipse(cx,cy,r,r*.82,0,0,6.283);g.stroke()}
-      // yıldız çizgileri (warp)
-      for(const o of S){const d=(o.d+o.sp*e*e*1.6)%1.4,r0=Math.pow(d,1.7)*mx*.6,len=3+d*d*mx*.22*(.4+e*1.6),a=Math.min(1,d*2)*.85*Math.min(1,p*4+.1);
-        const c=Math.cos(o.a),sn=Math.sin(o.a);g.strokeStyle=o.h<.5?'rgba(255,255,255,'+a+')':'rgba('+col[0]+','+col[1]+','+col[2]+','+a+')';g.lineWidth=o.w;g.beginPath();g.moveTo(cx+c*r0,cy+sn*r0);g.lineTo(cx+c*(r0+len),cy+sn*(r0+len));g.stroke()}
-      // merkez parıltı
-      const R=40+e*mx*.55,gr=g.createRadialGradient(cx,cy,0,cx,cy,R);gr.addColorStop(0,'rgba(255,255,255,'+Math.min(1,.4+e)+')');gr.addColorStop(.25,'rgba('+col[0]+','+col[1]+','+col[2]+','+(.55*e+.1)+')');gr.addColorStop(1,'rgba('+col[0]+','+col[1]+','+col[2]+',0)');g.fillStyle=gr;g.fillRect(0,0,W,H);
+      for(let k=0;k<9;k++){const yy=cy+(k-4)*R*.2,rx=R*(.5+.4*((k*37)%10)/10);g.fillStyle='rgba(255,255,255,'+(.05+.04*(k%3))+')';g.beginPath();g.ellipse(cx+Math.sin(k*2.3)*R*.25,yy,rx,R*.045,-.35,0,6.283);g.fill()}
+      g.restore();
+      g.save();g.globalAlpha=alpha*.8;g.strokeStyle='rgba('+col[0]+','+col[1]+','+col[2]+',.5)';g.lineWidth=2+R*.02;g.shadowColor='rgb('+col[0]+','+col[1]+','+col[2]+')';g.shadowBlur=R*.25;g.beginPath();g.arc(cx,cy,R,0,6.283);g.stroke();g.restore();
+      return R}
+    function ring(){
+      const gr=g.createLinearGradient(0,H*.1,0,H*.7);gr.addColorStop(0,'#7a4a24');gr.addColorStop(.5,'#c0702a');gr.addColorStop(1,'#4a2810');
+      g.save();g.lineCap='round';g.strokeStyle=gr;g.lineWidth=Math.max(14,H*.032);g.beginPath();g.arc(cx,H*1.55,H*1.32,Math.PI*1.2,Math.PI*1.8);g.stroke();
+      g.strokeStyle='rgba(255,170,80,.55)';g.lineWidth=2;g.beginPath();g.arc(cx,H*1.55,H*1.32-H*.022,Math.PI*1.2,Math.PI*1.8);g.stroke();
+      g.strokeStyle='rgba(255,220,170,.35)';g.lineWidth=1.5;g.beginPath();g.arc(cx,H*1.55,H*1.32+H*.02,Math.PI*1.21,Math.PI*1.79);g.stroke();g.restore()}
+    function hud(p,e,R){
+      const rem=Math.max(0,Math.ceil((1-p)*DUR/1000-.2)),dist=Math.round(140584*Math.pow(1-e,1.4)),fs=Math.max(11,Math.min(16,W/90));
+      g.save();g.globalAlpha=Math.min(1,p*3);
+      // işaret
+      const mxp=cx-R*.15,myp=cy+R*.45;g.translate(mxp,myp);g.rotate(Math.PI/4);g.fillStyle='#d9304a';g.strokeStyle='#fff';g.lineWidth=2;g.fillRect(-11,-11,22,22);g.strokeRect(-11,-11,22,22);g.rotate(-Math.PI/4);g.fillStyle='#fff';g.beginPath();g.arc(0,0,4,0,6.283);g.fill();g.translate(-mxp,-myp);
+      g.font='500 '+fs+'px Inter,system-ui,sans-serif';g.textAlign='left';g.shadowColor='#000';g.shadowBlur=6;g.fillStyle='#fff';
+      g.fillText('Sinyal Kaynağı',mxp+22,myp-4);g.fillText('VARIŞA KALAN: 0:0'+rem,mxp+22,myp+fs+2);g.fillStyle='rgba(255,255,255,.75)';g.fillText('Tahmini Konum',mxp+22,myp+fs*2+8);
+      // sağ üst etiket
+      const lx=Math.min(W-24,cx+R+W*.14),ly=cy-R*.1;g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=1;g.beginPath();g.moveTo(mxp+R*.1,myp+R*.1);g.lineTo(lx-8,ly);g.stroke();
+      g.textAlign='right';g.font='500 '+(fs+3)+'px Inter,system-ui,sans-serif';g.fillStyle='#fff';g.fillText(label,W-24,ly);g.fillStyle='#ffb04a';g.font='500 '+(fs+1)+'px Inter,system-ui,sans-serif';g.fillText('Keşfedilmemiş',W-24,ly+fs+6);
+      g.fillStyle='#ffd26a';g.font='500 '+(fs+3)+'px Inter,system-ui,sans-serif';g.fillText(dist.toLocaleString('tr-TR')+'u',W-24,ly+fs*4);g.fillStyle='rgba(255,255,255,.8)';g.font='400 '+fs+'px Inter,system-ui,sans-serif';g.fillText('Varış süresi 00:00:0'+rem,W-24,ly+fs*5.4);
+      g.restore()}
+    function fr(now){
+      const dt=Math.min(.05,(now-last)/1000);last=now;const t=now-t0,p=Math.min(1,t/DUR),e=p*p*(3-2*p),sp=.3+3.4*e;
+      g.clearRect(0,0,W,H);
+      const bgA=Math.min(1,p*4),gr=g.createRadialGradient(cx,cy,0,cx,cy,diag*.6);gr.addColorStop(0,'rgba(18,52,170,'+bgA+')');gr.addColorStop(.5,'rgba(10,22,92,'+bgA+')');gr.addColorStop(1,'rgba(4,6,28,'+bgA+')');g.fillStyle=gr;g.fillRect(0,0,W,H);
+      g.globalCompositeOperation='lighter';
+      for(const s of bgs){g.fillStyle='rgba(255,255,255,'+.5*bgA+')';g.fillRect(s.x,s.y,s.s,s.s)}
+      const ia=Math.min(1,p*3.2);
+      for(const s of S){s.z-=s.v*dt*sp*.55;if(s.z<.025){s.z=1;s.a=Math.random()*6.283}
+        const r=s.o*F*7/Math.max(.02,s.z),r0=s.o*F*7/(s.z+.07*sp*.9+.01);if(r0>diag)continue;const c=Math.cos(s.a),sn=Math.sin(s.a),a=Math.min(1,(1-s.z)*1.8+.15)*ia,w=s.w*(.7+r/diag*2.6);
+        const x0=cx+c*r0,y0=cy+sn*r0,x1=cx+c*r,y1=cy+sn*r;
+        g.lineWidth=w;g.strokeStyle='hsla('+s.h+',100%,62%,'+a*.9+')';g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();
+        g.lineWidth=w*.8;g.strokeStyle='hsla(0,100%,60%,'+a*.45+')';g.beginPath();g.moveTo(x0+1.6,y0);g.lineTo(x1+1.6,y1);g.stroke();
+        g.strokeStyle='hsla(190,100%,60%,'+a*.45+')';g.beginPath();g.moveTo(x0-1.6,y0);g.lineTo(x1-1.6,y1);g.stroke()}
       g.globalCompositeOperation='source-over';
-      if(p>.82){g.fillStyle='rgba(255,255,255,'+Math.min(1,(p-.82)/.18)+')';g.fillRect(0,0,W,H)}
-      if(p<1)requestAnimationFrame(fr);else if(!done){done=true;location.href=href}
-    }
+      const R=planet(e,Math.min(1,p*3));ring();hud(p,e,R);
+      if(p>.88){g.fillStyle='rgba(255,255,255,'+Math.min(1,(p-.88)/.12)+')';g.fillRect(0,0,W,H)}
+      if(p<1)requestAnimationFrame(fr);else if(!done){done=true;location.href=href}}
     requestAnimationFrame(fr);
-    setTimeout(()=>{if(!done){done=true;location.href=href}},DUR+1500);
-  }
+    setTimeout(()=>{if(!done){done=true;location.href=href}},DUR+1500)}
   document.addEventListener('click',e=>{
     if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
     const a=e.target.closest&&e.target.closest('a[href]');if(!a||a.target==='_blank')return;
-    const h=a.getAttribute('href')||'';if(h.indexOf('yapay-zeka/')!==0)return;
+    const h=a.getAttribute('href')||'';if(h.indexOf('yapay-zeka/')!==0&&h.indexOf('gezegen.html')!==0)return;
     if(reduce)return;e.preventDefault();
     const r=a.getBoundingClientRect(),pl=a.classList.contains('pl'),pb=pl?a.querySelector('.pb'):null,rr=pb?pb.getBoundingClientRect():r;
     const col=hex(getComputedStyle(a).getPropertyValue('--c')||'#f0a032');
-    go(pl?rr.left+rr.width/2:e.clientX||r.left+r.width/2,pl?rr.top+rr.height/2:e.clientY||r.top+r.height/2,col,a.href);
+    const nm=a.querySelector('.nm'),label=nm?nm.textContent:(h.indexOf('gezegen.html')===0?'Erdem gezegeni':'Ders sistemi');
+    go(pl?rr.left+rr.width/2:e.clientX||r.left+r.width/2,pl?rr.top+rr.height/2:e.clientY||r.top+r.height/2,col,a.href,label);
   },true);
   addEventListener('pageshow',e=>{if(e.persisted){busy=false;document.querySelectorAll('canvas[style*="z-index:500"]').forEach(c=>c.remove())}});
 })();
