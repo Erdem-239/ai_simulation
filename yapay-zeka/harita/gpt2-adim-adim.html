@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-2 Haritası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Düzen: sonsuz beyaz tuval. Her adım = sol ana kart + sağda dallanan not kartları, aralarında aşağı ok. */
+:root{
+  --bg:#fbfbf8; --dot:#dcdfe6; --card:#ffffff; --ink:#1b2130; --mute:#586073; --line:#d6dae3;
+  --blue:#2b6bd6; --teal:#0d8a86; --amber:#b4731a; --violet:#7a4cc0; --red:#c23c4b; --gray:#5d6678; --hl:#e0a400;
+  --sans:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --panel:#ffffffee;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151c; --dot:#262b37; --card:#1a1f2a; --ink:#e8ebf2; --mute:#9aa3b6; --line:#323a4a;
+  --blue:#6ea0ff; --teal:#3fc7c1; --amber:#e8a94d; --violet:#b592f0; --red:#f27a88; --gray:#9aa3b6; --hl:#ffc82e; --panel:#1a1f2aee; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151c; --dot:#262b37; --card:#1a1f2a; --ink:#e8ebf2; --mute:#9aa3b6; --line:#323a4a;
+  --blue:#6ea0ff; --teal:#3fc7c1; --amber:#e8a94d; --violet:#b592f0; --red:#f27a88; --gray:#9aa3b6; --hl:#ffc82e; --panel:#1a1f2aee; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;overflow:hidden}
+#vp{position:fixed;inset:0;overflow:hidden;touch-action:none;cursor:grab;
+  background-image:radial-gradient(var(--dot) 1.3px,transparent 1.3px);background-size:34px 34px}
+#vp.dragging{cursor:grabbing}
+#vp.dragging *{user-select:none}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;width:2760px;padding:140px 120px 400px;display:flex;flex-direction:column;gap:0;will-change:transform}
+#world.anim{transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.row{display:flex;align-items:flex-start;gap:0;position:relative}
+.main{width:1000px;flex:none;background:var(--card);border:2px solid var(--c);border-radius:18px;padding:30px 34px 28px;position:relative;box-shadow:0 2px 0 var(--c)}
+.side{width:1480px;flex:none;margin-left:86px;padding-left:0;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:22px 26px;align-content:start;align-items:start}
+.side::before{content:"";position:absolute;left:-86px;top:52px;width:86px;border-top:3px dashed var(--c);opacity:.7}
+.note{background:var(--card);border:1.5px solid var(--line);border-left:6px solid var(--c);border-radius:12px;padding:20px 24px 20px;position:relative}
+.note.wide{grid-column:1/3}
+.note::before{content:"";position:absolute;left:-27px;top:34px;width:21px;border-top:3px dashed var(--c);opacity:.55}
+.note:nth-child(even)::before{display:none}
+.badge{display:inline-flex;align-items:center;gap:8px;font:700 13px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--c)}
+.badge b{background:var(--c);color:var(--card);border-radius:999px;min-width:30px;height:30px;padding:0 9px;display:inline-grid;place-items:center;font-size:15px;letter-spacing:0}
+h2{margin:10px 0 4px;font-size:34px;line-height:1.15;text-wrap:balance}
+.sub{margin:0 0 14px;color:var(--mute);font-size:17px}
+.say{font-size:18px;line-height:1.5;margin:10px 0}
+.say b,.note b{color:var(--ink)}
+.note h3{margin:0 0 8px;font-size:19px;line-height:1.25;text-wrap:balance}
+.note .tag{display:block;font:700 11.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--c);margin-bottom:6px}
+.note p{margin:6px 0;font-size:16px;line-height:1.5}
+.note ul{margin:6px 0;padding-left:20px;font-size:16px;line-height:1.5}
+code,.mono{font-family:var(--mono);font-size:.92em}
+.formula{font:600 18px var(--mono);background:color-mix(in srgb,var(--c) 9%,var(--card));border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));border-radius:10px;padding:12px 16px;margin:12px 0;overflow-x:auto;white-space:pre}
+.gain{margin-top:16px;padding:12px 16px;border-radius:10px;background:color-mix(in srgb,var(--c) 11%,var(--card));font-size:16.5px;line-height:1.45}
+.gain b{color:var(--c)}
+.cap{font-size:13.5px;color:var(--mute);margin:4px 0 12px;line-height:1.4}
+.vis{margin:12px 0;overflow:visible}
+.vis svg{display:block;max-width:none;overflow:visible}
+.hv{font:10px var(--mono);fill:var(--ink)}
+.hl{font:11px var(--mono);fill:var(--mute)}
+.hlb{font:600 12px var(--sans);fill:var(--ink)}
+.arr{width:1000px;height:96px;display:flex;justify-content:center;position:relative;color:var(--gray)}
+.arr svg{overflow:visible}
+.arr span{position:absolute;left:calc(50% + 28px);top:34px;font-size:15px;color:var(--mute);max-width:420px}
+table.t{border-collapse:collapse;font-size:15px;width:100%}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+table.t th{background:color-mix(in srgb,var(--c) 8%,var(--card))}
+.slots{display:flex;gap:8px;margin:10px 0}
+.slot{width:78px;text-align:center}
+.slot i{display:block;font:11px var(--mono);color:var(--mute);font-style:normal}
+.slot .ch{display:grid;place-items:center;height:62px;border:2px solid var(--line);border-radius:10px;font:700 30px var(--mono);margin:3px 0;background:var(--card)}
+.slot .ch.pad{color:var(--mute);background:color-mix(in srgb,var(--gray) 10%,var(--card));font-weight:400}
+.slot .id{display:block;font:600 13px var(--mono);border-radius:6px;background:color-mix(in srgb,var(--c) 14%,var(--card));padding:3px 0}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.chip{border:2px solid var(--cc);border-radius:999px;padding:8px 16px;font:700 15px var(--sans);background:color-mix(in srgb,var(--cc) 10%,var(--card));color:var(--ink);cursor:pointer}
+.chip small{font:600 12px var(--mono);color:var(--cc);margin-right:6px}
+.pill{display:inline-block;font:600 13px var(--mono);padding:2px 8px;border-radius:6px;background:color-mix(in srgb,var(--c) 14%,var(--card))}
+.eq{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.eq .op{font:700 30px var(--sans);color:var(--mute)}
+.win{display:inline-flex;gap:2px;font:600 20px var(--mono)}
+.win span{width:28px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:5px}
+.win span.pd{color:var(--mute);background:color-mix(in srgb,var(--gray) 10%,var(--card))}
+/* araç çubuğu */
+#bar{position:fixed;left:max(12px,env(safe-area-inset-left,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:5;display:flex;flex-direction:column;gap:8px;max-width:calc(100vw - 24px)}
+.bar-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 8px;backdrop-filter:blur(6px)}
+.bar-row strong{font-size:14px;padding:0 6px}
+.bar-row button,.bar-row a{font:700 14px var(--sans);min-width:38px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;padding:0 10px}
+.bar-row button:hover{border-color:var(--blue)}
+.bar-row button:focus-visible,.chip:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+#nav{display:none;flex-direction:column;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;max-height:calc(100vh - 150px);overflow:auto;width:340px;max-width:calc(100vw - 24px)}
+#nav.open{display:flex}
+#nav button{text-align:left;font:400 14px var(--sans);border:0;background:transparent;color:var(--ink);padding:6px 8px;border-radius:8px;cursor:pointer;display:flex;gap:8px;align-items:center}
+#nav button:hover{background:color-mix(in srgb,var(--blue) 12%,var(--card))}
+#nav button b{min-width:26px;height:26px;border-radius:99px;display:inline-grid;place-items:center;font-size:12px;background:var(--cc);color:var(--card)}
+#hint{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--mute);max-width:min(440px,calc(100vw - 24px))}
+@media (max-width:700px){#hint{display:none}.bar-row strong{display:none}}
+@media (prefers-reduced-motion:reduce){#world.anim{transition:none}}
+</style>
+
+<div id="vp"><div id="world"></div></div>
+<div id="bar">
+  <div class="bar-row">
+    <a href="../index.html" title="Siteye dön" style="text-decoration:none;display:inline-grid;place-items:center">← Site</a>
+    <strong>GPT-2 haritası</strong>
+    <button id="zo" title="Uzaklaş" aria-label="Uzaklaş">−</button>
+    <button id="zi" title="Yakınlaş" aria-label="Yakınlaş">+</button>
+    <button id="fit" title="Hepsini sığdır">Sığdır</button>
+    <button id="prev" title="Önceki adım" aria-label="Önceki adım">◀</button>
+    <button id="cur" title="Adım listesi">Adımlar</button>
+    <button id="next" title="Sonraki adım" aria-label="Sonraki adım">▶</button>
+  </div>
+  <div id="nav"></div>
+</div>
+<div id="hint">Tekerlek: yakınlaş/uzaklaş · Sürükle: gez · Çift tık: o adıma odaklan · ◀ ▶ ya da ok tuşları: adım adım</div>
+
+<script>
+const f=(v,d=2)=>(v<0?'−':'')+Math.abs(v).toFixed(d).replace('.',',');
+const pc=v=>{const p=v*100;return (p>=99?p.toFixed(2):p>=10?p.toFixed(1):p>=1?p.toFixed(2):p>=0.1?p.toFixed(2):p.toFixed(3)).replace('.',',')+'%'};
+const row=(a,r,w=D)=>Array.from(a).slice(r*w,(r+1)*w);
+const dsp=c=>c===' '?'␣':c;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* ---------- çizim yardımcıları ---------- */
+function colr(v,vm){const a=Math.min(1,Math.abs(v)/vm)*.72;return v>=0?`rgba(43,107,214,${a.toFixed(3)})`:`rgba(204,56,72,${a.toFixed(3)})`}
+// heat: R satır, C sütun, get(r,c)
+function heat(R,C,get,o={}){
+  const cw=o.cw||30,ch=o.ch||20,lw=o.lw||0,th=o.th||0,vm=o.vmax||1;
+  const W=lw+C*cw,H=th+R*ch;let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label||'tablo')}">`;
+  for(let r=0;r<R;r++){
+    if(lw&&o.rl)s+=`<text class="hl" x="${lw-6}" y="${th+r*ch+ch/2+4}" text-anchor="end">${esc(o.rl(r))}</text>`;
+    for(let c=0;c<C;c++){const v=get(r,c);
+      s+=`<rect x="${lw+c*cw}" y="${th+r*ch}" width="${cw}" height="${ch}" fill="${colr(v,vm)}" stroke="var(--line)" stroke-width=".6"/>`;
+      if(o.val)s+=`<text class="hv" x="${lw+c*cw+cw/2}" y="${th+r*ch+ch/2+3.5}" text-anchor="middle">${f(v,o.dec==null?2:o.dec)}</text>`;
+    }}
+  if(th&&o.cl)for(let c=0;c<C;c++)s+=`<text class="hl" x="${lw+c*cw+cw/2}" y="${th-5}" text-anchor="middle">${esc(o.cl(c))}</text>`;
+  (o.hl||[]).forEach(r=>{s+=`<rect x="${lw-1}" y="${th+r*ch-1}" width="${C*cw+2}" height="${ch+2}" fill="none" stroke="var(--hl)" stroke-width="2.4" rx="3"/>`});
+  (o.hlc||[]).forEach(c=>{s+=`<rect x="${lw+c*cw-1}" y="${th-1}" width="${cw+2}" height="${R*ch+2}" fill="none" stroke="var(--hl)" stroke-width="2.4" rx="3"/>`});
+  return s+'</svg>';
+}
+const vecHeat=(arr,o={})=>heat(1,arr.length,(r,c)=>arr[c],Object.assign({cw:44,ch:28,val:true,vmax:Math.max(...arr.map(Math.abs))||1},o));
+function bars(vals,labels,o={}){
+  const W=o.w||700,rh=o.rh||28,lw=o.lw||64,vw=o.vw||92,bw=W-lw-vw;
+  const mn=Math.min(...vals,0),mx=Math.max(...vals,0),sc=bw/((mx-mn)||1),x0=lw+(-mn)*sc,hgt=vals.length*rh+4;
+  let s=`<svg width="${W}" height="${hgt}" viewBox="0 0 ${W} ${hgt}" role="img" aria-label="${esc(o.label||'çubuk grafik')}">`;
+  vals.forEach((v,i)=>{const y=i*rh+2,w=Math.abs(v)*sc,x=v>=0?x0:x0-w,hi=(o.hl||[]).includes(i);
+    s+=`<text class="hlb" x="${lw-8}" y="${y+rh/2+4}" text-anchor="end" style="${hi?'':'font-weight:400'}">${esc(labels[i])}</text>`;
+    s+=`<rect x="${x}" y="${y+3}" width="${Math.max(w,1)}" height="${rh-6}" rx="3" fill="${v<0?'var(--red)':(o.color||'var(--teal)')}" opacity="${hi?1:.55}"/>`;
+    if(hi)s+=`<rect x="${lw-2}" y="${y}" width="${bw+4}" height="${rh}" fill="none" stroke="var(--hl)" stroke-width="2" rx="4"/>`;
+    s+=`<text class="hl" x="${W-vw+8}" y="${y+rh/2+4}">${o.fmt?o.fmt(v):f(v,2)}</text>`;});
+  if(mn<0)s+=`<line x1="${x0}" x2="${x0}" y1="0" y2="${hgt}" stroke="var(--mute)" stroke-width="1"/>`;
+  return s+'</svg>';
+}
+function slotsHtml(chars,idl,hlLast){return `<div class="slots">`+chars.map((c,i)=>`<div class="slot"><i>slot ${i}</i><div class="ch ${c==='.'&&i<6?'pad':''}">${esc(dsp(c))}</div><span class="id">kimlik ${idl[i]}</span></div>`).join('')+`</div>`}
+const say=t=>`<p class="say">${t}</p>`, kaz=t=>`<div class="gain"><b>Kazanım:</b> ${t}</div>`, fm=t=>`<div class="formula">${t}</div>`, cap=t=>`<div class="cap">${t}</div>`;
+const note=(tag,title,html,wide)=>`<div class="note${wide?' wide':''}"><span class="tag">${tag}</span><h3>${title}</h3>${html}</div>`;
+const T='Takıldığın yer', V='Videoda (StatQuest)', Ö='Ölçtüm', K='Kısaca';
+
+/* ---------- GPT-2 haritası: adımlar (sayılar ŞEMATİK, şekiller GERÇEK) ---------- */
+const TOK=['7','+','5','='], TID=[22,10,20,28], TT=4;
+const prng=seed=>{let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const big=(seed,vm=1.5)=>{const g=prng(seed),A=[];for(let r=0;r<TT;r++){A.push([]);for(let c=0;c<28;c++)A[r].push((g()+g()+g()-1.5)*vm)}return A};
+const heat4=(A,o={})=>heat(TT,28,(r,c)=>A[r][c],Object.assign({cw:20,ch:24,lw:70,th:20,vmax:1.5,rl:r=>TOK[r],cl:c=>c<3?String(c):(c===27?'767':''),label:'4×768 tablo (şematik renkler)'},o));
+const oneRow=(seed,i,vm=1.5)=>heat(1,28,(r,c)=>big(seed,vm)[i][c],{cw:20,ch:24,lw:70,th:20,vmax:1.5,rl:()=>TOK[i],cl:c=>c<3?String(c):(c===27?'767':''),label:'768 sayılık satır (şematik)'});
+const SH='Renkler şematik (gerçek GPT-2 ağırlıkları yok), şekiller ve işlemler gerçek.';
+const sm=a=>{const m=Math.max(...a),e=a.map(v=>Math.exp(v-m)),s=e.reduce((x,y)=>x+y,0);return e.map(v=>v/s)};
+const chipRow=(arr,cls='')=>`<div class="eq" style="margin:8px 0">`+arr.map(a=>`<span class="pill" style="font-size:15px;padding:4px 10px">${a}</span>`).join('<span class="op" style="font-size:22px">·</span>')+`</div>`;
+const shapeEq=(a,op,b,res)=>`<div class="eq" style="margin:10px 0"><span class="pill" style="font-size:17px;padding:6px 12px">${a}</span><span class="op">${op}</span><span class="pill" style="font-size:17px;padding:6px 12px">${b}</span><span class="op">=</span><span class="pill" style="font-size:17px;padding:6px 12px;background:color-mix(in srgb,var(--hl) 35%,var(--card))">${res}</span></div>`;
+const MIN=t=>note('Minik GPT ile fark','Minik GPT\'de nasıldı?',t);
+const tokBoxes=(vals,lab)=>`<div class="slots">`+TOK.map((c,i)=>`<div class="slot"><i>konum ${i}</i><div class="ch">${c}</div><span class="id">${lab} ${vals[i]}</span></div>`).join('')+`</div>`;
+const slice12=(hi)=>{let s=`<svg width="${12*52+4}" height="74" viewBox="0 0 ${12*52+4} 74" role="img" aria-label="768 sütun, 12 dilim">`;for(let i=0;i<12;i++){const on=hi===i;s+=`<rect x="${2+i*52}" y="14" width="50" height="34" rx="5" fill="color-mix(in srgb,var(--c) ${on?55:16}%,var(--card))" stroke="${on?'var(--hl)':'var(--line)'}" stroke-width="${on?3:1}"/><text class="hlb" x="${27+i*52}" y="36" text-anchor="middle">${i+1}</text>`}return s+`<text class="hl" x="2" y="68">← 768 sütun = 12 dilim × 64 sütun →</text></svg>`};
+const S0=[[2.1,0,0,0],[0.4,1.8,0,0],[1.2,-0.3,1.5,0],[0.9,0.2,0.7,1.6]]; // şematik ham skorlar (Qᵢ·Kᵢᵀ/8)
+const tri=(S,mask)=>`<table class="t" style="width:auto"><tr><th></th>`+TOK.map(c=>`<th>${c}</th>`).join('')+`</tr>`+S.map((r,i)=>`<tr><th>${TOK[i]}</th>`+r.map((v,j)=>{const ok=j<=i;return `<td style="text-align:center;font-family:var(--mono);${ok?'':'color:var(--mute);background:color-mix(in srgb,var(--gray) 12%,var(--card))'}">${mask&&!ok?'−∞':f(v,1)}</td>`}).join('')+`</tr>`).join('')+`</table>`;
+const softTbl=S=>{const P=S.map((r,i)=>{const sub=r.slice(0,i+1),p=sm(sub);return r.map((_,j)=>j<=i?p[j]:0)});return `<table class="t" style="width:auto"><tr><th></th>`+TOK.map(c=>`<th>${c}</th>`).join('')+`<th>toplam</th></tr>`+P.map((r,i)=>`<tr><th>${TOK[i]}</th>`+r.map((v,j)=>`<td style="text-align:center;font-family:var(--mono);${j<=i?`background:rgba(63,199,193,${(v*.55).toFixed(2)})`:'color:var(--mute)'}">${j<=i?Math.round(v*100)+'%':'0'}</td>`).join('')+`<td style="text-align:center;font-family:var(--mono)">%100</td></tr>`).join('')+`</table>`};
+
+const STEPS=[];const add=o=>STEPS.push(o);
+const ARROWS=['metin → token numaraları','token → 768 sayılık kimlik kartı','kimlik tamam, peki nerede?','kimlik + konum = x','x\'i dengele (LayerNorm)','dengeli x → Q, K, V','tabloları 12 kafaya böl','her kafa: skor, maske, softmax','karışımı birleştir, x\'e ekle','dengele, FFN\'e ver','blok bitti, bir daha','12. bloktan çıkan son satır → 50.257 puan','puanları yüzdeye çevir','seçileni ekle, baştan','üretim hazır, peki ağ nasıl öğrendi?'];
+
+// 0
+add({c:'--gray',n:'0',title:'Büyük resim: GPT-2 de aynı oyunu oynuyor',sub:'Minik GPT\'nin haritasının aynısı, ama gerçek GPT-2 small\'un boyutlarıyla. Elimizde GPT-2\'nin ağırlıkları yok: şekiller ve işlemler gerçek, renkli sayılar şematik.',
+ main:()=>say('Soru yine <b>7+5=</b>. Ağ yine <b>sıradaki parçayı</b> söylüyor, seçileni sonuna ekleyip yeniden soruyoruz. Fark: parça artık harf değil <b>token</b>, kutu sayısı 10 değil <b>gerekli kadar</b> (burada 4), her kart 16 değil <b>768</b> sayı ve blok tek değil <b>12</b>.')+
+  `<div class="eq"><div class="win">${TOK.map(c=>`<span>${c}</span>`).join('')}</div><span class="op">→</span><div class="win"><span style="border-color:var(--violet);color:var(--violet)">?</span></div></div>`+
+  say('Gerçek GPT-2\'nin bu soruya ne cevap verdiğini <b>ölçmedik</b>, o yüzden çıktı kutusunda "?" var. Haritanın amacı cevap değil, <b>her adımda hangi tablonun hangi şekle dönüştüğü</b>.')+
+  say('Adımlara tıkla:')+`<div class="chips" id="chips"></div>`+
+  say('<b>Renkler:</b> mavi = pozitif, kırmızı = negatif, koyuluk = büyüklük (hepsi şematik). <b>Sarı çerçeve</b> = o adımda bakılacak parça.')+
+  kaz('Mekanizma Minik GPT ile <b>birebir aynı</b>; fark ölçek (16→768, 1 blok→12) ve birkaç ek parça (LayerNorm, GELU, kafa dilimleme).'),
+ notes:()=>[
+  note(K,'GPT-2 small\'un künyesi (hafızadan)',`<table class="t"><tr><th>Özellik</th><th>Değer</th></tr><tr><td>Sözlük (token)</td><td>50.257</td></tr><tr><td>En çok bağlam</td><td>1.024 token</td></tr><tr><td>Kart boyu (d)</td><td>768</td></tr><tr><td>Blok sayısı</td><td>12</td></tr><tr><td>Kafa sayısı / kafa boyu</td><td>12 / 64</td></tr><tr><td>FFN iç boyu</td><td>3.072 (= 4×768)</td></tr><tr><td>Toplam ağırlık</td><td>124.439.808</td></tr></table>`),
+  note(K,'Minik GPT ile yan yana',`<table class="t"><tr><th></th><th>Minik GPT</th><th>GPT-2</th></tr><tr><td>Parça</td><td>karakter (40)</td><td>token (50.257)</td></tr><tr><td>Bağlam</td><td>sabit 10 kutu</td><td>≤1.024, kaç token varsa o</td></tr><tr><td>Kart boyu</td><td>16</td><td>768</td></tr><tr><td>Blok</td><td>1</td><td>12</td></tr><tr><td>Kafa</td><td>1</td><td>12</td></tr><tr><td>LayerNorm</td><td>yok</td><td>var (blok başına 2 + sonda 1)</td></tr><tr><td>Aktivasyon</td><td>tanh</td><td>GELU</td></tr><tr><td>Ağırlık</td><td>3.576</td><td>124,4 milyon</td></tr></table>`),
+  note(K,'Bu haritada neye güvenebilirsin?',`<ul><li><b>Güvenebilirsin:</b> tablo şekilleri, işlem sırası, ağırlık sayıları (GPT-2 small, Transformer yapısı).</li><li><b>Güvenme:</b> renkli hücrelerin değerleri. Şematik, gerçek ağırlıklardan çıkmadı.</li><li><b>Ölçmedik:</b> gerçek GPT-2\'nin hangi kafası neye bakıyor, "7+5=" için cevabı ne.</li></ul>`),
+  note(K,'Minik GPT haritası',`<p>Aynı oyunun Minik GPT\'deki, gerçek sayılı hâli: <a href="adim-adim.html" target="_blank" rel="noopener">Minik GPT adım adım haritası</a>. İkisini yan yana açıp adım adım karşılaştırabilirsin.</p>`)]});
+
+// 1
+add({c:'--blue',n:'1',title:'Metin → token numaraları',sub:'GPT-2 harf bilmez, token bilir. Token = sık görülen harf grubu; her token\'ın sözlükte bir numarası var.',
+ main:()=>say('"7+5=" GPT-2\'nin sözlüğünde <b>4 token</b>: her karakter ayrı bir parça. Numaralar GPT-2\'nin gerçek sözlüğünden (ölçtük).')+
+  `<div class="vis">${tokBoxes(TID,'kimlik')}</div>`+
+  cap('Pencere dolgusu yok: T = 4, yani 4 satırlık tablolar. Cümle uzarsa T büyür (1.024\'e kadar).')+
+  say('Sözlük nasıl çıktı? Başta her <b>bayt</b> ayrı bir parça; metinlerde en sık yan yana gelen iki parça birleştirilip yeni parça yapıldı, bu on binlerce kez tekrarlandı (BPE). Sonuç: "the", " ve", "ing" gibi sık parçalar tek token, nadir kelimeler birkaç parçaya bölünür.')+
+  kaz('Ağ metni değil, <b>T tane tam sayıyı</b> görür. Burada: [22, 10, 20, 28].'),
+ notes:()=>[
+  MIN(`<p>Minik GPT\'de parça = <b>karakter</b>, sözlük 40 harf. Pencere hep 10 kutu, kısa soru baştan <code>.</code> ile doldurulurdu, uzun soru kırpılırdı.</p><p>GPT-2\'de dolgu yok, kırpma yalnız 1.024 token\'ı geçince.</p>`),
+  note(T,'Neden harf değil token?',`<p>Harf harf gitsek "hayatın anlamı nedir" 20 adım olurdu; token\'la ~11. Dizi kısalınca dikkat tablosu (T×T) çok küçülür ve her adım daha çok anlam taşır. Ama sözlük büyür (50.257 satırlık E tablosu).</p>`),
+  note(T,'" 12" ile "12" aynı token mu?',`<p>Hayır. Boşlukla başlayan parça ayrı bir token olabilir (" 12" ≠ "12"). Bu yüzden aynı sayı bağlama göre farklı numaralanabilir. Burada ölçtüğümüz yalnız "7+5=" parçalanışı.</p>`),
+  note(K,'Sözlük sayısı neden 50.257?',`<p>256 bayt + 50.000 birleştirme + 1 özel işaret (&lt;|endoftext|&gt;) = 50.257 (hafızadan).</p>`)]});
+
+// 2
+add({c:'--blue',n:'2',title:'Token → 768 sayılık kimlik kartı (wte)',sub:'E tablosunun karşılığı: wte, 50.257 satır × 768 sütun. Token numarası = hangi satırı okuyacağımız.',
+ main:()=>say('Her token numarası wte tablosundan <b>bir satır</b> seçer. 4 token → 4 satır → <b>4×768</b> bir tablo.')+
+  `<div class="vis">${heat4(big(11),{label:'wte satırları, 4×768 (şematik)'})}</div>`+cap(SH+' Satır etiketi = token; sarı çerçeve yok çünkü hepsi kullanılıyor.')+
+  shapeEq('wte: 50.257×768','→ 4 satır seç →','',`4 × 768`)+
+  say('Bu satırlar <b>eğitimle öğrenilmiş</b>: "7" ile "5" gibi benzer kullanılan token\'ların kartları zamanla yakınlaşır (Minik GPT\'de E tablosunda gördüğümüz şey, ölçeği büyük).')+
+  kaz('Artık her token <b>768 sayılık bir vektör</b>. Ama bu kart tokenin <b>ne olduğunu</b> söylüyor, <b>nerede durduğunu</b> değil.'),
+ notes:()=>[
+  MIN(`<p>E tablosu 40×16 = 640 sayıydı; kullandığımız her harf için 16 sayılık satır. Aynı mekanizma: numara → satır oku.</p><p>GPT-2\'nin wte\'si 38.597.376 sayı (38,6 milyon), toplam ağırlığın üçte biri.</p>`),
+  note(T,'Satırı kim yazıyor?',`<p>Kimse elle yazmaz: rastgele başlar, her eğitim adımında geri yayılımdan gelen gradyanla, yalnız o adımda <b>kullanılan</b> token\'ların satırları güncellenir.</p>`),
+  note(T,'Kullanılmayan token\'ların satırı?',`<p>Eğitim verisinde hiç geçmeyen token\'ın satırı rastgele kalır. Pratikte veri çok büyük olduğundan nadir token\'ların bile birkaç örneği vardır.</p>`),
+  note(K,'wte ikinci bir işte daha kullanılıyor',`<p>GPT-2 çıkışta aynı tabloyu (devrik) tekrar kullanır: adım 12\'de görürsün. Buna <b>ağırlık paylaşımı</b> denir.</p>`)]});
+
+// 3
+add({c:'--teal',n:'3',title:'Konum kartı (wpe)',sub:'Attention sırayı bilmez. Konumu ayrı bir tablodan okuruz: wpe, 1.024 satır × 768 sütun.',
+ main:()=>say('Tablo <b>konumla</b> indekslenir: 1., 2., 3., 4. token için wpe\'nin ilk 4 satırı. Bu satırlar <b>öğrenilir</b> (sinüs formülü değil).')+
+  `<div class="vis">${heat4(big(23,1.1),{rl:r=>'konum '+r,label:'wpe ilk 4 satır (şematik)'})}</div>`+cap(SH)+
+  say('Neden gerekli? "7+5" ile "5+7" aynı token\'ları içerir. Konum kartı olmasa attention için ikisi <b>aynı</b> olurdu.')+
+  kaz('Her token iki kart taşıyor: <b>kim</b> (wte) ve <b>kaçıncı</b> (wpe), ikisi de 768 sayı.'),
+ notes:()=>[
+  MIN(`<p>P tablosu 10×16 = 160 sayı; 10 kutunun her biri için bir satır. Yine öğrenilen bir tablo, yine aynı fikir.</p><p>GPT-2\'de satır sayısı 1.024: en uzun bağlam bu kadar. 1.025. token için konum kartı yok, eğitimde hiç görülmedi.</p>`),
+  note(T,'Neden "öğrenilen" konum?',`<p>Orijinal Transformer sinüs/kosinüs formülü kullandı, GPT-2 satırları öğrenir. İkisi de işe yarıyor; öğrenilende, uzun konumlara uzamak (1.024\'ü aşmak) mümkün değil.</p>`),
+  note(T,'Llama gibi yeni modellerde?',`<p>Konum kartı toplanmaz; RoPE denen yöntemle Q ve K döndürülür. Bu sayfada yalnız GPT-2 var; 3B mimari kartında Llama ile farkı görebilirsin.</p>`)]});
+
+// 4
+add({c:'--teal',n:'4',title:'x = wte + wpe: bloklara giren tablo',sub:'İki 4×768 tabloyu hücre hücre topluyoruz. Bu x, bütün blokların taşıdığı ana akım.',
+ main:()=>say('Her token için kimlik kartı ile konum kartı toplanır: <b>x = wte[token] + wpe[konum]</b>. Boyut aynı kalır, <b>4×768</b>.')+
+  `<div class="eq"><div class="vis">${heat4(big(11),{label:'wte'})}</div><span class="op">+</span><div class="vis">${heat4(big(23,1.1),{rl:r=>'k'+r,label:'wpe'})}</div></div><div class="eq"><span class="op">=</span><div class="vis">${heat4(big(11).map((r,i)=>r.map((v,j)=>v+big(23,1.1)[i][j])),{label:'x'})}</div></div>`+cap(SH)+
+  shapeEq('4×768','+','4×768','4×768')+
+  kaz('Artık her satır "<b>ben bu token\'ım ve şu sıradayım</b>" diyor. Bundan sonra yalnız <b>x</b> kullanılır.'),
+ notes:()=>[
+  MIN(`<p>Orada da x = E + P idi (10×16). Aynı toplama, aynı gerekçe: boyut 16\'da kalsın ki bloklar hep aynı şekille çalışsın.</p>`),
+  note(T,'Neden toplama, yan yana koymak değil?',`<p>Yan yana koysak kart 1.536 sayı olurdu, her W iki kat büyürdü. Toplamada boyut 768\'de kalır; ağ iki bilgiyi aynı vektörden ayırmayı öğrenir.</p>`),
+  note(K,'"Ana akım" (residual stream)',`<p>x bloklardan geçerken <b>üzerine yazılmaz, eklenir</b>. 12 blok boyunca 4×768\'lik bu tablo hep orada, her blok ona küçük bir katkı ekler (adım 9 ve 10).</p>`)]});
+
+// 5
+add({c:'--amber',n:'5',title:'LayerNorm: x\'i dengele (Minik GPT\'de yoktu)',sub:'Her satırı kendi içinde ortalaması 0, yayılımı 1 olacak şekilde ölçekleriz; sonra γ ve β ile yeniden ayarlarız.',
+ main:()=>say('Attention\'a girmeden önce <b>her satır ayrı</b> normalize edilir. Satırın 768 sayısı için:')+
+  fm('μ = ort(satır)     σ² = ort((satır−μ)²)\nn = (satır − μ) / √(σ² + 1e-5)\nçıktı = γ·n + β        (γ, β: 768\'er öğrenilen sayı)')+
+  `<div class="eq"><div class="vis">${heat4(big(11).map((r,i)=>r.map((v,j)=>v+big(23,1.1)[i][j]+(i-1.5)*.5),),{label:'x (satırların ortalaması farklı)'})}</div><span class="op">→</span><div class="vis">${heat4(big(31,1),{label:'LayerNorm(x): her satır dengeli'})}</div></div>`+cap(SH+' Gerçekte çıkışın her satırı ortalama 0, varyans 1 (γ=1, β=0 başlangıcında).')+
+  shapeEq('4×768','LayerNorm','γ, β: 768','4×768')+
+  kaz('Şekil değişmez (<b>4×768</b>), sadece her satırın <b>ölçeği</b> düzelir. Bu, 12 blok üst üste binince sayıların patlamasını önler.'),
+ notes:()=>[
+  MIN(`<p>Minik GPT\'de LayerNorm <b>yoktu</b> (tek blok, küçük sayılar, "sayfada belirtildi"). Bu, GPT-2 ile en görünür fark.</p><p>Transformer Bloğu dersindeki Bütün Resim\'de LayerNorm\'un türevini görmüştün.</p>`),
+  note(T,'"Pre-LN" ne demek?',`<p>GPT-2\'de LayerNorm, attention ve FFN\'den <b>önce</b> uygulanır, ana akıma ise normalize edilmemiş x eklenir. Orijinal Transformer\'da sonra idi (post-LN); önce koymak derin ağları eğitmeyi kolaylaştırır.</p>`),
+  note(T,'Neden satır başına?',`<p>Her token\'ın kartı kendi başına dengelenir; token sayısına (T) bağlı olmaz. Batch norm gibi yığına bakmaz.</p>`),
+  note(K,'Ağırlık sayısı',`<p>Blok başına iki LayerNorm: 2×(768+768) = 3.072 ağırlık; 12 blok = 36.864. Sonda bir tane daha (1.536).</p>`)]});
+
+// 6
+add({c:'--violet',n:'6',title:'Q, K, V: üç ayrı 4×768 tablo',sub:'Dengelenmiş x üç ayrı 768×768 ağırlıkla çarpılır. Çıkan üç tablonun her biri 4×768.',
+ main:()=>say('<b>Q = x·W_Q</b> (sorular), <b>K = x·W_K</b> (etiketler), <b>V = x·W_V</b> (içerikler); her biri 4×768. <b>Burada henüz kafa yok</b>, bunlar üç tam tablo.')+
+  `<div class="eq"><div class="vis">${heat4(big(41),{label:'Q'})}</div><span class="op">Q</span></div><div class="eq"><div class="vis">${heat4(big(42),{label:'K'})}</div><span class="op">K</span></div><div class="eq"><div class="vis">${heat4(big(43),{label:'V'})}</div><span class="op">V</span></div>`+cap(SH)+
+  shapeEq('4×768 (x)','·','768×768 (W_Q)','4×768 (Q)')+
+  kaz('Üç tablo, <b>her token için üç ayrı 768 sayılık satır</b>: soru, etiket, içerik. Hepsi aynı x\'ten, farklı W\'lerle çıkar.'),
+ notes:()=>[
+  MIN(`<p>Orada q yalnız <b>son</b> slot için hesaplanıyordu: 1×16. K ve V 10×16\'ydı.</p><p>GPT-2\'de <b>her token kendi sorusunu sorar</b>, o yüzden Q de T×768 (4×768). Bu fark önemli: Minik GPT bir sadeleştirmeydi.</p>`),
+  note(T,'"Üç tablo" mu, "tek 768×2304" mü?',`<p>Matematikte üç ayrı çarpma. Gerçek GPT-2 kodunda hız için W_Q, W_K, W_V yan yana yapıştırılıp <b>tek</b> 768×2304 matrisle bir kerede çarpılır, çıkan 4×2304 üçe bölünür. Sonuç tamamen aynı: üç adet 4×768.</p>`),
+  note(T,'Bias var mı?',`<p>Evet, GPT-2\'de her çarpmaya bir bias vektörü (768) eklenir; haritada sadeleştirmek için yazmadık.</p>`),
+  note(K,'Ağırlık sayısı',`<p>W_Q + W_K + W_V = 3×768×768 = 1.769.472 (+ 2.304 bias). Bloktaki attention ağırlıklarının büyük kısmı burada.</p>`)]});
+
+// 7
+add({c:'--violet',n:'7',title:'Üç tabloyu 12 kafaya böl (sütunlardan)',sub:'Q, K, V\'nin her biri sütunlarından 12 dilime kesilir: 768 = 12 × 64. Kafa i = üç tablonun i. dilimleri.',
+ main:()=>say('Satırlar (token\'lar) hep 4 kalır; <b>sütunlar</b> 64\'lük 12 gruba ayrılır. Hiçbir sayı hesaplanmaz, tablo sadece <b>kesilir</b>.')+
+  `<div class="vis">${slice12(0)}</div>`+cap('Q için çizdik; K ve V de aynı şekilde kesilir. Vurgulanan dilim = kafa 1\'in Q\'su.')+
+  say('Kafa 1 = (Q₁, K₁, V₁), her biri <b>4×64</b>. Toplam 12 kafa × 3 tablo = <b>36 küçük tablo</b>.')+
+  `<table class="t"><tr><th>Kafa</th><th>Q</th><th>K</th><th>V</th></tr><tr><td>1</td><td>Q₁ 4×64</td><td>K₁ 4×64</td><td>V₁ 4×64</td></tr><tr><td>2</td><td>Q₂ 4×64</td><td>K₂ 4×64</td><td>V₂ 4×64</td></tr><tr><td>…</td><td>…</td><td>…</td><td>…</td></tr><tr><td>12</td><td>Q₁₂ 4×64</td><td>K₁₂ 4×64</td><td>V₁₂ 4×64</td></tr></table>`+
+  kaz('"12 kafa" = 12 <b>ayrı küçük attention</b>, her biri 64 boyutlu. Bu yüzden her kafa farklı şeye bakmayı öğrenebilir.'),
+ notes:()=>[
+  MIN(`<p>Orada <b>tek kafa</b> vardı ve q/K/V 16 sütunun tamamını kullanıyordu: bölme yok, 1 skor tablosu.</p>`),
+  note(T,'Kafa, Q/K/V\'nin kendisi mi?',`<p>Hayır: Q, K, V tam tablolar (4×768). Kafa, bu tabloların <b>sütun dilimlerinden</b> oluşan üçlüdür (4×64 ×3).</p>`),
+  note(T,'Neden bölüyoruz, 768\'lik tek attention yetmez mi?',`<p>Tek attention her token çifti için <b>tek bir</b> skor çıkarır. 12 kafa, aynı çifte 12 farklı "ilgi" ölçüsü verir (ör. biri sözdizimine, biri yakınlığa bakabilir). Ne baktıklarını biz ölçmedik.</p>`),
+  note(K,'Toplam hesap aynı mı?',`<p>Evet: 12 kafa × 64 = 768. Bölmek ağırlık sayısını artırmaz, sadece 768\'i 12 ayrı alt-uzaya ayırır.</p>`)]});
+
+// 8
+add({c:'--red',n:'8',title:'Her kafada: skor, maske, softmax',sub:'Qᵢ·Kᵢᵀ/8 → 4×4 skor tablosu; geleceğe bakmayı −∞ ile kapat; her satırı yüzdeye çevir. 12 kafa için ayrı ayrı.',
+ main:()=>say('<b>Skor = Qᵢ · Kᵢᵀ / √64</b>. Kᵢ yatırılır (4×64 → 64×4) ki 64\'ler karşılıklı gelsin: (4×64)·(64×4) = <b>4×4</b>. Hücre [a][b] = a. token\'ın sorusu ile b. token\'ın etiketinin nokta çarpımı, 8\'e bölünmüş.')+
+  `<div class="eq"><div><div class="cap">ham skor (şematik)</div>${tri(S0,false)}</div><span class="op">→</span><div><div class="cap">+ maske: geleceği kapat</div>${tri(S0,true)}</div><span class="op">→</span><div><div class="cap">satır softmax</div>${softTbl(S0)}</div></div>`+
+  cap('Yalnız bir kafa çizildi, sayılar şematik. Maske ve softmax işlemleri gerçek: 16 hücrenin <b>10\'u geçerli</b> (alt üçgen + köşegen), kalan 6 hücre −∞ → softmax\'ta 0.')+
+  shapeEq('Qᵢ 4×64','·','Kᵢᵀ 64×4','skor 4×4')+say('Bu <b>12 kafa için ayrı yapılır</b>: 12 tane 4×4 tablo. "=" token\'ı (son satır) dört token\'a da bakabilir, "7" yalnız kendine.')+
+  kaz('Her token, <b>kendinden önceki</b> token\'lara kaç yüzde bakacağını belirliyor. Satır toplamı %100.'),
+ notes:()=>[
+  MIN(`<p>Orada skor <b>1 satırdı</b> (son slotun 10 slota skoru), maske yoktu çünkü yalnız son slot soru sorardı: 10 sayı, tek softmax.</p><p>GPT-2\'de her satır (her token) soru soruyor → 4×4 (T×T) tablo ve <b>nedensel maske</b>.</p>`),
+  note(T,'Neden nedensel maske?',`<p>Eğitim sırasında 4 pozisyonun hepsi aynı anda tahmin yapar; "5" token\'ı kendisinden sonraki "=" i görseydi cevabı kopyalardı. Maske bunu engeller. Üretimde zaten gelecek yok.</p>`),
+  note(T,'Neden 8\'e bölüyoruz?',`<p>√64 = 8. Nokta çarpımları boyutla büyür; bölmeden softmax tek bir token\'a kilitlenirdi (Self-Attention Örnek 2\'de ölçtük).</p>`),
+  note(K,'Tablo sayısı',`<p>Bir blokta 12 kafa × (4×4) = 12 skor tablosu. T=1.024 olsaydı her biri 1.024×1.024 (yarısı maskeli): dikkat maliyeti T²\'yle büyür.</p>`)]});
+
+// 9
+add({c:'--red',n:'9',title:'a·V, kafaları yan yana yapıştır, W_O, ana akıma ekle',sub:'Yüzdelerle V\'leri karıştır (4×64), 12 çıkışı yan yana koy (4×768), 768×768 W_O ile çevir, x\'e ekle.',
+ main:()=>say('Kafa i çıkışı = <b>aᵢ · Vᵢ</b>: (4×4)·(4×64) = <b>4×64</b>. 12 kafanın çıkışı <b>yan yana yapıştırılır</b> (toplanmaz): 12×64 = <b>4×768</b>.')+
+  `<div class="vis">${slice12(-1).replace('768 sütun = 12 dilim × 64 sütun','12 kafa çıkışı yan yana = 768 sütun')}</div>`+
+  shapeEq('a 4×4','·','Vᵢ 4×64','4×64')+shapeEq('12× 4×64','yapıştır','','4×768')+shapeEq('4×768','·','768×768 (W_O)','4×768')+
+  say('Son adım: bu çıkış ana akıma <b>eklenir</b>: <b>x ← x + attention</b> (4×768 + 4×768). Eski x silinmez, üzerine küçük bir düzeltme biner.')+
+  kaz('Her token artık "<b>çevresindeki önceki token\'lardan topladığı bilgiyle</b>" zenginleşti. Şekil hâlâ 4×768.'),
+ notes:()=>[
+  MIN(`<p>Orada tek kafa: o = a·V (tek 1×16 satır, yalnız son slot için), sonra W_O ve <b>x[9]</b>\'a ekleme. Yani yalnız son kutu güncelleniyordu.</p><p>GPT-2\'de dört satır da güncellenir, ama sonuçta yalnız son satırın sonraki adımı belirlediğini göreceksin (adım 12).</p>`),
+  note(T,'W_O ne işe yarıyor?',`<p>Yapıştırılmış kafa çıkışları arasında hâlâ "kafa 1 şunu, kafa 2 bunu" ayrımı var. W_O (768×768) 12 kafanın bilgisini <b>karıştırıp</b> tek bir 768\'lik kart katkısı yapar.</p>`),
+  note(T,'Yapıştırmak mı, toplamak mı?',`<p>Yapıştırmak: 12 kafanın çıktısı kendi sütunlarında kalır, kayıp yok. Toplamak olsaydı 12 kafanın katkısı birbirine karışıp ayırt edilemezdi.</p>`),
+  note(K,'Ağırlık sayısı',`<p>W_O: 768×768 = 589.824 (+768 bias). Bir bloğun attention\'ı toplam 2.362.368 ağırlık.</p>`)]});
+
+// 10
+add({c:'--amber',n:'10',title:'LayerNorm, FFN (768→3072→768), ana akıma ekle',sub:'Her token\'ın kartı ayrı ayrı işlenir; token\'lar bu adımda birbirine bakmaz.',
+ main:()=>say('Önce yine <b>LayerNorm</b> (4×768). Sonra her satır aynı iki katmandan geçer: 768 → <b>3.072</b> → GELU → 768.')+
+  shapeEq('4×768','·','768×3072 (W₁)','4×3072')+
+  fm('g = GELU(LN(x)·W₁ + b₁)     4×3072\nf = g·W₂ + b₂                 4×768')+
+  shapeEq('4×3072','·','3072×768 (W₂)','4×768')+
+  say('Sonra yine ekleme: <b>x ← x + f</b>. Blok bitti, çıkış <b>4×768</b>.')+
+  kaz('Attention <b>token\'lar arası</b> bilgi taşır, FFN <b>token\'ın kendi kartı üzerinde</b> düşünür. Burada hiçbir satır diğerine bakmaz.'),
+ notes:()=>[
+  MIN(`<p>Orada FFN 16→32→16, <b>tanh</b>, ve yalnız son satıra uygulanıyordu. GPT-2\'de GELU ve dört satıra birden.</p><p>Oran aynı: ara katman girişin 2 katı (Minik) / 4 katı (GPT-2).</p>`),
+  note(T,'GELU nedir?',`<p>ReLU\'ya benzer ama köşesi yumuşak: sıfırın altını tam kesmez, küçük bir değerle geçirir. Tanh gibi doymaz, ReLU gibi ölmez. Aktivasyon dersinde sigmoid/tanh/ReLU gördün; GELU onların yumuşak kuzeni.</p>`),
+  note(T,'Neden 4 kat genişlik?',`<p>Ağın "bilgiyi depoladığı" yer olduğu düşünülüyor: geniş ara katman daha çok örüntüyü (anahtar-değer gibi) tutuyor. Hangi nöronun ne depoladığını burada ölçmedik.</p>`),
+  note(K,'Ağırlık sayısı',`<p>W₁: 768×3072 + 3072 = 2.362.368; W₂: 3072×768 + 768 = 2.360.064. Toplam FFN 4.722.432: bloktaki ağırlıkların üçte ikisi.</p>`)]});
+
+// 11
+add({c:'--gray',n:'11',title:'Bu blok 12 kez art arda',sub:'Aynı yapı, ama her bloğun KENDİ ağırlıkları var. 4×768 tablo bir bloktan çıkıp ötekine girer.',
+ main:()=>say('Blok 1\'in çıkışı (4×768) blok 2\'ye girer; blok 2\'nin çıkışı blok 3\'e... 12. bloğa kadar. <b>Şekil hiç değişmez</b>: 4×768 → 4×768.')+
+  (()=>{let s=`<svg width="860" height="120" viewBox="0 0 860 120" role="img" aria-label="12 blok art arda">`;for(let i=0;i<12;i++){s+=`<rect x="${6+i*70}" y="30" width="62" height="50" rx="8" fill="color-mix(in srgb,var(--c) ${i===0?35:14}%,var(--card))" stroke="var(--line)"/><text class="hlb" x="${37+i*70}" y="60" text-anchor="middle">blok ${i+1}</text>`;if(i<11)s+=`<path d="M${70+i*70} 55h6" stroke="var(--mute)" stroke-width="2"/>`}return s+`<text class="hl" x="6" y="112">her bloğun kendi W_Q, W_K, W_V, W_O, W₁, W₂, LayerNorm'ları var → 12 × 7.087.872 ağırlık</text></svg>`})()+
+  say('Her blokta <b>ana akım</b> küçük bir ekleme alır: önce attention ekler, sonra FFN. 12 blokta toplam <b>24 ekleme</b>.')+
+  kaz('Alt bloklar basit ilişkilere, üst bloklar daha soyut olanlara bakıyor olabilir (genel eğilim; burada <b>ölçmedik</b>).'),
+ notes:()=>[
+  MIN(`<p>Orada <b>tek blok</b> vardı. Görev (7+5=) küçüktü, tek blok yetti.</p><p>12 blok = aynı mekanizmayı 12 kez üst üste: her turda token kartları çevresinden bilgi toplayıp işleniyor.</p>`),
+  note(T,'12 blok aynı ağırlıkla mı?',`<p>Hayır. Her blok ayrı ağırlıklara sahip (12× 7.087.872). Yapı aynı, parametreler ayrı. (Bazı modellerde paylaşılır, GPT-2\'de değil.)</p>`),
+  note(T,'Son bloğun çıkışı ne?',`<p>4×768. Ama sadece <b>son satır</b> ("=" için) bir sonraki token\'ı seçecek (adım 12). Diğer 3 satır ara basamak, ama eğitimde kendi tahminlerini yapıyorlar (adım 15).</p>`),
+  note(K,'Her blokta hesap',`<p>Bir blok: ~7,1 milyon ağırlık, her token için yaklaşık 7 milyon çarpma-toplama (her ağırlık bir kez). 12 blok ~85 milyon, 4 token için ~340 milyon.</p>`)]});
+
+// 12
+add({c:'--violet',n:'12',title:'Son LayerNorm + çıkış tablosu: 50.257 puan',sub:'Yalnız son satır (konum 3, "=") 50.257 token\'ın her biri için bir puan üretir.',
+ main:()=>say('Son bir LayerNorm (4×768). Sonra <b>yalnız son satır</b> (1×768) alınır ve <b>768×50.257</b> çıkış tablosuyla çarpılır: <b>1×50.257</b> puan.')+
+  shapeEq('4×768','LayerNorm','','4×768')+shapeEq('son satır 1×768','·','768×50.257','1×50.257')+
+  say('Çıkış tablosu yeni bir tablo değil: <b>wte\'nin devriği</b> (adım 2\'deki aynı 50.257×768 tablo çevrilmiş). Yani "bu kart hangi token\'a en çok benziyor?" sorusunu soruyoruz.')+
+  `<div class="vis">${bars([4.1,3.2,2.9,2.4,1.1,0.2,-0.5,-1.1],['aday 1','aday 2','aday 3','aday 4','aday 5','aday 6','aday 7','aday 8'],{w:720,label:'çıkış puanları (şematik)'})}</div>`+cap('Şematik: gerçek GPT-2 puanlarını ölçmedik. 50.257 puandan yalnız ilk sekiz aday çizildi.')+
+  kaz('Son satır <b>50.257 puana</b> döndü: her token için "bu kadar uygun" bir sayı.'),
+ notes:()=>[
+  MIN(`<p>Orada h (1×16) → W_out (16×40) → 40 harfe puan. Burada 768 → 50.257 token.</p><p>Fark: Minik GPT\'de W_out ayrı bir tabloydu (680 ağırlık), GPT-2\'de wte\'yle <b>paylaşılıyor</b> (ağırlık tasarrufu: 38,6 milyon).</p>`),
+  note(T,'Neden yalnız son satır?',`<p>Çünkü sıradaki token <b>"=" konumundan</b> sonra gelecek. Diğer satırlar kendi sonrasını tahmin eder ama üretimde kullanılmaz (eğitimde kullanılır, adım 15).</p>`),
+  note(T,'Neden wte\'yi paylaşıyoruz?',`<p>Girişte "token → kart", çıkışta "kart → token" ters işlemler; aynı tabloyla yapmak hem parametreyi azaltır hem iki ucu tutarlı tutar.</p>`),
+  note(K,'Bu adımın maliyeti',`<p>768×50.257 = 38,6 milyon çarpma yalnız tek token için. Sözlük büyüdükçe en pahalı adımlardan biri.</p>`)]});
+
+// 13
+add({c:'--blue',n:'13',title:'Softmax → seçim: cevap token\'ı',sub:'Puanları yüzdeye çevir, sonra bir token seç. Seçmenin birkaç yolu var.',
+ main:()=>say('Softmax: 50.257 puan → 50.257 yüzde (toplam %100). Sonra <b>seçim</b>:')+
+  `<table class="t"><tr><th>Yöntem</th><th>Ne yapar</th></tr><tr><td><b>Greedy</b></td><td>en yüksek yüzdeyi al</td></tr><tr><td><b>Sıcaklık</b> (T)</td><td>puanları T\'ye bölüp sonra softmax: düşük T keskin, yüksek T dağınık</td></tr><tr><td><b>Top-k / top-p</b></td><td>yalnız en iyi k (ya da toplamı p olan) adaydan, yüzdeye göre kura çek</td></tr></table>`+
+  (()=>{const L=[2,1,0.1];return `<table class="t" style="width:auto;margin-top:10px"><tr><th>Örnek puanlar [2, 1, 0,1]</th><th>aday 1</th><th>aday 2</th><th>aday 3</th></tr>`+[0.5,1,2].map(T=>{const p=sm(L.map(v=>v/T));return `<tr><td>sıcaklık ${String(T).replace('.',',')}</td>`+p.map(v=>`<td style="text-align:center">%${Math.round(v*100)}</td>`).join('')+`</tr>`}).join('')+`</table>`})()+cap('Örnek puanlar uydurma, işlem gerçek: düşük sıcaklık lideri büyütür, yüksek sıcaklık dağıtır.')+
+  say('Gerçek GPT-2\'nin "7+5=" sonrası <b>neyi seçtiğini ölçmedik</b>; yazılı çıktı vermiyoruz.')+
+  kaz('Ağın ürettiği şey bir <b>cevap değil, 50.257\'lik bir yüzde listesi</b>. Cevabı o listeden seçim kuralı üretir.'),
+ notes:()=>[
+  MIN(`<p>Orada hep <b>en yüksek yüzde</b> seçiliyordu (greedy): aynı soru, aynı cevap. Üretim sayfasında da öyle.</p><p>ChatGPT gibi sohbet modellerinin "her seferinde farklı yazması" sıcaklık ve top-p\'den gelir.</p>`),
+  note(T,'Küçük GPT-2 neden aritmetikte zayıf olabilir?',`<p>Eğitim verisinde toplama bir "kural" olarak değil metin örnekleri olarak geçer; küçük model çoğu zaman ezber/örüntü eşleştirir. Bu sayfada GPT-2\'yi çalıştırmadık, o yüzden bunun doğruluğunu ölçmedik: genel bilgi.</p>`),
+  note(T,'Seçilen token hep tek karakter mi?',`<p>Hayır, token bir kelime parçası olabilir (örn. bir sayının birkaç hanesi tek token). Her adımda bir <b>token</b> eklenir, harf değil.</p>`)]});
+
+// 14
+add({c:'--blue',n:'14',title:'Üretim döngüsü ve KV önbelleği',sub:'Seçilen token diziye eklenir (T=4 → 5), yeni adım. Ama baştan hesaplamaya gerek yok.',
+ main:()=>say('Seçilen token sona eklenir: T = 4 → 5. Ağ yeni diziyle çalışır, sıradaki token seçilir, yine eklenir... Uzun cevap = bu döngünün yüzlerce kez tekrarı.')+
+  `<div class="eq"><div class="win">${TOK.map(c=>`<span>${c}</span>`).join('')}</div><span class="op">+</span><div class="win"><span style="border-color:var(--violet);color:var(--violet)">?</span></div><span class="op">→</span><span class="pill">T = 5</span></div>`+
+  say('<b>İlk 4 token\'ın K ve V tabloları değişmez</b> (hepsi nedensel maske nedeniyle yalnız öncesine bakıyor). Bu yüzden her blokta o satırlar <b>saklanır</b> (KV önbelleği); yeni adımda yalnız <b>yeni token</b> için 1 satır Q, K, V hesaplanır.')+
+  shapeEq('yeni token 1×768','·','768×768','1×768')+
+  kaz('Önbellek sayesinde adım başına işlem <b>T²\'yle değil T\'yle</b> büyür: 1.000 token\'lık cevap mümkün.'),
+ notes:()=>[
+  MIN(`<p>Orada her adımda <b>pencere kaydırılıp her şey baştan</b> hesaplanıyordu (10 küçük kutu, maliyeti önemli değil). Önbelleğe gerek yoktu.</p>`),
+  note(T,'Önbellek bellekte ne tutuyor?',`<p>Her blok ve her token için K ve V satırı: 12 blok × 2 × 768 sayı = token başına 18.432 sayı. 1.024 token için yaklaşık 19 milyon sayı.</p>`),
+  note(T,'Neden Q saklanmıyor?',`<p>Q yalnız o anki token\'ın "sorusu"; sonraki adımlarda eski token\'ların sorusuna gerek yok. K ve V ise sonraki tüm token\'lar tarafından tekrar okunuyor.</p>`),
+  note(T,'Bitiş nasıl?',`<p>Ağ özel bir bitiş işareti (&lt;|endoftext|&gt;) seçerse ya da uzunluk sınırına gelinirse döngü durur.</p>`)]});
+
+// 15
+add({c:'--red',n:'15',title:'Ağ bunu nasıl öğrendi? Hata, her konumda',sub:'Eğitimde cevap sorulmaz, metnin kendisi etiket verir. Dört konumun HEPSİ bir sonrakini tahmin eder.',
+ main:()=>say('Eğitim verisi dev bir metin yığını (GPT-2 için "WebText": yaklaşık 8 milyon web sayfası, ~40 GB; hafızadan). Metinden bir dizi kesilir ve her konum bir sonrakini tahmin eder:')+
+  `<table class="t"><tr><th>Konum</th><th>Ağın gördüğü</th><th>Tahmin edilen (doğru cevap)</th></tr><tr><td>0</td><td>7</td><td>+</td></tr><tr><td>1</td><td>7 +</td><td>5</td></tr><tr><td>2</td><td>7 + 5</td><td>=</td></tr><tr><td>3</td><td>7 + 5 =</td><td>sonraki token</td></tr></table>`+
+  fm('hata = ortalama(−ln p(doğru token))     (4 konum üzerinden)')+
+  say('Bu, nedensel maske sayesinde mümkün: tek ileri geçişte <b>4 ayrı tahmin</b> ve 4 hata. Sonra geri yayılım 124 milyon ağırlığın her biri için gradyan bulur ve küçük bir adım atılır.')+
+  kaz('Metinden <b>milyarlarca</b> bu tür örnek çıkar, hepsi bedava etiketli. Ağ "doğru token\'a yüksek yüzde ver" diye ayarlanır.'),
+ notes:()=>[
+  MIN(`<p>Minik GPT\'de <b>yalnız son konum</b> eğitiliyordu: pencere → tek sonraki karakter. 727 ayrı (pencere, cevap) çifti.</p><p>GPT-2\'de dizi uzunluğu kadar (1.024) tahmin tek geçişte yapılır: aynı hesaptan çok daha fazla öğrenme sinyali.</p>`),
+  note(T,'Geri yayılım ne farklı?',`<p>Mantık aynı: hata → son tablo → bloklar (ana akım üzerinden hem blok içi yoldan hem kestirme yoldan) → wte/wpe. Transformer Bloğu Bütün Resim\'inde bir blok için gösterdik.</p>`),
+  note(T,'Eğitim maliyeti',`<p>124 milyon ağırlık, milyarlarca token, günler süren GPU/TPU zamanı. Bu yüzden haritada GPT-2 çalıştırmıyoruz; Minik GPT tarayıcıda 30 saniyede eğitiliyor ama aynı mekanizmayla.</p>`),
+  note(K,'Ezber mi, öğrenme mi?',`<p>Büyük model + çeşitli veri → çok şeyi genelleştirir; yine de verideki cümleleri ezberleyebilir. GPT Test\'te gördüğün "eğitimdeki ↔ görmediği" ayrımı burada da geçerli.</p>`)]});
+
+// 16
+(()=>{const E=50257*768,P=1024*768,LN=2*768,ATT=4*768*768+4*768+768*0+0,FF=768*3072+3072+3072*768+768;
+ const ATTq=768*2304+2304+768*768+768; const BLK=ATTq+FF+2*LN; const TOTAL=E+P+12*BLK+LN;
+ if(TOTAL!==124439808) console.warn('GPT-2 ağırlık toplamı tutmuyor',TOTAL);
+ const nf=n=>n.toLocaleString('tr-TR');
+ add({c:'--gray',n:'16',title:'Sayım: 124.439.808 ağırlık nerede?',sub:'Bütün haritayı ağırlık sayısına çeviriyoruz ve Minik GPT ile yan yana koyuyoruz.',
+ main:()=>`<table class="t"><tr><th>Parça</th><th>Boyut</th><th>Ağırlık</th></tr>
+  <tr><td>wte (token kartları)</td><td>50.257×768</td><td>${nf(E)}</td></tr>
+  <tr><td>wpe (konum kartları)</td><td>1.024×768</td><td>${nf(P)}</td></tr>
+  <tr><td>Attention (W_Q,K,V yapışık + W_O, bias'lar) × 12</td><td>768×2304 + 768×768 + bias</td><td>${nf(ATTq)} × 12 = ${nf(ATTq*12)}</td></tr>
+  <tr><td>FFN (W₁, W₂ + bias) × 12</td><td>768×3072 + 3072×768 + bias</td><td>${nf(FF)} × 12 = ${nf(FF*12)}</td></tr>
+  <tr><td>LayerNorm (γ, β) 2 × 12 + 1 son</td><td>768×2 her biri</td><td>${nf(LN*25)}</td></tr>
+  <tr><th colspan="2">Toplam</th><th>${nf(TOTAL)}</th></tr></table>`+
+  kaz('Ağırlıkların <b>üçte biri sözlük</b> (wte), <b>üçte ikisi bloklar</b> (içinde FFN attention\'ın 2 katı).')+say('Transformer Bloğu → Örnek Çalışmalar\'da bu sayıyı sıfırdan saydık ve resmî rakamlarla (124.439.808) tuttuğunu doğruladık.'),
+ notes:()=>[
+  note(K,'Minik GPT\'nin sayımı',`<table class="t"><tr><th>Parça</th><th>Boyut</th><th>Ağırlık</th></tr><tr><td>E</td><td>40×16</td><td>640</td></tr><tr><td>P</td><td>10×16</td><td>160</td></tr><tr><td>W_Q, K, V, O</td><td>4×16×16</td><td>1.024</td></tr><tr><td>FFN</td><td>16×32+32×16+bias</td><td>1.072</td></tr><tr><td>W_out + b_out</td><td>16×40+40</td><td>680</td></tr><tr><th colspan="2">Toplam</th><th>3.576</th></tr></table>`),
+  note(K,'Oran',`<p>GPT-2 / Minik GPT ≈ <b>34.800 kat</b> daha çok ağırlık. Mekanizma aynı, ölçek farklı.</p>`),
+  note(K,'Bundan sonra ne?',`<ul><li><a href="mimari-3b.html" target="_blank" rel="noopener">3B mimari</a> sayfasında GPT-2\'yi parçalayarak gez; 🎬 gezide Minik GPT ile adım adım yan yana.</li><li><a href="adim-adim.html" target="_blank" rel="noopener">Minik GPT adım adım</a>: aynı yolun gerçek sayılı hâli.</li></ul>`),
+  note(T,'Bu haritada olmayanlar',`<ul><li>Dropout (yalnız eğitimde, rastgele sıfırlama)</li><li>Bias\'ların ayrıntısı</li><li>Adam optimizer, öğrenme hızı çizelgesi</li><li>Attention için <code>1/√64</code> dışındaki sayısal kararlılık ayrıntıları</li></ul>`)]});
+})();
+
+/* ---------- DOM ---------- */
+const world=document.getElementById('world');
+const rowEls=[];
+STEPS.forEach((s,i)=>{
+  const R=document.createElement('section');R.className='row';R.dataset.i=i;R.style.setProperty('--c','var('+s.c+')');
+  R.innerHTML=`<div class="main"><span class="badge"><b>${s.n}</b> Adım</span><h2>${esc(s.title)}</h2><p class="sub">${esc(s.sub)}</p>${s.main()}</div><div class="side">${s.notes().join('')}</div>`;
+  world.appendChild(R);rowEls.push(R);
+  if(i<STEPS.length-1){const A=document.createElement('div');A.className='arr';A.style.setProperty('--c','var('+STEPS[i+1].c+')');
+    A.innerHTML=`<svg width="40" height="96" viewBox="0 0 40 96"><line x1="20" y1="2" x2="20" y2="80" stroke="currentColor" stroke-width="3.5"/><path d="M8 72L20 92L32 72z" fill="currentColor"/></svg><span>${esc(ARROWS[i]||'')}</span>`;world.appendChild(A);}
+});
+
+// baloncuklar
+const chipsEl=document.getElementById('chips');
+if(chipsEl)STEPS.slice(1).forEach((s,j)=>{const b=document.createElement('button');b.className='chip';b.style.setProperty('--cc','var('+s.c+')');b.innerHTML=`<small>${s.n}</small>${esc(s.title.replace(/:.*/,'').slice(0,34))}`;b.onclick=()=>gotoStep(j+1);chipsEl.appendChild(b)});
+// gezinme listesi
+const nav=document.getElementById('nav');
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.style.setProperty('--cc','var('+s.c+')');b.innerHTML=`<b>${s.n}</b><span>${esc(s.title)}</span>`;b.onclick=()=>{gotoStep(i);nav.classList.remove('open')};nav.appendChild(b)});
+// kamera
+const vp=document.getElementById('vp');let cam={x:0,y:0,k:1},cur=0;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function apply(anim){world.classList.toggle('anim',!!anim);world.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.k})`}
+function zoomAt(px,py,nk){nk=clamp(nk,.04,3);const q=nk/cam.k;cam.x=px-(px-cam.x)*q;cam.y=py-(py-cam.y)*q;cam.k=nk}
+function fitAll(anim){const vw=vp.clientWidth,k=Math.min(vw/world.offsetWidth,1);cam.k=k;cam.x=(vw-world.offsetWidth*k)/2;cam.y=60;apply(anim)}
+function gotoStep(i,anim=true){i=clamp(i,0,STEPS.length-1);cur=i;const el=rowEls[i],vw=vp.clientWidth,vh=vp.clientHeight,narrow=vw<760;
+  const tw=narrow?el.querySelector('.main').offsetWidth:el.offsetWidth;
+  const k=Math.min((vw-(narrow?24:80))/tw,1.1);cam.k=k;cam.x=(narrow?12:(vw-tw*k)/2)-el.offsetLeft*k;
+  const h=el.offsetHeight*k,top=vh>h+150?(vh-h)/2+30:78;cam.y=top-el.offsetTop*k;apply(anim);
+  document.getElementById('cur').textContent='Adım '+STEPS[i].n+' / '+(STEPS.length-1)}
+document.getElementById('zi').onclick=()=>{zoomAt(vp.clientWidth/2,vp.clientHeight/2,cam.k*1.35);apply(true)};
+document.getElementById('zo').onclick=()=>{zoomAt(vp.clientWidth/2,vp.clientHeight/2,cam.k/1.35);apply(true)};
+document.getElementById('fit').onclick=()=>fitAll(true);
+document.getElementById('prev').onclick=()=>gotoStep(cur-1);
+document.getElementById('next').onclick=()=>gotoStep(cur+1);
+document.getElementById('cur').onclick=()=>nav.classList.toggle('open');
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){gotoStep(cur+1);e.preventDefault()}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){gotoStep(cur-1);e.preventDefault()}else if(e.key==='+'||e.key==='='){document.getElementById('zi').click()}else if(e.key==='-'){document.getElementById('zo').click()}else if(e.key==='0'){fitAll(true)}});
+vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoomAt(e.clientX-r.left,e.clientY-r.top,cam.k*Math.exp(-e.deltaY*(e.ctrlKey?.01:.0016)));apply(false)},{passive:false});
+const ptr=new Map();let last=null;
+vp.addEventListener('pointerdown',e=>{if(e.target.closest('button,a,#nav'))return;vp.setPointerCapture(e.pointerId);ptr.set(e.pointerId,{x:e.clientX,y:e.clientY});vp.classList.add('dragging');last=null});
+vp.addEventListener('pointermove',e=>{if(!ptr.has(e.pointerId))return;const p=ptr.get(e.pointerId),pts=[...ptr.values()];
+  if(ptr.size===1){cam.x+=e.clientX-p.x;cam.y+=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;apply(false)}
+  else if(ptr.size===2){const o=pts.find(q=>q!==p);const d0=Math.hypot(p.x-o.x,p.y-o.y);p.x=e.clientX;p.y=e.clientY;const d1=Math.hypot(p.x-o.x,p.y-o.y),r=vp.getBoundingClientRect();if(d0>0)zoomAt((p.x+o.x)/2-r.left,(p.y+o.y)/2-r.top,cam.k*d1/d0);apply(false)}});
+const up=e=>{ptr.delete(e.pointerId);if(!ptr.size)vp.classList.remove('dragging')};
+vp.addEventListener('pointerup',up);vp.addEventListener('pointercancel',up);
+vp.addEventListener('dblclick',e=>{const r=e.target.closest('.row');if(r)gotoStep(+r.dataset.i)});
+window.addEventListener('resize',()=>gotoStep(cur,false));
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>gotoStep(0,false));
+gotoStep(0,false);
+</script>
+
+</body></html>
