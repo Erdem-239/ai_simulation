@@ -511,7 +511,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     drawNet(s,Math.min(.05,(t-(drawNet.l||t))/1000));drawNet.l=t;
     SKY.forEach((o,i)=>{
       const x=o.fx*W,y=o.fy*H,a=.5+.35*Math.sin(t/800+i*2);
-      g.fillStyle='rgba(235,240,255,'+a*.8+')';g.fillRect(x-.5,y-.5,1,1);
+      g.fillStyle='rgba(235,240,255,'+a*.8+')';g.fillRect(x-.65,y-.65,1.3,1.3);
       if(o.g0){const el=t-o.g0,p=el/11000;if(p>=1||p<0){if(p>=1)o.g0=0}else{
         const e=Math.sin(Math.min(1,p*1.1)*Math.PI),tw=.65+.35*Math.sin(el/260),loc=el<6000?Math.min(1,(6000-el)/1200):0;
         // ilk ~6 sn: konumu gösteren içe kapanan halkalar; sonra yalnız yumuşak ışıma
@@ -737,7 +737,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     msg.textContent='Sinyal alındı: nesne ekranda işaretlendi.';found[key]=1;save();open(hit,info);scrollTo({top:0,behavior:'smooth'});box.classList.remove('open');S.glow(hit);setTimeout(()=>card(hit),1400)};
   // elle bulma: nokta görülür ama içeriği kilitli
   const near=e=>{if(e.target.closest&&e.target.closest('a,button,input,textarea,select,label,.pl,.sky-card,#skyBox'))return null;
-    let b=null,bd=matchMedia('(pointer:coarse)').matches?14:8;S.list.forEach(o=>{const p=S.pos(o),d=Math.hypot(e.clientX-p[0],e.clientY-p[1]);if(d<bd){bd=d;b=o}});return b};
+    const co=matchMedia('(pointer:coarse)').matches;let b=null,bd=1e9;S.list.forEach(o=>{const p=S.pos(o),d=Math.hypot(e.clientX-p[0],e.clientY-p[1]),R=o.found?(co?30:24):(co?20:13);if(d<R&&d<bd){bd=d;b=o}});return b};
   addEventListener('click',e=>{const o=near(e);if(!o)return;if(o.info)card(o);else{S.glow(o);locked()}});
   renderList();
 })();
