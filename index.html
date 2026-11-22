@@ -68,7 +68,7 @@ h1 em{font-style:italic;background:linear-gradient(100deg,#ffb454,#ffe0a3 40%,#7
 .pl.below .pcard{bottom:auto;top:calc(100% + 6px)}
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:80;background:rgba(14,16,24,.92);border:1px solid var(--line);backdrop-filter:blur(12px);padding:12px 18px;border-radius:999px;font-size:14px;color:#e9edf8;opacity:0;pointer-events:none;transition:.3s;max-width:calc(100vw - 28px);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-@media(max-width:600px){.hero{padding:50px 14px 34px;min-height:840px}.live span:last-child{display:none}.pl .nm{font-size:11px}.pcard{width:176px}}
+@media(max-width:600px){.hero{padding:50px 14px 70px;min-height:700px}.pl .nm{font-size:10.5px}#skyBtn span{display:none}#skyBtn{padding:10px 12px}.live span:last-child{display:none}.pl .nm{font-size:11px}.pcard{width:176px}}
 
 /* SECTIONS */
 section{padding:110px 0 0}
@@ -567,7 +567,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   let W=0,H=0,dpr=Math.min(devicePixelRatio||1,2),P=[],mx=0,ty=0,tx=0,my=0,R=0,CX=0,CY=0;
   const ES={f:1.55,a:-.6,w:.05,tr:[]};window.__es=ES;
-  const TILT=0,RY=.42,ct=Math.cos(TILT),st=Math.sin(TILT);
+  const TILT=0,RY=innerWidth<600?.6:.42,ct=Math.cos(TILT),st=Math.sin(TILT);
   const pal=[[255,238,228],[255,205,195],[205,178,255],[155,172,255],[112,150,255]];
   const FIELDS=[
     {k:'ai',ff:0.55,dp:0.25,n:'Yapay zekâ',c:'#f0a032',f:.27,ph:1.15,sz:34,act:1,d:'28 ders, canlı simülasyonlar ve 3B mimariler.',href:'yapay-zeka/index.html',cta:'Dersleri aç →'},
@@ -650,7 +650,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     [cb,cf].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
     const tp=hero.querySelector('.hero-top').getBoundingClientRect(),bt=hero.querySelector('.hero-bot').getBoundingClientRect();
     const g0=tp.bottom-r.top+14,g1=bt.top-r.top-8,gap=Math.max(160,g1-g0);
-    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.42:.36),520,H*.66);FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=F.ff});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
+    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.35:.36),520,H*.66);if(W<600)R=Math.min(R,gap/(2*RY*1.25));FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=F.ff});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
     const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width='10px';
     const n=W<700?1800:3400;P=[];
     for(let i=0;i<n;i++){
