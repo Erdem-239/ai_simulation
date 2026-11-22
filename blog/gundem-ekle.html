@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Gündem ekle</title>
+<style>body{background:#06070b;color:#eef0f6;font:15px/1.6 Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px 18px}input,textarea{width:100%;background:#111522;border:1px solid #2a3046;color:#fff;border-radius:10px;padding:10px;font:inherit;margin:4px 0 12px}button{background:#fff;color:#000;border:0;border-radius:999px;padding:10px 18px;font-weight:500;cursor:pointer}pre{background:#0d1020;border:1px solid #2a3046;border-radius:10px;padding:12px;white-space:pre-wrap;word-break:break-all}a{color:#9cc4ff}small{color:#8b93a7}</style></head><body>
+<p><a href="./#/gundem">← Gündem</a></p><h1 style="font-weight:500">Gündem satırı oluştur</h1>
+<p><small>Bağlantıyı ve kendi notunu gir; çıkan satırı <code>blog/gundem/index.json</code> dizisine ekle (ya da bana gönder, ben ekleyeyim). Tweet metnini kopyalama: kendi cümlenle özetle, bağlantı kaynağa gider.</small></p>
+<label>Bağlantı<input id="u" placeholder="https://x.com/..."></label>
+<label>Başlık (kendi cümlenle)<input id="t"></label>
+<label>Not (isteğe bağlı)<textarea id="n" rows="2"></textarea></label>
+<label>Kaynak adı (isteğe bağlı, ör. @hesap)<input id="s"></label>
+<label>Etiketler (virgülle)<input id="g" placeholder="llm, açık model"></label>
+<label>Tarih<input id="d" type="date"></label>
+<button id="b">Satırı oluştur</button><pre id="o"></pre>
+<script>d.value=new Date().toISOString().slice(0,10);
+b.onclick=()=>{const o={date:d.value,title:t.value.trim(),url:u.value.trim()};if(n.value.trim())o.note=n.value.trim();if(s.value.trim())o.source=s.value.trim();const tg=g.value.split(',').map(x=>x.trim()).filter(Boolean);if(tg.length)o.tags=tg;document.getElementById('o').textContent=JSON.stringify(o)+',';navigator.clipboard&&navigator.clipboard.writeText(JSON.stringify(o)).catch(()=>{})}</script></body></html>
