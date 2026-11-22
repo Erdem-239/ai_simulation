@@ -16,8 +16,12 @@ UA = {'User-Agent': 'gundem-bulten/1.0'}
 
 def get(url, headers=None, data=None, timeout=30):
     req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode('utf-8', 'replace')
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read().decode('utf-8', 'replace')
+    except urllib.error.HTTPError as e:
+        print('HTTP', e.code, url.split('?')[0], e.read()[:300].decode('utf-8', 'replace'), file=sys.stderr)
+        raise
 
 def rss_items(url):
     root = ET.fromstring(get(url))
