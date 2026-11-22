@@ -1,122 +1,36 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>try{if(sessionStorage.getItem('wh')){sessionStorage.removeItem('wh');document.documentElement.classList.add('wh-in')}}catch(e){}</script>
-<title>Bilgisayar bilimi — Erdem Erzurumlu</title>
-<meta name="description" content="Hesaplamanın doğuşundan işletim sistemlerine: canlı simülasyonlarla bilgisayar bilimi dersleri.">
-<meta name="theme-color" content="#06070b">
+<title>Bilgisayar Bilimi Yol Haritası</title>
+<meta name="description" content="Hesaplamanın doğuşundan yapay zekâya: 40 derslik bilgisayar bilimi yol haritası, canlı simülasyonlarla. Türkçe ve ücretsiz.">
+<meta name="theme-color" content="#0d1224">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%92%BB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#06070b;--pn:#0d0f16;--line:rgba(255,255,255,.1);--tx:#eef0f6;--mut:#8b93a7;--ac:#4fd1c5;--ac2:#f0a032}
-*{box-sizing:border-box;margin:0;padding:0}
-html.wh-in:before{content:"";position:fixed;inset:0;background:#fff;z-index:9999;pointer-events:none;animation:whin .9s ease forwards}
-@keyframes whin{to{opacity:0;visibility:hidden}}
-body{background:radial-gradient(900px 500px at 85% -10%,rgba(79,209,197,.13),transparent 60%),radial-gradient(700px 500px at 0% 0%,rgba(240,160,50,.08),transparent 60%),var(--bg);color:var(--tx);font:300 16px/1.65 Inter,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
-a{color:inherit}
-.top{max-width:1100px;margin:0 auto;padding:20px 18px 0;display:flex;justify-content:space-between;gap:10px;font-size:14px;flex-wrap:wrap}
-.top a,.btn{padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);text-decoration:none;color:#cfd5e6;cursor:pointer;font:inherit;font-size:14px}
-.top a:hover,.btn:hover{background:rgba(255,255,255,.1)}
-.btn.on{background:#fff;color:#0a0b10}
-main{max-width:1100px;margin:0 auto;padding:30px 18px 90px}
-h1{font:italic 400 clamp(38px,6.5vw,64px)/1.05 "Instrument Serif",Georgia,serif;margin-bottom:8px}
-.sub{color:var(--mut);max-width:720px;margin-bottom:26px}
-.era{margin:0 0 26px}
-.era h2{font:500 12px "JetBrains Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:10px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
-.arrow{align-self:center;color:var(--mut);font-size:20px}
-.card{flex:1 1 230px;max-width:340px;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);cursor:pointer;transition:.2s;position:relative}
-.card:hover{background:rgba(255,255,255,.07);transform:translateY(-2px)}
-.card .ic{font-size:26px;margin-bottom:4px}
-.card h3{font:500 16px Inter;margin-bottom:3px}.card p{font-size:13.5px;color:#aab1c4}
-.card .st{position:absolute;top:12px;right:14px;font:500 10px "JetBrains Mono",monospace;letter-spacing:.08em;color:var(--ac)}
-.card.soon{opacity:.55;border-style:dashed}.card.soon .st{color:var(--mut)}
-.card.done{border-color:rgba(70,196,106,.6)}.card.done .st{color:#46c46a}
-.note{color:var(--mut);font-size:13px;margin-top:24px}
-#toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,10px);padding:10px 18px;border-radius:999px;background:rgba(20,16,40,.85);border:1px solid var(--line);opacity:0;transition:.3s;pointer-events:none;font-size:14px;z-index:50}
-#toast.on{opacity:1;transform:translate(-50%,0)}
-/* ders */
-.crumb{margin-bottom:8px;font-size:14px;color:var(--mut)}
-.stage{border:1px solid var(--line);border-radius:16px;margin:12px 0;background:rgba(255,255,255,.025);overflow:hidden}
-.stage>.sh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;font-weight:500}
-.stage>.sh:hover{background:rgba(255,255,255,.04)}
-.stage>.sh .chev{transition:.2s;color:var(--mut)}.stage.open>.sh .chev{transform:rotate(90deg)}
-.stage>.sb{display:none;padding:4px 20px 20px}.stage.open>.sb{display:block}
-.stage p{margin:10px 0;color:#d8dcea}.stage h4{font:500 15px Inter;margin:16px 0 4px;color:var(--ac)}
-.stage[data-c="1"]>.sh{border-left:4px solid #6aa7ff}.stage[data-c="2"]>.sh{border-left:4px solid #f0a032}.stage[data-c="3"]>.sh{border-left:4px solid #46c46a}
-.stage[data-c="4"]>.sh{border-left:4px solid #a98bff}.stage[data-c="5"]>.sh{border-left:4px solid #4fd1c5}.stage[data-c="6"]>.sh{border-left:4px solid #ff6b6b}
-.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
-.cards3>div{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);font-size:14px}
-.cards3 b{display:block;margin-bottom:3px}
-.call{border-left:3px solid var(--ac2);padding:8px 14px;margin:12px 0;background:rgba(240,160,50,.07);border-radius:0 10px 10px 0;color:#e9d9b8;font-size:14.5px}
-.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:8px}
-@media(max-width:860px){.sim{grid-template-columns:1fr}}
-.panel{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(0,0,0,.25)}
-.panel h5{font:500 12px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
-.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-.ctl label{font-size:13px;color:#c9cfdd}
-input[type=range]{accent-color:var(--ac);vertical-align:middle}
-table{border-collapse:collapse;font:400 13.5px "JetBrains Mono",monospace;width:100%}
-td,th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:center}th{color:var(--mut);font-weight:500}
-tr.hl td{background:rgba(79,209,197,.18)}
-.bit{width:34px;height:40px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font:500 18px "JetBrains Mono",monospace;cursor:pointer}
-.bit.on{background:var(--ac);color:#052a27;border-color:var(--ac)}
-.mono{font-family:"JetBrains Mono",monospace}
-.big{font:500 22px "JetBrains Mono",monospace;color:var(--ac)}
-.soz{margin-top:10px;padding:8px 12px;border-radius:10px;background:rgba(240,160,50,.09);font-size:14px;color:#f3e3c3}
-pre.code{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:12px 14px;overflow:auto;font:400 13px/1.5 "JetBrains Mono",monospace;margin:10px 0}
-.q{margin:14px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
-.q .o{display:block;margin:6px 0;padding:7px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:14.5px}
-.q .o:hover{background:rgba(255,255,255,.06)}.q .o.ok{background:rgba(70,196,106,.2);border-color:#46c46a}.q .o.bad{background:rgba(255,90,90,.18);border-color:#ff6b6b}
-.q .w{display:none;margin-top:6px;font-size:13.5px;color:#aab1c4}.q.done .w{display:block}
-.nav2{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=202611221500">
+<link rel="stylesheet" href="css/cs.css?v=202611221500">
+<link rel="stylesheet" href="css/theme.css?v=202611221500">
+<style>html.wh-in:before{content:"";position:fixed;inset:0;z-index:99999;pointer-events:none;background:#fff;animation:whin .9s ease forwards}@keyframes whin{to{opacity:0;visibility:hidden}}</style>
 </head>
 <body>
-<div class="top"><a href="../">← Ana sayfa</a><span id="topR"></span></div>
-<main id="m"></main>
-<div id="toast"></div>
-<script src="lessons.js?v=202611221300"></script>
-<script>
-(function(){
-const L=window.BB_LESSONS,m=document.getElementById('m'),$=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let done={};try{done=JSON.parse(localStorage.getItem('bb_done')||'{}')}catch(e){}
-const save=()=>{try{localStorage.setItem('bb_done',JSON.stringify(done))}catch(e){}};
-const ERAS=[['1 · Donanımın temelleri ve hesaplamanın tarihi',[['early','🧮','Erken hesaplama','Abaküs, Babbage, Lovelace, delikli kart'],['elec','⚡','Elektronik hesaplama','Röle, vakum tüpü, ENIAC, transistör'],['gates','🔀','Mantık kapıları','Boole cebri, NOT/AND/OR/XOR'],['binary','🔢','İkili sayılar ve metin','Bit, bayt, ikiye tümleyen, ASCII'],['alu','➕','ALU','Toplayıcılar, taşma, durum bayrakları'],['reg','🗄️','Yazmaç ve RAM','Latch, yazmaç, SRAM/DRAM'],['cpu','🧠','İşlemci (CPU)','Getir-çöz-çalıştır, saat hızı'],['instr','📜','Komutlar ve programlar','Makine kodu, dallanma, Intel 4004'],['adv','🚀','Gelişmiş CPU tasarımları','Önbellek, boru hattı, çok çekirdek'],['early2','🔌','Erken programlama','Fiş panosu, assembly, ilk derleyici']]],
- ['2 · Yazılım ve bilgisayar biliminin temelleri',[['lang1','💬','İlk programlama dilleri','FORTRAN, COBOL, LISP'],['basics','🧩','Programlama temelleri','Değişken, koşul, döngü, fonksiyon'],['algo','🧭','Algoritmalara giriş','Big O, sıralama, Dijkstra'],['ds','🧱','Veri yapıları','Dizi, liste, yığın, kuyruk, ağaç, graf'],['turing','♟️','Alan Turing','Turing makinesi, durma problemi'],['se','🛠️','Yazılım mühendisliği','OOP, API, Git, test'],['ic','🔬','Entegre devreler ve Moore','Fotolitografi, Moore yasası'],['os','🖥️','İşletim sistemleri','Çoklu görev, sanal bellek'],['stor','💾','Bellek ve depolama','Manyetik bant, HDD, SSD'],['fs','📁','Dosyalar ve dosya sistemleri','Format, dizin, parçalanma']]],
- ['3 · İnsan-bilgisayar etkileşimi, ağlar ve internet',[['comp','🗜️','Veri sıkıştırma','RLE, Huffman, JPEG, MP3'],['kbd','⌨️','Klavye ve komut satırı','QWERTY, terminal, CLI'],['scr','📺','Ekranlar ve 2B grafik','CRT, piksel, frame buffer, LCD'],['cold','🚀','Soğuk Savaş ve tüketim','SAGE, Apollo, Altair, Apple II'],['pc','💻','Kişisel bilgisayar devrimi','IBM PC, MS-DOS, Macintosh'],['gui','🖱️','Grafik arayüzler','Engelbart, Xerox PARC, WIMP'],['g3d','🧊','3B grafik','Çokgen ağ, Z-tamponu, doku, GPU'],['net','🔗','Bilgisayar ağları','LAN/WAN, Ethernet, paket anahtarlama'],['inet','🌐','İnternet','IP, UDP, TCP, DNS'],['web','🕸️','Dünya Çapında Ağ','Hipermetin, HTTP/HTML, PageRank'],['sec','🛡️','Siber güvenlik','CIA üçlüsü, kimlik doğrulama, zararlılar'],['hack','🕵️','Hackerlar ve siber saldırılar','Brute force, SQL enjeksiyonu, DDoS'],['crypto','🔐','Kriptografi','Sezar, AES, Diffie-Hellman, RSA']]],
- ['4 · Yapay zekâ, robotik ve gelecek',[['ml','🤖','Makine öğrenmesi ve YZ','Sınıflandırma, algılayıcı, derin öğrenme'],['cv','👁️','Bilgisayarlı görü','Kenar algılama, Viola-Jones, CNN'],['nlp','🗣️','Doğal dil işleme','Ayrıştırma ağacı, konuşma tanıma, TTS'],['robot','🦾','Robotlar','Sensör, eyleyici, PID, navigasyon'],['psy','🧠','Hesaplamanın psikolojisi','Kullanılabilirlik, Fitts yasası'],['edu','🎓','Eğitim teknolojileri','MOOC, uyarlanabilir öğrenme'],['future','🔮','Tekillik ve gelecek','Otomasyon, AGI, sorumlu teknoloji']]]
-];
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
-function home(){
-  document.title='Bilgisayar bilimi — Erdem Erzurumlu';$('topR').innerHTML='';
-  let h='<h1>Bilgisayar bilimi</h1><p class="sub">Hesaplamanın doğuşundan yapay zekâ ve geleceğe: 4 bölüm, 40 konu. Her ders canlı bir simülasyon içerir; sayılar tarayıcıda gerçekten hesaplanır. Sıra, bilgisayarın tarihsel ve mantıksal gelişimini izler.</p>';
-  ERAS.forEach(e=>{h+='<div class="era"><h2>'+e[0]+'</h2><div class="row">'+e[1].map((n,i)=>{const live=!!L[n[0]],d=done[n[0]];return'<div class="card '+(live?'':'soon ')+(d?'done':'')+'" data-k="'+n[0]+'"><span class="st">'+(d?'✓ TAMAM':live?'AÇIK':'YAKINDA')+'</span><div class="ic">'+n[1]+'</div><h3>'+esc(n[2])+'</h3><p>'+esc(n[3])+'</p></div>'}).join('')+'</div></div>'});
-  h+='<p class="note">Konu sırası, bilgisayar bilimine giriş yapan bir ders serisinin başlık sırasını izler; dersler kendi anlatımımla yazılıdır. Hazır olmayan kartlar sırayla açılacak.</p>';
-  m.innerHTML=h;m.querySelectorAll('.card').forEach(c=>c.onclick=()=>{const k=c.dataset.k;L[k]?location.hash='#ders='+k:toast('Bu ders yakında.')})}
-const KEYS=ERAS.flatMap(e=>e[1].map(n=>n[0]));
-function lesson(k){
-  const D=L[k];if(!D)return home();document.title=D.title+' — Bilgisayar bilimi';$('topR').innerHTML='<a href="#">🗺️ Yol haritası</a>';
-  const ST=[['1️⃣','Giriş',D.intro,1],['2️⃣','Hikâye',D.story,2],['3️⃣','Gerçek hayatta nerede',D.real,3],['4️⃣','Nedir ve nasıl çalışır',D.what,4],['5️⃣','Simülasyon',null,5],['6️⃣','Örnek çalışmalar',D.ornek,3],['7️⃣','Kendini test et',null,6]];
-  let h='<div class="crumb"><a href="#">Yol haritası</a> › '+esc(D.title)+'</div><h1>'+D.icon+' '+esc(D.title)+'</h1><p class="sub">'+esc(D.lead)+'</p>';
-  ST.forEach((s,i)=>{h+='<div class="stage'+(i<2?' open':'')+'" data-c="'+s[3]+'"><div class="sh"><span>'+s[0]+' '+s[1]+'</span><span class="chev">▸</span></div><div class="sb" id="sb'+i+'">'+(s[2]||'')+'</div></div>'});
-  const idx=KEYS.indexOf(k),nx=KEYS.slice(idx+1).find(x=>L[x]),pv=KEYS.slice(0,idx).reverse().find(x=>L[x]);
-  h+='<div class="nav2"><span>'+(pv?'<a class="btn" href="#ders='+pv+'">← '+esc(L[pv].title)+'</a>':'')+'</span><button class="btn '+(done[k]?'on':'')+'" id="dn">'+(done[k]?'✓ Tamamlandı':'✓ Bu dersi tamamladım')+'</button><span>'+(nx?'<a class="btn" href="#ders='+nx+'">'+esc(L[nx].title)+' →</a>':'')+'</span></div>';
-  m.innerHTML=h;
-  m.querySelectorAll('.stage>.sh').forEach(s=>s.onclick=()=>s.parentElement.classList.toggle('open'));
-  D.sim($('sb4'));
-  // test
-  const tb=$('sb6');tb.innerHTML=D.test.map((q,qi)=>'<div class="q" data-i="'+qi+'"><b>'+(qi+1)+'. '+esc(q.q)+'</b>'+q.o.map((o,oi)=>'<span class="o" data-o="'+oi+'">'+esc(o)+'</span>').join('')+'<div class="w">'+esc(q.w)+'</div></div>').join('')+'<p id="sc" class="mono" style="color:var(--ac)"></p>';
-  let ok=0,n=0;tb.querySelectorAll('.q').forEach(q=>{const qq=D.test[+q.dataset.i];q.querySelectorAll('.o').forEach(o=>o.onclick=()=>{if(q.classList.contains('done'))return;q.classList.add('done');n++;const g=+o.dataset.o===qq.a;if(g)ok++;o.classList.add(g?'ok':'bad');if(!g)q.querySelectorAll('.o')[qq.a].classList.add('ok');if(n===D.test.length)$('sc').textContent='Sonuç: '+ok+' / '+n})});
-  $('dn').onclick=()=>{done[k]=!done[k];save();lesson(k)};
-  window.scrollTo(0,0)}
-function route(){const x=(location.hash.match(/^#ders=(\w+)/)||[])[1];x?lesson(x):home()}
-addEventListener('hashchange',route);route();
-})();
-</script>
+<div class="applayout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-inner">
+      <div class="sb-title">💻 DERSLER</div>
+      <a class="sb-hello" href="../" style="display:block;text-decoration:none;margin-bottom:6px">← Ana sayfa</a>
+      <div id="navList"></div>
+      <div class="sb-note">Önerilen sıra: yukarıdan aşağı. İlerlemeni 🗺️ haritadan işaretle.</div>
+    </div>
+  </aside>
+  <div class="wrap" id="pages"></div>
+</div>
+<div id="csToast"></div>
+<script src="js/nodes.js?v=202611221500"></script>
+<script src="lessons.js?v=202611221500"></script>
+<script src="js/app.js?v=202611221500"></script>
 </body>
 </html>
