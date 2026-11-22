@@ -186,7 +186,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 </head>
 <body>
 <canvas id="cosmos" aria-hidden="true"></canvas>
-<div id="skyBox"><button id="skyBtn" type="button" aria-expanded="false">🔭 <span>Koordinat</span></button><div id="skyPanel"><p>Gökyüzünde saklı nesneler var. Bir koordinat gir, ya da gözünle ara.</p><form id="skyForm" autocomplete="off"><input id="skyIn" placeholder="02h 24m  −06°" aria-label="Koordinat: RA saat dakika, Dec derece"><button id="skyGo">Git</button></form><div id="skyMsg"></div><ul id="skyFound"></ul></div></div>
+<div id="skyBox"><button id="skyBtn" type="button" aria-expanded="false">🔭 <span>Koordinat</span></button><div id="skyPanel"><p>Gökyüzünde saklı nesneler var. Koordinatı bilirsen gir, ya da gözünle ara: bulursan kilitli bir sinyal göreceksin.</p><form id="skyForm" autocomplete="off"><input id="skyIn" placeholder="12h 00m 00s  +00° 00′" aria-label="Koordinat: RA saat dakika, Dec derece"><button id="skyGo">Git</button></form><div id="skyMsg"></div><ul id="skyFound"></ul></div></div>
 
 
 <nav class="nav" aria-label="Ana menü">
@@ -323,6 +323,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 </div>
 
 <div class="toast" id="toast" role="status"></div>
+<script src="js/sky-data.js?v=202611221200"></script>
 <script>
 /* ---------- Canlı XOR: 2-2-1 sigmoid ağ, tarayıcıda gerçekten eğitiliyor ---------- */
 (function(){
@@ -400,13 +401,8 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   }
   // Sinaps ağı: düğümler + yaylı bağlar + üzerinde akan sinyal noktaları
   let nodes=[],edges=[],glow=null,learnT=1.5;const coreEl=document.querySelector('.core');let sn=null,nextSn=3500;
-  // Gökyüzünde saklı nesneler: koordinat (RA saat/dk, Dec derece) → ekran oranı. Yeni nesne eklemek için diziye bir kayıt koy.
-  const SKY=[
-    {id:'erdem-2b3a',name:'Erdem-2b3a',tip:'Dış gezegen',ra:[2,24],dec:-6,col:'255,190,120',txt:'Atmosferi sıfırlardan ve birlerden oluşan bu gezegende bir yapay zekâ XOR bilmecesini çözmeye çalışıyor: tek bir çizgiyle çözülemeyen ilk soru. Yüzeydeki her nöron kendi çizgisini çiziyor, birlikte bilmeceyi çözüyorlar.',href:'yapay-zeka/index.html#ders=xor',cta:'XOR dersine git →'},
-    {id:'erdem-7c1f',name:'Erdem-7c1f',tip:'Pulsar',ra:[21,36],dec:34,col:'140,200,255',txt:'Her dönüşünde bir önceki dönüşünü hatırlayan nadir bir nötron yıldızı. Işığı kapılardan süzülüyor: neyi unutacağına, neyi tutacağına kendisi karar veriyor. Uzun süreli belleğin (LSTM) kapıları.',href:'yapay-zeka/index.html#ders=lstm',cta:'LSTM dersine git →'},
-    {id:'erdem-9d4e',name:'Erdem-9d4e',tip:'Süpernova kalıntısı',ra:[17,15],dec:-48,col:'255,140,150',txt:'Çöken yıldızın ışığı, her kelimenin her kelimeye baktığı bir ağ gibi yayılıyor. Kimin kime ne kadar dikkat verdiği, bu bulutsunun parlaklığını belirliyor: dikkat (attention).',href:'yapay-zeka/index.html#ders=attention',cta:'Self-Attention dersine git →'}
-  ];
-  SKY.forEach(o=>{o.fx=(o.ra[0]*60+o.ra[1])/1440;o.fy=(60-o.dec)/120;o.g0=0;o.found=false});
+  // Gökyüzünde saklı nesneler: yalnız ekran konumu açık; içerik ve koordinat şifreli (js/sky-data.js, tools/sky-encrypt.js)
+  const SKY=(window.SKY_DATA||[]).map(d=>({fx:d.fx,fy:d.fy,s:d.s,iv:d.iv,c:d.c,g0:0,found:false,info:null,col:'255,255,255'}));
   window.__sky={list:SKY,pos:o=>[o.fx*W,o.fy*H],glow:o=>{o.g0=performance.now()}};
   function net(){
     const n=W<600?34:60;nodes=[];edges=[];
@@ -521,7 +517,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
         let q=g.createRadialGradient(x,y,0,x,y,30);q.addColorStop(0,'rgba(255,255,255,'+.9*e+')');q.addColorStop(.25,'rgba('+o.col+','+.55*e+')');q.addColorStop(1,'rgba('+o.col+',0)');g.fillStyle=q;g.fillRect(x-30,y-30,60,60);
         g.strokeStyle='rgba('+o.col+','+(1-ph)*.7*e+')';g.lineWidth=1.3;g.beginPath();g.arc(x,y,6+ph*46,0,6.283);g.stroke();
         g.fillStyle='rgba(255,255,255,'+.8*e+')';g.fillRect(x-16,y-.5,32,1);g.fillRect(x-.5,y-16,1,32);
-        g.font='500 12px Inter,system-ui,sans-serif';g.textAlign='center';g.fillStyle='rgba(255,255,255,'+.9*e+')';g.fillText(o.name,x,y+30)}}
+        g.font='500 12px Inter,system-ui,sans-serif';g.textAlign='center';g.fillStyle='rgba(255,255,255,'+.9*e+')';if(o.info)g.fillText(o.info.name,x,y+30)}}
     });
     g.globalAlpha=1;g.globalCompositeOperation='source-over';
     // kara delik konumu (yıldızlar çevresinde bükülür)
@@ -704,31 +700,44 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
   els.forEach(e=>io.observe(e));
 })();
 
-/* ---------- Koordinat ile saklı nesneler ---------- */
+/* ---------- Koordinat ile saklı nesneler (içerik şifreli: yalnız doğru koordinat açar) ---------- */
 (function(){
   const S=window.__sky;if(!S)return;const box=document.getElementById('skyBox'),btn=document.getElementById('skyBtn'),inp=document.getElementById('skyIn'),msg=document.getElementById('skyMsg'),ul=document.getElementById('skyFound');
-  let found=[];try{found=JSON.parse(localStorage.getItem('erdem_sky')||'[]')}catch(e){}
-  S.list.forEach(o=>{if(found.indexOf(o.id)>=0)o.found=true});
-  const coord=o=>'RA '+String(o.ra[0]).padStart(2,'0')+'h '+String(o.ra[1]).padStart(2,'0')+'m · Dec '+(o.dec<0?'−':'+')+String(Math.abs(o.dec)).padStart(2,'0')+'°';
-  function renderList(){ul.innerHTML='';const f=S.list.filter(o=>o.found);msg.dataset.n=f.length;if(!f.length)return;
+  const b64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0)),enc=new TextEncoder(),dec=new TextDecoder();
+  // koordinat: saat dakika saniye ±derece yay-dakikası → "hh|mm|ss|±dd|mm"
+  function canon(str){const t=str.replace(/[−–—]/g,'-'),m=t.match(/[-+]?\d+(?:[.,]\d+)?/g)||[];if(m.length<5)return null;
+    const n=m.slice(0,5).map(v=>Math.round(parseFloat(v.replace(',','.')))),sg=/^-/.test(m[3])?'-':'+',p=x=>String(Math.abs(x)).padStart(2,'0');
+    return [p(n[0]),p(n[1]),p(n[2]),sg+p(n[3]),p(n[4])].join('|')}
+  async function unlock(key,o){try{const km=await crypto.subtle.importKey('raw',enc.encode(key),'PBKDF2',false,['deriveKey']),
+      k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(o.s),iterations:150000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['decrypt']),
+      pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(o.iv)},k,b64(o.c));return JSON.parse(dec.decode(pt))}catch(e){return null}}
+  let found={};try{found=JSON.parse(localStorage.getItem('erdem_sky2')||'{}')}catch(e){}
+  const save=()=>{try{localStorage.setItem('erdem_sky2',JSON.stringify(found))}catch(e){}};
+  function open(o,info){o.info=info;o.col=info.col;if(!o.found){o.found=true}}
+  function renderList(){ul.innerHTML='';const f=S.list.filter(o=>o.found);if(!f.length)return;
     const h=document.createElement('li');h.style.cursor='default';h.style.border='0';h.innerHTML='Keşfedilen: '+f.length+'/'+S.list.length;ul.appendChild(h);
-    f.forEach(o=>{const li=document.createElement('li');li.innerHTML=o.name+'<span>'+o.ra[0]+'h'+o.ra[1]+'m '+(o.dec<0?'−':'+')+Math.abs(o.dec)+'°</span>';li.onclick=()=>{S.glow(o);card(o)};ul.appendChild(li)})}
-  function card(o){document.querySelectorAll('.sky-card').forEach(c=>c.remove());
-    const c=document.createElement('div');c.className='sky-card';c.style.color='rgb('+o.col+')';
-    c.innerHTML='<button class="x" aria-label="Kapat">×</button><span class="tag">'+o.tip+'</span><h4 style="color:#fff">'+o.name+'</h4><div class="co">'+coord(o)+'</div><div style="color:#cfd6ea">'+o.txt+'</div><a href="'+o.href+'">'+o.cta+'</a>';
-    c.querySelector('.x').onclick=()=>c.remove();document.body.appendChild(c);S.glow(o);
-    if(!o.found){o.found=true;found.push(o.id);try{localStorage.setItem('erdem_sky',JSON.stringify(found))}catch(e){}renderList()}}
+    f.forEach(o=>{const li=document.createElement('li');li.textContent=o.info.name;li.onclick=()=>{S.glow(o);card(o)};ul.appendChild(li)})}
+  function card(o){document.querySelectorAll('.sky-card').forEach(c=>c.remove());const i=o.info;
+    const c=document.createElement('div');c.className='sky-card';c.style.color='rgb('+i.col+')';
+    c.innerHTML='<button class="x" aria-label="Kapat">×</button><span class="tag"></span><h4></h4><div style="color:#cfd6ea"></div><a></a>';
+    c.querySelector('.tag').textContent=i.tip;c.querySelector('h4').textContent=i.name;c.querySelector('div').textContent=i.txt;const a=c.querySelector('a');a.textContent=i.cta;a.href=i.href;
+    c.querySelector('.x').onclick=()=>c.remove();document.body.appendChild(c);S.glow(o);renderList()}
+  function locked(){document.querySelectorAll('.sky-card').forEach(c=>c.remove());const c=document.createElement('div');c.className='sky-card';c.style.color='#9fb3ff';
+    c.innerHTML='<button class="x" aria-label="Kapat">×</button><span class="tag">🔒 Şifreli sinyal</span><div style="color:#cfd6ea;margin-top:8px">Bu noktada bir şey var, ama bilgisi kilitli. Açmak için koordinatını bilmen gerek: sağ üstteki <b>🔭 Koordinat</b> kutusuna gir.</div>';
+    c.querySelector('.x').onclick=()=>c.remove();document.body.appendChild(c);setTimeout(()=>c.remove(),7000)}
+  // daha önce bulunanları sessizce aç
+  Object.keys(found).forEach(async k=>{for(const o of S.list){if(o.found)continue;const i=await unlock(k,o);if(i){open(o,i);renderList();break}}});
   btn.onclick=()=>{const o=box.classList.toggle('open');btn.setAttribute('aria-expanded',o);if(o)setTimeout(()=>inp.focus(),50)};
-  document.getElementById('skyForm').onsubmit=e=>{e.preventDefault();
-    const n=(inp.value.replace(/[−–—]/g,'-').match(/-?\d+(?:[.,]\d+)?/g)||[]).map(v=>parseFloat(v.replace(',','.')));
-    if(n.length<3){msg.textContent='Üç sayı gir: saat, dakika, derece (örn. 02h 24m −06°).';return}
-    const t=n[0]*60+n[1],hit=S.list.find(o=>Math.abs(o.ra[0]*60+o.ra[1]-t)<=2&&Math.abs(o.dec-n[2])<=1.2);
-    if(!hit){msg.textContent='Bu koordinatta bir şey görünmüyor. Gökyüzü büyük, tekrar dene.';return}
-    msg.textContent='Sinyal alındı…';scrollTo({top:0,behavior:'smooth'});box.classList.remove('open');S.glow(hit);setTimeout(()=>card(hit),1400)};
-  // elle bulma: imleç bir noktanın yakınındaysa
+  document.getElementById('skyForm').onsubmit=async e=>{e.preventDefault();const key=canon(inp.value);
+    if(!key){msg.textContent='Beş sayı gir: saat dakika saniye, derece yay-dakikası.';return}
+    msg.textContent='Sinyal çözülüyor…';let hit=null,info=null;
+    for(const o of S.list){info=await unlock(key,o);if(info){hit=o;break}}
+    if(!hit){msg.textContent='Bu koordinatta bir şey görünmüyor.';return}
+    msg.textContent='Sinyal alındı…';found[key]=1;save();open(hit,info);scrollTo({top:0,behavior:'smooth'});box.classList.remove('open');S.glow(hit);setTimeout(()=>card(hit),1400)};
+  // elle bulma: nokta görülür ama içeriği kilitli
   const near=e=>{if(e.target.closest&&e.target.closest('a,button,input,textarea,select,label,.pl,.sky-card,#skyBox'))return null;
     let b=null,bd=matchMedia('(pointer:coarse)').matches?14:8;S.list.forEach(o=>{const p=S.pos(o),d=Math.hypot(e.clientX-p[0],e.clientY-p[1]);if(d<bd){bd=d;b=o}});return b};
-    addEventListener('click',e=>{const o=near(e);if(o)card(o)});
+  addEventListener('click',e=>{const o=near(e);if(!o)return;if(o.info)card(o);else{S.glow(o);locked()}});
   renderList();
 })();
 </script>
