@@ -177,17 +177,29 @@ def llm(prompt):
         d = next((v for v in d.values() if isinstance(v, list)), [])
     return d
 
+def kod(i):
+    a = 'abcdefghjkmnpqrstuvwxyz'
+    return a[i // 23 % 23] + a[i % 23] + str(i * 7 % 10)
+
+def uyusuyor(title, it):
+    # başlıktaki özel adlar (Büyük harfle başlayan ya da rakam içeren sözcükler) adayın metninde/adresinde geçmeli
+    hay = (it['text'] + ' ' + it['url']).lower()
+    ws = re.findall(r"[A-Za-zÇĞİÖŞÜçğıöşü0-9][\w.\-]{2,}", title)
+    toks = [t.strip('.-:,') for k, t in enumerate(ws) if any(c.isdigit() for c in t) or (t[0].isupper() and k > 0) or (k == 0 and len(ws) == 1)]
+    toks = [t for t in toks if len(t) >= 3]
+    return any(t.lower() in hay for t in toks) if toks else True
+
 def summarize(items, n):
     if os.environ.get('GUNDEM_MOCK'):
-        return [{'i': i, 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
-    lst = '\n'.join('[%d] (%s%s) %s' % (i, it['author'], (', ' + it['pop']) if it.get('pop') else ((', beğeni ' + str(it['likes'])) if it.get('likes') else ''), it['text'][:400].replace('\n', ' ')) for i, it in enumerate(items))
+        return [{'i': kod(i), 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
+    lst = '\n'.join('[%s] (%s%s) %s' % (kod(i), it['author'], (', ' + it['pop']) if it.get('pop') else ((', beğeni ' + str(it['likes'])) if it.get('likes') else ''), it['text'][:400].replace('\n', ' ')) for i, it in enumerate(items))
     p = ('Ben yapay zekâ gündemini hızlıca öğrenmek istiyorum: şu an herkesin konuştuğu şeyler.\n'
          'ÖNCELİK: yeni çıkan modeller (sürüm/ağırlık yayını), yeni mimari ve teknikler, büyük şirket/laboratuvar duyuruları, '
          'önemli araştırma bulguları, açık kaynakta büyük gelişmeler. Beğeni/puan/yorum sayısı yüksekse daha önemlidir.\n'
          'ELE: müşteri hikâyeleri, tanıtım/pazarlama, genel eğitim yazıları, küçük araç güncellemeleri, aynı olayın tekrarları.\n'
          'En fazla %d haber seç. Her biri için KENDİ CÜMLELERİNLE Türkçe kısa başlık (en fazla 90 karakter; model/ürün adını koru), '
          'tek cümlelik "neden önemli" notu, 1-3 etiket (YALNIZCA şu listeden: %s) ve 1-10 arası önem puanı ver. Metni kopyalama/alıntılama.\n'
-         'Yanıt yalnız JSON nesnesi: {"secilen":[{"i":numara,"title":"...","note":"...","tags":["..."],"puan":8}]}\n\n%s') % (n, ', '.join(ETIKETLER), lst)
+         'Her haberin başındaki [kod] değerini AYNEN i alanına yaz (başlık o kodun metniyle uyuşmalı). Yanıt yalnız JSON nesnesi: {"secilen":[{"i":"kod","title":"...","note":"...","tags":["..."],"puan":8}]}\n\n%s') % (n, ', '.join(ETIKETLER), lst)
     return llm(p)
 
 def norm_tags(tags):
@@ -232,6 +244,7 @@ def main():
     print('yeni aday:', len(items))
     if not items:
         return
+    kodlar = {kod(i): i for i in range(len(items))}
     nmax = CFG.get('max_yeni_gunluk', 12)
     sel = summarize(items, int(nmax * 2))
     today = datetime.date.today().isoformat()
@@ -240,8 +253,10 @@ def main():
     byk = {}
     kcap = CFG.get('secim_kaynak_basina', 3)
     for s_ in sel:
-        try: it = items[int(s_['i'])]
+        try: it = items[kodlar[str(s_['i']).strip().lower()]]
         except Exception: continue
+        if not uyusuyor(str(s_.get('title', '')), it):
+            print('uyuşmayan seçim atıldı:', str(s_.get('title', ''))[:60], '->', it['url'][:60], file=sys.stderr); continue
         s_['_it'] = it
         byk.setdefault('X' if it['author'].startswith('@') else it['author'], []).append(s_)
     order = sorted(byk, key=lambda k: -float(byk[k][0].get('puan', 0) or 0))
