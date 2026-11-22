@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Günlük 'Haber & gündem' bülteni.
 Kaynaklardan öğe çeker -> Gemini ile süzer/özetler (kendi cümleleriyle) -> blog/gundem/index.json'a ekler.
-Gizli anahtarlar yalnız ortam değişkeninden: GEMINI_API_KEY, SOCIALDATA_API_KEY (ikisi de depoda YOK).
+Gizli anahtarlar yalnız ortam değişkeninden: GEMINI_API_KEY | GROQ_API_KEY | OPENROUTER_API_KEY (saglayici ayardan), SOCIALDATA_API_KEY (hiçbiri depoda YOK).
 Kullanım: python3 tools/gundem-bulten.py [--dry-run] [--girdi dosya.json]
   --girdi : kaynak çekmek yerine hazır öğe listesi ([{"url","text","author"}]) kullan (test)
   GUNDEM_MOCK=1 : LLM yerine sahte yanıt (anahtarsız test)
@@ -63,6 +63,24 @@ def gemini(prompt):
     r = json.loads(get(url, {'Content-Type': 'application/json'}, body, 90))
     return json.loads(r['candidates'][0]['content']['parts'][0]['text'])
 
+def openai_compat(prompt, base, key, model):
+    body = json.dumps({'model': model, 'temperature': .3, 'response_format': {'type': 'json_object'},
+        'messages': [{'role': 'system', 'content': 'Yalnız geçerli JSON döndür.'}, {'role': 'user', 'content': prompt}]}).encode()
+    r = json.loads(get(base + '/chat/completions', {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, body, 90))
+    return json.loads(r['choices'][0]['message']['content'])
+
+def llm(prompt):
+    sg = (os.environ.get('GUNDEM_SAGLAYICI') or CFG.get('saglayici') or 'gemini').lower()
+    if sg == 'groq':
+        d = openai_compat(prompt, 'https://api.groq.com/openai/v1', os.environ['GROQ_API_KEY'], CFG.get('model_groq', 'llama-3.3-70b-versatile'))
+    elif sg == 'openrouter':
+        d = openai_compat(prompt, 'https://openrouter.ai/api/v1', os.environ['OPENROUTER_API_KEY'], CFG.get('model_openrouter', 'meta-llama/llama-3.3-70b-instruct:free'))
+    else:
+        d = gemini(prompt)
+    if isinstance(d, dict):  # {"secilen":[...]} biçimini de kabul et
+        d = next((v for v in d.values() if isinstance(v, list)), [])
+    return d
+
 def summarize(items, n):
     if os.environ.get('GUNDEM_MOCK'):
         return [{'i': i, 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
@@ -71,8 +89,8 @@ def summarize(items, n):
          'Yalnız önemli ve özgün gelişmeleri seç (en fazla %d), reklam/tekrar/sohbeti ele.\n'
          'Her seçilen için KENDİ CÜMLELERİNLE Türkçe kısa bir başlık (en fazla 90 karakter) ve tek cümlelik not yaz; '
          'metni kopyalama/alıntılama. 1-3 küçük harfli Türkçe etiket ver.\n'
-         'Yanıt yalnız JSON dizisi: [{"i":numara,"title":"...","note":"...","tags":["..."]}]\n\n%s') % (CFG['ilgi'], n, lst)
-    return gemini(p)
+         'Yanıt yalnız JSON nesnesi: {"secilen":[{"i":numara,"title":"...","note":"...","tags":["..."]}]}\n\n%s') % (CFG['ilgi'], n, lst)
+    return llm(p)
 
 def main():
     dry = '--dry-run' in sys.argv
