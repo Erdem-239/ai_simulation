@@ -412,12 +412,9 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     for(let i=0;i<n;i++){const z=rnd()<.6?0:rnd()<.7?1:2;stars.push({x:rnd(),y:rnd(),z:z,s:z===0?.7+rnd()*.5:z===1?1+rnd()*.6:1.6+rnd()*.9,ph:rnd()*6.28,sp:.6+rnd()*1.6,h:rnd()<.2?28:rnd()<.5?215:0,al:.35+rnd()*.5})}
     const k=W<600?.62:1;
     gals=[
-      {sc:.3,cx:.78,cy:.55,size:560*k,tilt:-.38,sq:.36,spin:.004,al:.62,p:.18},
-      {sat:1,sc:.3,cx:.67,cy:.505,size:62*k,tilt:.3,sq:.8,spin:0,al:.75,p:.18},
-      {sat:1,sc:.3,cx:.885,cy:.63,size:92*k,tilt:-.2,sq:.55,spin:0,al:.6,p:.18},
-      {sc:0,cx:.1,cy:.4,size:300*k,tilt:.5,sq:.5,spin:.005,al:.42,p:.2},
-      {sc:.62,cx:.1,cy:.52,size:360*k,tilt:.72,sq:.3,spin:.004,al:.46,p:.2},
-      {sc:1,cx:.84,cy:.36,size:280*k,tilt:-.2,sq:.55,spin:-.004,al:.4,p:.18}
+      {sc:.3,cx:.8,cy:.55,size:190*k,tilt:-.38,sq:.38,spin:.004,al:.7,p:.18},
+      {sc:.62,cx:.09,cy:.5,size:150*k,tilt:.6,sq:.4,spin:.004,al:.6,p:.2},
+      {sc:1,cx:.86,cy:.3,size:110*k,tilt:-.2,sq:.55,spin:-.004,al:.55,p:.18}
     ];
     gals.forEach(o=>{o.spr=galaxy(Math.round(o.size),o.sat)});
     if(!bhSpr)bhSpr=bh();
@@ -429,7 +426,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
     g.globalCompositeOperation='lighter';
     // Samanyolu
-    g.save();g.translate(W*.5,H*.42-s*.05);g.rotate(-.34);g.globalAlpha=.68;g.drawImage(mw,-mw.width,-mw.height,mw.width*2,mw.height*2);g.restore();
+    g.save();g.translate(W*.5,H*.42-s*.05);g.rotate(-.34);g.restore();
     // uzak gökadalar
     for(const o of gals){
       const x=W*o.cx,y=H*o.cy+(o.sc*maxS-s)*o.p;if(y<-o.size||y>H+o.size)continue;
@@ -437,7 +434,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     }
     g.globalAlpha=1;g.globalCompositeOperation='source-over';
     // kara delik konumu (yıldızlar çevresinde bükülür)
-    const r=Math.max(13,Math.min(W,H)*(W<600?.026:.022)),bx=W*(W<600?.82:.88),by=H*.17+(0-s)*.25,Rl=r*5.5;
+    const r=Math.max(8,Math.min(W,H)*(W<600?.015:.013)),bx=W*(W<600?.82:.88),by=H*.17+(0-s)*.25,Rl=r*5.5;
     const PZ=[.05,.12,.25];
     for(const st of stars){
       let y=(((st.y*H-s*PZ[st.z])%H)+H)%H,x=st.x*W;
