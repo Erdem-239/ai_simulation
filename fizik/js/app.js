@@ -34,7 +34,7 @@ const s=document.createElement('script');s.src='js/tree.js?v=202611222000';s.onl
 /* kenar çubuğu */
 const ERA={newton:['🧰 ALET ÇANTASI','150,170,255'],planck:['⏱️ İLK AN','169,139,255'],hadron:['⚛️ PARÇACIKTAN ÇEKİRDEĞE','255,122,170'],atom:['💡 İLK IŞIK VE KARANLIK MADDE','255,201,60'],yildiz:['⭐ YILDIZLAR VE ELEMENTLER','80,200,240'],gunes:['🪐 GEZEGENLER VE ZAMAN','120,220,150']};
 nav.innerHTML='<button class="navbtn active" data-m="yol">🗺️ Yol Haritası</button>'+NODES.map(n=>(ERA[n[0]]?'<div class="sb-era" style="--era-c:'+ERA[n[0]][1]+'"><b>'+ERA[n[0]][0]+'</b></div>':'')+'<button class="navbtn'+(L[n[0]]?'':' soon')+'" data-m="'+n[0]+'">'+n[1]+' '+esc(n[2])+'</button>').join('');
-const EQ={kuant:['🧰 Alet çantası testi',['newton','enerji','em','isik','kuant']],kuark:['⏱️ İlk an testi',['planck','kuvvet','enflasyon','madde','higgs','kuark']],nukleo:['⚛️ Parçacık testi',['hadron','notrino','nukleo']]};
+const EQ={kuant:['🧰 Alet çantası testi',['newton','enerji','em','isik','kuant']],kuark:['⏱️ İlk an testi',['planck','kuvvet','enflasyon','madde','higgs','kuark']],nukleo:['⚛️ Parçacık testi',['hadron','notrino','nukleo']],yapi:['💡 İlk ışık testi',['atom','karanlik','cmb','yapi']]};
 Object.keys(EQ).forEach(k=>{});
 function eraTest(key){const ids=EQ[key][1].filter(i=>L[i]);const pool=[];ids.forEach(i=>shuf(L[i].test).slice(0,2).forEach(q=>pool.push(q)));
   const qs=shuf(pool).slice(0,14);let m=$('csModal');if(!m){m=document.createElement('div');m.id='csModal';document.body.appendChild(m)}
