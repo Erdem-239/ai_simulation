@@ -7,8 +7,7 @@
   "source": "huggingface.co",
   "tags": [
    "donanım",
-   "model",
-   "performans"
+   "model"
   ]
  },
  {
@@ -18,9 +17,7 @@
   "url": "https://huggingface.co/blog/Dharma-AI/predicting-fine-tuning-time",
   "source": "huggingface.co",
   "tags": [
-   "inceleme",
-   "optimizasyon",
-   "eğitim"
+   "diğer"
   ]
  },
  {
@@ -31,8 +28,7 @@
   "source": "huggingface.co",
   "tags": [
    "uygulama",
-   "model",
-   "gizlilik"
+   "model"
   ]
  },
  {
@@ -43,7 +39,6 @@
   "source": "huggingface.co",
   "tags": [
    "model",
-   "karar",
    "araştırma"
   ]
  },
@@ -54,8 +49,6 @@
   "url": "https://huggingface.co/blog/transformers-mic",
   "source": "huggingface.co",
   "tags": [
-   "standart",
-   "topluluk",
    "model"
   ]
  },
@@ -66,8 +59,6 @@
   "url": "https://huggingface.co/blog/microsoft/thinkingbox-training",
   "source": "huggingface.co",
   "tags": [
-   "rl",
-   "veri",
    "araştırma"
   ]
  },
@@ -78,9 +69,8 @@
   "url": "https://huggingface.co/blog/mps-pytorch-2-15",
   "source": "huggingface.co",
   "tags": [
-   "performans",
    "donanım",
-   "pytorch"
+   "araç"
   ]
  },
  {
@@ -90,9 +80,7 @@
   "url": "https://huggingface.co/blog/hf-torchneuron",
   "source": "huggingface.co",
   "tags": [
-   "bulut",
-   "model",
-   "optimizasyon"
+   "model"
   ]
  },
  {
@@ -103,7 +91,6 @@
   "source": "openai.com",
   "tags": [
    "araştırma",
-   "erişim",
    "model"
   ]
  },
@@ -114,7 +101,7 @@
   "url": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare",
   "source": "openai.com",
   "tags": [
-   "sağlık",
+   "bilim",
    "uygulama",
    "model"
   ]
@@ -126,7 +113,6 @@
   "url": "https://x.com/ClaudeDevs/status/2122801681939234950",
   "source": "@ClaudeDevs",
   "tags": [
-   "kod",
    "araç",
    "model"
   ]
@@ -138,8 +124,7 @@
   "url": "https://x.com/ClaudeDevs/status/2122457608963395586",
   "source": "@ClaudeDevs",
   "tags": [
-   "kod",
-   "doğrulama",
+   "araç",
    "model"
   ]
  },
@@ -150,9 +135,7 @@
   "url": "https://huggingface.co/blog/ibm-granite/granite-switch-4-1-1",
   "source": "huggingface.co",
   "tags": [
-   "model",
-   "güncelleme",
-   "yazılım"
+   "model"
   ]
  },
  {
@@ -162,9 +145,7 @@
   "url": "https://huggingface.co/blog/announcing-project-protostar",
   "source": "huggingface.co",
   "tags": [
-   "açıkbilim",
-   "yapayzeka",
-   "projeler"
+   "uygulama"
   ]
  },
  {
@@ -174,9 +155,7 @@
   "url": "https://huggingface.co/blog/torch-neuronx-model-support",
   "source": "huggingface.co",
   "tags": [
-   "donanım",
-   "trainium",
-   "uyumluluk"
+   "donanım"
   ]
  },
  {
@@ -186,9 +165,7 @@
   "url": "https://huggingface.co/blog/amazon/profiling-torchneuron-part-1",
   "source": "huggingface.co",
   "tags": [
-   "profiling",
-   "performans",
-   "trainium"
+   "donanım"
   ]
  },
  {
@@ -198,9 +175,8 @@
   "url": "https://huggingface.co/blog/hf-torchtpu",
   "source": "huggingface.co",
   "tags": [
-   "tpu",
-   "entegrasyon",
-   "hız"
+   "donanım",
+   "araç"
   ]
  },
  {
@@ -210,9 +186,8 @@
   "url": "https://huggingface.co/blog/anylanguagemodel-1-0",
   "source": "huggingface.co",
   "tags": [
-   "yerel",
-   "apple",
-   "dilmodeli"
+   "donanım",
+   "model"
   ]
  },
  {
@@ -222,9 +197,7 @@
   "url": "https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast",
   "source": "openai.com",
   "tags": [
-   "performans",
-   "otomasyon",
-   "chatgpt"
+   "araç"
   ]
  },
  {
@@ -235,8 +208,7 @@
   "source": "openai.com",
   "tags": [
    "araştırma",
-   "kodlama",
-   "ajan"
+   "araç"
   ]
  },
  {
@@ -246,9 +218,7 @@
   "url": "https://openai.com/index/managing-frontier-ai-risk",
   "source": "openai.com",
   "tags": [
-   "risk",
-   "güvenlik",
-   "hizalama"
+   "güvenlik"
   ]
  },
  {
@@ -258,9 +228,7 @@
   "url": "https://openai.com/index/strengthening-nato-allied-cyber-defences-ai",
   "source": "openai.com",
   "tags": [
-   "siber",
-   "savunma",
-   "ai"
+   "güvenlik"
   ]
  },
  {
@@ -271,8 +239,7 @@
   "source": "openai.com",
   "tags": [
    "bilim",
-   "anket",
-   "chatgpt"
+   "araştırma"
   ]
  },
  {
@@ -282,8 +249,7 @@
   "url": "https://openai.com/index/our-first-phase-of-embedded-assessments",
   "source": "openai.com",
   "tags": [
-   "değerlendirme",
-   "uyum",
+   "araştırma",
    "güvenlik"
   ]
  },
@@ -294,9 +260,7 @@
   "url": "https://huggingface.co/blog/openrouter",
   "source": "huggingface.co",
   "tags": [
-   "açık-modeller",
-   "dağıtım",
-   "hız"
+   "açık-model"
   ]
  },
  {
@@ -306,9 +270,7 @@
   "url": "https://huggingface.co/blog/ibm-granite/llmon-an-llm-native-markup-language-now-in-granite",
   "source": "huggingface.co",
   "tags": [
-   "işaretleme",
-   "dil-modelleri",
-   "granite"
+   "model"
   ]
  },
  {
@@ -318,9 +280,7 @@
   "url": "https://huggingface.co/blog/token-pooling",
   "source": "huggingface.co",
   "tags": [
-   "gömme",
-   "verimlilik",
-   "eğitim"
+   "diğer"
   ]
  },
  {
@@ -330,9 +290,8 @@
   "url": "https://huggingface.co/blog/open-asr-leaderboard-liva",
   "source": "huggingface.co",
   "tags": [
-   "ses",
-   "açık-asr",
-   "çeşitlilik"
+   "ses-görüntü",
+   "açık-model"
   ]
  },
  {
@@ -342,9 +301,8 @@
   "url": "https://huggingface.co/blog/phonon-tts",
   "source": "huggingface.co",
   "tags": [
-   "tts",
-   "cihaz-içi",
-   "kalite"
+   "ses-görüntü",
+   "donanım"
   ]
  },
  {
@@ -354,9 +312,7 @@
   "url": "https://huggingface.co/blog/mistral-large4",
   "source": "huggingface.co",
   "tags": [
-   "açık-modeller",
-   "mistral",
-   "performans"
+   "açık-model"
   ]
  },
  {
@@ -366,9 +322,7 @@
   "url": "https://huggingface.co/blog/anydecisionmodel",
   "source": "huggingface.co",
   "tags": [
-   "apple",
-   "ses-modelleri",
-   "karar-modelleri"
+   "ses-görüntü"
   ]
  },
  {
@@ -378,9 +332,7 @@
   "url": "https://huggingface.co/blog/LiquidAI/lfm3",
   "source": "huggingface.co",
   "tags": [
-   "multimodal",
-   "özel-modeller",
-   "lfm3"
+   "ses-görüntü"
   ]
  },
  {
@@ -390,9 +342,7 @@
   "url": "https://huggingface.co/blog/Dharma-AI/vocabx-vocabulary-specialization",
   "source": "huggingface.co",
   "tags": [
-   "verimlilik",
-   "kelime-hazinesi",
-   "çıkarsama"
+   "diğer"
   ]
  },
  {
@@ -402,9 +352,8 @@
   "url": "https://openai.com/business/customer-stories/hebbia",
   "source": "openai.com",
   "tags": [
-   "finans",
-   "araştırma",
-   "gpt6"
+   "uygulama",
+   "araştırma"
   ]
  },
  {
@@ -414,9 +363,8 @@
   "url": "https://openai.com/index/introducing-medchembench",
   "source": "openai.com",
   "tags": [
-   "ilaç",
    "bilim",
-   "ai-değerlendirme"
+   "araştırma"
   ]
  },
  {
@@ -426,9 +374,7 @@
   "url": "https://openai.com/index/the-silent-consensus",
   "source": "openai.com",
   "tags": [
-   "etik",
-   "toplum",
-   "gelecek"
+   "diğer"
   ]
  },
  {
@@ -439,8 +385,7 @@
   "source": "huggingface.co",
   "tags": [
    "model",
-   "yerel",
-   "performans"
+   "donanım"
   ]
  },
  {
@@ -450,9 +395,7 @@
   "url": "https://huggingface.co/blog/moe-expert-streaming",
   "source": "huggingface.co",
   "tags": [
-   "model",
-   "moe",
-   "performans"
+   "model"
   ]
  },
  {
@@ -463,8 +406,7 @@
   "source": "huggingface.co",
   "tags": [
    "model",
-   "açık",
-   "ölçek"
+   "açık-model"
   ]
  },
  {
@@ -475,8 +417,8 @@
   "source": "huggingface.co",
   "tags": [
    "model",
-   "multimodal",
-   "açık"
+   "ses-görüntü",
+   "açık-model"
   ]
  },
  {
@@ -487,8 +429,7 @@
   "source": "huggingface.co",
   "tags": [
    "model",
-   "verimlilik",
-   "açık"
+   "açık-model"
   ]
  },
  {
@@ -498,8 +439,6 @@
   "url": "https://huggingface.co/blog/harness-adapters-at-scale",
   "source": "huggingface.co",
   "tags": [
-   "performans",
-   "maliyet",
    "araç"
   ]
  },
@@ -510,9 +449,7 @@
   "url": "https://huggingface.co/blog/rumble-2-flash",
   "source": "huggingface.co",
   "tags": [
-   "konuşma",
-   "açık",
-   "dil"
+   "açık-model"
   ]
  },
  {
@@ -522,9 +459,7 @@
   "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol",
   "source": "openai.com",
   "tags": [
-   "model",
-   "profesyonel",
-   "güncelleme"
+   "model"
   ]
  },
  {
@@ -534,9 +469,7 @@
   "url": "https://openai.com/index/combatting-adversarial-distillation",
   "source": "openai.com",
   "tags": [
-   "güvenlik",
-   "risk",
-   "savunma"
+   "güvenlik"
   ]
  },
  {
@@ -546,9 +479,8 @@
   "url": "https://openai.com/index/advancing-chip-design-with-our-models",
   "source": "openai.com",
   "tags": [
-   "chip",
-   "araştırma",
-   "tasarım"
+   "donanım",
+   "araştırma"
   ]
  },
  {
@@ -558,9 +490,9 @@
   "url": "https://openai.com/index/step-toward-defining-the-standard-model",
   "source": "openai.com",
   "tags": [
-   "fizik",
+   "bilim",
    "araştırma",
-   "açık"
+   "açık-model"
   ]
  },
  {
@@ -571,7 +503,6 @@
   "source": "openai.com",
   "tags": [
    "bilim",
-   "blog",
    "araştırma"
   ]
  }
