@@ -63,13 +63,14 @@ def apify_items():
     if not (a.get('aktif') and tok and hs):
         return []
     # NOT: aktör adı ve girdi alanları Apify'ın güncel belgesinden doğrulanmalı (ilk gerçek çalıştırmada günlüğe bak).
-    since = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
-    terms = []
-    for i in range(0, len(hs), 15):
-        q = ' OR '.join('from:' + h for h in hs[i:i + 15])
-        terms.append('(%s) since:%s -filter:nativeretweets -filter:replies' % (q, since))
+    since = (datetime.date.today() - datetime.timedelta(days=a.get('gun', 2))).isoformat()
     actor = a.get('aktor', 'apidojo~tweet-scraper')
-    body = json.dumps({'searchTerms': terms, 'maxItems': a.get('en_fazla', 150), 'sort': 'Latest'}).encode()
+    if a.get('mod', 'hesap') == 'arama':
+        terms = ['(%s) since:%s -filter:nativeretweets -filter:replies' % (' OR '.join('from:' + h for h in hs[i:i + 15]), since) for i in range(0, len(hs), 15)]
+        inp = {'searchTerms': terms, 'maxItems': a.get('en_fazla', 150), 'sort': 'Latest'}
+    else:
+        inp = {'twitterHandles': hs, 'maxItems': a.get('en_fazla', 150), 'sort': 'Latest', 'start': since}
+    body = json.dumps(inp).encode()
     d = json.loads(get('https://api.apify.com/v2/acts/%s/run-sync-get-dataset-items' % actor,
                        {'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json'}, body, 240))
     if isinstance(d, list):
