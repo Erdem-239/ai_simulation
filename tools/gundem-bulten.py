@@ -142,9 +142,18 @@ def summarize(items, n):
     p = ('Aşağıda numaralı gönderiler var. İlgi alanım: %s.\n'
          'Yalnız önemli ve özgün gelişmeleri seç (en fazla %d), reklam/tekrar/sohbeti ele.\n'
          'Her seçilen için KENDİ CÜMLELERİNLE Türkçe kısa bir başlık (en fazla 90 karakter) ve tek cümlelik not yaz; '
-         'metni kopyalama/alıntılama. 1-3 küçük harfli Türkçe etiket ver.\n'
+         'metni kopyalama/alıntılama. etiketleri YALNIZCA şu listeden seç (1-3 tane): '+', '.join(ETIKETLER)+'.\n'
          'Yanıt yalnız JSON nesnesi: {"secilen":[{"i":numara,"title":"...","note":"...","tags":["..."]}]}\n\n%s') % (CFG['ilgi'], n, lst)
     return llm(p)
+
+ETIKETLER = ['model', 'araştırma', 'araç', 'güvenlik', 'açık-model', 'donanım', 'uygulama', 'ses-görüntü', 'bilim']
+
+def norm_tags(tags):
+    out = []
+    for t in tags or []:
+        t = str(t).strip().lower()
+        if t in ETIKETLER and t not in out: out.append(t)
+    return out[:3] or ['diğer']
 
 def main():
     dry = '--dry-run' in sys.argv
@@ -177,7 +186,7 @@ def main():
         try: it = items[int(s['i'])]
         except Exception: continue
         new.append({'date': today, 'title': str(s['title'])[:120], 'note': str(s.get('note', ''))[:240], 'url': it['url'],
-                    'source': it['author'], 'tags': [str(t)[:24] for t in (s.get('tags') or [])][:3]})
+                    'source': it['author'], 'tags': norm_tags(s.get('tags'))})
     print('eklenen:', len(new))
     allv = (new + old)[:300]
     if dry:
