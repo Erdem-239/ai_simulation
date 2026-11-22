@@ -2763,3 +2763,10 @@ body.wl-open{overflow:hidden}
 #ftEdit .ed-ctl input[type=range]{width:150px}
 #ftEdit .ed-wrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;align-items:start}
 @media(max-width:900px){#ftEdit .ed-wrap{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Ana sayfaya dönüş: her zaman görünen sabit düğme (#594) */
+#homeFab{position:fixed;top:12px;right:14px;z-index:900;display:inline-flex;gap:6px;align-items:center;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#f3ead2;text-decoration:none;background:rgba(32,22,8,.88);border:1px solid rgba(201,162,74,.6);box-shadow:0 4px 18px rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:.2s}
+#homeFab:hover{background:rgba(201,162,74,.95);color:#1a1204}
+body.tt-full #homeFab{display:none}
+@media(max-width:720px){#homeFab{top:10px;right:10px;padding:7px 11px;font-size:12px}}
