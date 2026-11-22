@@ -1,6 +1,77 @@
 [
  {
   "date": "2026-11-22",
+  "title": "Qwen3.8-27B: 27B parametreli çok-modelli model",
+  "note": "Geniş indirme sayısı ve yüksek beğeni, büyük ölçekli görsel‑metin görevlerinde yeni bir standart belirliyor",
+  "url": "https://huggingface.co/blog/nvidia/simready-assets-robot-pick-and-place",
+  "source": "huggingface.co",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Claude, kara delik fiziğinde iki açık problemi çözdü",
+  "note": "AI’nın temel fizik araştırmalarına katkısı, model‑temelli keşiflerin sınırlarını genişletiyor",
+  "url": "https://huggingface.co/blog/3d-lora-finetuning",
+  "source": "huggingface.co",
+  "tags": [
+   "araştırma",
+   "bilim"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Inkling-2-Mini-GGUF: Hızlı image‑text modeli",
+  "note": "Küçük boyutu ve GGUF formatı sayesinde düşük kaynaklı cihazlarda yüksek performans sağlıyor",
+  "url": "https://huggingface.co/blog/allenai/xybench",
+  "source": "huggingface.co",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Vibecoding: Yeni nesil inference çipi",
+  "note": "Özel tasarım çip, AI çıkarım hızını ve enerji verimliliğini önemli ölçüde artırıyor",
+  "url": "https://huggingface.co/blog/hub-gcp-marketplace",
+  "source": "huggingface.co",
+  "tags": [
+   "donanım"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Daybreak Blue: OpenAI yeni onboarding deneyimi",
+  "note": "Yeni kullanıcıların AI platformuna hızlı ve sorunsuz entegrasyonunu sağlayarak benimsenmeyi hızlandırıyor",
+  "url": "https://openai.com/business/learn/codex-security-plugin-demo",
+  "source": "openai.com",
+  "tags": [
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "LVMH Media Division ve OpenAI stratejik ortaklığı",
+  "note": "Lüks medya içeriklerinin AI ile zenginleştirilmesi, sektörde yeni gelir modelleri yaratabilir",
+  "url": "https://openai.com/business/learn/pr-scans-demo",
+  "source": "openai.com",
+  "tags": [
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Claude Desktop: Sık güncellemelerle daha hızlı iyileştirmeler",
+  "note": "Beta kanalıyla sık sürüm güncellemeleri, kullanıcı geri bildirimlerine dayalı hızlı iyileştirmeler sunuyor",
+  "url": "https://openai.com/business/learn/daybreak-blue-onboarding-demo",
+  "source": "openai.com",
+  "tags": [
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-22",
   "title": "Inkling 2 Mini: Yerel LLM kurulumları için yüksek performanslı donanım",
   "note": "Küçük bir kutu içinde güçlü GPU ve bellek sunarak yerel büyük dil modellerinin hızlı çalışmasını sağlıyor.",
   "url": "https://huggingface.co/blog/inkling2mini",
