@@ -1,1 +1,146 @@
-[]
+[
+ {
+  "date": "2026-11-22",
+  "title": "llama.cpp 1.0.0: Yerel AI ekosistemi için daha güçlü altyapı",
+  "note": "Yeni sürüm, CPU ve GPU’da daha hızlı ve hafif LLM çalıştırmayı mümkün kılıyor.",
+  "url": "https://huggingface.co/blog/ggml-org/llama-cpp-v1",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "yerel",
+   "performans"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "180B MoE modeli 32 GB RAM’da çalıştırma sınırları zorlandı",
+  "note": "MoE mimarisi, devasa parametreleri sınırlı bellekle gerçek zamanlı çıkarım sağlıyor.",
+  "url": "https://huggingface.co/blog/moe-expert-streaming",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "moe",
+   "performans"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Beam: 501 B açık model, özelleştirilebilir ve ölçeklenebilir",
+  "note": "Kullanıcılar, bu devasa açık ağırlıklı modeli istedikleri gibi eğitebilir ve dağıtabilir.",
+  "url": "https://huggingface.co/blog/reflection-beam",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "açık",
+   "ölçek"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Muse Spark Open: Meta’nın çok modlu MoE öncüsü",
+  "note": "Görsel‑metin‑ses entegrasyonu sunan açık ağırlıklı bir multimodal model.",
+  "url": "https://huggingface.co/blog/meta-muse-spark-open",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "multimodal",
+   "açık"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "DaisyRose-27B: Eğitim sonrası verimlilikte yeni sınır",
+  "note": "Post‑training teknikleriyle 27 B parametreli modelin maliyeti ve hızı artırıldı.",
+  "url": "https://huggingface.co/blog/RadixArk/daisyrose-27b-pushing-the-frontier-of-post-trainin",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "verimlilik",
+   "açık"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Harness adapters: Modelinizi maliyet ve performans için özelleştirin",
+  "note": "Adaptörler, aynı modelin farklı donanımlarda daha verimli çalışmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/harness-adapters-at-scale",
+  "source": "huggingface.co",
+  "tags": [
+   "performans",
+   "maliyet",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Rumble-2-Flash: 0.5 B açık konuşma modeli, 40+ dil",
+  "note": "Küçük ama çok dilli model, yerel cihazlarda gerçek zamanlı konuşma tanıma sunuyor.",
+  "url": "https://huggingface.co/blog/rumble-2-flash",
+  "source": "huggingface.co",
+  "tags": [
+   "konuşma",
+   "açık",
+   "dil"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "GPT‑6.2 Astra ve Sol: Daha iyi profesyonel çıktı ve düşük maliyet",
+  "note": "Yeni sürüm, kodlama, bilgisayar kullanımı ve iş akışlarında verimliliği artırıyor.",
+  "url": "https://openai.com/index/introducing-gpt-6-2-astra-sol",
+  "source": "openai.com",
+  "tags": [
+   "model",
+   "profesyonel",
+   "güncelleme"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Adversarial distillation’a karşı katmanlı savunma",
+  "note": "OpenAI, model çıkarımını korumak için eğitim, tespit ve uygulama adımları birleştiriyor.",
+  "url": "https://openai.com/index/combatting-adversarial-distillation",
+  "source": "openai.com",
+  "tags": [
+   "güvenlik",
+   "risk",
+   "savunma"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "OpenAI modelleriyle çip tasarımında ilerleme",
+  "note": "GPT‑6 Astra, silikon ve RISC‑V çekirdek tasarımlarını optimize ederek devre tasarımını hızlandırdı.",
+  "url": "https://openai.com/index/advancing-chip-design-with-our-models",
+  "source": "openai.com",
+  "tags": [
+   "chip",
+   "araştırma",
+   "tasarım"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Standart Model tanımı için ızgara çalışması, GPT‑6 yardımıyla",
+  "note": "AI, fiziksel teorinin non‑perturbatif ızgara kanıtını oluşturmak için kullanıldı.",
+  "url": "https://openai.com/index/step-toward-defining-the-standard-model",
+  "source": "openai.com",
+  "tags": [
+   "fizik",
+   "araştırma",
+   "açık"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "OpenAI bilim blogu: AI‑destekli keşiflerin yeni bulguları",
+  "note": "Blog, araştırmacıların AI’yı bilimsel çalışmalarına entegre etme yöntemlerini paylaşıyor.",
+  "url": "https://openai.com/index/our-new-blog-for-science",
+  "source": "openai.com",
+  "tags": [
+   "bilim",
+   "blog",
+   "araştırma"
+  ]
+ }
+]
