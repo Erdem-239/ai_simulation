@@ -142,8 +142,11 @@ def openai_compat(prompt, base, key, model):
         b = {'model': model, 'temperature': .3,
              'messages': [{'role': 'system', 'content': 'Yalnız geçerli JSON döndür.'}, {'role': 'user', 'content': prompt}]}
         if js: b['response_format'] = {'type': 'json_object'}
+        if 'gpt-oss' in model:
+            b['reasoning_effort'] = 'low'
+        b['max_completion_tokens'] = 8000
         r = json.loads(get(base + '/chat/completions', {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, json.dumps(b).encode(), 120))
-        return r['choices'][0]['message']['content']
+        return r['choices'][0]['message'].get('content') or ''
     import time
     def retry(js):
         for k in range(4):
@@ -160,14 +163,22 @@ def openai_compat(prompt, base, key, model):
         print('JSON modu başarısız, serbest metinle yeniden deneniyor', file=sys.stderr)
         txt = retry(False)
     m = re.search(r'[\[{].*[\]}]', txt, re.S)
-    return json.loads(m.group(0) if m else txt)
+    if not m:
+        raise ValueError('modelden boş/JSON olmayan yanıt: %r' % txt[:120])
+    return json.loads(m.group(0))
 
 def llm(prompt):
     sg = (os.environ.get('GUNDEM_SAGLAYICI') or CFG.get('saglayici') or 'gemini').lower()
     if sg == 'groq':
         base, key = 'https://api.groq.com/openai/v1', os.environ['GROQ_API_KEY']
         try:
-            d = openai_compat(prompt, base, key, CFG.get('model_groq', 'llama-3.3-70b-versatile'))
+            try:
+                d = openai_compat(prompt, base, key, CFG.get('model_groq', 'llama-3.3-70b-versatile'))
+            except ValueError as e:
+                yedek = CFG.get('model_groq_yedek')
+                if not yedek: raise
+                print('boş yanıt, yedek modele geçiliyor:', yedek, file=sys.stderr)
+                d = openai_compat(prompt, base, key, yedek)
         except urllib.error.HTTPError as e:
             if e.code != 404: raise
             ids = [m['id'] for m in json.loads(get(base + '/models', {'Authorization': 'Bearer ' + key})).get('data', [])]

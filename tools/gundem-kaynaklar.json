@@ -53,5 +53,6 @@
     "makale": 15
   },
   "aday_kaynak_basina": 12,
-  "secim_kaynak_basina": 3
+  "secim_kaynak_basina": 3,
+  "model_groq_yedek": "qwen/qwen3.8-27b"
 }
