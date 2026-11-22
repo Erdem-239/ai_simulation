@@ -1,6 +1,6 @@
 /* Bilgisayar bilimi teması: devre kartı (PCB) + fosfor yeşili terminal. AI sitesinin motorunu kullanır, görünümü farklıdır. */
-:root{--bg:#060d0b;--panel:#0e1c17;--panel2:#0a1612;--line:#1c4636;--text:#dff5ea;--muted:#7ca898;--accent:#3ddc97;--blue:#1f9d8a;--blue2:#188576;--green:#3ddc97}
-body{background:#060d0b radial-gradient(circle at 1px 1px,rgba(61,220,151,.09) 1px,transparent 1.5px) 0 0/22px 22px;font-family:"JetBrains Mono",Consolas,"Segoe UI",monospace}
+:root{--bg:#0f241c;--panel:#18352a;--panel2:#132b22;--line:#2d6a53;--text:#dff5ea;--muted:#7ca898;--accent:#3ddc97;--blue:#1f9d8a;--blue2:#188576;--green:#3ddc97}
+body{background:#0f241c radial-gradient(circle at 1px 1px,rgba(61,220,151,.09) 1px,transparent 1.5px) 0 0/22px 22px;font-family:"JetBrains Mono",Consolas,"Segoe UI",monospace}
 h1,h2,.sb-title,.tpl-head{font-family:"JetBrains Mono",Consolas,monospace}
 h1{letter-spacing:-.3px;color:#eafff6}h1:before{content:"> ";color:var(--accent)}
 .sub,.tpl-body p{font-family:"Segoe UI",Roboto,Arial,sans-serif}
@@ -10,18 +10,18 @@ h1{letter-spacing:-.3px;color:#eafff6}h1:before{content:"> ";color:var(--accent)
 .tpl-cl[data-stage="3"] .tpl-head{background:rgba(61,220,151,.13)}.tpl-cl[data-stage="4"] .tpl-head{background:rgba(120,140,255,.14)}
 .tpl-cl[data-stage="5"] .tpl-head{background:rgba(47,200,230,.14)}.tpl-cl[data-stage="6"] .tpl-head{background:rgba(255,110,110,.13)}
 /* kenar çubuğu */
-.sidebar{background:#07110d!important;border:1px solid #1c4636!important;border-left:none!important;box-shadow:inset -12px 0 30px -22px #3ddc97!important}
+.sidebar{background:#0d2019!important;border:1px solid #2d6a53!important;border-left:none!important;box-shadow:inset -12px 0 30px -22px #3ddc97!important}
 .sidebar .sb-inner::-webkit-scrollbar-thumb{background:#1c4636}
-.sidebar .sb-hello{background:#0b1c15;border:1px solid #1c4636;color:#9fe9c4}
-.sidebar .navbtn{background:#0b1713!important;border:1px solid #17382c!important;border-left:3px solid #1f9d6b!important;border-radius:4px!important;color:#bfe8d5!important;font-family:"JetBrains Mono",Consolas,monospace;font-size:12.5px;box-shadow:none!important;background-image:none!important;transform:none!important}
-.sidebar .navbtn:hover{background:#10271e!important;border-color:#3ddc97!important;color:#fff!important}
+.sidebar .sb-hello{background:#14301f;border:1px solid #2d6a53;color:#9fe9c4}
+.sidebar .navbtn{background:#133026!important;border:1px solid #24503f!important;border-left:3px solid #1f9d6b!important;border-radius:4px!important;color:#bfe8d5!important;font-family:"JetBrains Mono",Consolas,monospace;font-size:12.5px;box-shadow:none!important;background-image:none!important;transform:none!important}
+.sidebar .navbtn:hover{background:#1a4333!important;border-color:#3ddc97!important;color:#fff!important}
 .sidebar .navbtn.active{background:#3ddc97!important;color:#04180f!important;border-color:#3ddc97!important;font-weight:700}
 .sidebar .navbtn.soon{opacity:.45}
 .sidebar .navbtn::before,.sidebar .navbtn::after{display:none!important}
 .sidebar .sb-note{color:var(--muted)}
 /* harita: devre kartı */
-#techSvg.techSvg-all-new{background:#060d0b!important}
-#techSvg .era-band.era-band-new{fill:#08140f;stroke:rgba(61,220,151,.45);stroke-width:2}
+#techSvg.techSvg-all-new{background:#0f241c!important}
+#techSvg .era-band.era-band-new{fill:#112b21;stroke:rgba(61,220,151,.5);stroke-width:2}
 #techSvg .era-ribbon.era-ribbon-new{fill:#0f6b49}
 #techSvg .era-lbl.era-lbl-new{font-family:"JetBrains Mono",Consolas,monospace;letter-spacing:2px;fill:#eafff6}
 #techSvg .era-art .ea-s{stroke:#3ddc97;stroke-opacity:.34}
@@ -34,14 +34,17 @@ h1{letter-spacing:-.3px;color:#eafff6}h1:before{content:"> ";color:var(--accent)
 #techSvg .te-off{stroke:#1f6b52;stroke-width:2.2}
 #techSvg .te-on{stroke:#3ddc97;stroke-width:3}
 .ttc-card{border-radius:4px!important;font-family:"JetBrains Mono",Consolas,monospace;border-color:#1f6b52;--corner-c:#3ddc97;
-  background:radial-gradient(circle at 10px 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at 10px calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),linear-gradient(135deg,#0f241c,#0a1712)!important}
+  background:radial-gradient(circle at 10px 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) 10px,var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at 10px calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 10px) calc(100% - 10px),var(--corner-c) 0 2px,transparent 2.6px),linear-gradient(135deg,#1a3a2d,#122a20)!important}
 .ttc-card.ttc-done{border-color:#3ddc97;outline-color:rgba(61,220,151,.35)}
 .ttc-card.ttc-avail{border-color:#f0b03c;--corner-c:#ffd47a;outline-color:rgba(240,176,60,.4)}
 .ttc-card.ttc-locked{border-color:#1f4a3a;--corner-c:#2f7a5c}
 #ttTools button,#ttTools .tt-lab{font-family:"JetBrains Mono",Consolas,monospace}
 #ttTools button.on{background:#3ddc97;color:#04180f;border-color:#3ddc97}
-body.tt-full #ttBox{background:#060d0b}
+body.tt-full #ttBox{background:#0f241c}
 .cs .btn.on{background:#3ddc97;border-color:#3ddc97;color:#04180f}
 .cs .cards3 b,.cs h4{color:var(--accent)}
-.ttc-card.ttc-locked{border-color:#1f4a3a!important}.ttc-card.ttc-done{border-color:#3ddc97!important}
+.ttc-card.ttc-locked{border-color:#2f7a5c!important}.ttc-card.ttc-done{border-color:#3ddc97!important}
 .ttc-card .ttc-head,.ttc-card .ttc-chips,.ttc-card [class*=ttc-mast]{background-image:none}
+
+.sidebar .navbtn{margin-bottom:6px}
+.sidebar .sb-era{margin:16px 0 8px}
