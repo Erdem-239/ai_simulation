@@ -1,6 +1,46 @@
 [
  {
   "date": "2026-11-22",
+  "title": "Qwen 3.8-27B: 27B parameter multimodal model by Qwen",
+  "note": "En büyük açık‑kaynak çok‑modal model, geniş çapta araştırma ve uygulamalara olanak tanıyor.",
+  "url": "https://openai.com/business/learn/deploying-daybreak-red",
+  "source": "openai.com",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Qwen3.8-27B-pi-adapted: Adapted version for Pi devices",
+  "note": "Pi platformunda yüksek performanslı çalışması, kenar‑bilişime erişimi genişletiyor.",
+  "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers/",
+  "source": "Hacker News",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Inkling-2-Mini by thinkingmachines: Image‑text‑to‑text model",
+  "note": "Küçük boyutlu çok‑modal model, düşük kaynaklarda güçlü performans sunuyor.",
+  "url": "https://huggingface.co/thinkingmachines/Inkling-2-Mini",
+  "source": "HF trend model",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Inkling-2-Mini-GGUF by unsloth: GGUF optimized version",
+  "note": "GGUF formatıyla daha hızlı dağıtım ve düşük bellek tüketimi sağlıyor.",
+  "url": "https://huggingface.co/papers/2611.26232",
+  "source": "HF günün makalesi",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
   "title": "Qwen3.8-27B: 27B parametreli çok-modelli model",
   "note": "Geniş indirme sayısı ve yüksek beğeni, büyük ölçekli görsel‑metin görevlerinde yeni bir standart belirliyor",
   "url": "https://huggingface.co/blog/nvidia/simready-assets-robot-pick-and-place",
