@@ -144,12 +144,21 @@ def openai_compat(prompt, base, key, model):
         if js: b['response_format'] = {'type': 'json_object'}
         r = json.loads(get(base + '/chat/completions', {'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'}, json.dumps(b).encode(), 120))
         return r['choices'][0]['message']['content']
+    import time
+    def retry(js):
+        for k in range(4):
+            try:
+                return call(js)
+            except urllib.error.HTTPError as e:
+                if e.code != 429 or k == 3: raise
+                w = 25 * (k + 1)
+                print('429: %d sn bekleniyor' % w, file=sys.stderr); time.sleep(w)
     try:
-        txt = call(True)
+        txt = retry(True)
     except urllib.error.HTTPError as e:
         if e.code != 400: raise
         print('JSON modu başarısız, serbest metinle yeniden deneniyor', file=sys.stderr)
-        txt = call(False)
+        txt = retry(False)
     m = re.search(r'[\[{].*[\]}]', txt, re.S)
     return json.loads(m.group(0) if m else txt)
 
@@ -192,7 +201,7 @@ def uyusuyor(title, it):
 def summarize(items, n):
     if os.environ.get('GUNDEM_MOCK'):
         return [{'i': kod(i), 'title': 'Örnek özet %d' % i, 'note': 'Sahte yanıt (test).', 'tags': ['test']} for i in range(min(n, len(items)))]
-    lst = '\n'.join('[%s] (%s%s) %s' % (kod(i), it['author'], (', ' + it['pop']) if it.get('pop') else ((', beğeni ' + str(it['likes'])) if it.get('likes') else ''), it['text'][:400].replace('\n', ' ')) for i, it in enumerate(items))
+    lst = '\n'.join('[%s] (%s%s) %s' % (kod(i), it['author'], (', ' + it['pop']) if it.get('pop') else ((', beğeni ' + str(it['likes'])) if it.get('likes') else ''), it['text'][:220].replace('\n', ' ')) for i, it in enumerate(items))
     p = ('Ben yapay zekâ gündemini hızlıca öğrenmek istiyorum: şu an herkesin konuştuğu şeyler.\n'
          'ÖNCELİK: yeni çıkan modeller (sürüm/ağırlık yayını), yeni mimari ve teknikler, büyük şirket/laboratuvar duyuruları, '
          'önemli araştırma bulguları, açık kaynakta büyük gelişmeler. Beğeni/puan/yorum sayısı yüksekse daha önemlidir.\n'
