@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bir cümlenin yolculuğu</title>
+<style>
+:root{--bg:#12151c;--card:#1a1f2a;--ink:#e8ebf2;--mute:#9aa3b6;--line:#323a4a;--blue:#6ea0ff;--green:#5fcf8a;--amber:#e8a94d;--red:#f27a88;--violet:#b592f0;--hl:#ffc82e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:26px;margin:0 0 6px}h2{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+.warn{background:#2a2414;border:1px solid #6b5a1e;border-radius:10px;padding:10px 14px;margin:12px 0 22px;color:#f0dca0}
+.sec{background:var(--card);border:2px solid var(--c);border-radius:16px;padding:18px;margin-bottom:22px}
+.sec h2{color:var(--c)}
+.m{display:inline-block;border-radius:6px;padding:0 7px;font-size:12px;font-weight:700;color:#12151c}
+.m.ol{background:var(--green)}.m.sm{background:var(--amber)}
+.say{font:700 20px/1.4 ui-monospace,Consolas,monospace;background:#0f131b;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{border:2px solid var(--line);border-radius:8px;padding:4px 8px;background:#0f131b;font:15px ui-monospace,Consolas,monospace;text-align:center;cursor:pointer}
+.chip small{display:block;color:var(--mute);font-size:11px}
+.chip.on{border-color:var(--hl);background:#2c2a1c}
+button,select{font:inherit;color:var(--ink);background:#232a38;border:1px solid var(--line);border-radius:8px;padding:5px 11px;cursor:pointer}
+button.on{background:var(--hl);color:#1b1500;border-color:var(--hl)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:#202737}
+td.t{font:700 14px ui-monospace,Consolas,monospace;white-space:nowrap}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.bar{display:grid;grid-template-columns:90px 1fr 54px;gap:8px;align-items:center;margin:3px 0;font-size:13px}
+.bar .b{height:14px;background:#0f131b;border-radius:4px;overflow:hidden}
+.bar .b i{display:block;height:100%;background:var(--blue)}
+.bar.msk{opacity:.35}.bar.msk .b i{background:#444}
+.note{color:var(--mute);font-size:13px;margin:6px 0}
+.box{border-left:4px solid var(--c2,var(--hl));background:#0f131b;border-radius:0 8px 8px 0;padding:8px 12px;margin:8px 0}
+.gen{font:17px/1.6 ui-monospace,Consolas,monospace;background:#0f131b;border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-height:50px}
+.gen b{background:#2c2a1c;border-radius:4px;color:var(--hl)}
+code{background:#232a38;border-radius:4px;padding:0 5px}
+</style></head><body><div class="wrap">
+<h1>🔭 Bir cümlenin yolculuğu: «istanbulun başkenti nereresidir»</h1>
+<p class="sub">Eğitilmiş bir modele bu cümleyi verince içeride ne olur? Token'lara bölünme, her token'ın taşıdığı bilgi, dikkat ve tahmin — adım adım önizleme.</p>
+<div class="warn">⚠️ <b>Neyi ölçtük, neyi uydurduk?</b>
+<span class="m ol">ÖLÇÜLDÜ</span> yalnız token'lara bölünme (GPT-2 ve o200k sözlükleriyle, gerçek token numaralarıyla). Dikkat ağırlıkları, kartların taşıdığı bilgi ve tahmin yüzdeleri
+<span class="m sm">ŞEMATİK</span> — gerçek bir modelin ağırlıkları elimizde yok; "böyle olması makul" diye yazılmış örneklerdir. Gerçek bir modelin hangi kafasının neye baktığı ölçülmedi.</div>
+
+<div class="sec" style="--c:var(--green)">
+<h2>0) Cümle</h2>
+<div class="say">istanbulun başkenti nereresidir</div>
+<p>Küçük harfle, ek hatalı ("nereresidir" yerine "neresidir") yazılmış. Model için sorun değil: sözlükte olmayan yazımı daha küçük parçalarla yine okur. Bir de <b>içinde tuzak var</b>: İstanbul bir ülkenin başkenti değil (Türkiye'nin başkenti Ankara; İstanbul geçmişte Doğu Roma ve Osmanlı'nın başkentiydi). Eğitilmiş bir modelin bunu yakalayıp yakalamayacağı ölçülmedi — büyük modeller çoğunlukla yakalar, küçükler "İstanbul" deyip geçebilir.</p>
+</div>
+
+<div class="sec" style="--c:var(--blue)">
+<h2>1) Token'lara bölme <span class="m ol">ÖLÇÜLDÜ</span></h2>
+<p>Model harf ya da kelime değil, sözlükteki <b>parçaları</b> görür (BPE). Aynı cümle iki sözlükte farklı bölünür:</p>
+<div class="row"><b>GPT-2 sözlüğü (50.257) → 13 token</b></div>
+<div class="chips" id="tkG"></div>
+<div class="row"><b>o200k sözlüğü (≈200 bin; gpt-oss'un sözlüğü bunun uzantısı †) → 9 token</b></div>
+<div class="chips" id="tkO"></div>
+<p class="note">Neden böyle? Sözlükler İngilizce ağırlıklı yazıyla çıkarıldı. GPT-2'de «başkenti» → « ba» + «ş» + «k» + «ent» + «i» gibi parçalanır (ş harfi tek başına bir token); daha büyük ve çok dilli o200k daha az parçaya böler. Daha az token = daha az hesap. † Sohbet modellerinde cümlenin önüne ve arkasına «kullanıcı konuşuyor / asistan sırası» gibi özel işaret token'ları da eklenir; burada sayılmadı.</p>
+</div>
+
+<div class="sec" style="--c:var(--violet)">
+<h2>2) Her token'ın kartı ne taşır? <span class="m sm">ŞEMATİK</span></h2>
+<p>Her token'a 768 (ya da çok daha fazla) sayılık bir <b>kart</b> verilir. İlk kart yalnız «hangi parça + kaçıncı sıra» der; katman katman, <b>kendinden önceki</b> token'lardan okuduklarıyla zenginleşir. (Kural: bir token kendinden <i>sonrakini</i> göremez — «istan» kartı «bul»u bilemez, «bul» ise «istan»ı okuyabilir.)</p>
+<div class="row" id="stg"></div>
+<div class="tw"><table id="cardT"></table></div>
+<p class="note">Sütunlardaki yorumlar bir model içine bakılarak çıkarılmadı; yorumlanabilirlik çalışmalarında sık anlatılan eğilimlere dayanan <b>varsayımdır</b>: erken katman yüzey bilgisi, orta katman birleşme ve dil bilgisi, geç katman anlam ve «ne cevap beklenir».</p>
+</div>
+
+<div class="sec" style="--c:var(--amber)">
+<h2>3) Dikkat: kim kime bakar? <span class="m sm">ŞEMATİK</span></h2>
+<p>Bir token'ı seç: kartını güncellerken <b>kendinden önceki</b> hangi token'lara ne kadar bakıyor? Kafalar farklı iş yapar; üç tipik örnek:</p>
+<div class="row" id="hd"></div>
+<div class="chips" id="tkA"></div>
+<div id="attB"></div>
+<div class="box" id="attT" style="--c2:var(--amber)"></div>
+<p class="note">Cümleden tahmini <b>yalnız son token'ın</b> son kartı belirler (aşağıda). Önceki token'lar cevabı kendi satırlarından üretmez; kartlarını son token'ın okuması (K/V) için hazırlar. Üç kafa tipi sayıları elle seçilmiş örnektir.</p>
+</div>
+
+<div class="sec" style="--c:var(--red)">
+<h2>4) Tahmin: son kart → olasılıklar → seçim <span class="m sm">ŞEMATİK</span></h2>
+<p>Son token'ın (<code>idir</code>) son kartı sözlükteki <b>her token'ın kartıyla</b> nokta çarpılır (≈200 bin puan), puanlar softmax ile olasılığa çevrilir. Eğitilmiş bir sohbet modelinde ilk token için şöyle bir tablo <i>makul</i> olurdu (yüzdeler <b>uydurma örnek</b>):</p>
+<div id="prB"></div>
+<div class="row"><button id="gn">Sonraki token ▶</button><button id="gr">↺ Baştan</button></div>
+<div class="gen" id="gen">…</div>
+<div class="note" id="gnT"></div>
+<p class="note">Üretim döngüsü: seçilen token cümleye eklenir, model <b>yalnız yeni token'ın satırını</b> hesaplar (eski token'ların K/V'leri önbellekte durur) ve yeniden tahmin eder; bitiş işaretine kadar sürer. Aşağıdaki cevap örnektir, gerçek bir modelin çıktısı değildir; token sınırları da yaklaşık.</p>
+</div>
+</div>
+<script>
+(function(){
+var G=[["istan",4103],["bul",15065],["un",403],[" ba",26605],["ş",46481],["k",74],["ent",298],["i",72],[" ne",497],["re",260],["res",411],["id",312],["ir",343]];
+var O=[["istan",12560],["bul",17108],["un",373],[" baş",13777],["k",74],["enti",14989],[" ner",33853],["eres",21042],["idir",16259]];
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function vis(s){return esc(s).replace(/^ /,'␣')}
+function chips(id,arr,click){var h='';arr.forEach(function(t,i){h+='<div class="chip" data-i="'+i+'">'+vis(t[0])+'<small>#'+t[1]+(click?'':' · '+(i+1))+'</small></div>'});var e=document.getElementById(id);e.innerHTML=h;return e}
+chips('tkG',G);chips('tkO',O);
+/* --- 2) kartlar (o200k, 9 token) --- */
+var ST=['Erken katman','Orta katman','Geç katman'],cur=0;
+var C=[
+ ['istan',['«istan» parçası + 1. sıra. Başka bilgi yok','Kendinden öncesi yok: yalnız kendini görür. «…stan» ülke/yer eki gibi anlamsız kalabilir','Kendi satırından tahmin yapılmaz; kartı sonraki token\'ların okuması için K/V olarak durur']],
+ ['bul',['«bul» parçası + 2. sıra','«istan»ı okur: <b>istanbul = şehir adı</b> olduğunu toplar','«İstanbul» kavramı: şehir, Türkiye, en kalabalık, tarihî başkent… bilgi bu kartta toplanır']],
+ ['un',['«un» eki + 3. sıra','«-un» tamlayan eki: önündeki «İstanbul»a <b>sahiplik</b> bağlar','«İstanbul\'un ___» kalıbı: sıradaki isim İstanbul\'a ait bir şey']],
+ ['baş',['« baş» (kafa / ön / baş-) + 4. sıra','Tek başına belirsiz; «k»dan sonra anlam netleşecek, bu kart henüz bilemez','Sonrakilerin okuması için «İstanbul\'un baş…» bağlamını taşır']],
+ ['k',['«k» harfi + 5. sıra','«baş» ile birleşip «başk-» parçasını oluşturur','Çok kısa; asıl anlam bir sonraki parçada tamamlanır']],
+ ['enti',['«enti» + 6. sıra','«baş»+«k»+«enti» = <b>başkent</b> (+ iyelik eki «-i»): «İstanbul\'un başkenti»','<b>«Başkent» kavramı + İstanbul'+'\'a ait</b>: ülke yönetim merkezi sorusu açılıyor; «İstanbul bir başkent mi?» gerilimi burada doğar']],
+ ['ner',['« ner» + 7. sıra','Soru kökü: «nere-» → yer sorulacak','«Bir yer adı bekleniyor»']],
+ ['eres',['«eres» + 8. sıra','«ner»+«eres» = «nereres(i)»; yazım hatalı olsa da «neresi?» olarak okunur','Yazım hatası tolere edilir: anlam «neresi» ile aynı kümeye düşer']],
+ ['idir',['«idir» eki + 9. sıra','«-dir» bildirme eki: bu <b>bir soru cümlesi</b>, yanıt bekleniyor','<b>Tahmini yapan kart.</b> Taşıdığı: soru türü = «hangi yer?», konu = İstanbul\'un başkenti, olası cevaplar = Türkiye/Ankara/İstanbul, ve «öncül şüpheli» uyarısı']]
+];
+var sg=document.getElementById('stg'),h='';ST.forEach(function(s,i){h+='<button data-s="'+i+'">'+s+'</button>'});sg.innerHTML=h;
+function cardT(){var t='<tr><th>Token</th><th>'+ST[cur]+': kartın taşıdığı</th></tr>';C.forEach(function(r){t+='<tr><td class="t">'+r[0]+'</td><td>'+r[1][cur]+'</td></tr>'});document.getElementById('cardT').innerHTML=t;[].forEach.call(sg.children,function(b,i){b.className=i===cur?'on':''})}
+sg.onclick=function(e){var b=e.target.closest('button');if(!b)return;cur=+b.dataset.s;cardT()};cardT();
+/* --- 3) dikkat --- */
+var tk=O.map(function(t){return vis(t[0])}),sel=8,hd=0;
+var HN=['Kafa A: yakın komşu','Kafa B: soru ↔ konu','Kafa C: ilk token\'a yaslan'],
+ HE=['Çoğu kafa yakın komşuya bakar (söz dizimi): son token «idir» büyük ölçüde «eres» ve «ner»i okur.','Soru-konu bağlayan kafa (varsayım): soru token\'ları <b>«bul/un» (İstanbul)</b> ve <b>«enti» (başkent)</b> üzerine yoğunlaşır — cevabı belirleyen bilgi buradan gelir.','Bilgi gerekmeyen kafalar boşta kalmamak için ilk token\'a yaslanır (literatürde «attention sink»): anlamlı bir okuma değil, bir «boşa harcama noktası».'];
+var IMP=[.05,.32,.14,.04,.02,.24,.06,.04,.09];
+function wts(i,k){var w=[],s=0;for(var j=0;j<=i;j++){var v;if(k==0)v=Math.exp(-(i-j)*1.1);else if(k==1)v=(i==0?1:IMP[j]+(j==i?.03:0));else v=(j==0?6:.25);w.push(v);s+=v}return w.map(function(v){return v/s})}
+var hh='';HN.forEach(function(n,i){hh+='<button data-h="'+i+'">'+n+'</button>'});document.getElementById('hd').innerHTML=hh;
+var ta=chips('tkA',O,true);
+function att(){var w=wts(sel,hd),h='';for(var j=0;j<tk.length;j++){var m=j>sel;h+='<div class="bar'+(m?' msk':'')+'"><span>'+tk[j]+'</span><span class="b"><i style="width:'+(m?0:Math.round(w[j]*100))+'%"></i></span><span>'+(m?'görmez':Math.round(w[j]*100)+'%')+'</span></div>'}
+document.getElementById('attB').innerHTML=h;document.getElementById('attT').innerHTML='<b>«'+tk[sel]+'» satırı, '+HN[hd]+'</b><br>'+HE[hd]+(sel<8?'<br><span style="color:var(--mute)">Bu token cevabı üretmez; kartı son token tarafından okunur.</span>':'');
+[].forEach.call(ta.children,function(c,i){c.className='chip'+(i===sel?' on':'')});[].forEach.call(document.getElementById('hd').children,function(b,i){b.className=i===hd?'on':''})}
+ta.onclick=function(e){var c=e.target.closest('.chip');if(!c)return;sel=+c.dataset.i;att()};
+document.getElementById('hd').onclick=function(e){var b=e.target.closest('button');if(!b)return;hd=+b.dataset.h;att()};att();
+/* --- 4) tahmin --- */
+var CAND=[["İstanbul",34],["Türk",22],["Ankara",14],["Bu",9],["Aslında",8],["Osman",4],["Doğu",2],["diğerleri (~200 bin)",7]];
+var pb='';CAND.forEach(function(c){pb+='<div class="bar"><span>'+esc(c[0])+'</span><span class="b"><i style="width:'+c[1]*2+'%;background:var(--red)"></i></span><span>%'+c[1]+'</span></div>'});document.getElementById('prB').innerHTML=pb;
+var ST2=[["İstanbul","«İstanbul» seçildi (en yüksek olasılık). Cümleye eklenir, model yalnız yeni satırı hesaplar."],[" bir","Şimdi okuyucu «istanbulun başkenti nereresidir İstanbul» görür."],[" başkent","«İstanbul bir başkent…» — tuzak fark edilirse sıradaki token olumsuzlama olur."],[" değildir","Eğitilmiş model burada «değildir» gibi bir olumsuzlama seçebilir."],["."," Cümle bitti."],[" Türkiye'nin başkenti Ankara'dır","(Birkaç token) Doğru bilgiyi de ekler."],["<bitiş>","Bitiş işareti seçilince üretim durur."]];
+var gi=0;
+function gen(){var h='';for(var i=0;i<gi;i++){var t=ST2[i][0];if(t=='<bitiş>')continue;h+=(i==gi-1?'<b>'+esc(t)+'</b>':esc(t))}
+document.getElementById('gen').innerHTML=h||'…';document.getElementById('gnT').textContent=gi?ST2[gi-1][1]:'Düğmeye bas: her basış bir token ekler.'}
+document.getElementById('gn').onclick=function(){if(gi<ST2.length){gi++;gen()}};
+document.getElementById('gr').onclick=function(){gi=0;gen()};gen();
+window.__ist={O:O,G:G};
+})();
+</script></body></html>
