@@ -72,6 +72,12 @@ def apify_items():
     body = json.dumps({'searchTerms': terms, 'maxItems': a.get('en_fazla', 150), 'sort': 'Latest'}).encode()
     d = json.loads(get('https://api.apify.com/v2/acts/%s/run-sync-get-dataset-items' % actor,
                        {'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json'}, body, 240))
+    if isinstance(d, list):
+        print('apify: %d öğe; ilk öğe anahtarları: %s' % (len(d), sorted(d[0].keys())[:25] if d and isinstance(d[0], dict) else '-'), file=sys.stderr)
+        if d and isinstance(d[0], dict) and not (d[0].get('text') or d[0].get('fullText')):
+            print('apify ilk öğe (kısaltılmış):', json.dumps(d[0], ensure_ascii=False)[:400], file=sys.stderr)
+    else:
+        print('apify beklenmeyen yanıt:', json.dumps(d, ensure_ascii=False)[:400], file=sys.stderr)
     out = []
     for t in d if isinstance(d, list) else []:
         text = t.get('text') or t.get('fullText') or ''
