@@ -1,6 +1,150 @@
 [
  {
   "date": "2026-11-22",
+  "title": "Inkling 2 Mini: Yerel LLM kurulumları için yüksek performanslı donanım",
+  "note": "Küçük bir kutu içinde güçlü GPU ve bellek sunarak yerel büyük dil modellerinin hızlı çalışmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/inkling2mini",
+  "source": "huggingface.co",
+  "tags": [
+   "donanım",
+   "model",
+   "performans"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Fine‑tuning süresi neden FLOP tahminlerinden daha uzun?",
+  "note": "Veri akışı, I/O sınırlamaları ve optimizasyon eksikliği, eğitim süresini FLOP hesabının çok üzerine çıkarıyor.",
+  "url": "https://huggingface.co/blog/Dharma-AI/predicting-fine-tuning-time",
+  "source": "huggingface.co",
+  "tags": [
+   "inceleme",
+   "optimizasyon",
+   "eğitim"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "BotPsy: Cihaz içinde çalışan alt‑milyar parametreli ajan dil modeli",
+  "note": "Küçük bir LLM ile kişisel asistan işlevi sunarak çevrimdışı etkileşim ve gizlilik sağlıyor.",
+  "url": "https://huggingface.co/blog/qvac/botpsy",
+  "source": "huggingface.co",
+  "tags": [
+   "uygulama",
+   "model",
+   "gizlilik"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Hugging Face’de Karar Modelleri entegrasyonu",
+  "note": "Karar ağaçları ve regresyon modelleri, Transformers ekosistemine API üzerinden eklenerek çoklu görevlerde kullanılabiliyor.",
+  "url": "https://huggingface.co/blog/decision",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "karar",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Transformers Model Entegrasyon Sözleşmeleri",
+  "note": "Model paylaşımı ve sürüm uyumluluğu için standart sözleşmeler tanımlanarak topluluk iş birliği güçlendirildi.",
+  "url": "https://huggingface.co/blog/transformers-mic",
+  "source": "huggingface.co",
+  "tags": [
+   "standart",
+   "topluluk",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Veritabanı Sıralamasını RL ödüllerine dönüştürme",
+  "note": "ThinkingBox, veri tabanı derecelendirmesini pekiştirmeli öğrenme sinyallerine çevirerek post‑training ajanları eğitiyor.",
+  "url": "https://huggingface.co/blog/microsoft/thinkingbox-training",
+  "source": "huggingface.co",
+  "tags": [
+   "rl",
+   "veri",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "PyTorch 2.15’te MPS desteği",
+  "note": "Apple Silicon’da Metal Performance Shaders entegrasyonu, GPU hızlandırmalı eğitim ve çıkarım performansını artırıyor.",
+  "url": "https://huggingface.co/blog/mps-pytorch-2-15",
+  "source": "huggingface.co",
+  "tags": [
+   "performans",
+   "donanım",
+   "pytorch"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "TorchNeuron: AWS Trainium’da Hugging Face modelleri",
+  "note": "Trainium çipleri için optimize edilmiş kütüphane, büyük dil modellerinin bulutta daha ucuz ve hızlı çalışmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/hf-torchneuron",
+  "source": "huggingface.co",
+  "tags": [
+   "bulut",
+   "model",
+   "optimizasyon"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "ChatGPT for Academic Researchers programı genişletildi",
+  "note": "200 000 araştırmacıya ücretsiz erişim sunularak en yeni modellerin bilimsel çalışmalarda kullanılabilirliği artırıldı.",
+  "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers",
+  "source": "openai.com",
+  "tags": [
+   "araştırma",
+   "erişim",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "ChatGPT for Healthcare: Yeni klinik eklentiler ve bilgisayar‑kullanım ajanları",
+  "note": "Sağlık yazılımlarıyla entegrasyon, daha doğru klinik yanıtlar ve otomatik görev yürütme imkanı tanıyor.",
+  "url": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare",
+  "source": "openai.com",
+  "tags": [
+   "sağlık",
+   "uygulama",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Claude Code: Deneysel Kod Modu ile araç zinciri entegrasyonu",
+  "note": "Kullanıcılar, Claude’un komut dosyalarını birden çok araçla zincirleyerek uzun süren işlemler sırasında da yanıt alabiliyor.",
+  "url": "https://x.com/ClaudeDevs/status/2122801681939234950",
+  "source": "@ClaudeDevs",
+  "tags": [
+   "kod",
+   "araç",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Claude Code’da doğrulamalı kod üretimi",
+  "note": "Test, benchmark ve uç‑uç çalıştırma gibi maliyetli kontrollerin ucuzlaştırılması, kod kalitesini otomatik olarak artırıyor.",
+  "url": "https://x.com/ClaudeDevs/status/2122457608963395586",
+  "source": "@ClaudeDevs",
+  "tags": [
+   "kod",
+   "doğrulama",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-22",
   "title": "Granite Switch 4.1.1: Modelleri Yazılım Gibi Güncelleme",
   "note": "Granite Switch, model sürümlerini otomatik ve güvenli bir şekilde dağıtarak güncelleme sürecini basitleştiriyor.",
   "url": "https://huggingface.co/blog/ibm-granite/granite-switch-4-1-1",
