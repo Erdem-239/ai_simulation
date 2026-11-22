@@ -1,0 +1,72 @@
+window.BB_LESSONS={};
+(function(L){
+const $=(el,s)=>el.querySelector(s);
+/* ---------- 1. Erken hesaplama ---------- */
+L.early={icon:'🧮',title:'Erken hesaplama',lead:'Sayıları parmakla saymaktan, yalnızca toplama yaparak çok karmaşık tablolar üreten makinelere.',
+intro:'<p>İnsan, hesap yapmayı hep bir <b>araca</b> devretmek istedi: çakıl taşları, abaküs, hesap cetveli. Bilgisayarın hikâyesi, bu araçların yavaş yavaş “kendi kendine çalışan makineye” dönüşmesidir.</p><div class="cards3"><div><b>🪨 Sayma araçları</b>Çentikli kemikler, çakıllar, abaküs: bilgi dışarıda, aracın üstünde durur.</div><div><b>⚙️ Mekanik hesaplayıcılar</b>Dişli çarklarla toplama-çıkarma: insan kolu çevirir, makine elde tutar.</div><div><b>🧠 Programlanabilir makine</b>Hesap sırasını değiştirebilen makine fikri: bilgisayarın asıl sıçraması.</div></div>',
+story:'<p>1600’lerde Pascal ve Leibniz dişlilerle toplayıp çarpan makineler yaptı. 1800’lerin başında Jacquard dokuma tezgâhı, deliklerle dizilmiş kartlarla desen “programlıyordu”: kart değişince aynı makine başka desen dokuyordu.</p><p>Charles Babbage (1820’ler) tablo hatalarından bıktı: elle hazırlanan logaritma ve navigasyon tablolarında yanlışlar vardı. Önerisi <b>Fark Makinesi</b>ydi: polinom tablolarını yalnızca <i>toplama</i> ile üretecek, yani yanılmayacak bir makine. Sonra daha iddialı bir fikir geldi: <b>Analitik Makine</b>, kartlarla programlanan, bellek ve işlem birimi ayrı bir genel amaçlı makine. Ada Lovelace bu makinenin yalnızca sayılarla değil, her tür simgeyle çalışabileceğini yazdı. Makine hiç tamamlanmadı, ama bilgisayarın mimarisi neredeyse onun tarifidir.</p><div class="call">Not: tarihler yaklaşık verilmiştir; ayrıntıları kaynaktan doğrulamak iyi olur.</div>',
+real:'<div class="cards3"><div><b>🧾 Hesap makineleri</b>Kasadaki toplama makinesinin torunları.</div><div><b>🧵 Delikli kart</b>Oy sayımı, nüfus sayımı ve ilk veri işleme kartlarla yapıldı.</div><div><b>📈 Tablolar</b>Bugün bile hızlı hesap için “fark” tekniği (artımlı hesap) kullanılır: ekran çizimi, animasyon.</div></div>',
+what:'<h4>Fark yöntemi</h4><p>Bir polinomun değerlerini her seferinde baştan hesaplamak yerine, <b>ardışık değerler arasındaki farkları</b> toplayarak ilerleyebiliriz. İkinci dereceden bir polinomda ikinci farklar sabittir; yani bir kez doğru başlayınca yalnızca toplama yeter.</p><p>Örnek: f(n)=n²+n+41. f(0)=41, ilk fark 2, ikinci fark hep 2. Her adımda: <span class="mono">f ← f + d1</span>, sonra <span class="mono">d1 ← d1 + d2</span>. Çarpma yok, hata yok.</p><div class="call">Fikir: karmaşık bir işi, <b>çok basit bir işlemin tekrarına</b> indirgemek. Bilgisayar bilimi bu fikrin üstüne kuruludur.</div>',
+sim(el){el.innerHTML='<div class="sim"><div class="panel"><h5>Fark makinesi (n²+n+41)</h5><div class="ctl"><button class="btn" id="e1">➕ 1 adım</button><button class="btn" id="e5">⏩ 5 adım</button><button class="btn" id="e0">↺ Baştan</button></div><div class="mono" style="margin:8px 0">f = <span class="big" id="ef">41</span> &nbsp; d1 = <b id="ed1">2</b> &nbsp; d2 = <b id="ed2">2</b></div><div class="soz" id="es"></div></div><div class="panel"><h5>Üretilen tablo</h5><table id="et"></table></div></div>';
+let n,f,d1,d2,rows;const r=()=>{n=0;f=41;d1=2;d2=2;rows=[[0,41,'—']]};r();
+function draw(msg){$(el,'#ef').textContent=f;$(el,'#ed1').textContent=d1;$(el,'#ed2').textContent=d2;
+$(el,'#et').innerHTML='<tr><th>n</th><th>f(n)</th><th>nasıl</th></tr>'+rows.slice(-10).map((x,i,a)=>'<tr'+(i==a.length-1?' class="hl"':'')+'><td>'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td></tr>').join('');
+const ok=f===n*n+n+41;$(el,'#es').innerHTML=msg||'Başlangıç: yalnızca üç sayı biliyoruz (41, 2, 2).';$(el,'#es').innerHTML+=' <br>Kontrol: n²+n+41 = '+(n*n+n+41)+(ok?' ✓ (aynı, yalnız toplayarak)':' ✗')}
+function step(){const old=f;f+=d1;d1+=d2;n++;rows.push([n,f,old+' + '+(d1-d2)+' = '+f]);return 'f = '+old+' + '+(d1-d2)+' = '+f+'; sonra d1 = '+(d1-d2)+' + '+d2+' = '+d1+'.'}
+$(el,'#e1').onclick=()=>draw(step());$(el,'#e5').onclick=()=>{let m;for(let i=0;i<5;i++)m=step();draw(m)};$(el,'#e0').onclick=()=>{r();draw()};draw()},
+ornek:'<p>Fark makinesiyle n²+n+41 tablosunu n=10’a kadar elle üret: 41, 43, 47, 53, 61, 71, 83, 97, 113, 131, 151. Her satır bir öncekine yalnızca artan bir sayı eklenerek bulunur (2, 4, 6, 8…).</p><pre class="code">f, d1, d2 = 41, 2, 2\nfor n in range(11):\n    print(n, f)\n    f += d1      # yalnızca toplama\n    d1 += d2</pre>',
+test:[
+{q:'Babbage’in Fark Makinesi tabloları hangi işlemle üretirdi?',o:['Yalnızca toplama','Yalnızca çarpma','Rastgele tahmin','Logaritma cetveli'],a:0,w:'Ardışık farkları toplayarak polinom değerleri elde edilir.'},
+{q:'Analitik Makine’yi Fark Makinesi’nden ayıran temel özellik nedir?',o:['Daha büyük olması','Kartlarla programlanabilmesi','Elektrikle çalışması','Sadece çarpma yapması'],a:1,w:'Genel amaçlı, programlanabilir olması asıl sıçramaydı.'},
+{q:'Jacquard tezgâhı bilgisayar tarihinde neden önemlidir?',o:['İlk ekran','Delikli kartla davranış değiştirmenin ilk örneklerinden','İlk işlemci','İlk ağ'],a:1,w:'Aynı makine, kart değişince farklı desen dokur: program fikri.'},
+{q:'f(n)=n²+n+41 için ikinci fark kaçtır?',o:['0','1','2','41'],a:2,w:'İkinci derece polinomda ikinci fark sabittir; burada 2.'},
+{q:'“Karmaşık işi basit bir işlemin tekrarına indirgemek” fikri en iyi hangisidir?',o:['Yedekleme','Soyutlama ve tekrar','Şifreleme','Sıkıştırma'],a:1,w:'Bilgisayarlar, basit işlemleri çok hızlı tekrarlayarak karmaşık işler yapar.'}]};
+
+/* ---------- 2. Mantık kapıları ---------- */
+L.gates={icon:'🔀',title:'Mantık kapıları',lead:'Doğru/yanlış düşüncesini bir elektrik devresine dökmek: AND, OR, NOT ve hepsinin birleşimi.',
+intro:'<p>Bir lamba iki anahtara bağlı olsun. “İkisi de açıksa yansın” (<b>VE</b>), “biri açıksa yansın” (<b>VEYA</b>), “anahtar kapalıysa yansın” (<b>DEĞİL</b>). Bilgisayarın içindeki her şey, bu üç küçük kuralın kopyalarıdır.</p><div class="cards3"><div><b>AND (VE)</b>Çıkış yalnızca iki girdi de 1 ise 1.</div><div><b>OR (VEYA)</b>Çıkış, girdilerden en az biri 1 ise 1.</div><div><b>NOT (DEĞİL)</b>Girdiyi tersine çevirir.</div></div>',
+story:'<p>George Boole (1850’ler) mantığı cebire çevirdi: doğru=1, yanlış=0 ve işlemler VE/VEYA/DEĞİL. Yaklaşık 80 yıl sonra Claude Shannon (yüksek lisans tezi, 1937) bu cebirin anahtarlı devrelerle birebir örtüştüğünü gösterdi. Bir anahtar “1 ya da 0” olabiliyorsa, devre mantık yürütebilirdi. Bilgisayarın mantıksal temeli işte buradan gelir.</p><div class="call">Tarihler yaklaşık verilmiştir.</div>',
+real:'<div class="cards3"><div><b>🚪 Alarm sistemi</b>“Kapı açık VE alarm kurulu” ise çal.</div><div><b>🔎 Arama filtreleri</b>“mavi VE ayakkabı DEĞİL sandalet”.</div><div><b>🧮 İşlemcinin içi</b>Milyarlarca kapı; toplama, karşılaştırma, bellek hepsi kapılardan.</div></div>',
+what:'<h4>Doğruluk tabloları</h4><p>Bir kapının davranışı, tüm girdi kombinasyonları için çıkışı gösteren küçük bir tabloyla tarif edilir. İki girdili kapıda 4 satır vardır.</p><h4>İki kapıdan toplama</h4><p>İki bitin toplamı: <b>toplam = A XOR B</b> (ikisi farklıysa 1), <b>elde = A AND B</b>. Bu iki kapı bir <b>yarım toplayıcı</b> yapar; ikili sayı toplamanın en küçük parçası. (Sonraki derslerde bunun üstüne kuracağız.)</p>',
+sim(el){el.innerHTML='<div class="sim"><div class="panel"><h5>Kapı laboratuvarı</h5><div class="ctl"><label>A <button class="bit" id="ga">0</button></label><label>B <button class="bit" id="gb">0</button></label></div><div class="ctl" id="gsel"></div><div class="mono" style="margin:10px 0">Çıkış: <span class="big" id="go">0</span></div><div class="soz" id="gs"></div></div><div class="panel"><h5>Doğruluk tablosu</h5><table id="gt"></table><h5 style="margin-top:14px">Yarım toplayıcı</h5><div class="mono" id="gh"></div></div></div>';
+const G={AND:(a,b)=>a&b,OR:(a,b)=>a|b,XOR:(a,b)=>a^b,NAND:(a,b)=>1-(a&b),NOR:(a,b)=>1-(a|b),NOT:(a)=>1-a};
+const TX={AND:'iki girdi de 1 olmalı',OR:'en az biri 1 olmalı',XOR:'girdiler birbirinden farklı olmalı',NAND:'AND’in tersi: yalnız ikisi de 1 ise 0',NOR:'OR’un tersi: yalnız ikisi de 0 ise 1',NOT:'yalnız A kullanılır, tersine çevrilir'};
+let a=0,b=0,g='AND';
+$(el,'#gsel').innerHTML=Object.keys(G).map(k=>'<button class="btn" data-g="'+k+'">'+k+'</button>').join('');
+function draw(){$(el,'#ga').textContent=a;$(el,'#gb').textContent=b;$(el,'#ga').classList.toggle('on',!!a);$(el,'#gb').classList.toggle('on',!!b);
+el.querySelectorAll('[data-g]').forEach(x=>x.classList.toggle('on',x.dataset.g===g));
+const o=G[g](a,b);$(el,'#go').textContent=o;$(el,'#gs').innerHTML=g+(g=='NOT'?'('+a+')':'('+a+', '+b+')')+' = <b>'+o+'</b>: '+TX[g]+'.';
+let t='<tr><th>A</th><th>B</th><th>'+g+'</th></tr>';for(let i=0;i<4;i++){const x=i>>1,y=i&1;t+='<tr'+(x==a&&y==b?' class="hl"':'')+'><td>'+x+'</td><td>'+y+'</td><td>'+G[g](x,y)+'</td></tr>'}$(el,'#gt').innerHTML=t;
+$(el,'#gh').innerHTML=a+' + '+b+' → toplam (XOR) = <b>'+(a^b)+'</b>, elde (AND) = <b>'+(a&b)+'</b> → ikili: '+(a&b)+''+(a^b)+' = '+(a+b)}
+$(el,'#ga').onclick=()=>{a^=1;draw()};$(el,'#gb').onclick=()=>{b^=1;draw()};el.querySelectorAll('[data-g]').forEach(x=>x.onclick=()=>{g=x.dataset.g;draw()});draw()},
+ornek:'<p>XOR’u yalnız AND, OR ve NOT ile kur: <span class="mono">A XOR B = (A OR B) AND NOT(A AND B)</span>. (0,1) için: (1) AND NOT(0)=1 ✓. (1,1) için: (1) AND NOT(1)=0 ✓.</p><pre class="code">def xor(a, b):\n    return (a | b) & (1 - (a & b))\nfor a in (0,1):\n    for b in (0,1):\n        print(a, b, xor(a, b))</pre>',
+test:[
+{q:'AND kapısı hangi durumda 1 verir?',o:['Girdilerden biri 1','İkisi de 1','İkisi de 0','Girdiler farklı'],a:1,w:'AND: yalnız tüm girdiler 1 ise.'},
+{q:'NOT(1) kaçtır?',o:['0','1','2','Tanımsız'],a:0,w:'NOT girdiyi tersler.'},
+{q:'Yarım toplayıcıda “elde” hangi kapıdan çıkar?',o:['XOR','AND','OR','NOT'],a:1,w:'1+1 = 10: elde = A AND B.'},
+{q:'Boole cebrini anahtar devrelerine uygulayan kişi kimdir?',o:['Babbage','Shannon','Pascal','Turing'],a:1,w:'Shannon, 1937 tezinde anahtar devrelerini Boole cebriyle bağladı.'},
+{q:'XOR(1,1) kaçtır?',o:['0','1','2','Hata'],a:0,w:'XOR: girdiler farklıysa 1; aynıysa 0.'}]};
+
+/* ---------- 3. İkili sayılar ---------- */
+L.binary={icon:'🔢',title:'İkili sayılar ve metin',lead:'Bilgisayar yalnızca 0 ve 1 bilir; bunlarla sayıyı, harfi, hatta resmi nasıl saklar?',
+intro:'<p>Bir anahtar iki durumda olabilir: kapalı/açık. Buna <b>bit</b> diyoruz. Tek bit az bilgi taşır, ama <b>8 bit (1 bayt)</b> 256 farklı değer ayırt eder. Sayılar, harfler, renkler: hepsi bit dizisidir. Önemli olan, o diziyi nasıl <i>yorumladığımızdır</i>.</p><div class="cards3"><div><b>1 bit</b>2 değer</div><div><b>8 bit</b>256 değer (0–255)</div><div><b>n bit</b>2ⁿ değer</div></div>',
+story:'<p>İkili sayı sistemini Leibniz 1700’lerde sistematik olarak tanımladı; yalnız 0 ve 1 ile bütün sayılar yazılabilirdi. Elektronik devreler ise “var/yok gerilim”i ayırt etmekte çok iyiydi; üç ya da on durumdan çok, iki durumu güvenle ayırt etmek kolaydı. Böylece ikili sistem, hem matematiksel hem mühendislik olarak doğal seçim oldu. Metin için de ortak bir tablo gerekti: ASCII (1960’lar) her harfe bir sayı atadı, örneğin “A” = 65.</p><div class="call">Tarihler yaklaşık verilmiştir.</div>',
+real:'<div class="cards3"><div><b>🎨 Renkler</b>Bir piksel genelde 3 bayt: kırmızı, yeşil, mavi (0–255).</div><div><b>🌐 IP adresleri</b>192.168.1.1: dört bayt.</div><div><b>🔤 Emoji ve Türkçe harfler</b>Unicode: ASCII’nin genişlemişi (UTF-8).</div></div>',
+what:'<h4>Basamak değeri</h4><p>Onluk sistemde basamaklar 10’un kuvvetleridir (1, 10, 100…). İkilide 2’nin kuvvetleri: 1, 2, 4, 8, 16, 32, 64, 128. Örneğin <span class="mono">00101101</span> = 32+8+4+1 = 45.</p><h4>Metin</h4><p>Her karakterin bir sayısı vardır (ASCII/Unicode). “Merhaba” aslında bir sayı listesidir; bilgisayar bunları ikiliye çevirip saklar.</p>',
+sim(el){el.innerHTML='<div class="sim"><div class="panel"><h5>8 bitlik sayı</h5><div class="ctl" id="bb"></div><div class="mono">Basamak değerleri: 128 64 32 16 8 4 2 1</div><div style="margin-top:8px">Onluk: <span class="big" id="bd">0</span> &nbsp; Onaltılık: <b class="mono" id="bh">00</b> &nbsp; ASCII: <b id="bc"></b></div><div class="soz" id="bs"></div></div><div class="panel"><h5>Metni ikiliye çevir</h5><input id="bt" value="Hi!" maxlength="12" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font:inherit"><table id="bx" style="margin-top:10px"></table></div></div>';
+let bits=[0,0,0,0,0,0,0,0];const box=$(el,'#bb');
+box.innerHTML=bits.map((_,i)=>'<button class="bit" data-i="'+i+'">0</button>').join('');
+function draw(){const v=bits.reduce((s,x,i)=>s+x*(1<<(7-i)),0);box.querySelectorAll('.bit').forEach((e,i)=>{e.textContent=bits[i];e.classList.toggle('on',!!bits[i])});
+$(el,'#bd').textContent=v;$(el,'#bh').textContent=v.toString(16).toUpperCase().padStart(2,'0');$(el,'#bc').textContent=(v>=32&&v<127)?'“'+String.fromCharCode(v)+'”':'(görünmeyen)';
+const parts=bits.map((x,i)=>x?(1<<(7-i)):0).filter(x=>x);$(el,'#bs').textContent=parts.length?'Açık bitlerin değerleri: '+parts.join(' + ')+' = '+v+'.':'Hiç bit açık değil: değer 0.'}
+box.querySelectorAll('.bit').forEach(e=>e.onclick=()=>{bits[+e.dataset.i]^=1;draw()});
+function tx(){const s=$(el,'#bt').value;$(el,'#bx').innerHTML='<tr><th>harf</th><th>sayı</th><th>ikili</th></tr>'+[...s].map(c=>{const n=c.codePointAt(0);return '<tr><td>'+c.replace(/[<>&]/g,'?')+'</td><td>'+n+'</td><td>'+n.toString(2).padStart(8,'0')+'</td></tr>'}).join('')}
+$(el,'#bt').oninput=tx;tx();draw()},
+ornek:'<p>45 sayısını ikiliye çevir: 45 = 32+8+4+1 → <span class="mono">00101101</span>. “A” harfi = 65 = 64+1 → <span class="mono">01000001</span>. 8 bit ile en büyük sayı 11111111 = 255.</p><pre class="code">n = 45\nprint(bin(n))            # 0b101101\nprint(ord("A"), bin(ord("A")))  # 65 0b1000001\nprint(int("101101", 2))  # 45</pre>',
+test:[
+{q:'8 bit kaç farklı değer taşıyabilir?',o:['8','64','128','256'],a:3,w:'2⁸ = 256 (0–255).'},
+{q:'00001010 ikili sayısı onlukta kaçtır?',o:['8','10','12','5'],a:1,w:'8 + 2 = 10.'},
+{q:'ASCII’de “A” kaçıncı sayıdır?',o:['1','41','65','97'],a:2,w:'A = 65, a = 97.'},
+{q:'Elektronik devreler neden ikili sistemi tercih eder?',o:['Daha kolay yazılır','İki durumu güvenle ayırt etmek kolaydır','Daha az bellek','Moda'],a:1,w:'Gerilim var/yok, gürültüye dayanıklı bir ayrımdır.'},
+{q:'255 sayısı ikilide nasıl yazılır (8 bit)?',o:['11111111','10000000','01111111','11111110'],a:0,w:'128+64+32+16+8+4+2+1 = 255.'}]};
+})(window.BB_LESSONS);
