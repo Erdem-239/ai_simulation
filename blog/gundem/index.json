@@ -1,6 +1,150 @@
 [
  {
   "date": "2026-11-22",
+  "title": "Granite Switch 4.1.1: Modelleri Yazılım Gibi Güncelleme",
+  "note": "Granite Switch, model sürümlerini otomatik ve güvenli bir şekilde dağıtarak güncelleme sürecini basitleştiriyor.",
+  "url": "https://huggingface.co/blog/ibm-granite/granite-switch-4-1-1",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "güncelleme",
+   "yazılım"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Project ProtoStar: Kamu Bilimini AI’a Hazırlıyor",
+  "note": "ProtoStar, kamu fonlu araştırma projelerini açık yapay zeka araçlarıyla entegre etmeyi hedefliyor.",
+  "url": "https://huggingface.co/blog/announcing-project-protostar",
+  "source": "huggingface.co",
+  "tags": [
+   "açıkbilim",
+   "yapayzeka",
+   "projeler"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Modeliniz AWS Trainium’da Çalışıyor mu? Kontrol Listesi",
+  "note": "AWS Trainium uyumluluğu, büyük ölçekli dil modellerinin verimli eğitim ve çıkarımını mümkün kılıyor.",
+  "url": "https://huggingface.co/blog/torch-neuronx-model-support",
+  "source": "huggingface.co",
+  "tags": [
+   "donanım",
+   "trainium",
+   "uyumluluk"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "TorchNeuron Profiling: AWS Trainium’da Sistem Seviyesi Analiz",
+  "note": "Bu rehber, Trainium üzerinde model performansını ölçmek ve darboğazları tespit etmek için adım adım profil oluşturma sunuyor.",
+  "url": "https://huggingface.co/blog/amazon/profiling-torchneuron-part-1",
+  "source": "huggingface.co",
+  "tags": [
+   "profiling",
+   "performans",
+   "trainium"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Hugging Face ve TorchTPU: TPU Desteği Yerel Hale Geldi",
+  "note": "TorchTPU entegrasyonu, Hugging Face modellerinin Google TPU’larda doğrudan çalıştırılmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/hf-torchtpu",
+  "source": "huggingface.co",
+  "tags": [
+   "tpu",
+   "entegrasyon",
+   "hız"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "AnyLanguageModel 1.0: Apple Platformlarında Yerel Model Çalıştırma",
+  "note": "AnyLanguageModel, iOS ve macOS cihazlarında büyük dil modellerini offline çalıştırma imkanı tanıyor.",
+  "url": "https://huggingface.co/blog/anylanguagemodel-1-0",
+  "source": "huggingface.co",
+  "tags": [
+   "yerel",
+   "apple",
+   "dilmodeli"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "OpenAI Performance Factory: ChatGPT’nin Hızını Koruyan Sistem",
+  "note": "Performans Fabrikası, kod tabanlı otomasyonla performans sorunlarını tespit edip hızlıca düzeltmeyi sağlıyor.",
+  "url": "https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast",
+  "source": "openai.com",
+  "tags": [
+   "performans",
+   "otomasyon",
+   "chatgpt"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Araştırma Hızlandırma: Kodlama Ajanları ve Düzensiz İlerleme",
+  "note": "OpenAI, kodlama ajanlarının araştırma sürecini nasıl hızlandırdığını ve hâlâ çözülmemiş zorlukları inceliyor.",
+  "url": "https://openai.com/index/research-acceleration-jagged-frontier",
+  "source": "openai.com",
+  "tags": [
+   "araştırma",
+   "kodlama",
+   "ajan"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Sınırdaki AI Risk Yönetimi: Eğitimden Dağıtıma",
+  "note": "OpenAI, model hizalanması, kumanda ve izleme yoluyla ileri AI risklerini bütünsel bir çerçevede ele alıyor.",
+  "url": "https://openai.com/index/managing-frontier-ai-risk",
+  "source": "openai.com",
+  "tags": [
+   "risk",
+   "güvenlik",
+   "hizalama"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "NATO ve Müttefik Siber Savunmada AI Kullanımı",
+  "note": "OpenAI, NATO’ya güvenilir AI araçları sağlayarak savunma açıklarını tespit ve onarma süreçlerini destekliyor.",
+  "url": "https://openai.com/index/strengthening-nato-allied-cyber-defences-ai",
+  "source": "openai.com",
+  "tags": [
+   "siber",
+   "savunma",
+   "ai"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Bilim İnsanları ChatGPT’yi Nasıl Kullanıyor? Büyük Bir Anket",
+  "note": "1800’den fazla bilim insanının ChatGPT’yi araştırma, veri analizi ve yazımda nasıl kullandığını gösteren kapsamlı bir çalışma.",
+  "url": "https://openai.com/index/science-at-the-frontier",
+  "source": "openai.com",
+  "tags": [
+   "bilim",
+   "anket",
+   "chatgpt"
+  ]
+ },
+ {
+  "date": "2026-11-22",
+  "title": "Gömülü Değerlendirmeler: Model Uyumu ve Güvenlik Testleri",
+  "note": "OpenAI, bağımsız kuruluşlarla iş birliği yaparak modellerin uyum, güvenlik ve izleme sistemlerini bağımsız olarak değerlendiriyor.",
+  "url": "https://openai.com/index/our-first-phase-of-embedded-assessments",
+  "source": "openai.com",
+  "tags": [
+   "değerlendirme",
+   "uyum",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-22",
   "title": "Hugging Face ve OpenRouter iş birliğiyle açık ağırlıklı modeller kolaylaşıyor",
   "note": "Bu ortaklık, geliştiricilerin açık‑ağırlıklı LLM'leri tek bir platformda hızlıca dağıtıp çalıştırmasını sağlıyor.",
   "url": "https://huggingface.co/blog/openrouter",
