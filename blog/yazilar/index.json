@@ -1,3 +1,22 @@
 [
-  {"slug":"bu-site-neden-var","title":"Bu site neden var?","date":"2026-11-22","tags":["site","öğrenme"],"summary":"Okuyarak değil, oynatarak anlamak: bu sitenin arkasındaki fikir ve nasıl gezileceği."}
+ {
+  "slug": "siradaki-konular",
+  "title": "Sırada ne var? Araştırma ve ders konuları",
+  "date": "2026-11-23",
+  "tags": [
+   "plan",
+   "yapay zekâ"
+  ],
+  "summary": "Önümüzdeki haftalarda araştırıp yazmak istediğim 25 konu ve hangisinin ne aşamada olduğu."
+ },
+ {
+  "slug": "bu-site-neden-var",
+  "title": "Bu site neden var?",
+  "date": "2026-11-22",
+  "tags": [
+   "site",
+   "öğrenme"
+  ],
+  "summary": "Okuyarak değil, oynatarak anlamak: bu sitenin arkasındaki fikir ve nasıl gezileceği."
+ }
 ]
