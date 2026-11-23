@@ -737,10 +737,10 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     for(const F of FIELDS){
       let q,front,sc;
       if(F.par){/* uydu: yıldızın (Yapay zekâ) etrafında döner; yıldız da merkezin etrafında döndüğü için iki yörünge birden */
-        const P=FIELDS.find(f=>f.k===F.par);F.a+=(F.hov?.01:.3)*dt*(W<600?1.3:1)*MV;
+        const P=FIELDS.find(f=>f.k===F.par);F.a+=(F.hov?.01:.1)*dt*(W<600?1.2:1)*MV;
         const r=(W<600?30:46)*(P.sc||1),ca=Math.cos(F.a),sa=Math.sin(F.a);
         q=[P.q[0]+ca*r,P.q[1]+sa*r*.42];front=sa>0;sc=Math.max(.5,(P.sc||1)*(.85+.2*sa))}
-      else{F.a+=(F.hov?.01:.35)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1)*(W<600?1.3:1)*MV;
+      else{F.a+=(F.hov?.1:1)*(6.2832/(60+70*F.f))*dt*(W<600?1.2:1)*MV;/* tam tur ≈ 1–2 dk */
       q=pos(F.a,F.f,dx,dyk);front=Math.sin(F.a)>0;sc=Math.max(.45,1+(.16+.8*F.dp)*(W<600?.55:1)*Math.sin(F.a))}
       F.q=q;F.sc=sc;
       {const L0=F.par?FIELDS.find(f=>f.k===F.par).q:[CX,CY],vx=L0[0]-q[0],vy=L0[1]-q[1],ln=Math.hypot(vx,vy)||1;F.pb.style.setProperty('--lx',(50+vx/ln*30).toFixed(1)+'%');F.pb.style.setProperty('--ly',(50+vy/ln*30).toFixed(1)+'%')}
