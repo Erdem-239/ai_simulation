@@ -624,7 +624,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     {k:'fe',hid:1,ff:1.18,dp:0.8,n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
     {k:'ta',hid:1,ff:0.72,dp:0.2,n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
     {k:'ot',hid:1,ff:1.46,dp:1.1,n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
-    {k:'cm',par:'ai',ff:0.85,dp:0.45,n:'728',c:'#c9d6ea',f:.71,ph:2.9,sz:14,act:1,d:'Bu sitenin şimdiye kadarki commit sayısı. Her değişiklik bir commit; sayı canlı güncellenir.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
+    {k:'cm',par:'ai',ff:0.85,dp:0.45,n:'#672',cc:'736',c:'#c9d6ea',f:.71,ph:2.9,sz:14,act:1,d:'Bu sitedeki son birleşen değişikliğin (pull request) numarası. Sayı canlı güncellenir; sitenin en son değişikliği yayında mı diye buradan kontrol edebilirsin.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
     {k:'bl',ff:1.0,dp:0.4,n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,act:1,d:'Çalışmalar, projeler, öğrenilenler ve düşünceler.',href:'blog/',cta:'Yazıları aç →'}
   ];
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),2600)}
@@ -634,14 +634,16 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     if(F.act){el.href=F.href;if(F.ext){el.target='_blank';el.rel='noopener'}}else el.type='button';
     if(F.hid){el.setAttribute('aria-hidden','true');el.tabIndex=-1;el.style.pointerEvents='none';el.innerHTML='<span class="pb"></span>';el.className+=' hid';host.appendChild(el);F.el=el;F.pb=el.firstChild;F.a=F.ph;return}
     el.setAttribute('aria-label',F.n+(F.act?'':' (yakında)'));
-    el.innerHTML='<span class="pb"></span><span class="nm">'+F.n+'</span><span class="pcard"><b>'+F.n+(F.k==='cm'?' commit':'')+'</b>'+F.d+'<i>'+(F.act?F.cta:'Yakında')+'</i></span>';
+    el.innerHTML='<span class="pb"></span><span class="nm">'+F.n+'</span><span class="pcard"><b>'+(F.k==='cm'?'Son PR '+F.n+' · '+F.cc+' commit':F.n)+'</b>'+F.d+'<i>'+(F.act?F.cta:'Yakında')+'</i></span>';
     if(!F.act)el.addEventListener('click',()=>say(F.n+' yakında. Şimdilik yapay zekâ dersleri açık.'));
     el.addEventListener('pointerenter',()=>F.hov=1);el.addEventListener('pointerleave',()=>F.hov=0);
     el.addEventListener('focus',()=>F.hov=1);el.addEventListener('blur',()=>F.hov=0);
     host.appendChild(el);F.el=el;F.pb=el.firstChild;F.a=F.ph;
   });
   /* commit gezegeni: adı canlı commit sayısı (GitHub API, hata olursa sabit sayı kalır) */
-  fetch('https://api.github.com/repos/Erdem-239/ai_simulation/commits?per_page=1&sha=main').then(r=>{const m=/[?&]page=(\d+)>; rel="last"/.exec(r.headers.get('Link')||'');if(!m)return;const n=m[1],F=FIELDS.find(f=>f.k==='cm');F.n=n;F.el.setAttribute('aria-label',n+' commit');F.el.querySelector('.nm').textContent=n;F.el.querySelector('.pcard b').textContent=n+' commit'}).catch(()=>{});
+  const cmF=()=>FIELDS.find(f=>f.k==='cm'),cmSet=()=>{const F=cmF();F.el.setAttribute('aria-label','Son PR '+F.n);F.el.querySelector('.nm').textContent=F.n;F.el.querySelector('.pcard b').textContent='Son PR '+F.n+' · '+F.cc+' commit'};
+  fetch('https://api.github.com/repos/Erdem-239/ai_simulation/commits?per_page=1&sha=main').then(r=>{const m=/[?&]page=(\d+)>; rel="last"/.exec(r.headers.get('Link')||'');if(!m)return;cmF().cc=m[1];cmSet()}).catch(()=>{});
+  fetch('https://api.github.com/repos/Erdem-239/ai_simulation/commits?per_page=30&sha=main').then(r=>r.json()).then(a=>{for(const c of a){const m=/\(#(\d+)\)/.exec(c.commit&&c.commit.message||'');if(m){cmF().n='#'+m[1];cmSet();break}}}).catch(()=>{});
   const rnd=Math.random;
   function bhDraw(c){
     const S=1024,R0=64;c.width=c.height=S;const x=c.getContext('2d'),m=S/2,R=R0;
