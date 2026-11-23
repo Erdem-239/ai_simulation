@@ -1,5 +1,136 @@
 [
  {
+  "date": "2026-11-23",
+  "title": "GLM-5.4: İlk Loop Transformer ile Genel Kodlama Yeteneği",
+  "note": "Yeni mimari, kod üretiminde döngüsel düşünceyi entegre ederek daha karmaşık programları otomatikleştirebilir.",
+  "url": "https://z.ai/blog/glm-5.4",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "StereoVLM: 3D Mekânsal Akıl Yürütme için Binoküler VLM",
+  "note": "Metric 3D uzay akıl yürütmesi, robotik ve AR/VR uygulamalarında gerçek dünya etkileşimini iyileştiriyor.",
+  "url": "https://huggingface.co/papers/2611.27915",
+  "source": "HF günün makalesi",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "OpenAI modelleriyle Çip Tasarımı: Jalapeño silikon ve RISC‑V iyileştirmeleri",
+  "note": "AI‑destekli devre tasarımı, çip performansını artırarak donanım‑yazılım entegrasyonunu hızlandırıyor.",
+  "url": "https://openai.com/index/advancing-chip-design-with-our-models",
+  "source": "openai.com",
+  "tags": [
+   "donanım",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Inkling-2-Mini: Görüntü‑Metin‑Metin modeli trend modeli",
+  "note": "Küçük parametreli ama yüksek performanslı model, çok-modelli uygulamalarda yaygın kullanım buluyor.",
+  "url": "https://huggingface.co/thinkingmachines/Inkling-2-Mini",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Hugging Face ve OpenRouter: Açık‑ağırlıklı modelleri kolay çalıştırma",
+  "note": "Entegrasyon, geliştiricilerin açık‑ağırlıklı modelleri bulut ve kenar ortamlarında sorunsuz dağıtmasını sağlıyor.",
+  "url": "https://huggingface.co/blog/openrouter",
+  "source": "huggingface.co",
+  "tags": [
+   "açık-model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Jensen Huang Nvidia CEO olarak yeniden atandı",
+  "note": "Nvidia’nın lideri değişmedi, bu da şirketin AI donanım stratejisinin istikrarını gösteriyor.",
+  "url": "https://nvidianews.nvidia.com/news/nvidia-board-reinstates-jensen-huang-as-president-ceo-and-board-director",
+  "source": "Hacker News",
+  "tags": [
+   "donanım"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "MemOnce: Uzun‑horizontlu LLM’ler için Ölçeklenebilir Bellek Mimarisi",
+  "note": "Tekrarlayan ve uzun süreli görevlerde hafıza yönetimi, modelin tutarlı ve bağlam‑farkındalığını artırıyor.",
+  "url": "https://huggingface.co/papers/2611.27973",
+  "source": "HF günün makalesi",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "MedChemBench: AI ile ilaç adaylarını keşfetmek",
+  "note": "Modelin moleküler yapı ve deneysel kanıtları yorumlayabilmesi, ilaç keşfinde maliyet ve zaman tasarrufu sağlayabilir.",
+  "url": "https://openai.com/index/introducing-medchembench",
+  "source": "openai.com",
+  "tags": [
+   "araştırma",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "LongCat Video Avatar 1.6: Video Avatar Modeli Trendi",
+  "note": "Gerçek zamanlı video avatar oluşturma, sanal iletişim ve içerik üretiminde yeni bir akım yaratıyor.",
+  "url": "https://huggingface.co/meituan-longcat/LongCat-Video-Avatar-1.6",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Robotik Pick‑and‑Place Simülasyonu: SimReady varlıklarıyla oluşturma",
+  "note": "Gerçekçi simülasyon ortamı, robotik kontrol ve LLM‑tabanlı eylem planlaması araştırmalarını hızlandırıyor.",
+  "url": "https://huggingface.co/blog/nvidia/simready-assets-robot-pick-and-place",
+  "source": "huggingface.co",
+  "tags": [
+   "uygulama",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Anthropic gücünün %87'i gaz, %11'i kömürden gelecek (2028)",
+  "note": "Enerji tüketimi, büyük ölçekli modellerin sürdürülebilirliği için kritik bir risk faktörü.",
+  "url": "https://betterdatacenterproject.com/2026/11/16/how-ai-is-powered-a-breakdown-of-byop-and-grid-power/",
+  "source": "Hacker News",
+  "tags": [
+   "bilim",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Non‑penetrating World Models: Nesne Geçişini Önleyen Benchmark",
+  "note": "Yeni benchmark, video dünyalarında nesnelerin iç içe geçmesini engelleyen model yeteneklerini ölçüyor.",
+  "url": "https://huggingface.co/papers/2611.27963",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araştırma",
+   "model"
+  ]
+ },
+ {
   "date": "2026-11-22",
   "title": "Qwen3.8‑27B Modeli 20 Milyon Beğeniyle En Popüler HF Modeli Oldu",
   "note": "Geniş topluluk desteği, modelin ekosistemdeki etkisini artırıyor.",
