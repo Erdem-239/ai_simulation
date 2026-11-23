@@ -154,6 +154,9 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
 .pl .pb{background:radial-gradient(circle,#fff 0,#fff 16%,color-mix(in srgb,var(--c) 65%,#fff) 32%,var(--c) 52%,transparent 74%)!important;box-shadow:0 0 14px var(--c),0 0 40px color-mix(in srgb,var(--c) 55%,transparent)!important}
 .pl.act .pb:after{display:none}
 .pl.soon .pb{filter:none;opacity:.8}
+/* gerçek gezegen: kendi ışığı yok, yıldızdan (Yapay zekâ) aldığı ışığı yansıtır; yıldıza dönük yüz aydınlık, arka yüz karanlık */
+.pl.cm .pb{background:radial-gradient(circle at var(--lx,35%) var(--ly,32%),#fffaf0 0,#dfe6f2 18%,#9fb0c8 40%,#3a4558 68%,#06080d 100%)!important;box-shadow:inset -3px -3px 7px rgba(0,0,0,.75),0 0 5px rgba(220,230,255,.18)!important}
+.pl.cm:hover .pb,.pl.cm:focus-visible .pb{box-shadow:inset -3px -3px 7px rgba(0,0,0,.75),0 0 18px rgba(220,230,255,.55)!important}
 .hero-top h1,.hero-top .motto,.hero-top .pill{text-shadow:0 2px 24px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.6)}
 .hero-bot .sub{text-shadow:0 2px 14px #000,0 0 4px #000}
 .hero-top,.hero-bot{position:relative;z-index:5}
@@ -620,12 +623,12 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     {k:'fe',hid:1,ff:1.18,dp:0.8,n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
     {k:'ta',hid:1,ff:0.72,dp:0.2,n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
     {k:'ot',hid:1,ff:1.46,dp:1.1,n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
-    {k:'cm',ff:0.85,dp:0.45,n:'728',c:'#7ee787',f:.71,ph:2.9,sz:21,act:1,d:'Bu sitenin şimdiye kadarki commit sayısı. Her değişiklik bir commit; sayı canlı güncellenir.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
+    {k:'cm',par:'ai',ff:0.85,dp:0.45,n:'728',c:'#c9d6ea',f:.71,ph:2.9,sz:21,act:1,d:'Bu sitenin şimdiye kadarki commit sayısı. Her değişiklik bir commit; sayı canlı güncellenir.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
     {k:'bl',ff:1.0,dp:0.4,n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,act:1,d:'Çalışmalar, projeler, öğrenilenler ve düşünceler.',href:'blog/',cta:'Yazıları aç →'}
   ];
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),2600)}
   FIELDS.forEach(F=>{
-    const el=document.createElement(F.act?'a':'button');el.className='pl '+(F.act?'act':'soon');
+    const el=document.createElement(F.act?'a':'button');el.className='pl '+(F.act?'act':'soon')+(F.par?' cm':'');
     el.style.setProperty('--c',F.c);el.style.setProperty('--sz',F.sz+'px');
     if(F.act){el.href=F.href;if(F.ext){el.target='_blank';el.rel='noopener'}}else el.type='button';
     if(F.hid){el.setAttribute('aria-hidden','true');el.tabIndex=-1;el.style.pointerEvents='none';el.innerHTML='<span class="pb"></span>';el.className+=' hid';host.appendChild(el);F.el=el;F.pb=el.firstChild;F.a=F.ph;return}
@@ -732,9 +735,15 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
       gg.globalCompositeOperation='source-over';gg.font='500 10px "JetBrains Mono",monospace';gg.fillStyle='rgba(255,170,150,.8)';const rt=q[0]>W*.8;gg.textAlign=rt?'right':'left';gg.fillText('hata '+Ls.v.toFixed(3),q[0]+(rt?-r0*1.8:r0*1.8),q[1]+3)}}
     // gezegenler
     for(const F of FIELDS){
-      F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1)*(W<600?1.7:1)*MV;
-      const q=pos(F.a,F.f,dx,dyk),front=Math.sin(F.a)>0,sc=Math.max(.45,1+(.16+.8*F.dp)*(W<600?.55:1)*Math.sin(F.a));
-      {const vx=CX-q[0],vy=CY-q[1],ln=Math.hypot(vx,vy)||1;F.pb.style.setProperty('--lx',(50+vx/ln*30).toFixed(1)+'%');F.pb.style.setProperty('--ly',(50+vy/ln*30).toFixed(1)+'%')}
+      let q,front,sc;
+      if(F.par){/* uydu: yıldızın (Yapay zekâ) etrafında döner; yıldız da merkezin etrafında döndüğü için iki yörünge birden */
+        const P=FIELDS.find(f=>f.k===F.par);F.a+=(F.hov?.05:1.6)*dt*(W<600?1.3:1)*MV;
+        const r=(W<600?34:56)*(P.sc||1),ca=Math.cos(F.a),sa=Math.sin(F.a);
+        q=[P.q[0]+ca*r,P.q[1]+sa*r*.42];front=sa>0;sc=Math.max(.5,(P.sc||1)*(.85+.2*sa))}
+      else{F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1)*(W<600?1.7:1)*MV;
+      q=pos(F.a,F.f,dx,dyk);front=Math.sin(F.a)>0;sc=Math.max(.45,1+(.16+.8*F.dp)*(W<600?.55:1)*Math.sin(F.a))}
+      F.q=q;F.sc=sc;
+      {const L0=F.par?FIELDS.find(f=>f.k===F.par).q:[CX,CY],vx=L0[0]-q[0],vy=L0[1]-q[1],ln=Math.hypot(vx,vy)||1;F.pb.style.setProperty('--lx',(50+vx/ln*30).toFixed(1)+'%');F.pb.style.setProperty('--ly',(50+vy/ln*30).toFixed(1)+'%')}
       F.el.style.transform='translate('+(q[0])+'px,'+(q[1])+'px) translate(-50%,-50%) scale('+sc.toFixed(3)+')';
       F.el.style.zIndex=F.hov?8:(front?3:0);F.el.style.opacity=front?1:.72;F.el.style.filter=sc>1.45?'blur('+((sc-1.45)*2.2).toFixed(1)+'px)':'';
       F.el.classList.toggle('sl',q[0]<W*.18);F.el.classList.toggle('sr',q[0]>W*.82);F.el.classList.toggle('below',q[1]<H*.3);
