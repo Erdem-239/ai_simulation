@@ -1988,3 +1988,5 @@ Kullanıcı «Sıfırdan Medeniyet İnşası» başlıklı bir belge yapıştır
 **Avalon gemisi (ana sayfa)**: kozmos canvas'ında (supernova bloğunun yanında) ~45–90 sn'de bir, 34 sn'de ekranı yatay geçen küçük yolcu gemisi (ince gövde, dönen iki halka, motor izi, küçük boy (28 px, mobil 20 px); `av/nextAv`). Kendi çizimimiz, `prefers-reduced-motion`'da yok.
 
 **Mobil yıldız ölçeği**: ≤600 px'te alan yıldızları yarı boyutta (`MS=.5`, `--sz` build()'te yazılır), derinlik büyümesi ×.55, yörünge hızı ×1,7 (küçük yörüngede yavaş görünüyordu). Masaüstü değişmedi.
+
+**Hareketi-azalt modunda yörünge (ana sayfa)**: telefonda «animasyonları kaldır»/pil tasarrufu `prefers-reduced-motion` açtırınca yıldızlar HİÇ dönmüyordu (loop tek kare çiziyordu). Artık loop her zaman çalışır; yörünge/toz/hata yıldızı `MV=reduce?.6:1` hızıyla döner, parlak efektler (şimşek, süpernova, gemi) reduce'ta kapalı kalır.
