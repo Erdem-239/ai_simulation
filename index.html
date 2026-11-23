@@ -663,12 +663,12 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     x.globalCompositeOperation='destination-in';const mk=x.createRadialGradient(m,m,0,m,m,m);mk.addColorStop(0,'#000');mk.addColorStop(.6,'#000');mk.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=mk;x.fillRect(0,0,S,S);
   }
   eyeDraw(document.getElementById('bhCore'));
-  function build(){
+  let MS=1;function build(){
     const r=hero.getBoundingClientRect();W=r.width;H=r.height;
     [cb,cf].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
     const tp=hero.querySelector('.hero-top').getBoundingClientRect(),bt=hero.querySelector('.hero-bot').getBoundingClientRect();
     const g0=tp.bottom-r.top+14,g1=bt.top-r.top-8,gap=Math.max(160,g1-g0);
-    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.35:.36),520,H*.66);if(W<600)R=Math.min(R,gap/(2*RY*1.25));FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=F.ff});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
+    CX=W/2;CY=g0+gap/2+14;R=Math.min(W*(W<600?.35:.36),520,H*.66);if(W<600)R=Math.min(R,gap/(2*RY*1.25));MS=W<600?.5:1;FIELDS.forEach(F=>{if(F.f0==null)F.f0=F.f;F.f=F.ff;if(F.el)F.el.style.setProperty('--sz',(F.sz*MS).toFixed(1)+'px')});const bc=document.getElementById('bhCore');bc.style.width=(2.4*R)+'px';bc.style.height=(2.4*R*RY)+'px';
     const core=hero.querySelector('.core');core.style.top=CY+'px';core.style.width='10px';
     const n=W<700?1800:3400;P=[];
     for(let i=0;i<n;i++){
@@ -707,8 +707,8 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
       gg.globalCompositeOperation='source-over';gg.font='500 10px "JetBrains Mono",monospace';gg.fillStyle='rgba(255,170,150,.8)';const rt=q[0]>W*.8;gg.textAlign=rt?'right':'left';gg.fillText('hata '+Ls.v.toFixed(3),q[0]+(rt?-r0*1.8:r0*1.8),q[1]+3)}}
     // gezegenler
     for(const F of FIELDS){
-      if(!reduce)F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1);
-      const q=pos(F.a,F.f,dx,dyk),front=Math.sin(F.a)>0,sc=Math.max(.45,1+(.16+.8*F.dp)*Math.sin(F.a));
+      if(!reduce)F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1)*(W<600?1.7:1);
+      const q=pos(F.a,F.f,dx,dyk),front=Math.sin(F.a)>0,sc=Math.max(.45,1+(.16+.8*F.dp)*(W<600?.55:1)*Math.sin(F.a));
       {const vx=CX-q[0],vy=CY-q[1],ln=Math.hypot(vx,vy)||1;F.pb.style.setProperty('--lx',(50+vx/ln*30).toFixed(1)+'%');F.pb.style.setProperty('--ly',(50+vy/ln*30).toFixed(1)+'%')}
       F.el.style.transform='translate('+(q[0])+'px,'+(q[1])+'px) translate(-50%,-50%) scale('+sc.toFixed(3)+')';
       F.el.style.zIndex=F.hov?8:(front?3:0);F.el.style.opacity=front?1:.72;F.el.style.filter=sc>1.45?'blur('+((sc-1.45)*2.2).toFixed(1)+'px)':'';
