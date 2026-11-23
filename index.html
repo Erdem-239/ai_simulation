@@ -521,10 +521,11 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
         const ew=(document.getElementById('bhCore')||coreEl).getBoundingClientRect().width,D0=Math.hypot(W,H)*.62,
           rp=Math.max(50,ew*.07),eps=ew*.11,v0=D0/26,GM=v0*v0*D0*.75,vesc=Math.sqrt(2*GM*Math.pow(rp*rp+eps*eps,-.5)*1.0),
           vp=vesc*.93,ang=1.42+(rnd()-.5)*.08;
-        const px=Math.cos(ang)*rp,py=Math.sin(ang)*rp;let x=px,y=py,vx=Math.sin(ang)*vp,vy=-Math.cos(ang)*vp,tt=0;
-        // geriye sür: hız ters, çekim aynı
-        vx=-vx;vy=-vy;for(let k=0;k<60000&&Math.hypot(x,y)<D0&&tt<600;k++){const r2=x*x+y*y+eps*eps,i3=GM/(r2*Math.sqrt(r2)),dt=.01;vx+=-x*i3*dt;vy+=-y*i3*dt;x+=vx*dt;y+=vy*dt;tt+=dt}
-        av={x:x,y:y,vx:-vx,vy:-vy,GM:GM,eps:eps,D0:D0,dv:.18*vp,burn:0,bt:0,lr:Math.hypot(x,y),t0:t,lt:t,tr:[],L:W<600?20:28}}}
+        let x,y,vx,vy,vpp=vp;/* gelen kol D0'a ulaşmazsa (küçük ekran/gözde bağlı yörünge) hızı artırıp yeniden dene */
+        for(const q of [.93,.96,.985,.999,1.02]){vpp=vesc*q;x=Math.cos(ang)*rp;y=Math.sin(ang)*rp;vx=-Math.sin(ang)*vpp;vy=Math.cos(ang)*vpp;let tt=0;
+          for(let k=0;k<80000&&Math.hypot(x,y)<D0&&tt<800;k++){const r2=x*x+y*y+eps*eps,i3=GM/(r2*Math.sqrt(r2)),dt=.01;vx+=-x*i3*dt;vy+=-y*i3*dt;x+=vx*dt;y+=vy*dt;tt+=dt}
+          if(Math.hypot(x,y)>=D0)break}
+        av={x:x,y:y,vx:-vx,vy:-vy,GM:GM,eps:eps,D0:D0,dv:.18*vpp,burn:0,bt:0,lr:Math.hypot(x,y),t0:t,lt:t,tr:[],L:W<600?20:28}}}
       if(av){let dt=Math.min(.05,(t-av.lt)/1000);av.lt=t;const n=8;dt/=n;
         for(let k=0;k<n;k++){const r=Math.hypot(av.x,av.y),ra=Math.pow(r*r+av.eps*av.eps,1.5),ax=-av.GM*av.x/ra,ay=-av.GM*av.y/ra;
           let bx=0,by=0;if(av.burn>0){const v=Math.hypot(av.vx,av.vy);bx=av.vx/v*av.dv/.7;by=av.vy/v*av.dv/.7;av.burn-=dt}
