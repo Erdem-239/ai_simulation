@@ -1986,3 +1986,5 @@ Kullanıcı «Sıfırdan Medeniyet İnşası» başlıklı bir belge yapıştır
 **Ana sayfa mobil düzeltmesi**: ≤600 px'te göz canvas'ı hero kenarında kırpılıyordu (R=.42W → 2.4R>W), göz fazla yassıydı, Koordinat düğmesi alt yazıyı örtüyordu. Artık `RY` mobilde .6, `R=.35W` ve `R≤gap/(2·RY·1.25)` (alt yazıyla örtüşmesin), hero `min-height:700px`/alt padding 70, `#skyBtn` yalnız 🔭 simgesi. Masaüstü değişmedi.
 
 **Avalon gemisi (ana sayfa)**: kozmos canvas'ında (supernova bloğunun yanında) ~45–90 sn'de bir, 34 sn'de ekranı yatay geçen küçük yolcu gemisi (ince gövde, dönen iki halka, motor izi, küçük boy (28 px, mobil 20 px); `av/nextAv`). Kendi çizimimiz, `prefers-reduced-motion`'da yok.
+
+**Mobil yıldız ölçeği**: ≤600 px'te alan yıldızları yarı boyutta (`MS=.5`, `--sz` build()'te yazılır), derinlik büyümesi ×.55, yörünge hızı ×1,7 (küçük yörüngede yavaş görünüyordu). Masaüstü değişmedi.
