@@ -1,0 +1,92 @@
+/* Fizik — evrenin zaman çizelgesi: siyah, yıldızlı uzay + genişleyen koni */
+#fzSpace{position:relative;background:#02020a;border:1px solid #2a2350;border-radius:16px;overflow:hidden;color:#e9e4ff;margin:-6px 0 0}
+#fzStars{position:absolute;inset:0;pointer-events:none;z-index:0}
+#fzSpace .fz-c{position:relative;z-index:1;padding:22px 22px 18px}
+#model-yol h1:before{content:none}
+.fz-hero h1{margin:0 0 8px;font-size:30px;letter-spacing:.5px;color:#fff;text-shadow:0 0 22px rgba(183,156,255,.55)}
+.fz-hero .sub{max-width:900px;color:#c9c0ec;line-height:1.6;margin:0 0 14px}
+.fz-prog{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;color:#b9aee6}
+.fz-bar{width:200px;height:7px;border-radius:5px;background:#1d1838;overflow:hidden}.fz-bar i{display:block;height:100%;background:linear-gradient(90deg,#fff3c4,#ff9f43,#8a6cf5,#5ec8ff)}
+.fz-b{font:600 12.5px "JetBrains Mono",Consolas,monospace;background:rgba(30,24,64,.85);color:#e6deff;border:1px solid #4a3a88;border-radius:8px;padding:7px 12px;cursor:pointer}
+.fz-b:hover{border-color:#b79cff;color:#fff}.fz-b.on{background:#b79cff;color:#120a2a;border-color:#b79cff}.fz-b:disabled{opacity:.35;cursor:default}
+.fz-b.fz-gold{background:rgba(255,211,110,.12);border-color:#ffd36e;color:#ffe3a1}
+.fz-views{display:flex;gap:8px;margin-bottom:6px}
+/* alet çantası */
+.fz-kit{background:linear-gradient(180deg,rgba(40,30,80,.72),rgba(20,15,45,.72));border:1px solid #3d3175;border-radius:12px;padding:12px 14px;margin:14px 0 16px;backdrop-filter:blur(2px)}
+.fz-kith{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}.fz-kith b{font-size:15px;color:#fff}.fz-kith span{font-size:12.5px;color:#a99ad6}
+.fz-tools{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.fz-tool{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:#e6deff;background:rgba(10,8,28,.7);border:1px solid #4a3a88;border-left:4px solid #8f7ae8;border-radius:9px;padding:9px 10px;transition:border-color .2s,transform .2s}
+.fz-tool:hover{border-color:#ffd36e;transform:translateY(-2px)}
+.fz-tool .fz-ti{font-size:22px}.fz-tool b{font-size:13px}.fz-tool small{font:12px/1.45 "Segoe UI",Roboto,Arial,sans-serif;color:#b8addf}.fz-tool em{font-style:normal;font-size:11px;color:#8f84bd;margin-top:auto}
+.fz-tool.st-done{border-left-color:#5fd08a}.fz-tool.st-done em{color:#7fe0a3}.fz-tool.st-next{border-left-color:#ffd36e;box-shadow:0 0 18px -6px #ffd36e}.fz-tool.st-next em{color:#ffd36e}
+.fz-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}.fz-hint{font-size:12px;color:#8f84bd;margin-left:4px}
+/* zaman çizelgesi */
+.fz-scroll{overflow-x:auto;overflow-y:hidden;cursor:grab;scrollbar-width:thin;scrollbar-color:#4a3a88 transparent;padding-bottom:6px}
+.fz-scroll::-webkit-scrollbar{height:8px}.fz-scroll::-webkit-scrollbar-thumb{background:#4a3a88;border-radius:5px}
+.fz-inner{position:relative;display:flex;padding-left:150px;padding-right:90px;width:max-content}
+#fzCone{position:absolute;left:0;top:0;pointer-events:none;z-index:0;overflow:visible}
+.fz-bang{position:absolute;left:24px;top:76px;width:80px;height:330px;display:flex;align-items:center;justify-content:center;z-index:1;pointer-events:none}
+.fz-bang:before{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,#fff 0,#fff6cf 18%,rgba(255,200,120,.55) 38%,rgba(255,140,80,0) 70%);animation:fzBang 3.2s ease-in-out infinite}
+.fz-bang span{position:relative;font:700 10px/1.2 "JetBrains Mono",monospace;color:#3a2405;text-align:center;letter-spacing:.5px}
+@keyframes fzBang{50%{transform:scale(1.18);filter:brightness(1.2)}}
+.fz-ep{position:relative;z-index:1;width:226px;flex:0 0 226px;display:flex;flex-direction:column;cursor:pointer;border-radius:12px;transition:background .25s}
+.fz-ep.hl .fz-cap h3{color:#ffd36e}.fz-ep.hl .fz-top b{color:#ffd36e}
+.fz-top{height:76px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;gap:3px;padding:0 6px 8px}
+.fz-top b{font-size:13.5px;color:var(--c);text-shadow:0 0 12px rgba(0,0,0,.9)}.fz-top span{font-size:11.5px;color:#a99ad6}
+.fz-slot{height:330px;pointer-events:none}
+.fz-cap{padding:10px 10px 12px;text-align:center}
+.fz-cap h3{margin:0 0 6px;font-size:14px;line-height:1.3;color:#fff}
+.fz-n{display:inline-block;min-width:20px;height:20px;line-height:20px;border-radius:50%;background:var(--c);color:#120a2a;font-size:11px;margin-right:6px;vertical-align:1px}
+.fz-cap p{font:12.5px/1.5 "Segoe UI",Roboto,Arial,sans-serif;color:#c8bfea;margin:0 0 8px}
+.fz-ep.sel .fz-cap h3{color:var(--c)}.fz-ep.sel .fz-n{box-shadow:0 0 0 3px #02020a,0 0 0 5px #ffd36e}.fz-ep:hover .fz-cap h3{text-decoration:underline;text-decoration-color:var(--c)}
+.fz-ep.nx .fz-cap h3:after{content:" ▶ sıradaki";font-size:10.5px;color:#ffd36e;white-space:nowrap}
+.fz-chips{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.fz-chip{font:600 11.5px "JetBrains Mono",Consolas,monospace;text-decoration:none;padding:4px 8px;border-radius:999px;border:1px solid #4a3a88;background:rgba(20,15,45,.85);color:#e6deff;white-space:nowrap}
+.fz-chip:hover{border-color:#fff}.fz-chip i{font-style:normal;font-size:10px;opacity:.75}
+.fz-chip.st-done{border-color:#5fd08a;color:#a9f0c3;background:rgba(40,110,70,.25)}
+.fz-chip.st-next{border-color:#ffd36e;color:#ffe3a1;background:rgba(255,211,110,.14);box-shadow:0 0 14px -5px #ffd36e}
+.fz-chip.st-soon{opacity:.5;border-style:dashed}
+/* dilimler */
+.fz-sl .fz-rim{stroke-width:1.6;stroke-opacity:.9}.fz-sl .fz-halo{stroke-width:2;stroke-opacity:0;transition:stroke-opacity .3s}
+.fz-sl.sel .fz-rim{stroke:#ffd36e;stroke-width:3}.fz-sl.sel .fz-halo{stroke-opacity:.5;stroke-dasharray:4 5;animation:fzRot 6s linear infinite}
+.fz-sl.hl .fz-halo{stroke-opacity:.85;stroke:#ffd36e}
+.fz-sl.nx:not(.sel) .fz-halo{stroke-opacity:.35}
+@keyframes fzRot{to{stroke-dashoffset:-90}}
+/* ayrıntı */
+.fz-detail{margin-top:12px}
+.fz-art{background:rgba(14,10,34,.86);border:1px solid #3d3175;border-radius:14px;padding:18px 20px;margin-bottom:14px;backdrop-filter:blur(3px)}
+.fz-dh{display:flex;gap:14px;align-items:center;border-bottom:1px solid #2e2560;padding-bottom:12px;margin-bottom:12px}
+.fz-dic{font-size:34px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 45%,transparent),transparent 70%);flex:0 0 58px}
+.fz-dh small{color:#8f84bd;font-size:12px}.fz-dh h2{margin:2px 0 0;font-size:22px;color:var(--c)}
+.fz-facts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.fz-facts span{background:rgba(255,255,255,.04);border:1px solid #2e2560;border-radius:9px;padding:8px 10px;font-size:13px;color:#fff;line-height:1.35}
+.fz-facts b{display:block;font-size:11px;color:#a99ad6;font-weight:500;margin-bottom:2px}
+.fz-dg{display:grid;grid-template-columns:1.35fr 1fr;gap:22px}
+.fz-art h4{margin:12px 0 6px;font-size:13.5px;color:#ffd36e}.fz-art h4:first-child{margin-top:0}
+.fz-art p,.fz-art li{font:14px/1.65 "Segoe UI",Roboto,Arial,sans-serif;color:#ddd6f7}.fz-art p{margin:0 0 10px}
+.fz-art ul{margin:0 0 6px;padding-left:20px}
+.fz-art .fz-chips{justify-content:flex-start}
+.fz-warn{background:rgba(255,160,80,.08);border-left:3px solid #ff9f43;padding:7px 10px;border-radius:6px;font-size:13px!important}
+.fz-dnav{display:flex;justify-content:space-between;gap:8px;margin-top:14px;border-top:1px solid #2e2560;padding-top:12px}
+.fz-allh{display:flex;justify-content:space-between;align-items:center;margin:4px 0 10px;font-size:15px}
+.fz-note{font-size:12px;color:#8077a8;margin:8px 0 0}
+body.fz-full #fzSpace{position:fixed;inset:0;z-index:4000;border-radius:0;overflow:auto;margin:0}
+body.fz-full #fzStars{position:fixed}
+/* dar ekran: dikey zaman çizelgesi */
+@media(max-width:1100px){.fz-tools{grid-template-columns:repeat(3,minmax(0,1fr))}.fz-facts{grid-template-columns:repeat(3,minmax(0,1fr))}.fz-dg{grid-template-columns:1fr}}
+@media(max-width:720px){
+  #fzSpace .fz-c{padding:16px 12px}
+  .fz-hero h1{font-size:23px}
+  .fz-tools{grid-template-columns:repeat(2,minmax(0,1fr))}.fz-tool small{display:none}
+  .fz-scroll{overflow:visible;cursor:default}
+  .fz-inner.vert{flex-direction:column;padding:96px 0 40px;width:auto}
+  .fz-inner.vert .fz-bang{left:0;top:0;width:140px;height:90px}
+  .fz-inner.vert .fz-ep{width:auto;flex:none;display:grid;grid-template-columns:140px minmax(0,1fr);grid-template-rows:auto 1fr;min-height:200px}
+  .fz-inner.vert .fz-slot{grid-column:1;grid-row:1/3;height:auto;min-height:150px}
+  .fz-inner.vert .fz-top{grid-column:2;grid-row:1;height:auto;align-items:flex-start;text-align:left;padding:10px 6px 0;flex-direction:row;flex-wrap:wrap;gap:4px 10px;justify-content:flex-start}
+  .fz-inner.vert .fz-cap{grid-column:2;grid-row:2;text-align:left;padding:4px 6px 16px}
+  .fz-inner.vert .fz-chips{justify-content:flex-start}
+  .fz-chip{white-space:normal}
+  .fz-facts{grid-template-columns:1fr 1fr}.fz-art{padding:14px 12px}.fz-dh h2{font-size:18px}
+  .fz-detail{margin:0 0 16px}
+}
