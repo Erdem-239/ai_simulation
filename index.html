@@ -512,12 +512,18 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
        kısa bir itiş yapar (Oberth etkisi) ve kütleçekim sapanıyla hızlanıp başka yöne fırlar (Voyager / Interstellar gibi). */
       const cr=coreEl.getBoundingClientRect(),ccx=cr.left+cr.width/2,ccy=cr.top+cr.height/2;
       if(!av&&t>nextAv){if(cr.bottom<0||cr.top>H){nextAv=t+4000}else{
-        const ew=(document.getElementById('bhCore')||coreEl).getBoundingClientRect().width,D0=Math.hypot(W,H)*.62,rp=Math.max(55,Math.min(320,ew*.2)),v0=D0/26,vp=.72*v0*D0/rp,
-          GM=(vp*vp-v0*v0)/(2*(1/rp-1/D0)),th=rnd()*6.283,sg=rnd()<.5?1:-1,vt=rp*vp/D0,vr=-Math.sqrt(Math.max(0,v0*v0-vt*vt)),
-          ux=Math.cos(th),uy=Math.sin(th);
-        av={x:ux*D0,y:uy*D0,vx:ux*vr-uy*vt*sg,vy:uy*vr+ux*vt*sg,GM:GM,D0:D0,dv:.32*vp,burn:0,bt:0,lr:D0,t0:t,lt:t,tr:[],L:W<600?20:28}}}
+        /* Rota: sol üstten gelir, gözün ALTINDAN U çizer, en alt noktada son itişle hızlanıp sağ üste fırlar.
+           Göz geniş bir bulutsu olduğundan çekim yumuşatılmış (Plummer); yol, periapsisten GERİYE doğru
+           aynı çekimle sürülerek kurulur, böylece başlangıç noktası da fizikten çıkar. */
+        const ew=(document.getElementById('bhCore')||coreEl).getBoundingClientRect().width,D0=Math.hypot(W,H)*.62,
+          rp=Math.max(50,ew*.07),eps=ew*.11,v0=D0/26,GM=v0*v0*D0*.75,vesc=Math.sqrt(2*GM*Math.pow(rp*rp+eps*eps,-.5)*1.0),
+          vp=vesc*.93,ang=1.42+(rnd()-.5)*.08;
+        const px=Math.cos(ang)*rp,py=Math.sin(ang)*rp;let x=px,y=py,vx=Math.sin(ang)*vp,vy=-Math.cos(ang)*vp,tt=0;
+        // geriye sür: hız ters, çekim aynı
+        vx=-vx;vy=-vy;for(let k=0;k<60000&&Math.hypot(x,y)<D0&&tt<600;k++){const r2=x*x+y*y+eps*eps,i3=GM/(r2*Math.sqrt(r2)),dt=.01;vx+=-x*i3*dt;vy+=-y*i3*dt;x+=vx*dt;y+=vy*dt;tt+=dt}
+        av={x:x,y:y,vx:-vx,vy:-vy,GM:GM,eps:eps,D0:D0,dv:.18*vp,burn:0,bt:0,lr:Math.hypot(x,y),t0:t,lt:t,tr:[],L:W<600?20:28}}}
       if(av){let dt=Math.min(.05,(t-av.lt)/1000);av.lt=t;const n=8;dt/=n;
-        for(let k=0;k<n;k++){const r=Math.hypot(av.x,av.y),ax=-av.GM*av.x/(r*r*r),ay=-av.GM*av.y/(r*r*r);
+        for(let k=0;k<n;k++){const r=Math.hypot(av.x,av.y),ra=Math.pow(r*r+av.eps*av.eps,1.5),ax=-av.GM*av.x/ra,ay=-av.GM*av.y/ra;
           let bx=0,by=0;if(av.burn>0){const v=Math.hypot(av.vx,av.vy);bx=av.vx/v*av.dv/.7;by=av.vy/v*av.dv/.7;av.burn-=dt}
           av.vx+=(ax+bx)*dt;av.vy+=(ay+by)*dt;av.x+=av.vx*dt;av.y+=av.vy*dt;
           const r2=Math.hypot(av.x,av.y);if(!av.bt&&r2>av.lr&&av.lr<av.D0*.6){av.burn=.7;av.bt=t}av.lr=r2}
