@@ -623,7 +623,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     {k:'fe',hid:1,ff:1.18,dp:0.8,n:'Felsefe',c:'#ff8fb1',f:.75,ph:5.8,sz:24,d:'Mantık, bilinç, etik: büyük sorular.'},
     {k:'ta',hid:1,ff:0.72,dp:0.2,n:'Tarih',c:'#d9824f',f:.83,ph:1.9,sz:25,d:'Fikirlerin ve icatların hikâyesi.'},
     {k:'ot',hid:1,ff:1.46,dp:1.1,n:'Oyun teorisi',c:'#ff6b6b',f:.91,ph:3.7,sz:23,d:'Strateji, iş birliği, rekabet, denge.'},
-    {k:'cm',par:'ai',ff:0.85,dp:0.45,n:'728',c:'#c9d6ea',f:.71,ph:2.9,sz:21,act:1,d:'Bu sitenin şimdiye kadarki commit sayısı. Her değişiklik bir commit; sayı canlı güncellenir.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
+    {k:'cm',par:'ai',ff:0.85,dp:0.45,n:'728',c:'#c9d6ea',f:.71,ph:2.9,sz:14,act:1,d:'Bu sitenin şimdiye kadarki commit sayısı. Her değişiklik bir commit; sayı canlı güncellenir.',href:'https://github.com/Erdem-239/ai_simulation/commits/main',cta:'Commit geçmişini aç →',ext:1},
     {k:'bl',ff:1.0,dp:0.4,n:'Blog',c:'#e8ecf8',f:.99,ph:.85,sz:22,act:1,d:'Çalışmalar, projeler, öğrenilenler ve düşünceler.',href:'blog/',cta:'Yazıları aç →'}
   ];
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),2600)}
@@ -737,8 +737,8 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
     for(const F of FIELDS){
       let q,front,sc;
       if(F.par){/* uydu: yıldızın (Yapay zekâ) etrafında döner; yıldız da merkezin etrafında döndüğü için iki yörünge birden */
-        const P=FIELDS.find(f=>f.k===F.par);F.a+=(F.hov?.05:1.6)*dt*(W<600?1.3:1)*MV;
-        const r=(W<600?34:56)*(P.sc||1),ca=Math.cos(F.a),sa=Math.sin(F.a);
+        const P=FIELDS.find(f=>f.k===F.par);F.a+=(F.hov?.01:.3)*dt*(W<600?1.3:1)*MV;
+        const r=(W<600?30:46)*(P.sc||1),ca=Math.cos(F.a),sa=Math.sin(F.a);
         q=[P.q[0]+ca*r,P.q[1]+sa*r*.42];front=sa>0;sc=Math.max(.5,(P.sc||1)*(.85+.2*sa))}
       else{F.a+=(F.hov?.02:1)*(.2/Math.sqrt(F.f))*dt*(F.act?1.15:1)*(W<600?1.7:1)*MV;
       q=pos(F.a,F.f,dx,dyk);front=Math.sin(F.a)>0;sc=Math.max(.45,1+(.16+.8*F.dp)*(W<600?.55:1)*Math.sin(F.a))}
