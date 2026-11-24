@@ -185,7 +185,7 @@ body.emb #fam{display:none!important}
 
 <div id="stage"></div>
 <div id="labels"></div>
-<div id="fam"><span class="fl">Mimari ailesi:</span><button data-fam="tr" class="on" title="Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, T5">🧠 Transformer</button><button data-fam="oyuncak" title="En küçük Transformer: «let's go» → «vamos», her kelime 2 sayı">🔤 Mini çevirmen</button><button data-fam="rnn" title="Zamanda açılmış RNN">🔁 RNN</button><button data-fam="s2s" title="2 katmanlı LSTM encoder-decoder, 7 + 5 → 12">➡️ Seq2Seq (LSTM)</button></div>
+<div id="fam"><span class="fl">Mimari ailesi:</span><button data-fam="tr" class="on" title="Minik GPT, GPT-2, Llama, gpt-oss, Qwen3, Inkling 2 Mini, T5">🧠 Transformer</button><button data-fam="oyuncak" title="En küçük Transformer: «let's go» → «vamos», her kelime 2 sayı">🔤 Mini çevirmen</button><button data-fam="rnn" title="Zamanda açılmış RNN">🔁 RNN</button><button data-fam="s2s" title="2 katmanlı LSTM encoder-decoder, 7 + 5 → 12">➡️ Seq2Seq (LSTM)</button></div>
 <iframe id="famView" title="Mimari"></iframe>
 <div id="top"><h1>Minik GPT: 3B mimari</h1><p>Tek parça bir "motor" gibi başlar. Tekerleği ileri çevirince parçalara ayrılır; her parça gerçek, eğitilmiş modelin sayılarıyla çizili.</p></div>
 <div id="cmp"></div>
@@ -485,6 +485,50 @@ function qwen3moe(){const L=[],K='q3';
     blocks:[[3,21]],blockHtml:['BLOK × 48<small>48 blok: tam attention (32 Q / 4 K-V) + 128 uzmanlı MoE (token başı 8)</small>'],
     asm:'Qwen3-30B-A3B<small>≈30 milyar toplam, ≈3 milyar aktif †</small>',title:'Açık ağırlıklı MoE: Qwen3-30B-A3B şeması',
     sub:'Alibaba Qwen ailesinin küçük MoE modeli. Arama sonuçlarıyla doğrulananlar: 48 katman, 128 uzman (token başı 8), 32 sorgu / 4 K-V kafası, paylaşılan uzman yok. † ile işaretliler (model boyutu 2048, kafa boyutu 128, uzman ara boyutu 768, QK-Norm, sözlük, bağlam) hafızadan veya tek bir yan modelin sayfasından. Şekiller gerçek, sayılar şematik.'}}
+function inkling2(){const L=[],K='ik';
+  tokPart(L,"Metin BPE ile alt kelime parçalarına bölünür; Inkling sözlüğü yaklaşık 200 bin parçalık (şemada «Vocabulary size of 200k»). Çizilen parçalar GPT-2'nin gerçek parçalaması; Inkling'in kendi sözlüğü metni farklı bölebilir.");
+  mkP(L,K,'Emb','Token tablosu','Emb (kim)','in',40,16,'≈200.000 × 2304',"Minik GPT'deki E ile aynı fikir. Model boyutu 2304 (şemada yazıyor). Konum tablosu YOK: konum bilgisi sonradan Q·K skoruna öğrenilmiş göreli yanlılık olarak girer.");
+  mkP(L,K,'x','x = Emb + Embedding RMSNorm','x','in',10,16,'T × 2304',"Şemada token gömmesinden hemen sonra bir «Embedding RMSNorm» var: ölçek dengelenir, yeni bilgi eklenmez. Bu x, derinlik karışımının (AttnRes) kaynaklarından biri olarak saklanır.");
+  mkP(L,K,'ar1','AttnRes mix (derinlik karışımı)','AttnRes mix','att',10,16,'T × 2304',"Standart transformer'da katman çıktıları tek bir toplam akışa eklenir. Burada her katmanın girişi, DERİNLİK kaynaklarından (token gömmeleri + önceki blokların toplamları) öğrenilmiş dikkatle karıştırılır. 4 AttnRes bloğu × 6 katman. Ayrıntı şemadan okundu; ağırlıkların içeriği ölçülmedi.");
+  mkP(L,K,'msg1','Mesaj kapıları: Q, K, V','mesaj kapıları','att',10,16,'T × 2304',"YALNIZ döngü çekirdeğinin 2. ve 3. geçişinde var (Prelude ve Coda'da yok). Bir önceki geçişin blok toplamları (Blok 2 ve Blok 3) «mesaj» olarak okunur: katman başına 4 öğrenilmiş sorgu (Q, K, V ve MoE girişi için), kapı rank 64, tanh; formül (1 − f)·x + g·m.");
+  mkP(L,K,'rms1','RMSNorm 1','RMSNorm','norm',10,16,'T × 2304',"Attention alt-bloğunun girişinde ölçek dengeleme (şemada «RMSNorm 1»).");
+  mkP(L,K,'Wq','W_Q','W_Q','att',16,16,'2304 × (24 × d_kafa)',"24 sorgu kafası. Kafa boyutu şemada yazmıyor; bu yüzden sütun sayısı «24 × d_kafa» olarak bırakıldı.");
+  mkP(L,K,'Wk','W_K','W_K','att',16,8,'2304 × (8 × d_kafa)',"Yalnız 8 anahtar kafası: 3 sorgu kafası aynı K'yı paylaşır (grup başına 3).");
+  mkP(L,K,'Wv','W_V','W_V','att',16,8,'2304 × (8 × d_kafa)',"8 değer kafası; 3 sorgu kafası aynı V'yi paylaşır.");
+  mkP(L,K,'qT','Q = x · W_Q','Q','att',4,16,'T × (24 × d_kafa)',"Her token'ın sorusu; 24 kafaya dilimlenir.");
+  mkP(L,K,'kT','K = x · W_K','K','att',4,8,'T × (8 × d_kafa)',"Etiketler: yalnız 8 K/V kafası. Şemada K ve V için ayrıca «kısa konvolüsyon» var (çekirdek 4).",{w:4*U});
+  mkP(L,K,'vT','V = x · W_V','V','att',4,8,'T × (8 × d_kafa)',"İçerikler: 8 K/V kafası; her dilimi 3 sorgu kafası paylaşır.",{w:4*U});
+  mkP(L,K,'qkn','Q/K L2 kırpma + sink + kapı','L2 kırpma · sink · kapı','norm',10,16,'Q ve K (kafa başına)',"Şemada dikkat kutusunun yanındaki küçük etiket: «Q/K L2 clip, sink, gate». Q ve K'nın büyüklüğü kırpılır, bir «sink» (dikkatin boşa gideceği yer) ve çıkışta kapı var. Ağırlıkları küçük, yeni bilgi eklemez.");
+  mkP(L,K,'rpb','Öğrenilmiş göreli konum yanlılığı','göreli konum','att',10,16,'skor tablosuna eklenir',"Şemada «Learned relative-position bias» yazıyor: RoPE değil. Konum, Q·K skoruna eklenen öğrenilmiş bir yanlılık olarak girer; uzaklığa göre bir ekleme değeri. (Bu fikir sitedeki T5 örneğine yakın.)");
+  mkP(L,K,'qS','Q dilimleri (24 × T×d_kafa)','Q dilimleri','att',4,8,'24 × (T × d_kafa)',"Q tablosu 24 kafaya dilimlenir. Hesap yok, sadece kesme.",{multi:{n:24,cols:6,groups:3,card:'slice',lab:'Q'},w:3.6,h:1.4});
+  mkP(L,K,'kS','K dilimleri (8 × T×d_kafa)','K dilimleri','att',4,8,'8 × (T × d_kafa)',"K tablosu 8 dilime kesilir; her dilimi 3 sorgu kafası paylaşır.",{multi:{n:8,cols:8,card:'slice',lab:'K'},w:3.2,h:0.5});
+  mkP(L,K,'vS','V dilimleri (8 × T×d_kafa)','V dilimleri','att',4,8,'8 × (T × d_kafa)',"V tablosu 8 dilime kesilir; her dilimi 3 sorgu kafası paylaşır.",{multi:{n:8,cols:8,card:'slice',lab:'V'},w:3.2,h:0.5});
+  mkP(L,K,'heads','Skor tabloları: Qᵢ·Kᵢᵀ + göreli yanlılık + maske (24 × T×T)','24 kafa · skor','att',8,32,'24 sorgu kafası × (T × T), 8 K/V grubu',"24 sorgu kafasının skor tabloları, üst üçgen maskeli. Aynı renkli çerçeveli 3 kafa AYNI K ve V diliminden beslenir (gruplu sorgu dikkati). Şemaya göre 6 katmanlık her blokta 5 katman kayan pencereli, 1 katman tam (global) dikkattir (5:1); pencere boyutunu şemadan okuyamadım. Renkli sayılar şematik.",{multi:{n:24,cols:6,groups:3,card:'score'},w:4.4,h:2.4});
+  mkP(L,K,'aT','Softmax sonrası yüzdeler (24 × T×T)','24 kafa · yüzde','att',8,32,'24 sorgu kafası × (T × T)',"Her kafanın her satırı ayrı softmax'tan geçer: toplam %100, maskeli hücreler %0.",{multi:{n:24,cols:6,groups:3,card:'prob'},w:4.4,h:2.4});
+  mkP(L,K,'oS','a · V çıkışları (24 × T×d_kafa)','a·V çıkışları','att',4,8,'24 × (T × d_kafa)',"Her kafada yüzde tablosu paylaşılan V dilimiyle çarpılır.",{multi:{n:24,cols:6,groups:3,card:'slice',lab:'o'},w:3.6,h:1.4});
+  mkP(L,K,'cat','24 çıkış yan yana','yan yana','att',4,16,'T × (24 × d_kafa)',"24 kafanın çıkışı yan yana; karıştırma W_O'da.",{canvas:catCv(24),w:4.0,h:0.8});
+  mkP(L,K,'Wo','W_O','W_O','att',16,16,'(24 × d_kafa) × 2304',"Kafa çıktılarını model boyutuna (2304) geri çevirir ve karıştırır.");
+  mkP(L,K,'cv1','Kısa konvolüsyon (çekirdek 4)','kısa konv.','att',10,16,'T × 2304',"Şemada attention'dan sonra bir «Short conv (kernel 4)» var: her token, kendisinden önceki 3 token ile küçük bir pencerede karıştırılır. Sitedeki diğer modellerde böyle bir adım yok.");
+  mkP(L,K,'add1','⊕ x + attention','⊕ artık','att',10,16,'T × 2304',"Artık bağlantı: giriş + attention.");
+  mkP(L,K,'ar2','AttnRes mix (MoE girişi için)','AttnRes mix','att',10,16,'T × 2304',"MoE alt-bloğunun girişi için derinlik karışımı: aynı kaynaklar, yeniden karıştırılır.");
+  mkP(L,K,'msg2','Mesaj kapısı (MoE girişi)','mesaj kapısı','att',10,16,'T × 2304',"Döngü çekirdeğinin 2. ve 3. geçişinde MoE girişine de bir mesaj kapısı bağlanır (Q, K, V ile birlikte 4 kapı).");
+  mkP(L,K,'rms2','RMSNorm 2','RMSNorm','norm',10,16,'T × 2304',"MoE öncesi ikinci normalizasyon.");
+  mkP(L,K,'Wr','Yönlendirici W_r (router)','router W_r','ffn',16,16,'2304 × 128',"Her token için 128 uzmanın her birine bir puan çıkarır.");
+  mkP(L,K,'topk','128 puan → en iyi 8 uzman','top-8 seçim','ffn',10,32,'T × 128 → T × 8',"Her token satırında 128 puandan EN YÜKSEK 8 tanesi seçilir; yalnız o 8'inin puanı softmax'tan geçip karışım ağırlığı olur. Paylaşılan (her zaman çalışan) uzman yok. Hangi uzmanın seçildiğini ölçmedik; çizimdeki renkler şematik.");
+  mkP(L,K,'Wgate','Uzman W_gate (128 kopya)','uzman W_gate','ffn',16,24,'128 × (2304 × 1152)',"Her uzman kendi küçük FFN'ine sahip: kapı yolu. Uzman ara boyutu 1152 (şemada yazıyor).");
+  mkP(L,K,'Wup','Uzman W_up (128 kopya)','uzman W_up','ffn',16,24,'128 × (2304 × 1152)',"Uzmanın değer yolu.");
+  mkP(L,K,'swi','Uzman aktivasyonu (kapılı)','kapılı aktivasyon','ffn',10,24,'8 uzman × (T × 1152)',"Seçilen 8 uzmanın HER BİRİNDE: kapı ile değer eleman eleman çarpılır (SwiGLU; şemada «softcapped SiLU» ve «linear + softcap»: değerler bir tavanla sınırlanır).");
+  mkP(L,K,'Wdown','Uzman W_down (128 kopya)','uzman W_down','ffn',24,16,'128 × (1152 × 2304)',"Her uzmanın çıkış katmanı.");
+  mkP(L,K,'mix','Ağırlıklı toplam (8 uzman)','8 uzman · karışım','ffn',10,16,'T × 2304',"8 uzmanın çıktısı router yüzdeleriyle toplanır. Toplam 26,4 milyar ağırlıktan token başına yaklaşık 3,4 milyarı çalışır; döngü sayılınca etkin hesap yaklaşık 5,4 milyar ağırlığa denk gelir.");
+  mkP(L,K,'cv2','Kısa konvolüsyon (çekirdek 4)','kısa konv.','ffn',10,16,'T × 2304',"MoE'den sonra da bir «Short conv (kernel 4)» var.");
+  mkP(L,K,'add2','⊕ + MoE','⊕ artık','ffn',10,16,'T × 2304',"Katmanın çıktısı. 24 fiziksel katman var; döngü çekirdeğindeki 12 katman 3 kez çalışır, toplam 48 katman ziyareti.");
+  tail(L,K,'Son RMSNorm (+ Final Block AttnRes)','≈200.000',false,'Son RMSNorm','Tüm katmanlardan sonra Final Block AttnRes ve son RMSNorm.');
+  L.find(p=>p.id==='head').desc="Son vektörü sözlükteki HER token için bir skora çevirir; ardından logit softcap (şemada 30): ham skorlar bir tavanla sınırlanır. Giriş tablosundan ayrı olup olmadığı şemadan belli değil.";
+  return {key:'ik',btn:'Inkling 2 Mini (2026)',parts:L,two:false,
+    cols:[['tok'],['Emb'],['x'],['ar1'],['msg1'],['rms1'],['Wq','Wk','Wv'],['qT','kT','vT'],['qkn','rpb'],['qS','kS','vS'],['heads'],['aT'],['oS'],['cat'],['Wo'],['cv1'],['add1'],['ar2'],['msg2'],['rms2'],['Wr'],['topk'],['Wgate','Wup'],['swi'],['Wdown'],['mix'],['cv2'],['add2'],['lnf'],['head'],['logits'],['next']],
+    blocks:[[3,27]],blockHtml:['KATMAN × 24 → 48 ziyaret<small>Prelude 6 katman bir kez · DÖNGÜ ÇEKİRDEĞİ 12 katman aynı ağırlıkla 3 geçiş (mesaj kapılı) · Coda 6 katman bir kez</small>'],
+    asm:'Inkling 2 Mini<small>26,4 milyar toplam, 3,4 aktif, 5,4 etkin</small>',title:'Döngülü MoE: Inkling 2 Mini şeması',
+    sub:'Thinking Machines Lab, 20 Kasım 2026, açık ağırlıklı. Çizim, modelin yayımlanan şemasına (model kartı, config ve Transformers uygulamasından derlenmiş) dayanıyor: 24 fiziksel katman (6 + 12×3 + 6 = 48 ziyaret), 128 uzman / 8 seçilen / 0 paylaşılan, 24 sorgu / 8 K-V kafası, 5:1 kayan pencere-global dikkat, öğrenilmiş göreli konum yanlılığı, kısa konvolüsyon, derinlik karışımı (AttnRes) ve geçişler arası mesaj kapıları. Kafa boyutu ve pencere boyutu şemada yazmadığı için çizimde sayılmadı. Şekiller gerçek, renkli sayılar şematik. Çizimde kayan pencere/global ayrımı ve döngünün 3 geçişi tek katman sütunuyla gösterilir.'}}
 function decTokCv(){const T=['<s>','1','2'],S=['başla','üretildi','üretildi'],c=cv(480,100),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,480,100);
   T.forEach((t,i)=>{const x=6+i*158,bw=150;g.fillStyle='#2c2a1c';g.fillRect(x,8,bw,84);g.strokeStyle='#f0d35a';g.lineWidth=2;g.strokeRect(x,8,bw,84);g.fillStyle='#e8ebf2';g.font='700 30px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText(t,x+bw/2,48);g.fillStyle='#c9b765';g.font='600 17px ui-monospace,Menlo,monospace';g.fillText(S[i],x+bw/2,78)});return c}
 function encdec(){const L=[],K='ed';
@@ -543,8 +587,8 @@ function encdec(){const L=[],K='ed';
     blocks:[[3,15],[19,35]],blockHtml:['ENCODER BLOĞU × 12<small>maskesiz self-attention + FFN · soruyu bir kez okur</small>','DECODER BLOĞU × 12<small>maskeli self-attention + ÇAPRAZ dikkat + FFN · cevabı token token yazar</small>'],
     asm:'T5-base (encoder-decoder)<small>≈220 milyon ağırlık †</small>',title:'Encoder-decoder: T5-base şeması',
     sub:'Decoder-only modellerle (GPT-2, Llama…) karşılaştırmak için: üst satır ENCODER (soruyu maskesiz okur → bellek), alt satır DECODER (cevabı maskeli yazar, her blokta ÇAPRAZ dikkatle belleğe bakar). Boyutlar GPT-2 small ile aynı (768, 12 kafa, 12+12 blok). † hafızadan; şekiller gerçek, sayılar şematik.'}}
-const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss(),QWEN3=qwen3moe(),ED=encdec();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);layoutArch(QWEN3);layoutArch(ED);
-const ARCHS=[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED];let ARCH=MINI;
+const GPT2=gpt2(),LLAMA=llama(),GPTOSS=gptoss(),QWEN3=qwen3moe(),INK=inkling2(),ED=encdec();layoutArch(GPT2);layoutArch(LLAMA);layoutArch(GPTOSS);layoutArch(QWEN3);layoutArch(INK);layoutArch(ED);
+const ARCHS=[MINI,GPT2,LLAMA,GPTOSS,QWEN3,INK,ED];let ARCH=MINI;
 let COLS=MINI.cols,BLOCKS=MINI.blocks,byId=MINI.byId,LEN1=MINI.LEN1,LEN2=MINI.LEN2,XC_A=MINI.XC_A,LENc=LEN2,mm=0,mT=0,links,lgeo,bboxes;
 /* ---------- sahne ---------- */
 const stage=$('stage');
@@ -667,6 +711,51 @@ Object.assign(CARRY,{gptoss:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',
 Object.assign(FAQ,{gptoss:{topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. Aynı katmanda farklı token\'lar farklı uzmanları seçer.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'Pencereli katmanda 128\'den kısa istemde (7+5= gibi) maske fark etmez: hepsi zaten pencerenin içinde.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam ≈117 milyar, ama bir token için yalnız ≈5,1 milyarlık kısım hesaplanır (aktif).'}});
 Object.assign(CARRY,{q3:{tok:'Yalnız kimlik numaraları. Anlam/konum yok.',Emb:'Token\'ın "ne olduğu" (2048 sayı †). Sıra bilgisi YOK: RoPE ile Q ve K\'ya işlenir.',x:'Yalnız anlam (konum henüz yok).',rms1:'Aynı bilgi, yalnız ölçeği dengelenmiş.',Wq:'Soru üretme kuralı (32 kafa).',Wk:'Etiket üretme kuralı (4 grup).',Wv:'İçerik üretme kuralı (4 grup).',qT:'Her token\'ın SORUSU.',kT:'Her token\'ın ETİKETİ (4 grup, GQA).',vT:'Her token\'ın İÇERİĞİ (4 grup).',qkn:'Q ve K\'nın ölçek dengelemesi (kafa başına): yeni bilgi yok, skorların patlamasını önler.',rope:'Konum bilgisi: Q ve K döndürülür.',qS:'Q\'nun 32 küçük parçası (128 sayı).',kS:'K\'nın 4 küçük parçası, 8 kafaca paylaşılır.',vS:'V\'nin 4 küçük parçası, 8 kafaca paylaşılır.',heads:'Ham uyum puanları (maskeli), henüz yüzde değil. Pencere/çukur yok: her katman tam geçmişe bakabilir †.',aT:'Yüzdeler: her satır %100.',oS:'Her token için baktıklarından karışan bilgi (kafa başına 128 sayı).',cat:'32 kafanın bilgisi yan yana, henüz karışmadı.',Wo:'Kafaların bulduklarını birleştirip model boyutuna çevirme kuralı.',add1:'Eski x + attention katkısı.',rms2:'Yalnız ölçek dengeleme.',Wr:'Yönlendirme kuralı: x\'ten 128 uzman için uygunluk puanı çıkarır.',topk:'Hangi 8 uzmanın bu token\'ı işleyeceği ve karışım yüzdeleri.',Wgate:'Her uzmanın kapı yolu.',Wup:'Her uzmanın değer yolu.',swi:'Seçilen 8 uzmanda kapı × değer: hangi örüntülerin açık olduğu.',Wdown:'Her uzmanın sonucu geri toplama kuralı.',mix:'8 uzmanın bulduğu bilgilerin router yüzdeleriyle karışımı: token\'ın işlenmiş hâli.',add2:'Önceki + MoE katkısı: bağlam + uzmanlarca işlenmiş bilgi.',lnf:'Son ölçek dengelemesi.',head:'Son satırı sözlükle karşılaştıran ayrı çıkış tablosu †.',logits:'Her token için ham uygunluk puanı.',next:'Yüzdeye çevrilip seçilen tek token.'}});
 Object.assign(FAQ,{q3:{qkn:'QK-Norm bir ağırlık matrisi değil, küçük bir ölçek dengelemesi (kafa başına RMSNorm). Q ve K\'nın sayıları, nokta çarpımdan önce dengelenir; yeni bilgi eklemez. Qwen3\'te var olduğunu hafızadan söylüyoruz †, arama sonuçları bunu doğrulamadı.',topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN, eğitimle kendiliğinden farklılaşıyor. Hangi uzmanın neye baktığı ölçülmedi. gpt-oss\'ta token başına 4 uzman seçilir, burada 8.',Wr:'Router küçük (token × 128 puan); asıl ağırlık uzmanlarda. Router da eğitimle öğrenilir.',heads:'gpt-oss\'tan fark: Qwen3-30B-A3B\'de katmanlar arasında kayan pencere/tam dönüşümü ve dikkat çukuru yok †; her katman tam nedensel attention.',Wgate:'128 uzmanın HEPSİ bellekte; bu yüzden toplam yaklaşık 30 milyar †, ama bir token için yalnız yaklaşık 3 milyarlık kısım hesaplanır (aktif, adındaki «A3B»). Bu yüzden bellek ihtiyacı 30B\'lik bir modele, hız ise ~3B\'lik bir modele benzer.'}});
+GRPS.ik=[
+  G('Tokenizer',C_TOK,[0,0],'Sinir ağının parçası DEĞİL: ağırlığı olmayan, sabit bir program (BPE). Sözlük yaklaşık 200 bin parça.','Yalnız numaralar. Anlam ya da konum bilgisi taşımaz.',{pm:.55,lv:1}),
+  G('Embedding katmanı',C_EMB,[1,2],'Numaraları anlam taşıyan sayı listelerine çevirir (2304 sayı), ardından Embedding RMSNorm. Konum burada EKLENMEZ.','Çıkışı x: yalnız «token ne» bilgisi.'),
+  G('Konum (göreli yanlılık)',C_POS,[8,8],'RoPE ya da konum tablosu yok: konum, Q·K skoruna eklenen ÖĞRENİLMİŞ göreli yanlılık olarak girer. Aynı sütunda Q/K L2 kırpma da durur.','Bağıl uzaklık: iki token arası kaç adım var.',{pm:.55,bottom:true,lv:1}),
+  G('Derinlik karışımı + mesaj',C_OUT,[3,4],'AttnRes mix: katman girişi, token gömmeleri ve önceki blok toplamlarından öğrenilmiş dikkatle karıştırılır. Mesaj kapıları (Q,K,V) yalnız döngünün 2. ve 3. geçişinde bir önceki geçişin blok toplamlarını okur.','«Bir önceki turda ne bulduk?» bilgisinin geri beslemesi.',{pm:.8}),
+  G('Attention alt-bloğu',C_ALT,[3,16],'Katmanın 1. yarısı: AttnRes → mesaj → RMSNorm → Q,K,V → L2 kırpma + göreli yanlılık → 24 sorgu kafası (8 K/V grubu; 5 kayan pencere : 1 global) → W_O → kısa konvolüsyon → artık bağ.','Token\'ın kartına çevresinden toplanan bilgi eklenir.',{pm:1.2,lv:2}),
+  G('Q, K, V üretimi',C_ATT,[6,7],'Q 24 kafaya, K ve V yalnız 8 gruba çıkar: 3 sorgu kafası bir K/V grubunu paylaşır.','«Ne arıyorum» (Q), «beni böyle bul» (K), «vereceğim bilgi» (V).',{pm:.8}),
+  G('Kafalara bölme',C_ATT,[9,9],'Q 24, K ve V 8 dilime kesilir. Hesap yok, sadece kesme.','Aynı bilgi, ayrı bakış açılarına ayrılmış hâlde.',{pm:.8}),
+  G('Kafalar: skor → softmax → a·V',C_ATT,[10,12],'Her kafada Qᵢ·Kᵢᵀ + göreli yanlılık, maske, softmax, paylaşılan V ile karışım.','Skor: ham uyum. Yüzde: kim kime ne kadar bakıyor. a·V: baktıklarından karışan bilgi.',{pm:.7}),
+  G('Birleştir + kısa konv. + artık',C_ATT,[13,16],'Kafa çıkışları yapıştırılıp W_O ile çevrilir, kısa konvolüsyondan geçer ve ana akıma eklenir.','Token\'ın kendi bilgisi + çevresinden topladığı bilgi.',{pm:.8}),
+  G('MoE alt-bloğu',C_ALT,[17,27],'Katmanın 2. yarısı: AttnRes → mesaj kapısı → RMSNorm → router → en iyi 8 uzman → ağırlıklı toplam → kısa konvolüsyon → artık bağ.','Token\'ın kendi kartı üzerinde «düşünme», her token için farklı uzmanlarla.',{pm:1.2,lv:2}),
+  G('Mesaj + derinlik karışımı',C_OUT,[17,18],'MoE girişi için de derinlik karışımı ve (döngü geçişlerinde) mesaj kapısı.','Aynı geri besleme, FFN tarafı için.',{pm:.8}),
+  G('Router + seçim',C_OUT,[20,21],'Her token için 128 uzmana puan çıkarılır, en yüksek 8\'i seçilir.','«Bu token hangi uzmanlara gitsin?» Seçilmeyen 120 uzman çalışmaz.',{pm:.8}),
+  G('128 uzman (yalnız 8\'i çalışır)',C_FFN,[22,24],'Her uzman kendi kapılı FFN\'i (ara boyut 1152). Hepsi bellekte, token başına 8\'i kullanılır.','Uzmanlaşmış «düşünme» yolları. Hangi uzmanın neye uzmanlaştığı ölçülmedi.',{pm:.8}),
+  G('Karışım',C_FFN,[25,25],'8 uzmanın çıktıları router yüzdeleriyle toplanır.','Tek bir T×2304 vektör: normal FFN\'in yerini tutar.',{pm:.8,bottom:true,lv:1}),
+  G('Çıkış',C_OUT,[28,30],'Final Block AttnRes + son RMSNorm, ardından çıkış tablosu ve logit softcap (30): ≈200.000 token için puan.','Her token için «bir sonraki ben olabilir miyim» puanı.')];
+Object.assign(CARRY,{ik:Object.assign({},CARRY.q3,{
+ Emb:'Token\'ın «ne olduğu» (2304 sayı). Sıra bilgisi YOK: konum sonradan Q·K skoruna göreli yanlılık olarak girer.',
+ x:'Yalnız anlam (konum henüz yok); Embedding RMSNorm ile dengelenmiş.',
+ ar1:'Derinlik karışımı: bu katmanın girişi, token gömmeleri ve önceki blok toplamlarının öğrenilmiş bir karışımı. Yeni bilgi değil, mevcut bilginin yeniden dengelenmesi.',
+ msg1:'Bir önceki geçişin blok toplamlarından okunan «mesaj»: bu geçişe ne bulunduğu bilgisi. Prelude ve Coda\'da yok.',
+ rms1:'Aynı bilgi, yalnız ölçeği dengelenmiş.',
+ Wq:'Soru üretme kuralı (24 kafa).',Wk:'Etiket üretme kuralı (8 grup).',Wv:'İçerik üretme kuralı (8 grup).',
+ qkn:'Q ve K\'nın büyüklüğünü kırpar; yeni bilgi yok, skorların patlamasını önler.',
+ rpb:'Konum bilgisi: skora eklenen, uzaklığa göre öğrenilmiş bir yanlılık.',
+ qS:'Q\'nun 24 küçük parçası.',kS:'K\'nın 8 küçük parçası, 3 kafaca paylaşılır.',vS:'V\'nin 8 küçük parçası, 3 kafaca paylaşılır.',
+ heads:'Ham uyum puanları (maskeli), henüz yüzde değil. Çoğu katmanda kayan pencere: pencere dışı kapalı; her blokta bir katman tamamen global.',
+ oS:'Her token için baktıklarından karışan bilgi.',cat:'24 kafanın bilgisi yan yana, henüz karışmadı.',
+ Wo:'Kafaların bulduklarını birleştirip model boyutuna (2304) çeviren kural.',
+ cv1:'Her token\'ı kendisinden önceki 3 token ile küçük bir pencerede karıştırır: yakın bağlamı güçlendirir.',
+ ar2:'MoE girişi için derinlik karışımı.',msg2:'MoE girişi için mesaj (yalnız 2. ve 3. geçişte).',
+ Wr:'Yönlendirme kuralı: x\'ten 128 uzman için uygunluk puanı çıkarır.',
+ Wgate:'Her uzmanın kapı yolu.',Wup:'Her uzmanın değer yolu.',swi:'Seçilen 8 uzmanda kapı × değer (tavanlı).',Wdown:'Her uzmanın geri toplama kuralı.',
+ cv2:'MoE çıktısına yine kısa bir yakın-bağlam karıştırması.',
+ add2:'Önceki + MoE katkısı: bağlam + işlenmiş bilgi.',
+ head:'Son satırı sözlükteki her token ile karşılaştıran çıkış tablosu; ardından logit softcap.'})});
+Object.assign(FAQ,{ik:{
+ ar1:'AttnRes «residual yok» demek değil: artık bağlantı (⊕) hâlâ var. Fark, her katmanın girişinin tek bir toplam yerine, derinlik kaynaklarından öğrenilmiş dikkatle karıştırılması. Bu bölümü şemadan okudum; ağırlıkların gerçekte ne öğrendiğini ölçmedik.',
+ msg1:'«Mesaj» ayrı bir tablo ya da token değil: bir önceki geçişin blok toplamı (Blok 2 ve Blok 3), kapıyla mevcut geçişe karıştırılan bir vektör. Formül (1 − f)·x + g·m: kapı g ne kadar açıksa o kadar mesaj girer.',
+ rpb:'Burada RoPE YOK. Konum, skora eklenen öğrenilmiş bir yanlılık. Bu yüzden Q ve K döndürülmez; uzaklık bilgisi doğrudan skor tablosuna yazılır.',
+ heads:'Kayan pencere + global (5:1): 6 katmanlık her blokta 5 katman yalnız yakın geçmişe bakar, 1 katman tüm geçmişe. Pencere boyutunu şemadan okuyamadım. 7+5= gibi kısa istemlerde maske fark yaratmaz.',
+ cv1:'«Kısa konvolüsyon» attention değil: sabit boyutlu (4) küçük bir pencerede komşu token\'ları karıştıran ucuz bir işlem. Sitedeki diğer modellerde yok.',
+ topk:'«Uzman» bir konu uzmanı olmak zorunda değil: her uzman aynı yapıda küçük bir FFN. Hangi uzmanın neye baktığı ölçülmedi. Paylaşılan uzman yok: seçilen 8 uzmanın hepsi router\'a bağlı.',
+ Wgate:'128 uzmanın HEPSİ bellekte; toplam 26,4 milyar. Token başına yaklaşık 3,4 milyar çalışır. Döngü çekirdeği 3 kez çalıştığı için etkin hesap yaklaşık 5,4 milyar ağırlığa denk gelir: bellek dosyası küçük, hesap ise o kadar küçük değil.',
+ add2:'«24 katman ama 48 ziyaret»: katmanlar saklanırken 24, çalışırken 48 kez kullanılır (çekirdekteki 12 katman 3 kez). Bu yüzden KV önbelleği de geçiş başına ayrı tutulur (ölçüm: bu sayfada yok).'}});
 GRPS.ed=[
   G('Tokenizer',C_TOK,[0,0],'Sabit program (SentencePiece †): soruyu parçalara böler. Ağırlığı yok.','Yalnız numaralar.',{pm:.55,lv:1}),
   G('Embedding (paylaşımlı)',C_EMB,[1,2],'Tek Emb tablosu: soru token\'larının kartları buradan okunur. Aynı tablo decoder girdisi ve çıkış tablosu için de kullanılır †.','x_enc: her soru token\'ının "ne olduğu". Konum yok, bağlam yok.'),
@@ -687,8 +776,8 @@ FAQ.ed={enc:'Encoder yalnız BİR KEZ çalışır: cevabın her token\'ı için 
  dtok:'Decoder girdisi cevabın kendisi: eğitimde doğru cevap bir kaydırılarak verilir (teacher forcing), üretimde model kendi yazdıklarını okur.',
  Emb:'Tek tablo, üç kullanım: soru kartları, cevap kartları ve çıkış puanları (devriği) †. Ayrı tablolar da kullanılabilirdi (sitedeki LSTM Seq2Seq\'te embE ve embD ayrı).'};
 
-[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
-[MINI,GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3,INK,ED].forEach(A=>Object.entries(FAQ[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.faq=t}));
+[MINI,GPT2,LLAMA,GPTOSS,QWEN3,INK,ED].forEach(A=>{A.groups=GRPS[A.key];Object.entries(CARRY[A.key]||{}).forEach(([id,t])=>{const p=A.byId[id];if(p)p.carry=t})});
 function showGroup(A,g){select(null);const info=$('info');info.style.setProperty('--c',g.col);$('it').textContent=g.title;
   $('is').textContent=A.btn+' · bölüm (çerçeve)';$('id').textContent=g.body;
   const names=A.parts.filter(p=>p.ci>=g.cols[0]&&p.ci<=g.cols[1]).map(p=>p.name);
@@ -773,7 +862,7 @@ function addHalo(p,main){const m=new THREE.Group(),geo=new THREE.BoxGeometry(p.w
   const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xffc82e,depthTest:false}));e.renderOrder=6;m.add(f);m.add(e);haloG.add(m);halos.push({m,p})}
 function showInfo(p,extra){const info=$('info');if(!p){info.classList.remove('on');return}
   info.style.setProperty('--c',p.col);$('it').textContent=p.name;$('is').textContent=p.arch.btn+' · şekil: '+p.shape;$('id').textContent=p.desc+(p.carry?'\n\n📦 Taşıdığı bilgi: '+p.carry:'')+(p.faq?'\n\n❓ Sık karışan nokta: '+p.faq:'');
-  $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'&&p.arch.key!=='ed'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
+  $('cx').innerHTML=cmpBlock(p);$('hgo').innerHTML=p.kind==='multi'&&p.arch.key!=='ed'&&p.arch.key!=='ik'?'<button id="hgob">🔬 Kafanın içine gir (kafa '+((lastHead%p.multi.n)+1)+')</button>':'';
   $('in').textContent=(p.nums?((p.arch===MINI?'gerçek değerler: ':'')+p.nums):'')+(extra?(p.nums?'\n\n':'')+extra:'');info.classList.add('on')}
 function select(p){selected=p;focusV=null;selSet.clear();pairs=[];let extra='';
   if(p){selSet.add(p);const others=ARCHS.filter(A=>A.on&&A!==p.arch),lines=[];
@@ -884,7 +973,7 @@ function applyArch(){const act=ARCHS.filter(A=>A.on);
   document.querySelector('#top h1').textContent=act.length===1?act[0].title:'Karşılaştırma: '+act.map(A=>A.btn).join(' ↔ ');
   document.querySelector('#top p').textContent=act.length===1?act[0].sub:'Her mimari ayrı bir satırda, alt alta. Satırlara yakınlaş (imlecin olduğu yere zoom), parçalara tıkla. ⚖ Farklar düğmesi farkları listeler.';
   buildCmp();}
-const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0',q3:'#ff8f6b',ed:'#f0d35a'};
+const ACOL={mini:'#6ea0ff',gpt2:'#e8a94d',llama:'#b592f0',gptoss:'#5fd0a0',q3:'#ff8f6b',ik:'#4fc3f7',ed:'#f0d35a'};
 const AM=()=>CHARS[D.p.indexOf(Math.max(...D.p))],AP=()=>(Math.max(...D.p)*100).toFixed(1).replace('.',','),WIN=()=>D.ctxChars.map(dsp).join('');
 const T2=()=>D.a.map((v,i)=>[v,i]).sort((p,q)=>q[0]-p[0]).slice(0,2).sort((p,q)=>p[1]-q[1]);
 const fv=v=>typeof v==='function'?v():v;
@@ -928,6 +1017,7 @@ const EQ={mini:{girdi:'tok',E:'emb',P:'pos',x:'x',WQ:'Wq',WK:'Wk',WV:'Wv',q:'qt'
  q3:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',qkn:undefined,rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  ed:{tok:'tok',Emb:'emb',x:'x',erpb:'pos',eln1:'norm1',eWQ:'Wq',eWK:'Wk',eWV:'Wv',eqT:'qt',ekT:'kt',evT:'vt',eheads:'sc',eaT:'soft',eav:'cat',eWo:'oproj',eadd1:'res1',eln2:'norm2',eWi:'up',erelu:'act',eWff2:'down',eadd2:'res2',enc:'mem',dtok:'dtok',dx:'x',dln1:'norm1',dWQ:'Wq',dWK:'Wk',dWV:'Wv',dheads:'sc',dWo:'oproj',dadd1:'res1',dln2:'cross',cWq:'cross',cWk:'cross',cWv:'cross',cQ:'cross',cK:'cross',cV:'cross',cheads:'cross',cav:'cross',cWo:'cross',dadd2:'cross',dln3:'norm2',dWi:'up',drelu:'act',dWff2:'down',dadd3:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'},
  llama:{tok:'tok',Emb:'emb',x:'x',rms1:'norm1',Wq:'Wq',Wk:'Wk',Wv:'Wv',qT:'qt',kT:'kt',vT:'vt',rope:'pos',heads:'sc',qS:'qs',kS:'ks',vS:'vs',aT:'soft',oS:'ov',cat:'cat',Wo:'oproj',add1:'res1',rms2:'norm2',Wgate:'up',Wup:'up',swi:'act',Wdown:'down',add2:'res2',lnf:'normf',head:'head',logits:'logits',next:'next'}};
+EQ.ik=Object.assign({},EQ.q3,{rope:undefined,qkn:undefined,rpb:'pos',ar1:undefined,msg1:undefined,cv1:undefined,ar2:undefined,msg2:undefined,cv2:undefined,mix:undefined});
 ARCHS.forEach(A=>A.parts.forEach(p=>{p.eq=EQ[A.key][p.id]}));
 ARCHS.forEach(A=>{A.on=A===MINI;A.mDef=A===MINI?1:0;A.mm=A.mDef;A.mT=A.mDef;A._fresh=true;A.LENc=A.LEN2;A.yo=0;A.yoT=0;
   const b=document.createElement('button');b.textContent=A.btn;b.dataset.k=A.key;
@@ -982,7 +1072,7 @@ const PRN0=()=>PK==='B'?{
  gpt2:'Aynı metin GPT-2\'nin BPE sözlüğüyle <b>4 token</b>\'a bölünür: <span class="mono">7 | + | 5 | =</span> (numaralar 22, 10, 20, 28 — gerçek, ölçüldü). Her rakam/işaret tek parça. <b>T = 4</b>, dolgu yok. (Genel olarak BPE: başta her harf ayrıdır, en sık yan yana gelen iki parça birleştirilip yeni parça yapılır, on binlerce kez tekrarlanır.)',
  llama:'Aynı fikir (BPE), daha büyük sözlük: <b>128.256 parça</b>; bağlam en çok 8192 token. Bu kısa istemin Llama ile kaç token olduğunu ölçmedik.',
  fark:'Karakter ↔ alt-kelime: burada ikisi de 4 parça, ama GPT-2 sözlüğü 50.257 (Llama 128.256), Minik GPT\'ninki 40. Pencere sabit 10 (6 dolgu) ↔ T = cümle kadar.'};
-const PRN=()=>{const o=PRN0();o.gptoss=o.llama.replace('128.256 parçalık sözlük','yaklaşık 201 bin parçalık sözlük †').replace('Llama ile','gpt-oss ile').replace(/bağlam en çok 8192 token\./,'bağlam çok uzun (≈131 bin token †).');o.gptoss=o.gptoss.replace('<b>128.256 parça</b>','<b>≈201 bin parça †</b>');o.q3=o.llama.replace('128.256 parçalık sözlük','yaklaşık 152 bin parçalık sözlük †').replace('<b>128.256 parça</b>','<b>≈152 bin parça †</b>').replace('Llama ile','Qwen3 ile').replace(/bağlam en çok 8192 token\./,'yerel bağlam 32.768 token †.');return o};
+const PRN=()=>{const o=PRN0();o.gptoss=o.llama.replace('128.256 parçalık sözlük','yaklaşık 201 bin parçalık sözlük †').replace('Llama ile','gpt-oss ile').replace(/bağlam en çok 8192 token\./,'bağlam çok uzun (≈131 bin token †).');o.gptoss=o.gptoss.replace('<b>128.256 parça</b>','<b>≈201 bin parça †</b>');o.q3=o.llama.replace('128.256 parçalık sözlük','yaklaşık 152 bin parçalık sözlük †').replace('<b>128.256 parça</b>','<b>≈152 bin parça †</b>').replace('Llama ile','Qwen3 ile').replace(/bağlam en çok 8192 token\./,'yerel bağlam 32.768 token †.');o.ik=o.llama.replace('128.256 parçalık sözlük','yaklaşık 200 bin parçalık sözlük').replace('<b>128.256 parça</b>','<b>≈200 bin parça</b>').replace('Llama ile','Inkling ile').replace(/bağlam en çok 8192 token\./,'yerel bağlam 1M token.');return o};
 const TOUR=[
  {t:'1 · Girdi: metin nasıl sayıya hazırlanıyor?',ids:{mini:['girdi'],gpt2:['tok'],llama:['tok']},
   txt:{mini:()=>PRN().mini,gpt2:()=>PRN().gpt2,llama:()=>PRN().llama},
@@ -1146,11 +1236,53 @@ Object.entries({
  next:"Seçilen token DECODER girdisine eklenir; encoder (bellek) yeniden çalışmaz."
 }).forEach(([k,v])=>{if(CMPTXT[k])CMPTXT[k].ed=v});
 const NOENC="Yok: decoder-only. Ayrı bir encoder yok; soru ve cevap aynı akışta, aynı maskeli self-attention'dan geçer.";
-CMPTXT.mem={mini:NOENC,gpt2:NOENC,llama:NOENC,gptoss:NOENC,q3:NOENC,ed:"Encoder'ın çıktısı (T_enc × 768): sorunun bağlamlı kartları. Bir kez hesaplanır; decoder'ın 12 bloğundaki çapraz dikkat K ve V'yi buradan üretir."};
+CMPTXT.mem={mini:NOENC,gpt2:NOENC,llama:NOENC,gptoss:NOENC,q3:NOENC,ik:NOENC,ed:"Encoder'ın çıktısı (T_enc × 768): sorunun bağlamlı kartları. Bir kez hesaplanır; decoder'ın 12 bloğundaki çapraz dikkat K ve V'yi buradan üretir."};
 const NODTOK="Ayrı bir decoder girdisi yok: üretilen token aynı diziye, sorunun arkasına eklenir («7+5=1…»).";
-CMPTXT.dtok={mini:"Ayrı decoder girdisi yok: üretilen karakter aynı pencereye eklenir, pencere kayar.",gpt2:NODTOK,llama:NODTOK,gptoss:NODTOK,q3:NODTOK,ed:"Cevabın şimdiye kadarki kısmı («<s> 1 2», örnek) AYRI bir dizi olarak decoder'a girer."};
+CMPTXT.dtok={mini:"Ayrı decoder girdisi yok: üretilen karakter aynı pencereye eklenir, pencere kayar.",gpt2:NODTOK,llama:NODTOK,gptoss:NODTOK,q3:NODTOK,ik:NODTOK,ed:"Cevabın şimdiye kadarki kısmı («<s> 1 2», örnek) AYRI bir dizi olarak decoder'a girer."};
 const NOCROSS="Çapraz dikkat yok: cevap token'ları soruya, aynı self-attention tablosunun içinden (cevap satırları × soru sütunları) bakar.";
-CMPTXT.cross={mini:"Çapraz dikkat yok: tek akış, tek dikkat (son kutu öncekilere bakar).",gpt2:NOCROSS,llama:NOCROSS,gptoss:NOCROSS,q3:NOCROSS,ed:"Her decoder bloğunda ayrı alt-blok: Q cevap token'larından, K ve V encoder belleğinden; tablo T_dec × T_enc, maskesiz."};
+CMPTXT.cross={mini:"Çapraz dikkat yok: tek akış, tek dikkat (son kutu öncekilere bakar).",gpt2:NOCROSS,llama:NOCROSS,gptoss:NOCROSS,q3:NOCROSS,ik:NOCROSS,ed:"Her decoder bloğunda ayrı alt-blok: Q cevap token'larından, K ve V encoder belleğinden; tablo T_dec × T_enc, maskesiz."};
+Object.entries({
+ tok:"Soru BPE ile bölünür (yaklaşık 200 bin parça). Çizilen parçalar GPT-2'ninki.",
+ emb:"Token tablosu ≈200.000 × 2304: her parça için 2304 sayılık kart.",
+ pos:"Tablo yok, RoPE da yok: konum, skora eklenen öğrenilmiş göreli yanlılık olarak girer.",
+ x:"x: T × 2304, yalnız kimlik; Embedding RMSNorm ile dengelenir. Konum sonradan, skora girer.",
+ norm1:"RMSNorm (alt-bloğun girişinde); ayrıca Q/K L2 kırpma. Girişten önce derinlik karışımı (AttnRes) var.",
+ Wq:"W_Q 2304 × (24 × d_kafa): 24 sorgu kafası (kafa boyutu şemada yazmıyor).",
+ Wk:"W_K 2304 × (8 × d_kafa): yalnız 8 anahtar kafası.",
+ Wv:"W_V 2304 × (8 × d_kafa): 8 değer kafası; 3 sorgu kafası paylaşır.",
+ qt:"Q: T × (24 × d_kafa) — her token'ın sorusu.",kt:"K: T × (8 × d_kafa) (8 K/V kafası).",vt:"V: T × (8 × d_kafa) (8 K/V kafası).",
+ qs:"Q 24 dilim.",ks:"K 8 dilim, her biri 3 kafaca paylaşılır.",vs:"V 8 dilim, 3 kafaca paylaşılır.",
+ sc:"24 tablo T×T; çoğu katmanda kayan pencere (5:1), her blokta bir katman global; göreli konum yanlılığı eklenir.",
+ soft:"24 tablo, satır başına softmax: toplam %100.",
+ ov:"24 tablo: yüzde · paylaşılan V dilimi.",cat:"24 çıkış yan yana.",
+ attn:"24 sorgu kafası, 8 K/V grubu; 5 kayan pencere : 1 global.",
+ oproj:"W_O (24 × d_kafa) × 2304: kafaları birleştirip model boyutuna döndürür; ardından kısa konvolüsyon.",
+ res1:"x + attention, HER konumda.",norm2:"RMSNorm 2 (MoE öncesi); öncesinde AttnRes ve (döngü geçişlerinde) mesaj kapısı.",
+ up:"128 uzmanın her birinde W_gate ve W_up (kapılı ikili yol, ara boyut 1152); token başına yalnız 8 uzman çalışır.",
+ act:"Seçilen 8 uzmanda kapılı aktivasyon (SwiGLU; softcapped SiLU).",
+ down:"Her uzmanda W_down; 8 uzmanın çıktısı router yüzdeleriyle toplanır; ardından kısa konvolüsyon.",
+ res2:"Katman çıktısı bir sonrakine girer; 24 fiziksel katman, döngü çekirdeği 3 geçiş: 48 ziyaret.",normf:"Final Block AttnRes + son RMSNorm.",
+ head:"≈200.000 sözlüğe çıkış tablosu + logit softcap (30); girişten ayrı olup olmadığı şemadan belli değil.",logits:"T × sözlük: her konum için skor satırı.",
+ next:"Örnek bir token seçilir ve diziye eklenir.",
+ mem:NOENC,dtok:NODTOK,cross:NOCROSS
+}).forEach(([k,v])=>{if(CMPTXT[k])CMPTXT[k].ik=v});
+INK.facts=['≈200 bin parça','2304','24 sorgu / 8 K-V (gruplu sorgu dikkati)','24 fiziksel katman (6 + 12×3 + 6 = 48 ziyaret)','MoE: 128 uzman, token başı 8 (paylaşılan yok), uzman ara boyutu 1152','Kapılı (SwiGLU, tavanlı SiLU)','RMSNorm (+ Q/K L2 kırpma); derinlik karışımı (AttnRes)','öğrenilmiş göreli konum yanlılığı (RoPE yok, tablo yok)','1M token','nedensel; 5 kayan pencere : 1 global','her konumda','şemadan belli değil (+ logit softcap 30)','26,4 milyar (aktif 3,4; döngü sayılınca ≈5,4)'];
+(function(){const ids=[['tok'],['Emb'],['x'],['x','ar1','msg1','rms1'],['Wq','Wk','Wv','qT','kT','vT','qkn','rpb','qS','kS','vS'],['heads','aT'],['oS','cat','Wo','cv1','add1'],['ar2','msg2','rms2','Wr','topk','Wgate','Wup','swi','Wdown','mix'],['cv2','add2'],['lnf','head','logits'],['next']];
+ const txt=[()=>"Aynı fikir (BPE), yaklaşık 200 bin parçalık sözlük. Bu istemin Inkling ile kaç token olduğunu ölçmedik.",
+  "<b>Emb ≈200.000 × 2304</b>: her token için 2304 sayılık kart.",
+  "Bu adımda konum <b>eklenmez</b>. Konum bilgisi, 5. adımda skora <b>öğrenilmiş göreli yanlılık</b> olarak girer (RoPE yok).",
+  "Derinlik karışımı (<b>AttnRes</b>): katman girişi, token gömmeleri ve önceki blok toplamlarından karıştırılır. Döngünün 2. ve 3. geçişinde ayrıca <b>mesaj kapıları</b> bir önceki geçişin sonucunu okur. Sonra RMSNorm.",
+  "W_Q → <b>24 sorgu kafası</b>; W_K ve W_V → yalnız <b>8 K/V kafası</b>: 3 sorgu kafası bir K/V grubunu paylaşır. Q ve K L2 kırpmadan geçer, sonra kafalara dilimlenir.",
+  "<b>24 sorgu kafası</b> × T×T, maske + öğrenilmiş göreli yanlılık. Çoğu katman kayan pencereli, her blokta bir katman global (5:1).",
+  "24 kafa birleşir, W_O ile model boyutuna döner, <b>kısa konvolüsyondan</b> (çekirdek 4) geçer, residual eklenir.",
+  "FFN yerine <b>uzman karışımı (MoE)</b>: derinlik karışımı + mesaj → RMSNorm → <b>router</b> her token için 128 uzmana puan verir → <b>en iyi 8</b> → kapılı FFN'ler → router yüzdeleriyle toplanır. Paylaşılan uzman yok.",
+  "Kısa konvolüsyon + residual: katman biter. <b>12 katmanlık döngü çekirdeği bu adımlardan 3 kez geçer</b> (aynı ağırlık, mesaj kapılarıyla); Prelude ve Coda birer kez. Toplam 24 saklı katmandan 48 ziyaret.",
+  "Final Block AttnRes + son RMSNorm, çıkış tablosu ve logit softcap (30): her konum için ≈200.000 skor.",
+  "Aynı: skor → yüzde → seç → ekle → tekrar."];
+ TOUR.forEach((st,i)=>{st.ids.ik=ids[i];st.txt.ik=txt[i]});
+ const sh=[null,null,null,null,null,null,null,()=>"Router: T×128 puan → T×8 seçim; 8 uzmanın T×2304'lük çıktısı → ağırlıklı toplam. Hesap yükü ≈ 8/128 (≈%6)."];
+ sh.forEach((f,i)=>{if(f)SHP[i].ik=f});
+ })();
 ED.facts=['≈32.128 SentencePiece parça †','768','12 (her biri 64)','12 encoder + 12 decoder','768 → 3072 → 768 (4×)','ReLU †','ortalamasız LayerNorm (RMSNorm benzeri), alt-bloğun girişinde †','göreli konum yanlılığı (skora eklenir; tablo/RoPE yok) †','eğitimde 512 token †','encoder MASKESİZ; decoder maskeli + çapraz dikkat','yalnız decoder konumlarında (cevap)','Emb ile paylaşımlı †','≈220 milyon †'];
 (function(){const ids=[['tok','dtok'],['Emb','x','dx'],['erpb'],['x','eln1','dln1'],['eWQ','eWK','eWV','eqT','ekT','evT','dWQ','dWK','dWV'],['eheads','eaT','dheads','cheads'],['eav','eWo','eadd1','cav','cWo','dadd2'],['eln2','eWi','erelu','eWff2','dln3','dWi','drelu','dWff2'],['eadd2','enc','dadd3'],['lnf','head','logits'],['next']];
  const txt=["İKİ ayrı girdi: soru («7+5=») <b>encoder</b>'a, cevabın şimdiye kadarki kısmı («&lt;s&gt; 1 2», örnek) <b>decoder</b>'a. T5'in bu istemi kaç token'a böldüğünü ölçmedik.",
@@ -1184,7 +1316,7 @@ function setPrompt(k){if(PK===k)return;PK=k;D=k==='B'?DBF:DA;const nw=buildMini(
   MINI.parts.forEach(p=>{const q=by[p.id];if(!q)return;p.desc=q.desc;p.nums=q.nums;p.shape=q.shape;
     if(q.canvas){p.canvas=q.canvas;if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}
     if(p.cfm)p.cfm.forEach((fm,i)=>{const pad=D.ctxChars[i]==='.'&&i<6;fm.map.dispose();fm.map=tex(letter(D.ctxChars[i],D.ids[i],pad));fm.needsUpdate=true;p.ced[i].material.opacity=pad?0.35:0.9})});
-  [GPT2,LLAMA,GPTOSS,QWEN3,ED].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
+  [GPT2,LLAMA,GPTOSS,QWEN3,INK,ED].forEach(A=>A.parts.forEach(p=>{if(p.dyn){p.canvas=p.dyn();if(p.fm){p.fm.map.dispose();p.fm.map=tex(p.canvas);p.fm.needsUpdate=true}}}));
   if(selected)select(selected);buildCmp();if(tourOn&&!storyOn)tourPanel()}
 let tourHadBar=true;
 function startTour(){if(storyOn)stopStory();tourHadBar=!document.body.classList.contains('nobar');document.body.classList.add('nobar');if(ARCHS.filter(A=>A.on).length<2){GPT2.on=true;GPT2._fresh=true;GPT2.mm=GPT2.mT=GPT2.mDef}
