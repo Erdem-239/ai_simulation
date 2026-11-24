@@ -1,5 +1,70 @@
 [
  {
+  "date": "2026-11-24",
+  "title": "Nvidia Jensen Huang CEO'luk Görevine Geri Döndü",
+  "note": "Şirketin stratejik yönelimini ve GPU pazarındaki liderliğini pekiştirecek bir adım.",
+  "url": "https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo.html",
+  "source": "Hacker News",
+  "tags": [
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "Qwen-Image-2.1-Uncensored-Omni-Quantized Modeli 427 005 Kez İndirildi",
+  "note": "Metin‑görüntü üretiminde yüksek kalite ve düşük maliyet sunuyor.",
+  "url": "https://huggingface.co/chatrlabs/Qwen-Image-2.1-Uncensored-Omni-Quantized",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "VLM'ler Robot Manipülasyonu İçin Temel Model Olarak Eğitildi",
+  "note": "Robotik kontrolünde genel amaçlı görsel dil modellerinin kullanılabilirliğini gösteriyor.",
+  "url": "https://huggingface.co/papers/2611.29338",
+  "source": "HF günün makalesi",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "OpenAI PR Tarama Demo'su Yayınlandı",
+  "note": "Kod inceleme süreçlerinde güvenlik ve verimlilik artışı sağlıyor.",
+  "url": "https://openai.com/business/learn/pr-scans-demo",
+  "source": "openai.com",
+  "tags": [
+   "araç",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "unsloth/Inkling-2-Mini-GGUF Modeli Popülerleşti",
+  "note": "Küçük boyutu ve yüksek performansı sayesinde çok sayıda cihazda kullanılabilir.",
+  "url": "https://huggingface.co/unsloth/Inkling-2-Mini-GGUF",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "higurashi-ai/Haru-4B Ses Modeli 9 087 İndirme Aldı",
+  "note": "Çok dilli ses sentezi alanında yeni bir referans noktası oluşturuyor.",
+  "url": "https://huggingface.co/higurashi-ai/Haru-4B",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
   "date": "2026-11-23",
   "title": "GLM-5.4: İlk Loop Transformer ile Genel Kodlama Yeteneği",
   "note": "Yeni mimari, kod üretiminde döngüsel düşünceyi entegre ederek daha karmaşık programları otomatikleştirebilir.",
