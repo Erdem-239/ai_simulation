@@ -519,7 +519,7 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
            Göz geniş bir bulutsu olduğundan çekim yumuşatılmış (Plummer); yol, periapsisten GERİYE doğru
            aynı çekimle sürülerek kurulur, böylece başlangıç noktası da fizikten çıkar. */
         const ew=(document.getElementById('bhCore')||coreEl).getBoundingClientRect().width,D0=Math.hypot(W,H)*.62,
-          rp=Math.max(50,ew*.07),eps=ew*.11,v0=D0/26,GM=v0*v0*D0*.75,vesc=Math.sqrt(2*GM*Math.pow(rp*rp+eps*eps,-.5)*1.0),
+          rp=Math.max(120,ew*.2),eps=ew*.11,v0=D0/26,GM=v0*v0*D0*.75,vesc=Math.sqrt(2*GM*Math.pow(rp*rp+eps*eps,-.5)*1.0),
           vp=vesc*.93,ang=1.42+(rnd()-.5)*.08;
         let x,y,vx,vy,vpp=vp;/* gelen kol D0'a ulaşmazsa (küçük ekran/gözde bağlı yörünge) hızı artırıp yeniden dene */
         for(const q of [.93,.96,.985,.999,1.02]){vpp=vesc*q;x=Math.cos(ang)*rp;y=Math.sin(ang)*rp;vx=-Math.sin(ang)*vpp;vy=Math.cos(ang)*vpp;let tt=0;
@@ -535,8 +535,6 @@ main.wrap,.band,footer,.wrap{position:relative;z-index:1}
         if(!av.tr.length||Math.hypot(av.x-av.tr[av.tr.length-1][0],av.y-av.tr[av.tr.length-1][1])>6){av.tr.push([av.x,av.y]);if(av.tr.length>160)av.tr.shift()}
         const fade=Math.min(1,(t-av.t0)/1500,Math.max(0,(av.D0*1.15-r)/(av.D0*.25)));
         g.save();g.lineWidth=1;for(let k=1;k<av.tr.length;k++){g.strokeStyle='rgba(160,200,255,'+(k/av.tr.length)*.22*fade+')';g.beginPath();g.moveTo(ccx+av.tr[k-1][0],ccy+av.tr[k-1][1]);g.lineTo(ccx+av.tr[k][0],ccy+av.tr[k][1]);g.stroke()}g.restore();
-        if(av.bt&&t-av.bt<4200){const e=t-av.bt,a=Math.min(1,e/300,(4200-e)/900)*.75;g.save();g.globalAlpha=a*fade;g.font=(W<600?9:11)+'px "JetBrains Mono",monospace';g.fillStyle='#ffd9a0';
-          const ox=ccx+av.x+14,oy=ccy+av.y-14;g.fillText('son yakıt · kütleçekim sapanı',ox,oy);g.restore()}
         const x=ccx+av.x,y=ccy+av.y,L=av.L,thr=av.burn>0?1:.12;
         g.save();g.translate(x,y);g.rotate(Math.atan2(av.vy,av.vx));g.globalAlpha=fade;
         const u=L/30;g.scale(u,u);const T=t/1000;
