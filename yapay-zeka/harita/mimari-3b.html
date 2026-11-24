@@ -524,11 +524,12 @@ function inkling2(){const L=[],K='ik';
   mkP(L,K,'add2','⊕ + MoE','⊕ artık','ffn',10,16,'T × 2304',"Katmanın çıktısı. 24 fiziksel katman var; döngü çekirdeğindeki 12 katman 3 kez çalışır, toplam 48 katman ziyareti.");
   tail(L,K,'Son RMSNorm (+ Final Block AttnRes)','≈200.000',false,'Son RMSNorm','Tüm katmanlardan sonra Final Block AttnRes ve son RMSNorm.');
   L.find(p=>p.id==='head').desc="Son vektörü sözlükteki HER token için bir skora çevirir; ardından logit softcap (şemada 30): ham skorlar bir tavanla sınırlanır. Giriş tablosundan ayrı olup olmadığı şemadan belli değil.";
+  ['ar1','msg1','cv1','ar2','msg2','cv2'].forEach(id=>{const p=L.find(q=>q.id===id);p.short+=' ✦';p.desc="✦ Yalnız Inkling'de: sitedeki diğer modellerde bu parça yok. "+p.desc});
   return {key:'ik',btn:'Inkling 2 Mini (2026)',parts:L,two:false,
     cols:[['tok'],['Emb'],['x'],['ar1'],['msg1'],['rms1'],['Wq','Wk','Wv'],['qT','kT','vT'],['qkn','rpb'],['qS','kS','vS'],['heads'],['aT'],['oS'],['cat'],['Wo'],['cv1'],['add1'],['ar2'],['msg2'],['rms2'],['Wr'],['topk'],['Wgate','Wup'],['swi'],['Wdown'],['mix'],['cv2'],['add2'],['lnf'],['head'],['logits'],['next']],
     blocks:[[3,27]],blockHtml:['KATMAN × 24 → 48 ziyaret<small>Prelude 6 katman bir kez · DÖNGÜ ÇEKİRDEĞİ 12 katman aynı ağırlıkla 3 geçiş (mesaj kapılı) · Coda 6 katman bir kez</small>'],
     asm:'Inkling 2 Mini<small>26,4 milyar toplam, 3,4 aktif, 5,4 etkin</small>',title:'Döngülü MoE: Inkling 2 Mini şeması',
-    sub:'Thinking Machines Lab, 20 Kasım 2026, açık ağırlıklı. Çizim, modelin yayımlanan şemasına (model kartı, config ve Transformers uygulamasından derlenmiş) dayanıyor: 24 fiziksel katman (6 + 12×3 + 6 = 48 ziyaret), 128 uzman / 8 seçilen / 0 paylaşılan, 24 sorgu / 8 K-V kafası, 5:1 kayan pencere-global dikkat, öğrenilmiş göreli konum yanlılığı, kısa konvolüsyon, derinlik karışımı (AttnRes) ve geçişler arası mesaj kapıları. Kafa boyutu ve pencere boyutu şemada yazmadığı için çizimde sayılmadı. Şekiller gerçek, renkli sayılar şematik. Çizimde kayan pencere/global ayrımı ve döngünün 3 geçişi tek katman sütunuyla gösterilir.'}}
+    sub:'Thinking Machines Lab, 20 Kasım 2026, açık ağırlıklı. Çizim, modelin yayımlanan şemasına (model kartı, config ve Transformers uygulamasından derlenmiş) dayanıyor: 24 fiziksel katman (6 + 12×3 + 6 = 48 ziyaret), 128 uzman / 8 seçilen / 0 paylaşılan, 24 sorgu / 8 K-V kafası, 5:1 kayan pencere-global dikkat, öğrenilmiş göreli konum yanlılığı, kısa konvolüsyon, derinlik karışımı (AttnRes) ve geçişler arası mesaj kapıları. Kafa boyutu ve pencere boyutu şemada yazmadığı için çizimde sayılmadı. Şekiller gerçek, renkli sayılar şematik. Çizimde kayan pencere/global ayrımı ve döngünün 3 geçişi tek katman sütunuyla gösterilir. ✦ = sitedeki diğer modellerde olmayan parça.'}}
 function decTokCv(){const T=['<s>','1','2'],S=['başla','üretildi','üretildi'],c=cv(480,100),g=c.getContext('2d');g.fillStyle='#161b26';g.fillRect(0,0,480,100);
   T.forEach((t,i)=>{const x=6+i*158,bw=150;g.fillStyle='#2c2a1c';g.fillRect(x,8,bw,84);g.strokeStyle='#f0d35a';g.lineWidth=2;g.strokeRect(x,8,bw,84);g.fillStyle='#e8ebf2';g.font='700 30px ui-monospace,Menlo,monospace';g.textAlign='center';g.fillText(t,x+bw/2,48);g.fillStyle='#c9b765';g.font='600 17px ui-monospace,Menlo,monospace';g.fillText(S[i],x+bw/2,78)});return c}
 function encdec(){const L=[],K='ed';
@@ -630,7 +631,7 @@ const labs=$('labels');
 const mkLb=(c,h)=>{const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',c);d.innerHTML=h;labs.appendChild(d);return d};
 
 const G=(title,col,cols,body,carry,o={})=>Object.assign({title,col,cols,body,carry,pm:1},o);
-const C_TOK='#8a93a6',C_EMB='#6ea0ff',C_POS='#b592f0',C_ATT='#3fc7c1',C_FFN='#e8a94d',C_OUT='#f27a88',C_ALT='#7fd18b';
+const C_TOK='#8a93a6',C_EMB='#6ea0ff',C_POS='#b592f0',C_ATT='#3fc7c1',C_FFN='#e8a94d',C_OUT='#f27a88',C_ALT='#7fd18b',C_NEW='#4fc3f7';
 const GRPS={
  mini:[
   G('Tokenizer',C_TOK,[0,0],'Minik GPT\'de tokenizer sadece harf → numara tablosu (40 harf); baştaki boş kutular da burada dolguyla doldurulur. Sinir ağının parçası değil, ağırlığı yok.','Yalnız numaralar. Anlam ya da konum bilgisi taşımaz; tabloda hangi satırı okuyacağız adresi.',{pm:.55,lv:1}),
@@ -715,14 +716,14 @@ GRPS.ik=[
   G('Tokenizer',C_TOK,[0,0],'Sinir ağının parçası DEĞİL: ağırlığı olmayan, sabit bir program (BPE). Sözlük yaklaşık 200 bin parça.','Yalnız numaralar. Anlam ya da konum bilgisi taşımaz.',{pm:.55,lv:1}),
   G('Embedding katmanı',C_EMB,[1,2],'Numaraları anlam taşıyan sayı listelerine çevirir (2304 sayı), ardından Embedding RMSNorm. Konum burada EKLENMEZ.','Çıkışı x: yalnız «token ne» bilgisi.'),
   G('Konum (göreli yanlılık)',C_POS,[8,8],'RoPE ya da konum tablosu yok: konum, Q·K skoruna eklenen ÖĞRENİLMİŞ göreli yanlılık olarak girer. Aynı sütunda Q/K L2 kırpma da durur.','Bağıl uzaklık: iki token arası kaç adım var.',{pm:.55,bottom:true,lv:1}),
-  G('Derinlik karışımı + mesaj',C_OUT,[3,4],'AttnRes mix: katman girişi, token gömmeleri ve önceki blok toplamlarından öğrenilmiş dikkatle karıştırılır. Mesaj kapıları (Q,K,V) yalnız döngünün 2. ve 3. geçişinde bir önceki geçişin blok toplamlarını okur.','«Bir önceki turda ne bulduk?» bilgisinin geri beslemesi.',{pm:.8}),
+  G('✦ Derinlik karışımı + mesaj',C_NEW,[3,4],'AttnRes mix: katman girişi, token gömmeleri ve önceki blok toplamlarından öğrenilmiş dikkatle karıştırılır. Mesaj kapıları (Q,K,V) yalnız döngünün 2. ve 3. geçişinde bir önceki geçişin blok toplamlarını okur.','«Bir önceki turda ne bulduk?» bilgisinin geri beslemesi. ✦ Yalnız Inkling\'de: sitedeki diğer modellerde yok.',{pm:.8,prio:1}),
   G('Attention alt-bloğu',C_ALT,[3,16],'Katmanın 1. yarısı: AttnRes → mesaj → RMSNorm → Q,K,V → L2 kırpma + göreli yanlılık → 24 sorgu kafası (8 K/V grubu; 5 kayan pencere : 1 global) → W_O → kısa konvolüsyon → artık bağ.','Token\'ın kartına çevresinden toplanan bilgi eklenir.',{pm:1.2,lv:2}),
   G('Q, K, V üretimi',C_ATT,[6,7],'Q 24 kafaya, K ve V yalnız 8 gruba çıkar: 3 sorgu kafası bir K/V grubunu paylaşır.','«Ne arıyorum» (Q), «beni böyle bul» (K), «vereceğim bilgi» (V).',{pm:.8}),
   G('Kafalara bölme',C_ATT,[9,9],'Q 24, K ve V 8 dilime kesilir. Hesap yok, sadece kesme.','Aynı bilgi, ayrı bakış açılarına ayrılmış hâlde.',{pm:.8}),
   G('Kafalar: skor → softmax → a·V',C_ATT,[10,12],'Her kafada Qᵢ·Kᵢᵀ + göreli yanlılık, maske, softmax, paylaşılan V ile karışım.','Skor: ham uyum. Yüzde: kim kime ne kadar bakıyor. a·V: baktıklarından karışan bilgi.',{pm:.7}),
   G('Birleştir + kısa konv. + artık',C_ATT,[13,16],'Kafa çıkışları yapıştırılıp W_O ile çevrilir, kısa konvolüsyondan geçer ve ana akıma eklenir.','Token\'ın kendi bilgisi + çevresinden topladığı bilgi.',{pm:.8}),
   G('MoE alt-bloğu',C_ALT,[17,27],'Katmanın 2. yarısı: AttnRes → mesaj kapısı → RMSNorm → router → en iyi 8 uzman → ağırlıklı toplam → kısa konvolüsyon → artık bağ.','Token\'ın kendi kartı üzerinde «düşünme», her token için farklı uzmanlarla.',{pm:1.2,lv:2}),
-  G('Mesaj + derinlik karışımı',C_OUT,[17,18],'MoE girişi için de derinlik karışımı ve (döngü geçişlerinde) mesaj kapısı.','Aynı geri besleme, FFN tarafı için.',{pm:.8}),
+  G('✦ Mesaj + derinlik karışımı',C_NEW,[17,18],'MoE girişi için de derinlik karışımı ve (döngü geçişlerinde) mesaj kapısı.','Aynı geri besleme, FFN tarafı için. ✦ Yalnız Inkling\'de: sitedeki diğer modellerde yok.',{pm:.8,prio:1}),
   G('Router + seçim',C_OUT,[20,21],'Her token için 128 uzmana puan çıkarılır, en yüksek 8\'i seçilir.','«Bu token hangi uzmanlara gitsin?» Seçilmeyen 120 uzman çalışmaz.',{pm:.8}),
   G('128 uzman (yalnız 8\'i çalışır)',C_FFN,[22,24],'Her uzman kendi kapılı FFN\'i (ara boyut 1152). Hepsi bellekte, token başına 8\'i kullanılır.','Uzmanlaşmış «düşünme» yolları. Hangi uzmanın neye uzmanlaştığı ölçülmedi.',{pm:.8}),
   G('Karışım',C_FFN,[25,25],'8 uzmanın çıktıları router yüzdeleriyle toplanır.','Tek bir T×2304 vektör: normal FFN\'in yerini tutar.',{pm:.8,bottom:true,lv:1}),
@@ -794,7 +795,7 @@ function buildScene(A){
   A.lines=new THREE.LineSegments(A.lgeo,lmat);A.lines.frustumCulled=false;scene.add(A.lines);
   A.bboxes=A.blocks.map(()=>{const b=new THREE.LineSegments(new THREE.EdgesGeometry(bgeo),new THREE.LineBasicMaterial({color:0x3fc7c1,transparent:true,opacity:0}));b.frustumCulled=false;scene.add(b);return b});
   A.gbox=(A.groups||[]).map(g=>{const b=new THREE.LineSegments(new THREE.EdgesGeometry(bgeo),new THREE.LineBasicMaterial({color:new THREE.Color(g.col),transparent:true,opacity:0}));b.frustumCulled=false;scene.add(b);return b});
-  A.glb=(A.groups||[]).map(g=>{const d=mkLb(g.col,g.title);d.title='Tıkla: ne içeriyor, hangi bilgiyi taşıyor?';d.classList.add('gl');if(g.bottom)d.classList.add('bot');d.addEventListener('click',ev=>{ev.stopPropagation();showGroup(A,g)});return d});
+  A.glb=(A.groups||[]).map(g=>{const d=mkLb(g.col,g.title);d.title='Tıkla: ne içeriyor, hangi bilgiyi taşıyor?';d.classList.add('gl');if(g.prio)d.dataset.prio='1';if(g.bottom)d.classList.add('bot');d.addEventListener('click',ev=>{ev.stopPropagation();showGroup(A,g)});return d});
   A.parts.forEach(p=>{const d=document.createElement('div');d.className='lb';d.style.setProperty('--c',p.col);d.innerHTML=p.short+'<small>'+p.shape+'</small>';labs.appendChild(d);p.lb=d;p.arch=A});
   A.blockLb=mkLb('#3fc7c1',A.blockHtml[0]);A.blockLb2=mkLb('#3fc7c1',A.blockHtml[1]||'');A.contLb=mkLb('#3fc7c1','blok burada devam ediyor ↓<small>r → W1 (aynı blok, alt satır)</small>');A.asmLb=mkLb('#6ea0ff',A.asm);
   A.contGeo=new THREE.BufferGeometry();A.contGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));
@@ -884,7 +885,7 @@ let LBMODE='sparse';
 function declutter(act){
   if(LBMODE==='all'||EMB)return;
   const els=[];act.forEach(A=>{A.parts.forEach(p=>els.push({e:p.lb,pri:(p===selected||tourParts.indexOf(p)>=0)?1:0}));
-    [A.blockLb,A.blockLb2,A.contLb,A.asmLb,A.memLb].forEach(e=>{if(e)els.push({e,pri:0})});(A.glb||[]).forEach(e=>els.push({e,pri:0}))});
+    [A.blockLb,A.blockLb2,A.contLb,A.asmLb,A.memLb].forEach(e=>{if(e)els.push({e,pri:0})});(A.glb||[]).forEach(e=>els.push({e,pri:e.dataset.prio?1:0}))});
   const vis=[];els.forEach(o=>{const op=parseFloat(o.e.style.opacity);if(op>0.08){if(LBMODE==='none'&&!o.pri){o.e.style.opacity=0;o.e.style.pointerEvents='none'}else vis.push(o)}});
   if(LBMODE==='none')return;
   vis.forEach(o=>{const r=o.e.getBoundingClientRect();o.r=r;o.n=(o.e.textContent||'').length});
