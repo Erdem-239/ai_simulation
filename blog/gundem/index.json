@@ -1,6 +1,136 @@
 [
  {
   "date": "2026-11-24",
+  "title": "OpenAI ve Cisco Shirudo'yu Tanıttı",
+  "note": "Linux için açık kaynak runtime, güvenlik yamalarını sorunsuz dağıtmayı sağlıyor",
+  "url": "https://openai.com/index/introducing-shirudo",
+  "source": "openai.com",
+  "tags": [
+   "araç",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "DexDuet Bimanual Dexterity Öğreniyor",
+  "note": "İki elle hassas robotik hareketler, endüstriyel otomasyonda yeni kapılar açıyor",
+  "url": "https://huggingface.co/papers/2611.30495",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araç",
+   "bilim"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "tencent/Hy4-flash Görüntü‑Metin Modeli Çıktı",
+  "note": "Görsel ve metin entegrasyonu, multimodal uygulamaları hızlandırıyor",
+  "url": "https://huggingface.co/tencent/Hy4-flash",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "Rumble‑2‑Flash 0.5B Konuşma Modeli 40+ Dil Desteğiyle",
+  "note": "Küçük boyutlu çok‑dilli ses modeli, düşük kaynaklı uygulamalara imkan tanıyor",
+  "url": "https://huggingface.co/blog/rumble-2-flash",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "OpenAI Sınır AI Risk Yönetimi Stratejisi",
+  "note": "Model hizalanması ve sandboxing ile uç AI risklerinin kontrolü ele alınıyor",
+  "url": "https://openai.com/index/managing-frontier-ai-risk",
+  "source": "openai.com",
+  "tags": [
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "Open Vision Banana Görsel Algı Çerçevesi",
+  "note": "Üretken RGB tabanlı algı, görsel görevlerde tek modelle çok iş yapmayı sağlıyor",
+  "url": "https://huggingface.co/papers/2611.28489",
+  "source": "HF günün makalesi",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "AtomicChat Inkling‑2‑Mini Uncensored GGUF Yayınlandı",
+  "note": "Küçük boyutlu görüntü‑metin modeli, kenar cihazlarda AI kullanımını genişletiyor",
+  "url": "https://huggingface.co/AtomicChat/Inkling-2-Mini-Uncensored-GGUF",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "LLMON: Granite 4.1’de LLM‑Yerel İşaretleme Dili",
+  "note": "Model içinde yapılandırılmış çıktı üretimi, entegrasyonları basitleştiriyor",
+  "url": "https://huggingface.co/blog/ibm-granite/llmon-an-llm-native-markup-language-now-in-granite",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "OpenAI Performance Factory ChatGPT’yi Hızlı Tutuyor",
+  "note": "Performans izleme ve otomatik düzeltme pipeline’ı, hizmet sürekliliğini artırıyor",
+  "url": "https://openai.com/index/how-openai-performance-factory-keeps-chatgpt-fast",
+  "source": "openai.com",
+  "tags": [
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "Wactorz: Kenar’da Kendini Yazabilen LLM Ajanları",
+  "note": "Ajanların kendini güncellemesi, dinamik ortamlarda sürdürülebilir otomasyonu mümkün kılıyor",
+  "url": "https://huggingface.co/papers/2611.29619",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araç",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "SenseNova‑Loop‑9B Görüntü‑Metin Modeli Yayınlandı",
+  "note": "Orta ölçekli model, araştırmacılar için erişilebilir multimodal çözüm sunuyor",
+  "url": "https://huggingface.co/sensenova/SenseNova-Loop-9B",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-24",
+  "title": "3D Üretim Modelleri İçin Kesin Fine‑Tuning Kılavuzu",
+  "note": "3D içerik üretiminde model adaptasyonu, yaratıcı AI akışlarını hızlandırıyor",
+  "url": "https://huggingface.co/blog/3d-lora-finetuning",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-24",
   "title": "Nvidia Jensen Huang CEO'luk Görevine Geri Döndü",
   "note": "Şirketin stratejik yönelimini ve GPU pazarındaki liderliğini pekiştirecek bir adım.",
   "url": "https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo.html",
