@@ -122,6 +122,20 @@ code{background:#232a38;border-radius:4px;padding:0 5px}
 <li>GQA, RMSNorm ve alt-bloğun hem önünde hem arkasında norm (sandviç) kullanır (hafızadan, kaynakta doğrulamadım).</li>
 </ul></div></div></div>
 
+<div class="sec" style="--c:#4fc3f7">
+<h2>8b) Inkling 2 Mini — döngülü MoE (Thinking Machines Lab, Kasım 2026)</h2>
+<p class="sub">Açık ağırlıklı (Apache 2.0). 24 fiziksel katman, her token için 48 katman ziyareti: ilk 6 katman bir kez, ortadaki 12 katman aynı ağırlıkla 3 kez, son 6 katman bir kez. Şema, modelin yayımlanan çiziminden (model kartı, config ve Transformers uygulamasına dayandığı belirtiliyor) okundu.</p>
+<div class="cols"><div id="d9"></div><div>
+<ul class="nt">
+<li><span class="tag" style="--c:#4fc3f7">Döngü (looped)</span> Orta 12 katman 3 geçişte <b>aynı ağırlıklarla</b> çalışır: 24 saklı katmandan 48 ziyaret. Bu, yukarıdaki «Astra» şemasının doğrulanmış bir örneği sayılabilir; ayrıca ağırlık paylaşımı yalnız <b>orta</b> kısımda.</li>
+<li><span class="tag" style="--c:#e8a94d">MoE (128 uzman, 8 seçilir)</span> Paylaşılan uzman yok; uzman ara boyutu 1152, model boyutu 2304. Toplam 26,4 milyar, token başına 3,4 milyar aktif; döngü sayılınca ≈5,4 milyar etkin.</li>
+<li><span class="tag" style="--c:#5fcf8a">Derinlik karışımı (AttnRes)</span> Her katmanın girişi tek bir toplam akış yerine, token gömmeleri ve önceki blok toplamlarından öğrenilmiş dikkatle karıştırılır (4 blok × 6 katman).</li>
+<li><span class="tag" style="--c:#f27a88">Mesaj kapıları</span> Döngünün 2. ve 3. geçişinde, bir önceki geçişin blok toplamları «mesaj» olarak okunur: katman başına 4 öğrenilmiş sorgu (Q, K, V, MoE girişi), kapı rank 64, tanh; (1 − f)·x + g·m. Prelude ve Coda'da yok.</li>
+<li><span class="tag" style="--c:#b592f0">Dikkat</span> Kapılı gruplu sorgu dikkati: 24 Q / 8 K/V; 6 katmanlık her blokta 5 kayan pencereli, 1 global (5:1). RoPE yok: <b>öğrenilmiş göreli konum yanlılığı</b>. Ayrıca Q/K L2 kırpma, «sink», K/V kısa konvolüsyon ve attention/MoE sonrası kısa konvolüsyon (çekirdek 4).</li>
+<li><span class="tag" style="--c:#9aa3b6">Sözlük ve çıkış</span> ≈200 bin parça, bağlam 1M token, çıkışta logit softcap (30).</li>
+</ul>
+<p class="sub">Şemada yazmayan şeyler (kafa boyutu, pencere boyutu, KV önbelleği, 4-bit katman dağılımı) burada verilmedi.</p></div></div></div>
+
 <div class="sec" style="--c:#9aa3b6">
 <h2>9) Claude, Gemini, GPT-4/5: neden çizemiyoruz?</h2>
 <p class="sub">Bunlar <b>kapalı</b> modeller: ağırlıklar da, kesin mimari de yayımlanmadı.</p>
@@ -135,15 +149,15 @@ code{background:#232a38;border-radius:4px;padding:0 5px}
 <div class="sec" style="--c:#6ea0ff">
 <h2>11) Yan yana: bilinen açık modeller</h2>
 <div class="tw"><table>
-<tr><th></th><th>DeepSeek-V3</th><th>Mixtral 8x7B</th><th>gpt-oss-120b</th><th>Gemma 3</th></tr>
-<tr><td>Toplam / aktif ağırlık</td><td>671 mlr / ≈37 mlr</td><td>≈47 mlr / ≈13 mlr</td><td>≈117 mlr† / ≈5,1 mlr</td><td>yoğun (MoE değil)†</td></tr>
-<tr><td>FFN</td><td>MoE: 1 paylaşılan + 256 uzman, 8 seçilir</td><td>MoE: 8 uzman, 2 seçilir</td><td>MoE: 128 uzman, 4 seçilir</td><td>tek yoğun FFN†</td></tr>
-<tr><td>Attention</td><td>MLA (K/V gizli vektöre sıkıştırılır)</td><td>GQA 32 Q / 8 K/V, tam</td><td>GQA 64 Q / 8 K/V, 128'lik pencere ↔ tam dönüşümlü</td><td>GQA†; 5 yerel : 1 küresel, QK-Norm</td></tr>
-<tr><td>Derinlik</td><td>61 katman</td><td>32 katman</td><td>36 katman</td><td>modele göre değişir</td></tr>
-<tr><td>Bağlam</td><td>128K†</td><td>32K†</td><td>≈131K†</td><td>128K (1B: 32K)</td></tr>
-<tr><td>Ayırt edici fikir</td><td>MLA + MTP + yük dengesi</td><td>2/8 uzman yönlendirme</td><td>MXFP4 + attention sink</td><td>5:1 yerel/küresel + iki RoPE hızı</td></tr>
+<tr><th></th><th>DeepSeek-V3</th><th>Mixtral 8x7B</th><th>gpt-oss-120b</th><th>Gemma 3</th><th>Inkling 2 Mini</th></tr>
+<tr><td>Toplam / aktif ağırlık</td><td>671 mlr / ≈37 mlr</td><td>≈47 mlr / ≈13 mlr</td><td>≈117 mlr† / ≈5,1 mlr</td><td>yoğun (MoE değil)†</td><td>26,4 mlr / 3,4 mlr (döngüyle ≈5,4 mlr)</td></tr>
+<tr><td>FFN</td><td>MoE: 1 paylaşılan + 256 uzman, 8 seçilir</td><td>MoE: 8 uzman, 2 seçilir</td><td>MoE: 128 uzman, 4 seçilir</td><td>tek yoğun FFN†</td><td>MoE: 128 uzman, 8 seçilir, paylaşılan yok</td></tr>
+<tr><td>Attention</td><td>MLA (K/V gizli vektöre sıkıştırılır)</td><td>GQA 32 Q / 8 K/V, tam</td><td>GQA 64 Q / 8 K/V, 128'lik pencere ↔ tam dönüşümlü</td><td>GQA†; 5 yerel : 1 küresel, QK-Norm</td><td>Kapılı GQA 24 Q / 8 K/V; 5 kayan pencere : 1 global; öğrenilmiş göreli konum yanlılığı</td></tr>
+<tr><td>Derinlik</td><td>61 katman</td><td>32 katman</td><td>36 katman</td><td>modele göre değişir</td><td>24 fiziksel katman, 48 ziyaret (orta 12 katman ×3)</td></tr>
+<tr><td>Bağlam</td><td>128K†</td><td>32K†</td><td>≈131K†</td><td>128K (1B: 32K)</td><td>1M</td></tr>
+<tr><td>Ayırt edici fikir</td><td>MLA + MTP + yük dengesi</td><td>2/8 uzman yönlendirme</td><td>MXFP4 + attention sink</td><td>5:1 yerel/küresel + iki RoPE hızı</td><td>döngü + AttnRes + mesaj kapıları</td></tr>
 </table></div>
-<p class="sub" style="margin-top:10px">† işaretli sayılar yalnız ikincil kaynaklardan ya da hafızadan; resmî makale/model kartından doğrudan doğrulayamadım. İşaretsizler birden fazla kaynakta tutarlı.</p>
+<p class="sub" style="margin-top:10px">† işaretli sayılar yalnız ikincil kaynaklardan ya da hafızadan; resmî makale/model kartından doğrudan doğrulayamadım. İşaretsizler birden fazla kaynakta tutarlı. Inkling 2 Mini sütunu, modelin yayımlanan şemasından okundu (resmî sayfaları bu ortamdan açamadım).</p>
 </div>
 
 <div class="sec" style="--c:#9aa3b6">
@@ -285,11 +299,13 @@ function stack(id,o){
  s+='<path d="M200 510 L100 510 L100 374 L200 374" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M100 378 L80 378 L80 190 L200 190" fill="none" stroke="#5fcf8a" stroke-width="1.5" stroke-dasharray="3 3"/>';
  s+='<text x="74" y="330" transform="rotate(-90 74 330)" style="fill:#5fcf8a;font-size:11px">residual</text>';
  s+=box(0,95,548,230,28,'Token gömme');s+=ar(210,548,504);
+ if(o.loop){s+='<path d="M366 232 L378 232 L378 500 L366 500" fill="none" stroke="'+c+'" stroke-width="2"/><text x="398" y="366" text-anchor="middle" transform="rotate(90 398 366)" style="fill:'+c+';font-size:11px">'+o.loop+'</text>'}
  s+='</svg>';
  document.getElementById(id).innerHTML=s}
 stack('d5',{c:'#5ad1e6',bg:'#17303a',n:'× 61 katman',out:'Çıkış katmanı (+ MTP başlığı)',moe:{t:'MoE: 1 paylaşılan + 256 uzman',show:16,act:[2,5,9,13],cap:'… ×256 uzman · 8 seçilir (renkli)'},att:['MLA — Multi-head Latent Attention','K/V → 512 boyutlu gizli vektör†']});
 stack('d6',{c:'#f27a88',bg:'#331d22',n:'× 32 katman',moe:{t:'8 uzman, 2 seçilir',show:8,act:[1,5],cap:'router 2 uzman seçer (renkli)'},att:['GQA · 32 Q / 8 K/V · RoPE','tam dikkat (bağlam 32K†)']});
 stack('d7',{c:'#e8a94d',bg:'#2f2a17',n:'× 36 katman',moe:{t:'128 uzman, 4 seçilir',show:16,act:[3,7,10,14],cap:'… ×128 uzman · 4 seçilir (renkli)'},att:['GQA · 64 Q / 8 K/V','pencere 128 ↔ tam, dönüşümlü']});
+stack('d9',{c:'#4fc3f7',bg:'#14303d',n:'24 katman · 48 ziyaret',out:'Çıkış katmanı (+ logit softcap 30)',moe:{t:'MoE: 128 uzman, 8 seçilir (paylaşılan yok)',show:16,act:[1,4,8,12,5,10,14,2],cap:'… ×128 uzman · 8 seçilir (renkli)'},att:['Kapılı GQA · 24 Q / 8 K/V','5 kayan pencere : 1 global'],loop:'orta 12 katman ×3 geçiş'});
 stack('d8',{c:'#b592f0',bg:'#261f3a',n:'× N katman (5 yerel : 1 küresel)',ffn:['FFN (yoğun)','tek FFN†'],att:['GQA · QK-Norm','5 katman yerel (≈1024†) : 1 küresel']});
 </script><script>/*home-back*/(function(){try{if(window!==window.top||/[?&]embed=|[?&]snap=/.test(location.search))return}catch(e){return}
 var a=document.createElement('a');a.href='../../';a.textContent='\u2190 Ana sayfa';a.setAttribute('style','position:fixed;left:10px;bottom:10px;z-index:99999;padding:7px 13px;border-radius:999px;background:rgba(10,12,28,.72);border:1px solid rgba(255,255,255,.25);color:#fff;font:500 12.5px Inter,system-ui,sans-serif;text-decoration:none;backdrop-filter:blur(6px)');
