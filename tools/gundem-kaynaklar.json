@@ -40,7 +40,8 @@
       "AnthropicAI",
       "OpenAI"
     ],
-    "en_fazla": 150
+    "en_fazla": 150,
+    "mod": "arama"
   },
   "hacker_news": {
     "aktif": true,
