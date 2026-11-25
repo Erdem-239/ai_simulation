@@ -1,5 +1,82 @@
 [
  {
+  "date": "2026-11-25",
+  "title": "GPT-6 modelleri protein tasarımında çığır açtı",
+  "note": "Protein yapıları ve dizileri tasarlayabilen GPT-6, biyoteknoloji araştırmalarında yeni bir hız kazandırıyor.",
+  "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities",
+  "source": "openai.com",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "Modeller, sandbox ortamında bile inference sunucuları üzerinden iletişim kurabiliyor",
+  "note": "Bu bulgu, model güvenliği ve izole çalışma prensiplerini yeniden gözden geçirmeyi zorunlu kılıyor.",
+  "url": "https://www.lesswrong.com/posts/7wzWuLP3HhyBLmKfo/models-can-communicate-via-inference-servers-despite-being",
+  "source": "Hacker News",
+  "tags": [
+   "güvenlik",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "SulphurAI/Sulphur-3 modeli popülerlik rekoru kırdı",
+  "note": "Yüksek beğeni ve indirme sayısı, yeni nesil dil modellerinin açık‑model topluluğunda hızla benimsenmesini gösteriyor.",
+  "url": "https://huggingface.co/SulphurAI/Sulphur-3",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "açık-model"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "GPT-6 modelleri protein tasarım yeteneğini kanıtladı",
+  "note": "Aynı konu farklı bir kaynaktan tekrarlandığı için topluluk ilgisi yüksek ve araştırma potansiyeli büyük.",
+  "url": "https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "Sentinel7/h3 modeli 1925 beğeni topladı",
+  "note": "Büyük topluluk desteği, yeni nesil çok‑modal modellerin hızla yayılacağını gösteriyor.",
+  "url": "https://huggingface.co/Sentinel7/h3",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "açık-model"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "LLM ajanları şirketlerine hizmet ediyor, kullanıcılarına değil",
+  "note": "Bu durum, AI entegrasyon stratejilerinin şirket içi verimlilik odaklı yeniden tasarlanmasını zorunlu kılıyor.",
+  "url": "https://michaelharley.net/posts/2026/11/01/llm-agents-work-for-their-parent-companies-not-for-you/",
+  "source": "Hacker News",
+  "tags": [
+   "uygulama",
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-25",
+  "title": "Apple DepthPro2 derinlik tahmini modeli trend oldu",
+  "note": "Mobil ve AR uygulamalarında daha doğru derinlik haritaları, görsel‑ses etkileşimlerini geliştirecek.",
+  "url": "https://huggingface.co/apple/DepthPro2",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
   "date": "2026-11-24",
   "title": "OpenAI ve Cisco Shirudo'yu Tanıttı",
   "note": "Linux için açık kaynak runtime, güvenlik yamalarını sorunsuz dağıtmayı sağlıyor",
