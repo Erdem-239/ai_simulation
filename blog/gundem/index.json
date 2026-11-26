@@ -1,5 +1,137 @@
 [
  {
+  "date": "2026-11-26",
+  "title": "Nemotron 3.5 Parse: Açık Veri ve Hızlı Çıkarım",
+  "note": "Yeni mimari, ince ayar ve daha hızlı çıkarım imkanı sunarak büyük dil modellerinin verimliliğini artırıyor.",
+  "url": "https://huggingface.co/blog/nvidia/building-on-nemotron-35-parse-open-data-fine-tunin",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "GPT-6.2 Astra Kod Golf Rekorlarını Kırdı",
+  "note": "Kod üretiminde önceki sınırları aşarak geliştiricilerin verimliliğini önemli ölçüde yükseltti.",
+  "url": "https://bjin.github.io/go-codegolf-benchmark/#leaderboard",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Nemotron-Labs-Image-30B-A3B: Metinden Görsele Yeni Model",
+  "note": "30 milyar parametreli model, yüksek kaliteli görsel üretiminde yeni bir standart belirliyor.",
+  "url": "https://huggingface.co/nvidia/Nemotron-Labs-Image-30B-A3B",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "GOLD‑SLAM: Panoramik LiDAR‑Derinlik SLAM",
+  "note": "Tam küresel görüş sağlayan LiDAR‑derinlik haritalama, otonom araçların algısını güçlendiriyor.",
+  "url": "https://huggingface.co/papers/2611.32335",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araştırma",
+   "donanım"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Richpanel, GPT‑6 Astra ile Destek Süreçlerini %50 Azaltıyor",
+  "note": "Müşteri hizmetlerinde yapay zeka otomasyonu, maliyet ve yanıt süresinde belirgin iyileşme getiriyor.",
+  "url": "https://openai.com/business/customer-stories/richpanel-ai-customer-support",
+  "source": "openai.com",
+  "tags": [
+   "uygulama",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Inkling 2 Mini: RTX PRO 6000 Üzerinde Mini Çıkarım",
+  "note": "Tek bir GPU’da yüksek verimlilikle model çıkarımı, uç‑uç uygulamalara kapı açıyor.",
+  "url": "https://huggingface.co/blog/inkling-2-mini-inference-hillclimb",
+  "source": "huggingface.co",
+  "tags": [
+   "donanım",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "OpenAI, GPT-6.2 Kullanımını %40 Daha Hızlı Kısıtladı",
+  "note": "Performans iyileştirmeleri, maliyet ve ölçeklenebilirlik açısından kritik bir adım.",
+  "url": "https://twitter.com/thsottiaux/status/2125784147889393806",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Qwen3.8-27B-NariQ: Görüntü‑Metin‑Metin Üretiminde Çığır Açıyor",
+  "note": "Çok-modlu yetenekleri, görsel ve metinsel görevlerde tek modelle yüksek performans sağlıyor.",
+  "url": "https://huggingface.co/nari-labs/Qwen3.8-27B-NariQ-GGUF",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Clay: Satış Takımlarında Codex ve ChatGPT Entegrasyonu",
+  "note": "Satış süreçlerinde AI‑destekli araştırma ve veri analizi, karar alma hızını artırıyor.",
+  "url": "https://openai.com/business/customer-stories/clay-plugins-openai",
+  "source": "openai.com",
+  "tags": [
+   "uygulama",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "DaisyRose‑27B: Post‑Training Verimlilikte Yeni Sınır",
+  "note": "Post‑training teknikleriyle büyük modelin çıkarım maliyeti %30’a kadar azalıyor.",
+  "url": "https://huggingface.co/blog/RadixArk/daisyrose-27b-pushing-the-frontier-of-post-trainin",
+  "source": "huggingface.co",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "NYT, Photoshop AI Özelliklerini Güncellemeyi Uyarıyor",
+  "note": "Popüler fotoğraf yazılımındaki AI entegrasyonu, veri gizliliği ve güvenlik riskleri taşıyor.",
+  "url": "https://www.theverge.com/ai-artificial-intelligence/1041227/the-new-york-times-warns-photographers-not-to-update-photoshop-over-ai-features",
+  "source": "Hacker News",
+  "tags": [
+   "güvenlik",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-26",
+  "title": "Ternary‑Bonsai‑2.5‑27B‑GGUF: Yeni Metin Üretim Modeli",
+  "note": "Kompakt ama güçlü model, düşük kaynaklı ortamlarda yüksek kalite metin üretimi sağlıyor.",
+  "url": "https://huggingface.co/prism-ml/Ternary-Bonsai-2.5-27B-GGUF",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
   "date": "2026-11-25",
   "title": "GPT-6 modelleri protein tasarımında çığır açtı",
   "note": "Protein yapıları ve dizileri tasarlayabilen GPT-6, biyoteknoloji araştırmalarında yeni bir hız kazandırıyor.",
