@@ -1,5 +1,73 @@
 [
  {
+  "date": "2026-11-27",
+  "title": "Trainium3 ile LTX-2.5 Video Üretimi",
+  "note": "Yeni donanım ve model birleşimi, yüksek kaliteli video üretimini hızlandırıyor",
+  "url": "https://huggingface.co/blog/video-trainium3",
+  "source": "huggingface.co",
+  "tags": [
+   "donanım",
+   "model",
+   "ses-görüntü"
+  ]
+ },
+ {
+  "date": "2026-11-27",
+  "title": "Voice-Isolator: Ses İzolasyonu İçin Yeni Model",
+  "note": "Ses‑görüntü uygulamalarında gürültü azaltma performansı büyük ölçüde iyileştirildi",
+  "url": "https://huggingface.co/inworld/voice-isolator",
+  "source": "HF trend model",
+  "tags": [
+   "ses-görüntü",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-27",
+  "title": "AMD‑Özel Llama.cpp Fork’u",
+  "note": "AMD işlemcilerde LLM performansını artıran optimizasyonlar içeriyor",
+  "url": "https://devnull.land/amd-specific-llama-cpp",
+  "source": "Hacker News",
+  "tags": [
+   "donanım",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-27",
+  "title": "OS‑Omni: Uzun‑Horizon Çalışma Akışları İçin Genelist Ajanlar",
+  "note": "Bilgisayar‑kullanan ajanların platformlar arası tutarlılığı ölçülüyor",
+  "url": "https://huggingface.co/papers/2611.34232",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araç",
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-27",
+  "title": "Self‑Hosting AI Artık Daha Eğlenceli",
+  "note": "Yeni araçlar ve paketler, kişisel sunucularda AI çalıştırmayı basitleştiriyor",
+  "url": "https://janlukas.blog/posts/ai-self-hosting",
+  "source": "Hacker News",
+  "tags": [
+   "araç",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-27",
+  "title": "Google AI Ajanları MCP Sunucularını Kullanacak",
+  "note": "Google’ın sunucu altyapısı, AI ajanlarının ölçeklenebilirliğini artıracak",
+  "url": "https://techstackups.com/articles/google-workspace-ai-agents-mcp/",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "donanım"
+  ]
+ },
+ {
   "date": "2026-11-26",
   "title": "Nemotron 3.5 Parse: Açık Veri ve Hızlı Çıkarım",
   "note": "Yeni mimari, ince ayar ve daha hızlı çıkarım imkanı sunarak büyük dil modellerinin verimliliğini artırıyor.",
