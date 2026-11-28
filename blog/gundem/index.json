@@ -1,5 +1,125 @@
 [
  {
+  "date": "2026-11-28",
+  "title": "Google DeepCrossAttention: Model kalitesinde %300'e kadar hız artışı",
+  "note": "Aynı model kalitesini üç kat daha hızlı sunarak büyük ölçekli eğitim ve çıkarım maliyetlerini düşürüyor.",
+  "url": "https://research.google/blog/supercharging-transformer-residual-connections/",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Baidu ERNIE-5.5-Flash-Preview: Metin üretiminde yeni nesil büyük model",
+  "note": "Çin’in en büyük LLM’lerinden biri, çok dilli yetenekleri ve hızlı yanıt süresiyle dikkat çekiyor.",
+  "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Preview",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Astra ile uzaktan gezegen aramaları: Kodex ve Astra’nın Kepler/TESS verisi keşfi",
+  "note": "Amatör astronomların yapay zekâ destekli araçlarla yeni potansiyel ötegezegenler bulması, astro‑bilimde AI’nın gücünü gösteriyor.",
+  "url": "https://openai.com/index/searching-for-distant-planets-with-astra",
+  "source": "openai.com",
+  "tags": [
+   "araştırma",
+   "bilim"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Harness Adapters: Model performansını maliyetle optimize eden yeni eklenti",
+  "note": "Mevcut modelleri farklı donanım ve görevler için hızlıca uyarlamayı mümkün kılıyor.",
+  "url": "https://huggingface.co/blog/harness-adapters-at-scale",
+  "source": "huggingface.co",
+  "tags": [
+   "araç",
+   "model"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Sıfır‑Şot Zaman Serisi Tahmini: Forecasting Leaderboard sonuçları",
+  "note": "Temel model bir kez eğitilip hiç görülmemiş serilerde tahmin yapabiliyor, zaman serisi alanında çığır açıyor.",
+  "url": "https://huggingface.co/papers/2611.31619",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araştırma",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "SpaceX’e karşı dava: Grok’un çocuk pornosu üretmesi",
+  "note": "AI içerik denetimi ve yasal sorumluluk konularında kritik bir örnek olarak öne çıkıyor.",
+  "url": "https://www.oag.state.va.us/media-center/news-releases/jay-jones/3162-attorneys-general-jones-and-rayfield-file-suit-against-spacex-parent-company-of-x-xai-and-grok-over-creation-and-promotion-of-child-exploitation-and-non-consensual-images-on-platform",
+  "source": "Hacker News",
+  "tags": [
+   "güvenlik"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "ISTA-DASLab Inkling-2-Mini-GSQ-RCO-GGUF: Yeni metin üretim modeli",
+  "note": "Küçük boyutlu ama yüksek performanslı bir model, düşük kaynaklı ortamlarda LLM kullanımını genişletiyor.",
+  "url": "https://huggingface.co/ISTA-DASLab/Inkling-2-Mini-GSQ-RCO-GGUF",
+  "source": "HF trend model",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Agentic Evaluation: Yapay ajanların değerlendirme çerçevesi nasıl kurulur",
+  "note": "Ajan tabanlı sistemlerin performansını ölçmek için standart bir metodoloji öneriyor.",
+  "url": "https://huggingface.co/blog/agentic-evals",
+  "source": "huggingface.co",
+  "tags": [
+   "araştırma",
+   "araç"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "LLM’ler Bağlam Mühendisliği: Prompt tasarımının önemi",
+  "note": "Büyük modelleri verimli kullanmak için bağlam mühendisliği teknikleri topluluğa sunuldu.",
+  "url": "https://huggingface.co/papers/2611.30494",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araştırma",
+   "uygulama"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "GPT 6.2 Astra: Tarihi bir gizemi çözen model",
+  "note": "Tarihsel metin analizi için özel olarak optimize edilmiş GPT sürümü, çok disiplinli araştırmalara yeni bir araç sunuyor.",
+  "url": "https://generativehistory.substack.com/p/gpt-62-astra-solves-a-historical",
+  "source": "Hacker News",
+  "tags": [
+   "model",
+   "araştırma"
+  ]
+ },
+ {
+  "date": "2026-11-28",
+  "title": "Generation as Reverse Encoding: Görsel temsillerin jeneratif öğrenmedeki rolü",
+  "note": "Görsel ön‑öğrenmenin üretken modellerde verimliliği artırdığı gösterildi, yeni araştırma yönleri açtı.",
+  "url": "https://huggingface.co/papers/2611.34782",
+  "source": "HF günün makalesi",
+  "tags": [
+   "araştırma",
+   "bilim"
+  ]
+ },
+ {
   "date": "2026-11-27",
   "title": "Trainium3 ile LTX-2.5 Video Üretimi",
   "note": "Yeni donanım ve model birleşimi, yüksek kaliteli video üretimini hızlandırıyor",
